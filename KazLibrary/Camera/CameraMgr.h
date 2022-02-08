@@ -1,0 +1,88 @@
+#pragma once
+#include"../DirectXCommon/Base.h"
+#include"../Helper/ISinglton.h"
+
+enum CameraType
+{
+	CAMERA_TYPE_NONE = -1,
+	CAMERA_TYPE_GAME,
+	CAMERA_TYPE_DEBUG
+};
+
+struct CameraAxis
+{
+	XMVECTOR x;
+	XMVECTOR y;
+	XMVECTOR z;
+	XMVECTOR upVec;
+};
+
+struct CameraData
+{
+	XMMATRIX view;
+	XMMATRIX Perspectiveprojection;
+	XMMATRIX orthographicMatProjection;
+};
+
+
+/// <summary>
+/// 作られたビュー行列を保管し、指定されたビュー行列を描画クラスに渡します
+/// </summary>
+class CameraMgr :public ISingleton<CameraMgr>
+{
+public:
+	CameraMgr();
+
+	/// <summary>
+	/// 視野角と描画距離を設定します
+	/// </summary>
+	/// <param name="VIEWING_ANGLE">視野角</param>
+	/// <param name="FAR_SIDE">描画距離</param>
+	void CameraSetting(float VIEWING_ANGLE = 60.0f, float FAR_SIDE = 700.0f);
+
+	/// <summary>
+	///  座標を受け取り、ビュー行列を計算します
+	/// </summary>
+	/// <param name="EYE_POS">視点座標</param>
+	/// <param name="TARGET_POS">注視点</param>
+	/// <param name="UP">上ベクトル</param>
+	void Camera(XMFLOAT3 EYE_POS, XMFLOAT3 TARGET_POS, XMFLOAT3 UP);
+
+	XMMATRIX CreateCamera(XMFLOAT3 EYE_POS, XMFLOAT3 TARGET_POS, XMFLOAT3 UP);
+
+	/// <summary>
+	/// ビュー行列を渡します
+	/// </summary>
+	/// <returns>ビュー行列</returns>
+	XMMATRIX GetViewMatrix();
+
+	/// <summary>
+	/// ビルボード行列を渡します
+	/// </summary>
+	/// <returns>ビルボード行列</returns>
+	XMMATRIX GetMatBillBoard();
+
+	/// <summary>
+	/// 透視投影変換行列を受け取ります
+	/// </summary>
+	/// <returns>透視投影変換行列</returns>
+	XMMATRIX GetPerspectiveMatProjection();
+
+	// 透視投影変換行列を視野角を指定して取得する。
+	XMMATRIX GetPerspectiveMatProjectionAngle(float angle);
+
+	XMMATRIX view;
+	XMMATRIX billBoard;
+
+	XMMATRIX perspectiveMat;
+	XMMATRIX orthographicMatProjection;
+private:
+
+
+};
+
+// ライトカメラ定数を送る用の構造体
+struct LightCamera {
+	XMMATRIX viewProj;
+};
+
