@@ -12,6 +12,7 @@ namespace KazFilePathName
 	static string VertexShaderPath = RelativeShaderPath + "VertexShader/";
 	static string PixelShaderPath = RelativeShaderPath + "PixelShader/";
 	static string GeometryShaderPath = RelativeShaderPath + "GeometryShader/";
+	static string ComputeShaderPath = RelativeShaderPath + "ComputeShader/";
 
 	static string TestPath = RelativeResourcePath + "Test/";
 	static string CursorPath = RelativeResourcePath + "Cursor/";

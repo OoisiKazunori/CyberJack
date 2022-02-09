@@ -13,8 +13,8 @@ SceneManager::SceneManager() {
 	scene.emplace_back(new DebugScene());
 
 	nowScene = 0;
-	nextScene = 1;
-	scene[nowScene]->Init();
+	nextScene = 2;
+	scene[nextScene]->Init();
 	itisInArrayFlag = true;
 }
 
@@ -29,7 +29,10 @@ SceneManager::~SceneManager() {
 	SoundManager::Instance()->Finalize();
 }
 
-void SceneManager::Update() {
+void SceneManager::Update()
+{
+	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
+
 	//�V�[���J�ڂ̋N��
 	if (nextScene != nowScene) {
 		change.Start();
@@ -57,6 +60,7 @@ void SceneManager::Update() {
 	}
 
 	if (itisInArrayFlag) {
+	
 		scene[nowScene]->Input();
 		scene[nowScene]->Update();
 
@@ -73,7 +77,7 @@ void SceneManager::Update() {
 }
 
 void SceneManager::Draw() {
-	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
+
 	if (itisInArrayFlag) {
 		scene[nowScene]->Draw();
 	}

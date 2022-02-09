@@ -38,6 +38,12 @@ enum PipeLineDataNames
 	PIPELINE_DATA_MAX
 };
 
+enum ComputePipeLineDataNames
+{
+	PIPELINE_COMPUTE_DATA_NONE = -1,
+	PIPELINE_COMPUTE_DATA_TEST
+};
+
 enum InputLayOutNames
 {
 	LAYOUT_POS_NORMAL_TEX,
@@ -112,6 +118,11 @@ enum GeometoryShaderNames
 	SHADER_GEOMETORY_LINE
 };
 
+enum ComputeShaderNames
+{
+	SHADER_COMPUTE_NONE = -1,
+	SHADER_COMPUTE_TEST
+};
 
 enum PipeLineNames
 {
@@ -167,6 +178,11 @@ enum PipeLineNames
 	PIPELINE_MAX
 };
 
+enum ComputePipeLineNames
+{
+	PIPELINE_COMPUTE_NAME_NONE = -1,
+	PIPELINE_COMPUTE_NAME_TEST
+};
 
 /// <summary>
 /// パイプラインの管理、生成の役割を持つクラスです
@@ -208,11 +224,25 @@ public:
 	void RegisterGeometoryShaderWithData(string SHADER_FILE, LPCSTR ENTRY_POINT, LPCSTR SHADER_MODEL, GeometoryShaderNames NAME);
 
 	/// <summary>
+	/// コンピュートシェーダーのデータと名前を登録します
+	/// </summary>
+	/// <param name="GS_BLOB">登録したいShaderクラスでコンパイル済みのコンピュートシェーダー</param>
+	/// <param name="NAME">登録名</param>
+	void RegisterComputeShaderWithData(string SHADER_FILE, LPCSTR ENTRY_POINT, LPCSTR SHADER_MODEL, ComputeShaderNames NAME);
+
+	/// <summary>
 	/// PipeLineの設定と名前を登録します
 	/// </summary>
 	/// <param name="PIPELINE_DATA">登録したいパイプラインの設定</param>
 	/// <param name="NAME">登録名</param>
 	void RegisterPipeLineDataWithData(D3D12_GRAPHICS_PIPELINE_STATE_DESC PIPELINE_DATA, PipeLineDataNames NAME);
+
+	/// <summary>
+	/// ComputePipeLineの設定と名前を登録します
+	/// </summary>
+	/// <param name="PIPELINE_DATA">登録したいパイプラインの設定</param>
+	/// <param name="NAME">登録名</param>
+	void RegisterComputePipeLineDataWithData(D3D12_COMPUTE_PIPELINE_STATE_DESC PIPELINE_DATA, ComputePipeLineDataNames NAME);
 
 	/// <summary>
 	/// 登録されたデータとルートシグネチャを組みわせて、パイプラインを生成します
@@ -225,10 +255,27 @@ public:
 	void CreatePipeLine(InputLayOutNames INPUT_LAYOUT_NAME, VertexShaderNames VERTEX_SHADER_NAME, PixcelShaderNames PIXCEL_SHADER_NAME, PipeLineDataNames PIPELINE_DATA_NAME, RootSignatureMode ROOTSIGNATURE, PipeLineNames PIPELINE_NAME, GeometoryShaderNames GEOMETORY_SHADER_NAME = SHADER_GEOMETORY_NONE);
 
 	/// <summary>
+	/// 登録されたデータとルートシグネチャを組みわせて、パイプラインを生成します
+	/// </summary>
+	/// <param name="SHADER_NAME">登録したShaderの名前</param>
+	/// <param name="PIPELINE_DATA_NAME">登録したPipeLineDataの名前</param>
+	/// <param name="ROOT_SIGNATURE">ルートシグネチャの設定</param>
+	/// <param name="NAME">パイプラインの登録名</param>
+	void CreateComputePipeLine(ComputeShaderNames COMPUTE_SHADER_NAME, ComputePipeLineDataNames PIPELINE_DATA_NAME, RootSignatureMode ROOTSIGNATURE, ComputePipeLineNames PIPELINE_NAME);
+
+	/// <summary>
 	/// 登録されたパイプラインの中から指定のパイプラインをコマンドリストに積みます
 	/// </summary>
 	/// <param name="PIPELINE_NAME">登録したパイプラインの名前</param>
 	bool SetPipeLineAndRootSignature(PipeLineNames PIPELINE_NAME);
+
+
+	/// <summary>
+	/// 登録されたコンピュートパイプラインの中から指定のパイプラインをコマンドリストに積みます
+	/// </summary>
+	/// <param name="PIPELINE_NAME">登録したパイプラインの名前</param>
+	bool SetComputePipeLineAndRootSignature(ComputePipeLineNames PIPELINE_NAME);
+
 
 	/// <summary>
 	/// パイプラインと関連付けしたルートシグネチャーを呼び出します
@@ -249,6 +296,11 @@ private:
 	vector<RootSignatureMode> RootSignatureName;
 	vector<D3D12_GRAPHICS_PIPELINE_STATE_DESC> PipeLineDataRegisterData;
 	vector<ComPtr<ID3D12PipelineState>> PipeLineRegisterData;
+	
+	vector<ComPtr<ID3DBlob>> ComputeShaderRegisterData;
+	vector<D3D12_COMPUTE_PIPELINE_STATE_DESC> computePipeLineDataRegisterData;
+	vector<ComPtr<ID3D12PipelineState>> ComputePipeLineRegisterData;
+	vector<RootSignatureMode> computeRootSignatureName;
 
 	bool geo;
 	template <typename T>

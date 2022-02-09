@@ -12,7 +12,11 @@ GraphicsPipeLineMgr::GraphicsPipeLineMgr()
 	GeometoryShaderRegisterData.resize(50);
 	RootSignatureName.resize(50);
 	PipeLineRegisterData.resize(50);
+	computeRootSignatureName.resize(50);
 
+	ComputeShaderRegisterData.resize(50);
+	computePipeLineDataRegisterData.resize(50);
+	ComputePipeLineRegisterData.resize(50);
 	geo = false;
 }
 
@@ -70,7 +74,21 @@ void GraphicsPipeLineMgr::RegisterGeometoryShaderWithData(string SHADER_FILE, LP
 	}
 	else
 	{
-		FailCheck("危険:PixcelShaderNamesが登録できませんでした");
+		FailCheck("危険:GeometryShaderNamesが登録できませんでした");
+	}
+}
+
+void GraphicsPipeLineMgr::RegisterComputeShaderWithData(string SHADER_FILE, LPCSTR ENTRY_POINT, LPCSTR SHADER_MODEL, ComputeShaderNames NAME)
+{
+	if (IsitSafe(NAME, ComputeShaderRegisterData.size()))
+	{
+		Shader csShader;
+		csShader.CompileShader(SHADER_FILE, ENTRY_POINT, SHADER_MODEL, SHADER_TYPE_COMPUTE);
+		ComputeShaderRegisterData[NAME] = csShader.GetShaderData(SHADER_TYPE_COMPUTE);
+	}
+	else
+	{
+		FailCheck("危険:ComputeShaderNamesが登録できませんでした");
 	}
 }
 
@@ -83,6 +101,18 @@ void GraphicsPipeLineMgr::RegisterPipeLineDataWithData(D3D12_GRAPHICS_PIPELINE_S
 	else
 	{
 		FailCheck("危険:PipeLineDataRegisterDataが登録できませんでした");
+	}
+}
+
+void GraphicsPipeLineMgr::RegisterComputePipeLineDataWithData(D3D12_COMPUTE_PIPELINE_STATE_DESC PIPELINE_DATA, ComputePipeLineDataNames NAME)
+{
+	if (IsitSafe(NAME, computePipeLineDataRegisterData.size()))
+	{
+		computePipeLineDataRegisterData[NAME] = PIPELINE_DATA;
+	}
+	else
+	{
+		FailCheck("危険:computePipeLineDataRegisterDataが登録できませんでした");
 	}
 }
 
@@ -122,6 +152,32 @@ void GraphicsPipeLineMgr::CreatePipeLine(InputLayOutNames INPUT_LAYOUT_NAME, Ver
 	}
 }
 
+void GraphicsPipeLineMgr::CreateComputePipeLine(ComputeShaderNames COMPUTE_SHADER_NAME, ComputePipeLineDataNames PIPELINE_DATA_NAME, RootSignatureMode ROOTSIGNATURE, ComputePipeLineNames PIPELINE_NAME)
+{
+	//パイプラインデータの代入
+	D3D12_COMPUTE_PIPELINE_STATE_DESC grahicsPipeLine;
+	grahicsPipeLine = computePipeLineDataRegisterData[PIPELINE_DATA_NAME];
+
+	//Shaderの代入
+	grahicsPipeLine.CS = CD3DX12_SHADER_BYTECODE(ComputeShaderRegisterData[COMPUTE_SHADER_NAME].Get());
+
+	//ルートシグネチャの設定
+	computeRootSignatureName[PIPELINE_NAME] = ROOTSIGNATURE;
+	grahicsPipeLine.pRootSignature = GraphicsRootSignature::Instance()->GetRootSignature(ROOTSIGNATURE).Get();
+
+
+	//パイプラインの生成
+	if (IsitSafe(PIPELINE_NAME, ComputePipeLineRegisterData.size()))
+	{
+		DirectX12Device::Instance()->dev->CreateComputePipelineState(&grahicsPipeLine, IID_PPV_ARGS(&ComputePipeLineRegisterData[PIPELINE_NAME]));
+		ComputePipeLineRegisterData[PIPELINE_NAME]->SetName(L"Compute");
+	}
+	else
+	{
+		FailCheck("危険:ComputePipelineが登録できませんでした");
+	}
+}
+
 bool GraphicsPipeLineMgr::SetPipeLineAndRootSignature(PipeLineNames PIPELINE_NAME)
 {
 	if (IsitSafe(PIPELINE_NAME, PipeLineRegisterData.size()) && PipeLineRegisterData[PIPELINE_NAME].Get() != nullptr)
@@ -133,6 +189,21 @@ bool GraphicsPipeLineMgr::SetPipeLineAndRootSignature(PipeLineNames PIPELINE_NAM
 	else
 	{
 		FailCheck("危険:PipeLineが存在しない為、コマンドリストに積めませんでした");
+		return false;
+	}
+}
+
+bool GraphicsPipeLineMgr::SetComputePipeLineAndRootSignature(ComputePipeLineNames PIPELINE_NAME)
+{
+	if (IsitSafe(PIPELINE_NAME, ComputePipeLineRegisterData.size()) && ComputePipeLineRegisterData[PIPELINE_NAME].Get() != nullptr)
+	{
+		GraphicsRootSignature::Instance()->SetComputeRootSignature(computeRootSignatureName[PIPELINE_NAME]);
+		DirectX12CmdList::Instance()->cmdList->SetPipelineState(ComputePipeLineRegisterData[PIPELINE_NAME].Get());
+		return true;
+	}
+	else
+	{
+		FailCheck("危険:ComputePipeLineが存在しない為、コマンドリストに積めませんでした");
 		return false;
 	}
 }

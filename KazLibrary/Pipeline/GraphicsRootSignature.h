@@ -31,7 +31,9 @@ enum RootSignatureMode
 	ROOTSIGNATURE_DATA_DATA1_DATA2_TEX,
 	ROOTSIGNATURE_DATA_DATA1_DATA2_DATA3_TEX,
 	ROOTSIGNATURE_DATA_DATA1,
-	ROOTSIGNATURE_DATA_DATA1_DATA2
+	ROOTSIGNATURE_DATA_DATA1_DATA2,
+	//テスト用
+	ROOTSIGNATURE_DATA_SRV_UAV,
 };
 
 
@@ -166,6 +168,13 @@ public:
 	void SetRootSignature(RootSignatureMode ROOTSIGNATURE_MODE);
 
 	/// <summary>
+	/// 指定のルートシグネチャをコマンドリストに積みます
+	/// </summary>
+	/// <param name="ROOTSIGNATURE_MODE">どのルートシグネチャを設定するか</param>
+	void SetComputeRootSignature(RootSignatureMode ROOTSIGNATURE_MODE);
+
+
+	/// <summary>
 	/// 指定のルートシグネチャーを返り値で渡します
 	/// </summary>
 	/// <param name="ROOT_SIGNATURE">指定のルートシグネチャー</param>
@@ -201,6 +210,12 @@ private:
 
 
 	void CreateMyRootSignature(D3D12_STATIC_SAMPLER_DESC SAMPLER_DATA, D3D12_ROOT_PARAMETER *ROOT_PARAM_DATA, short DATA_MAX, RootSignatureMode ROOTSIGNATURE);
+
+	RootSignatureMode CheckEnum(RootSignatureMode MODE)
+	{
+		RootSignatureMode tmp = MODE;
+		return tmp;
+	};
 };
 
 

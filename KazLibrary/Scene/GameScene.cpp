@@ -89,7 +89,6 @@ void GameScene::Update()
 {
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
 
-
 #pragma region ロックオン
 	//ロックオン判定
 	bool enableToLockOnNumFlag = cursor.LockOn();
@@ -111,7 +110,6 @@ void GameScene::Update()
 		hitBox.Dead();
 	}
 #pragma endregion
-
 
 	player.Update();
 	cursor.Update();

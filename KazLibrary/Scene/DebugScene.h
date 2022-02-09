@@ -2,6 +2,17 @@
 #include"../DirectXCommon/Base.h"
 #include"../Scene/SceneBase.h"
 #include"../Render/BackGroundForDebug.h"
+#include"../KazLibrary/Buffer/CreateGpuBuffer.h"
+
+struct InputData
+{
+	float data;
+};
+
+struct OutPutData
+{
+	float data2;
+};
 
 class DebugScene :public SceneBase {
 public:
@@ -22,6 +33,11 @@ private:
 	XMFLOAT3 eyePos, targetPos;
 	XMFLOAT2 angle;
 
-	BackGroundForDebug bg;
+	//BackGroundForDebug bg;
 
+	unique_ptr<CreateGpuBuffer>buffer;
+	short inputHandle, outPutHandle;
+
+	InputData inputData;
+	BufferMemorySize size;
 };

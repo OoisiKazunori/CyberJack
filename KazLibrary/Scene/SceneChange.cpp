@@ -78,7 +78,7 @@ void SceneChange::Draw() {
 
 	}
 
-	eye_catch_->Draw();
+	//eye_catch_->Draw();
 }
 
 void SceneChange::Start() {

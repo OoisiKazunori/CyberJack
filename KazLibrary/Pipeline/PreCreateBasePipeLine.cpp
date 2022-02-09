@@ -327,6 +327,9 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstanceColorGetShadowVertexShader.hlsl", "VSmain", "vs_5_0", SHADER_VERTEX_INSTANCE_COLOR_GET_SHADOWMAP);
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorGetShadowPixelShader.hlsl", "PSmain", "ps_5_0", SHADER_PIXCEL_INSTANCE_COLOR_GET_SHADOW);
 
+	//コンピュートシェーダーのコンパイル
+	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "TestComputeShader.hlsl", "CSmain", "cs_5_0", SHADER_COMPUTE_TEST);
+
 	OutputDebugStringA("シェーダーのコンパイルを終了します\n");
 #pragma endregion
 
@@ -784,10 +787,26 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 #pragma endregion
 
 
+	//コンピュートパイプライン
+	D3D12_COMPUTE_PIPELINE_STATE_DESC desc = {};
+	desc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
+	desc.NodeMask = 0;
+	GraphicsPipeLineMgr::Instance()->RegisterComputePipeLineDataWithData(desc, PIPELINE_COMPUTE_DATA_TEST);
+
 #pragma endregion
 
 
 #pragma region パイプラインの生成と登録
+
+	//コンピュートパイプラインの作成
+	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+		SHADER_COMPUTE_TEST,
+		PIPELINE_COMPUTE_DATA_TEST,
+		ROOTSIGNATURE_DATA_SRV_UAV,
+		PIPELINE_COMPUTE_NAME_TEST
+	);
+
+
 	//色パイプライン
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,

@@ -13,6 +13,7 @@ enum BufferMemory
 	DESCRIPTORHEAP_MEMORY_TEXTURE_OBJ,
 	DESCRIPTORHEAP_MEMORY_TEXTURE_FBX,
 	DESCRIPTORHEAP_MEMORY_TEXTURE_RENDERTARGET,
+	DESCRIPTORHEAP_MEMORY_TEXTURE_COMPUTEBUFFER,
 	DESCRIPTORHEAP_MEMORY_MAX = 5
 };
 
@@ -69,6 +70,9 @@ namespace KazBufferHelper
 
 	KazBufferHelper::BufferResourceData SetRenderTargetData(const D3D12_HEAP_PROPERTIES &HEAP_PROPERTIES, const D3D12_RESOURCE_DESC &RESOURCE, D3D12_CLEAR_VALUE *CLEAR_COLOR, const string &BUFFER_NAME = "RenderTarget");
 
+	KazBufferHelper::BufferResourceData SetStructureBuffer(const unsigned int &BUFFER_SIZE, const string &BUFFER_NAME = "StructureBuffer");
+
+	KazBufferHelper::BufferResourceData SetRWStructuredBuffer(const unsigned int &BUFFER_SIZE, const string &BUFFER_NAME = "RWStructureBuffer");
 
 
 

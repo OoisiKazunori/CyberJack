@@ -353,4 +353,24 @@ PreCreateBaseRootSignature::PreCreateBaseRootSignature()
 
 		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_DATA1_DATA2, lineData, 2);
 	}
+
+
+	//SR‚ÆUAV
+
+	{
+		RootSignatureData lineData;
+		lineData.paramData[0].param = 0;
+		lineData.paramData[0].type = GRAPHICS_PRAMTYPE_DATA;
+		lineData.range[0] = GRAPHICS_RANGE_TYPE_SRV;
+
+		lineData.paramData[1].param = 1;
+		lineData.paramData[1].type = GRAPHICS_PRAMTYPE_DATA2;
+		lineData.range[1] = GRAPHICS_RANGE_TYPE_UAV;
+
+		lineData.sample.AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+
+		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_SRV_UAV, lineData, 2);
+	}
+
+
 }
