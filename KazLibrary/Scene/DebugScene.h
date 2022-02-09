@@ -14,8 +14,7 @@ struct OutPutData
 	float data2;
 };
 
-class DebugScene :public SceneBase
-{
+class DebugScene :public SceneBase {
 public:
 	DebugScene();
 	~DebugScene();
@@ -37,10 +36,8 @@ private:
 	//BackGroundForDebug bg;
 
 	unique_ptr<CreateGpuBuffer>buffer;
-	array<short, 2> inputHandle, outPutHandle;
-	array<short, 2> inputViewHandle, outPutViewHandle;
+	short inputHandle, outPutHandle;
 
 	InputData inputData;
 	BufferMemorySize size;
-	int bbIndex;
 };
