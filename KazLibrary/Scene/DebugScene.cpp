@@ -83,8 +83,6 @@ void DebugScene::Draw()
 	//出力用のバッファ設定
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(size.startSize + 1));
 
-	MessageBoxA(nullptr, "Test", "成績発表", MB_OK);
-
 }
 
 void DebugScene::Input()
@@ -203,5 +201,5 @@ void DebugScene::Input()
 
 int DebugScene::SceneChange()
 {
-	return SCENE_DEBUG;
+	return -1;
 }
