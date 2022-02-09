@@ -6,15 +6,18 @@
 #include"../KazLibrary/Pipeline/GraphicsPipeLineMgr.h"
 #include"../KazLibrary/DirectXCommon/DirectX12CmdList.h"
 #include"../KazLibrary/Buffer/DescriptorHeapMgr.h"
+#include"../KazLibrary/RenderTarget/RenderTargetStatus.h"
 
 DebugScene::DebugScene()
 {
 	buffer = std::make_unique<CreateGpuBuffer>();
 
 	//入力用のバッファ作成
-	inputHandle = buffer->CreateBuffer(KazBufferHelper::SetStructureBuffer(sizeof(InputData)));
+	inputHandle[0] = buffer->CreateBuffer(KazBufferHelper::SetStructureBuffer(sizeof(InputData)));
+	inputHandle[1] = buffer->CreateBuffer(KazBufferHelper::SetStructureBuffer(sizeof(InputData)));
 	//出力用のバッファ作成
-	outPutHandle = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(OutPutData)));
+	outPutHandle[0] = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(OutPutData)));
+	outPutHandle[1] = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(OutPutData)));
 
 	//データを入力してみる
 	inputData.data = 1;
@@ -41,9 +44,15 @@ DebugScene::DebugScene()
 	outPutDesc.Buffer.StructureByteStride = sizeof(OutPutData);
 	outPutDesc.Buffer.CounterOffsetInBytes = 0;
 
-	DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize, inputDesc, buffer->GetBufferData(inputHandle).Get());
-	DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + 1, outPutDesc, buffer->GetBufferData(outPutHandle).Get());
+	DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize, inputDesc, buffer->GetBufferData(inputHandle[0]).Get());
+	DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + 1, inputDesc, buffer->GetBufferData(inputHandle[1]).Get());
+	DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + 2, outPutDesc, buffer->GetBufferData(outPutHandle[0]).Get());
+	DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + 3, outPutDesc, buffer->GetBufferData(outPutHandle[1]).Get());
 
+	inputViewHandle[0] = size.startSize;
+	outPutViewHandle[0] = size.startSize + 1;
+	inputViewHandle[1] = size.startSize + 2;
+	outPutViewHandle[1] = size.startSize + 3;
 }
 
 DebugScene::~DebugScene()
@@ -63,20 +72,22 @@ void DebugScene::Update()
 {
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
 
+	bbIndex = RenderTargetStatus::Instance()->bbIndex;
+
 	//コンピュート用のパイプライン設定
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_TEST);
 	//入力用のバッファ設定
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(size.startSize));
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(inputViewHandle[bbIndex]));
 	//出力用のバッファ設定
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(size.startSize + 1));
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outPutViewHandle[bbIndex]));
 	DirectX12CmdList::Instance()->cmdList->Dispatch(1, 1, 1);
 
 	//入力用のデータ転送
-	buffer->TransData(inputHandle, &inputData, sizeof(InputData));
+	buffer->TransData(inputHandle[bbIndex], &inputData, sizeof(InputData));
 
-	
+	void *adress = buffer->GetBufferData(outPutHandle[bbIndex]).Get();
 	//出力結果の受け取り
-	OutPutData *data = (OutPutData *)buffer->GetBufferData(outPutHandle).Get();
+	OutPutData *data = (OutPutData *)adress;
 }
 
 void DebugScene::Draw()

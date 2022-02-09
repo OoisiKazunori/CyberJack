@@ -76,6 +76,8 @@ public:
 	short handle, handle2;
 
 	unique_ptr<CreateGpuBuffer> buffers;
+	int bbIndex;
+
 private:
 
 
@@ -90,7 +92,6 @@ private:
 
 
 	D3D12_DESCRIPTOR_HEAP_DESC heapDesc{};
-	int bbIndex;
 
 	void ChangeBarrier(ID3D12Resource *RESOURCE, D3D12_RESOURCE_STATES BEFORE_STATE, D3D12_RESOURCE_STATES AFTER_STATE);
 };
