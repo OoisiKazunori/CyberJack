@@ -65,18 +65,20 @@ void DebugScene::Update()
 
 	//コンピュート用のパイプライン設定
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_TEST);
+
+	//入力用のデータ転送
+	buffer->TransData(inputHandle, &inputData, sizeof(InputData));
+
 	//入力用のバッファ設定
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(size.startSize));
 	//出力用のバッファ設定
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(size.startSize + 1));
 	DirectX12CmdList::Instance()->cmdList->Dispatch(1, 1, 1);
 
-	//入力用のデータ転送
-	buffer->TransData(inputHandle, &inputData, sizeof(InputData));
-
-
 	//出力結果の受け取り
-	OutPutData *data = (OutPutData *)buffer->GetBufferData(outPutHandle).Get();
+	void *b;
+	buffer->GetBufferData(outPutHandle)->Map(0, nullptr, (void **)&b);
+	OutPutData *data = (OutPutData *)b;
 }
 
 void DebugScene::Draw()
