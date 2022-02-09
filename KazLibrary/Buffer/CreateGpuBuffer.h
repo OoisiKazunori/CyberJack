@@ -76,6 +76,10 @@ public:
 	/// <returns>バッファのGPUアドレス</returns>
 	D3D12_GPU_VIRTUAL_ADDRESS GetGpuAddress(short HANDLE);
 
+
+	void *GetMapAddres(short HANDLE);
+
+
 	unique_ptr<HandleMaker> handle;
 private:	
 	vector<ComPtr<ID3D12Resource>> buffers;

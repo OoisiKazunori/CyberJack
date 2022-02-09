@@ -76,9 +76,7 @@ void DebugScene::Update()
 	DirectX12CmdList::Instance()->cmdList->Dispatch(1, 1, 1);
 
 	//出力結果の受け取り
-	void *b;
-	buffer->GetBufferData(outPutHandle)->Map(0, nullptr, (void **)&b);
-	OutPutData *data = (OutPutData *)b;
+	OutPutData *data = (OutPutData *)buffer->GetMapAddres(outPutHandle);
 }
 
 void DebugScene::Draw()

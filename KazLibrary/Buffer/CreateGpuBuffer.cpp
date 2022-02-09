@@ -170,3 +170,10 @@ D3D12_GPU_VIRTUAL_ADDRESS CreateGpuBuffer::GetGpuAddress(short HANDLE)
 		return buffers[caluHandle]->GetGPUVirtualAddress();
 	}
 }
+
+void *CreateGpuBuffer::GetMapAddres(short HANDLE)
+{
+	void *dataMap = nullptr;
+	buffers[HANDLE]->Map(0, nullptr, (void **)&dataMap);
+	return dataMap;
+}
