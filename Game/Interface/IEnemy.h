@@ -10,20 +10,22 @@ struct EnemyData
 	/// <summary>
 	/// 敵の情報を初期化します
 	/// </summary>
-	/// <param name="HITBOX_DATA">当たり判定のアドレス</param>
+	/// <param name="HITBOX_POS_ADRESS">当たり判定用の座標アドレス</param>
+	/// <param name="RADIUS">当たり判定の大きさ</param>
 	/// <param name="MAX_ROCKON_NUM">ロックオン回数のアドレス</param>
-	EnemyData(const Sphere &HITBOX_DATA, const short &MAX_ROCKON_NUM):
-		hitBox(std::make_shared<Sphere>(HITBOX_DATA)), rockOnNum(std::make_shared<short>(MAX_ROCKON_NUM)),
-		deadFlag(false), initFlag(false)
+	EnemyData(XMVECTOR *HITBOX_POS_ADRESS,const float &RADIUS ,IOperationObjectData *OPERATION_DATA) :
+		hitBox({ HITBOX_POS_ADRESS ,RADIUS }),
+		oprationObjData(OPERATION_DATA)
 	{
 	};
 
-	shared_ptr<Sphere> hitBox;		//敵の当たり判定
-	bool deadFlag;					//敵の死亡フラグ
-	bool initFlag;					//敵の生成フラグ
-	shared_ptr<short> rockOnNum;	//ロックオンできる回数
+	Sphere hitBox;							//敵の当たり判定
+	IOperationObjectData *oprationObjData;	//操作可能OBJが持つ基本データのアドレス
 };
 
+/// <summary>
+/// 敵の抽象クラス
+/// </summary>
 class IEnemy :public IOperationObject
 {
 public:
@@ -41,8 +43,8 @@ public:
 	/// 初期化処理
 	/// </summary>
 	/// <param name="POS">初期座標</param>
-	virtual void Init(const XMVECTOR &POS) = 0; 
-	
+	virtual void Init(const XMVECTOR &POS) = 0;
+
 	/// <summary>
 	/// 終了処理
 	/// </summary>
@@ -61,10 +63,11 @@ public:
 	/// </summary>
 	void Dead();
 
+	
 	/// <returns>敵の情報</returns>
 	const unique_ptr<EnemyData> &GetData();
 
 
 	unique_ptr<EnemyData> iEnemy_EnemyStatusData;		//敵の状態を保存するデータ
-	BoxPolygonRenderPtr iEnemy_ModelRender;
+	BoxPolygonRenderPtr iEnemy_ModelRender;				//敵の描画
 };
