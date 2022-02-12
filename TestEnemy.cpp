@@ -6,6 +6,8 @@ TestEnemy::TestEnemy()
 
 	hitColor = { 255.0f,0.0f,0.0f,255.0f };
 	normalColor = { 255.0f,255.0f,0.0f,255.0f };
+
+	sphere.center = &render->data.transform.pos;
 }
 
 void TestEnemy::Init(const XMVECTOR &POS, const int &HP)
@@ -37,7 +39,7 @@ void TestEnemy::Update()
 		hitFlag = false;//毎フレームfalseで初期化する事で次のリリース判定の準備をする
 
 
-		sphere.center = render->data.transform.pos;
+		
 		render->data.color = normalColor;
 	}
 	else

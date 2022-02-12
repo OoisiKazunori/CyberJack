@@ -6,8 +6,9 @@ NormalEnemy::NormalEnemy()
 
 void NormalEnemy::Init(const XMVECTOR &POS)
 {
-	iOprationObject_hitBox.center = POS;
-	iOprationObject_hitBox.radius = 10.0f;
+	iEnemy_ModelRender->data.transform.pos = POS;
+	iEnemy_EnemyStatusData->hitBox.radius = 5.0f;
+	iOperationData.Init(1);
 }
 
 void NormalEnemy::Finalize()

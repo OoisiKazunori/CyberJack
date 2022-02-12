@@ -17,6 +17,9 @@ void GameScene::Init()
 	hitBox.Init({ 0.0f,0.0f,30.0f }, 1);
 
 	sceneNum = SCENE_NONE;
+
+	enemy[0] = std::make_unique<NormalEnemy>();
+	enemy[0]->Init({ 0.0f,0.0f,30.0f });
 }
 
 void GameScene::Finalize()
@@ -114,6 +117,8 @@ void GameScene::Update()
 	player.Update();
 	cursor.Update();
 	hitBox.Update();
+
+	enemy[0]->GetData();
 }
 
 void GameScene::Draw()
@@ -121,7 +126,9 @@ void GameScene::Draw()
 	bg.Draw();
 	player.Draw();
 	cursor.Draw();
-	hitBox.Draw();
+	//hitBox.Draw();
+
+	enemy[0]->Draw();
 }
 
 int GameScene::SceneChange()

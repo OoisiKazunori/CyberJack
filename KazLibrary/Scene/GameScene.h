@@ -6,6 +6,8 @@
 #include"../Player.h"
 #include"../Cursor.h"
 #include"../TestEnemy.h"
+#include"../Game/Interface/IEnemy.h"
+#include"../Game/Enemy/NormalEnemy.h"
 
 class GameScene :public SceneBase
 {
@@ -32,4 +34,6 @@ private:
 	Player player;
 	Cursor cursor;
 	TestEnemy hitBox;
+
+	array<unique_ptr<IEnemy>,2>enemy;
 };

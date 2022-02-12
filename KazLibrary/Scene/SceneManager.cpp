@@ -13,8 +13,8 @@ SceneManager::SceneManager() {
 	scene.emplace_back(new DebugScene());
 
 	nowScene = 0;
-	nextScene = 2;
-	scene[nextScene]->Init();
+	nextScene = 1;
+	scene[nowScene]->Init();
 	itisInArrayFlag = true;
 }
 

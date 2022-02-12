@@ -2,6 +2,9 @@
 #include"../KazLibrary/Render/KazRender.h"
 #include"../Game/Interface/IEnemy.h"
 
+/// <summary>
+/// ƒTƒ“ƒvƒ‹—p‚Ì“G
+/// </summary>
 class NormalEnemy:public IEnemy
 {
 public:

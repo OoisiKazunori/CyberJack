@@ -46,7 +46,7 @@ struct Ray
 struct Sphere
 {
 	// ’†SÀ•W
-	XMVECTOR center = {};
+	XMVECTOR* center;
 	// ”¼Œa
 	float radius = 1.0f;
 };

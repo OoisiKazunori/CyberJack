@@ -12,7 +12,7 @@ CollisionManager::~CollisionManager()
 bool CollisionManager::CheckSphereAndPlane(const Sphere& SPHERE, const Plane& PLANE, XMVECTOR* INTER)
 {
 	//座標系の原点から球の中心座標への距離
-	XMVECTOR distV = XMVector3Dot(SPHERE.center, PLANE.normal);
+	XMVECTOR distV = XMVector3Dot(*SPHERE.center, PLANE.normal);
 
 	//平面の原点距離を減算する事で、平面と球の中心との距離が出る
 	float dist = distV.m128_f32[0] - PLANE.distance;
@@ -28,7 +28,7 @@ bool CollisionManager::CheckSphereAndPlane(const Sphere& SPHERE, const Plane& PL
 	if (INTER)
 	{
 		//平面上の疑似接点を、疑似交点とする
-		*INTER = -dist * PLANE.normal + SPHERE.center;
+		*INTER = -dist * PLANE.normal + *SPHERE.center;
 	}
 	return true;
 }
@@ -38,10 +38,10 @@ bool CollisionManager::CheckSphereAndTriangle(const Sphere& SPHERE, const Triang
 	XMVECTOR p;
 
 	//球の中心に対する最近接点である三角形上にある点pを見つける
-	ClosestPtPoint2Triangle(SPHERE.center, TRIANGLE, &p);
+	ClosestPtPoint2Triangle(*SPHERE.center, TRIANGLE, &p);
 
 	//点pと球の中心の差分ベクトル
-	XMVECTOR v = p - SPHERE.center;
+	XMVECTOR v = p - *SPHERE.center;
 
 	//距離の二乗を求める
 	//(同じベクトル同士の内積は三平方の定理のルート内部の式と一致する)
@@ -170,7 +170,7 @@ bool CollisionManager::CheckRayAndTriange(const Ray& RAY, const Triangle& TRIANG
 
 bool CollisionManager::CheckRayAndSphere(const Ray& RAY, const Sphere& SPHERE, float* DISTANCE, XMVECTOR* INTER)
 {
-	XMVECTOR m = RAY.start - SPHERE.center;
+	XMVECTOR m = RAY.start - *SPHERE.center;
 	float b = XMVector3Dot(m, RAY.dir).m128_f32[0];
 	float c = XMVector3Dot(m, m).m128_f32[0] - SPHERE.radius * SPHERE.radius;
 
@@ -214,9 +214,9 @@ bool CollisionManager::CheckRayAndSphere(const Ray& RAY, const Sphere& SPHERE, f
 bool CollisionManager::CheckSphereAndSphere(const Sphere& SPHERE_1, const Sphere& SPHERE_2)
 {
 	XMVECTOR tmp;
-	tmp.m128_f32[0] = SPHERE_1.center.m128_f32[0] - SPHERE_2.center.m128_f32[0];
-	tmp.m128_f32[1] = SPHERE_1.center.m128_f32[1] - SPHERE_2.center.m128_f32[1];
-	tmp.m128_f32[2] = SPHERE_1.center.m128_f32[2] - SPHERE_2.center.m128_f32[2];
+	tmp.m128_f32[0] = SPHERE_1.center->m128_f32[0] - SPHERE_2.center->m128_f32[0];
+	tmp.m128_f32[1] = SPHERE_1.center->m128_f32[1] - SPHERE_2.center->m128_f32[1];
+	tmp.m128_f32[2] = SPHERE_1.center->m128_f32[2] - SPHERE_2.center->m128_f32[2];
 
 
 	float distance = sqrtf(pow(tmp.m128_f32[0], 2) + pow(tmp.m128_f32[1], 2) + pow(tmp.m128_f32[2], 2));
@@ -263,8 +263,8 @@ bool CollisionManager::CheckThicklineAndSphere(const Sphere &SPHERE, const ModiR
 	Sphere sphereBuff = SPHERE;
 	ModiRectangle rectangleBuff = RECTANGLE;
 
-	sphereBuff.center.m128_f32[1] = SPHERE.center.m128_f32[2];
-	sphereBuff.center.m128_f32[2] = SPHERE.center.m128_f32[1];
+	sphereBuff.center->m128_f32[1] = SPHERE.center->m128_f32[2];
+	sphereBuff.center->m128_f32[2] = SPHERE.center->m128_f32[1];
 
 	rectangleBuff.p0.m128_f32[1] = RECTANGLE.p0.m128_f32[2];
 	rectangleBuff.p0.m128_f32[2] = RECTANGLE.p0.m128_f32[1];
@@ -387,7 +387,7 @@ bool CollisionManager::CheckThicklineAndSphere(const Sphere &SPHERE, const ModiR
 		vTvVec = KazMath::SubXMVECTOR(rectangleBuffBuff.p1, rectangleBuffBuff.p0);
 		vTvVec = XMVector2Normalize(vTvVec);
 		// 頂点と中心点のベクトルを求めて正規化
-		vTPVec = KazMath::SubXMVECTOR(sphereBuff.center, rectangleBuffBuff.p0);
+		vTPVec = KazMath::SubXMVECTOR(*sphereBuff.center, rectangleBuffBuff.p0);
 		vTPVec = XMVector2Normalize(vTPVec);
 
 		// 外積を計算 +の場合右判定
@@ -403,7 +403,7 @@ bool CollisionManager::CheckThicklineAndSphere(const Sphere &SPHERE, const ModiR
 		vTvVec = KazMath::SubXMVECTOR(rectangleBuffBuff.p2, rectangleBuffBuff.p1);
 		vTvVec = XMVector2Normalize(vTvVec);
 		// 頂点と中心点のベクトルを求めて正規化
-		vTPVec = KazMath::SubXMVECTOR(sphereBuff.center, rectangleBuffBuff.p1);
+		vTPVec = KazMath::SubXMVECTOR(*sphereBuff.center, rectangleBuffBuff.p1);
 		vTPVec = XMVector2Normalize(vTPVec);
 
 		// 外積を計算 +の場合右判定
@@ -418,7 +418,7 @@ bool CollisionManager::CheckThicklineAndSphere(const Sphere &SPHERE, const ModiR
 		vTvVec = KazMath::SubXMVECTOR(rectangleBuffBuff.p3, rectangleBuffBuff.p2);
 		vTvVec = XMVector2Normalize(vTvVec);
 		// 頂点と中心点のベクトルを求めて正規化
-		vTPVec = KazMath::SubXMVECTOR(sphereBuff.center, rectangleBuffBuff.p2);
+		vTPVec = KazMath::SubXMVECTOR(*sphereBuff.center, rectangleBuffBuff.p2);
 		vTPVec = XMVector2Normalize(vTPVec);
 
 		// 外積を計算 +の場合右判定
@@ -433,7 +433,7 @@ bool CollisionManager::CheckThicklineAndSphere(const Sphere &SPHERE, const ModiR
 		vTvVec = KazMath::SubXMVECTOR(rectangleBuffBuff.p0, rectangleBuffBuff.p3);
 		vTvVec = XMVector2Normalize(vTvVec);
 		// 頂点と中心点のベクトルを求めて正規化
-		vTPVec = KazMath::SubXMVECTOR(sphereBuff.center, rectangleBuffBuff.p3);
+		vTPVec = KazMath::SubXMVECTOR(*sphereBuff.center, rectangleBuffBuff.p3);
 		vTPVec = XMVector2Normalize(vTPVec);
 
 		// 外積を計算 +の場合右判定
