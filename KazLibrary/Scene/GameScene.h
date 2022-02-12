@@ -9,6 +9,13 @@
 #include"../Game/Interface/IEnemy.h"
 #include"../Game/Enemy/NormalEnemy.h"
 
+struct ResponeData
+{
+	short flame;		//“G‚ªŒ»‚ê‚éƒtƒŒ[ƒ€”
+	short enemyType;	//“G‚Ìí—Ş
+	XMVECTOR initPos;	//‰ŠúÀ•W
+};
+
 class GameScene :public SceneBase
 {
 public:
@@ -35,5 +42,9 @@ private:
 	Cursor cursor;
 	TestEnemy hitBox;
 
-	array<unique_ptr<IEnemy>,2>enemy;
+	array<unique_ptr<IEnemy>, 2>enemy;
+
+
+	array<array<unique_ptr<IEnemy>, 10>, 50> enemies;
+	array<int, 10> enemiesHandle;
 };

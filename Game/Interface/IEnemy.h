@@ -3,6 +3,24 @@
 #include"../KazLibrary/Collision/CollisionManager.h"
 
 /// <summary>
+/// 敵から他のOBJを生成する際に渡すデータ
+/// </summary>
+struct GenarateOtherObjData
+{
+	GenarateOtherObjData()
+	{
+		enemyType = -1;
+		initPos = {};
+		generateNum = -1;
+	}
+
+	int enemyType;			//どの種類を登場させるか
+	XMVECTOR initPos;		//登場させる座標
+	int generateNum;		//登場させる個数
+	int intervalFlame;		//二体以上の場合に何フレーム間隔で生成するか
+};
+
+/// <summary>
 /// ゲーム内に登場する敵のデータ
 /// </summary>
 struct EnemyData
@@ -21,6 +39,7 @@ struct EnemyData
 
 	Sphere hitBox;							//敵の当たり判定
 	IOperationObjectData *oprationObjData;	//操作可能OBJが持つ基本データのアドレス
+	GenarateOtherObjData genarateData;
 };
 
 /// <summary>
