@@ -11,6 +11,10 @@
 
 struct ResponeData
 {
+	ResponeData() :layerLevel(-1), flame(-1), enemyType(-1), initPos({})
+	{
+	}
+	int layerLevel;		//どのレイヤーレベルで現れるか
 	short flame;		//敵が現れるフレーム数
 	short enemyType;	//敵の種類
 	XMVECTOR initPos;	//初期座標
@@ -31,20 +35,36 @@ public:
 	int SceneChange();
 
 private:
-	int sceneNum;
-	BackGroundForDebug bg;
+	//ゲームループ----------------------------------------------------------------
+	int sceneNum;		//次何処のシーンに飛ぶか
+	int gameFlame;		//1ステージの経過時間
+	int gameLayerLevel;	//現在のレイヤーレベル
+	//ゲームループ----------------------------------------------------------------
 
+	//デバック用-------------------------------------------------------------
+	BackGroundForDebug bg;
+	//デバック用-------------------------------------------------------------
+
+
+	//カメラ----------------------------------------------------------------
 	XMFLOAT3 debugCameraMove;
 	XMFLOAT3 eyePos, targetPos;
 	XMFLOAT2 angle;
+	//カメラ----------------------------------------------------------------
 
+	//プレイヤーが操作するもの----------------------------------------------------------------
 	Player player;
 	Cursor cursor;
-	TestEnemy hitBox;
+	//プレイヤーが操作するもの----------------------------------------------------------------
 
-	array<unique_ptr<IEnemy>, 2>enemy;
-
-
-	array<array<unique_ptr<IEnemy>, 10>, 50> enemies;
-	array<int, 10> enemiesHandle;
+	//敵----------------------------------------------------------------
+	array<unique_ptr<IEnemy>, 2>enemy;					//敵(サンプル)
+	TestEnemy hitBox;									//敵(サンプル)
+	array<array<unique_ptr<IEnemy>, 50>, 10> enemies;	//1ステージに生成する敵の総数
+	array<int, 10> enemiesHandle;						//0から順番に初期化する際に必要
+	array<int, 10> addEnemiesHandle;					//0から順番に追加で初期化する際に必要
+	array<array<ResponeData, 10>, 50> responeData;		//敵を生成する際に必要な設定
+	array<ResponeData, 50>addResponeData;				//敵を追加で生成する際に必要な設定をスタックしたもの
+	int addResponeHandle;								//追加で生成する際,順番に追加するのに使うハンドル
+	//敵----------------------------------------------------------------
 };

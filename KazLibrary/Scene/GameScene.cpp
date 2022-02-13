@@ -19,13 +19,46 @@ void GameScene::Init()
 
 	sceneNum = SCENE_NONE;
 
-	enemy[0] = std::make_unique<NormalEnemy>();
-	enemy[0]->Init({ 0.0f,0.0f,30.0f });
 
+	responeData[0][0].enemyType = 0;
+	responeData[0][0].layerLevel = 0;
+	responeData[0][0].flame = 360;
+	responeData[0][0].initPos = { 0.0f,10.0f,20.0f };
 
 	//敵を纏めて生成する処理----------------------------------------------------------------
-	enemies[0];
+	for (int enemyType = 0; enemyType < responeData.size(); ++enemyType)
+	{
+		for (int enemyCount = 0; enemyCount < responeData[enemyType].size(); ++enemyCount)
+		{
+			if (responeData[enemyType][enemyCount].enemyType != -1)
+			{
+				switch (enemyType)
+				{
+				case 0:
+					enemies[enemyType][enemyCount] = std::make_unique<NormalEnemy>();
+					//子敵の生成(テスト用)
+					for (int i = 0; i < 8; ++i)
+					{
+						int index = enemiesHandle[1];
+						enemies[1][index] = std::make_unique<NormalEnemy>();
+						++enemiesHandle[1];
+					}
+
+					break;
+				default:
+					break;
+				}
+				++enemiesHandle[enemyType];
+			}
+		}
+	}
 	//敵を纏めて生成する処理----------------------------------------------------------------
+
+
+
+	//ゲームループの初期化----------------------------------------------------------------
+	gameFlame = 0;
+	//ゲームループの初期化----------------------------------------------------------------
 
 }
 
@@ -99,14 +132,70 @@ void GameScene::Update()
 {
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
 
-	//敵をどのタイミングで初期化する処理----------------------------------------------------------------
-	//敵をどのタイミングで初期化する処理----------------------------------------------------------------
 
-
+#pragma region 生成処理
 	//敵を追加で初期化する処理----------------------------------------------------------------
+	for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
+	{
+		for (int enemyCount = 0; enemyCount < enemies[enemyType].size(); ++enemyCount)
+		{
+			//生成されている、初期化している敵のみ更新処理を通す
+			bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
+			if (enableToUseDataFlag)
+			{
+				EnemyData *enemyData = enemies[enemyType][enemyCount]->GetData().get();
+				//追加で生成するデータを検知したら生成する
+				if (enemyData->genarateData.enemyType != -1)
+				{
+					//生成する分の情報を積める
+					for (int index = 0; index < enemyData->genarateData.generateNum; ++index)
+					{
+						int enemyTypeData = enemyData->genarateData.enemyType;
+						int nowHandle = addEnemiesHandle[enemyTypeData];
+						responeData[enemyTypeData][nowHandle].enemyType = enemyData->genarateData.enemyType;
+						//現在のレイヤーレベルに合わせる
+						responeData[enemyTypeData][nowHandle].layerLevel = gameLayerLevel;
+						//現在のフレーム数+インターバルフレームで設定する
+						responeData[enemyTypeData][nowHandle].flame = gameFlame + enemyData->genarateData.intervalFlame;
+						responeData[enemyTypeData][nowHandle].initPos = enemyData->genarateData.initPos;
+						//ハンドルを増やす
+						++addEnemiesHandle[enemyTypeData];
+					}
+				}
+			}
+		}
+	}
 	//敵を追加で初期化する処理----------------------------------------------------------------
 
 
+	//敵をどのタイミングで初期化する処理----------------------------------------------------------------
+	for (int enemyType = 0; enemyType < responeData.size(); ++enemyType)
+	{
+		for (int enemyCount = 0; enemyCount < responeData[enemyType].size(); ++enemyCount)
+		{
+			bool enableToUseThisDataFlag = responeData[enemyType][enemyCount].enemyType != -1;
+			bool readyToInitDataFlag = responeData[enemyType][enemyCount].flame == gameFlame &&
+										responeData[enemyType][enemyCount].layerLevel == gameLayerLevel;
+
+			if (enableToUseThisDataFlag && readyToInitDataFlag)
+			{
+				switch (enemyType)
+				{
+				case 0:
+					enemies[enemyType][enemyCount]->Init(responeData[enemyType][enemyCount].initPos);
+					break;
+
+				case 1:
+					enemies[enemyType][enemyCount]->Init(responeData[enemyType][enemyCount].initPos);
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
+	//敵をどのタイミングで初期化する処理----------------------------------------------------------------
+#pragma endregion
 
 
 #pragma region ロックオン
@@ -131,11 +220,33 @@ void GameScene::Update()
 	}
 #pragma endregion
 
+
+	//更新処理----------------------------------------------------------------
 	player.Update();
 	cursor.Update();
 	hitBox.Update();
 
-	enemy[0]->GetData();
+	//敵の更新処理
+	for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
+	{
+		for (int enemyCount = 0; enemyCount < enemies[enemyType].size(); ++enemyCount)
+		{
+			//生成されている、初期化している敵のみ更新処理を通す
+			bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
+			if (enableToUseDataFlag)
+			{
+				enemies[enemyType][enemyCount]->Update();
+			}
+		}
+	}
+	//更新処理----------------------------------------------------------------
+
+
+
+	//ゲームループの経過時間----------------------------------------------------------------
+	++gameFlame;
+	//ゲームループの経過時間----------------------------------------------------------------
+
 }
 
 void GameScene::Draw()
@@ -145,7 +256,21 @@ void GameScene::Draw()
 	cursor.Draw();
 	//hitBox.Draw();
 
-	enemy[0]->Draw();
+	//敵の描画処理----------------------------------------------------------------
+	for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
+	{
+		for (int enemyCount = 0; enemyCount < enemies[enemyType].size(); ++enemyCount)
+		{
+			//生成されている敵のみ描画処理を通す
+			bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
+			if (enableToUseDataFlag)
+			{
+				enemies[enemyType][enemyCount]->Draw();
+			}
+		}
+	}
+	//敵の描画処理----------------------------------------------------------------
+
 }
 
 int GameScene::SceneChange()

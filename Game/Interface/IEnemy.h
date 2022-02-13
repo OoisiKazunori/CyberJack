@@ -39,7 +39,7 @@ struct EnemyData
 
 	Sphere hitBox;							//敵の当たり判定
 	IOperationObjectData *oprationObjData;	//操作可能OBJが持つ基本データのアドレス
-	GenarateOtherObjData genarateData;
+	GenarateOtherObjData genarateData;		//追加で敵を生成する際に必要な情報
 };
 
 /// <summary>
