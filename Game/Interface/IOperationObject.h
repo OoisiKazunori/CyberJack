@@ -23,7 +23,7 @@ struct IOperationObjectData
 	void Init(const short &MAX_ROCKON_NUM)
 	{
 		rockOnNum = MAX_ROCKON_NUM;
-		enableToHitFlag = false;
+		enableToHitFlag = true;
 		initFlag = true;
 	};
 };

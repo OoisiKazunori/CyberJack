@@ -117,6 +117,14 @@ void GameScene::Input()
 #pragma endregion
 
 
+	if (input->InputTrigger(DIK_END))
+	{
+		bool debug = false;
+
+		debug = true;
+	}
+
+
 	cursor.Input
 	(
 		input->InputState(DIK_T),
@@ -131,6 +139,9 @@ void GameScene::Input()
 void GameScene::Update()
 {
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
+
+
+
 
 
 #pragma region 生成処理
@@ -200,24 +211,38 @@ void GameScene::Update()
 
 
 #pragma region ロックオン
-	//ロックオン判定
-	bool enableToLockOnNumFlag = cursor.LockOn();
-	bool enableToLockOnEnemyFlag = hitBox.AliveOrNot() && !hitBox.LockedOrNot();
-	if (CollisionManager::Instance()->CheckRayAndSphere(cursor.hitBox, hitBox.sphere) &&
-		enableToLockOnNumFlag &&
-		enableToLockOnEnemyFlag)
+	for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
 	{
-		//カーソルのカウント数を増やす
-		cursor.Count();
-		//敵が当たった情報を書く
-		hitBox.Hit();
-		//線演出をかける際にどの配列を使用するか決める
-	}
+		for (int enemyCount = 0; enemyCount < enemies[enemyType].size(); ++enemyCount)
+		{
+			//生成されている、初期化している敵のみ更新処理を通す
+			bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
+			if (enableToUseDataFlag)
+			{
+				//敵のデータのポインタを代入
+				EnemyData *enemyData = enemies[enemyType][enemyCount]->GetData().get();
 
-	//敵が生きている&&ロックオンできる回数が0以下&&ロックオン入力がリリースされた時、敵は死亡する
-	if (hitBox.AliveOrNot() && hitBox.LockedOrNot() && cursor.Release())
-	{
-		hitBox.Dead();
+				//ロックオン判定
+				bool enableToLockOnNumFlag = cursor.LockOn();
+				bool enableToLockOnEnemyFlag = enemies[enemyType][enemyCount]->AliveOrNot() && !enemies[enemyType][enemyCount]->LockedOrNot();
+				if (CollisionManager::Instance()->CheckRayAndSphere(cursor.hitBox, enemyData->hitBox) &&
+					enableToLockOnNumFlag &&
+					enableToLockOnEnemyFlag)
+				{
+					//カーソルのカウント数を増やす
+					cursor.Count();
+					//敵が当たった情報を書く
+					enemies[enemyType][enemyCount]->Hit();
+					//線演出をかける際にどの配列を使用するか決める
+				}
+
+				//敵が生きている&&ロックオンできる回数が0以下&&ロックオン入力がリリースされた時、敵は死亡する
+				if (enemies[enemyType][enemyCount]->AliveOrNot() && enemies[enemyType][enemyCount]->LockedOrNot() && cursor.Release())
+				{
+					enemies[enemyType][enemyCount]->Dead();
+				}
+			}
+		}
 	}
 #pragma endregion
 
