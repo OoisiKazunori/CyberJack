@@ -39,9 +39,9 @@ void GameScene::Init()
 					//子敵の生成(テスト用)
 					for (int i = 0; i < 8; ++i)
 					{
-						int index = enemiesHandle[1];
-						enemies[1][index] = std::make_unique<KidEnemy>();
-						++enemiesHandle[1];
+						int index = enemiesHandle[ENEMY_TYPE_KID];
+						enemies[ENEMY_TYPE_KID][index] = std::make_unique<KidEnemy>();
+						++enemiesHandle[ENEMY_TYPE_KID];
 					}
 
 					break;
@@ -182,11 +182,11 @@ void GameScene::Update()
 			{
 				switch (enemyType)
 				{
-				case 0:
+				case ENEMY_TYPE_NORMAL:
 					enemies[enemyType][enemyCount]->Init(responeData[enemyType][enemyCount].initPos);
 					break;
 
-				case 1:
+				case ENEMY_TYPE_KID:
 					enemies[enemyType][enemyCount]->Init(responeData[enemyType][enemyCount].initPos);
 					break;
 				default:

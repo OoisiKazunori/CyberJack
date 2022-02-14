@@ -8,7 +8,7 @@
 #include"../TestEnemy.h"
 #include"../Game/Interface/IEnemy.h"
 #include"../Game/Enemy/NormalEnemy.h"
-#include"../KidEnemy.h"
+#include"../Game/Enemy/KidEnemy.h"
 
 struct ResponeData
 {
@@ -19,6 +19,13 @@ struct ResponeData
 	short flame;		//“G‚ªŒ»‚ê‚éƒtƒŒ[ƒ€”
 	short enemyType;	//“G‚Ìí—Ş
 	XMVECTOR initPos;	//‰ŠúÀ•W
+};
+
+enum eEnemyType
+{
+	ENEMY_TYPE_NONE = -1,
+	ENEMY_TYPE_NORMAL,
+	ENEMY_TYPE_KID
 };
 
 class GameScene :public SceneBase
