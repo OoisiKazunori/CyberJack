@@ -8,6 +8,7 @@
 #include"../TestEnemy.h"
 #include"../Game/Interface/IEnemy.h"
 #include"../Game/Enemy/NormalEnemy.h"
+#include"../KidEnemy.h"
 
 struct ResponeData
 {

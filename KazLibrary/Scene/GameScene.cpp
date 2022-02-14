@@ -40,7 +40,7 @@ void GameScene::Init()
 					for (int i = 0; i < 8; ++i)
 					{
 						int index = enemiesHandle[1];
-						enemies[1][index] = std::make_unique<NormalEnemy>();
+						enemies[1][index] = std::make_unique<KidEnemy>();
 						++enemiesHandle[1];
 					}
 
@@ -147,20 +147,21 @@ void GameScene::Update()
 				//追加で生成するデータを検知したら生成する
 				if (enemyData->genarateData.enemyType != -1)
 				{
-					//生成する分の情報を積める
-					for (int index = 0; index < enemyData->genarateData.generateNum; ++index)
-					{
-						int enemyTypeData = enemyData->genarateData.enemyType;
-						int nowHandle = addEnemiesHandle[enemyTypeData];
-						responeData[enemyTypeData][nowHandle].enemyType = enemyData->genarateData.enemyType;
-						//現在のレイヤーレベルに合わせる
-						responeData[enemyTypeData][nowHandle].layerLevel = gameLayerLevel;
-						//現在のフレーム数+インターバルフレームで設定する
-						responeData[enemyTypeData][nowHandle].flame = gameFlame + enemyData->genarateData.intervalFlame;
-						responeData[enemyTypeData][nowHandle].initPos = enemyData->genarateData.initPos;
-						//ハンドルを増やす
-						++addEnemiesHandle[enemyTypeData];
-					}
+					//生成する敵の種類
+					int enemyTypeData = enemyData->genarateData.enemyType;
+					//最後に生成して次のハンドル
+					int nowHandle = addEnemiesHandle[enemyTypeData];
+					responeData[enemyTypeData][nowHandle].enemyType = enemyData->genarateData.enemyType;
+					//現在のレイヤーレベルに合わせる
+					responeData[enemyTypeData][nowHandle].layerLevel = gameLayerLevel;
+					//現在のフレーム数+インターバルフレーム*個数で設定する
+					responeData[enemyTypeData][nowHandle].flame = gameFlame;
+					responeData[enemyTypeData][nowHandle].initPos = enemyData->genarateData.initPos;
+					//ハンドルを増やす
+					++addEnemiesHandle[enemyTypeData];
+
+					//追加したら終了処理を入れる
+					enemies[enemyType][enemyCount]->GetData()->genarateData.Finalize();
 				}
 			}
 		}
@@ -175,7 +176,7 @@ void GameScene::Update()
 		{
 			bool enableToUseThisDataFlag = responeData[enemyType][enemyCount].enemyType != -1;
 			bool readyToInitDataFlag = responeData[enemyType][enemyCount].flame == gameFlame &&
-										responeData[enemyType][enemyCount].layerLevel == gameLayerLevel;
+				responeData[enemyType][enemyCount].layerLevel == gameLayerLevel;
 
 			if (enableToUseThisDataFlag && readyToInitDataFlag)
 			{
@@ -221,6 +222,7 @@ void GameScene::Update()
 #pragma endregion
 
 
+#pragma region 更新処理
 	//更新処理----------------------------------------------------------------
 	player.Update();
 	cursor.Update();
@@ -240,7 +242,7 @@ void GameScene::Update()
 		}
 	}
 	//更新処理----------------------------------------------------------------
-
+#pragma endregion
 
 
 	//ゲームループの経過時間----------------------------------------------------------------

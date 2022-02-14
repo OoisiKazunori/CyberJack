@@ -7,17 +7,17 @@
 /// </summary>
 struct GenarateOtherObjData
 {
-	GenarateOtherObjData()
+	GenarateOtherObjData():enemyType(-1),initPos({})
+	{
+	}
+
+	void Finalize()
 	{
 		enemyType = -1;
 		initPos = {};
-		generateNum = -1;
 	}
-
 	int enemyType;			//‚Ç‚Ìí—Ş‚ğ“oê‚³‚¹‚é‚©
 	XMVECTOR initPos;		//“oê‚³‚¹‚éÀ•W
-	int generateNum;		//“oê‚³‚¹‚éŒÂ”
-	int intervalFlame;		//“ñ‘ÌˆÈã‚Ìê‡‚É‰½ƒtƒŒ[ƒ€ŠÔŠu‚Å¶¬‚·‚é‚©
 };
 
 /// <summary>
