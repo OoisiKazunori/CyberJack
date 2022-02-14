@@ -44,9 +44,11 @@ public:
 
 private:
 	//ゲームループ----------------------------------------------------------------
-	int sceneNum;		//次何処のシーンに飛ぶか
-	int gameFlame;		//1ステージの経過時間
-	int gameLayerLevel;	//現在のレイヤーレベル
+	int sceneNum;							//次何処のシーンに飛ぶか
+	int gameFlame;							//1ステージの経過時間
+	int gameStageLevel;						//現在のステージのレベル
+	int gameLeyerLevel;						//現在のステージのレベル
+	array<int, 10>changeLayerLevelMaxTime;	//次のレイヤーレベルに切り替わるフレーム数を保管する
 	//ゲームループ----------------------------------------------------------------
 
 	//デバック用-------------------------------------------------------------
@@ -68,11 +70,10 @@ private:
 	//敵----------------------------------------------------------------
 	array<unique_ptr<IEnemy>, 2>enemy;					//敵(サンプル)
 	TestEnemy hitBox;									//敵(サンプル)
-	array<array<unique_ptr<IEnemy>, 50>, 10> enemies;	//1ステージに生成する敵の総数
+	array<array<unique_ptr<IEnemy>, 10>, 10> enemies;	//1ステージに生成する敵の総数
 	array<int, 10> enemiesHandle;						//0から順番に初期化する際に必要
 	array<int, 10> addEnemiesHandle;					//0から順番に追加で初期化する際に必要
 	array<array<ResponeData, 10>, 50> responeData;		//敵を生成する際に必要な設定
 	array<ResponeData, 50>addResponeData;				//敵を追加で生成する際に必要な設定をスタックしたもの
-	int addResponeHandle;								//追加で生成する際,順番に追加するのに使うハンドル
 	//敵----------------------------------------------------------------
 };

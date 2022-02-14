@@ -7,7 +7,7 @@ NormalEnemy::NormalEnemy()
 void NormalEnemy::Init(const XMVECTOR &POS)
 {
 	iEnemy_ModelRender->data.transform.pos = POS;	//座標の初期化
-	iEnemy_EnemyStatusData->hitBox.radius = 15.0f;	//当たり判定の大きさ変更
+	iEnemy_EnemyStatusData->hitBox.radius = 5.0f;	//当たり判定の大きさ変更
 	iOperationData.Init(1);							//残りロックオン数等の初期化
 
 	iEnemy_EnemyStatusData->genarateData.enemyType = 1;

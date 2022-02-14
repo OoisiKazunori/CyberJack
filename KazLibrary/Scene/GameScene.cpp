@@ -58,12 +58,36 @@ void GameScene::Init()
 
 	//ゲームループの初期化----------------------------------------------------------------
 	gameFlame = 0;
+	//ゴールに触れ無かった場合に次のステージに移動する際の最大フレーム数
+	for (int i = 0; i < changeLayerLevelMaxTime.size(); ++i)
+	{
+		changeLayerLevelMaxTime[i] = 1000;
+	}
+	gameStageLevel = 0;
 	//ゲームループの初期化----------------------------------------------------------------
 
 }
 
 void GameScene::Finalize()
 {
+	//敵の終了処理
+	for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
+	{
+		for (int enemyCount = 0; enemyCount < enemies[enemyType].size(); ++enemyCount)
+		{
+			if (enemies[enemyType][enemyCount] != nullptr)
+			{
+				enemies[enemyType][enemyCount].reset();
+			}
+		}
+	}
+
+	//生成ハンドルの初期化
+	for (int i = 0; i < 10; ++i)
+	{
+		enemiesHandle[i] = 0;
+		addEnemiesHandle[i] = 0;
+	}
 }
 
 void GameScene::Input()
@@ -120,8 +144,12 @@ void GameScene::Input()
 	if (input->InputTrigger(DIK_END))
 	{
 		bool debug = false;
-
 		debug = true;
+	}
+
+	if (input->InputTrigger(DIK_O))
+	{
+		sceneNum = 0;
 	}
 
 
@@ -140,7 +168,13 @@ void GameScene::Update()
 {
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
 
-
+	//ゴールに触れ無かった場合に次のステージに移動する処理----------------------------------------------------------------
+	if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
+	{
+		++gameStageLevel;
+		gameFlame = 0;
+	}
+	//ゴールに触れ無かった場合に次のステージに移動する処理----------------------------------------------------------------
 
 
 
@@ -164,7 +198,7 @@ void GameScene::Update()
 					int nowHandle = addEnemiesHandle[enemyTypeData];
 					responeData[enemyTypeData][nowHandle].enemyType = enemyData->genarateData.enemyType;
 					//現在のレイヤーレベルに合わせる
-					responeData[enemyTypeData][nowHandle].layerLevel = gameLayerLevel;
+					responeData[enemyTypeData][nowHandle].layerLevel = gameStageLevel;
 					//現在のフレーム数+インターバルフレーム*個数で設定する
 					responeData[enemyTypeData][nowHandle].flame = gameFlame;
 					responeData[enemyTypeData][nowHandle].initPos = enemyData->genarateData.initPos;
@@ -187,7 +221,7 @@ void GameScene::Update()
 		{
 			bool enableToUseThisDataFlag = responeData[enemyType][enemyCount].enemyType != -1;
 			bool readyToInitDataFlag = responeData[enemyType][enemyCount].flame == gameFlame &&
-				responeData[enemyType][enemyCount].layerLevel == gameLayerLevel;
+				responeData[enemyType][enemyCount].layerLevel == gameStageLevel;
 
 			if (enableToUseThisDataFlag && readyToInitDataFlag)
 			{

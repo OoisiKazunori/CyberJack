@@ -17,6 +17,6 @@ public:
 	int SceneChange();
 
 private:
-
+	int sceneNum;
 };
 
