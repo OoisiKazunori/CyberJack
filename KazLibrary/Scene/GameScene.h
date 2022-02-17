@@ -60,6 +60,11 @@ private:
 	XMFLOAT3 debugCameraMove;
 	XMFLOAT3 eyePos, targetPos;
 	XMFLOAT2 angle;
+
+	XMFLOAT3 baseEyePos;						//視点座標の基準値
+	XMVECTOR baseTargetPos;						//注視点の基準値
+	XMVECTOR nowTargerPos, trackingTargetPos;	//本来ポズ、現在ポズ
+	XMVECTOR angleVel;							//視点座標の向く角度
 	//カメラ----------------------------------------------------------------
 
 	//プレイヤーが操作するもの----------------------------------------------------------------

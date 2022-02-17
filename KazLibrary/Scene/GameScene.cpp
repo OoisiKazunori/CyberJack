@@ -66,6 +66,15 @@ void GameScene::Init()
 	gameStageLevel = 0;
 	//ゲームループの初期化----------------------------------------------------------------
 
+
+	eyePos = { 0.0f,5.0f,-10.0f };
+	trackingTargetPos = { 0.0f,0.0f,0.0f };
+	nowTargerPos = { 0.0f,0.0f,0.0f };
+	angleVel = { 90.0f,0.0f,0.0f };
+
+
+	baseEyePos = eyePos;
+	baseTargetPos = { 0.0f,3.0f,0.0f };
 }
 
 void GameScene::Finalize()
@@ -135,8 +144,8 @@ void GameScene::Input()
 	{
 		angle.y += -debugSpeed;
 	}
-	eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
-	targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
+	//eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
+	//targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
 
 #pragma endregion
 
@@ -152,21 +161,91 @@ void GameScene::Input()
 		sceneNum = 0;
 	}
 
+	bool upFlag = false;
+	bool downFlag = false;
+	bool leftFlag = false;
+	bool rightFlag = false;
+
+	if (input->InputState(DIK_T))
+	{
+		upFlag = true;
+	}
+	if (input->InputState(DIK_G))
+	{
+		downFlag = true;
+	}
+	if (input->InputState(DIK_F))
+	{
+		leftFlag = true;
+	}
+	if (input->InputState(DIK_H))
+	{
+		rightFlag = true;
+	}
+
 
 	cursor.Input
 	(
-		input->InputState(DIK_T),
-		input->InputState(DIK_G),
-		input->InputState(DIK_F),
-		input->InputState(DIK_H),
+		upFlag,
+		downFlag,
+		leftFlag,
+		rightFlag,
 		input->InputState(DIK_RETURN),
 		input->InputRelease(DIK_RETURN)
 	);
+
+
+	XMVECTOR vel = {};
+	float speed = 1.0f;
+	if (upFlag)
+	{
+		vel = { 0.0f,speed,0.0f };
+		angleVel.m128_f32[1] += -speed;
+	}
+	if (downFlag)
+	{
+		vel = { 0.0f,-speed,0.0f };
+		angleVel.m128_f32[1] += speed;
+	}
+	if (leftFlag)
+	{
+		vel = { speed,0.0f,0.0f };
+		angleVel.m128_f32[0] += speed;
+	}
+	if (rightFlag)
+	{
+		vel = { -speed,0.0f,0.0f };
+		angleVel.m128_f32[0] += -speed;
+	}
+
+	nowTargerPos += vel;
 }
 
 void GameScene::Update()
 {
+
+	ImGui::Begin("Camera");
+	ImGui::InputFloat("EyeX", &baseEyePos.x);
+	ImGui::InputFloat("EyeY", &baseEyePos.y);
+	ImGui::InputFloat("EyeZ", &baseEyePos.z);
+	ImGui::InputFloat("TargetX", &baseTargetPos.m128_f32[0]);
+	ImGui::InputFloat("TargetY", &baseTargetPos.m128_f32[1]);
+	ImGui::InputFloat("TargetZ", &baseTargetPos.m128_f32[2]);
+	ImGui::End();
+
+
+#pragma region カメラ挙動
+	//本来ポズに現在ポズ
+	XMVECTOR distance = nowTargerPos - trackingTargetPos;
+	trackingTargetPos += distance * 0.1f;
+
+	//現在ポズを値渡し用に代入
+	targetPos = { KazMath::LoadVecotrToXMFLOAT3(baseTargetPos + trackingTargetPos) };
+
+	XMFLOAT2 radian = { cosf(KazMath::AngleToRadian(angleVel.m128_f32[0])),  sinf(KazMath::AngleToRadian(angleVel.m128_f32[1])) };
+	eyePos = { baseEyePos.x + radian.x * 30.0f,baseEyePos.y + 30.0f * radian.y,baseEyePos.z };
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
+#pragma endregion
 
 	//ゴールに触れ無かった場合に次のステージに移動する処理----------------------------------------------------------------
 	if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
@@ -175,7 +254,6 @@ void GameScene::Update()
 		gameFlame = 0;
 	}
 	//ゴールに触れ無かった場合に次のステージに移動する処理----------------------------------------------------------------
-
 
 
 #pragma region 生成処理
