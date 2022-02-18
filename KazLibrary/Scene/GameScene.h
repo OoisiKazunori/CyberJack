@@ -61,11 +61,19 @@ private:
 	XMFLOAT3 eyePos, targetPos;
 	XMFLOAT2 angle;
 
-	XMFLOAT3 baseEyePos;						//視点座標の基準値
+	XMVECTOR baseEyePos;						//視点座標の基準値
 	XMVECTOR baseTargetPos;						//注視点の基準値
 	XMVECTOR nowTargerPos, trackingTargetPos;	//本来ポズ、現在ポズ
-	XMVECTOR angleVel;							//視点座標の向く角度
+	XMVECTOR leftRightAngleVel;					//左右視点座標の向く角度
+	XMVECTOR upDownAngleVel;					//上下視点座標の向く角度
+	XMVECTOR trackLeftRightAngleVel;
+	XMVECTOR trackUpDownAngleVel;
 	//カメラ----------------------------------------------------------------
+
+	//カメラ挙動の確認
+	BoxPolygonRenderPtr besidePoly, verticlaPoly,cameraPoly;
+	float r;
+
 
 	//プレイヤーが操作するもの----------------------------------------------------------------
 	Player player;

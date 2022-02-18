@@ -4,6 +4,14 @@
 
 GameScene::GameScene()
 {
+	besidePoly = std::make_unique<BoxPolygonRender>();
+	verticlaPoly = std::make_unique<BoxPolygonRender>();
+	cameraPoly = std::make_unique<BoxPolygonRender>();
+
+	besidePoly->data.color = { 255.0f,255.0f,255.0f,255.0f };
+	verticlaPoly->data.color = { 255.0f,255.0f,0.0f,255.0f };
+	cameraPoly->data.color = { 255.0f,0.0f,0.0f,255.0f };
+	r = 1.0f;
 }
 
 GameScene::~GameScene()
@@ -70,10 +78,10 @@ void GameScene::Init()
 	eyePos = { 0.0f,5.0f,-10.0f };
 	trackingTargetPos = { 0.0f,0.0f,0.0f };
 	nowTargerPos = { 0.0f,0.0f,0.0f };
-	angleVel = { 90.0f,0.0f,0.0f };
+	leftRightAngleVel = { 0.0f,0.0f,0.0f };
+	upDownAngleVel = { 0.0f,0.0f,0.0f };
 
-
-	baseEyePos = eyePos;
+	baseEyePos = { 0.0f,5.0f,-10.0f };
 	baseTargetPos = { 0.0f,3.0f,0.0f };
 }
 
@@ -199,23 +207,27 @@ void GameScene::Input()
 	float speed = 1.0f;
 	if (upFlag)
 	{
-		vel = { 0.0f,speed,0.0f };
-		angleVel.m128_f32[1] += -speed;
+		vel = { 0.0f,-speed,0.0f };
+		upDownAngleVel.m128_f32[0] += -speed;
+		upDownAngleVel.m128_f32[1] += -speed;
 	}
 	if (downFlag)
 	{
-		vel = { 0.0f,-speed,0.0f };
-		angleVel.m128_f32[1] += speed;
+		vel = { 0.0f,speed,0.0f };
+		upDownAngleVel.m128_f32[0] += speed;
+		upDownAngleVel.m128_f32[1] += speed;
 	}
 	if (leftFlag)
 	{
-		vel = { speed,0.0f,0.0f };
-		angleVel.m128_f32[0] += speed;
+		vel = { -speed,0.0f,0.0f };
+		leftRightAngleVel.m128_f32[0] += speed;
+		leftRightAngleVel.m128_f32[1] += speed;
 	}
 	if (rightFlag)
 	{
-		vel = { -speed,0.0f,0.0f };
-		angleVel.m128_f32[0] += -speed;
+		vel = { speed,0.0f,0.0f };
+		leftRightAngleVel.m128_f32[0] += -speed;
+		leftRightAngleVel.m128_f32[1] += -speed;
 	}
 
 	nowTargerPos += vel;
@@ -225,33 +237,74 @@ void GameScene::Update()
 {
 
 	ImGui::Begin("Camera");
-	ImGui::InputFloat("EyeX", &baseEyePos.x);
-	ImGui::InputFloat("EyeY", &baseEyePos.y);
-	ImGui::InputFloat("EyeZ", &baseEyePos.z);
+	ImGui::InputFloat("EyeX", &baseEyePos.m128_f32[0]);
+	ImGui::InputFloat("EyeY", &baseEyePos.m128_f32[1]);
+	ImGui::InputFloat("EyeZ", &baseEyePos.m128_f32[2]);
 	ImGui::InputFloat("TargetX", &baseTargetPos.m128_f32[0]);
 	ImGui::InputFloat("TargetY", &baseTargetPos.m128_f32[1]);
 	ImGui::InputFloat("TargetZ", &baseTargetPos.m128_f32[2]);
+	ImGui::InputFloat("R", &r);
+	ImGui::Text("leftRightAngleVel:X%f,Y:%f", leftRightAngleVel.m128_f32[0], leftRightAngleVel.m128_f32[1]);
+	ImGui::Text("upDownAngleVel:X%f,Y:%f", upDownAngleVel.m128_f32[0], upDownAngleVel.m128_f32[1]);
 	ImGui::End();
 
 
 #pragma region カメラ挙動
-	//本来ポズに現在ポズ
-	XMVECTOR distance = nowTargerPos - trackingTargetPos;
-	trackingTargetPos += distance * 0.1f;
 
-	//現在ポズを値渡し用に代入
-	targetPos = { KazMath::LoadVecotrToXMFLOAT3(baseTargetPos + trackingTargetPos) };
 
-	XMFLOAT2 radian = { cosf(KazMath::AngleToRadian(angleVel.m128_f32[0])),  sinf(KazMath::AngleToRadian(angleVel.m128_f32[1])) };
-	eyePos = { baseEyePos.x + radian.x * 30.0f,baseEyePos.y + 30.0f * radian.y,baseEyePos.z };
+	{
+		//本来ポズに現在ポズ
+		XMVECTOR distance = nowTargerPos - trackingTargetPos;
+		trackingTargetPos += distance * 0.1f;
+
+	} //現在ポズを値渡し用に代入
+	//targetPos = { KazMath::LoadVecotrToXMFLOAT3(baseTargetPos + trackingTargetPos) };
+
+	//左右の角度変更のイージング
+	{
+		XMVECTOR distance = leftRightAngleVel - trackLeftRightAngleVel;
+		trackLeftRightAngleVel += distance * 0.1f;
+	}
+	//上下の角度変更のイージング
+	{
+		XMVECTOR distance = upDownAngleVel - trackUpDownAngleVel;
+		trackUpDownAngleVel += distance * 0.1f;
+	}
+	//左右の回転
+	besidePoly->data.transform.pos = 
+	{
+		cosf(KazMath::AngleToRadian(trackLeftRightAngleVel.m128_f32[0])) * r,
+		0.0f,
+		sinf(KazMath::AngleToRadian(trackLeftRightAngleVel.m128_f32[1])) * r 
+	};
+	//上下の回転
+	verticlaPoly->data.transform.pos =
+	{ 
+		0.0f,
+		0.0f,//cosf(KazMath::AngleToRadian(trackUpDownAngleVel.m128_f32[0])) * r,
+		0.0f//sinf(KazMath::AngleToRadian(trackUpDownAngleVel.m128_f32[1])) * r
+	};
+	//上下左右の回転
+	cameraPoly->data.transform.pos = (besidePoly->data.transform.pos + verticlaPoly->data.transform.pos);
+
+
+	eyePos = KazMath::LoadVecotrToXMFLOAT3(cameraPoly->data.transform.pos);
+
+	XMVECTOR central = { 0.0f,0.0f,0.0f };
+	XMVECTOR dir = cameraPoly->data.transform.pos - central;
+	dir = XMVector2Normalize(dir);
+	XMVECTOR tmp = cameraPoly->data.transform.pos + (dir);
+	targetPos = KazMath::LoadVecotrToXMFLOAT3(baseTargetPos);
+
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
+
 #pragma endregion
 
 	//ゴールに触れ無かった場合に次のステージに移動する処理----------------------------------------------------------------
 	if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
 	{
-		++gameStageLevel;
-		gameFlame = 0;
+		//++gameStageLevel;
+		//gameFlame = 0;
 	}
 	//ゴールに触れ無かった場合に次のステージに移動する処理----------------------------------------------------------------
 
@@ -391,9 +444,13 @@ void GameScene::Update()
 void GameScene::Draw()
 {
 	bg.Draw();
-	player.Draw();
-	cursor.Draw();
+	//player.Draw();
+	//cursor.Draw();
 	//hitBox.Draw();
+
+	besidePoly->Draw();
+	verticlaPoly->Draw();
+	cameraPoly->Draw();
 
 	//敵の描画処理----------------------------------------------------------------
 	for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
@@ -404,7 +461,7 @@ void GameScene::Draw()
 			bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
 			if (enableToUseDataFlag)
 			{
-				enemies[enemyType][enemyCount]->Draw();
+				//enemies[enemyType][enemyCount]->Draw();
 			}
 		}
 	}
