@@ -83,6 +83,9 @@ void GameScene::Init()
 
 	baseEyePos = { 0.0f,5.0f,-10.0f };
 	baseTargetPos = { 0.0f,3.0f,0.0f };
+
+	centralPos = { 0.0f,3.0f,5.0f };
+	centralPos2 = centralPos;
 }
 
 void GameScene::Finalize()
@@ -243,6 +246,12 @@ void GameScene::Update()
 	ImGui::InputFloat("TargetX", &baseTargetPos.m128_f32[0]);
 	ImGui::InputFloat("TargetY", &baseTargetPos.m128_f32[1]);
 	ImGui::InputFloat("TargetZ", &baseTargetPos.m128_f32[2]);
+	ImGui::InputFloat("CentralX", &centralPos.m128_f32[0]);
+	ImGui::InputFloat("CentralY", &centralPos.m128_f32[1]);
+	ImGui::InputFloat("CentralZ", &centralPos.m128_f32[2]);
+	ImGui::InputFloat("Central2X", &centralPos2.m128_f32[0]);
+	ImGui::InputFloat("Central2Y", &centralPos2.m128_f32[1]);
+	ImGui::InputFloat("Central2Z", &centralPos2.m128_f32[2]);
 	ImGui::InputFloat("R", &r);
 	ImGui::Text("leftRightAngleVel:X%f,Y:%f", leftRightAngleVel.m128_f32[0], leftRightAngleVel.m128_f32[1]);
 	ImGui::Text("upDownAngleVel:X%f,Y:%f", upDownAngleVel.m128_f32[0], upDownAngleVel.m128_f32[1]);
@@ -271,31 +280,26 @@ void GameScene::Update()
 		trackUpDownAngleVel += distance * 0.1f;
 	}
 	//左右の回転
-	besidePoly->data.transform.pos = 
+	besidePoly->data.transform.pos =
 	{
 		cosf(KazMath::AngleToRadian(trackLeftRightAngleVel.m128_f32[0])) * r,
-		3.0f,
-		5.0f+sinf(KazMath::AngleToRadian(trackLeftRightAngleVel.m128_f32[1])) * r 
+		0.0f,
+		sinf(KazMath::AngleToRadian(trackLeftRightAngleVel.m128_f32[1])) * r
 	};
 	//上下の回転
 	verticlaPoly->data.transform.pos =
-	{ 
+	{
 		0.0f,
-		0.0f,//cosf(KazMath::AngleToRadian(trackUpDownAngleVel.m128_f32[0])) * r,
-		0.0f//sinf(KazMath::AngleToRadian(trackUpDownAngleVel.m128_f32[1])) * r
+		cosf(KazMath::AngleToRadian(trackUpDownAngleVel.m128_f32[0])) * r,
+		sinf(KazMath::AngleToRadian(trackUpDownAngleVel.m128_f32[1])) * r
 	};
 	//上下左右の回転
-	cameraPoly->data.transform.pos = (besidePoly->data.transform.pos + verticlaPoly->data.transform.pos);
+	cameraPoly->data.transform.pos = (besidePoly->data.transform.pos + centralPos) + (verticlaPoly->data.transform.pos + centralPos2);
+
 
 
 	eyePos = KazMath::LoadVecotrToXMFLOAT3(cameraPoly->data.transform.pos);
-
-	XMVECTOR central = { 0.0f,0.0f,0.0f };
-	XMVECTOR dir = cameraPoly->data.transform.pos - central;
-	dir = XMVector2Normalize(dir);
-	XMVECTOR tmp = cameraPoly->data.transform.pos + (dir);
 	targetPos = KazMath::LoadVecotrToXMFLOAT3(baseTargetPos);
-
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
 
 #pragma endregion
@@ -444,13 +448,13 @@ void GameScene::Update()
 void GameScene::Draw()
 {
 	bg.Draw();
-	//player.Draw();
+	player.Draw();
 	//cursor.Draw();
 	//hitBox.Draw();
 
-	besidePoly->Draw();
-	verticlaPoly->Draw();
-	cameraPoly->Draw();
+	//besidePoly->Draw();
+	//verticlaPoly->Draw();
+	//cameraPoly->Draw();
 
 	//敵の描画処理----------------------------------------------------------------
 	for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)

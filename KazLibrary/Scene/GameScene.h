@@ -72,6 +72,8 @@ private:
 
 	//カメラ挙動の確認
 	BoxPolygonRenderPtr besidePoly, verticlaPoly,cameraPoly;
+	XMVECTOR centralPos;		//左右回転の中心座標
+	XMVECTOR centralPos2;		//上下回転の中心座標
 	float r;
 
 
