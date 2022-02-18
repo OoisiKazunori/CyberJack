@@ -11,7 +11,7 @@ GameScene::GameScene()
 	besidePoly->data.color = { 255.0f,255.0f,255.0f,255.0f };
 	verticlaPoly->data.color = { 255.0f,255.0f,0.0f,255.0f };
 	cameraPoly->data.color = { 255.0f,0.0f,0.0f,255.0f };
-	r = 1.0f;
+	r = 12.0f;
 }
 
 GameScene::~GameScene()
@@ -274,8 +274,8 @@ void GameScene::Update()
 	besidePoly->data.transform.pos = 
 	{
 		cosf(KazMath::AngleToRadian(trackLeftRightAngleVel.m128_f32[0])) * r,
-		0.0f,
-		sinf(KazMath::AngleToRadian(trackLeftRightAngleVel.m128_f32[1])) * r 
+		3.0f,
+		5.0f+sinf(KazMath::AngleToRadian(trackLeftRightAngleVel.m128_f32[1])) * r 
 	};
 	//上下の回転
 	verticlaPoly->data.transform.pos =
