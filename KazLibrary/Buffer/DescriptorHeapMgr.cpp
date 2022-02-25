@@ -44,6 +44,22 @@ DescriptorHeapMgr::~DescriptorHeapMgr()
 {
 }
 
+void DescriptorHeapMgr::CreateBufferView(const short &HANDLE, const D3D12_CONSTANT_BUFFER_VIEW_DESC &BUFFER_VIEW, ID3D12Resource *ADDRESS)
+{
+	D3D12_CPU_DESCRIPTOR_HANDLE heapHandle;
+	if (isSafeToUseThisHandle(HANDLE))
+	{
+		heapHandle = heaps->GetCPUDescriptorHandleForHeapStart();
+		heapHandle.ptr += shaderResourceHeapIncreSize * static_cast<UINT64>(HANDLE);
+		DirectX12Device::Instance()->dev->CreateConstantBufferView(&BUFFER_VIEW, heapHandle);
+		usedHandle[HANDLE] = true;
+	}
+	else
+	{
+		ErrorCheck("既に使われた、もしくはデスクリプタヒープの範囲外の場所でシェーダーリソースビューを作成しようとしています");
+	}
+}
+
 void DescriptorHeapMgr::CreateBufferView(const short &HANDLE, const D3D12_SHADER_RESOURCE_VIEW_DESC &BUFFER_VIEW, ID3D12Resource *RESOURCE)
 {
 	D3D12_CPU_DESCRIPTOR_HANDLE heapHandle;
