@@ -22,9 +22,9 @@ struct CommonData
 	XMMATRIX projectionMat;
 };
 
-
 static const int MAX = 800;
-class DebugScene :public SceneBase {
+class DebugScene :public SceneBase
+{
 public:
 	DebugScene();
 	~DebugScene();
@@ -46,7 +46,7 @@ private:
 	//BackGroundForDebug bg;
 
 	unique_ptr<CreateGpuBuffer>buffer;
-	short inputHandle, outPutHandle;
+	short inputHandle, outPutHandle, commonHandle;
 
 	InputData inputData;
 	BufferMemorySize size;

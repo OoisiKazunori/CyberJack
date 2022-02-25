@@ -20,6 +20,8 @@ DebugScene::DebugScene()
 	inputHandle = buffer->CreateBuffer(KazBufferHelper::SetStructureBuffer(sizeof(InputData) * num));
 	//出力用のバッファ作成
 	outPutHandle = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(OutPutData) * num));
+	//共通用のバッファ
+	commonHandle = buffer->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(CommonData)));
 
 	//データを入力してみる
 	//inputData = 1;
@@ -46,8 +48,17 @@ DebugScene::DebugScene()
 	outPutDesc.Buffer.StructureByteStride = sizeof(OutPutData) * num;
 	outPutDesc.Buffer.CounterOffsetInBytes = 0;
 
+
+
+	D3D12_CONSTANT_BUFFER_VIEW_DESC commonDesc;
+	commonDesc.BufferLocation = buffer->GetBufferData(commonHandle)->GetGPUVirtualAddress();
+	commonDesc.SizeInBytes = (UINT)buffer->GetBufferData(commonHandle)->GetDesc().Width;
+
+
 	DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize, inputDesc, buffer->GetBufferData(inputHandle).Get());
 	DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + 1, outPutDesc, buffer->GetBufferData(outPutHandle).Get());
+	//後で第三引数を消そう
+	DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + 2, commonDesc, buffer->GetBufferData(commonHandle).Get());
 
 
 

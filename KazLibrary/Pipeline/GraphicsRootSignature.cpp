@@ -94,7 +94,7 @@ void GraphicsRootSignature::CreateRootSignature(RootSignatureMode ROOTSIGNATURE,
 
 	CreateMyRootSignature(ROOTSIGNATURE_DATA.sample, rootparam.data(), rootparam.size(), ROOTSIGNATURE);
 
-	if (ROOTSIGNATURE == ROOTSIGNATURE_DATA_SRV_UAV)
+	if (ROOTSIGNATURE == ROOTSIGNATURE_DATA_SRV_UAV_CBV)
 	{
 		rootSignature[ROOTSIGNATURE]->SetName(L"ComputeRootSignature");
 	}
