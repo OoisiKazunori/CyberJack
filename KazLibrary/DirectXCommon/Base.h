@@ -14,8 +14,8 @@ using namespace std;
 #include<array>
 #include<memory>
 
-static const int WIN_X = 1536;
-static const int WIN_Y = 824;
+static const int WIN_X = 1280;
+static const int WIN_Y = 720;
 
 //static const XMFLOAT3 BG_COLOR = { 255.0f,255.0f,255.0f };
 static const XMFLOAT3 BG_COLOR_WHITE = { 255.0f,255.0f,255.0f };

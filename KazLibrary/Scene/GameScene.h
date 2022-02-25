@@ -74,8 +74,11 @@ private:
 	BoxPolygonRenderPtr besidePoly, verticlaPoly,cameraPoly;
 	XMVECTOR centralPos;		//左右回転の中心座標
 	XMVECTOR centralPos2;		//上下回転の中心座標
-	float r;
+	float r;					//左右回転の円の大きさ
+	float r2;					//上下回転の円の大きさ
 
+	XMVECTOR cameraRotaVel;		//カメラを動かした移動量
+	XMVECTOR forceCameraAngle;	//カメラを強制的に他の方向に向かせる際に使用する値
 
 	//プレイヤーが操作するもの----------------------------------------------------------------
 	Player player;

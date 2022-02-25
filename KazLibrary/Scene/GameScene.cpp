@@ -7,11 +7,6 @@ GameScene::GameScene()
 	besidePoly = std::make_unique<BoxPolygonRender>();
 	verticlaPoly = std::make_unique<BoxPolygonRender>();
 	cameraPoly = std::make_unique<BoxPolygonRender>();
-
-	besidePoly->data.color = { 255.0f,255.0f,255.0f,255.0f };
-	verticlaPoly->data.color = { 255.0f,255.0f,0.0f,255.0f };
-	cameraPoly->data.color = { 255.0f,0.0f,0.0f,255.0f };
-	r = 12.0f;
 }
 
 GameScene::~GameScene()
@@ -78,14 +73,23 @@ void GameScene::Init()
 	eyePos = { 0.0f,5.0f,-10.0f };
 	trackingTargetPos = { 0.0f,0.0f,0.0f };
 	nowTargerPos = { 0.0f,0.0f,0.0f };
-	leftRightAngleVel = { 0.0f,0.0f,0.0f };
-	upDownAngleVel = { 0.0f,0.0f,0.0f };
+	leftRightAngleVel = { -91.0f,-91.0f,0.0f };
+	upDownAngleVel = { -103.0f,-103.0f,0.0f };
 
 	baseEyePos = { 0.0f,5.0f,-10.0f };
 	baseTargetPos = { 0.0f,3.0f,0.0f };
 
-	centralPos = { 0.0f,3.0f,5.0f };
+	centralPos = { 0.0f,3.0f,8.0f };
 	centralPos2 = centralPos;
+
+
+	besidePoly->data.color = { 255.0f,255.0f,255.0f,255.0f };
+	verticlaPoly->data.color = { 255.0f,255.0f,0.0f,255.0f };
+	cameraPoly->data.color = { 255.0f,0.0f,0.0f,255.0f };
+	r = 12.0f;
+	r2 = 12.0f;
+
+	cameraRotaVel = { 30.0f,30.0f,0.0f };
 }
 
 void GameScene::Finalize()
@@ -207,38 +211,63 @@ void GameScene::Input()
 
 
 	XMVECTOR vel = {};
+	XMVECTOR verticalVel = {};
+	XMVECTOR besideVel = {};
+
 	float speed = 1.0f;
 	if (upFlag)
 	{
-		vel = { 0.0f,-speed,0.0f };
-		upDownAngleVel.m128_f32[0] += -speed;
-		upDownAngleVel.m128_f32[1] += -speed;
+		vel.m128_f32[1] = -speed;
+		verticalVel = { -speed,-speed,0.0f };
 	}
 	if (downFlag)
 	{
-		vel = { 0.0f,speed,0.0f };
-		upDownAngleVel.m128_f32[0] += speed;
-		upDownAngleVel.m128_f32[1] += speed;
+		vel.m128_f32[1] = speed;
+		verticalVel = { speed,speed,0.0f };
 	}
 	if (leftFlag)
 	{
-		vel = { -speed,0.0f,0.0f };
-		leftRightAngleVel.m128_f32[0] += speed;
-		leftRightAngleVel.m128_f32[1] += speed;
+		vel.m128_f32[0] = -speed;
+		besideVel = { speed,speed,0.0f };
 	}
 	if (rightFlag)
 	{
-		vel = { speed,0.0f,0.0f };
-		leftRightAngleVel.m128_f32[0] += -speed;
-		leftRightAngleVel.m128_f32[1] += -speed;
+		vel.m128_f32[0] = speed;
+		besideVel = { -speed,-speed,0.0f };
 	}
 
+
+	//カメラの制限
+	if (60 <= cameraRotaVel.m128_f32[0])
+	{
+		besideVel = { 0.0f,0.0f,0.0f };
+		cameraRotaVel.m128_f32[0] = { 60.0f };
+	}
+	if (cameraRotaVel.m128_f32[0] <= 0)
+	{
+		besideVel = { 0.0f,0.0f,0.0f };
+		cameraRotaVel.m128_f32[0] = { 0.0f };
+	}
+	if (50 <= cameraRotaVel.m128_f32[1])
+	{
+		verticalVel = { 0.0f,0.0f,0.0f };
+		cameraRotaVel.m128_f32[1] = { 50.0f };
+	}
+	if (cameraRotaVel.m128_f32[1] <= -10)
+	{
+		verticalVel = { 0.0f,0.0f,0.0f };
+		cameraRotaVel.m128_f32[1] = { -10.0f };
+	}
+
+
 	nowTargerPos += vel;
+	cameraRotaVel += vel;
+	upDownAngleVel += verticalVel;
+	leftRightAngleVel += besideVel;
 }
 
 void GameScene::Update()
 {
-
 	ImGui::Begin("Camera");
 	ImGui::InputFloat("EyeX", &baseEyePos.m128_f32[0]);
 	ImGui::InputFloat("EyeY", &baseEyePos.m128_f32[1]);
@@ -253,21 +282,14 @@ void GameScene::Update()
 	ImGui::InputFloat("Central2Y", &centralPos2.m128_f32[1]);
 	ImGui::InputFloat("Central2Z", &centralPos2.m128_f32[2]);
 	ImGui::InputFloat("R", &r);
+	ImGui::InputFloat("R2", &r2);
 	ImGui::Text("leftRightAngleVel:X%f,Y:%f", leftRightAngleVel.m128_f32[0], leftRightAngleVel.m128_f32[1]);
 	ImGui::Text("upDownAngleVel:X%f,Y:%f", upDownAngleVel.m128_f32[0], upDownAngleVel.m128_f32[1]);
+	ImGui::Text("cameraRotaVel:X%f,Y:%f", cameraRotaVel.m128_f32[0], cameraRotaVel.m128_f32[1]);
 	ImGui::End();
 
 
 #pragma region カメラ挙動
-
-
-	{
-		//本来ポズに現在ポズ
-		XMVECTOR distance = nowTargerPos - trackingTargetPos;
-		trackingTargetPos += distance * 0.1f;
-
-	} //現在ポズを値渡し用に代入
-	//targetPos = { KazMath::LoadVecotrToXMFLOAT3(baseTargetPos + trackingTargetPos) };
 
 	//左右の角度変更のイージング
 	{
@@ -290,8 +312,8 @@ void GameScene::Update()
 	verticlaPoly->data.transform.pos =
 	{
 		0.0f,
-		cosf(KazMath::AngleToRadian(trackUpDownAngleVel.m128_f32[0])) * r,
-		sinf(KazMath::AngleToRadian(trackUpDownAngleVel.m128_f32[1])) * r
+		cosf(KazMath::AngleToRadian(trackUpDownAngleVel.m128_f32[0])) * r2,
+		sinf(KazMath::AngleToRadian(trackUpDownAngleVel.m128_f32[1])) * r2
 	};
 	//上下左右の回転
 	cameraPoly->data.transform.pos = (besidePoly->data.transform.pos + centralPos) + (verticlaPoly->data.transform.pos + centralPos2);
