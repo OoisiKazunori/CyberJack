@@ -3,17 +3,27 @@
 #include"../Scene/SceneBase.h"
 #include"../Render/BackGroundForDebug.h"
 #include"../KazLibrary/Buffer/CreateGpuBuffer.h"
+#include"../KazLibrary/Render/KazRender.h"
 
 struct InputData
 {
-	float data;
+	XMFLOAT3 pos;
+	float pad;
 };
 
 struct OutPutData
 {
-	float data2;
+	XMMATRIX mat;
 };
 
+struct CommonData
+{
+	XMMATRIX cameraMat;
+	XMMATRIX projectionMat;
+};
+
+
+static const int MAX = 800;
 class DebugScene :public SceneBase {
 public:
 	DebugScene();
@@ -40,4 +50,9 @@ private:
 
 	InputData inputData;
 	BufferMemorySize size;
+
+
+	array<array<XMMATRIX, 800>, 13>matData;
+	array<BoxPolygonRenderPtr,13> instanceBox;
+	array<int, 10000>test;
 };
