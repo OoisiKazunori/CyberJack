@@ -22,7 +22,7 @@ LineEffect::LineEffect()
 	circle->data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
 	releaseCircle->data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
 
-	constBufferHandle = line->CreateConstBuffer(sizeof(ConstLineData), typeid(ConstLineData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+	//constBufferHandle = line->CreateConstBuffer(sizeof(ConstLineData), typeid(ConstLineData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
 
 	finishFlag = false;
 	allFinishFlag = false;

@@ -7,6 +7,8 @@ GameScene::GameScene()
 	besidePoly = std::make_unique<BoxPolygonRender>();
 	verticlaPoly = std::make_unique<BoxPolygonRender>();
 	cameraPoly = std::make_unique<BoxPolygonRender>();
+	testEnemyPoly = std::make_unique<BoxPolygonRender>();
+	testEnemyPoly->data.color = { 255.0f,255.0f,255.0f,255.0f };
 }
 
 GameScene::~GameScene()
@@ -90,6 +92,10 @@ void GameScene::Init()
 	r2 = 12.0f;
 
 	cameraRotaVel = { 30.0f,30.0f,0.0f };
+
+
+
+	testEnemyPos = { 0.0f,0.0f,100.0f };
 }
 
 void GameScene::Finalize()
@@ -159,8 +165,8 @@ void GameScene::Input()
 	{
 		angle.y += -debugSpeed;
 	}
-	//eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
-	//targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
+	eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
+	targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
 
 #pragma endregion
 
@@ -208,6 +214,20 @@ void GameScene::Input()
 		input->InputState(DIK_RETURN),
 		input->InputRelease(DIK_RETURN)
 	);
+
+
+
+	//線演出確認--------------------------
+	if (input->InputState(DIK_RETURN))
+	{
+		lineLevel.Attack2(player.pos, testEnemyPos, {});
+	}
+	if (input->InputRelease(DIK_RETURN))
+	{
+		lineLevel.Release();
+	}
+	//線演出確認--------------------------
+
 
 
 	XMVECTOR vel = {};
@@ -289,6 +309,17 @@ void GameScene::Update()
 	ImGui::End();
 
 
+	ImGui::Begin("Line");
+	ImGui::InputFloat("PosX", &testEnemyPos.m128_f32[0]);
+	ImGui::InputFloat("PosY", &testEnemyPos.m128_f32[1]);
+	ImGui::InputFloat("PosZ", &testEnemyPos.m128_f32[2]);
+	ImGui::End();
+
+	testEnemyPoly->data.transform.pos = testEnemyPos;
+
+
+
+
 #pragma region カメラ挙動
 
 	//左右の角度変更のイージング
@@ -320,8 +351,8 @@ void GameScene::Update()
 
 
 
-	eyePos = KazMath::LoadVecotrToXMFLOAT3(cameraPoly->data.transform.pos);
-	targetPos = KazMath::LoadVecotrToXMFLOAT3(baseTargetPos);
+	//eyePos = KazMath::LoadVecotrToXMFLOAT3(cameraPoly->data.transform.pos);
+	//targetPos = KazMath::LoadVecotrToXMFLOAT3(baseTargetPos);
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
 
 #pragma endregion
@@ -443,6 +474,7 @@ void GameScene::Update()
 	player.Update();
 	cursor.Update();
 	hitBox.Update();
+	lineLevel.Update();
 
 	//敵の更新処理
 	for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
@@ -471,8 +503,10 @@ void GameScene::Draw()
 {
 	bg.Draw();
 	player.Draw();
+	lineLevel.Draw();
 	//cursor.Draw();
 	//hitBox.Draw();
+	testEnemyPoly->Draw();
 
 	//besidePoly->Draw();
 	//verticlaPoly->Draw();

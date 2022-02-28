@@ -444,7 +444,8 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 	for (int i = 0; i < limitPolygon.size(); i++)
 	{
 		limitPolygon[i]->data.transform.pos = limitPos[i];
-		limitPolygon[i]->data.color = { 255.0f,255.0f,255.0f,255.0f };
+		limitPolygon[i]->data.transform.scale = { 0.5f,2.0f,0.5f };
+		limitPolygon[i]->data.color = { 255.0f,0.0f,0.0f,255.0f };
 	}
 
 
@@ -487,59 +488,64 @@ void LineLevel1::Release()
 
 void LineLevel1::Update()
 {
-
-	line[0]->Update();
-	for (int i = 1; i < line.size(); ++i)
+	if (initFlag)
 	{
-		if (line[i - 1]->finishRockOnFlag)
+		line[0]->Update();
+		for (int i = 1; i < line.size(); ++i)
 		{
-			line[i]->StartEffect();
-		}
-		if (line[i - 1]->finishReleaseFlag)
-		{
-			line[i]->ReleaseEffect();
-		}
+			if (line[i - 1]->finishRockOnFlag)
+			{
+				line[i]->StartEffect();
+			}
+			if (line[i - 1]->finishReleaseFlag)
+			{
+				line[i]->ReleaseEffect();
+			}
 
 
-		line[i]->Update();
-	}
-
-	int count = 0;
-	for (int i = 1; i < line.size(); ++i)
-	{
-		if (line[i]->finishReleaseFlag)
-		{
-			++count;
-		}
-	}
-
-
-	//èIóπèàóù
-	if (line.size() - 1 <= count)
-	{
-		for (int i = 0; i < line.size(); ++i)
-		{
-			line[i]->Finalize();
+			line[i]->Update();
 		}
 
-		if (line[0]->FinishFlag())
+		int count = 0;
+		for (int i = 1; i < line.size(); ++i)
 		{
-			initFlag = false;
-			allFinishFlag = true;
+			if (line[i]->finishReleaseFlag)
+			{
+				++count;
+			}
+		}
+
+
+		//èIóπèàóù
+		if (line.size() - 1 <= count)
+		{
+			for (int i = 0; i < line.size(); ++i)
+			{
+				line[i]->Finalize();
+			}
+
+			if (line[0]->FinishFlag())
+			{
+				initFlag = false;
+				allFinishFlag = true;
+			}
 		}
 	}
 }
 
 void LineLevel1::Draw()
 {
-	for (int i = 0; i < limitPolygon.size(); i++)
+	if (initFlag)
 	{
-		//limitPolygon[i]->Draw();
-	}
+		for (int i = 0; i < limitPolygon.size(); i++)
+		{
+			limitPolygon[i]->Draw();
+		}
 
-	for (int i = 0; i < line.size(); i++)
-	{
-		line[i]->Draw();
+		for (int i = 0; i < line.size(); i++)
+		{
+			line[i]->Draw();
+		}
 	}
 }
 

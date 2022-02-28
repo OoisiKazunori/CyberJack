@@ -1,5 +1,5 @@
 #define INSTANCE_FIRST_LEVEL 6
-#define INSTANCE_SECOND_LEVEL 10
+#define INSTANCE_SECOND_LEVEL 1
 
 struct InputElement
 {

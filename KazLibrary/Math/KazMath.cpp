@@ -208,7 +208,7 @@ int KazMath::IntRand(int MAX_NUM, int MIN_NUM)
 	return rand() % MAX_NUM + MIN_NUM;
 }
 
-float KazMath::Rand(float MAX_NUM, float MIN_NUM)
+float KazMath::FloatRand(float MAX_NUM, float MIN_NUM)
 {
 	float result = (MAX_NUM - MIN_NUM) * rand() / RAND_MAX + MIN_NUM;
 	return result;

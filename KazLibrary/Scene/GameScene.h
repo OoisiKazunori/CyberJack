@@ -9,6 +9,7 @@
 #include"../Game/Interface/IEnemy.h"
 #include"../Game/Enemy/NormalEnemy.h"
 #include"../Game/Enemy/KidEnemy.h"
+#include"../Game/LineEffect/LineLevel1.h"
 
 struct ResponeData
 {
@@ -94,4 +95,12 @@ private:
 	array<array<ResponeData, 10>, 50> responeData;		//敵を生成する際に必要な設定
 	array<ResponeData, 50>addResponeData;				//敵を追加で生成する際に必要な設定をスタックしたもの
 	//敵----------------------------------------------------------------
+
+
+
+	//線演出----------------------------------------------------------------
+	LineLevel1 lineLevel;			//直角に敵に線を伸ばしていく演出
+	XMVECTOR testEnemyPos;			//ロックオンする対象座標(テスト)
+	BoxPolygonRenderPtr testEnemyPoly;			//ロックオンする対象描画(テスト)
+	//線演出----------------------------------------------------------------
 };
