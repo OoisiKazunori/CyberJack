@@ -11,7 +11,7 @@
 
 DebugScene::DebugScene()
 {
-	short texHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "");
+	//short texHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "");
 
 	buffer = std::make_unique<CreateGpuBuffer>();
 
@@ -61,13 +61,10 @@ DebugScene::DebugScene()
 	DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + 2, commonDesc, buffer->GetBufferData(commonHandle).Get());
 
 
+	instanceBox = std::make_unique<BoxPolygonRender>(true, INSTANCE_NUM_MAX);
+	instanceBox->data.pipelineName = PIPELINE_NAME_INSTANCE_COLOR;
+	instanceBox->CreateConstBuffer(matData.size() * sizeof(XMMATRIX), typeid(XMMATRIX).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
 
-	for (int i = 0; i < instanceBox.size(); ++i)
-	{
-		instanceBox[i] = std::make_unique<BoxPolygonRender>(true, MAX);
-		instanceBox[i]->data.pipelineName = PIPELINE_NAME_INSTANCE_COLOR;
-		instanceBox[i]->CreateConstBuffer(matData.size() * sizeof(XMMATRIX), typeid(XMMATRIX).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
-	}
 	for (int i = 0; i < matData.size(); ++i)
 	{
 		matData[i];
@@ -103,18 +100,22 @@ void DebugScene::Update()
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(size.startSize));
 	//出力用のバッファ設定
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(size.startSize + 1));
-	DirectX12CmdList::Instance()->cmdList->Dispatch(1, 1, 1);
-	//出力結果の受け取り
-	OutPutData *data = (OutPutData *)buffer->GetMapAddres(outPutHandle);
+
+	//共通データのバッファ設定と転送
+	{
+		CommonData data;
+		data.cameraMat = CameraMgr::Instance()->GetViewMatrix();
+		data.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
+		buffer->TransData(commonHandle, &data, sizeof(CommonData));
+	}
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(2, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(size.startSize + 2));
+	//ディスパッチ
+	DirectX12CmdList::Instance()->cmdList->Dispatch(100, 10, 1);
 }
 
 void DebugScene::Draw()
 {
-	//bg.Draw();
-	for (int i = 0; i < instanceBox.size(); ++i)
-	{
-		instanceBox[i]->Draw();
-	}
+	instanceBox->Draw();
 }
 
 void DebugScene::Input()

@@ -369,7 +369,7 @@ PreCreateBaseRootSignature::PreCreateBaseRootSignature()
 
 		lineData.paramData[2].param = 2;
 		lineData.paramData[2].type = GRAPHICS_PRAMTYPE_DATA3;
-		lineData.range[2] = GRAPHICS_RANGE_TYPE_CBV;
+		lineData.range[2] = GRAPHICS_RANGE_TYPE_CBV_DESC;
 
 		lineData.sample.AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
 

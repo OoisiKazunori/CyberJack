@@ -77,7 +77,7 @@ namespace KazMath
 	XMFLOAT2 NewRota(float ANGLE, XMFLOAT2 POS);
 
 	int IntRand(int MAX_NUM, int MIN_NUM);
-	float Rand(float MAX_NUM, float MIN_NUM);
+	float FloatRand(float MAX_NUM, float MIN_NUM);
 	void ConvertMatrixFromFbx(XMMATRIX *DST, const FbxAMatrix &SRC);
 
 	float ConvertSecondToFlame(float SECOND);

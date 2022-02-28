@@ -22,7 +22,7 @@ struct CommonData
 	XMMATRIX projectionMat;
 };
 
-static const int MAX = 800;
+static const int INSTANCE_NUM_MAX = 800;
 class DebugScene :public SceneBase
 {
 public:
@@ -53,6 +53,6 @@ private:
 
 
 	array<array<XMMATRIX, 800>, 13>matData;
-	array<BoxPolygonRenderPtr,13> instanceBox;
+	BoxPolygonRenderPtr instanceBox;
 	array<int, 10000>test;
 };
