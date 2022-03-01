@@ -276,7 +276,7 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 					//true...プレイヤーの方向に線を伸ばす,false...乱数で線を伸ばす
 					if (2 <= limitCount[moveVector])
 					{
-						XMVECTOR dir;
+						//XMVECTOR dir;
 						//余剰分の距離を入れる
 						XMVECTOR addDistance = { 10.0f,10.0f,10.0f };
 
@@ -326,75 +326,76 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 						正し、プレイヤーより線を越えてはいけないので比較する
 						*/
 						//true...敵との距離の方よりプレイヤーとの距離の方が短い
-						if (distance2.m128_f32[0] <= distance.m128_f32[0] + addDistance.m128_f32[0] ||
-							distance2.m128_f32[1] <= distance.m128_f32[1] + addDistance.m128_f32[1] ||
-							distance2.m128_f32[2] <= distance.m128_f32[2] + addDistance.m128_f32[2])
+						for (int axis = 0; axis < 3; ++axis)
 						{
-							//プレイヤーと敵との距離内かつ敵より前の座標を配置する
-
-							//どれくらい超えているか確認
-							XMVECTOR tmp = distance2 - distance;
-
-							//tmpの軸が0出ない限り、超えた距離の半分を足すようにする
-							for (int i = 0; i < 3; ++i)
+							if (distance2.m128_f32[axis] <= distance.m128_f32[axis] + addDistance.m128_f32[axis])
 							{
-								//敵とゴール座標との距離に超えた距離の半分を足す
-								if (0.1f <= tmp.m128_f32[i])
+								//プレイヤーと敵との距離内かつ敵より前の座標を配置する
+								//どれくらい超えているか確認
+								XMVECTOR tmp;
+								tmp.m128_f32[axis] = distance2.m128_f32[axis] - distance.m128_f32[axis];
+								tmp.m128_f32[axis] = (float)fabs(tmp.m128_f32[axis]);
+
+								//敵とゴール座標との距離に超えた距離を引く
+								//tmpの軸が0出ない限り、超えた距離を引く
+								if (0.1f <= tmp.m128_f32[axis])
 								{
-									vec.m128_f32[i] = distance.m128_f32[i] + (tmp.m128_f32[i] / 2.0f);
+									vec.m128_f32[axis] = distance.m128_f32[axis] - tmp.m128_f32[axis];
 								}
 							}
+							else
+							{
+								//越えなければそのまま使う
+								vec = distance + addDistance;
+							}
 						}
-
-
 
 						//どの方向に線を伸ばすか-----------------------
-						int random = KazMath::IntRand(3, 0);
-						while (1)
+						float dirVec = 0.0f;
+						switch (moveVector)
 						{
-							//前と同じ方向に線を伸ばさないかつ残り距離が0じゃないなら抜ける
-							if (random != oldNum && distance.m128_f32[random] != 0)
-							{
-								break;
-							}
-							random = KazMath::IntRand(3, 0);
-						}
-						oldNum = random;
-
-						switch (random)
-						{
-						case LINE_MOVE_X:
-							dir = { vec.m128_f32[0],0.0f,0.0f };
+						case LINE_MOVE_LEFT:
+							dirVec = vec.m128_f32[0];
 							break;
-						case LINE_MOVE_Y:
-							dir = { 0.0f, vec.m128_f32[1],0.0f };
+						case LINE_MOVE_RIGHT:
+							dirVec = vec.m128_f32[0];
 							break;
-						case LINE_MOVE_Z:
-							dir = { 0.0f,0.0f, vec.m128_f32[2] };
+						case LINE_MOVE_UP:
+							dirVec = vec.m128_f32[1];
+							break;
+						case LINE_MOVE_DOWN:
+							dirVec = vec.m128_f32[1];
+							break;
+						case LINE_MOVE_STRAIGHT:
+							dirVec = vec.m128_f32[2];
+							break;
+						case LINE_MOVE_BACK:
+							dirVec = vec.m128_f32[2];
 							break;
 						default:
 							break;
 						}
-						//どの方向に線を伸ばすか-----------------------
-
 
 						//プレイヤーの方向に向かせる
 						if (xMinusFlag)
 						{
-							dir.m128_f32[0] *= -1;
+							dirVec *= -1;
 						}
 						if (yMinusFlag)
 						{
-							dir.m128_f32[1] *= -1;
+							dirVec *= -1;
 						}
 						if (zMinusFlag)
 						{
-							dir.m128_f32[2] *= -1;
+							dirVec *= -1;
 						}
 						//プレイヤーの方向に向かせる
 
-						//線を伸ばす、その後記録
-						goalPos += dir;
+						goalPos += CalucurateMoveVector(moveVector, dirVec);
+						//どの方向に線を伸ばすか-----------------------
+
+
+					
 					}
 					else
 					{
