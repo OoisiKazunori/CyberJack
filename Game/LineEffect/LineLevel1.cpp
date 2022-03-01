@@ -133,6 +133,10 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 		bool xMinusFlag = signbit(ENEMY_POS.m128_f32[0]);
 		bool yMinusFlag = signbit(ENEMY_POS.m128_f32[1]);
 		bool zMinusFlag = signbit(ENEMY_POS.m128_f32[2]);
+		//同じ高さにいるかどうか
+		bool yEqualFlag = ENEMY_POS.m128_f32[1] <= 1.0f && -1.0f <= ENEMY_POS.m128_f32[1];
+		//真正面かどうか
+		bool frontFlag = ENEMY_POS.m128_f32[0] == PLAYER_POS.m128_f32[0];
 
 		//どれがマイナスかでどの面が見えているかどうか分かる
 		array<eSurface, 3> canLook;
@@ -161,6 +165,22 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 			canLook[2] = SURFACE_FRONT;
 		}
 
+		//真正面に敵が居る場合は正面しか見えない
+		if (frontFlag)
+		{
+			canLook[0] = SURFACE_NONE;
+			canLook[1] = SURFACE_NONE;
+			canLook[2] = SURFACE_FRONT;
+		}
+		//高さが同じなら上下と後ろ面は見えない
+		if (yEqualFlag)
+		{
+			canLook[1] = SURFACE_NONE;
+			canLook[2] = SURFACE_FRONT;
+		}
+
+
+
 		//見える面に刺すかどうか判断する
 		bool canLookFlag = false;
 		for (int i = 0; i < canLook.size(); i++)
@@ -174,12 +194,10 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 
 		XMVECTOR goalPos = ENEMY_POS;
 
-
-		//使用しない
-		if (false)
+		//ゴール座標から順に制御点にプッシュするための座標を記録する
+		vector<XMVECTOR> endLimitPos;
+		if (true)
 		{
-			//ゴール座標から順に制御点にプッシュするための座標を記録する
-			vector<XMVECTOR> endLimitPos;
 			//true...プレイヤーから見えている面の場合,false...プレイヤーから見えていない面の場合
 			if (canLookFlag)
 			{
@@ -225,85 +243,158 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 				}
 
 
-
+#pragma region 回り道線の処理
 				//条件に沿って線を伸ばしていく
 				int moveVector = oldMoveVector;
+				//伸びた方向の回数の初期化
 				array<int, 5>limitCount;
 				for (int i = 0; i < limitCount.size(); ++i)
 				{
 					limitCount[i] = 0;
 				}
-
 				int oldNum = -1;
+
+				//回り道線の処理開始
 				while (1)
 				{
 					//どの方向に線を伸ばすか指定
 					moveVector = CalucurateDirection(moveVector, 5);
+
+					bool yUpLimitFlag = (LINE_MOVE_UP == moveVector && 1 <= limitCount[moveVector]);
+					bool yDownLimitFlag = (LINE_MOVE_DOWN == moveVector && 1 <= limitCount[moveVector]);
+					//上か下に2回以上伸ばそうとしたらもう一度乱数を出す
+					if (yUpLimitFlag || yDownLimitFlag)
+					{
+						continue;
+					}
+
 					//伸ばした方向をカウントする
 					++limitCount[moveVector];
 
+
+					//制限された回数以上に線が伸びようとしたらtrueになる
 					//true...プレイヤーの方向に線を伸ばす,false...乱数で線を伸ばす
 					if (2 <= limitCount[moveVector])
 					{
-						//XMVECTOR dir;
-						////ゴール座標と敵との距離
-						//XMVECTOR distance = ENEMY_POS - goalPos;
-						////敵とプレイヤーの距離
-						//XMVECTOR distance2 = ENEMY_POS - PLAYER_POS;
-
-						///*
-						//敵の座標より手前に座標を持ってくる
-						//正し、プレイヤーより線を越えてはいけないのでプレイヤーと敵との距離分割り、その値を加える
-						//*/
-						//distance += (distance2 / 3);
+						XMVECTOR dir;
+						//余剰分の距離を入れる
+						XMVECTOR addDistance = { 10.0f,10.0f,10.0f };
 
 
-						////どの方向に線を伸ばすか
-						//int random = KazMath::IntRand(3, 0);
-						//while (1)
-						//{
-						//	if (random != oldNum && distance.m128_f32[random] != 0)
-						//	{
-						//		break;
-						//	}
-						//	random = KazMath::IntRand(3, 0);
-						//}
-						//oldNum = random;
+						//ゴール座標と敵との距離
+						XMVECTOR distance = ENEMY_POS - goalPos;
+						//敵とプレイヤーの距離
+						XMVECTOR distance2 = ENEMY_POS - PLAYER_POS;
 
-						//switch (random)
-						//{
-						//case LINE_MOVE_X:
-						//	dir = { distance.m128_f32[0],0.0f,0.0f };
-						//	break;
-						//case LINE_MOVE_Y:
-						//	dir = { 0.0f,distance.m128_f32[1],0.0f };
-						//	break;
-						//case LINE_MOVE_Z:
-						//	dir = { 0.0f,0.0f,distance.m128_f32[2] };
-						//	break;
-						//default:
-						//	break;
-						//}
 
-						////プレイヤーの方向に向かせる
-						//if (xMinusFlag)
-						//{
-						//	dir.m128_f32[0] *= -1;
-						//}
-						//if (yMinusFlag)
-						//{
-						//	dir.m128_f32[1] *= -1;
-						//}
-						//if (zMinusFlag)
-						//{
-						//	dir.m128_f32[2] *= -1;
-						//}
-						////プレイヤーの方向に向かせる
+						//+軸か-軸かを判断するもの-----------------------
+						//敵とゴール座標
+						array<bool, 3> minusFlags;
+						for (int i = 0; i < minusFlags.size(); ++i)
+						{
+							if (distance.m128_f32[i] < 0)
+							{
+								minusFlags[i] = true;
+								distance.m128_f32[i] = (float)fabs(distance.m128_f32[i]);
+							}
+							else
+							{
+								minusFlags[i] = false;
+							}
+						}
 
-						////線を伸ばす、その後記録
-						//goalPos += dir;
+						//プレイヤーと敵座標
+						array<bool, 3> minusFlags2;
+						for (int i = 0; i < minusFlags2.size(); ++i)
+						{
+							if (distance2.m128_f32[i] < 0)
+							{
+								minusFlags2[i] = true;
+								distance2.m128_f32[i] = (float)fabs(distance2.m128_f32[i]);
+							}
+							else
+							{
+								minusFlags2[i] = false;
+							}
+						}
+						//+軸か-軸かを判断するもの-----------------------
 
-						goalPos += CalucurateMoveVector(moveVector, 10);
+						//伸ばす距離
+						XMVECTOR vec = {};
+						/*
+						敵の座標より手前に座標を持ってくる
+						正し、プレイヤーより線を越えてはいけないので比較する
+						*/
+						//true...敵との距離の方よりプレイヤーとの距離の方が短い
+						if (distance2.m128_f32[0] <= distance.m128_f32[0] + addDistance.m128_f32[0] ||
+							distance2.m128_f32[1] <= distance.m128_f32[1] + addDistance.m128_f32[1] ||
+							distance2.m128_f32[2] <= distance.m128_f32[2] + addDistance.m128_f32[2])
+						{
+							//プレイヤーと敵との距離内かつ敵より前の座標を配置する
+
+							//どれくらい超えているか確認
+							XMVECTOR tmp = distance2 - distance;
+
+							//tmpの軸が0出ない限り、超えた距離の半分を足すようにする
+							for (int i = 0; i < 3; ++i)
+							{
+								//敵とゴール座標との距離に超えた距離の半分を足す
+								if (0.1f <= tmp.m128_f32[i])
+								{
+									vec.m128_f32[i] = distance.m128_f32[i] + (tmp.m128_f32[i] / 2.0f);
+								}
+							}
+						}
+
+
+
+						//どの方向に線を伸ばすか-----------------------
+						int random = KazMath::IntRand(3, 0);
+						while (1)
+						{
+							//前と同じ方向に線を伸ばさないかつ残り距離が0じゃないなら抜ける
+							if (random != oldNum && distance.m128_f32[random] != 0)
+							{
+								break;
+							}
+							random = KazMath::IntRand(3, 0);
+						}
+						oldNum = random;
+
+						switch (random)
+						{
+						case LINE_MOVE_X:
+							dir = { vec.m128_f32[0],0.0f,0.0f };
+							break;
+						case LINE_MOVE_Y:
+							dir = { 0.0f, vec.m128_f32[1],0.0f };
+							break;
+						case LINE_MOVE_Z:
+							dir = { 0.0f,0.0f, vec.m128_f32[2] };
+							break;
+						default:
+							break;
+						}
+						//どの方向に線を伸ばすか-----------------------
+
+
+						//プレイヤーの方向に向かせる
+						if (xMinusFlag)
+						{
+							dir.m128_f32[0] *= -1;
+						}
+						if (yMinusFlag)
+						{
+							dir.m128_f32[1] *= -1;
+						}
+						if (zMinusFlag)
+						{
+							dir.m128_f32[2] *= -1;
+						}
+						//プレイヤーの方向に向かせる
+
+						//線を伸ばす、その後記録
+						goalPos += dir;
 					}
 					else
 					{
@@ -324,11 +415,12 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 						endLimitPos.push_back(goalPos);
 					}
 				}
+#pragma endregion
 			}
 		}
 #pragma endregion
 
-		goalPos = ENEMY_POS;
+		//goalPos = ENEMY_POS;
 		//通常処理開始----------------------------------------------------------------
 		//1.プレイヤーと敵の距離を算出する
 		XMVECTOR distance = goalPos - PLAYER_POS;
@@ -416,10 +508,10 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 
 
 		//ゴール座標から敵までの座標を追加していく
-		//for (int i = endLimitPos.size() - 1; 0 <= i; --i)
-		//{
-		//	limitPos.push_back(endLimitPos[i]);
-		//}
+		for (int i = endLimitPos.size() - 1; 0 <= i; --i)
+		{
+			limitPos.push_back(endLimitPos[i]);
+		}
 		limitPos.push_back(ENEMY_POS);
 
 
@@ -438,15 +530,32 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 			line[i]->RockOn(limitPos[i], limitPos[i + 1]);
 		}
 
+
+
+		for (int i = 0; i < limitPolygon.size(); i++)
+		{
+			limitPolygon[i]->data.transform.pos = limitPos[i];
+			limitPolygon[i]->data.transform.scale = { 0.5f,2.0f,0.5f };
+			limitPolygon[i]->data.color = { 255.0f,0.0f,0.0f,255.0f };
+		}
+
+		int count = endLimitPos.size();
+		for (int i = limitPolygon.size() - 1; 0 <= i; --i)
+		{
+			if (count <= 0)
+			{
+				break;
+			}
+			limitPolygon[i]->data.transform.scale = { 2.0f,0.5f,0.5f };
+			limitPolygon[i]->data.color = { 0.0f,255.0f,0.0f,255.0f };
+			--count;
+		}
+
+
 		allFinishFlag = false;
 	}
 
-	for (int i = 0; i < limitPolygon.size(); i++)
-	{
-		limitPolygon[i]->data.transform.pos = limitPos[i];
-		limitPolygon[i]->data.transform.scale = { 0.5f,2.0f,0.5f };
-		limitPolygon[i]->data.color = { 255.0f,0.0f,0.0f,255.0f };
-	}
+
 
 
 	line[0]->StartEffect();

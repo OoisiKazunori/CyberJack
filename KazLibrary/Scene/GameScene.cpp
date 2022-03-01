@@ -222,7 +222,7 @@ void GameScene::Input()
 	{
 		lineLevel.Attack2(player.pos, testEnemyPos, {});
 	}
-	if (input->InputRelease(DIK_RETURN))
+	if (input->InputTrigger(DIK_L))
 	{
 		lineLevel.Release();
 	}
