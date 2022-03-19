@@ -14,13 +14,14 @@ public:
 	LineEffect();
 	~LineEffect();
 
-	void RockOn(const XMVECTOR &START_POS, const XMVECTOR &END_POS);
+	void RockOn(const XMVECTOR &START_POS, const XMVECTOR &END_POS, const XMVECTOR &START_PLAYER_DISTANCE, const XMVECTOR &END_PLAYER_DISTANCE);
 	void StartEffect();
 	void ReleaseEffect();
 	void Finalize();
 	void Update();
 	void Draw();
 
+	void MoveLine(const XMVECTOR &VALUE);
 	bool FinishFlag();
 
 	bool finishRockOnFlag;
@@ -34,7 +35,10 @@ private:
 
 	bool rockOnFlag;
 	XMVECTOR startPos, endPos;
+	XMVECTOR startPlayerDistance, endPlayerDistance;
 	XMVECTOR distance;
+	XMVECTOR value;
+
 	float rate,lockOnTime,releaseTime;
 	float lockOnSpeed,releaseSpeed;
 	int axis;

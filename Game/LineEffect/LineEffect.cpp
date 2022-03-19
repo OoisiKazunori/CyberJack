@@ -38,12 +38,16 @@ LineEffect::~LineEffect()
 	allFinishFlag = false;
 }
 
-void LineEffect::RockOn(const XMVECTOR &START_POS, const XMVECTOR &END_POS)
+void LineEffect::RockOn(const XMVECTOR &START_POS, const XMVECTOR &END_POS, const XMVECTOR &START_PLAYER_DISTANCE, const XMVECTOR &END_PLAYER_DISTANCE)
 {
 	if (!rockOnFlag)
 	{
 		startPos = START_POS;
 		endPos = END_POS;
+		startPlayerDistance = START_PLAYER_DISTANCE;
+		endPlayerDistance = END_PLAYER_DISTANCE;
+
+
 		float color = 255.0f;
 		line->data.color = { color,color,color ,255.0f };
 		//234.0f,69.0f,50.0f
@@ -109,8 +113,13 @@ void LineEffect::Finalize()
 
 void LineEffect::Update()
 {
+	XMVECTOR playerPos = { 0.0f,0.0f,0.0f };
+	startPos = playerPos + startPlayerDistance * value;
+	endPos = playerPos + endPlayerDistance * value;
+
+
 	//ƒƒbƒNƒIƒ“ˆ—
-	if (rockOnFlag && !finishRockOnFlag)
+	//if (rockOnFlag && !finishRockOnFlag)
 	{
 		line->data.startPos = startPos;
 		float tmp = (lockOnTime / rate) * rate;
@@ -225,6 +234,11 @@ void LineEffect::Draw()
 	{
 		line->Draw();
 	}
+}
+
+void LineEffect::MoveLine(const XMVECTOR &VALUE)
+{
+	value = VALUE;
 }
 
 bool LineEffect::FinishFlag()

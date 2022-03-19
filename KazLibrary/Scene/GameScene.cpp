@@ -222,6 +222,10 @@ void GameScene::Input()
 	{
 		lineLevel.Attack2(player.pos, testEnemyPos, {});
 	}
+	if (input->InputState(DIK_K))
+	{
+		lineLevel.ReleaseShot();
+	}
 	if (input->InputTrigger(DIK_L))
 	{
 		lineLevel.Release();
@@ -310,10 +314,11 @@ void GameScene::Update()
 
 
 	ImGui::Begin("Line");
-	ImGui::InputFloat("PosX", &testEnemyPos.m128_f32[0]);
-	ImGui::InputFloat("PosY", &testEnemyPos.m128_f32[1]);
-	ImGui::InputFloat("PosZ", &testEnemyPos.m128_f32[2]);
+	ImGui::SliderFloat("PosX", &testEnemyPos.m128_f32[0], -100, 100);
+	ImGui::SliderFloat("PosY", &testEnemyPos.m128_f32[1], -100, 100);
+	ImGui::SliderFloat("PosZ", &testEnemyPos.m128_f32[2], -100, 100);
 	ImGui::End();
+
 
 	testEnemyPoly->data.transform.pos = testEnemyPos;
 
@@ -474,6 +479,8 @@ void GameScene::Update()
 	player.Update();
 	cursor.Update();
 	hitBox.Update();
+
+	lineLevel.CalucurateDistance(player.pos, testEnemyPos);
 	lineLevel.Update();
 
 	//敵の更新処理

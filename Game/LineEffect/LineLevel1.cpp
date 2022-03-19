@@ -13,6 +13,23 @@ LineLevel1::LineLevel1()
 	allFinishFlag = false;
 }
 
+void LineLevel1::CalucurateDistance(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS)
+{
+	XMVECTOR distance(ENEMY_POS - PLAYER_POS);
+
+	distanceValue = distance / rockOnDistance;
+
+
+	for (int i = 0; i < 3; ++i)
+	{
+		if (isnan<float>(distanceValue.m128_f32[i]) || isinf<float>(distanceValue.m128_f32[i]))
+		{
+			distanceValue.m128_f32[i] = 0.0f;
+		}
+	}
+
+}
+
 void LineLevel1::Attack(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, const EnemyMoveData &FLAG_DATA)
 {
 	if (!initFlag)
@@ -104,7 +121,7 @@ void LineLevel1::Attack(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, c
 		for (int i = 0; i < line.size(); i++)
 		{
 			line[i].reset(new LineEffect);
-			line[i]->RockOn(limitPos[i], limitPos[i + 1]);
+			//line[i]->RockOn(limitPos[i], limitPos[i + 1]);
 		}
 
 		//ここまでで制御点の配置は終わる
@@ -407,7 +424,7 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 					bool nearXFlag = abs(goalPos.m128_f32[0]) < abs(ENEMY_POS.m128_f32[0]);
 					bool nearYFlag = abs(goalPos.m128_f32[1]) < abs(ENEMY_POS.m128_f32[1]);
 					bool nearZFlag = abs(goalPos.m128_f32[2]) < abs(ENEMY_POS.m128_f32[2]);
-					if (nearXFlag || nearYFlag || nearZFlag)
+					if (nearXFlag || nearZFlag || nearYFlag)
 					{
 						break;
 					}
@@ -528,7 +545,12 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 		for (int i = 0; i < line.size(); i++)
 		{
 			line[i].reset(new LineEffect);
-			line[i]->RockOn(limitPos[i], limitPos[i + 1]);
+
+
+			XMVECTOR startPlayerdistance = limitPos[i]- PLAYER_POS;
+			XMVECTOR endPlayerdistance = limitPos[i + 1]- PLAYER_POS;
+
+			line[i]->RockOn(limitPos[i], limitPos[i + 1], startPlayerdistance, endPlayerdistance);
 		}
 
 
@@ -552,6 +574,9 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 			--count;
 		}
 
+
+
+		rockOnDistance = ENEMY_POS - PLAYER_POS;
 
 		allFinishFlag = false;
 	}
@@ -600,6 +625,17 @@ void LineLevel1::Update()
 {
 	if (initFlag)
 	{
+		//ロックオン中の挙動-----------------------
+		//敵とプレイヤーの距離　/ ロックオン時の距離　で割合を求める
+
+		//ロックオン中の挙動-----------------------
+
+		for (int i = 0; i < line.size(); ++i)
+		{
+			line[i]->MoveLine(distanceValue);
+		}
+
+
 		line[0]->Update();
 		for (int i = 1; i < line.size(); ++i)
 		{

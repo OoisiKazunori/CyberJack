@@ -46,6 +46,8 @@ class LineLevel1
 public:
 	LineLevel1();
 
+	void CalucurateDistance(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS);
+
 	void Attack(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, const EnemyMoveData &FLAG_DATA);
 	void Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, const EnemyMoveData &FLAG_DATA);
 
@@ -64,6 +66,9 @@ private:
 	vector<unique_ptr<LineEffect>> line;
 
 	array<int, 3> countVec;
+
+	XMVECTOR rockOnDistance;//ロックオンした際の敵の座標
+	XMVECTOR distanceValue;//ロックオン時の距離と現在のプレイヤーと敵の距離の割合
 
 	XMVECTOR CalucurateMoveVector(const int &RANDM_NUM, const float &LENGTH);
 	int CalucurateDirection(const int &MOVE_VEC, const int &MOVE_VEC_MAX_NUM);
