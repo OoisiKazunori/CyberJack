@@ -260,7 +260,6 @@ void GameScene::Input()
 		besideVel = { -speed,-speed,0.0f };
 	}
 
-
 	//カメラの制限
 	if (60 <= cameraRotaVel.m128_f32[0])
 	{
@@ -512,7 +511,7 @@ void GameScene::Draw()
 	bg.Draw();
 	player.Draw();
 	lineLevel.Draw();
-	//cursor.Draw();
+	cursor.Draw();
 	//hitBox.Draw();
 	testEnemyPoly->Draw();
 
