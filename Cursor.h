@@ -24,6 +24,8 @@ public:
 	void Count();
 	const int &GetCount();
 
+	const XMVECTOR &GetValue();
+
 	XMVECTOR cursorPos;
 	XMVECTOR vel;
 	Ray hitBox;

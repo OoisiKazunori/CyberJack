@@ -196,3 +196,18 @@ const int &Cursor::GetCount()
 {
 	return lockOnNum;
 }
+
+const XMVECTOR &Cursor::GetValue()
+{
+	//画面中央を中心座標とする
+	XMVECTOR adjPos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+	XMVECTOR pos = cursorPos - adjPos;
+
+	//割合計算
+	XMVECTOR value = pos / adjPos;
+
+	//カメラの座標に合わせる為にY軸の符号を反転
+	value.m128_f32[1] *= -1.0f;
+
+	return value;
+}

@@ -283,6 +283,7 @@ void GameScene::Input()
 	}
 
 
+	XMVECTOR debug = cursor.GetValue();
 	nowTargerPos += vel;
 	cameraRotaVel += vel;
 	upDownAngleVel += verticalVel;
@@ -322,7 +323,6 @@ void GameScene::Update()
 
 
 	testEnemyPoly->data.transform.pos = testEnemyPos;
-
 
 
 
