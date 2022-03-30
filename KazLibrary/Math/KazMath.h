@@ -204,7 +204,7 @@ namespace KazMath
 	XMMATRIX CaluFrontMatrix(const XMVECTOR &Y,const XMVECTOR &Z);
 
 	int RadianToAngle(float RADIAN);
-	float AngleToRadian(int ANGLE);
+	float AngleToRadian(float ANGLE);
 
 
 	XMMATRIX CaluMat(const KazMath::Transform3D &TRANSFORM, const XMVECTOR &Y_VEC, const XMVECTOR &Z_VEC, const XMMATRIX &VIEW_MAT, const XMMATRIX &PROJECT_MAT);

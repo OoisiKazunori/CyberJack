@@ -125,48 +125,48 @@ void GameScene::Input()
 	KeyBoradInputManager *input = KeyBoradInputManager::Instance();
 
 #pragma region カメラ操作
-	debugCameraMove = { 0,0,0 };
-	float debugSpeed = 1;
-	//�J�����ړ�
-	if (input->InputState(DIK_D))
-	{
-		debugCameraMove.x = -debugSpeed;
-	}
-	if (input->InputState(DIK_A))
-	{
-		debugCameraMove.x = debugSpeed;
-	}
-	if (input->InputState(DIK_W))
-	{
-		//y�Ȃ̂ɑO�ɐi��....
-		debugCameraMove.y = debugSpeed;
-	}
-	if (input->InputState(DIK_S))
-	{
-		debugCameraMove.y = -debugSpeed;
-	}
+	//debugCameraMove = { 0,0,0 };
+	//float debugSpeed = 1;
+	////�J�����ړ�
+	//if (input->InputState(DIK_D))
+	//{
+	//	debugCameraMove.x = -debugSpeed;
+	//}
+	//if (input->InputState(DIK_A))
+	//{
+	//	debugCameraMove.x = debugSpeed;
+	//}
+	//if (input->InputState(DIK_W))
+	//{
+	//	//y�Ȃ̂ɑO�ɐi��....
+	//	debugCameraMove.y = debugSpeed;
+	//}
+	//if (input->InputState(DIK_S))
+	//{
+	//	debugCameraMove.y = -debugSpeed;
+	//}
 
 
-	//�J�����p�x
-	if (input->InputState(DIK_RIGHTARROW))
-	{
-		angle.x += debugSpeed;
-	}
-	if (input->InputState(DIK_LEFTARROW))
-	{
-		angle.x += -debugSpeed;
-	}
+	////�J�����p�x
+	//if (input->InputState(DIK_RIGHTARROW))
+	//{
+	//	angle.x += debugSpeed;
+	//}
+	//if (input->InputState(DIK_LEFTARROW))
+	//{
+	//	angle.x += -debugSpeed;
+	//}
 
-	if (input->InputState(DIK_UPARROW))
-	{
-		angle.y += debugSpeed;
-	}
-	if (input->InputState(DIK_DOWNARROW))
-	{
-		angle.y += -debugSpeed;
-	}
-	eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
-	targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
+	//if (input->InputState(DIK_UPARROW))
+	//{
+	//	angle.y += debugSpeed;
+	//}
+	//if (input->InputState(DIK_DOWNARROW))
+	//{
+	//	angle.y += -debugSpeed;
+	//}
+	//eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
+	//targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
 
 #pragma endregion
 
@@ -310,6 +310,8 @@ void GameScene::Update()
 	ImGui::Text("leftRightAngleVel:X%f,Y:%f", leftRightAngleVel.m128_f32[0], leftRightAngleVel.m128_f32[1]);
 	ImGui::Text("upDownAngleVel:X%f,Y:%f", upDownAngleVel.m128_f32[0], upDownAngleVel.m128_f32[1]);
 	ImGui::Text("cameraRotaVel:X%f,Y:%f", cameraRotaVel.m128_f32[0], cameraRotaVel.m128_f32[1]);
+	ImGui::Text("trackUpDownAngleVel:X%f,Y:%f", trackUpDownAngleVel.m128_f32[0], trackUpDownAngleVel.m128_f32[1]);
+	ImGui::Text("trackLeftRightAngleVel:X%f,Y:%f", trackLeftRightAngleVel.m128_f32[0], trackLeftRightAngleVel.m128_f32[1]);
 	ImGui::End();
 
 
@@ -356,8 +358,8 @@ void GameScene::Update()
 
 
 
-	//eyePos = KazMath::LoadVecotrToXMFLOAT3(cameraPoly->data.transform.pos);
-	//targetPos = KazMath::LoadVecotrToXMFLOAT3(baseTargetPos);
+	eyePos = KazMath::LoadVecotrToXMFLOAT3(cameraPoly->data.transform.pos);
+	targetPos = KazMath::LoadVecotrToXMFLOAT3(baseTargetPos);
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
 
 #pragma endregion
@@ -498,7 +500,6 @@ void GameScene::Update()
 	}
 	//更新処理----------------------------------------------------------------
 #pragma endregion
-
 
 	//ゲームループの経過時間----------------------------------------------------------------
 	++gameFlame;

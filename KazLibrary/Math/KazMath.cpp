@@ -592,7 +592,7 @@ int KazMath::RadianToAngle(float RADIAN)
 	return static_cast<int>(angle);
 }
 
-float KazMath::AngleToRadian(int ANGLE)
+float KazMath::AngleToRadian(float ANGLE)
 {
 	float radian = static_cast<float>(ANGLE) * (PI_2F / 180.0f);
 	return radian;
