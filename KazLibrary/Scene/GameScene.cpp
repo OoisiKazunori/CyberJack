@@ -1,5 +1,6 @@
 ﻿#include "GameScene.h"
 #include"../Input/KeyBoradInputManager.h"
+#include"../Input/ControllerInputManager.h"
 #include"../Imgui/MyImgui.h"
 
 GameScene::GameScene()
@@ -91,9 +92,6 @@ void GameScene::Init()
 	r = 12.0f;
 	r2 = 12.0f;
 
-	cameraRotaVel = { 30.0f,30.0f,0.0f };
-
-
 
 	testEnemyPos = { 0.0f,0.0f,100.0f };
 }
@@ -123,6 +121,7 @@ void GameScene::Finalize()
 void GameScene::Input()
 {
 	KeyBoradInputManager *input = KeyBoradInputManager::Instance();
+	ControllerInputManager *inputController = ControllerInputManager::Instance();
 
 #pragma region カメラ操作
 	//debugCameraMove = { 0,0,0 };
@@ -171,7 +170,7 @@ void GameScene::Input()
 #pragma endregion
 
 
-	if (input->InputTrigger(DIK_END))
+	if (inputController->InputTrigger(XINPUT_GAMEPAD_A))
 	{
 		bool debug = false;
 		debug = true;
@@ -187,19 +186,19 @@ void GameScene::Input()
 	bool leftFlag = false;
 	bool rightFlag = false;
 
-	if (input->InputState(DIK_T))
+	if (inputController->InputStickState(LEFT_STICK, UP_SIDE))
 	{
 		upFlag = true;
 	}
-	if (input->InputState(DIK_G))
+	if (inputController->InputStickState(LEFT_STICK, DOWN_SIDE))
 	{
 		downFlag = true;
 	}
-	if (input->InputState(DIK_F))
+	if (inputController->InputStickState(LEFT_STICK, LEFT_SIDE))
 	{
 		leftFlag = true;
 	}
-	if (input->InputState(DIK_H))
+	if (inputController->InputStickState(LEFT_STICK, RIGHT_SIDE))
 	{
 		rightFlag = true;
 	}
@@ -265,8 +264,6 @@ void GameScene::Input()
 
 
 	nowTargerPos += vel;
-	cameraRotaVel += vel;
-
 
 	upDownAngleVel =
 	{
@@ -299,7 +296,6 @@ void GameScene::Update()
 	ImGui::InputFloat("R2", &r2);
 	ImGui::Text("leftRightAngleVel:X%f,Y:%f", leftRightAngleVel.m128_f32[0], leftRightAngleVel.m128_f32[1]);
 	ImGui::Text("upDownAngleVel:X%f,Y:%f", upDownAngleVel.m128_f32[0], upDownAngleVel.m128_f32[1]);
-	ImGui::Text("cameraRotaVel:X%f,Y:%f", cameraRotaVel.m128_f32[0], cameraRotaVel.m128_f32[1]);
 	ImGui::Text("trackUpDownAngleVel:X%f,Y:%f", trackUpDownAngleVel.m128_f32[0], trackUpDownAngleVel.m128_f32[1]);
 	ImGui::Text("trackLeftRightAngleVel:X%f,Y:%f", trackLeftRightAngleVel.m128_f32[0], trackLeftRightAngleVel.m128_f32[1]);
 	ImGui::End();
@@ -310,6 +306,14 @@ void GameScene::Update()
 	ImGui::SliderFloat("PosY", &testEnemyPos.m128_f32[1], -100, 100);
 	ImGui::SliderFloat("PosZ", &testEnemyPos.m128_f32[2], -100, 100);
 	ImGui::End();
+
+
+	//操作感に関わる設定
+	ImGui::Begin("Move");
+
+	ImGui::End();
+
+
 
 
 	testEnemyPoly->data.transform.pos = testEnemyPos;

@@ -10,6 +10,7 @@
 #include"../Imgui/MyImgui.h"
 #include"../Helper/OutPutDebugStringAndCheckResult.h"
 #include"../Input/KeyBoradInputManager.h"
+#include"../Input/ControllerInputManager.h"
 #include<time.h>
 
 /*
@@ -80,6 +81,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
 		RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
 		KeyBoradInputManager::Instance()->InputLog();
+		ControllerInputManager::Instance()->InputLog();
 #ifdef _DEBUG
 		winApi.FPS();
 #endif
