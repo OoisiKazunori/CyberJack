@@ -82,18 +82,20 @@ void GameScene::Init()
 	baseEyePos = { 0.0f,5.0f,-10.0f };
 	baseTargetPos = { 0.0f,3.0f,0.0f };
 
-	centralPos = { 0.0f,3.0f,8.0f };
+	centralPos = { 0.0f,3.0f,0.0f };
 	centralPos2 = centralPos;
 
 
 	besidePoly->data.color = { 255.0f,255.0f,255.0f,255.0f };
 	verticlaPoly->data.color = { 255.0f,255.0f,0.0f,255.0f };
 	cameraPoly->data.color = { 255.0f,0.0f,0.0f,255.0f };
-	r = 12.0f;
-	r2 = 12.0f;
+	r = 8.0f;
+	r2 = 8.0f;
 
 
 	testEnemyPos = { 0.0f,0.0f,100.0f };
+	mulValue = { 10.0f,30.0f };
+	mulValue2 = { 60.0f,60.0f };
 }
 
 void GameScene::Finalize()
@@ -234,21 +236,21 @@ void GameScene::Input()
 
 	if (input->InputState(DIK_UP))
 	{
-
+		forceCameraDirVel.m128_f32[1] += -1.0f;
 	}
 	if (input->InputState(DIK_DOWN))
 	{
-
+		forceCameraDirVel.m128_f32[1] += 1.0f;
 	}
 	if (input->InputState(DIK_LEFT))
 	{
 		forceCameraDirVel.m128_f32[0] += -1.0f;
-		forceCameraDirVel.m128_f32[1] += -1.0f;
+
 	}
 	if (input->InputState(DIK_RIGHT))
 	{
 		forceCameraDirVel.m128_f32[0] += 1.0f;
-		forceCameraDirVel.m128_f32[1] += 1.0f;
+
 	}
 
 
@@ -286,13 +288,13 @@ void GameScene::Input()
 
 	upDownAngleVel =
 	{
-		-103.0f + 30 * -cursorValue.m128_f32[1],
-		-103.0f + 30 * -cursorValue.m128_f32[1]
+		mulValue.x * -cursorValue.m128_f32[1],
+		mulValue.y * -cursorValue.m128_f32[1]
 	};
 	leftRightAngleVel =
 	{
-		-90.0f + 30 * -cursorValue.m128_f32[0],
-		-90.0f + 30 * -cursorValue.m128_f32[0]
+		-90.0f + mulValue2.x * -cursorValue.m128_f32[0],
+		-90.0f + mulValue2.y * -cursorValue.m128_f32[0]
 	};
 
 
@@ -301,22 +303,29 @@ void GameScene::Input()
 void GameScene::Update()
 {
 	ImGui::Begin("Camera");
-	ImGui::InputFloat("EyeX", &baseEyePos.m128_f32[0]);
-	ImGui::InputFloat("EyeY", &baseEyePos.m128_f32[1]);
-	ImGui::InputFloat("EyeZ", &baseEyePos.m128_f32[2]);
+	ImGui::Text("Target");
 	ImGui::InputFloat("TargetX", &baseTargetPos.m128_f32[0]);
 	ImGui::InputFloat("TargetY", &baseTargetPos.m128_f32[1]);
 	ImGui::InputFloat("TargetZ", &baseTargetPos.m128_f32[2]);
+	ImGui::Text("Central_Side");
 	ImGui::InputFloat("CentralX", &centralPos.m128_f32[0]);
 	ImGui::InputFloat("CentralY", &centralPos.m128_f32[1]);
 	ImGui::InputFloat("CentralZ", &centralPos.m128_f32[2]);
+	ImGui::Text("Central_UpDown");
 	ImGui::InputFloat("Central2X", &centralPos2.m128_f32[0]);
 	ImGui::InputFloat("Central2Y", &centralPos2.m128_f32[1]);
 	ImGui::InputFloat("Central2Z", &centralPos2.m128_f32[2]);
+	ImGui::Text("Force");
 	ImGui::InputFloat("forceCameraDirVel0", &forceCameraDirVel.m128_f32[0]);
 	ImGui::InputFloat("forceCameraDirVel1", &forceCameraDirVel.m128_f32[1]);
+	ImGui::Text("Circle");
 	ImGui::InputFloat("R", &r);
 	ImGui::InputFloat("R2", &r2);
+	ImGui::Text("MulValue");
+	ImGui::InputFloat("mulValueX", &mulValue.x);
+	ImGui::InputFloat("mulValueY", &mulValue.y);
+	ImGui::InputFloat("mulValue2X", &mulValue2.x);
+	ImGui::InputFloat("mulValue2Y", &mulValue2.y);
 	ImGui::Text("leftRightAngleVel:X%f,Y:%f", leftRightAngleVel.m128_f32[0], leftRightAngleVel.m128_f32[1]);
 	ImGui::Text("upDownAngleVel:X%f,Y:%f", upDownAngleVel.m128_f32[0], upDownAngleVel.m128_f32[1]);
 	ImGui::Text("trackUpDownAngleVel:X%f,Y:%f", trackUpDownAngleVel.m128_f32[0], trackUpDownAngleVel.m128_f32[1]);
@@ -360,17 +369,56 @@ void GameScene::Update()
 	{
 		cosf(KazMath::AngleToRadian(trackLeftRightAngleVel.m128_f32[0] + forceCameraDirVel.m128_f32[0])) * r,
 		0.0f,
-		sinf(KazMath::AngleToRadian(trackLeftRightAngleVel.m128_f32[1] + forceCameraDirVel.m128_f32[1])) * r
+		sinf(KazMath::AngleToRadian(trackLeftRightAngleVel.m128_f32[1] + forceCameraDirVel.m128_f32[0])) * r
 	};
 	//上下の回転
 	verticlaPoly->data.transform.pos =
 	{
 		0.0f,
-		cosf(KazMath::AngleToRadian(trackUpDownAngleVel.m128_f32[0])) * r2,
-		sinf(KazMath::AngleToRadian(trackUpDownAngleVel.m128_f32[1])) * r2
+		trackUpDownAngleVel.m128_f32[0],
+		0.0f,
 	};
+
+
+	//注視点の自動
+	//baseTargetPos.m128_f32[2] = 0.0f + 1.0f * -cursor.GetValue().m128_f32[1];
+	//if (baseTargetPos.m128_f32[2] <= 0.0f)
+	//{
+	//	baseTargetPos.m128_f32[2] = 0.0f;
+	//}
+
+	//centralPos.m128_f32[2] = 0.0f + 3.0f * -cursor.GetValue().m128_f32[1];
+
+
+
+
+	{
+		float mul = 1.0f;
+		float limitValue = 3.0f;
+		//上下でプレイヤーのいる位置を変える
+		if (0.1f <= cursor.GetValue().m128_f32[1])
+		{
+			mul *= -1.0f;
+			limitValue = 2.0f;
+		}
+
+		honraiPlayerCameraPos.m128_f32[0] = 0.0f + 2.0f * -cursor.GetValue().m128_f32[0];
+		honraiPlayerCameraPos.m128_f32[2] = 0.0f + (limitValue * cursor.GetValue().m128_f32[1]) * mul;
+
+
+		if (0.0f <= honraiPlayerCameraPos.m128_f32[2])
+		{
+			honraiPlayerCameraPos.m128_f32[2] = 0.0f;
+		}
+		XMVECTOR distance = honraiPlayerCameraPos - player.pos;
+		player.pos += distance * 0.1f;
+	}
+
+
 	//上下左右の回転
-	cameraPoly->data.transform.pos = (besidePoly->data.transform.pos + centralPos) + (verticlaPoly->data.transform.pos + centralPos2);
+	cameraPoly->data.transform.pos = centralPos + (besidePoly->data.transform.pos + verticlaPoly->data.transform.pos);
+
+
 
 
 

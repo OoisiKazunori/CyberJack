@@ -56,17 +56,17 @@ void BackGroundForDebug::Draw()
 	xLine.data.endPos = { 30,0,0 };
 	xLine.data.color = { 255,0,0,255.0f };
 	xLine.data.pipelineName = pipeline;
-	xLine.Draw();
+	//xLine.Draw();
 
 	yLine.data.startPos = { 0,0,0 };
 	yLine.data.endPos = { 0,30,0 };
 	yLine.data.color = { 0,255,0,255.0f };
 	yLine.data.pipelineName = pipeline;
-	yLine.Draw();
+	//yLine.Draw();
 
 	zLine.data.startPos = { 0,0,0 };
 	zLine.data.endPos = { 0,0,30 };
 	zLine.data.color = { 0,0,255,255.0f };
 	zLine.data.pipelineName = pipeline;
-	zLine.Draw();
+	//zLine.Draw();
 }

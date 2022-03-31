@@ -70,6 +70,10 @@ private:
 	XMVECTOR trackLeftRightAngleVel;
 	XMVECTOR trackUpDownAngleVel;
 	XMVECTOR forceCameraDirVel;					//カメラの前後左右の向きを強制的に指定する
+	XMFLOAT2 mulValue;							//カメラの上下左右の掛ける割合
+	XMFLOAT2 mulValue2;							//カメラの上下左右の掛ける割合
+
+	XMVECTOR honraiPlayerCameraPos;
 	//カメラ----------------------------------------------------------------
 
 	//カメラ挙動の確認

@@ -23,6 +23,7 @@ void Player::Input()
 
 void Player::Update()
 {
+	render->data.transform.pos = pos;
 	ImGui::Begin("Player");
 	ImGui::InputFloat("ScaleX", &render->data.transform.scale.m128_f32[0]);
 	ImGui::InputFloat("ScaleY", &render->data.transform.scale.m128_f32[1]);
