@@ -260,34 +260,24 @@ void GameScene::Input()
 		besideVel = { -speed,-speed,0.0f };
 	}
 
-	//カメラの制限
-	if (60 <= cameraRotaVel.m128_f32[0])
-	{
-		besideVel = { 0.0f,0.0f,0.0f };
-		cameraRotaVel.m128_f32[0] = { 60.0f };
-	}
-	if (cameraRotaVel.m128_f32[0] <= 0)
-	{
-		besideVel = { 0.0f,0.0f,0.0f };
-		cameraRotaVel.m128_f32[0] = { 0.0f };
-	}
-	if (50 <= cameraRotaVel.m128_f32[1])
-	{
-		verticalVel = { 0.0f,0.0f,0.0f };
-		cameraRotaVel.m128_f32[1] = { 50.0f };
-	}
-	if (cameraRotaVel.m128_f32[1] <= -10)
-	{
-		verticalVel = { 0.0f,0.0f,0.0f };
-		cameraRotaVel.m128_f32[1] = { -10.0f };
-	}
+
+	XMVECTOR cursorValue = cursor.GetValue();
 
 
-	XMVECTOR debug = cursor.GetValue();
 	nowTargerPos += vel;
 	cameraRotaVel += vel;
-	upDownAngleVel += verticalVel;
-	leftRightAngleVel += besideVel;
+
+
+	upDownAngleVel =
+	{
+		-103.0f + 30 * -cursorValue.m128_f32[1],
+		-103.0f + 30 * -cursorValue.m128_f32[1]
+	};
+	leftRightAngleVel =
+	{
+		-90.0f + 30 * -cursorValue.m128_f32[0],
+		-90.0f + 30 * -cursorValue.m128_f32[0]
+	};
 }
 
 void GameScene::Update()
