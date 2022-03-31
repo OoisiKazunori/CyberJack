@@ -69,6 +69,7 @@ private:
 	XMVECTOR upDownAngleVel;					//上下視点座標の向く角度
 	XMVECTOR trackLeftRightAngleVel;
 	XMVECTOR trackUpDownAngleVel;
+	XMVECTOR forceCameraDirVel;					//カメラの前後左右の向きを強制的に指定する
 	//カメラ----------------------------------------------------------------
 
 	//カメラ挙動の確認

@@ -232,6 +232,25 @@ void GameScene::Input()
 	//線演出確認--------------------------
 
 
+	if (input->InputState(DIK_UP))
+	{
+
+	}
+	if (input->InputState(DIK_DOWN))
+	{
+
+	}
+	if (input->InputState(DIK_LEFT))
+	{
+		forceCameraDirVel.m128_f32[0] += -1.0f;
+		forceCameraDirVel.m128_f32[1] += -1.0f;
+	}
+	if (input->InputState(DIK_RIGHT))
+	{
+		forceCameraDirVel.m128_f32[0] += 1.0f;
+		forceCameraDirVel.m128_f32[1] += 1.0f;
+	}
+
 
 	XMVECTOR vel = {};
 	XMVECTOR verticalVel = {};
@@ -275,6 +294,8 @@ void GameScene::Input()
 		-90.0f + 30 * -cursorValue.m128_f32[0],
 		-90.0f + 30 * -cursorValue.m128_f32[0]
 	};
+
+
 }
 
 void GameScene::Update()
@@ -292,6 +313,8 @@ void GameScene::Update()
 	ImGui::InputFloat("Central2X", &centralPos2.m128_f32[0]);
 	ImGui::InputFloat("Central2Y", &centralPos2.m128_f32[1]);
 	ImGui::InputFloat("Central2Z", &centralPos2.m128_f32[2]);
+	ImGui::InputFloat("forceCameraDirVel0", &forceCameraDirVel.m128_f32[0]);
+	ImGui::InputFloat("forceCameraDirVel1", &forceCameraDirVel.m128_f32[1]);
 	ImGui::InputFloat("R", &r);
 	ImGui::InputFloat("R2", &r2);
 	ImGui::Text("leftRightAngleVel:X%f,Y:%f", leftRightAngleVel.m128_f32[0], leftRightAngleVel.m128_f32[1]);
@@ -335,9 +358,9 @@ void GameScene::Update()
 	//左右の回転
 	besidePoly->data.transform.pos =
 	{
-		cosf(KazMath::AngleToRadian(trackLeftRightAngleVel.m128_f32[0])) * r,
+		cosf(KazMath::AngleToRadian(trackLeftRightAngleVel.m128_f32[0] + forceCameraDirVel.m128_f32[0])) * r,
 		0.0f,
-		sinf(KazMath::AngleToRadian(trackLeftRightAngleVel.m128_f32[1])) * r
+		sinf(KazMath::AngleToRadian(trackLeftRightAngleVel.m128_f32[1] + forceCameraDirVel.m128_f32[1])) * r
 	};
 	//上下の回転
 	verticlaPoly->data.transform.pos =
