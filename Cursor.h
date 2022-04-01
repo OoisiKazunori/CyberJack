@@ -26,6 +26,7 @@ public:
 
 	const XMVECTOR &GetValue();
 
+	XMVECTOR honraiCursorPos;
 	XMVECTOR cursorPos;
 	XMVECTOR vel;
 	Ray hitBox;
@@ -49,6 +50,8 @@ private:
 	short flameHandle;
 	
 	float speed;
+	XMVECTOR knockBackVal;	//”½“]ˆÚ“®—p‚ÌˆÚ“®—Ê
 	XMVECTOR oldPos;
+	XMVECTOR oldVel;
 };
 

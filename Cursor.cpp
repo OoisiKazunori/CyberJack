@@ -1,5 +1,6 @@
 #include "Cursor.h"
 #include"../KazLibrary/Helper/ResourceFilePass.h"
+#include"../KazLibrary/Imgui/MyImgui.h"
 
 Cursor::Cursor()
 {
@@ -9,7 +10,7 @@ Cursor::Cursor()
 	cursorFlameTex.reset(new Sprite2DRender);
 	numberTex.reset(new Sprite2DRender);
 
-	speed = 15.0f;
+	speed = 10.0f;
 	flameHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::CursorPath + "CursorBase.png");
 	cursorFlameTex->data.handle = flameHandle;
 	cursorFlameTex->data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
@@ -62,6 +63,15 @@ void Cursor::Input(bool UP_FLAG, bool DOWN_FLAG, bool LEFT_FLAG, bool RIGHT_FLAG
 
 void Cursor::Update()
 {
+	ImGui::Begin("Curosr");
+	ImGui::InputFloat("Speed", &speed);
+	ImGui::Text("KnockBackValX%f", knockBackVal.m128_f32[0]);
+	ImGui::Text("KnockBackValY%f", knockBackVal.m128_f32[1]);
+	ImGui::End();
+
+
+
+
 	//最大値固定
 	if (LOCKON_MAX_NUM <= lockOnNum)
 	{
@@ -112,41 +122,88 @@ void Cursor::Update()
 	if (leftFlag)
 	{
 		vel.m128_f32[0] = -speed;
+		knockBackVal.m128_f32[0] += 1.0f;
 	}
 	if (rightFlag)
 	{
 		vel.m128_f32[0] = speed;
+		knockBackVal.m128_f32[0] += 1.0f;
 	}
 
 	if (upFlag)
 	{
 		vel.m128_f32[1] = -speed;
+		knockBackVal.m128_f32[1] += 1.0f;
 	}
 	if (downFlag)
 	{
 		vel.m128_f32[1] = speed;
+		knockBackVal.m128_f32[1] += 1.0f;
+	}
+
+	//ノックバックの制限
+	if (30.0f <= knockBackVal.m128_f32[0])
+	{
+		knockBackVal.m128_f32[0] = 500.0f;
+	}
+	if (30.0f <= knockBackVal.m128_f32[1])
+	{
+		knockBackVal.m128_f32[1] = 500.0f;
+	}
+
+	//ノックバックの処理
+	if (!leftFlag && !rightFlag)
+	{
+		if (signbit(oldVel.m128_f32[0]))
+		{
+			vel.m128_f32[0] = knockBackVal.m128_f32[0];
+		}
+		else
+		{
+			vel.m128_f32[0] = -knockBackVal.m128_f32[0];
+		}
+		knockBackVal.m128_f32[0] = 0.0f;
 	}
 
 
-	cursorPos += vel;
-	if (cursorPos.m128_f32[0] < 0.0f)
+	if (!upFlag && !downFlag)
 	{
-		cursorPos.m128_f32[0] = 0.0f;
-	}
-	if (WIN_X < cursorPos.m128_f32[0])
-	{
-		cursorPos.m128_f32[0] = WIN_X;
-	}
-
-	if (cursorPos.m128_f32[1] < 0.0f)
-	{
-		cursorPos.m128_f32[1] = 0.0f;
-	}
-	if (WIN_Y < cursorPos.m128_f32[1])
-	{
-		cursorPos.m128_f32[1] = WIN_Y;
+		if (signbit(oldVel.m128_f32[1]))
+		{
+			vel.m128_f32[1] = knockBackVal.m128_f32[1];
+		}
+		else
+		{
+			vel.m128_f32[1] = -knockBackVal.m128_f32[1];
+		}
+		knockBackVal.m128_f32[1] = 0.0f;
 	}
 
+	honraiCursorPos += vel;
+	oldVel = vel;
+
+	if (honraiCursorPos.m128_f32[0] < 0.0f)
+	{
+		honraiCursorPos.m128_f32[0] = 0.0f;
+	}
+	if (WIN_X < honraiCursorPos.m128_f32[0])
+	{
+		honraiCursorPos.m128_f32[0] = WIN_X;
+	}
+
+	if (honraiCursorPos.m128_f32[1] < 0.0f)
+	{
+		honraiCursorPos.m128_f32[1] = 0.0f;
+	}
+	if (WIN_Y < honraiCursorPos.m128_f32[1])
+	{
+		honraiCursorPos.m128_f32[1] = WIN_Y;
+	}
+
+
+	//補間
+	XMVECTOR distance = honraiCursorPos - cursorPos;
+	cursorPos += distance * 0.1f;
 
 	cursorFlameTex->data.transform.pos = { cursorPos.m128_f32[0],cursorPos.m128_f32[1] };
 	numberTex->data.transform.pos = { cursorPos.m128_f32[0],cursorPos.m128_f32[1] };
