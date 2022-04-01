@@ -2,6 +2,9 @@
 #include"../KazLibrary/Helper/ResourceFilePass.h"
 #include"../KazLibrary/Imgui/MyImgui.h"
 
+XMFLOAT2 Cursor::KOCKBACK_MAX_VALUE = { 300.0f,300.0f };
+XMFLOAT2 Cursor::KOCKBACK_VELOCITY = { 9.0f,9.0f };
+
 Cursor::Cursor()
 {
 	enableLockOnTimer = 0;
@@ -65,6 +68,10 @@ void Cursor::Update()
 {
 	ImGui::Begin("Curosr");
 	ImGui::InputFloat("Speed", &speed);
+	ImGui::InputFloat("KOCKBACK_MAX_VALUE_X", &KOCKBACK_MAX_VALUE.x);
+	ImGui::InputFloat("KOCKBACK_MAX_VALUE_Y", &KOCKBACK_MAX_VALUE.y);
+	ImGui::InputFloat("KOCKBACK_VELOCITY_X", &KOCKBACK_VELOCITY.x);
+	ImGui::InputFloat("KOCKBACK_VELOCITY_Y", &KOCKBACK_VELOCITY.y);
 	ImGui::Text("KnockBackValX%f", knockBackVal.m128_f32[0]);
 	ImGui::Text("KnockBackValY%f", knockBackVal.m128_f32[1]);
 	ImGui::End();
@@ -122,33 +129,33 @@ void Cursor::Update()
 	if (leftFlag)
 	{
 		vel.m128_f32[0] = -speed;
-		knockBackVal.m128_f32[0] += 1.0f;
+		knockBackVal.m128_f32[0] += KOCKBACK_VELOCITY.x;
 	}
 	if (rightFlag)
 	{
 		vel.m128_f32[0] = speed;
-		knockBackVal.m128_f32[0] += 1.0f;
+		knockBackVal.m128_f32[0] += KOCKBACK_VELOCITY.x;
 	}
 
 	if (upFlag)
 	{
 		vel.m128_f32[1] = -speed;
-		knockBackVal.m128_f32[1] += 1.0f;
+		knockBackVal.m128_f32[1] += KOCKBACK_VELOCITY.y;
 	}
 	if (downFlag)
 	{
 		vel.m128_f32[1] = speed;
-		knockBackVal.m128_f32[1] += 1.0f;
+		knockBackVal.m128_f32[1] += KOCKBACK_VELOCITY.y;
 	}
 
 	//ノックバックの制限
-	if (30.0f <= knockBackVal.m128_f32[0])
+	if (KOCKBACK_MAX_VALUE.x <= knockBackVal.m128_f32[0])
 	{
-		knockBackVal.m128_f32[0] = 500.0f;
+		knockBackVal.m128_f32[0] = KOCKBACK_MAX_VALUE.x;
 	}
-	if (30.0f <= knockBackVal.m128_f32[1])
+	if (KOCKBACK_MAX_VALUE.y <= knockBackVal.m128_f32[1])
 	{
-		knockBackVal.m128_f32[1] = 500.0f;
+		knockBackVal.m128_f32[1] = KOCKBACK_MAX_VALUE.y;
 	}
 
 	//ノックバックの処理

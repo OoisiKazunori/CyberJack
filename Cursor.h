@@ -50,8 +50,14 @@ private:
 	short flameHandle;
 	
 	float speed;
-	XMVECTOR knockBackVal;	//反転移動用の移動量
 	XMVECTOR oldPos;
 	XMVECTOR oldVel;
+
+
+	//ノックバック挙動-----------------------
+	XMVECTOR knockBackVal;	//反転移動用の移動量
+	static XMFLOAT2 KOCKBACK_MAX_VALUE;	//ノックバックの最大量(constにする)
+	static XMFLOAT2 KOCKBACK_VELOCITY;		//ノックバックの加算量
+	//ノックバック挙動-----------------------
 };
 
