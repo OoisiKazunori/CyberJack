@@ -188,22 +188,33 @@ void GameScene::Input()
 	bool leftFlag = false;
 	bool rightFlag = false;
 
-	if (inputController->InputStickState(LEFT_STICK, UP_SIDE))
+	const int DEAD_ZONE = 3000;
+	if (inputController->InputStickState(LEFT_STICK, UP_SIDE, DEAD_ZONE))
 	{
 		upFlag = true;
 	}
-	if (inputController->InputStickState(LEFT_STICK, DOWN_SIDE))
+	if (inputController->InputStickState(LEFT_STICK, DOWN_SIDE, DEAD_ZONE))
 	{
 		downFlag = true;
 	}
-	if (inputController->InputStickState(LEFT_STICK, LEFT_SIDE))
+	if (inputController->InputStickState(LEFT_STICK, LEFT_SIDE, DEAD_ZONE))
 	{
 		leftFlag = true;
 	}
-	if (inputController->InputStickState(LEFT_STICK, RIGHT_SIDE))
+	if (inputController->InputStickState(LEFT_STICK, RIGHT_SIDE, DEAD_ZONE))
 	{
 		rightFlag = true;
 	}
+
+	if (!upFlag && !downFlag && !leftFlag && !rightFlag)
+	{
+		bool debug = false;
+	}
+
+	XMFLOAT2 joyStick;
+	joyStick.x = inputController->GetJoyStickLXNum(0) / 32767.0f;
+	joyStick.y = inputController->GetJoyStickLYNum(0) / 32767.0f;
+	float angle = -atan2(joyStick.y, joyStick.x);
 
 
 	cursor.Input
@@ -213,7 +224,8 @@ void GameScene::Input()
 		leftFlag,
 		rightFlag,
 		input->InputState(DIK_RETURN),
-		input->InputRelease(DIK_RETURN)
+		input->InputRelease(DIK_RETURN),
+		angle
 	);
 
 
@@ -252,6 +264,25 @@ void GameScene::Input()
 		forceCameraDirVel.m128_f32[0] += 1.0f;
 
 	}
+
+
+	if (input->InputState(DIK_1))
+	{
+		forceCameraDirVel.m128_f32[0] = 0.0f;
+	}
+	if (input->InputState(DIK_2))
+	{
+		forceCameraDirVel.m128_f32[0] = -90.0f;
+	}
+	if (input->InputState(DIK_3))
+	{
+		forceCameraDirVel.m128_f32[0] = -180.0f;
+	}
+	if (input->InputState(DIK_4))
+	{
+		forceCameraDirVel.m128_f32[0] = -270.0f;
+	}
+
 
 
 	XMVECTOR vel = {};
@@ -293,8 +324,8 @@ void GameScene::Input()
 	};
 	leftRightAngleVel =
 	{
-		-90.0f + mulValue2.x * -cursorValue.m128_f32[0],
-		-90.0f + mulValue2.y * -cursorValue.m128_f32[0]
+		forceCameraDirVel.m128_f32[0] + mulValue2.x * -cursorValue.m128_f32[0],
+		forceCameraDirVel.m128_f32[0] + mulValue2.y * -cursorValue.m128_f32[0]
 	};
 
 
@@ -367,9 +398,9 @@ void GameScene::Update()
 	//左右の回転
 	besidePoly->data.transform.pos =
 	{
-		cosf(KazMath::AngleToRadian(trackLeftRightAngleVel.m128_f32[0] + forceCameraDirVel.m128_f32[0])) * r,
+		cosf(KazMath::AngleToRadian(trackLeftRightAngleVel.m128_f32[0])) * r,
 		0.0f,
-		sinf(KazMath::AngleToRadian(trackLeftRightAngleVel.m128_f32[1] + forceCameraDirVel.m128_f32[0])) * r
+		sinf(KazMath::AngleToRadian(trackLeftRightAngleVel.m128_f32[1])) * r
 	};
 	//上下の回転
 	verticlaPoly->data.transform.pos =
@@ -402,7 +433,7 @@ void GameScene::Update()
 			limitValue = 2.0f;
 		}
 
-		honraiPlayerCameraPos.m128_f32[0] = 0.0f + 2.0f * -cursor.GetValue().m128_f32[0];
+		honraiPlayerCameraPos.m128_f32[0] = 0.0f + (2.0f * -cursor.GetValue().m128_f32[0]);
 		honraiPlayerCameraPos.m128_f32[2] = 0.0f + (limitValue * cursor.GetValue().m128_f32[1]) * mul;
 
 

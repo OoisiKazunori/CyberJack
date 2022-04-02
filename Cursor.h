@@ -9,7 +9,7 @@ public:
 	Cursor();
 
 	void Init();
-	void Input(bool UP_FLAG, bool DOWN_FLAG, bool LEFT_FLAG, bool RIGHT_FLAG, bool DONE_FLAG,bool RELEASE_FLAG);
+	void Input(bool UP_FLAG, bool DOWN_FLAG, bool LEFT_FLAG, bool RIGHT_FLAG, bool DONE_FLAG, bool RELEASE_FLAG, float ANGLE);
 	void Update();
 	void Draw();
 
@@ -42,6 +42,7 @@ private:
 
 	//移動----------------------------------------------------------------
 	bool upFlag, downFlag, leftFlag, rightFlag,doneFlag;
+	float stickAngle;
 
 
 	//画像----------------------------------------------------------------
@@ -56,8 +57,10 @@ private:
 
 	//ノックバック挙動-----------------------
 	XMVECTOR knockBackVal;	//反転移動用の移動量
-	static XMFLOAT2 KOCKBACK_MAX_VALUE;	//ノックバックの最大量(constにする)
-	static XMFLOAT2 KOCKBACK_VELOCITY;		//ノックバックの加算量
+	static XMFLOAT2 KOCKBACK_MAX_VALUE;		//ノックバックの最大量(値が決まったらconstにする)
+	static XMFLOAT2 KOCKBACK_VELOCITY;		//ノックバックの加算量(値が決まったらconstにする)
+	XMINT2 noTochFlag;
+	XMINT2 noTockTimer;
 	//ノックバック挙動-----------------------
 };
 

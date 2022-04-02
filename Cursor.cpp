@@ -2,8 +2,8 @@
 #include"../KazLibrary/Helper/ResourceFilePass.h"
 #include"../KazLibrary/Imgui/MyImgui.h"
 
-XMFLOAT2 Cursor::KOCKBACK_MAX_VALUE = { 300.0f,300.0f };
-XMFLOAT2 Cursor::KOCKBACK_VELOCITY = { 9.0f,9.0f };
+XMFLOAT2 Cursor::KOCKBACK_MAX_VALUE = { 200.0f,200.0f };
+XMFLOAT2 Cursor::KOCKBACK_VELOCITY = { 5.0f,5.0f };
 
 Cursor::Cursor()
 {
@@ -54,7 +54,7 @@ void Cursor::Init()
 
 }
 
-void Cursor::Input(bool UP_FLAG, bool DOWN_FLAG, bool LEFT_FLAG, bool RIGHT_FLAG, bool DONE_FLAG, bool RELEASE_FLAG)
+void Cursor::Input(bool UP_FLAG, bool DOWN_FLAG, bool LEFT_FLAG, bool RIGHT_FLAG, bool DONE_FLAG, bool RELEASE_FLAG, float ANGLE)
 {
 	upFlag = UP_FLAG;
 	downFlag = DOWN_FLAG;
@@ -62,6 +62,9 @@ void Cursor::Input(bool UP_FLAG, bool DOWN_FLAG, bool LEFT_FLAG, bool RIGHT_FLAG
 	rightFlag = RIGHT_FLAG;
 	doneFlag = DONE_FLAG;
 	releaseFlag = RELEASE_FLAG;
+
+
+	stickAngle = ANGLE;
 }
 
 void Cursor::Update()
@@ -74,6 +77,7 @@ void Cursor::Update()
 	ImGui::InputFloat("KOCKBACK_VELOCITY_Y", &KOCKBACK_VELOCITY.y);
 	ImGui::Text("KnockBackValX%f", knockBackVal.m128_f32[0]);
 	ImGui::Text("KnockBackValY%f", knockBackVal.m128_f32[1]);
+	ImGui::Text("stickAngle%f", stickAngle);
 	ImGui::End();
 
 
@@ -126,26 +130,33 @@ void Cursor::Update()
 	vel = { 0.0f,0.0f,0.0f };
 
 
+
+
+
 	if (leftFlag)
 	{
 		vel.m128_f32[0] = -speed;
 		knockBackVal.m128_f32[0] += KOCKBACK_VELOCITY.x;
+		noTochFlag.x = 1;
 	}
 	if (rightFlag)
 	{
 		vel.m128_f32[0] = speed;
 		knockBackVal.m128_f32[0] += KOCKBACK_VELOCITY.x;
+		noTochFlag.x = 1;
 	}
 
 	if (upFlag)
 	{
 		vel.m128_f32[1] = -speed;
 		knockBackVal.m128_f32[1] += KOCKBACK_VELOCITY.y;
+		noTochFlag.y = 1;
 	}
 	if (downFlag)
 	{
 		vel.m128_f32[1] = speed;
 		knockBackVal.m128_f32[1] += KOCKBACK_VELOCITY.y;
+		noTochFlag.y = 1;
 	}
 
 	//ノックバックの制限
@@ -158,8 +169,40 @@ void Cursor::Update()
 		knockBackVal.m128_f32[1] = KOCKBACK_MAX_VALUE.y;
 	}
 
-	//ノックバックの処理
+
+	if (!upFlag && !downFlag)
+	{
+		noTochFlag.y = 0;
+	}
 	if (!leftFlag && !rightFlag)
+	{
+		noTochFlag.x = 0;
+	}
+
+	if (!noTochFlag.x)
+	{
+		++noTockTimer.x;
+	}
+	else
+	{
+		noTockTimer.x = 0;
+		oldVel.m128_f32[0] = vel.m128_f32[0];
+	}
+
+
+	if (!noTochFlag.y)
+	{
+		++noTockTimer.y;
+	}
+	else
+	{
+		noTockTimer.y = 0;
+		oldVel.m128_f32[1] = vel.m128_f32[1];
+	}
+
+
+	//ノックバックの処理
+	if (5 <= noTockTimer.x&&false)
 	{
 		if (signbit(oldVel.m128_f32[0]))
 		{
@@ -171,9 +214,7 @@ void Cursor::Update()
 		}
 		knockBackVal.m128_f32[0] = 0.0f;
 	}
-
-
-	if (!upFlag && !downFlag)
+	if (5 <= noTockTimer.y&&false)
 	{
 		if (signbit(oldVel.m128_f32[1]))
 		{
@@ -187,8 +228,9 @@ void Cursor::Update()
 	}
 
 	honraiCursorPos += vel;
-	oldVel = vel;
 
+
+	//画面外から出ないようにする処理
 	if (honraiCursorPos.m128_f32[0] < 0.0f)
 	{
 		honraiCursorPos.m128_f32[0] = 0.0f;
@@ -210,7 +252,7 @@ void Cursor::Update()
 
 	//補間
 	XMVECTOR distance = honraiCursorPos - cursorPos;
-	cursorPos += distance * 0.1f;
+	cursorPos += distance * 0.5f;
 
 	cursorFlameTex->data.transform.pos = { cursorPos.m128_f32[0],cursorPos.m128_f32[1] };
 	numberTex->data.transform.pos = { cursorPos.m128_f32[0],cursorPos.m128_f32[1] };
