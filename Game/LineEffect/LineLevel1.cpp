@@ -139,6 +139,10 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 {
 	if (!initFlag)
 	{
+		limitPos.clear();
+		line.clear();
+		limitPolygon.clear();
+
 #pragma region ゴール座標算出
 
 		//ゴール座標算出を開始----------------------------------------------------------------

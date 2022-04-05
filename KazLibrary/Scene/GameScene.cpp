@@ -29,7 +29,7 @@ void GameScene::Init()
 	responeData[0][0].enemyType = 0;
 	responeData[0][0].layerLevel = 0;
 	responeData[0][0].flame = 360;
-	responeData[0][0].initPos = { 0.0f,10.0f,20.0f };
+	responeData[0][0].initPos = { 0.0f,10.0f,100.0f };
 
 	//敵を纏めて生成する処理----------------------------------------------------------------
 	for (int enemyType = 0; enemyType < responeData.size(); ++enemyType)
@@ -185,6 +185,8 @@ void GameScene::Input()
 	bool downFlag = false;
 	bool leftFlag = false;
 	bool rightFlag = false;
+	bool doneFlag = false;
+	bool releaseFlag = false;
 
 	const int DEAD_ZONE = 3000;
 	if (inputController->InputStickState(LEFT_STICK, UP_SIDE, DEAD_ZONE))
@@ -203,6 +205,16 @@ void GameScene::Input()
 	{
 		rightFlag = true;
 	}
+	if (inputController->InputState(XINPUT_GAMEPAD_A))
+	{
+		doneFlag = true;
+	}
+	if (inputController->InputRelease(XINPUT_GAMEPAD_A))
+	{
+		releaseFlag = true;
+	}
+
+
 
 	if (!upFlag && !downFlag && !leftFlag && !rightFlag)
 	{
@@ -221,8 +233,8 @@ void GameScene::Input()
 		downFlag,
 		leftFlag,
 		rightFlag,
-		input->InputState(DIK_RETURN),
-		input->InputRelease(DIK_RETURN),
+		doneFlag,
+		releaseFlag,
 		angle
 	);
 
@@ -231,15 +243,14 @@ void GameScene::Input()
 	//線演出確認--------------------------
 	if (input->InputState(DIK_RETURN))
 	{
-		lineLevel.Attack2(player.pos, testEnemyPos, {});
 	}
 	if (input->InputState(DIK_K))
 	{
-		lineLevel.ReleaseShot();
+		//lineLevel.ReleaseShot();
 	}
 	if (input->InputTrigger(DIK_L))
 	{
-		lineLevel.Release();
+		//lineLevel.Release();
 	}
 	//線演出確認--------------------------
 
@@ -533,7 +544,8 @@ void GameScene::Update()
 				//ロックオン判定
 				bool enableToLockOnNumFlag = cursor.LockOn();
 				bool enableToLockOnEnemyFlag = enemies[enemyType][enemyCount]->AliveOrNot() && !enemies[enemyType][enemyCount]->LockedOrNot();
-				if (CollisionManager::Instance()->CheckRayAndSphere(cursor.hitBox, enemyData->hitBox) &&
+				bool hitFlag = CollisionManager::Instance()->CheckRayAndSphere(cursor.hitBox, enemyData->hitBox);
+				if (hitFlag &&
 					enableToLockOnNumFlag &&
 					enableToLockOnEnemyFlag)
 				{
@@ -541,7 +553,20 @@ void GameScene::Update()
 					cursor.Count();
 					//敵が当たった情報を書く
 					enemies[enemyType][enemyCount]->Hit();
+
 					//線演出をかける際にどの配列を使用するか決める
+					for (int i = 0; i < lineEffectArrayData.size(); ++i)
+					{
+						if (!lineEffectArrayData[i].usedFlag)
+						{
+							lineLevel[i].Attack2(player.pos, *enemyData->hitBox.center, {});
+							lineEffectArrayData[i].usedFlag = true;
+							lineEffectArrayData[i].lineIndex = i;
+							lineEffectArrayData[i].enemyTypeIndex = enemyType;
+							lineEffectArrayData[i].enemyIndex = enemyCount;
+							break;
+						}
+					}
 				}
 
 				//敵が生きている&&ロックオンできる回数が0以下&&ロックオン入力がリリースされた時、敵は死亡する
@@ -561,9 +586,39 @@ void GameScene::Update()
 	cursor.Update();
 	hitBox.Update();
 
-	lineLevel.CalucurateDistance(player.pos, testEnemyPos);
-	lineLevel.playerPos = player.pos;
-	lineLevel.Update();
+	//ロックオンのリリース処理
+	if (cursor.releaseFlag)
+	{
+		for (int i = 0; i < lineEffectArrayData.size(); ++i)
+		{
+			if (lineEffectArrayData[i].usedFlag)
+			{
+				int lineIndex = lineEffectArrayData[i].lineIndex;
+				lineLevel[lineIndex].ReleaseShot();
+				lineEffectArrayData[i].Reset();
+			}
+		}
+	}
+
+	//ロックオン中に必要なデータ
+	for (int i = 0; i < lineEffectArrayData.size(); ++i)
+	{
+		if (lineEffectArrayData[i].usedFlag)
+		{
+			int lineIndex = lineEffectArrayData[i].lineIndex;
+			int enemyTypeIndex = lineEffectArrayData[i].enemyTypeIndex;
+			int enemyIndex = lineEffectArrayData[i].enemyIndex;
+			XMVECTOR pos = *enemies[enemyTypeIndex][enemyIndex]->GetData()->hitBox.center;
+			lineLevel[lineIndex].CalucurateDistance(player.pos, pos);
+		}
+	}
+
+
+	for (int i = 0; i < lineLevel.size(); ++i)
+	{
+		lineLevel[i].playerPos = player.pos;
+		lineLevel[i].Update();
+	}
 
 	//敵の更新処理
 	for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
@@ -591,7 +646,10 @@ void GameScene::Draw()
 {
 	bg.Draw();
 	player.Draw();
-	lineLevel.Draw();
+	for (int i = 0; i < lineLevel.size(); ++i)
+	{
+		lineLevel[i].Draw();
+	}
 	cursor.Draw();
 	//hitBox.Draw();
 	testEnemyPoly->Draw();
@@ -609,7 +667,7 @@ void GameScene::Draw()
 			bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
 			if (enableToUseDataFlag)
 			{
-				//enemies[enemyType][enemyCount]->Draw();
+				enemies[enemyType][enemyCount]->Draw();
 			}
 		}
 	}

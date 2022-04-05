@@ -63,7 +63,6 @@ void Cursor::Input(bool UP_FLAG, bool DOWN_FLAG, bool LEFT_FLAG, bool RIGHT_FLAG
 	doneFlag = DONE_FLAG;
 	releaseFlag = RELEASE_FLAG;
 
-
 	stickAngle = ANGLE;
 }
 

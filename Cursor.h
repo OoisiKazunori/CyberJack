@@ -31,14 +31,13 @@ public:
 	XMVECTOR vel;
 	Ray hitBox;
 	XMINT2 stopFlag;
+	bool releaseFlag;
 private:
 	//ロックオン数----------------------------------------------------------------
 	static const int LOCKON_MAX_NUM = 8;	//最大ロックオン数
 	int lockOnNum;							//現在のロックオン数
 	bool notEnableLockOnFlag;
 	int enableLockOnTimer;
-
-	bool releaseFlag;
 
 	//移動----------------------------------------------------------------
 	bool upFlag, downFlag, leftFlag, rightFlag,doneFlag;

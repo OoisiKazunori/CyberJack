@@ -327,6 +327,8 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstanceColorGetShadowVertexShader.hlsl", "VSmain", "vs_5_0", SHADER_VERTEX_INSTANCE_COLOR_GET_SHADOWMAP);
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorGetShadowPixelShader.hlsl", "PSmain", "ps_5_0", SHADER_PIXCEL_INSTANCE_COLOR_GET_SHADOW);
 
+	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineUvPixelShader.hlsl", "PSmain", "ps_5_0", SHADER_PIXCEL_LINE_UV);
+
 	//コンピュートシェーダーのコンパイル
 	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "TestComputeShader.hlsl", "CSmain", "cs_5_0", SHADER_COMPUTE_TEST);
 
@@ -984,6 +986,15 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_LINE
 	);
 
+	//Lineパイプライン(uv付き)
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS_TEX,
+		SHADER_VERTEX_SPRITE,
+		SHADER_PIXCEL_LINE_UV,
+		PIPELINE_DATA_NOCARING_ALPHABLEND_LINE,
+		ROOTSIGNATURE_DATA_DRAW_DATA1,
+		PIPELINE_NAME_LINE_UV
+	);
 
 	//ライト
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(

@@ -7,7 +7,7 @@
 
 struct InputLayOutData
 {
-	D3D12_INPUT_ELEMENT_DESC* inputLayOut;
+	D3D12_INPUT_ELEMENT_DESC *inputLayOut;
 	UINT size;
 };
 
@@ -107,6 +107,7 @@ enum PixcelShaderNames
 	SHADER_PIXCEL_INSTANCE_OBJ,
 	SHADER_PIXCEL_INSTANCE_COLOR,
 	SHADER_PIXCEL_INSTANCE_COLOR_GET_SHADOW,
+	SHADER_PIXCEL_LINE_UV,
 	SHADER_PIXCEL_INSTANCE_GET_SHADOWMAP,
 	SHADER_PIXCEL_INSTANCE_OBJ_EXPANTION,
 	SHADER_PIXCEL_MAX
@@ -175,6 +176,7 @@ enum PipeLineNames
 	PIPELINE_NAME_INSTANCE_OBJ_GET_SHADOWMAP,
 	PIPELINE_NAME_INSTANCE_OBJ_EXPANTION_VERTEX,
 	PIPELINE_NAME_INSTANCE_COLOR_GET_SHADOWMAP,
+	PIPELINE_NAME_LINE_UV,
 	PIPELINE_MAX
 };
 
@@ -296,7 +298,7 @@ private:
 	vector<RootSignatureMode> RootSignatureName;
 	vector<D3D12_GRAPHICS_PIPELINE_STATE_DESC> PipeLineDataRegisterData;
 	vector<ComPtr<ID3D12PipelineState>> PipeLineRegisterData;
-	
+
 	vector<ComPtr<ID3DBlob>> ComputeShaderRegisterData;
 	vector<D3D12_COMPUTE_PIPELINE_STATE_DESC> computePipeLineDataRegisterData;
 	vector<ComPtr<ID3D12PipelineState>> ComputePipeLineRegisterData;

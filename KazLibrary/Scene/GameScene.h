@@ -22,6 +22,22 @@ struct ResponeData
 	XMVECTOR initPos;	//初期座標
 };
 
+struct LineEffectData
+{
+	bool usedFlag;
+	int lineIndex;
+	int enemyTypeIndex;
+	int enemyIndex;
+
+	void Reset()
+	{
+		usedFlag = false;
+		lineIndex = -1;
+		enemyTypeIndex = -1;
+		enemyIndex = -1;
+	}
+};
+
 enum eEnemyType
 {
 	ENEMY_TYPE_NONE = -1,
@@ -103,7 +119,8 @@ private:
 
 
 	//線演出----------------------------------------------------------------
-	LineLevel1 lineLevel;			//直角に敵に線を伸ばしていく演出
+	array<LineLevel1, 8> lineLevel;			//直角に敵に線を伸ばしていく演出
+	array<LineEffectData, 8>lineEffectArrayData;
 	XMVECTOR testEnemyPos;			//ロックオンする対象座標(テスト)
 	BoxPolygonRenderPtr testEnemyPoly;			//ロックオンする対象描画(テスト)
 	//線演出----------------------------------------------------------------
