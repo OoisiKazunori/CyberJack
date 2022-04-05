@@ -246,26 +246,7 @@ void GameScene::Input()
 	//線演出確認--------------------------
 
 
-	if (input->InputState(DIK_UP))
-	{
-		forceCameraDirVel.m128_f32[1] += -1.0f;
-	}
-	if (input->InputState(DIK_DOWN))
-	{
-		forceCameraDirVel.m128_f32[1] += 1.0f;
-	}
-	if (input->InputState(DIK_LEFT))
-	{
-		forceCameraDirVel.m128_f32[0] += -1.0f;
-
-	}
-	if (input->InputState(DIK_RIGHT))
-	{
-		forceCameraDirVel.m128_f32[0] += 1.0f;
-
-	}
-
-
+	//カメラの前後左右強制に向かせる処理
 	if (input->InputState(DIK_1))
 	{
 		forceCameraDirVel.m128_f32[0] = 0.0f;
