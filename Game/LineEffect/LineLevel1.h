@@ -60,6 +60,7 @@ public:
 
 	bool allFinishFlag;
 	bool initFlag;
+	XMVECTOR playerPos;
 private:
 	vector<XMVECTOR> limitPos;
 	vector<BoxPolygonRenderPtr> limitPolygon;

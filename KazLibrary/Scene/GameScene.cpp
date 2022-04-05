@@ -126,48 +126,46 @@ void GameScene::Input()
 	ControllerInputManager *inputController = ControllerInputManager::Instance();
 
 #pragma region カメラ操作
-	//debugCameraMove = { 0,0,0 };
-	//float debugSpeed = 1;
-	////�J�����ړ�
-	//if (input->InputState(DIK_D))
-	//{
-	//	debugCameraMove.x = -debugSpeed;
-	//}
-	//if (input->InputState(DIK_A))
-	//{
-	//	debugCameraMove.x = debugSpeed;
-	//}
-	//if (input->InputState(DIK_W))
-	//{
-	//	//y�Ȃ̂ɑO�ɐi��....
-	//	debugCameraMove.y = debugSpeed;
-	//}
-	//if (input->InputState(DIK_S))
-	//{
-	//	debugCameraMove.y = -debugSpeed;
-	//}
+	debugCameraMove = { 0,0,0 };
+	float debugSpeed = 1;
+	//�J�����ړ�
+	if (input->InputState(DIK_D))
+	{
+		debugCameraMove.x = -debugSpeed;
+	}
+	if (input->InputState(DIK_A))
+	{
+		debugCameraMove.x = debugSpeed;
+	}
+	if (input->InputState(DIK_W))
+	{
+		//y�Ȃ̂ɑO�ɐi��....
+		debugCameraMove.y = debugSpeed;
+	}
+	if (input->InputState(DIK_S))
+	{
+		debugCameraMove.y = -debugSpeed;
+	}
 
 
-	////�J�����p�x
-	//if (input->InputState(DIK_RIGHTARROW))
-	//{
-	//	angle.x += debugSpeed;
-	//}
-	//if (input->InputState(DIK_LEFTARROW))
-	//{
-	//	angle.x += -debugSpeed;
-	//}
+	//�J�����p�x
+	if (input->InputState(DIK_RIGHTARROW))
+	{
+		angle.x += debugSpeed;
+	}
+	if (input->InputState(DIK_LEFTARROW))
+	{
+		angle.x += -debugSpeed;
+	}
 
-	//if (input->InputState(DIK_UPARROW))
-	//{
-	//	angle.y += debugSpeed;
-	//}
-	//if (input->InputState(DIK_DOWNARROW))
-	//{
-	//	angle.y += -debugSpeed;
-	//}
-	//eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
-	//targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
+	if (input->InputState(DIK_UPARROW))
+	{
+		angle.y += debugSpeed;
+	}
+	if (input->InputState(DIK_DOWNARROW))
+	{
+		angle.y += -debugSpeed;
+	}
 
 #pragma endregion
 
@@ -434,8 +432,12 @@ void GameScene::Update()
 
 
 
-	eyePos = KazMath::LoadVecotrToXMFLOAT3(cameraPoly->data.transform.pos);
-	targetPos = KazMath::LoadVecotrToXMFLOAT3(baseTargetPos);
+	//eyePos = KazMath::LoadVecotrToXMFLOAT3(cameraPoly->data.transform.pos);
+	//targetPos = KazMath::LoadVecotrToXMFLOAT3(baseTargetPos);
+
+	//デバック用
+	eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
+	targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
 
 #pragma endregion
@@ -516,6 +518,7 @@ void GameScene::Update()
 
 
 #pragma region ロックオン
+	
 	for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
 	{
 		for (int enemyCount = 0; enemyCount < enemies[enemyType].size(); ++enemyCount)
@@ -559,6 +562,7 @@ void GameScene::Update()
 	hitBox.Update();
 
 	lineLevel.CalucurateDistance(player.pos, testEnemyPos);
+	lineLevel.playerPos = player.pos;
 	lineLevel.Update();
 
 	//敵の更新処理

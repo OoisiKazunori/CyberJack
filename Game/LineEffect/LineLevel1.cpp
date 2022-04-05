@@ -547,8 +547,8 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 			line[i].reset(new LineEffect);
 
 
-			XMVECTOR startPlayerdistance = limitPos[i]- PLAYER_POS;
-			XMVECTOR endPlayerdistance = limitPos[i + 1]- PLAYER_POS;
+			XMVECTOR startPlayerdistance = limitPos[i] - PLAYER_POS;
+			XMVECTOR endPlayerdistance = limitPos[i + 1] - PLAYER_POS;
 
 			line[i]->RockOn(limitPos[i], limitPos[i + 1], startPlayerdistance, endPlayerdistance);
 		}
@@ -627,13 +627,12 @@ void LineLevel1::Update()
 	{
 		//ロックオン中の挙動-----------------------
 		//敵とプレイヤーの距離　/ ロックオン時の距離　で割合を求める
-
-		//ロックオン中の挙動-----------------------
-
 		for (int i = 0; i < line.size(); ++i)
 		{
+			line[i]->playerPos = playerPos;
 			line[i]->MoveLine(distanceValue);
 		}
+		//ロックオン中の挙動-----------------------
 
 
 		line[0]->Update();

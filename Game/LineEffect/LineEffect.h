@@ -26,6 +26,7 @@ public:
 
 	bool finishRockOnFlag;
 	bool finishReleaseFlag;
+	XMVECTOR playerPos;
 private:
 	LineRenderPtr line;
 	Sprite3DRenderPtr circle;

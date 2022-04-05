@@ -52,27 +52,6 @@ void LineEffect::RockOn(const XMVECTOR &START_POS, const XMVECTOR &END_POS, cons
 		line->data.color = { color,color,color ,255.0f };
 		//234.0f,69.0f,50.0f
 
-		distance = endPos - startPos;
-
-		for (int i = 0; i < 3; ++i)
-		{
-			if (distance.m128_f32[i] != 0.0f)
-			{
-				rate = distance.m128_f32[i];
-				axis = i;
-				break;
-			}
-		}
-
-		minusFlag = signbit(rate);
-		rate = (float)fabs(rate);
-
-		if (rate <= 0)
-		{
-			rate = 1.0f;
-		}
-
-
 		line->data.startPos = startPos;
 		line->data.endPos = endPos;
 
@@ -113,21 +92,43 @@ void LineEffect::Finalize()
 
 void LineEffect::Update()
 {
-	XMVECTOR playerPos = { 0.0f,0.0f,0.0f };
 	startPos = playerPos + startPlayerDistance * value;
 	endPos = playerPos + endPlayerDistance * value;
 
 
-	//ロックオン処理
-	//if (rockOnFlag && !finishRockOnFlag)
+	distance = endPos - startPos;
+
+	for (int i = 0; i < 3; ++i)
 	{
+		if (distance.m128_f32[i] != 0.0f)
+		{
+			rate = distance.m128_f32[i];
+			axis = i;
+			break;
+		}
+	}
+	minusFlag = signbit(rate);
+	rate = (float)fabs(rate);
+	if (rate <= 0)
+	{
+		rate = 1.0f;
+	}
+
+
+	//ロックオン処理
+	if (rockOnFlag && !finishRockOnFlag)
+	{
+		//始点を初期化
 		line->data.startPos = startPos;
-		float tmp = (lockOnTime / rate) * rate;
+
+		//経過時間から線の伸ばす値を計算
+		float distance = (lockOnTime / rate) * rate;
 		if (minusFlag)
 		{
-			tmp *= -1;
+			distance *= -1;
 		}
-		line->data.endPos.m128_f32[axis] = startPos.m128_f32[axis] + tmp;
+		line->data.endPos = endPos;
+		line->data.endPos.m128_f32[axis] = startPos.m128_f32[axis] + distance;
 
 		if (lockOnTime < rate)
 		{
@@ -141,6 +142,11 @@ void LineEffect::Update()
 		}
 
 		circle->data.transform.pos = line->data.endPos;
+	}
+	else
+	{
+		line->data.startPos = startPos;
+		line->data.endPos = endPos;
 	}
 
 
@@ -165,7 +171,6 @@ void LineEffect::Update()
 			releaseCircleEffectFlag = true;
 		}
 	}
-
 
 	if (finishFlag)
 	{
