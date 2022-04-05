@@ -688,7 +688,7 @@ void LineLevel1::Draw()
 	{
 		for (int i = 0; i < limitPolygon.size(); i++)
 		{
-			limitPolygon[i]->Draw();
+			//limitPolygon[i]->Draw();
 		}
 
 		for (int i = 0; i < line.size(); i++)
