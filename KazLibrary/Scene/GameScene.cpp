@@ -426,7 +426,6 @@ void GameScene::Update()
 
 
 
-
 	eyePos = KazMath::LoadVecotrToXMFLOAT3(cameraPoly->data.transform.pos);
 	targetPos = KazMath::LoadVecotrToXMFLOAT3(baseTargetPos);
 
