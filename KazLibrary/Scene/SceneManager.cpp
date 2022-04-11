@@ -5,15 +5,17 @@
 #include"../Helper/ResourceFilePass.h"
 #include"../Buffer/DescriptorHeapMgr.h"
 #include"../Fps/FPSManager.h"
+#include"../Scene/ClassScene.h"
 
 
 SceneManager::SceneManager() {
 	scene.emplace_back(new TitleScene());
 	scene.emplace_back(new GameScene());
 	scene.emplace_back(new DebugScene());
+	scene.emplace_back(new ClassScene());
 
 	nowScene = 0;
-	nextScene = 1;
+	nextScene = 3;
 	scene[nowScene]->Init();
 	itisInArrayFlag = true;
 }
