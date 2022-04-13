@@ -28,6 +28,12 @@ void NormalEnemy::Update()
 		//iEnemy_EnemyStatusData->genarateData.initPos= { -30.0f, 30.0f,30.0f };
 	}
 
+	if (iEnemy_EnemyStatusData->oprationObjData->rockOnNum <= 0)
+	{
+		iEnemy_ModelRender->data.color = { 255.0f,0.0f,0.0f,255.0f };
+	}
+
+
 	++generateTimer;
 }
 
