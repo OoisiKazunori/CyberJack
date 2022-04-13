@@ -42,6 +42,7 @@ enum eEnemyType
 {
 	ENEMY_TYPE_NONE = -1,
 	ENEMY_TYPE_NORMAL,
+	ENEMY_TYPE_MOTHER,
 	ENEMY_TYPE_KID
 };
 
@@ -107,12 +108,15 @@ private:
 	//プレイヤーが操作するもの----------------------------------------------------------------
 
 	//敵----------------------------------------------------------------
+	static const int LAYER_LEVEL_MAX = 10;				//レイヤーレベルの最大数
+	static const int ENEMY_NUM_MAX = 50;				//1レイヤーレベルに登場する敵の最大数
+
 	array<unique_ptr<IEnemy>, 2>enemy;					//敵(サンプル)
 	TestEnemy hitBox;									//敵(サンプル)
-	array<array<unique_ptr<IEnemy>, 10>, 10> enemies;	//1ステージに生成する敵の総数
+	array<array<unique_ptr<IEnemy>, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> enemies;	//1ステージに生成する敵の総数
 	array<int, 10> enemiesHandle;						//0から順番に初期化する際に必要
 	array<int, 10> addEnemiesHandle;					//0から順番に追加で初期化する際に必要
-	array<array<ResponeData, 10>, 50> responeData;		//敵を生成する際に必要な設定
+	array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> responeData;		//敵を生成する際に必要な設定
 	array<ResponeData, 50>addResponeData;				//敵を追加で生成する際に必要な設定をスタックしたもの
 	//敵----------------------------------------------------------------
 

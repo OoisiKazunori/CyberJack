@@ -205,7 +205,10 @@ XMFLOAT2 KazMath::NewRota(float ANGLE, XMFLOAT2 POS)
 
 int KazMath::IntRand(int MAX_NUM, int MIN_NUM)
 {
-	return rand() % MAX_NUM + MIN_NUM;
+	float randNum = rand() % MAX_NUM;
+	randNum += MIN_NUM;
+
+	return randNum;
 }
 
 float KazMath::FloatRand(float MAX_NUM, float MIN_NUM)

@@ -26,10 +26,58 @@ void GameScene::Init()
 	sceneNum = SCENE_NONE;
 
 
-	responeData[0][0].enemyType = 0;
+	responeData[0][0].enemyType = ENEMY_TYPE_NORMAL;
 	responeData[0][0].layerLevel = 0;
 	responeData[0][0].flame = 360;
 	responeData[0][0].initPos = { 0.0f,10.0f,100.0f };
+
+
+	//テスト用の敵挙動
+	for (int layerLevel = 0; layerLevel < 1; ++layerLevel)
+	{
+		for (int enemyNum = 0; enemyNum < responeData[layerLevel].size(); ++enemyNum)
+		{
+			responeData[layerLevel][enemyNum].enemyType = ENEMY_TYPE_NORMAL;
+			responeData[layerLevel][enemyNum].layerLevel = 0;
+
+			//0~60秒以内に出す
+			responeData[layerLevel][enemyNum].flame = KazMath::IntRand(3600, 0);
+
+			//プレイヤーからある程度離れた場所に登場させる
+			XMVECTOR tmp;
+			for (int dir = 0; dir < 3; ++dir)
+			{
+				int setAreaNum = KazMath::IntRand(2, 0);
+				//X軸とZ軸
+				if (dir != 1)
+				{
+					if (1 <= setAreaNum)
+					{
+						tmp.m128_f32[dir] = KazMath::FloatRand(100.0f, 20.0f);
+					}
+					else
+					{
+						tmp.m128_f32[dir] = KazMath::FloatRand(-20.0f, -100.0f);
+					}
+				}
+				//Y軸
+				else
+				{
+					if (1 <= setAreaNum)
+					{
+						tmp.m128_f32[dir] = KazMath::FloatRand(50.0f, 0.0f);
+					}
+					else
+					{
+						tmp.m128_f32[dir] = KazMath::FloatRand(0.0f, -50.0f);
+					}
+				}
+			}
+			responeData[layerLevel][enemyNum].initPos = tmp;
+
+		}
+	}
+
 
 	//敵を纏めて生成する処理----------------------------------------------------------------
 	for (int enemyType = 0; enemyType < responeData.size(); ++enemyType)
@@ -40,7 +88,11 @@ void GameScene::Init()
 			{
 				switch (enemyType)
 				{
-				case 0:
+				case ENEMY_TYPE_NORMAL:
+					enemies[enemyType][enemyCount] = std::make_unique<NormalEnemy>();
+					break;
+
+				case ENEMY_TYPE_MOTHER:
 					enemies[enemyType][enemyCount] = std::make_unique<NormalEnemy>();
 					//子敵の生成(テスト用)
 					for (int i = 0; i < 8; ++i)
@@ -49,8 +101,8 @@ void GameScene::Init()
 						enemies[ENEMY_TYPE_KID][index] = std::make_unique<KidEnemy>();
 						++enemiesHandle[ENEMY_TYPE_KID];
 					}
-
 					break;
+
 				default:
 					break;
 				}

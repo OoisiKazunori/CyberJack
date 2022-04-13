@@ -15,7 +15,7 @@ SceneManager::SceneManager() {
 	scene.emplace_back(new ClassScene());
 
 	nowScene = 0;
-	nextScene = 3;
+	nextScene = 1;
 	scene[nowScene]->Init();
 	itisInArrayFlag = true;
 }
