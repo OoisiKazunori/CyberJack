@@ -32,6 +32,12 @@ public:
 	Ray hitBox;
 	XMINT2 stopFlag;
 	bool releaseFlag;
+
+
+	XMFLOAT2 cameraMoveValue;//上下左右にカメラをどれくらい動かすかの値を保存する
+	XMVECTOR dontMoveCameraStartPos;//カメラの無操作開始地点
+	XMVECTOR dontMoveCameraEndPos;//カメラの無操作終了地点
+
 private:
 	//ロックオン数----------------------------------------------------------------
 	static const int LOCKON_MAX_NUM = 8;	//最大ロックオン数
@@ -46,6 +52,7 @@ private:
 
 	//画像----------------------------------------------------------------
 	Sprite2DRenderPtr cursorFlameTex, numberTex;	//スクリーン座標の描画
+	LineRenderPtr noMoveLineRender;					//カメラの無操作範囲のデバック表示
 	array<short, LOCKON_MAX_NUM + 1> numberHandle;			//数字用の画像ハンドル
 	short flameHandle;
 	

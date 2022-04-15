@@ -10,8 +10,9 @@ Cursor::Cursor()
 	enableLockOnTimer = 0;
 	notEnableLockOnFlag = false;
 
-	cursorFlameTex.reset(new Sprite2DRender);
-	numberTex.reset(new Sprite2DRender);
+	cursorFlameTex = std::make_unique<Sprite2DRender>();
+	numberTex = std::make_unique<Sprite2DRender>();
+	noMoveLineRender = std::make_unique<LineRender>();
 
 	speed = 10.0f;
 	flameHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::CursorPath + "CursorBase.png");
@@ -201,7 +202,7 @@ void Cursor::Update()
 
 
 	//ノックバックの処理
-	if (5 <= noTockTimer.x&&false)
+	if (5 <= noTockTimer.x && false)
 	{
 		if (signbit(oldVel.m128_f32[0]))
 		{
@@ -213,7 +214,7 @@ void Cursor::Update()
 		}
 		knockBackVal.m128_f32[0] = 0.0f;
 	}
-	if (5 <= noTockTimer.y&&false)
+	if (5 <= noTockTimer.y && false)
 	{
 		if (signbit(oldVel.m128_f32[1]))
 		{
@@ -258,6 +259,48 @@ void Cursor::Update()
 	//移動----------------------------------------------------------------
 
 
+	//カメラ無操作-----------------------
+	//追尾
+	{
+		//カーソルの位置が始点と終点以内だった場合、無操作範囲の追尾をやめてカメラ移動量を追加しない
+		if (dontMoveCameraStartPos.m128_f32[0] < cursorPos.m128_f32[0] &&
+			cursorPos.m128_f32[0] < dontMoveCameraEndPos.m128_f32[0])
+		{
+			bool debug = false;
+		}
+		//カーソル外に出ようとしたら無操作範囲の追尾を開始する
+		else
+		{
+			float cursorStartDistanceX = dontMoveCameraStartPos.m128_f32[0] - cursorPos.m128_f32[0];
+			float cursorEndDistanceX = dontMoveCameraEndPos.m128_f32[0] - cursorPos.m128_f32[0];
+			const float distance = 50.0f;
+			//終点より始点の方が近かったら始点を基準に動かす
+			if (fabs(cursorStartDistanceX) < fabs(cursorEndDistanceX))
+			{
+				dontMoveCameraStartPos.m128_f32[0] = cursorPos.m128_f32[0];
+				dontMoveCameraEndPos.m128_f32[0] = cursorPos.m128_f32[0] + distance;
+			}
+			//始点より終点の方が近かったら終点を基準に動かす
+			else
+			{
+				dontMoveCameraStartPos.m128_f32[0] = cursorPos.m128_f32[0] - distance;
+				dontMoveCameraEndPos.m128_f32[0] = cursorPos.m128_f32[0];
+			}
+		}
+	}
+
+
+	dontMoveCameraStartPos.m128_f32[1] = cursorPos.m128_f32[1];
+	dontMoveCameraEndPos.m128_f32[1] = cursorPos.m128_f32[1];
+
+	noMoveLineRender->data.startPos = dontMoveCameraStartPos;
+	noMoveLineRender->data.endPos = dontMoveCameraEndPos;
+	noMoveLineRender->data.color = { 255.0f,0.0f,0.0f,255.0f };
+	//カメラ無操作-----------------------
+
+
+
+
 	//当たり判定----------------------------------------------------------------
 	XMVECTOR nearPos = { cursorPos.m128_f32[0],cursorPos.m128_f32[1],0.0f,0.0f };
 	XMVECTOR farPos = { cursorPos.m128_f32[0],cursorPos.m128_f32[1],1.0f,0.0f };
@@ -273,6 +316,8 @@ void Cursor::Draw()
 {
 	numberTex->Draw();
 	cursorFlameTex->Draw();
+
+	noMoveLineRender->Draw();
 }
 
 bool Cursor::LockOn()
