@@ -26,9 +26,10 @@ void ClassScene::Update()
 
 void ClassScene::Draw()
 {
+	bg.Draw();
 }
 
 int ClassScene::SceneChange()
 {
-    return 0;
+	return 0;
 }

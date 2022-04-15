@@ -1,5 +1,6 @@
 #pragma once
 #include"../Scene/SceneBase.h"
+#include"../Render/BackGroundForDebug.h"
 
 class ClassScene:public SceneBase
 {
@@ -16,5 +17,6 @@ public:
 	int SceneChange();
 
 private:
+	BackGroundForDebug bg;
 };
 
