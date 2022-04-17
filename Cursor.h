@@ -35,10 +35,12 @@ public:
 	bool releaseFlag;
 
 
+	XMVECTOR honraiCameraMoveValue;//上下左右にカメラをどれくらい動かすかの値を保存する(本来ポズ)
 	XMVECTOR cameraMoveValue;//上下左右にカメラをどれくらい動かすかの値を保存する
-	XMVECTOR honraiCameraMoveValue;//上下左右にカメラをどれくらい動かすかの値を保存する
 	XMVECTOR dontMoveCameraStartPos;//カメラの無操作開始地点
 	XMVECTOR dontMoveCameraEndPos;//カメラの無操作終了地点
+
+	XMVECTOR limitValue;//カメラの端の値
 
 private:
 	//ロックオン数----------------------------------------------------------------

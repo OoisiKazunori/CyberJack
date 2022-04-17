@@ -33,11 +33,13 @@ Cursor::Cursor()
 	numberHandle[8] = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::CursorPath + "CursorNumMax.png");
 
 	cursorPos = { WIN_X / 2.0f,WIN_Y / 2.0f,0.0f };
+	limitValue = { WIN_X / 2.0f,WIN_Y / 2.0f,0.0f };
 
 	XMVECTOR scale = { 2.0f,2.0f };
 	cursorFlameTex->data.transform.scale = scale;
 	numberTex->data.transform.scale = scale;
 	stopFlag = { 0,0 };
+
 }
 
 void Cursor::Init()
@@ -294,20 +296,20 @@ void Cursor::Update()
 	//ƒJƒƒ‰‚Ì§ŒÀ
 	if (honraiCursorPos.m128_f32[0] <= 0.0f)
 	{
-		honraiCameraMoveValue.m128_f32[0] = WIN_X / 2.0f - speed;
+		honraiCameraMoveValue.m128_f32[0] = limitValue.m128_f32[0];
 	}
 	if (WIN_X <= honraiCursorPos.m128_f32[0])
 	{
-		honraiCameraMoveValue.m128_f32[0] = -WIN_X / 2.0f - speed;
+		honraiCameraMoveValue.m128_f32[0] = -limitValue.m128_f32[0];
 	}
 
 	if (honraiCursorPos.m128_f32[1] <= 0.0f)
 	{
-		honraiCameraMoveValue.m128_f32[1] = WIN_Y / 2.0f;
+		honraiCameraMoveValue.m128_f32[1] = limitValue.m128_f32[1];
 	}
 	if (WIN_Y <= honraiCursorPos.m128_f32[1])
 	{
-		honraiCameraMoveValue.m128_f32[1] = -WIN_Y / 2.0f;
+		honraiCameraMoveValue.m128_f32[1] = -limitValue.m128_f32[1];
 	}
 
 	XMVECTOR cameraDistance = honraiCameraMoveValue - cameraMoveValue;
