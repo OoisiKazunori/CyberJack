@@ -294,11 +294,11 @@ void Cursor::Update()
 	//カメラの制限
 	if (honraiCursorPos.m128_f32[0] <= 0.0f)
 	{
-		honraiCameraMoveValue.m128_f32[0] = WIN_X / 2.0f;
+		honraiCameraMoveValue.m128_f32[0] = WIN_X / 2.0f - speed;
 	}
 	if (WIN_X <= honraiCursorPos.m128_f32[0])
 	{
-		honraiCameraMoveValue.m128_f32[0] = -WIN_X / 2.0f;
+		honraiCameraMoveValue.m128_f32[0] = -WIN_X / 2.0f - speed;
 	}
 
 	if (honraiCursorPos.m128_f32[1] <= 0.0f)
@@ -369,15 +369,11 @@ const int &Cursor::GetCount()
 
 const XMVECTOR &Cursor::GetValue()
 {
-	//画面中央を中心座標とする
-	XMVECTOR adjPos = { WIN_X / 2.0f,WIN_Y / 2.0f };
-	XMVECTOR pos = cursorPos - adjPos;
-
+	//画面中央を0,0の中心座標とする
+	XMVECTOR rateMaxValue = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	//割合計算
-	XMVECTOR value = pos / adjPos;
-
-	//カメラの座標に合わせる為にY軸の符号を反転
-	value.m128_f32[1] *= -1.0f;
-
+	XMVECTOR value = cameraMoveValue / rateMaxValue;
+	//カメラの座標に合わせる為にX軸の符号を反転
+	value.m128_f32[0] *= -1.0f;
 	return value;
 }
