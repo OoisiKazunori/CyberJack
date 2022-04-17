@@ -7,6 +7,7 @@
 #include"../Scene/SceneChange.h"
 #include"../RenderTarget/GaussianBuler.h"
 #include"../RenderTarget/RenderTargetStatus.h"
+#include<memory>
 /// <summary>
 /// ?V?[???????????s?????
 /// </summary>
@@ -18,7 +19,7 @@ public:
 	void Draw();
 
 private:
-	std::vector<SceneBase *> scene;
+	std::vector<std::unique_ptr<SceneBase>> scene;
 	ChangeScene::SceneChange change;
 	int nowScene, nextScene;
 

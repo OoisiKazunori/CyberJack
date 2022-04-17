@@ -9,25 +9,19 @@
 
 
 SceneManager::SceneManager() {
-	scene.emplace_back(new TitleScene());
-	scene.emplace_back(new GameScene());
-	scene.emplace_back(new DebugScene());
-	scene.emplace_back(new ClassScene());
+	scene.emplace_back(std::make_unique<TitleScene>());
+	scene.emplace_back(std::make_unique<GameScene>());
+	scene.emplace_back(std::make_unique<DebugScene>());
+	scene.emplace_back(std::make_unique<ClassScene>());
 
 	nowScene = 0;
-	nextScene = 1;
+	nextScene = 3;
 	scene[nowScene]->Init();
 	itisInArrayFlag = true;
 }
 
-SceneManager::~SceneManager() {
-	for (int i = 0; i < scene.size(); i++) {
-		if (scene[i] != nullptr) {
-			delete scene[i];
-			scene[i] = nullptr;
-		}
-	}
-
+SceneManager::~SceneManager()
+{
 	SoundManager::Instance()->Finalize();
 }
 

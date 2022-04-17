@@ -17,6 +17,10 @@ public:
 	int SceneChange();
 
 private:
+	XMFLOAT3 debugCameraMove;
+	XMFLOAT3 eyePos, targetPos;
+	XMFLOAT2 angle;
+
 	BackGroundForDebug bg;
 };
 
