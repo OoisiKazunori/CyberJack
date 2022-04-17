@@ -4,6 +4,7 @@
 
 XMFLOAT2 Cursor::KOCKBACK_MAX_VALUE = { 200.0f,200.0f };
 XMFLOAT2 Cursor::KOCKBACK_VELOCITY = { 5.0f,5.0f };
+XMVECTOR Cursor::NO_MOVE_DISTANCE = { 150.0f,50.0f };
 
 Cursor::Cursor()
 {
@@ -33,7 +34,7 @@ Cursor::Cursor()
 	numberHandle[8] = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::CursorPath + "CursorNumMax.png");
 
 	cursorPos = { WIN_X / 2.0f,WIN_Y / 2.0f,0.0f };
-	limitValue = { WIN_X / 2.0f,WIN_Y / 2.0f,0.0f };
+	limitValue = { 570.0f,WIN_Y / 2.0f,0.0f };
 
 	XMVECTOR scale = { 2.0f,2.0f };
 	cursorFlameTex->data.transform.scale = scale;
@@ -272,24 +273,52 @@ void Cursor::Update()
 		//カーソル外に出ようとしたら無操作範囲の追尾を開始する
 		else
 		{
-			float cursorStartDistanceX = dontMoveCameraStartPos.m128_f32[0] - cursorPos.m128_f32[0];
-			float cursorEndDistanceX = dontMoveCameraEndPos.m128_f32[0] - cursorPos.m128_f32[0];
-			const float distance = 150.0f;
-			//終点より始点の方が近かったら始点を基準に動かす
-			if (fabs(cursorStartDistanceX) < fabs(cursorEndDistanceX))
 			{
-				dontMoveCameraStartPos.m128_f32[0] = cursorPos.m128_f32[0];
-				dontMoveCameraEndPos.m128_f32[0] = cursorPos.m128_f32[0] + distance;
+				float cursorStartDistanceX = dontMoveCameraStartPos.m128_f32[0] - cursorPos.m128_f32[0];
+				float cursorEndDistanceX = dontMoveCameraEndPos.m128_f32[0] - cursorPos.m128_f32[0];
+				//終点より始点の方が近かったら始点を基準に動かす
+				if (fabs(cursorStartDistanceX) < fabs(cursorEndDistanceX))
+				{
+					dontMoveCameraStartPos.m128_f32[0] = cursorPos.m128_f32[0];
+					dontMoveCameraEndPos.m128_f32[0] = cursorPos.m128_f32[0] + NO_MOVE_DISTANCE.m128_f32[0];
+				}
+				//始点より終点の方が近かったら終点を基準に動かす
+				else
+				{
+					dontMoveCameraStartPos.m128_f32[0] = cursorPos.m128_f32[0] - NO_MOVE_DISTANCE.m128_f32[0];
+					dontMoveCameraEndPos.m128_f32[0] = cursorPos.m128_f32[0];
+				}
 			}
-			//始点より終点の方が近かったら終点を基準に動かす
-			else
-			{
-				dontMoveCameraStartPos.m128_f32[0] = cursorPos.m128_f32[0] - distance;
-				dontMoveCameraEndPos.m128_f32[0] = cursorPos.m128_f32[0];
-			}
-
 			//移動量をカメラに追加していく
-			honraiCameraMoveValue += prevCursorPos - cursorPos;
+			honraiCameraMoveValue.m128_f32[0] += prevCursorPos.m128_f32[0] - cursorPos.m128_f32[0];
+		}
+
+		if (dontMoveCameraStartPos.m128_f32[1] < cursorPos.m128_f32[1] &&
+			cursorPos.m128_f32[1] < dontMoveCameraEndPos.m128_f32[1])
+		{
+
+		}
+		//カーソル外に出ようとしたら無操作範囲の追尾を開始する
+		else
+		{
+			{
+				float cursorStartDistanceY = dontMoveCameraStartPos.m128_f32[1] - cursorPos.m128_f32[1];
+				float cursorEndDistanceY = dontMoveCameraEndPos.m128_f32[1] - cursorPos.m128_f32[1];
+				//終点より始点の方が近かったら始点を基準に動かす
+				if (fabs(cursorStartDistanceY) < fabs(cursorEndDistanceY))
+				{
+					dontMoveCameraStartPos.m128_f32[1] = cursorPos.m128_f32[1];
+					dontMoveCameraEndPos.m128_f32[1] = cursorPos.m128_f32[1] + NO_MOVE_DISTANCE.m128_f32[1];
+				}
+				//始点より終点の方が近かったら終点を基準に動かす
+				else
+				{
+					dontMoveCameraStartPos.m128_f32[1] = cursorPos.m128_f32[1] - NO_MOVE_DISTANCE.m128_f32[1];
+					dontMoveCameraEndPos.m128_f32[1] = cursorPos.m128_f32[1];
+				}
+			}
+			//移動量をカメラに追加していく
+			honraiCameraMoveValue.m128_f32[1] += prevCursorPos.m128_f32[1] - cursorPos.m128_f32[1];
 		}
 	}
 
@@ -305,7 +334,7 @@ void Cursor::Update()
 
 	if (honraiCursorPos.m128_f32[1] <= 0.0f)
 	{
-		honraiCameraMoveValue.m128_f32[1] = limitValue.m128_f32[1];
+		honraiCameraMoveValue.m128_f32[1] = limitValue.m128_f32[1] - NO_MOVE_DISTANCE.m128_f32[1];
 	}
 	if (WIN_Y <= honraiCursorPos.m128_f32[1])
 	{
@@ -314,11 +343,6 @@ void Cursor::Update()
 
 	XMVECTOR cameraDistance = honraiCameraMoveValue - cameraMoveValue;
 	cameraMoveValue += cameraDistance * 0.5f;
-
-
-
-	dontMoveCameraStartPos.m128_f32[1] = cursorPos.m128_f32[1];
-	dontMoveCameraEndPos.m128_f32[1] = cursorPos.m128_f32[1];
 
 	//カメラ無操作-----------------------
 

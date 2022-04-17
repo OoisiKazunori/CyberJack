@@ -42,6 +42,7 @@ public:
 
 	XMVECTOR limitValue;//カメラの端の値
 
+	static XMVECTOR NO_MOVE_DISTANCE;//XYそれぞれどこまでの範囲ならカーソル動かしてもカメラに影響が出ないか
 private:
 	//ロックオン数----------------------------------------------------------------
 	static const int LOCKON_MAX_NUM = 8;	//最大ロックオン数

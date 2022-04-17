@@ -405,8 +405,10 @@ void GameScene::Update()
 	ImGui::Text("dontMoveCameraEndPos:X%f,Y:%f", cursor.dontMoveCameraEndPos.m128_f32[0], cursor.dontMoveCameraEndPos.m128_f32[1]);
 	ImGui::Text("CursorPos:X%f,Y:%f", cursor.cursorPos.m128_f32[0], cursor.cursorPos.m128_f32[1]);
 	ImGui::Text("CameraMoveValue:X%f,Y:%f", cursor.cameraMoveValue.m128_f32[0], cursor.cameraMoveValue.m128_f32[1]);
-	ImGui::InputFloat("limitValue:X%f", &cursor.limitValue.m128_f32[0]);
-	ImGui::InputFloat("limitValue:Y%f", &cursor.limitValue.m128_f32[1]);
+	ImGui::InputFloat("limitValue:X", &cursor.limitValue.m128_f32[0]);
+	ImGui::InputFloat("limitValue:Y", &cursor.limitValue.m128_f32[1]);
+	ImGui::InputFloat("NO_MOVE_DISTANCE:X", &cursor.NO_MOVE_DISTANCE.m128_f32[0]);
+	ImGui::InputFloat("NO_MOVE_DISTANCE:Y", &cursor.NO_MOVE_DISTANCE.m128_f32[1]);
 	ImGui::End();
 
 
