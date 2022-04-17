@@ -409,6 +409,7 @@ void GameScene::Update()
 	ImGui::InputFloat("limitValue:Y", &cursor.limitValue.m128_f32[1]);
 	ImGui::InputFloat("NO_MOVE_DISTANCE:X", &cursor.NO_MOVE_DISTANCE.m128_f32[0]);
 	ImGui::InputFloat("NO_MOVE_DISTANCE:Y", &cursor.NO_MOVE_DISTANCE.m128_f32[1]);
+	ImGui::InputFloat("speed", &cursor.speed);
 	ImGui::End();
 
 
@@ -465,7 +466,7 @@ void GameScene::Update()
 		if (0.1f <= cursor.GetValue().m128_f32[1])
 		{
 			mul *= -1.0f;
-			limitValue = 2.0f;
+			limitValue = 2.5f;
 		}
 
 		honraiPlayerCameraPos.m128_f32[0] = 0.0f + (2.0f * -cursor.GetValue().m128_f32[0]);

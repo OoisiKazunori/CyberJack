@@ -43,6 +43,8 @@ public:
 	XMVECTOR limitValue;//カメラの端の値
 
 	static XMVECTOR NO_MOVE_DISTANCE;//XYそれぞれどこまでの範囲ならカーソル動かしてもカメラに影響が出ないか
+
+	float speed;
 private:
 	//ロックオン数----------------------------------------------------------------
 	static const int LOCKON_MAX_NUM = 8;	//最大ロックオン数
@@ -60,7 +62,7 @@ private:
 	array<short, LOCKON_MAX_NUM + 1> numberHandle;			//数字用の画像ハンドル
 	short flameHandle;
 	
-	float speed;
+
 	XMVECTOR oldPos;
 	XMVECTOR oldVel;
 
