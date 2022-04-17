@@ -73,21 +73,6 @@ void Cursor::Input(bool UP_FLAG, bool DOWN_FLAG, bool LEFT_FLAG, bool RIGHT_FLAG
 
 void Cursor::Update()
 {
-	ImGui::Begin("Curosr");
-	ImGui::InputFloat("Speed", &baseSpeed);
-	ImGui::InputFloat("KOCKBACK_MAX_VALUE_X", &KOCKBACK_MAX_VALUE.x);
-	ImGui::InputFloat("KOCKBACK_MAX_VALUE_Y", &KOCKBACK_MAX_VALUE.y);
-	ImGui::InputFloat("KOCKBACK_VELOCITY_X", &KOCKBACK_VELOCITY.x);
-	ImGui::InputFloat("KOCKBACK_VELOCITY_Y", &KOCKBACK_VELOCITY.y);
-	ImGui::Text("KnockBackValX%f", knockBackVal.m128_f32[0]);
-	ImGui::Text("KnockBackValY%f", knockBackVal.m128_f32[1]);
-	ImGui::Text("stickAngleX:%f", stickAngle.m128_f32[0]);
-	ImGui::Text("stickAngleY:%f", stickAngle.m128_f32[1]);
-	ImGui::InputFloat("deadLine", &deadLine);
-	ImGui::End();
-
-
-
 
 	//最大値固定
 	if (LOCKON_MAX_NUM <= lockOnNum)
@@ -138,15 +123,54 @@ void Cursor::Update()
 
 	prevCursorPos = cursorPos;
 
-
+	XMVECTOR honraiStick = stickAngle;
+	//デットライン-----------------------
 	if (fabs(stickAngle.m128_f32[0]) < deadLine)
 	{
 		stickAngle.m128_f32[0] = 0.0f;
+	}
+	else
+	{
+		stickAngle.m128_f32[0] += -deadLine;
 	}
 	if (fabs(stickAngle.m128_f32[1]) < deadLine)
 	{
 		stickAngle.m128_f32[1] = 0.0f;
 	}
+	else
+	{
+		stickAngle.m128_f32[1] += -deadLine;
+	}
+	//デットライン-----------------------
+
+
+	if (1.0f - deadLine <= fabs(stickAngle.m128_f32[0]))
+	{
+		bool flag = signbit(stickAngle.m128_f32[0]);
+		if (flag)
+		{
+			stickAngle.m128_f32[0] = -1.0f + deadLine;
+		}
+		else
+		{
+			stickAngle.m128_f32[0] = 1.0f - deadLine;
+		}
+	}
+	if (1.0f - deadLine <= fabs(stickAngle.m128_f32[1]))
+	{
+		bool flag = signbit(stickAngle.m128_f32[1]);
+		if (flag)
+		{
+			stickAngle.m128_f32[1] = -1.0f + deadLine;
+		}
+		else
+		{
+			stickAngle.m128_f32[1] = 1.0f - deadLine;
+		}
+	}
+
+
+	//スティックの操作からカーソルのスピードを調整
 	speed.x = baseSpeed * -stickAngle.m128_f32[0];
 	speed.y = baseSpeed * stickAngle.m128_f32[1];
 
@@ -372,6 +396,22 @@ void Cursor::Update()
 	hitBox.start = KazMath::ConvertScreenPosToWorldPos(nearPos, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
 	hitBox.dir = XMVector3Normalize(endPos - hitBox.start);
 	//当たり判定----------------------------------------------------------------
+
+
+	ImGui::Begin("Curosr");
+	ImGui::InputFloat("Speed", &baseSpeed);
+	ImGui::InputFloat("KOCKBACK_MAX_VALUE_X", &KOCKBACK_MAX_VALUE.x);
+	ImGui::InputFloat("KOCKBACK_MAX_VALUE_Y", &KOCKBACK_MAX_VALUE.y);
+	ImGui::InputFloat("KOCKBACK_VELOCITY_X", &KOCKBACK_VELOCITY.x);
+	ImGui::InputFloat("KOCKBACK_VELOCITY_Y", &KOCKBACK_VELOCITY.y);
+	ImGui::InputFloat("deadLine", &deadLine);
+	ImGui::Text("NowSpeed:%f", speed);
+	ImGui::Text("MaxSpeed:%f", baseSpeed *(1.0 - deadLine));
+	ImGui::Text("KnockBackValX%f", knockBackVal.m128_f32[0]);
+	ImGui::Text("KnockBackValY%f", knockBackVal.m128_f32[1]);
+	ImGui::Text("stickAngleX:%f", honraiStick.m128_f32[0]);
+	ImGui::Text("stickAngleY:%f", honraiStick.m128_f32[1]);
+	ImGui::End();
 
 }
 
