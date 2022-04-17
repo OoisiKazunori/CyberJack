@@ -273,11 +273,9 @@ void GameScene::Input()
 		bool debug = false;
 	}
 
-	XMFLOAT2 joyStick;
-	joyStick.x = inputController->GetJoyStickLXNum(0) / 32767.0f;
-	joyStick.y = inputController->GetJoyStickLYNum(0) / 32767.0f;
-	float angle = -atan2(joyStick.y, joyStick.x);
-
+	XMVECTOR joyStick;
+	joyStick.m128_f32[0] = inputController->GetJoyStickLXNum(0) / 32767.0f;
+	joyStick.m128_f32[1] = inputController->GetJoyStickLYNum(0) / 32767.0f;
 
 	cursor.Input
 	(
@@ -287,7 +285,7 @@ void GameScene::Input()
 		rightFlag,
 		doneFlag,
 		releaseFlag,
-		angle
+		joyStick
 	);
 
 
@@ -409,7 +407,6 @@ void GameScene::Update()
 	ImGui::InputFloat("limitValue:Y", &cursor.limitValue.m128_f32[1]);
 	ImGui::InputFloat("NO_MOVE_DISTANCE:X", &cursor.NO_MOVE_DISTANCE.m128_f32[0]);
 	ImGui::InputFloat("NO_MOVE_DISTANCE:Y", &cursor.NO_MOVE_DISTANCE.m128_f32[1]);
-	ImGui::InputFloat("speed", &cursor.speed);
 	ImGui::End();
 
 

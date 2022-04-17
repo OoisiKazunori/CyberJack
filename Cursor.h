@@ -9,7 +9,7 @@ public:
 	Cursor();
 
 	void Init();
-	void Input(bool UP_FLAG, bool DOWN_FLAG, bool LEFT_FLAG, bool RIGHT_FLAG, bool DONE_FLAG, bool RELEASE_FLAG, float ANGLE);
+	void Input(bool UP_FLAG, bool DOWN_FLAG, bool LEFT_FLAG, bool RIGHT_FLAG, bool DONE_FLAG, bool RELEASE_FLAG, const XMVECTOR &ANGLE);
 	void Update();
 	void Draw();
 
@@ -44,7 +44,6 @@ public:
 
 	static XMVECTOR NO_MOVE_DISTANCE;//XYそれぞれどこまでの範囲ならカーソル動かしてもカメラに影響が出ないか
 
-	float speed;
 private:
 	//ロックオン数----------------------------------------------------------------
 	static const int LOCKON_MAX_NUM = 8;	//最大ロックオン数
@@ -54,7 +53,10 @@ private:
 
 	//移動----------------------------------------------------------------
 	bool upFlag, downFlag, leftFlag, rightFlag,doneFlag;
-	float stickAngle;
+	XMVECTOR stickAngle;
+	float deadLine;
+	float baseSpeed;
+	XMFLOAT2 speed;
 
 
 	//画像----------------------------------------------------------------

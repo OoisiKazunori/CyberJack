@@ -14,7 +14,7 @@ Cursor::Cursor()
 	cursorFlameTex = std::make_unique<Sprite2DRender>();
 	numberTex = std::make_unique<Sprite2DRender>();
 
-	speed = 10.0f;
+	baseSpeed = 10.0f;
 	flameHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::CursorPath + "CursorBase.png");
 	cursorFlameTex->data.handle = flameHandle;
 	cursorFlameTex->data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
@@ -41,6 +41,7 @@ Cursor::Cursor()
 	numberTex->data.transform.scale = scale;
 	stopFlag = { 0,0 };
 
+	deadLine = 0.25f;
 }
 
 void Cursor::Init()
@@ -58,7 +59,7 @@ void Cursor::Init()
 
 }
 
-void Cursor::Input(bool UP_FLAG, bool DOWN_FLAG, bool LEFT_FLAG, bool RIGHT_FLAG, bool DONE_FLAG, bool RELEASE_FLAG, float ANGLE)
+void Cursor::Input(bool UP_FLAG, bool DOWN_FLAG, bool LEFT_FLAG, bool RIGHT_FLAG, bool DONE_FLAG, bool RELEASE_FLAG, const XMVECTOR &ANGLE)
 {
 	upFlag = UP_FLAG;
 	downFlag = DOWN_FLAG;
@@ -73,14 +74,16 @@ void Cursor::Input(bool UP_FLAG, bool DOWN_FLAG, bool LEFT_FLAG, bool RIGHT_FLAG
 void Cursor::Update()
 {
 	ImGui::Begin("Curosr");
-	ImGui::InputFloat("Speed", &speed);
+	ImGui::InputFloat("Speed", &baseSpeed);
 	ImGui::InputFloat("KOCKBACK_MAX_VALUE_X", &KOCKBACK_MAX_VALUE.x);
 	ImGui::InputFloat("KOCKBACK_MAX_VALUE_Y", &KOCKBACK_MAX_VALUE.y);
 	ImGui::InputFloat("KOCKBACK_VELOCITY_X", &KOCKBACK_VELOCITY.x);
 	ImGui::InputFloat("KOCKBACK_VELOCITY_Y", &KOCKBACK_VELOCITY.y);
 	ImGui::Text("KnockBackValX%f", knockBackVal.m128_f32[0]);
 	ImGui::Text("KnockBackValY%f", knockBackVal.m128_f32[1]);
-	ImGui::Text("stickAngle%f", stickAngle);
+	ImGui::Text("stickAngleX:%f", stickAngle.m128_f32[0]);
+	ImGui::Text("stickAngleY:%f", stickAngle.m128_f32[1]);
+	ImGui::InputFloat("deadLine", &deadLine);
 	ImGui::End();
 
 
@@ -133,31 +136,43 @@ void Cursor::Update()
 	vel = { 0.0f,0.0f,0.0f };
 
 
-
 	prevCursorPos = cursorPos;
+
+
+	if (fabs(stickAngle.m128_f32[0]) < deadLine)
+	{
+		stickAngle.m128_f32[0] = 0.0f;
+	}
+	if (fabs(stickAngle.m128_f32[1]) < deadLine)
+	{
+		stickAngle.m128_f32[1] = 0.0f;
+	}
+	speed.x = baseSpeed * -stickAngle.m128_f32[0];
+	speed.y = baseSpeed * stickAngle.m128_f32[1];
+
 
 	if (leftFlag)
 	{
-		vel.m128_f32[0] = -speed;
+		vel.m128_f32[0] = -speed.x;
 		knockBackVal.m128_f32[0] += KOCKBACK_VELOCITY.x;
 		noTochFlag.x = 1;
 	}
 	if (rightFlag)
 	{
-		vel.m128_f32[0] = speed;
+		vel.m128_f32[0] = -speed.x;
 		knockBackVal.m128_f32[0] += KOCKBACK_VELOCITY.x;
 		noTochFlag.x = 1;
 	}
 
 	if (upFlag)
 	{
-		vel.m128_f32[1] = -speed;
+		vel.m128_f32[1] = -speed.y;
 		knockBackVal.m128_f32[1] += KOCKBACK_VELOCITY.y;
 		noTochFlag.y = 1;
 	}
 	if (downFlag)
 	{
-		vel.m128_f32[1] = speed;
+		vel.m128_f32[1] = -speed.y;
 		knockBackVal.m128_f32[1] += KOCKBACK_VELOCITY.y;
 		noTochFlag.y = 1;
 	}
