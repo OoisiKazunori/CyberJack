@@ -1,6 +1,7 @@
 #pragma once
 #include"../Scene/SceneBase.h"
 #include"../Render/BackGroundForDebug.h"
+#include"../Render/KazRender.h"
 
 class ClassScene:public SceneBase
 {
@@ -21,6 +22,13 @@ private:
 	XMFLOAT3 eyePos, targetPos;
 	XMFLOAT2 angle;
 
+	double caluSpeed;
+	double caluSpeed2;
+	double caluDistance;
+	double caluDistance2;
+
+
+	BoxPolygonRenderPtr boxRender;
 	BackGroundForDebug bg;
 };
 

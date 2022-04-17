@@ -210,5 +210,101 @@ namespace KazMath
 	XMMATRIX CaluMat(const KazMath::Transform3D &TRANSFORM, const XMVECTOR &Y_VEC, const XMVECTOR &Z_VEC, const XMMATRIX &VIEW_MAT, const XMMATRIX &PROJECT_MAT);
 	XMMATRIX CaluWorld(const KazMath::Transform3D &TRANSFORM, const XMVECTOR &Y_VEC, const XMVECTOR &Z_VEC);
 
+	
 }
 
+//MT4で追加した物理系の関数
+namespace KazPhysics
+{
+	/// <summary>
+	/// MT4第一回運動の法則、初速度の計算
+	/// 54Pの速度の公式①に書いてある
+	/// </summary>
+	/// <param name="VELOCITY">移動量</param>
+	/// <param name="TIME">時間</param>
+	/// <param name="INITIAL_VALOCITY">初速度</param>
+	/// <returns>加速度</returns>
+	double CaluAcceleration(double VELOCITY, double TIME, double INITIAL_VALOCITY = 0.0);
+
+	/// <summary>
+	/// MT4第一回運動の法則,速度の公式①
+	/// </summary>
+	/// <param name="ACCELERATION">加速度</param>
+	/// <param name="TIME">時間</param>
+	/// <param name="INITIAL_VALOCITY">初速度</param>
+	/// <returns>速度</returns>
+	double CalucurateHorizontalSpeed(double ACCELERATION, double TIME, double INITIAL_VALOCITY = 0.0);
+
+	/// <summary>
+	/// MT4第一回運動の法則,速度の公式②
+	/// 移動にかかった時間が分からない時でも速度が求められます
+	/// </summary>
+	/// <param name="ACCELERATION">加速度</param>
+	/// <param name="DISTANCE">距離</param>
+	/// <param name="INITIAL_VALOCITY">初速度</param>
+	/// <returns>速度</returns>
+	double CalucurateHorizontalSpeed2(double ACCELERATION, double DISTANCE, double INITIAL_VALOCITY = 0.0f);
+
+	/// <summary>
+	///　MT4第一回運動の法則,距離の公式①
+	/// </summary>
+	/// <param name="ACCELERATION">加速度</param>
+	/// <param name="TIME">時間</param>
+	/// <param name="INITIAL_VALOCITY">初速度</param>
+	/// <returns>距離</returns>
+	double CalucurateHorizontalDistance(double ACCELERATION, double TIME, double INITIAL_VALOCITY = 0.0f);
+
+	/// <summary>
+	///　MT4第一回運動の法則,距離の公式②
+	/// </summary>
+	/// <param name="ACCELERATION">加速度</param>
+	/// <param name="TIME">時間</param>
+	/// <param name="INITIAL_VALOCITY">初速度</param>
+	/// <returns>距離</returns>
+	double CalucurateHorizontalDistance2(double ACCELERATION, double TIME, double INITIAL_VALOCITY = 0.0f);
+
+
+
+
+	/// <summary>
+	/// MT4第一回運動の法則,速度の公式①
+	/// 垂直方向対応
+	/// </summary>
+	/// <param name="ACCELERATION">加速度</param>
+	/// <param name="TIME">時間</param>
+	/// <param name="INITIAL_VALOCITY">初速度</param>
+	/// <returns>速度</returns>
+	double CalucurateVerticalSpeed(double ACCELERATION, double TIME, double INITIAL_VALOCITY = 0.0);
+
+	/// <summary>
+	/// MT4第一回運動の法則,速度の公式②
+	/// 移動にかかった時間が分からない時でも速度が求められます
+	/// 垂直方向対応
+	/// </summary>
+	/// <param name="ACCELERATION">加速度</param>
+	/// <param name="DISTANCE">距離</param>
+	/// <param name="INITIAL_VALOCITY">初速度</param>
+	/// <returns>速度</returns>
+	double CalucurateVerticalSpeed2(double ACCELERATION, double DISTANCE, double INITIAL_VALOCITY = 0.0f);
+
+	/// <summary>
+	///　MT4第一回運動の法則,距離の公式①
+	/// 垂直方向対応
+	/// </summary>
+	/// <param name="ACCELERATION">加速度</param>
+	/// <param name="TIME">時間</param>
+	/// <param name="INITIAL_VALOCITY">初速度</param>
+	/// <returns>距離</returns>
+	double CalucurateVerticalDistance(double ACCELERATION, double TIME, double INITIAL_VALOCITY = 0.0f);
+
+	/// <summary>
+	///　MT4第一回運動の法則,距離の公式②
+	/// 垂直方向対応
+	/// </summary>
+	/// <param name="ACCELERATION">加速度</param>
+	/// <param name="TIME">時間</param>
+	/// <param name="INITIAL_VALOCITY">初速度</param>
+	/// <returns>距離</returns>
+	double CalucurateVerticalDistance2(double ACCELERATION, double TIME, double INITIAL_VALOCITY = 0.0f);
+
+}

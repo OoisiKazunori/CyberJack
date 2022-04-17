@@ -1,9 +1,11 @@
 ﻿#include "ClassScene.h"
 #include"../Camera/CameraMgr.h"
 #include"../Input/KeyBoradInputManager.h"
+#include"../Math/KazMath.h"
 
 ClassScene::ClassScene()
 {
+	boxRender = std::make_unique<BoxPolygonRender>();
 }
 
 ClassScene::~ClassScene()
@@ -22,7 +24,7 @@ void ClassScene::Input()
 {
 
 	KeyBoradInputManager *input = KeyBoradInputManager::Instance();
-//	ControllerInputManager *inputController = ControllerInputManager::Instance();
+	//	ControllerInputManager *inputController = ControllerInputManager::Instance();
 
 #pragma region カメラ操作
 	debugCameraMove = { 0,0,0 };
@@ -76,14 +78,59 @@ void ClassScene::Update()
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
 
 
+	//速度の公式①
+	{
+		caluSpeed = KazPhysics::CalucurateHorizontalSpeed(0.8, 5.0);
+	}
+
+	//速度の公式②
+	{
+		caluSpeed2 = KazPhysics::CalucurateHorizontalSpeed2(0.8, 10.0);
+	}
+
+	//距離の公式1
+	{
+		double a = KazPhysics::CaluAcceleration(5.0, 5.0, 3.0);
+		caluDistance = KazPhysics::CalucurateHorizontalDistance(a, 5.0, 3.0);
+	}
+
+	//距離の公式2
+	{
+		caluDistance2 = KazPhysics::CalucurateHorizontalDistance2(5.0, 5.0, 3.0);
+	}
 
 
 
+	////例題1
+	//{
+	//	caluSpeed = KazPhysics::CalucurateVerticalDistance(9.8, 5.0);
+	//}
+
+	////例題2
+	//{
+	//	caluSpeed2 = KazPhysics::CalucurateVerticalDistance(9.8, -10.0);
+	//}
+
+	////例題3
+	//{
+	//	double a = KazPhysics::CalucurateVerticalSpeed2(9.8, -10.0, -10.0);
+	//	//KazPhysics::CalucurateVerticalSpeed(a,)
+	//}
+
+	////例題4
+	//{
+	//	caluDistance2 = KazPhysics::CalucurateVerticalSpeed2(5.0, 5.0, 20.0);
+	//}
+
+
+
+	boxRender->data.transform.pos;
 }
 
 void ClassScene::Draw()
 {
 	bg.Draw();
+	boxRender->Draw();
 }
 
 int ClassScene::SceneChange()

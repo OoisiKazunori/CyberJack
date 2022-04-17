@@ -287,10 +287,10 @@ XMVECTOR KazMath::ConvertWorldPosToScreenPos(XMVECTOR WORLD_POS, XMMATRIX VIEW_M
 	XMMATRIX mat;
 	XMVECTOR result = { -1,-1,-1 };
 
-	
-	XMMATRIX matRot = CaluRotaMatrix(XMFLOAT3( 0.0f,0.0f,0.0f ));
+
+	XMMATRIX matRot = CaluRotaMatrix(XMFLOAT3(0.0f, 0.0f, 0.0f));
 	XMMATRIX matTrans = CaluTransMatrix(WORLD_POS);
-	XMMATRIX matScale = CaluScaleMatrix(XMFLOAT3( 1.0f,1.0f,1.0f ));
+	XMMATRIX matScale = CaluScaleMatrix(XMFLOAT3(1.0f, 1.0f, 1.0f));
 
 	matWorld = XMMatrixIdentity();
 	matWorld *= matScale;
@@ -655,3 +655,52 @@ XMMATRIX KazMath::CaluWorld(const KazMath::Transform3D &TRANSFORM, const XMVECTO
 	baseMatWorldData.matWorld *= baseMatWorldData.matTrans;
 	return baseMatWorldData.matWorld;
 }
+
+double KazPhysics::CaluAcceleration(double VELOCITY, double TIME, double INITIAL_VALOCITY)
+{
+	return (VELOCITY - INITIAL_VALOCITY) / TIME;
+}
+
+double KazPhysics::CalucurateHorizontalSpeed(double ACCELERATION, double TIME, double INITIAL_VALOCITY)
+{
+	return  ACCELERATION * TIME + INITIAL_VALOCITY;
+};
+
+double KazPhysics::CalucurateHorizontalSpeed2(double ACCELERATION, double DISTANCE, double INITIAL_VALOCITY)
+{
+	double velocity = pow(INITIAL_VALOCITY, 2.0) + 2 * ACCELERATION * DISTANCE;
+	velocity = sqrtf(velocity);
+	return velocity;
+};
+
+double KazPhysics::CalucurateHorizontalDistance(double ACCELERATION, double TIME, double INITIAL_VALOCITY)
+{
+	return INITIAL_VALOCITY * TIME + ((1.0 / 2.0) * ACCELERATION * TIME * TIME);
+}
+
+double KazPhysics::CalucurateHorizontalDistance2(double ACCELERATION, double TIME, double INITIAL_VALOCITY)
+{
+	return (1.0 / 2.0) * (INITIAL_VALOCITY + ACCELERATION) * TIME;
+}
+
+double KazPhysics::CalucurateVerticalSpeed(double ACCELERATION, double TIME, double INITIAL_VALOCITY)
+{
+	return -ACCELERATION * TIME + INITIAL_VALOCITY;
+}
+
+double KazPhysics::CalucurateVerticalSpeed2(double ACCELERATION, double DISTANCE, double INITIAL_VALOCITY)
+{
+	double velocity = pow(INITIAL_VALOCITY, 2.0) + -(2 * ACCELERATION * DISTANCE);
+	velocity = sqrtf(velocity);
+	return velocity;
+}
+
+double KazPhysics::CalucurateVerticalDistance(double ACCELERATION, double TIME, double INITIAL_VALOCITY)
+{
+	return INITIAL_VALOCITY * TIME + (-(1.0 / 2.0) * ACCELERATION * TIME * TIME);
+}
+
+double KazPhysics::CalucurateVerticalDistance2(double ACCELERATION, double TIME, double INITIAL_VALOCITY)
+{
+	return 	(1.0 / 2.0) * ((INITIAL_VALOCITY * TIME) + ACCELERATION) * TIME;
+};
