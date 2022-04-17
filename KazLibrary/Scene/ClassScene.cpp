@@ -2,10 +2,16 @@
 #include"../Camera/CameraMgr.h"
 #include"../Input/KeyBoradInputManager.h"
 #include"../Math/KazMath.h"
+#include"../Imgui/MyImgui.h"
 
 ClassScene::ClassScene()
 {
 	boxRender = std::make_unique<BoxPolygonRender>();
+	distanceRender = std::make_unique<LineRender>();
+	landingPointRender = std::make_unique<BoxPolygonRender>();
+
+	dirtyFlags[0] = std::make_unique<DirtySet>(initialVelocity);
+	dirtyFlags[1] = std::make_unique<DirtySet>(valueOfAcceleration);
 }
 
 ClassScene::~ClassScene()
@@ -14,6 +20,10 @@ ClassScene::~ClassScene()
 
 void ClassScene::Init()
 {
+	eyePos = { 61.9449921,18.0000000,-81.9450226 };
+	targetPos = { 61.9449921,18.0000000,-76.9450226 };
+	valueOfAcceleration = 1.0f;
+	initialVelocity = 1.0f;
 }
 
 void ClassScene::Finalize()
@@ -73,64 +83,115 @@ void ClassScene::Input()
 
 void ClassScene::Update()
 {
-	eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
-	targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
+
+	ImGui::Begin("MT4_01");
+	ImGui::Checkbox("Start", &startFlag);
+	ImGui::SliderFloat("Acceleration", &valueOfAcceleration, 1.0f, 20.0f);
+	ImGui::SliderFloat("initialVelocity", &initialVelocity, 1.0f, 10.0f);
+
+	ImGui::Text("Result");
+	ImGui::Text("ReachingDistance:%f", landingPointRender->data.transform.pos.m128_f32[0]);
+	ImGui::Text("CurrentTime:%f", time);
+	ImGui::Text("ArrivalTime:%f", landingTime);
+	ImGui::End();
+
+	if (dirtyFlags[0]->FloatDirty() || dirtyFlags[1]->FloatDirty())
+	{
+		startFlag = false;
+	}
+
+
+	//eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
+	//targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
 
 
-	//速度の公式①
+	//開始
+	if (startFlag && time < landingTime - 0.1f)
 	{
-		caluSpeed = KazPhysics::CalucurateHorizontalSpeed(0.8, 5.0);
+		time += landingTime / 60.0f;
 	}
-
-	//速度の公式②
+	//終了
+	else if (!startFlag)
 	{
-		caluSpeed2 = KazPhysics::CalucurateHorizontalSpeed2(0.8, 10.0);
+		time = 0.0f;
 	}
-
-	//距離の公式1
+	//着地
+	else
 	{
-		double a = KazPhysics::CaluAcceleration(5.0, 5.0, 3.0);
-		caluDistance = KazPhysics::CalucurateHorizontalDistance(a, 5.0, 3.0);
-	}
-
-	//距離の公式2
-	{
-		caluDistance2 = KazPhysics::CalucurateHorizontalDistance2(5.0, 5.0, 3.0);
+		time = landingTime;
 	}
 
 
 
-	////例題1
-	//{
-	//	caluSpeed = KazPhysics::CalucurateVerticalDistance(9.8, 5.0);
-	//}
-
-	////例題2
-	//{
-	//	caluSpeed2 = KazPhysics::CalucurateVerticalDistance(9.8, -10.0);
-	//}
-
-	////例題3
-	//{
-	//	double a = KazPhysics::CalucurateVerticalSpeed2(9.8, -10.0, -10.0);
-	//	//KazPhysics::CalucurateVerticalSpeed(a,)
-	//}
-
-	////例題4
-	//{
-	//	caluDistance2 = KazPhysics::CalucurateVerticalSpeed2(5.0, 5.0, 20.0);
-	//}
+	//水平方向で使う情報
+	caluSpeed = KazPhysics::CalucurateHorizontalSpeed(valueOfAcceleration, time, initialVelocity);
+	caluDistance = KazPhysics::CalucurateHorizontalDistance2(valueOfAcceleration, time, initialVelocity);
+	//垂直方向で使う情報
+	caluSpeed2 = KazPhysics::CalucurateVerticalSpeed(valueOfAcceleration, time, initialVelocity);
+	caluDistance2 = KazPhysics::CalucurateVerticalDistance(valueOfAcceleration, time, initialVelocity);
 
 
+	XMFLOAT3 basePos(0.0f, 0.0f, 0.0f);
+	boxRender->data.transform.pos =
+	{
+		basePos.x + static_cast<float>(0.0 + caluDistance),
+		basePos.y + static_cast<float>(0.0 + caluDistance2),
+		basePos.z
+	};
+	distanceRender->data.color = { 255.0f,0.0f,0.0f,255.0f };
+	distanceRender->data.startPos =
+	{
+		basePos.x,
+		basePos.y,
+		basePos.z
+	};
 
-	boxRender->data.transform.pos;
+
+	int timer = 0;
+	int yCount = 0;
+	XMFLOAT2 distance;
+	while (1)
+	{
+		++timer;
+
+		//水平方向で使う情報
+		distance.x = KazPhysics::CalucurateHorizontalDistance2(valueOfAcceleration, timer, initialVelocity);
+		//垂直方向で使う情報
+		distance.y = KazPhysics::CalucurateVerticalDistance(valueOfAcceleration, timer, initialVelocity);
+
+		if (distance.y <= 0.0f)
+		{
+			landingTime = timer;
+			break;
+		}
+	}
+
+	distanceRender->data.endPos =
+	{
+		basePos.x + static_cast<float>(distance.x),
+		basePos.y,
+		basePos.z
+	};
+	landingPointRender->data.transform.pos = distanceRender->data.endPos;
+
+
+	if (boxRender->data.transform.pos.m128_f32[1] <= 0.0f)
+	{
+		bool falg = false;
+	}
+
+
+	dirtyFlags[0]->Record();
+	dirtyFlags[1]->Record();
 }
 
 void ClassScene::Draw()
 {
 	bg.Draw();
 	boxRender->Draw();
+	distanceRender->Draw();
+	landingPointRender->Draw();
 }
 
 int ClassScene::SceneChange()

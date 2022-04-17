@@ -28,7 +28,18 @@ private:
 	double caluDistance2;
 
 
+	float valueOfAcceleration;
+	float initialVelocity;
+	float time;
+	float landingTime;
+
+	bool startFlag;
+
 	BoxPolygonRenderPtr boxRender;
+	BoxPolygonRenderPtr landingPointRender;
+	LineRenderPtr distanceRender;
 	BackGroundForDebug bg;
+
+	std::array<unique_ptr<DirtySet>, 2>dirtyFlags;
 };
 
