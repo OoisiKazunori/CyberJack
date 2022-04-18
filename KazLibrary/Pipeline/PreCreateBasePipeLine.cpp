@@ -332,6 +332,8 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	//コンピュートシェーダーのコンパイル
 	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "TestComputeShader.hlsl", "CSmain", "cs_5_0", SHADER_COMPUTE_TEST);
 
+	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "VHSPixelShader.hlsl", "PSmain", "ps_5_0", SHADER_PIXCEL_WIHITENOISE);
+
 	OutputDebugStringA("シェーダーのコンパイルを終了します\n");
 #pragma endregion
 
@@ -1189,6 +1191,19 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		ROOTSIGNATURE_MODE_LINE,
 		PIPELINE_NAME_FOG_LINE_FORBG
 	);
+
+
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS_TEX,
+		SHADER_VERTEX_SPRITE,
+		SHADER_PIXCEL_WIHITENOISE,
+		PIPELINE_DATA_NOCARING_BLENDALPHA,
+		ROOTSIGNATURE_MODE_LIGHT_BORDER,
+		PIPELINE_NAME_SPRITE_VHS
+	);
+
+
+
 
 	//マルチパスは「テクスチャ用」、
 	//Create2DPipeLineはスプライト
