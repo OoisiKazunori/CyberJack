@@ -32,9 +32,9 @@ ClassScene::ClassScene()
 
 	data[0].graphSize = { WIN_X,WIN_Y };
 	data[0].backGroundColor = BG_COLOR;
-	data[1].graphSize = { WIN_X,WIN_Y };
+	data[1].graphSize = { WIN_X,WIN_Y};
 	data[1].backGroundColor = { 255.0f,0.0f,0.0f };
-	RenderTargetStatus::Instance()->CreateMultiRenderTarget(data, DXGI_FORMAT_R8G8B8A8_UNORM);
+	multiHandle = RenderTargetStatus::Instance()->CreateMultiRenderTarget(data, DXGI_FORMAT_R8G8B8A8_UNORM);
 }
 
 ClassScene::~ClassScene()
@@ -112,20 +112,28 @@ void ClassScene::Update()
 	mainRenderTarget->TransData(&data, handle, typeid(data).name());
 
 	modelRender->data.isPlay = true;
-
 }
 
 void ClassScene::Draw()
 {
-	RenderTargetStatus::Instance()->PrepareToChangeBarrier(gameRenderTarget->data.handle);
-	RenderTargetStatus::Instance()->ClearRenderTarget(gameRenderTarget->data.handle);
-	modelRender->Draw();
-	bg.Draw();
-	RenderTargetStatus::Instance()->PrepareToChangeBarrier(mainRenderTarget->data.handle, gameRenderTarget->data.handle);
-	RenderTargetStatus::Instance()->ClearRenderTarget(mainRenderTarget->data.handle);
-	gameRenderTarget->Draw();
-	RenderTargetStatus::Instance()->PrepareToCloseBarrier(mainRenderTarget->data.handle);
+	RenderTargetStatus::Instance()->PrepareToChangeBarrier(multiHandle[0]);
+	RenderTargetStatus::Instance()->ClearRenderTarget(multiHandle[0]);
+	//modelRender->Draw();
+	//bg.Draw();
+	//RenderTargetStatus::Instance()->PrepareToChangeBarrier(mainRenderTarget->data.handle, gameRenderTarget->data.handle);
+	//RenderTargetStatus::Instance()->ClearRenderTarget(mainRenderTarget->data.handle);
+	//gameRenderTarget->Draw();
+	RenderTargetStatus::Instance()->PrepareToCloseBarrier(multiHandle[0]);
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
+
+	if (KeyBoradInputManager::Instance()->InputState(DIK_O))
+	{
+		mainRenderTarget->data.handle = multiHandle[1];
+	}
+	else
+	{
+		mainRenderTarget->data.handle = multiHandle[0];
+	}
 	mainRenderTarget->Draw();
 }
 

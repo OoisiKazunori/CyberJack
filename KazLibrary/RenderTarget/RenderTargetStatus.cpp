@@ -71,7 +71,7 @@ void RenderTargetStatus::SetDoubleBufferFlame(XMFLOAT3 COLOR)
 
 	bbIndex = copySwapchain->GetCurrentBackBufferIndex();
 	//バリア切り替え
-	ChangeBarrier(backBuffers[bbIndex].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET, 1);
+	ChangeBarrier(backBuffers[bbIndex].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
 	//レンダータゲットの設定
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvH;
@@ -98,49 +98,69 @@ void RenderTargetStatus::ClearDoubuleBuffer(XMFLOAT3 COLOR)
 
 void RenderTargetStatus::SwapResourceBarrier()
 {
-	ChangeBarrier(backBuffers[bbIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT, 1);
+	ChangeBarrier(backBuffers[bbIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 }
 
-void RenderTargetStatus::PrepareToChangeBarrier(const short& OPEN_RENDERTARGET_HANDLE, const short& CLOSE_RENDERTARGET_HANDLE)
+void RenderTargetStatus::PrepareToChangeBarrier(const short &OPEN_RENDERTARGET_HANDLE, const short &CLOSE_RENDERTARGET_HANDLE)
 {
-	unsigned int openRendertargetPass = CountPass(OPEN_RENDERTARGET_HANDLE);
-	unsigned int closeRendertargetPass = CountPass(CLOSE_RENDERTARGET_HANDLE);
+	RenderTargetHandle openRendertargetPass = CountPass(OPEN_RENDERTARGET_HANDLE);
 
 
 	if (CLOSE_RENDERTARGET_HANDLE == -1)
 	{
 		//ダブルバッファリング用のバリアを閉じる
-		ChangeBarrier(backBuffers[bbIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT, 1);
+		ChangeBarrier(backBuffers[bbIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 
 	}
 	else
 	{
-		//指定のレンダータゲットを閉じる
-		ChangeBarrier(buffers->GetBufferData(CLOSE_RENDERTARGET_HANDLE).Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, closeRendertargetPass);
+		RenderTargetHandle closeRendertargetPass = CountPass(CLOSE_RENDERTARGET_HANDLE);
+
+		for (int i = 0; i < closeRendertargetPass.renderTargetNum; ++i)
+		{
+			//指定のレンダータゲットを閉じる
+			ChangeBarrier(buffers->GetBufferData(closeRendertargetPass.firstHandle + i).Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+		}
 	}
 
-	//指定のレンダータゲットでバリアをあける
-	ChangeBarrier(buffers->GetBufferData(OPEN_RENDERTARGET_HANDLE).Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET, openRendertargetPass);
+
+	for (int i = 0; i < openRendertargetPass.renderTargetNum; ++i)
+	{
+		//指定のレンダータゲットでバリアをあける
+		ChangeBarrier(buffers->GetBufferData(openRendertargetPass.firstHandle + i).Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
+	}
 
 
 	//レンダータゲットの設定
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvH = multiPassRTVHeap->GetCPUDescriptorHandleForHeapStart();
-	rtvH.ptr += DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV) * buffers->handle->CaluNowHandle(OPEN_RENDERTARGET_HANDLE);
-	DirectX12CmdList::Instance()->cmdList->OMSetRenderTargets(openRendertargetPass, &rtvH, false, &gDepth.dsvH[handle]);
+	std::vector<D3D12_CPU_DESCRIPTOR_HANDLE>rtvHs;
+	for (int i = 0; i < openRendertargetPass.renderTargetNum; ++i)
+	{
+		unsigned int handle = buffers->handle->CaluNowHandle(openRendertargetPass.firstHandle + i);
+		D3D12_CPU_DESCRIPTOR_HANDLE rtvH = multiPassRTVHeap->GetCPUDescriptorHandleForHeapStart();
+		rtvH.ptr += DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV) * handle;
+		rtvHs.push_back(rtvH);
+	}
+
+	DirectX12CmdList::Instance()->cmdList->OMSetRenderTargets(openRendertargetPass.renderTargetNum, rtvHs.data(), false, &gDepth.dsvH[handle]);
 }
 
-void RenderTargetStatus::PrepareToCloseBarrier(const short& RENDERTARGET_HANDLE)
+void RenderTargetStatus::PrepareToCloseBarrier(const short &RENDERTARGET_HANDLE)
 {
-	ChangeBarrier(buffers->GetBufferData(RENDERTARGET_HANDLE).Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, CountPass(RENDERTARGET_HANDLE));
+	RenderTargetHandle closeRendertargetPass = CountPass(RENDERTARGET_HANDLE);
+	for (int i = 0; i < closeRendertargetPass.renderTargetNum; ++i)
+	{
+		ChangeBarrier(buffers->GetBufferData(closeRendertargetPass.firstHandle + i).Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+	}
 }
 
 void RenderTargetStatus::PrepareToChangeBarrier(const short &RENDERTARGET, int DEPHT_HANDLE)
 {
 	//ダブルバッファリング用のバリアを閉じる
-	ChangeBarrier(backBuffers[bbIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT, 1);
+	ChangeBarrier(backBuffers[bbIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 	gDepth.Clear(DEPHT_HANDLE);
+
 	//指定のレンダータゲットでバリアをあける
-	ChangeBarrier(buffers->GetBufferData(0).Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET, CountPass(RENDERTARGET));
+	ChangeBarrier(buffers->GetBufferData(0).Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
 
 	//レンダータゲットの設定とクリア
@@ -151,25 +171,38 @@ void RenderTargetStatus::PrepareToChangeBarrier(const short &RENDERTARGET, int D
 		rtvH.ptr += DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	}
 
-
 	DirectX12CmdList::Instance()->cmdList->OMSetRenderTargets(1, &rtvH, false, &gDepth.dsvH[DEPHT_HANDLE]);
 	float ClearColor[] = { clearColors[0].x,clearColors[0].y ,clearColors[0].z ,clearColors[0].w };
 	DirectX12CmdList::Instance()->cmdList->ClearRenderTargetView(rtvH, ClearColor, 0, nullptr);
 }
 
-void RenderTargetStatus::ClearRenderTarget(const short& RENDERTARGET_HANDLE)
+void RenderTargetStatus::ClearRenderTarget(const short &RENDERTARGET_HANDLE)
 {
-	short clearHandle = buffers->handle->CaluNowHandle(RENDERTARGET_HANDLE);
-
 	//レンダータゲットのクリア
 	gDepth.Clear(handle);
 	//レンダータゲットの設定
-	//DescriptorHeapMgr::Instance()->SetDescriptorHeap(RENDERTARGET_HANDLE);
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvH = multiPassRTVHeap->GetCPUDescriptorHandleForHeapStart();
-	rtvH.ptr += DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV) * buffers->handle->CaluNowHandle(RENDERTARGET_HANDLE);
 
-	float ClearColor[] = { clearColors[clearHandle].x,clearColors[clearHandle].y ,clearColors[clearHandle].z ,clearColors[clearHandle].w };
-	DirectX12CmdList::Instance()->cmdList->ClearRenderTargetView(rtvH, ClearColor, 0, nullptr);
+	RenderTargetHandle openHandle = CountPass(RENDERTARGET_HANDLE);
+	for (int i = 0; i < openHandle.renderTargetNum; ++i)
+	{
+		unsigned int handle = static_cast<unsigned int>(buffers->handle->CaluNowHandle(openHandle.firstHandle + i));
+		D3D12_CPU_DESCRIPTOR_HANDLE rtvH = multiPassRTVHeap->GetCPUDescriptorHandleForHeapStart();
+		rtvH.ptr += DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV) * handle;
+
+		short clearHandle = buffers->handle->CaluNowHandle(openHandle.firstHandle + i);
+		float ClearColor[] = { clearColors[clearHandle].x,clearColors[clearHandle].y ,clearColors[clearHandle].z ,clearColors[clearHandle].w };
+		DirectX12CmdList::Instance()->cmdList->ClearRenderTargetView(rtvH, ClearColor, 0, nullptr);
+
+		XMUINT2 graphSize =
+		{
+			static_cast<uint32_t>(buffers->GetBufferData(openHandle.firstHandle + i)->GetDesc().Width),
+			static_cast<uint32_t>(buffers->GetBufferData(openHandle.firstHandle + i)->GetDesc().Height)
+		};
+		CD3DX12_RECT rect(0.0f, 0.0f, graphSize.x, graphSize.y);
+		CD3DX12_VIEWPORT viewport(0.0f, 0.0f, graphSize.x, graphSize.y);
+		DirectX12CmdList::Instance()->cmdList->RSSetViewports(openHandle.renderTargetNum, &viewport);
+		DirectX12CmdList::Instance()->cmdList->RSSetScissorRects(openHandle.renderTargetNum, &rect);
+	}
 }
 
 short RenderTargetStatus::CreateRenderTarget(const XMFLOAT2 &GRAPH_SIZE, const XMFLOAT3 &CLEAR_COLOR, const DXGI_FORMAT &FORMAT)
@@ -227,7 +260,9 @@ short RenderTargetStatus::CreateRenderTarget(const XMFLOAT2 &GRAPH_SIZE, const X
 		multiPassRTVHanlde
 	);
 
-	renderTargetData.push_back(vector<short>(handle));
+	vector<short> handls;
+	handls.push_back(handle);
+	renderTargetData.push_back(handls);
 	return num;
 }
 
@@ -272,7 +307,7 @@ std::vector<short> RenderTargetStatus::CreateMultiRenderTarget(const std::vector
 
 
 		multiPassRTVHanlde = multiPassRTVHeap->GetCPUDescriptorHandleForHeapStart();
-		for (int i = 0; i < buffers->handle->CaluNowHandle(num); i++)
+		for (int bufferNum = 0; bufferNum < buffers->handle->CaluNowHandle(num); bufferNum++)
 		{
 			multiPassRTVHanlde.ptr
 				+= DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
@@ -307,7 +342,7 @@ D3D12_GPU_DESCRIPTOR_HANDLE RenderTargetStatus::GetViewData(short HANDLE)
 	return DescriptorHeapMgr::Instance()->GetGpuDescriptorView(HANDLE);
 }
 
-void RenderTargetStatus::ChangeBarrier(ID3D12Resource *RESOURCE, const D3D12_RESOURCE_STATES& BEFORE_STATE, const D3D12_RESOURCE_STATES& AFTER_STATE, unsigned int RENDER_TARGET_PASS_NUM)
+void RenderTargetStatus::ChangeBarrier(ID3D12Resource *RESOURCE, const D3D12_RESOURCE_STATES &BEFORE_STATE, const D3D12_RESOURCE_STATES &AFTER_STATE)
 {
 	D3D12_RESOURCE_BARRIER barrier =
 		CD3DX12_RESOURCE_BARRIER::Transition(
@@ -315,21 +350,20 @@ void RenderTargetStatus::ChangeBarrier(ID3D12Resource *RESOURCE, const D3D12_RES
 			BEFORE_STATE,
 			AFTER_STATE
 		);
-	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(RENDER_TARGET_PASS_NUM, &barrier);
+	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(1, &barrier);
 }
 
-unsigned int RenderTargetStatus::CountPass(short HANDLE)
+const RenderTargetStatus::RenderTargetHandle &RenderTargetStatus::CountPass(short HANDLE)
 {
 	for (int handleNum = 0; handleNum < renderTargetData.size(); ++handleNum)
 	{
-		for (int renderTargetNum = 0; renderTargetNum < renderTargetData.size(); ++renderTargetNum)
+		for (int renderTargetNum = 0; renderTargetNum < renderTargetData[handleNum].size(); ++renderTargetNum)
 		{
 			if (renderTargetData[handleNum][renderTargetNum] == HANDLE)
 			{
-				return static_cast<unsigned int>(renderTargetData[handleNum].size());
+				return	RenderTargetHandle(static_cast<unsigned int>(renderTargetData[handleNum].size()), static_cast<unsigned int>(renderTargetData[handleNum][0]));
 			}
 		}
 	}
-	//パスが無かった場合アサートを吐く
 	assert(0);
 }

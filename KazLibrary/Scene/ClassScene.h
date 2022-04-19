@@ -28,5 +28,7 @@ private:
 	Sprite2DRenderPtr gameRenderTarget;
 	Sprite2DRenderPtr mainRenderTarget;
 	BackGroundForDebug bg;
+
+	std::vector<short>multiHandle;
 };
 

@@ -8,11 +8,9 @@ struct MultiRenderTargetData
 {
 	XMFLOAT3 backGroundColor;
 	XMFLOAT2 graphSize;
-	MultiRenderTargetData() 
+	MultiRenderTargetData()
 	{};
 };
-
-
 
 /// <summary>
 /// レンダーターゲットの切り替え
@@ -57,7 +55,7 @@ public:
 	/// 指定のレンダーターゲットをリソースバリアを閉じます
 	/// </summary>
 	/// <param name="RENDERTARGET">閉じたいレンダーターゲット</param>
-	void PrepareToCloseBarrier(const short& RENDERTARGET_HANDLE);
+	void PrepareToCloseBarrier(const short &RENDERTARGET_HANDLE);
 
 	/// <summary>
 	/// 未完成
@@ -65,14 +63,14 @@ public:
 	/// </summary>
 	/// <param name="RENDERTARGET">指定のレンダータゲット</param>
 	/// <param name="DEPHT_HANDLE">指定の深度バッファ</param>
-	void PrepareToChangeBarrier(const short &RENDERTARGET,int DEPHT_HANDLE);
+	void PrepareToChangeBarrier(const short &RENDERTARGET, int DEPHT_HANDLE);
 
 
 	/// <summary>
 	/// レンダーターゲットをクリアします
 	/// </summary>
 	/// <param name="RENDERTARGET">クリアするレンダーターゲット</param>
-	void ClearRenderTarget(const short& RENDERTARGET_HANDLE);
+	void ClearRenderTarget(const short &RENDERTARGET_HANDLE);
 
 
 	short CreateRenderTarget(const XMFLOAT2 &GRAPH_SIZE, const XMFLOAT3 &CLEAR_COLOR, const DXGI_FORMAT &FORMAT);
@@ -82,7 +80,7 @@ public:
 
 	ComPtr<ID3D12DescriptorHeap> multiPassRTVHeap;
 	ComPtr<ID3D12Resource> copyBuffer;
-	
+
 	GraphicsDepthTest gDepth;
 	short handle, handle2;
 
@@ -98,15 +96,23 @@ private:
 	array<XMFLOAT4, 100> clearColors;
 
 
-	ComPtr<IDXGISwapChain4> copySwapchain;	
+	ComPtr<IDXGISwapChain4> copySwapchain;
 	ComPtr<ID3D12DescriptorHeap> rtvHeaps;
 	D3D12_CPU_DESCRIPTOR_HANDLE multiPassRTVHanlde;
 
 
 	D3D12_DESCRIPTOR_HEAP_DESC heapDesc{};
 
-	void ChangeBarrier(ID3D12Resource *RESOURCE, const D3D12_RESOURCE_STATES& BEFORE_STATE, const D3D12_RESOURCE_STATES& AFTER_STATE, unsigned int RENDER_TARGET_PASS_NUM);
+	void ChangeBarrier(ID3D12Resource *RESOURCE, const D3D12_RESOURCE_STATES &BEFORE_STATE, const D3D12_RESOURCE_STATES &AFTER_STATE);
 
-	unsigned int CountPass(short HANDLE);
+	struct RenderTargetHandle
+	{
+		unsigned int renderTargetNum;
+		unsigned int firstHandle;
+		RenderTargetHandle(unsigned int RENDER_TARGET_NUM, unsigned int FIRST_HANDLE) :renderTargetNum(RENDER_TARGET_NUM), firstHandle(FIRST_HANDLE)
+		{
+		};
+	};
+	const RenderTargetHandle &CountPass(short HANDLE);
 };
 
