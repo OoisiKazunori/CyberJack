@@ -17,7 +17,7 @@ ClassScene::ClassScene()
 	mainRenderTarget->data.pipelineName = PIPELINE_NAME_SPRITE_VHS;
 
 
-	handle=mainRenderTarget->CreateConstBuffer(sizeof(constBufferVhsData), typeid(constBufferVhsData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+	handle = mainRenderTarget->CreateConstBuffer(sizeof(constBufferVhsData), typeid(constBufferVhsData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
 
 
 	gameRenderTarget->data.handle =
@@ -32,7 +32,7 @@ ClassScene::ClassScene()
 
 	data[0].graphSize = { WIN_X,WIN_Y };
 	data[0].backGroundColor = BG_COLOR;
-	data[1].graphSize = { WIN_X,WIN_Y};
+	data[1].graphSize = { WIN_X,WIN_Y };
 	data[1].backGroundColor = { 255.0f,0.0f,0.0f };
 	multiHandle = RenderTargetStatus::Instance()->CreateMultiRenderTarget(data, DXGI_FORMAT_R8G8B8A8_UNORM);
 }
@@ -45,6 +45,8 @@ void ClassScene::Init()
 {
 	modelRender->data.handle =
 		FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "boneTest.fbx");
+
+	modelRender->data.pipelineName = PIPELINE_NAME_FBX_RENDERTARGET_TWO;
 }
 
 void ClassScene::Finalize()
@@ -118,7 +120,7 @@ void ClassScene::Draw()
 {
 	RenderTargetStatus::Instance()->PrepareToChangeBarrier(multiHandle[0]);
 	RenderTargetStatus::Instance()->ClearRenderTarget(multiHandle[0]);
-	//modelRender->Draw();
+	modelRender->Draw();
 	//bg.Draw();
 	//RenderTargetStatus::Instance()->PrepareToChangeBarrier(mainRenderTarget->data.handle, gameRenderTarget->data.handle);
 	//RenderTargetStatus::Instance()->ClearRenderTarget(mainRenderTarget->data.handle);

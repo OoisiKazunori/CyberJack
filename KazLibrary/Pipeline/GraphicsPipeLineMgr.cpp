@@ -5,18 +5,18 @@
 
 GraphicsPipeLineMgr::GraphicsPipeLineMgr()
 {
-	InputLayOutRegisterData.resize(50);
-	VertexShaderRegisterData.resize(50);
-	PixcelShaderRegisterData.resize(50);
-	PipeLineDataRegisterData.resize(50);
-	GeometoryShaderRegisterData.resize(50);
-	RootSignatureName.resize(50);
-	PipeLineRegisterData.resize(50);
-	computeRootSignatureName.resize(50);
+	InputLayOutRegisterData.resize(100);
+	VertexShaderRegisterData.resize(100);
+	PixcelShaderRegisterData.resize(100);
+	PipeLineDataRegisterData.resize(100);
+	GeometoryShaderRegisterData.resize(100);
+	RootSignatureName.resize(100);
+	PipeLineRegisterData.resize(100);
+	computeRootSignatureName.resize(100);
 
-	ComputeShaderRegisterData.resize(50);
-	computePipeLineDataRegisterData.resize(50);
-	ComputePipeLineRegisterData.resize(50);
+	ComputeShaderRegisterData.resize(100);
+	computePipeLineDataRegisterData.resize(100);
+	ComputePipeLineRegisterData.resize(100);
 	geo = false;
 }
 
