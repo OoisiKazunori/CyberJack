@@ -89,19 +89,8 @@ public:
 	unique_ptr<CreateGpuBuffer> buffers;
 	int bbIndex;
 
-	/// <summary>
-	/// レンダーターゲット
-	/// </summary>
-	struct MultiRenderTargetHandleData
-	{
-		int handle;
-		int renderTargetNum;
-		MultiRenderTargetHandleData(int HANDLE, int RNEDER_TARGET_NUM) :handle(HANDLE), renderTargetNum(RNEDER_TARGET_NUM)
-		{
-		}
-	};
-	std::vector<MultiRenderTargetHandleData>renderTargetData;
-
+	//レンダーターゲットのハンドルからパス数を記録した配列
+	std::vector<std::vector<short>>renderTargetData;
 private:
 
 	std::vector<ComPtr<ID3D12Resource>> backBuffers;
@@ -116,6 +105,8 @@ private:
 
 	D3D12_DESCRIPTOR_HEAP_DESC heapDesc{};
 
-	void ChangeBarrier(ID3D12Resource *RESOURCE, D3D12_RESOURCE_STATES BEFORE_STATE, D3D12_RESOURCE_STATES AFTER_STATE);
+	void ChangeBarrier(ID3D12Resource *RESOURCE, const D3D12_RESOURCE_STATES& BEFORE_STATE, const D3D12_RESOURCE_STATES& AFTER_STATE, unsigned int RENDER_TARGET_PASS_NUM);
+
+	unsigned int CountPass(short HANDLE);
 };
 
