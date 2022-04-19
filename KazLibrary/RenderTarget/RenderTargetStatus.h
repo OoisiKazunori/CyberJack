@@ -4,6 +4,16 @@
 #include"../Helper/ISinglton.h"
 #include"../Buffer/CreateGpuBuffer.h"
 
+struct MultiRenderTargetData
+{
+	XMFLOAT3 backGroundColor;
+	XMFLOAT2 graphSize;
+	MultiRenderTargetData() 
+	{};
+};
+
+
+
 /// <summary>
 /// レンダーターゲットの切り替え
 /// ダブルバッファリングの処理がメインですが
@@ -66,6 +76,7 @@ public:
 
 
 	short CreateRenderTarget(const XMFLOAT2 &GRAPH_SIZE, const XMFLOAT3 &CLEAR_COLOR, const DXGI_FORMAT &FORMAT);
+	std::vector<short> CreateMultiRenderTarget(const std::vector<MultiRenderTargetData> &MULTIRENDER_TARGET_DATA, const DXGI_FORMAT &FORMAT);
 	ID3D12Resource *GetBufferData(short HANDLE)const;
 	D3D12_GPU_DESCRIPTOR_HANDLE GetViewData(short HANDLE);
 
@@ -78,8 +89,20 @@ public:
 	unique_ptr<CreateGpuBuffer> buffers;
 	int bbIndex;
 
-private:
+	/// <summary>
+	/// レンダーターゲット
+	/// </summary>
+	struct MultiRenderTargetHandleData
+	{
+		int handle;
+		int renderTargetNum;
+		MultiRenderTargetHandleData(int HANDLE, int RNEDER_TARGET_NUM) :handle(HANDLE), renderTargetNum(RNEDER_TARGET_NUM)
+		{
+		}
+	};
+	std::vector<MultiRenderTargetHandleData>renderTargetData;
 
+private:
 
 	std::vector<ComPtr<ID3D12Resource>> backBuffers;
 
