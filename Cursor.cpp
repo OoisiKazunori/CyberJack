@@ -40,8 +40,14 @@ Cursor::Cursor()
 	cursorFlameTex->data.transform.scale = scale;
 	numberTex->data.transform.scale = scale;
 	stopFlag = { 0,0 };
-
+	baseScale = { 2.0f,2.0f };
 	deadLine = 0.25f;
+
+
+	for (int i = 0; i < cursorEffectTex.size(); ++i)
+	{
+		cursorEffectTex[i].cursorEffectTex->data.handle = flameHandle;
+	}
 }
 
 void Cursor::Init()
@@ -49,9 +55,8 @@ void Cursor::Init()
 	honraiCursorPos = { WIN_X / 2.0f,WIN_Y / 2.0f,0.0f };
 	cursorPos = { WIN_X / 2.0f,WIN_Y / 2.0f,0.0f };
 
-	XMVECTOR scale = { 2.0f,2.0f };
-	cursorFlameTex->data.transform.scale = scale;
-	numberTex->data.transform.scale = scale;
+	cursorFlameTex->data.transform.scale = baseScale;
+	numberTex->data.transform.scale = baseScale;
 	stopFlag = { 0,0 };
 
 	enableLockOnTimer = 0;
@@ -385,7 +390,32 @@ void Cursor::Update()
 
 	//カメラ無操作-----------------------
 
+	//カーソル演出
+	for (int i = 0; i < cursorEffectTex.size(); ++i)
+	{
+		if (releaseFlag && !cursorEffectTex[i].initFlag)
+		{
+			cursorEffectTex[i].cursorEffectTex->data.transform.pos = cursorPos;
+			cursorEffectTex[i].cursorEffectTex->data.alpha = 255.0f;
+			cursorEffectTex[i].cursorEffectTex->data.transform.scale = baseScale;
+			cursorEffectTex[i].initFlag = true;
+			break;
+		}
+	}
 
+	for (int i = 0; i < cursorEffectTex.size(); ++i)
+	{
+		if (cursorEffectTex[i].initFlag)
+		{
+			cursorEffectTex[i].cursorEffectTex->data.alpha -= 255.0f / 10.0f;
+			XMVECTOR addSize = { 0.1f,0.1f };
+			cursorEffectTex[i].cursorEffectTex->data.transform.scale += addSize;
+		}
+		if (cursorEffectTex[i].cursorEffectTex->data.alpha <= 0.0f)
+		{
+			cursorEffectTex[i].initFlag = false;
+		}
+	}
 
 
 	//当たり判定----------------------------------------------------------------
@@ -406,7 +436,7 @@ void Cursor::Update()
 	ImGui::InputFloat("KOCKBACK_VELOCITY_Y", &KOCKBACK_VELOCITY.y);
 	ImGui::InputFloat("deadLine", &deadLine);
 	ImGui::Text("NowSpeed:%f", speed);
-	ImGui::Text("MaxSpeed:%f", baseSpeed *(1.0 - deadLine));
+	ImGui::Text("MaxSpeed:%f", baseSpeed * (1.0 - deadLine));
 	ImGui::Text("KnockBackValX%f", knockBackVal.m128_f32[0]);
 	ImGui::Text("KnockBackValY%f", knockBackVal.m128_f32[1]);
 	ImGui::Text("stickAngleX:%f", honraiStick.m128_f32[0]);
@@ -419,6 +449,14 @@ void Cursor::Draw()
 {
 	numberTex->Draw();
 	cursorFlameTex->Draw();
+
+	for (int i = 0; i < cursorEffectTex.size(); ++i)
+	{
+		if (cursorEffectTex[i].initFlag)
+		{
+			cursorEffectTex[i].cursorEffectTex->Draw();
+		}
+	}
 }
 
 bool Cursor::LockOn()
