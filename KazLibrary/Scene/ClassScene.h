@@ -22,8 +22,6 @@ private:
 	XMFLOAT3 eyePos, targetPos;
 	XMFLOAT2 angle;
 
-	double caluSpeed;
-	double caluSpeed2;
 	double caluDistance;
 	double caluDistance2;
 

@@ -88,7 +88,6 @@ void ClassScene::Update()
 	ImGui::Checkbox("Start", &startFlag);
 	ImGui::SliderFloat("Acceleration", &valueOfAcceleration, 1.0f, 20.0f);
 	ImGui::SliderFloat("initialVelocity", &initialVelocity, 1.0f, 10.0f);
-
 	ImGui::Text("Result");
 	ImGui::Text("ReachingDistance:%f", landingPointRender->data.transform.pos.m128_f32[0]);
 	ImGui::Text("CurrentTime:%f", time);
@@ -100,9 +99,6 @@ void ClassScene::Update()
 		startFlag = false;
 	}
 
-
-	//eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
-	//targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
 
 
@@ -125,20 +121,24 @@ void ClassScene::Update()
 
 
 	//水平方向で使う情報
-	caluSpeed = KazPhysics::CalucurateHorizontalSpeed(valueOfAcceleration, time, initialVelocity);
 	caluDistance = KazPhysics::CalucurateHorizontalDistance2(valueOfAcceleration, time, initialVelocity);
 	//垂直方向で使う情報
-	caluSpeed2 = KazPhysics::CalucurateVerticalSpeed(valueOfAcceleration, time, initialVelocity);
 	caluDistance2 = KazPhysics::CalucurateVerticalDistance(valueOfAcceleration, time, initialVelocity);
 
 
+	
 	XMFLOAT3 basePos(0.0f, 0.0f, 0.0f);
+	//n秒後の位置-----------------------
 	boxRender->data.transform.pos =
 	{
 		basePos.x + static_cast<float>(0.0 + caluDistance),
 		basePos.y + static_cast<float>(0.0 + caluDistance2),
 		basePos.z
 	};
+	//n秒後の位置-----------------------
+
+
+	//開始地点-----------------------
 	distanceRender->data.color = { 255.0f,0.0f,0.0f,255.0f };
 	distanceRender->data.startPos =
 	{
@@ -146,7 +146,10 @@ void ClassScene::Update()
 		basePos.y,
 		basePos.z
 	};
+	//開始地点-----------------------
 
+
+	//終点の計算-----------------------
 
 	int timer = 0;
 	int yCount = 0;
@@ -166,7 +169,9 @@ void ClassScene::Update()
 			break;
 		}
 	}
+	//終点の計算-----------------------
 
+	//終点の設定-----------------------
 	distanceRender->data.endPos =
 	{
 		basePos.x + static_cast<float>(distance.x),
@@ -174,12 +179,7 @@ void ClassScene::Update()
 		basePos.z
 	};
 	landingPointRender->data.transform.pos = distanceRender->data.endPos;
-
-
-	if (boxRender->data.transform.pos.m128_f32[1] <= 0.0f)
-	{
-		bool falg = false;
-	}
+	//終点の設定-----------------------
 
 
 	dirtyFlags[0]->Record();
