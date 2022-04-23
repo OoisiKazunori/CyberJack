@@ -82,7 +82,7 @@ void ObjModelRender::Draw()
 			//baseMatWorldData.matWorld *= data.motherMat;
 
 			//親行列を掛ける
-			motherMat = baseMatWorldData.matWorld;
+			data.motherMat = baseMatWorldData.matWorld;
 		}
 		//行列計算-----------------------------------------------------------------------------------------------------
 

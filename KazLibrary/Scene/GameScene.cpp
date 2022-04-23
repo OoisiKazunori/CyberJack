@@ -495,12 +495,12 @@ void GameScene::Update()
 
 
 
-	eyePos = KazMath::LoadVecotrToXMFLOAT3(cameraPoly->data.transform.pos);
-	targetPos = KazMath::LoadVecotrToXMFLOAT3(baseTargetPos);
+	//eyePos = KazMath::LoadVecotrToXMFLOAT3(cameraPoly->data.transform.pos);
+	//targetPos = KazMath::LoadVecotrToXMFLOAT3(baseTargetPos);
 
 	//デバック用
-	//eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
-	//targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
+	eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
+	targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
 
 #pragma endregion

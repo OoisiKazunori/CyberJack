@@ -9,7 +9,7 @@
 class Sprite3DRender : public IRender
 {
 public:
-	Sprite3DRender();
+	Sprite3DRender(const XMFLOAT2 &ANCHOR_POINT = { 0.5f,0.5f });
 	~Sprite3DRender();
 	void Draw();
 
@@ -45,5 +45,6 @@ private:
 	unique_ptr<DirtySet> cameraProjectionDirtyFlag;
 	unique_ptr<DirtySet> cameraBillBoardDirtyFlag;
 	unique_ptr<DirtySet> sizeDirtyFlag;
+	unique_ptr<DirtySet> motherDirtyFlag;
 
 };

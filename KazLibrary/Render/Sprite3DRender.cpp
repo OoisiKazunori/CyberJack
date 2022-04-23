@@ -3,28 +3,30 @@
 #include"../Helper/KazRenderHelper.h"
 #include"../Helper/KazHelper.h"
 
-Sprite3DRender::Sprite3DRender()
+Sprite3DRender::Sprite3DRender(const XMFLOAT2 &ANCHOR_POINT)
 {
-	anchorPoint = { 0.5f,0.5f };
+	anchorPoint = ANCHOR_POINT;
 
-	gpuBuffer.reset(new CreateGpuBuffer);
+	gpuBuffer = std::make_unique<CreateGpuBuffer>();
 
-	positionDirtyFlag.reset(new DirtySet(data.transform.pos));
-	scaleDirtyFlag.reset(new DirtySet(data.transform.scale));
-	rotationDirtyFlag.reset(new DirtySet(data.transform.rotation));
+	positionDirtyFlag = std::make_unique<DirtySet>(data.transform.pos);
+	scaleDirtyFlag = std::make_unique<DirtySet>(data.transform.scale);
+	rotationDirtyFlag = std::make_unique<DirtySet>(data.transform.rotation);
 
-	flipXDirtyFlag.reset(new DirtyFlag<bool>(&data.flip.x,false));
-	flipYDirtyFlag.reset(new DirtyFlag<bool>(&data.flip.y,false));
+	flipXDirtyFlag = std::make_unique<DirtyFlag<bool>>(&data.flip.x, false);
+	flipYDirtyFlag = std::make_unique<DirtyFlag<bool>>(&data.flip.y, false);
 
-	textureHandleDirtyFlag.reset(new DirtyFlag<short>(&data.handle));
-	animationHandleDirtyFlag.reset(new DirtyFlag<short>(&data.animationHandle));
+	textureHandleDirtyFlag = std::make_unique<DirtyFlag<short>>(&data.handle);
+	animationHandleDirtyFlag = std::make_unique<DirtyFlag<short>>(&data.animationHandle);
 
 
-	cameraViewDirtyFlag.reset(new DirtySet(renderData.cameraMgrInstance->view));
-	cameraProjectionDirtyFlag.reset(new DirtySet(renderData.cameraMgrInstance->perspectiveMat));
-	cameraBillBoardDirtyFlag.reset(new DirtySet(renderData.cameraMgrInstance->billBoard));
+	cameraViewDirtyFlag = std::make_unique<DirtySet>(renderData.cameraMgrInstance->view);
+	cameraProjectionDirtyFlag = std::make_unique<DirtySet>(renderData.cameraMgrInstance->perspectiveMat);
+	cameraBillBoardDirtyFlag = std::make_unique<DirtySet>(renderData.cameraMgrInstance->billBoard);
 
-	sizeDirtyFlag.reset(new DirtySet(data.size));
+	sizeDirtyFlag = std::make_unique<DirtySet>(data.size);
+
+	motherDirtyFlag = std::make_unique<DirtySet>(data.motherMat);
 
 
 	//データの定義-----------------------------------------------------------------------------------------------------
@@ -83,7 +85,7 @@ void Sprite3DRender::Draw()
 
 
 	//DirtyFlag検知-----------------------------------------------------------------------------------------------------	
-	bool matFlag = cameraViewDirtyFlag->FloatDirty() || cameraProjectionDirtyFlag->FloatDirty() || cameraBillBoardDirtyFlag->FloatDirty();
+	bool matFlag = cameraViewDirtyFlag->FloatDirty() || cameraProjectionDirtyFlag->FloatDirty() || cameraBillBoardDirtyFlag->FloatDirty() || motherDirtyFlag->FloatDirty();
 	bool matrixDirtyFlag = positionDirtyFlag->FloatDirty() || scaleDirtyFlag->FloatDirty() || rotationDirtyFlag->FloatDirty();
 	bool scaleDirtyFlag = this->scaleDirtyFlag->FloatDirty();
 
@@ -107,9 +109,6 @@ void Sprite3DRender::Draw()
 		baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
 		baseMatWorldData.matTrans = KazMath::CaluTransMatrix(data.transform.pos);
 		baseMatWorldData.matRota = KazMath::CaluRotaMatrix(data.transform.rotation);
-
-		//ワールド行列の計算
-		baseMatWorldData.matWorld = XMMatrixIdentity();
 		//ビルボード行列を掛ける
 		if (data.billBoardFlag)
 		{
@@ -214,15 +213,15 @@ void Sprite3DRender::Draw()
 	//行列
 	//if (matrixDirtyFlag || matFlag)
 	//{
-		ConstBufferData constMap;
-		constMap.world = baseMatWorldData.matWorld;
-		constMap.view = renderData.cameraMgrInstance->GetViewMatrix();
-		constMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
-		constMap.color = { 0.0f,0.0f,0.0f,data.alpha / 255.0f };
-		constMap.mat = constMap.world * constMap.view * constMap.viewproj;
+	ConstBufferData constMap;
+	constMap.world = baseMatWorldData.matWorld;
+	constMap.view = renderData.cameraMgrInstance->GetViewMatrix();
+	constMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
+	constMap.color = { 0.0f,0.0f,0.0f,data.alpha / 255.0f };
+	constMap.mat = constMap.world * constMap.view * constMap.viewproj;
 
-		//gpuBuffer->TransData();
-		TransData(&constMap, constBufferHandle, typeid(ConstBufferData).name());
+	//gpuBuffer->TransData();
+	TransData(&constMap, constBufferHandle, typeid(ConstBufferData).name());
 	//}
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 
@@ -255,6 +254,7 @@ void Sprite3DRender::Draw()
 	cameraBillBoardDirtyFlag->Record();
 	cameraProjectionDirtyFlag->Record();
 	cameraViewDirtyFlag->Record();
+	motherDirtyFlag->Record();
 	//DirtyFlagの更新-----------------------------------------------------------------------------------------------------
 }
 

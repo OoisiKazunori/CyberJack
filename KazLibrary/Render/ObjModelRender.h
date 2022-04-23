@@ -26,7 +26,7 @@ private:
 	UINT VertByte;
 	UINT IndexByte;
 
-	XMMATRIX motherMat;
+
 	short vertexBufferHandle;
 	short indexBufferHandle;
 
