@@ -10,6 +10,7 @@ GoalBoxEffect::GoalBoxEffect()
 	{
 		lightRender[i] = std::make_unique<Sprite3DRender>(XMFLOAT2(0.0f, 0.0f));
 		lightRender[i]->data.handle = handle;
+		lightRender[i]->data.pipelineName = PIPELINE_NAME_SPRITE_GOAL_EFFECT;
 	}
 
 

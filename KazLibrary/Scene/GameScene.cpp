@@ -706,8 +706,8 @@ void GameScene::Draw()
 	}
 	cursor.Draw();
 	//hitBox.Draw();
-	testEnemyPoly->Draw();
 	goalBox.Draw();
+	testEnemyPoly->Draw();
 
 	//besidePoly->Draw();
 	//verticlaPoly->Draw();

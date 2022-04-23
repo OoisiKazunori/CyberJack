@@ -89,6 +89,6 @@ void GoalBox::Update()
 
 void GoalBox::Draw()
 {
-	effect.Draw();
 	model->Draw();
+	effect.Draw();
 }
