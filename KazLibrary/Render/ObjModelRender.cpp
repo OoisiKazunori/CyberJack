@@ -26,7 +26,7 @@ ObjModelRender::ObjModelRender(bool INSTANCE_FLAG, int INSTANCE_NUM)
 		constBufferHandle[0] = CreateConstBuffer(sizeof(ConstBufferData), typeid(ConstBufferData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DRAW);
 	}
 
-	constBufferHandle[1] = CreateConstBuffer(sizeof(ConstBufferDataB1), typeid(ConstBufferDataB1).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+	//constBufferHandle[1] = CreateConstBuffer(sizeof(ConstBufferDataB1), typeid(ConstBufferDataB1).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
 
 }
 
@@ -104,23 +104,28 @@ void ObjModelRender::Draw()
 	}
 
 
-	//マテリアルデータ
-	if (true)
+	if (data.pipelineName != PIPELINE_NAME_COLOR_WIREFLAME)
 	{
-		ConstBufferDataB1 constMap;
-		constMap.alpha = data.color.w / 255.0f;
-		constMap.ambient = modelData.material.ambient;
-		constMap.diffuse = modelData.material.diffuse;
-		constMap.specular = modelData.material.specular;
-		TransData(&constMap, constBufferHandle[1], typeid(constMap).name());
+
+		//マテリアルデータ
+		if (true)
+		{
+			ConstBufferDataB1 constMap;
+			constMap.alpha = data.color.w / 255.0f;
+			constMap.ambient = modelData.material.ambient;
+			constMap.diffuse = modelData.material.diffuse;
+			constMap.specular = modelData.material.specular;
+			TransData(&constMap, constBufferHandle[1], typeid(constMap).name());
+		}
+		//バッファの転送-----------------------------------------------------------------------------------------------------
+
+
+		//バッファをコマンドリストに積む-----------------------------------------------------------------------------------------------------
+		renderData.shaderResourceMgrInstance->SetSRV(modelData.mtlHanlde, GraphicsRootSignature::Instance()->GetRootParam(renderData.pipelineMgr->GetRootSignatureName(pipeline)), GRAPHICS_PRAMTYPE_TEX);
+		//バッファをコマンドリストに積む-----------------------------------------------------------------------------------------------------
 	}
-	//バッファの転送-----------------------------------------------------------------------------------------------------
 
-
-	//バッファをコマンドリストに積む-----------------------------------------------------------------------------------------------------
 	SetConstBufferOnCmdList(pipeline);
-	renderData.shaderResourceMgrInstance->SetSRV(modelData.mtlHanlde, GraphicsRootSignature::Instance()->GetRootParam(renderData.pipelineMgr->GetRootSignatureName(pipeline)), GRAPHICS_PRAMTYPE_TEX);
-	//バッファをコマンドリストに積む-----------------------------------------------------------------------------------------------------
 
 
 	//追加のテクスチャを送る---------------------------------------------------------------

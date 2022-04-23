@@ -2,13 +2,21 @@
 #include"../Input/KeyBoradInputManager.h"
 #include"../Input/ControllerInputManager.h"
 #include"../Imgui/MyImgui.h"
-
+#include"../Loader/ObjResourceMgr.h"
+#include"../Helper/ResourceFilePass.h"
 GameScene::GameScene()
 {
 	besidePoly = std::make_unique<BoxPolygonRender>();
 	verticlaPoly = std::make_unique<BoxPolygonRender>();
 	cameraPoly = std::make_unique<BoxPolygonRender>();
 	testEnemyPoly = std::make_unique<BoxPolygonRender>();
+
+	model = std::make_unique<ObjModelRender>();
+	model->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
+	model->data.transform.pos = { 0.0f,0.0f,20.0f };
+	model->data.transform.scale = { 5.0f,5.0f,5.0f };
+	model->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "hamster.obj");
+	model->data.color = { 255.0f,0.0f,0.0f,255.0f };
 	testEnemyPoly->data.color = { 255.0f,255.0f,255.0f,255.0f };
 }
 
@@ -715,6 +723,7 @@ void GameScene::Draw()
 	}
 	//敵の描画処理----------------------------------------------------------------
 
+	model->Draw();
 }
 
 int GameScene::SceneChange()

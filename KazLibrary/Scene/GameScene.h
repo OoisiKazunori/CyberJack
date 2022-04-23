@@ -128,4 +128,6 @@ private:
 	XMVECTOR testEnemyPos;			//ロックオンする対象座標(テスト)
 	BoxPolygonRenderPtr testEnemyPoly;			//ロックオンする対象描画(テスト)
 	//線演出----------------------------------------------------------------
+
+	ObjModelRenderPtr model;
 };

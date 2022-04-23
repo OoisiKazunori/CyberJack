@@ -469,8 +469,9 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		rasterrize.FillMode = D3D12_FILL_MODE_WIREFRAME;
 		gPipeline.RasterizerState = rasterrize;
+
 		//ブレンドモード
-		gPipeline.BlendState.RenderTarget[0] = addBlendDesc;
+		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
 
 		//図形の形状
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
@@ -940,6 +941,16 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		ROOTSIGNATURE_DATA_DRAW_TEX_DATA1,
 		PIPELINE_NAME_OBJ
 	);
+
+	////OBJパイプラインのワイヤーフレーム
+	//GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+	//	LAYOUT_POS,
+	//	SHADER_VERTEX_COLOR,
+	//	SHADER_PIXCEL_COLOR,
+	//	PIPELINE_DATA_BACKCARING_ALPHABLEND_WIREFLAME,
+	//	ROOTSIGNATURE_DATA_DRAW_DATA1,
+	//	PIPELINE_NAME_OBJ_WIREFLAME
+	//);
 
 	//インスタンシング描画Objパイプライン
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
