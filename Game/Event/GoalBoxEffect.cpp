@@ -11,6 +11,7 @@ GoalBoxEffect::GoalBoxEffect()
 		lightRender[i] = std::make_unique<Sprite3DRender>(XMFLOAT2(0.0f, 0.0f));
 		lightRender[i]->data.handle = handle;
 		lightRender[i]->data.pipelineName = PIPELINE_NAME_SPRITE_GOAL_EFFECT;
+		uvHandle[i] = lightRender[i]->CreateConstBuffer(sizeof(GoalLightData), typeid(GoalLightData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
 	}
 
 
@@ -36,6 +37,7 @@ GoalBoxEffect::GoalBoxEffect()
 void GoalBoxEffect::Init(XMMATRIX *ADRESS)
 {
 	motherPtr = ADRESS;
+	uvData.light = { 0.0f,0.0f,0.0f,0.0f };
 }
 
 void GoalBoxEffect::Update()
@@ -44,6 +46,13 @@ void GoalBoxEffect::Update()
 	for (int i = 0; i < lightRender.size(); ++i)
 	{
 		lightRender[i]->data.motherMat = *motherPtr;
+	}
+
+
+	uvData.light.y += 0.01f;
+	for (int i = 0; i < lightRender.size(); ++i)
+	{
+		lightRender[i]->TransData(&uvData, uvHandle[i], typeid(GoalLightData).name());
 	}
 
 	//ImGui::Begin("Effect");
