@@ -493,12 +493,12 @@ void GameScene::Update()
 
 
 
-	eyePos = KazMath::LoadVecotrToXMFLOAT3(cameraPoly->data.transform.pos);
-	targetPos = KazMath::LoadVecotrToXMFLOAT3(baseTargetPos);
+	//eyePos = KazMath::LoadVecotrToXMFLOAT3(cameraPoly->data.transform.pos);
+	//targetPos = KazMath::LoadVecotrToXMFLOAT3(baseTargetPos);
 
 	//デバック用
-	//eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
-	//targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
+	eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
+	targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
 
 #pragma endregion
@@ -635,6 +635,7 @@ void GameScene::Update()
 	player.Update();
 	cursor.Update();
 	hitBox.Update();
+	stage.Update();
 
 	//ロックオンのリリース処理
 	if (cursor.releaseFlag)
@@ -702,7 +703,7 @@ void GameScene::Draw()
 	}
 	cursor.Draw();
 	//hitBox.Draw();
-	testEnemyPoly->Draw();
+	//testEnemyPoly->Draw();
 
 	//besidePoly->Draw();
 	//verticlaPoly->Draw();
@@ -717,13 +718,15 @@ void GameScene::Draw()
 			bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
 			if (enableToUseDataFlag)
 			{
-				enemies[enemyType][enemyCount]->Draw();
+				//enemies[enemyType][enemyCount]->Draw();
 			}
 		}
 	}
 	//敵の描画処理----------------------------------------------------------------
 
 	model->Draw();
+
+	stage.Draw();
 }
 
 int GameScene::SceneChange()

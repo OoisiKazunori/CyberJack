@@ -10,6 +10,7 @@
 #include"../Game/Enemy/NormalEnemy.h"
 #include"../Game/Enemy/KidEnemy.h"
 #include"../Game/LineEffect/LineLevel1.h"
+#include"../Game/Stage/FirstStage.h"
 
 struct ResponeData
 {
@@ -130,4 +131,6 @@ private:
 	//ü‰‰o----------------------------------------------------------------
 
 	ObjModelRenderPtr model;
+
+	FirstStage stage;
 };
