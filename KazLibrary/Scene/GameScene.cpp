@@ -156,6 +156,7 @@ void GameScene::Init()
 	testEnemyPos = { 0.0f,0.0f,100.0f };
 	mulValue = { 10.0f,30.0f };
 	mulValue2 = { 60.0f,60.0f };
+	cameraChangeFlag = false;
 }
 
 void GameScene::Finalize()
@@ -365,7 +366,7 @@ void GameScene::Input()
 
 void GameScene::Update()
 {
-	ImGui::Begin("Camera");
+	/*ImGui::Begin("Camera");
 	ImGui::Text("Target");
 	ImGui::InputFloat("TargetX", &baseTargetPos.m128_f32[0]);
 	ImGui::InputFloat("TargetY", &baseTargetPos.m128_f32[1]);
@@ -393,20 +394,11 @@ void GameScene::Update()
 	ImGui::Text("upDownAngleVel:X%f,Y:%f", upDownAngleVel.m128_f32[0], upDownAngleVel.m128_f32[1]);
 	ImGui::Text("trackUpDownAngleVel:X%f,Y:%f", trackUpDownAngleVel.m128_f32[0], trackUpDownAngleVel.m128_f32[1]);
 	ImGui::Text("trackLeftRightAngleVel:X%f,Y:%f", trackLeftRightAngleVel.m128_f32[0], trackLeftRightAngleVel.m128_f32[1]);
-	ImGui::End();
-
-
-	ImGui::Begin("Line");
-	ImGui::SliderFloat("PosX", &testEnemyPos.m128_f32[0], -100, 100);
-	ImGui::SliderFloat("PosY", &testEnemyPos.m128_f32[1], -100, 100);
-	ImGui::SliderFloat("PosZ", &testEnemyPos.m128_f32[2], -100, 100);
-	ImGui::End();
-
-
+	ImGui::End();*/
 
 
 	//操作感に関わる設定
-	ImGui::Begin("Move");
+	/*ImGui::Begin("Move");
 	ImGui::Text("dontMoveCameraStartPos:X%f,Y:%f", cursor.dontMoveCameraStartPos.m128_f32[0], cursor.dontMoveCameraStartPos.m128_f32[1]);
 	ImGui::Text("dontMoveCameraEndPos:X%f,Y:%f", cursor.dontMoveCameraEndPos.m128_f32[0], cursor.dontMoveCameraEndPos.m128_f32[1]);
 	ImGui::Text("CursorPos:X%f,Y:%f", cursor.cursorPos.m128_f32[0], cursor.cursorPos.m128_f32[1]);
@@ -415,6 +407,10 @@ void GameScene::Update()
 	ImGui::InputFloat("limitValue:Y", &cursor.limitValue.m128_f32[1]);
 	ImGui::InputFloat("NO_MOVE_DISTANCE:X", &cursor.NO_MOVE_DISTANCE.m128_f32[0]);
 	ImGui::InputFloat("NO_MOVE_DISTANCE:Y", &cursor.NO_MOVE_DISTANCE.m128_f32[1]);
+	ImGui::End();*/
+
+	ImGui::Begin("Camera");
+	ImGui::Checkbox("Debug", &cameraChangeFlag);
 	ImGui::End();
 
 
@@ -492,13 +488,17 @@ void GameScene::Update()
 
 
 
-
-	//eyePos = KazMath::LoadVecotrToXMFLOAT3(cameraPoly->data.transform.pos);
-	//targetPos = KazMath::LoadVecotrToXMFLOAT3(baseTargetPos);
-
-	//デバック用
-	eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
-	targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
+	if (cameraChangeFlag)
+	{
+		eyePos = KazMath::LoadVecotrToXMFLOAT3(cameraPoly->data.transform.pos);
+		targetPos = KazMath::LoadVecotrToXMFLOAT3(baseTargetPos);
+	}
+	else
+	{
+		//デバック用
+		eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
+		targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
+	}
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
 
 #pragma endregion

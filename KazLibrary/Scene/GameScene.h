@@ -133,4 +133,5 @@ private:
 	ObjModelRenderPtr model;
 
 	FirstStage stage;
+	bool cameraChangeFlag;
 };
