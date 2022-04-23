@@ -16,5 +16,6 @@ namespace KazFilePathName
 
 	static string TestPath = RelativeResourcePath + "Test/";
 	static string CursorPath = RelativeResourcePath + "Cursor/";
+	static string GoalPath = RelativeResourcePath + "Goal/";
 
 }

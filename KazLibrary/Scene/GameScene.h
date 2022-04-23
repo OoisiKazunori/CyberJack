@@ -10,6 +10,7 @@
 #include"../Game/Enemy/NormalEnemy.h"
 #include"../Game/Enemy/KidEnemy.h"
 #include"../Game/LineEffect/LineLevel1.h"
+#include"../Game/Event/GoalBox.h"
 
 struct ResponeData
 {
@@ -94,7 +95,7 @@ private:
 	//カメラ----------------------------------------------------------------
 
 	//カメラ挙動の確認
-	BoxPolygonRenderPtr besidePoly, verticlaPoly,cameraPoly;
+	BoxPolygonRenderPtr besidePoly, verticlaPoly, cameraPoly;
 	XMVECTOR centralPos;		//左右回転の中心座標
 	XMVECTOR centralPos2;		//上下回転の中心座標
 	float r;					//左右回転の円の大きさ
@@ -120,8 +121,6 @@ private:
 	array<ResponeData, 50>addResponeData;				//敵を追加で生成する際に必要な設定をスタックしたもの
 	//敵----------------------------------------------------------------
 
-
-
 	//線演出----------------------------------------------------------------
 	array<LineLevel1, 8> lineLevel;			//直角に敵に線を伸ばしていく演出
 	array<LineEffectData, 8>lineEffectArrayData;
@@ -130,4 +129,6 @@ private:
 	//線演出----------------------------------------------------------------
 
 	ObjModelRenderPtr model;
+
+	GoalBox goalBox;
 };

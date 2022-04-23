@@ -34,6 +34,9 @@ void GameScene::Init()
 	sceneNum = SCENE_NONE;
 
 
+	BufferMemorySize enemySize = { 0,ENEMY_NUM_MAX };
+	BufferMemorySize eventSize = { ENEMY_NUM_MAX,ENEMY_NUM_MAX + 50 };
+
 	responeData[0][0].enemyType = ENEMY_TYPE_NORMAL;
 	responeData[0][0].layerLevel = 0;
 	responeData[0][0].flame = 360;
@@ -86,8 +89,7 @@ void GameScene::Init()
 		}
 	}
 
-
-	//敵を纏めて生成する処理----------------------------------------------------------------
+	//操作可能OBJを纏めて生成する処理----------------------------------------------------------------
 	for (int enemyType = 0; enemyType < responeData.size(); ++enemyType)
 	{
 		for (int enemyCount = 0; enemyCount < responeData[enemyType].size(); ++enemyCount)
@@ -579,7 +581,6 @@ void GameScene::Update()
 
 
 #pragma region ロックオン
-	
 	for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
 	{
 		for (int enemyCount = 0; enemyCount < enemies[enemyType].size(); ++enemyCount)
@@ -686,6 +687,9 @@ void GameScene::Update()
 	//更新処理----------------------------------------------------------------
 #pragma endregion
 
+
+	goalBox.Update();
+
 	//ゲームループの経過時間----------------------------------------------------------------
 	++gameFlame;
 	//ゲームループの経過時間----------------------------------------------------------------
@@ -703,6 +707,7 @@ void GameScene::Draw()
 	cursor.Draw();
 	//hitBox.Draw();
 	testEnemyPoly->Draw();
+	goalBox.Draw();
 
 	//besidePoly->Draw();
 	//verticlaPoly->Draw();
@@ -723,7 +728,7 @@ void GameScene::Draw()
 	}
 	//敵の描画処理----------------------------------------------------------------
 
-	model->Draw();
+	//model->Draw();
 }
 
 int GameScene::SceneChange()
