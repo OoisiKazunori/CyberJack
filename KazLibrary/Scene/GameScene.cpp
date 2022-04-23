@@ -4,12 +4,12 @@
 #include"../Imgui/MyImgui.h"
 #include"../Loader/ObjResourceMgr.h"
 #include"../Helper/ResourceFilePass.h"
+
 GameScene::GameScene()
 {
 	besidePoly = std::make_unique<BoxPolygonRender>();
 	verticlaPoly = std::make_unique<BoxPolygonRender>();
 	cameraPoly = std::make_unique<BoxPolygonRender>();
-	testEnemyPoly = std::make_unique<BoxPolygonRender>();
 
 	model = std::make_unique<ObjModelRender>();
 	model->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
@@ -17,7 +17,18 @@ GameScene::GameScene()
 	model->data.transform.scale = { 5.0f,5.0f,5.0f };
 	model->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "hamster.obj");
 	model->data.color = { 255.0f,0.0f,0.0f,255.0f };
-	testEnemyPoly->data.color = { 255.0f,255.0f,255.0f,255.0f };
+
+
+	mainRenderTarget.data.handle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, BG_COLOR, DXGI_FORMAT_R8G8B8A8_UNORM);
+	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+
+
+	addHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, XMFLOAT3(0.0f, 0.0f, 0.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
+	addRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+	addRenderTarget.data.pipelineName = PIPELINE_NAME_ADDBLEND;
+	
+	buler = std::make_unique<GaussianBuler>(XMFLOAT2(WIN_X, WIN_Y), XMFLOAT3(0.0f, 0.0f, 0.0f));
+
 }
 
 GameScene::~GameScene()
@@ -422,10 +433,6 @@ void GameScene::Update()
 
 
 
-	testEnemyPoly->data.transform.pos = testEnemyPos;
-
-
-
 #pragma region カメラ挙動
 
 	//左右の角度変更のイージング
@@ -698,6 +705,10 @@ void GameScene::Update()
 
 void GameScene::Draw()
 {
+	short mainHandle = mainRenderTarget.data.handle;
+
+	RenderTargetStatus::Instance()->PrepareToChangeBarrier(mainHandle);
+	RenderTargetStatus::Instance()->ClearRenderTarget(mainHandle);
 	bg.Draw();
 	player.Draw();
 	for (int i = 0; i < lineLevel.size(); ++i)
@@ -705,13 +716,14 @@ void GameScene::Draw()
 		lineLevel[i].Draw();
 	}
 	cursor.Draw();
-	//hitBox.Draw();
 	goalBox.Draw();
-	testEnemyPoly->Draw();
 
-	//besidePoly->Draw();
-	//verticlaPoly->Draw();
-	//cameraPoly->Draw();
+	//色んな色に対しての輝度中質方法が不明
+	RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, mainHandle);
+	RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
+	goalBox.effect.Draw();
+	RenderTargetStatus::Instance()->PrepareToChangeBarrier(mainHandle, addHandle);
+
 
 	//敵の描画処理----------------------------------------------------------------
 	for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
@@ -727,8 +739,13 @@ void GameScene::Draw()
 		}
 	}
 	//敵の描画処理----------------------------------------------------------------
+	RenderTargetStatus::Instance()->PrepareToCloseBarrier(mainHandle);
+	RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
+	mainRenderTarget.Draw();
 
-	//model->Draw();
+	addRenderTarget.data.handle = buler->BlurImage(addHandle);
+	addRenderTarget.Draw();
+
 }
 
 int GameScene::SceneChange()

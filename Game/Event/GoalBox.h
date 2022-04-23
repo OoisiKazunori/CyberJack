@@ -13,6 +13,9 @@ public:
 	void Update();
 	void Draw();
 
+
+	//ゴールエフェクト
+	GoalBoxEffect effect;
 private:
 	//移動-----------------------
 	XMVECTOR lerpRota;//角度のラープ
@@ -27,7 +30,5 @@ private:
 	ObjModelRenderPtr model;
 
 
-	//ゴールエフェクト
-	GoalBoxEffect effect;
 
 };

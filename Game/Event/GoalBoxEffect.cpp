@@ -38,6 +38,12 @@ void GoalBoxEffect::Init(XMMATRIX *ADRESS)
 {
 	motherPtr = ADRESS;
 	uvData.light = { 0.0f,0.0f,0.0f,0.0f };
+	drawHandle = 0;
+
+	for (int i = 0; i < lightRender.size(); ++i)
+	{
+		lightRender[i]->data.alpha = 0.0f;
+	}
 }
 
 void GoalBoxEffect::Update()
@@ -54,6 +60,19 @@ void GoalBoxEffect::Update()
 	{
 		lightRender[i]->TransData(&uvData, uvHandle[i], typeid(GoalLightData).name());
 	}
+	//ìoèÍÇ≥ÇπÇÈ
+	for (int i = 0; i < drawHandle; ++i)
+	{
+		if (lightRender[i]->data.alpha < 255.0f)
+		{
+			lightRender[i]->data.alpha += 5.0f;
+		}
+		if (255.0f <= lightRender[i]->data.alpha)
+		{
+			lightRender[i]->data.alpha = 255.0f;
+		}
+	}
+
 
 	//ImGui::Begin("Effect");
 	//for (int i = 0; i < lightRender.size(); ++i)
@@ -79,5 +98,15 @@ void GoalBoxEffect::Draw()
 	for (int i = 0; i < lightRender.size(); ++i)
 	{
 		lightRender[i]->Draw();
+	}
+}
+
+void GoalBoxEffect::Appear()
+{
+	++drawHandle;
+
+	if (8 <= drawHandle)
+	{
+		drawHandle = 8;
 	}
 }

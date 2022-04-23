@@ -11,6 +11,8 @@
 #include"../Game/Enemy/KidEnemy.h"
 #include"../Game/LineEffect/LineLevel1.h"
 #include"../Game/Event/GoalBox.h"
+#include"../KazLibrary/RenderTarget/RenderTargetStatus.h"
+#include"../KazLibrary/RenderTarget/GaussianBuler.h"
 
 struct ResponeData
 {
@@ -125,10 +127,16 @@ private:
 	array<LineLevel1, 8> lineLevel;			//直角に敵に線を伸ばしていく演出
 	array<LineEffectData, 8>lineEffectArrayData;
 	XMVECTOR testEnemyPos;			//ロックオンする対象座標(テスト)
-	BoxPolygonRenderPtr testEnemyPoly;			//ロックオンする対象描画(テスト)
 	//線演出----------------------------------------------------------------
 
 	ObjModelRenderPtr model;
 
 	GoalBox goalBox;
+
+	//画面効果準備-----------------------
+	Sprite2DRender mainRenderTarget;
+	Sprite2DRender addRenderTarget;
+	short addHandle;
+	std::unique_ptr<GaussianBuler> buler;
+
 };

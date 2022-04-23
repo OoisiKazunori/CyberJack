@@ -59,6 +59,7 @@ void GoalBox::Update()
 		lerpPos.m128_f32[2] = model->data.transform.pos.m128_f32[2] + moveVel.m128_f32[2];
 		//‰ñ“]‚³‚¹‚é
 		lerpRota = model->data.transform.rotation + moveRotaVel;
+		effect.Appear();
 	}
 
 	//À•W‚Ìƒ‰[ƒv
