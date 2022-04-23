@@ -13,5 +13,7 @@ public:
 
 private:
 	std::array<BoxPolygonRender, 20> stageDebugBox;
+	std::array<FogData, 20> fogData;
+	std::array<float, 20> constHandle;
 };
 
