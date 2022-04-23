@@ -14,6 +14,52 @@ FirstStage::FirstStage()
 	fogData[0].fogdata.x = 255.0f;
 	fogData[0].fogdata.y = 0.0f;
 	fogData[0].fogdata.z = 0.0f;
+
+	stageDebugBox[0].data.transform.pos = { 0.0f,-25.0f,0.0f };
+	stageDebugBox[0].data.transform.scale = { 60.0f,0.0f,2000.0f };
+	stageDebugBox[0].data.transform.rotation = { 0.0f,0.0f,0.0f };
+
+	stageDebugBox[1].data.transform.pos = { 140.0f,100.0f,0.0f };
+	stageDebugBox[1].data.transform.scale = { 20.0f,30.0f,2000.0f };
+	stageDebugBox[1].data.transform.rotation = { 0.0f,0.0f,0.0f };
+
+	stageDebugBox[2].data.transform.pos = { -140.0f,100.0f,0.0f };
+	stageDebugBox[2].data.transform.scale = { 20.0f,30.0f,2000.0f };
+	stageDebugBox[2].data.transform.rotation = { 0.0f,0.0f,0.0f };
+
+
+
+	stageDebugBox[2].data.transform.pos = { -140.0f,-100.0f,400.0f };
+	stageDebugBox[2].data.transform.scale = { 10.0f,200.0f,10.0f };
+	stageDebugBox[2].data.transform.rotation = { 0.0f,0.0f,0.0f };
+
+	stageDebugBox[3].data.transform.pos = { 140.0f,-100.0f,400.0f };
+	stageDebugBox[3].data.transform.scale = { 10.0f,200.0f,10.0f };
+	stageDebugBox[3].data.transform.rotation = { 0.0f,0.0f,0.0f };
+
+	stageDebugBox[4].data.transform.pos = { 140.0f,-100.0f,200.0f };
+	stageDebugBox[4].data.transform.scale = { 10.0f,200.0f,10.0f };
+	stageDebugBox[4].data.transform.rotation = { 0.0f,0.0f,0.0f };
+
+	stageDebugBox[5].data.transform.pos = { -140.0f,-100.0f,200.0f };
+	stageDebugBox[5].data.transform.scale = { 10.0f,200.0f,10.0f };
+	stageDebugBox[5].data.transform.rotation = { 0.0f,0.0f,0.0f };
+
+	stageDebugBox[6].data.transform.pos = { 140.0f,-100.0f,0.0f };
+	stageDebugBox[6].data.transform.scale = { 10.0f,200.0f,10.0f };
+	stageDebugBox[6].data.transform.rotation = { 0.0f,0.0f,0.0f };
+
+	stageDebugBox[7].data.transform.pos = { -140.0f,-100.0f,0.0f };
+	stageDebugBox[7].data.transform.scale = { 10.0f,200.0f,10.0f };
+	stageDebugBox[7].data.transform.rotation = { 0.0f,0.0f,0.0f };
+
+	stageDebugBox[8].data.transform.pos = { 140.0f,-100.0f,0.0f };
+	stageDebugBox[8].data.transform.scale = { 10.0f,200.0f,10.0f };
+	stageDebugBox[8].data.transform.rotation = { 0.0f,0.0f,0.0f };
+
+	stageDebugBox[9].data.transform.pos = { -140.0f,100.0f,0.0f };
+	stageDebugBox[9].data.transform.scale = { 20.0f,30.0f,2000.0f };
+	stageDebugBox[9].data.transform.rotation = { 0.0f,0.0f,0.0f };
 }
 
 void FirstStage::Update()

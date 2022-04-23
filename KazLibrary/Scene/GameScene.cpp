@@ -701,7 +701,7 @@ void GameScene::Draw()
 	{
 		lineLevel[i].Draw();
 	}
-	cursor.Draw();
+	//cursor.Draw();
 	//hitBox.Draw();
 	//testEnemyPoly->Draw();
 
@@ -724,7 +724,7 @@ void GameScene::Draw()
 	}
 	//敵の描画処理----------------------------------------------------------------
 
-	model->Draw();
+	//model->Draw();
 
 	stage.Draw();
 }
