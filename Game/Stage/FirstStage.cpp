@@ -7,6 +7,7 @@ FirstStage::FirstStage()
 	{
 		stageDebugBox[i].data.pipelineName = PIPELINE_NAME_FOG_COLOR;
 		constHandle[i] = stageDebugBox[i].CreateConstBuffer(sizeof(FogData), typeid(FogData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+		stageDebugBox[i].data.color = { 48.0f,20.0f,57.0f,255.0f };
 
 		fogData[i].fogdata = { 0.0f,0.0f,0.0f,0.0f };
 	}
@@ -124,6 +125,9 @@ FirstStage::FirstStage()
 
 	}
 
+	fogData[0].fogdata.x = BG_COLOR.x / 255.0f;;
+	fogData[0].fogdata.y = BG_COLOR.y / 255.0f;;
+	fogData[0].fogdata.z = BG_COLOR.z / 255.0f;;
 	stageParamLoader.ExportFile(KazFilePathName::StageParamPath + "StageParamData.json");
 }
 

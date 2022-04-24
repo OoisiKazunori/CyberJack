@@ -160,6 +160,8 @@ void GameScene::Init()
 	mulValue = { 10.0f,30.0f };
 	mulValue2 = { 60.0f,60.0f };
 	cameraChangeFlag = false;
+
+	forceCameraDirVel.m128_f32[0] = -90.0f;
 }
 
 void GameScene::Finalize()
@@ -302,7 +304,7 @@ void GameScene::Input()
 
 
 	//カメラの前後左右強制に向かせる処理
-	if (input->InputState(DIK_1))
+	/*if (input->InputState(DIK_1))
 	{
 		forceCameraDirVel.m128_f32[0] = 0.0f;
 	}
@@ -318,7 +320,7 @@ void GameScene::Input()
 	{
 		forceCameraDirVel.m128_f32[0] = -270.0f;
 	}
-
+*/
 
 
 	XMVECTOR vel = {};
@@ -413,7 +415,8 @@ void GameScene::Update()
 	ImGui::End();*/
 
 	ImGui::Begin("Camera");
-	ImGui::Checkbox("Debug", &cameraChangeFlag);
+	ImGui::Checkbox("DebugCamera", &cameraChangeFlag);
+	ImGui::Checkbox("DebugLine", &lineDebugFlag);
 	ImGui::End();
 
 
@@ -698,7 +701,10 @@ void GameScene::Update()
 
 void GameScene::Draw()
 {
-	bg.Draw();
+	if (lineDebugFlag)
+	{
+		bg.Draw();
+	}
 	player.Draw();
 	for (int i = 0; i < lineLevel.size(); ++i)
 	{

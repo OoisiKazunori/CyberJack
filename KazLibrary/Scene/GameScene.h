@@ -134,4 +134,5 @@ private:
 
 	FirstStage stage;
 	bool cameraChangeFlag;
+	bool lineDebugFlag;
 };
