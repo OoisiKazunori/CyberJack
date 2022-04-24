@@ -4,6 +4,8 @@
 #include"../Imgui/MyImgui.h"
 #include"../Loader/ObjResourceMgr.h"
 #include"../Helper/ResourceFilePass.h"
+#include"../Game/Debug/ParameterMgr.h"
+
 GameScene::GameScene()
 {
 	besidePoly = std::make_unique<BoxPolygonRender>();
@@ -18,6 +20,7 @@ GameScene::GameScene()
 	model->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "hamster.obj");
 	model->data.color = { 255.0f,0.0f,0.0f,255.0f };
 	testEnemyPoly->data.color = { 255.0f,255.0f,255.0f,255.0f };
+
 }
 
 GameScene::~GameScene()
@@ -156,6 +159,9 @@ void GameScene::Init()
 	testEnemyPos = { 0.0f,0.0f,100.0f };
 	mulValue = { 10.0f,30.0f };
 	mulValue2 = { 60.0f,60.0f };
+	cameraChangeFlag = false;
+
+	forceCameraDirVel.m128_f32[0] = -90.0f;
 }
 
 void GameScene::Finalize()
@@ -298,7 +304,7 @@ void GameScene::Input()
 
 
 	//カメラの前後左右強制に向かせる処理
-	if (input->InputState(DIK_1))
+	/*if (input->InputState(DIK_1))
 	{
 		forceCameraDirVel.m128_f32[0] = 0.0f;
 	}
@@ -314,7 +320,7 @@ void GameScene::Input()
 	{
 		forceCameraDirVel.m128_f32[0] = -270.0f;
 	}
-
+*/
 
 
 	XMVECTOR vel = {};
@@ -365,7 +371,7 @@ void GameScene::Input()
 
 void GameScene::Update()
 {
-	ImGui::Begin("Camera");
+	/*ImGui::Begin("Camera");
 	ImGui::Text("Target");
 	ImGui::InputFloat("TargetX", &baseTargetPos.m128_f32[0]);
 	ImGui::InputFloat("TargetY", &baseTargetPos.m128_f32[1]);
@@ -393,20 +399,11 @@ void GameScene::Update()
 	ImGui::Text("upDownAngleVel:X%f,Y:%f", upDownAngleVel.m128_f32[0], upDownAngleVel.m128_f32[1]);
 	ImGui::Text("trackUpDownAngleVel:X%f,Y:%f", trackUpDownAngleVel.m128_f32[0], trackUpDownAngleVel.m128_f32[1]);
 	ImGui::Text("trackLeftRightAngleVel:X%f,Y:%f", trackLeftRightAngleVel.m128_f32[0], trackLeftRightAngleVel.m128_f32[1]);
-	ImGui::End();
-
-
-	ImGui::Begin("Line");
-	ImGui::SliderFloat("PosX", &testEnemyPos.m128_f32[0], -100, 100);
-	ImGui::SliderFloat("PosY", &testEnemyPos.m128_f32[1], -100, 100);
-	ImGui::SliderFloat("PosZ", &testEnemyPos.m128_f32[2], -100, 100);
-	ImGui::End();
-
-
+	ImGui::End();*/
 
 
 	//操作感に関わる設定
-	ImGui::Begin("Move");
+	/*ImGui::Begin("Move");
 	ImGui::Text("dontMoveCameraStartPos:X%f,Y:%f", cursor.dontMoveCameraStartPos.m128_f32[0], cursor.dontMoveCameraStartPos.m128_f32[1]);
 	ImGui::Text("dontMoveCameraEndPos:X%f,Y:%f", cursor.dontMoveCameraEndPos.m128_f32[0], cursor.dontMoveCameraEndPos.m128_f32[1]);
 	ImGui::Text("CursorPos:X%f,Y:%f", cursor.cursorPos.m128_f32[0], cursor.cursorPos.m128_f32[1]);
@@ -415,6 +412,11 @@ void GameScene::Update()
 	ImGui::InputFloat("limitValue:Y", &cursor.limitValue.m128_f32[1]);
 	ImGui::InputFloat("NO_MOVE_DISTANCE:X", &cursor.NO_MOVE_DISTANCE.m128_f32[0]);
 	ImGui::InputFloat("NO_MOVE_DISTANCE:Y", &cursor.NO_MOVE_DISTANCE.m128_f32[1]);
+	ImGui::End();*/
+
+	ImGui::Begin("Camera");
+	ImGui::Checkbox("DebugCamera", &cameraChangeFlag);
+	ImGui::Checkbox("DebugLine", &lineDebugFlag);
 	ImGui::End();
 
 
@@ -492,13 +494,17 @@ void GameScene::Update()
 
 
 
-
-	eyePos = KazMath::LoadVecotrToXMFLOAT3(cameraPoly->data.transform.pos);
-	targetPos = KazMath::LoadVecotrToXMFLOAT3(baseTargetPos);
-
-	//デバック用
-	//eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
-	//targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
+	if (cameraChangeFlag)
+	{
+		eyePos = KazMath::LoadVecotrToXMFLOAT3(cameraPoly->data.transform.pos);
+		targetPos = KazMath::LoadVecotrToXMFLOAT3(baseTargetPos);
+	}
+	else
+	{
+		//デバック用
+		eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
+		targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
+	}
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
 
 #pragma endregion
@@ -635,6 +641,7 @@ void GameScene::Update()
 	player.Update();
 	cursor.Update();
 	hitBox.Update();
+	stage.Update();
 
 	//ロックオンのリリース処理
 	if (cursor.releaseFlag)
@@ -694,15 +701,18 @@ void GameScene::Update()
 
 void GameScene::Draw()
 {
-	bg.Draw();
+	if (lineDebugFlag)
+	{
+		bg.Draw();
+	}
 	player.Draw();
 	for (int i = 0; i < lineLevel.size(); ++i)
 	{
 		lineLevel[i].Draw();
 	}
-	cursor.Draw();
+	//cursor.Draw();
 	//hitBox.Draw();
-	testEnemyPoly->Draw();
+	//testEnemyPoly->Draw();
 
 	//besidePoly->Draw();
 	//verticlaPoly->Draw();
@@ -717,13 +727,15 @@ void GameScene::Draw()
 			bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
 			if (enableToUseDataFlag)
 			{
-				enemies[enemyType][enemyCount]->Draw();
+				//enemies[enemyType][enemyCount]->Draw();
 			}
 		}
 	}
 	//敵の描画処理----------------------------------------------------------------
 
-	model->Draw();
+	//model->Draw();
+
+	stage.Draw();
 }
 
 int GameScene::SceneChange()

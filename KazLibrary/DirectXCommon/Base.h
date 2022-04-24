@@ -19,8 +19,9 @@ static const int WIN_Y = 720;
 
 //static const XMFLOAT3 BG_COLOR = { 255.0f,255.0f,255.0f };
 static const XMFLOAT3 BG_COLOR_WHITE = { 255.0f,255.0f,255.0f };
-static const XMFLOAT3 BG_COLOR = { 22,38,37 };
-static const XMFLOAT3 PLAYER_POS = { 0,10,30 };
+static const XMFLOAT3 BG_COLOR = { 158.0f,37.0f,179.0f };
+//static const XMFLOAT3 BG_COLOR = { 22,38,37 };
+static const XMFLOAT3 PLAYER_POS = { 0.0f,10.0f,30.0f };
 //static const XMFLOAT3 BG_COLOR = { 255,255,255 };
 
 struct Vertex
