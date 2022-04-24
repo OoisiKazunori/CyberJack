@@ -4,6 +4,8 @@
 #include"../Imgui/MyImgui.h"
 #include"../Loader/ObjResourceMgr.h"
 #include"../Helper/ResourceFilePass.h"
+#include"../Game/Debug/ParameterMgr.h"
+
 GameScene::GameScene()
 {
 	besidePoly = std::make_unique<BoxPolygonRender>();
@@ -18,6 +20,7 @@ GameScene::GameScene()
 	model->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "hamster.obj");
 	model->data.color = { 255.0f,0.0f,0.0f,255.0f };
 	testEnemyPoly->data.color = { 255.0f,255.0f,255.0f,255.0f };
+
 }
 
 GameScene::~GameScene()

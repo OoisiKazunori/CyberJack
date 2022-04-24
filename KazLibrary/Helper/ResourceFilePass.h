@@ -8,13 +8,25 @@
 namespace KazFilePathName
 {
 	static string RelativeResourcePath = "Resource/";
+
+	//シェーダーパス-----------------------
+
 	static string RelativeShaderPath = "KazLibrary/ShaderFiles/";
 	static string VertexShaderPath = RelativeShaderPath + "VertexShader/";
 	static string PixelShaderPath = RelativeShaderPath + "PixelShader/";
 	static string GeometryShaderPath = RelativeShaderPath + "GeometryShader/";
 	static string ComputeShaderPath = RelativeShaderPath + "ComputeShader/";
 
+
+	//画像パス-----------------------
+
 	static string TestPath = RelativeResourcePath + "Test/";
 	static string CursorPath = RelativeResourcePath + "Cursor/";
+
+
+	//デバックパス-----------------------
+
+	static string ParamPath = RelativeResourcePath + "Parameter/";
+	static string StageParamPath = ParamPath + "Stage/";
 
 }

@@ -60,6 +60,48 @@ FirstStage::FirstStage()
 	stageDebugBox[9].data.transform.pos = { -140.0f,100.0f,0.0f };
 	stageDebugBox[9].data.transform.scale = { 20.0f,30.0f,2000.0f };
 	stageDebugBox[9].data.transform.rotation = { 0.0f,0.0f,0.0f };
+
+
+	stageParamLoader.LoadFile(KazFilePathName::StageParamPath + "StageParamData.json");
+
+
+	std::array <std::array<char, 20>, 20>data;
+	for (int i = 0; i < stageDebugBox.size(); ++i)
+	{
+		data[i][0] = 'B';
+		data[i][1] = 'o';
+		data[i][2] = 'x';
+		data[i][3] = std::to_string(i)[0];
+		data[i][4] = '\0';
+	}
+
+
+	for (int i = 0; i < stageDebugBox.size(); ++i)
+	{
+		XMVECTOR pos = stageDebugBox[i].data.transform.pos;
+		XMVECTOR scale = stageDebugBox[i].data.transform.scale;
+		XMVECTOR rota = stageDebugBox[i].data.transform.rotation;
+
+		//Box毎のメンバ変数を追加
+		rapidjson::Value posArray(rapidjson::kArrayType);
+		rapidjson::Value scaleArray(rapidjson::kArrayType);
+		rapidjson::Value rotaArray(rapidjson::kArrayType);
+		for (int axisIndex = 0; axisIndex < 3; ++axisIndex)
+		{
+			posArray.PushBack(rapidjson::Value(pos.m128_f32[axisIndex]), stageParamLoader.doc.GetAllocator());
+			scaleArray.PushBack(rapidjson::Value(scale.m128_f32[axisIndex]), stageParamLoader.doc.GetAllocator());
+			rotaArray.PushBack(rapidjson::Value(rota.m128_f32[axisIndex]), stageParamLoader.doc.GetAllocator());
+		}
+
+		//Boxオブジェクトにデータを追加
+		rapidjson::Value object(rapidjson::kObjectType);
+		object.AddMember("Pos", posArray, stageParamLoader.doc.GetAllocator());
+		object.AddMember("Scale", scaleArray, stageParamLoader.doc.GetAllocator());
+		object.AddMember("Rota", rotaArray, stageParamLoader.doc.GetAllocator());
+
+		stageParamLoader.doc.AddMember(rapidjson::GenericStringRef<char>(data[i].data()), object, stageParamLoader.doc.GetAllocator());
+	}
+	stageParamLoader.ExportFile(KazFilePathName::StageParamPath + "StageParamData.json");
 }
 
 void FirstStage::Update()
