@@ -58,12 +58,29 @@ private:
 	float baseSpeed;
 	XMFLOAT2 speed;
 
+	//入力演出-----------------------
+
+	struct CursorEffectData
+	{
+		bool initFlag;
+		Sprite2DRenderPtr cursorEffectTex;
+
+		CursorEffectData() :cursorEffectTex(std::make_unique<Sprite2DRender>()), initFlag(false)
+		{
+		}
+	};
+
+	std::array<CursorEffectData, 10> cursorEffectTex;
+
+
+
+
 
 	//画像----------------------------------------------------------------
 	Sprite2DRenderPtr cursorFlameTex, numberTex;	//スクリーン座標の描画
 	array<short, LOCKON_MAX_NUM + 1> numberHandle;			//数字用の画像ハンドル
 	short flameHandle;
-	
+	XMVECTOR baseScale;
 
 	XMVECTOR oldPos;
 	XMVECTOR oldVel;
