@@ -26,7 +26,7 @@ ObjModelRender::ObjModelRender(bool INSTANCE_FLAG, int INSTANCE_NUM)
 		constBufferHandle[0] = CreateConstBuffer(sizeof(ConstBufferData), typeid(ConstBufferData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DRAW);
 	}
 
-	//constBufferHandle[1] = CreateConstBuffer(sizeof(ConstBufferDataB1), typeid(ConstBufferDataB1).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+	constBufferHandle[1] = CreateConstBuffer(sizeof(ConstBufferDataB1), typeid(ConstBufferDataB1).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
 
 }
 
@@ -82,7 +82,7 @@ void ObjModelRender::Draw()
 			//baseMatWorldData.matWorld *= data.motherMat;
 
 			//親行列を掛ける
-			motherMat = baseMatWorldData.matWorld;
+			data.motherMat = baseMatWorldData.matWorld;
 		}
 		//行列計算-----------------------------------------------------------------------------------------------------
 

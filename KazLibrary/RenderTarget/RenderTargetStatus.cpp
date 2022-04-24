@@ -261,7 +261,7 @@ short RenderTargetStatus::CreateRenderTarget(const XMFLOAT2 &GRAPH_SIZE, const X
 	);
 
 	vector<short> handls;
-	handls.push_back(handle);
+	handls.push_back(num);
 	renderTargetData.push_back(handls);
 	return num;
 }

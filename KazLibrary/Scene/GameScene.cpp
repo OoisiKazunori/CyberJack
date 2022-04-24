@@ -11,7 +11,6 @@ GameScene::GameScene()
 	besidePoly = std::make_unique<BoxPolygonRender>();
 	verticlaPoly = std::make_unique<BoxPolygonRender>();
 	cameraPoly = std::make_unique<BoxPolygonRender>();
-	testEnemyPoly = std::make_unique<BoxPolygonRender>();
 
 	model = std::make_unique<ObjModelRender>();
 	model->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
@@ -19,7 +18,17 @@ GameScene::GameScene()
 	model->data.transform.scale = { 5.0f,5.0f,5.0f };
 	model->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "hamster.obj");
 	model->data.color = { 255.0f,0.0f,0.0f,255.0f };
-	testEnemyPoly->data.color = { 255.0f,255.0f,255.0f,255.0f };
+
+
+	mainRenderTarget.data.handle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, BG_COLOR, DXGI_FORMAT_R8G8B8A8_UNORM);
+	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+
+
+	addHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, XMFLOAT3(0.0f, 0.0f, 0.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
+	addRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+	addRenderTarget.data.pipelineName = PIPELINE_NAME_ADDBLEND;
+	
+	buler = std::make_unique<GaussianBuler>(XMFLOAT2(WIN_X, WIN_Y), XMFLOAT3(0.0f, 0.0f, 0.0f));
 
 }
 
@@ -36,6 +45,9 @@ void GameScene::Init()
 
 	sceneNum = SCENE_NONE;
 
+
+	BufferMemorySize enemySize = { 0,ENEMY_NUM_MAX };
+	BufferMemorySize eventSize = { ENEMY_NUM_MAX,ENEMY_NUM_MAX + 50 };
 
 	responeData[0][0].enemyType = ENEMY_TYPE_NORMAL;
 	responeData[0][0].layerLevel = 0;
@@ -89,8 +101,7 @@ void GameScene::Init()
 		}
 	}
 
-
-	//敵を纏めて生成する処理----------------------------------------------------------------
+	//操作可能OBJを纏めて生成する処理----------------------------------------------------------------
 	for (int enemyType = 0; enemyType < responeData.size(); ++enemyType)
 	{
 		for (int enemyCount = 0; enemyCount < responeData[enemyType].size(); ++enemyCount)
@@ -422,10 +433,6 @@ void GameScene::Update()
 
 
 
-	testEnemyPoly->data.transform.pos = testEnemyPos;
-
-
-
 #pragma region カメラ挙動
 
 	//左右の角度変更のイージング
@@ -585,7 +592,6 @@ void GameScene::Update()
 
 
 #pragma region ロックオン
-	
 	for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
 	{
 		for (int enemyCount = 0; enemyCount < enemies[enemyType].size(); ++enemyCount)
@@ -693,6 +699,9 @@ void GameScene::Update()
 	//更新処理----------------------------------------------------------------
 #pragma endregion
 
+
+	goalBox.Update();
+
 	//ゲームループの経過時間----------------------------------------------------------------
 	++gameFlame;
 	//ゲームループの経過時間----------------------------------------------------------------
@@ -701,6 +710,12 @@ void GameScene::Update()
 
 void GameScene::Draw()
 {
+
+	short mainHandle = mainRenderTarget.data.handle;
+
+	RenderTargetStatus::Instance()->PrepareToChangeBarrier(mainHandle);
+	RenderTargetStatus::Instance()->ClearRenderTarget(mainHandle);
+	stage.Draw();
 	if (lineDebugFlag)
 	{
 		bg.Draw();
@@ -710,12 +725,15 @@ void GameScene::Draw()
 	{
 		lineLevel[i].Draw();
 	}
-	//hitBox.Draw();
-	//testEnemyPoly->Draw();
+	goalBox.Draw();
 
-	//besidePoly->Draw();
-	//verticlaPoly->Draw();
-	//cameraPoly->Draw();
+
+	//色んな色に対しての輝度中質方法が不明
+	RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, mainHandle);
+	RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
+	goalBox.effect.Draw();
+	RenderTargetStatus::Instance()->PrepareToChangeBarrier(mainHandle, addHandle);
+
 
 	//敵の描画処理----------------------------------------------------------------
 	for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
@@ -730,11 +748,15 @@ void GameScene::Draw()
 			}
 		}
 	}
-	//敵の描画処理----------------------------------------------------------------
 
-	//model->Draw();
-	stage.Draw();
 	cursor.Draw();
+	//敵の描画処理----------------------------------------------------------------
+	RenderTargetStatus::Instance()->PrepareToCloseBarrier(mainHandle);
+	RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
+	mainRenderTarget.Draw();
+
+	addRenderTarget.data.handle = buler->BlurImage(addHandle);
+	addRenderTarget.Draw();
 }
 
 int GameScene::SceneChange()
