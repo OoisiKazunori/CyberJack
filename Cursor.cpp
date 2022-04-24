@@ -47,6 +47,7 @@ Cursor::Cursor()
 	for (int i = 0; i < cursorEffectTex.size(); ++i)
 	{
 		cursorEffectTex[i].cursorEffectTex->data.handle = flameHandle;
+		cursorEffectTex[i].cursorEffectTex->data.pipelineName = PIPELINE_NAME_SPRITE;
 	}
 }
 

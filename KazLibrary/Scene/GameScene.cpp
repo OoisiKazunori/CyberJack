@@ -710,7 +710,6 @@ void GameScene::Draw()
 	{
 		lineLevel[i].Draw();
 	}
-	//cursor.Draw();
 	//hitBox.Draw();
 	//testEnemyPoly->Draw();
 
@@ -734,8 +733,8 @@ void GameScene::Draw()
 	//敵の描画処理----------------------------------------------------------------
 
 	//model->Draw();
-
 	stage.Draw();
+	cursor.Draw();
 }
 
 int GameScene::SceneChange()
