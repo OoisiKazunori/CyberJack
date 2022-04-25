@@ -29,7 +29,7 @@ GameScene::GameScene()
 	data[0].graphSize = { WIN_X,WIN_Y };
 	data[0].backGroundColor = BG_COLOR;
 	data[1].graphSize = { WIN_X,WIN_Y };
-	data[1].backGroundColor = BG_COLOR;
+	data[1].backGroundColor = { 0.0f,0.0f,0.0f};
 
 	handles =
 		RenderTargetStatus::Instance()->CreateMultiRenderTarget(data, DXGI_FORMAT_R8G8B8A8_UNORM);
@@ -41,6 +41,13 @@ GameScene::GameScene()
 	
 	buler = std::make_unique<GaussianBuler>(XMFLOAT2(WIN_X, WIN_Y), XMFLOAT3(0.0f, 0.0f, 0.0f));
 
+
+
+	luminaceTex.data.pipelineName = PIPELINE_NAME_SPRITE_LUMI;
+	luminaceTex.data.handle = handles[0];
+	luminaceTex.data.addHandle.handle[0] = handles[1];
+	luminaceTex.data.addHandle.paramType[0] = GRAPHICS_PRAMTYPE_TEX2;
+	luminaceTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 }
 
 GameScene::~GameScene()
@@ -760,8 +767,6 @@ void GameScene::Draw()
 		goalBox.Draw();
 		goalBox.effect[0].Draw();
 
-		//色んな色に対しての輝度抽出方法が不明
-
 		//敵の描画処理----------------------------------------------------------------
 		for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
 		{
@@ -776,13 +781,16 @@ void GameScene::Draw()
 			}
 		}
 
-		//敵の描画処理----------------------------------------------------------------
-		RenderTargetStatus::Instance()->PrepareToCloseBarrier(handles[0]);
+
+		//輝度抽出
+		RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, handles[0]);
+		RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
+		luminaceTex.Draw();
+		RenderTargetStatus::Instance()->PrepareToCloseBarrier(addHandle);
 		RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
 		mainRenderTarget.Draw();
-
-		//addRenderTarget.data.handle = buler->BlurImage(addHandle);
-		//addRenderTarget.Draw();
+		addRenderTarget.data.handle = buler->BlurImage(addHandle);
+		addRenderTarget.Draw();
 	}
 	else
 	{

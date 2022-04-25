@@ -52,6 +52,8 @@ struct Sprite2DData :public IData
 	XMFLOAT4 size;
 	float alpha;
 
+	AddTextureData addHandle;
+
 	Sprite2DData()
 	{
 		address = this;

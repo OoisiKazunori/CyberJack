@@ -137,6 +137,7 @@ private:
 	//‰æ–ÊŒø‰Ê€”õ-----------------------
 	Sprite2DRender mainRenderTarget;
 	Sprite2DRender addRenderTarget;
+	Sprite2DRender luminaceTex;
 	short addHandle;
 	std::unique_ptr<GaussianBuler> buler;
 

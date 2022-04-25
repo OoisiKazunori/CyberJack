@@ -3,7 +3,7 @@
 #include"../ShaderHeader/FogBufferHeader.hlsli"
 #include"../ShaderHeader/MultiPassHeader.hlsli"
 
-TwoRender PSmain(FogOutPut input) : SV_TARGET
+TwoRender PSmain(FogOutPut input)
 {
     float4 fog = CaluFog(input.svpos, color, fogData.xyz, fogData.w);
     

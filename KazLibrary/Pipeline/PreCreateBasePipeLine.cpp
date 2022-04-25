@@ -343,6 +343,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ObjTwoRenderPixelShader.hlsl", "PSmain", "ps_5_0", SHADER_PIXCEL_OBJ_MULTITEX);
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GoalLightTwoRenderPixelShader.hlsl", "PSmain", "ps_5_0", SHADER_PIXCEL_GOALLIGHT_MULTITEX);
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogColorTwoRenderPixelShader.hlsl", "PSmain", "ps_5_0", SHADER_PIXCEL_FOG_COLOR_MULTITEX);
+	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "MultiPassLuminancePixelShader.hlsl", "PSmain", "ps_5_0", SHADER_PIXCEL_LUMINANCE_MULTI);
 
 	OutputDebugStringA("シェーダーのコンパイルを終了します\n");
 #pragma endregion
@@ -1439,6 +1440,16 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_SPRITE_GOAL_EFFECT_MULTITEX
 	);
 
+	//輝度抽出
+	//スプライトパイプライン
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS_TEX,
+		SHADER_VERTEX_SPRITE,
+		SHADER_PIXCEL_LUMINANCE_MULTI,
+		PIPELINE_DATA_NOCARING_BLENDALPHA,
+		ROOTSIGNATURE_DATA_DRAW_TEX_TEX2,
+		PIPELINE_NAME_SPRITE_LUMI
+	);
 
 #pragma region パイプラインの設定の登録HDR用
 	DXGI_FORMAT_R32G32B32A32_FLOAT;

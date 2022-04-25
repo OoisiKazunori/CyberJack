@@ -376,5 +376,20 @@ PreCreateBaseRootSignature::PreCreateBaseRootSignature()
 		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_SRV_UAV_CBV, lineData, 3);
 	}
 
+#pragma region 座標とテクスチャ二枚を送る
+	{
+		RootSignatureData spriteData;
+		spriteData.paramData[0].param = 0;
+		spriteData.paramData[0].type = GRAPHICS_PRAMTYPE_DRAW;
+		spriteData.range[0] = GRAPHICS_RANGE_TYPE_CBV;
+		spriteData.paramData[1].param = 1;
+		spriteData.paramData[1].type = GRAPHICS_PRAMTYPE_TEX;
+		spriteData.range[1] = GRAPHICS_RANGE_TYPE_SRV;
+		spriteData.paramData[2].param = 2;
+		spriteData.paramData[2].type = GRAPHICS_PRAMTYPE_TEX2;
+		spriteData.range[2] = GRAPHICS_RANGE_TYPE_SRV;
+		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_DRAW_TEX_TEX2, spriteData, 3);
+	}
+#pragma endregion
 
 }

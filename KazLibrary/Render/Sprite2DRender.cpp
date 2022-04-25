@@ -255,7 +255,15 @@ void Sprite2DRender::Draw()
 		int param = KazRenderHelper::SetBufferOnCmdList(GraphicsRootSignature::Instance()->GetRootParam(renderData.pipelineMgr->GetRootSignatureName(pipeline)), GRAPHICS_RANGE_TYPE_SRV, GRAPHICS_PRAMTYPE_TEX);
 		renderData.cmdListInstance->cmdList->SetGraphicsRootDescriptorTable(param, gpuDescHandleSRV);
 	}
+
+	for (int i = 0; i < data.addHandle.handle.size(); ++i)
+	{
+		renderData.shaderResourceMgrInstance->SetSRV(data.addHandle.handle[i], GraphicsRootSignature::Instance()->GetRootParam(renderData.pipelineMgr->GetRootSignatureName(pipeline)), data.addHandle.paramType[i]);
+	}
 	//バッファをコマンドリストに積む-----------------------------------------------------------------------------------------------------
+
+
+
 
 	//描画命令-----------------------------------------------------------------------------------------------------
 	renderData.cmdListInstance->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
