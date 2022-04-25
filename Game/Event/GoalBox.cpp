@@ -11,7 +11,7 @@ GoalBox::GoalBox()
 
 	model->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::GoalPath + "goal.obj");
 
-	lerpPos = { 0.0f,0.0f,0.0f };
+	lerpPos = { 10.0f,0.0f,10.0f };
 	lerpRota = { 0.0f,0.0f,0.0f };
 	model->data.transform.pos = lerpPos;
 	model->data.transform.rotation = lerpRota;
@@ -23,9 +23,8 @@ GoalBox::GoalBox()
 	moveRotaVel = { 200.0f,200.0f,200.0f };
 	moveVel = { 0.0f,0.0f,15.0f };
 
-	//std::shared_ptr<XMMATRIX>data = std::make_shared<XMMATRIX>(model->data.motherMat);
-
 	effect.Init(&model->data.motherMat);
+	//std::shared_ptr<XMMATRIX>data = std::make_shared<XMMATRIX>(model->data.motherMat);
 }
 
 void GoalBox::Init()
@@ -38,6 +37,8 @@ void GoalBox::Init()
 	lerpRota = { 0.0f,0.0f,0.0f };
 	model->data.transform.pos = lerpPos;
 	model->data.transform.rotation = lerpRota;
+
+	effect.Init(&model->data.motherMat);
 }
 
 void GoalBox::Update()

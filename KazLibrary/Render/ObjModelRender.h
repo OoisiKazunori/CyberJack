@@ -10,7 +10,7 @@
 class ObjModelRender :public IRender
 {
 public:
-	ObjModelRender(bool INSTANCE_FLAG = false, int INSTANCE_NUM = 1);
+	ObjModelRender(bool INSTANCE_FLAG = false, int INSTANCE_NUM = 1, bool MATERIAL_NONE_FALG = false);
 	~ObjModelRender();
 
 	void Draw();

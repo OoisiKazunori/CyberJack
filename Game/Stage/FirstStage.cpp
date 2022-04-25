@@ -125,9 +125,9 @@ FirstStage::FirstStage()
 
 	}
 
-	fogData[0].fogdata.x = BG_COLOR.x / 255.0f;;
-	fogData[0].fogdata.y = BG_COLOR.y / 255.0f;;
-	fogData[0].fogdata.z = BG_COLOR.z / 255.0f;;
+	fogData[0].fogdata.x = BG_COLOR.x / 255.0f;
+	fogData[0].fogdata.y = BG_COLOR.y / 255.0f;
+	fogData[0].fogdata.z = BG_COLOR.z / 255.0f;
 	stageParamLoader.ExportFile(KazFilePathName::StageParamPath + "StageParamData.json");
 }
 

@@ -1,6 +1,6 @@
 #include "ObjModelRender.h"
 
-ObjModelRender::ObjModelRender(bool INSTANCE_FLAG, int INSTANCE_NUM)
+ObjModelRender::ObjModelRender(bool INSTANCE_FLAG, int INSTANCE_NUM, bool MATERIAL_NONE_FALG)
 {
 
 	instanceFlag = INSTANCE_FLAG;
@@ -26,8 +26,10 @@ ObjModelRender::ObjModelRender(bool INSTANCE_FLAG, int INSTANCE_NUM)
 		constBufferHandle[0] = CreateConstBuffer(sizeof(ConstBufferData), typeid(ConstBufferData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DRAW);
 	}
 
-	constBufferHandle[1] = CreateConstBuffer(sizeof(ConstBufferDataB1), typeid(ConstBufferDataB1).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
-
+	if (!MATERIAL_NONE_FALG)
+	{
+		constBufferHandle[1] = CreateConstBuffer(sizeof(ConstBufferDataB1), typeid(ConstBufferDataB1).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+	}
 }
 
 ObjModelRender::~ObjModelRender()

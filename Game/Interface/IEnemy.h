@@ -82,11 +82,16 @@ public:
 	/// </summary>
 	void Dead();
 
+	/// <summary>
+	/// €–S‰‰o
+	/// </summary>
+	void DradEffect(XMVECTOR *POS, XMVECTOR *ROTATION, float *ALPHA);
+
 	
 	/// <returns>“G‚Ìî•ñ</returns>
 	const unique_ptr<EnemyData> &GetData();
 
 
 	unique_ptr<EnemyData> iEnemy_EnemyStatusData;		//“G‚Ìó‘Ô‚ğ•Û‘¶‚·‚éƒf[ƒ^
-	BoxPolygonRenderPtr iEnemy_ModelRender;				//“G‚Ì•`‰æ
+	ObjModelRenderPtr iEnemy_ModelRender;				//“G‚Ì•`‰æ
 };

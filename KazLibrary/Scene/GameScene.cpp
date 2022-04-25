@@ -425,9 +425,10 @@ void GameScene::Update()
 	ImGui::InputFloat("NO_MOVE_DISTANCE:Y", &cursor.NO_MOVE_DISTANCE.m128_f32[1]);
 	ImGui::End();*/
 
-	ImGui::Begin("Camera");
+	ImGui::Begin("Debug");
 	ImGui::Checkbox("DebugCamera", &cameraChangeFlag);
 	ImGui::Checkbox("DebugLine", &lineDebugFlag);
+	ImGui::Checkbox("DebugBloom", &bloomFlag);
 	ImGui::End();
 
 
@@ -631,8 +632,25 @@ void GameScene::Update()
 					}
 				}
 
+				bool releaseFlag = cursor.Release();
+				bool aliveFlag = enemies[enemyType][enemyCount]->AliveOrNot();
+				bool lockedFlag = enemies[enemyType][enemyCount]->LockedOrNot();
+				if (releaseFlag)
+				{
+					bool debug = false;
+				}
+				if (aliveFlag)
+				{
+					bool debug = false;
+				}
+				if (lockedFlag)
+				{
+					bool debug = false;
+				}
+
+
 				//敵が生きている&&ロックオンできる回数が0以下&&ロックオン入力がリリースされた時、敵は死亡する
-				if (enemies[enemyType][enemyCount]->AliveOrNot() && enemies[enemyType][enemyCount]->LockedOrNot() && cursor.Release())
+				if (releaseFlag && !aliveFlag && lockedFlag)
 				{
 					enemies[enemyType][enemyCount]->Dead();
 				}
@@ -713,50 +731,83 @@ void GameScene::Draw()
 
 	short mainHandle = mainRenderTarget.data.handle;
 
-	RenderTargetStatus::Instance()->PrepareToChangeBarrier(mainHandle);
-	RenderTargetStatus::Instance()->ClearRenderTarget(mainHandle);
-	stage.Draw();
-	if (lineDebugFlag)
+	if (bloomFlag)
 	{
-		bg.Draw();
-	}
-	player.Draw();
-	for (int i = 0; i < lineLevel.size(); ++i)
-	{
-		lineLevel[i].Draw();
-	}
-	goalBox.Draw();
 
-
-	//色んな色に対しての輝度中質方法が不明
-	RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, mainHandle);
-	RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
-	goalBox.effect.Draw();
-	RenderTargetStatus::Instance()->PrepareToChangeBarrier(mainHandle, addHandle);
-
-
-	//敵の描画処理----------------------------------------------------------------
-	for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
-	{
-		for (int enemyCount = 0; enemyCount < enemies[enemyType].size(); ++enemyCount)
+		RenderTargetStatus::Instance()->PrepareToChangeBarrier(mainHandle);
+		RenderTargetStatus::Instance()->ClearRenderTarget(mainHandle);
+		cursor.Draw();
+		stage.Draw();
+		if (lineDebugFlag)
 		{
-			//生成されている敵のみ描画処理を通す
-			bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
-			if (enableToUseDataFlag)
+			bg.Draw();
+		}
+		player.Draw();
+		for (int i = 0; i < lineLevel.size(); ++i)
+		{
+			lineLevel[i].Draw();
+		}
+		goalBox.Draw();
+
+
+		//色んな色に対しての輝度中質方法が不明
+		RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, mainHandle);
+		RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
+		goalBox.effect.Draw();
+		RenderTargetStatus::Instance()->PrepareToChangeBarrier(mainHandle, addHandle);
+
+
+		//敵の描画処理----------------------------------------------------------------
+		for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
+		{
+			for (int enemyCount = 0; enemyCount < enemies[enemyType].size(); ++enemyCount)
 			{
-				//enemies[enemyType][enemyCount]->Draw();
+				//生成されている敵のみ描画処理を通す
+				bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
+				if (enableToUseDataFlag)
+				{
+					//enemies[enemyType][enemyCount]->Draw();
+				}
 			}
 		}
+
+		//敵の描画処理----------------------------------------------------------------
+		RenderTargetStatus::Instance()->PrepareToCloseBarrier(mainHandle);
+		RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
+		mainRenderTarget.Draw();
+
+		addRenderTarget.data.handle = buler->BlurImage(addHandle);
+		addRenderTarget.Draw();
 	}
-
-	cursor.Draw();
-	//敵の描画処理----------------------------------------------------------------
-	RenderTargetStatus::Instance()->PrepareToCloseBarrier(mainHandle);
-	RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
-	mainRenderTarget.Draw();
-
-	addRenderTarget.data.handle = buler->BlurImage(addHandle);
-	addRenderTarget.Draw();
+	else
+	{
+		stage.Draw();
+		if (lineDebugFlag)
+		{
+			bg.Draw();
+		}
+		player.Draw();
+		for (int i = 0; i < lineLevel.size(); ++i)
+		{
+			lineLevel[i].Draw();
+		}
+		goalBox.Draw();
+		goalBox.effect.Draw();
+		//敵の描画処理----------------------------------------------------------------
+		for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
+		{
+			for (int enemyCount = 0; enemyCount < enemies[enemyType].size(); ++enemyCount)
+			{
+				//生成されている敵のみ描画処理を通す
+				bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
+				if (enableToUseDataFlag)
+				{
+					//enemies[enemyType][enemyCount]->Draw();
+				}
+			}
+		}
+		cursor.Draw();
+	}
 }
 
 int GameScene::SceneChange()
