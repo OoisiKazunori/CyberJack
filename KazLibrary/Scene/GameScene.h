@@ -3,9 +3,9 @@
 #include"../Render/BackGroundForDebug.h"
 #include"../Render/KazRender.h"
 #include<memory>
-#include"../Player.h"
-#include"../Cursor.h"
-#include"../TestEnemy.h"
+#include"../Game/Player.h"
+#include"../Game/UI/Cursor.h"
+#include"../Game/Debug/TestEnemy.h"
 #include"../Game/Interface/IEnemy.h"
 #include"../Game/Enemy/NormalEnemy.h"
 #include"../Game/Enemy/KidEnemy.h"

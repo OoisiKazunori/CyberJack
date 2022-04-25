@@ -23,7 +23,10 @@ GoalBox::GoalBox()
 	moveRotaVel = { 200.0f,200.0f,200.0f };
 	moveVel = { 0.0f,0.0f,15.0f };
 
-	effect.Init(&model->data.motherMat);
+	for (int i = 0; i < effect.size(); ++i)
+	{
+		effect[i].Init(&model->data.motherMat);
+	}
 	//std::shared_ptr<XMMATRIX>data = std::make_shared<XMMATRIX>(model->data.motherMat);
 }
 
@@ -38,7 +41,10 @@ void GoalBox::Init()
 	model->data.transform.pos = lerpPos;
 	model->data.transform.rotation = lerpRota;
 
-	effect.Init(&model->data.motherMat);
+	for (int i = 0; i < effect.size(); ++i)
+	{
+		effect[i].Init(&model->data.motherMat);
+	}
 }
 
 void GoalBox::Update()
@@ -60,7 +66,11 @@ void GoalBox::Update()
 		lerpPos.m128_f32[2] = model->data.transform.pos.m128_f32[2] + moveVel.m128_f32[2];
 		//‰ñ“]‚³‚¹‚é
 		lerpRota = model->data.transform.rotation + moveRotaVel;
-		effect.Appear();
+
+		for (int i = 0; i < effect.size(); ++i)
+		{
+			effect[i].Appear();
+		}
 	}
 
 	//À•W‚Ìƒ‰[ƒv
@@ -75,8 +85,10 @@ void GoalBox::Update()
 	}
 	prevHpNum = iOperationData.rockOnNum;
 
-
-	effect.Update();
+	for (int i = 0; i < effect.size(); ++i)
+	{
+		effect[i].Update();
+	}
 
 
 	ImGui::Begin("Goal");
@@ -92,5 +104,4 @@ void GoalBox::Update()
 void GoalBox::Draw()
 {
 	model->Draw();
-	effect.Draw();
 }

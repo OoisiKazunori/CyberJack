@@ -980,6 +980,16 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_SPRITE_GOAL_EFFECT
 	);
 
+	//ゴールエフェクト2
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS_TEX,
+		SHADER_VERTEX_SPRITE,
+		SHADER_PIXCEL_SPRITE_GOAL_EFFECT,
+		PIPELINE_DATA_NOCARING_BLENDALPHA_DEPTHOFF,
+		ROOTSIGNATURE_DATA_DRAW_TEX_DATA1,
+		PIPELINE_NAME_SPRITE_GOAL_EFFECT_DEPTHOFF
+	);
+
 	//Objパイプライン
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX,
@@ -1200,7 +1210,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		ROOTSIGNATURE_MODE_LIGHT,
 		PIPELINE_NAME_GOALLIGHT
 	);
-
+	
 	//Fog
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,

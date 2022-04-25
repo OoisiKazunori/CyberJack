@@ -733,7 +733,6 @@ void GameScene::Draw()
 
 	if (bloomFlag)
 	{
-
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(mainHandle);
 		RenderTargetStatus::Instance()->ClearRenderTarget(mainHandle);
 		cursor.Draw();
@@ -748,12 +747,16 @@ void GameScene::Draw()
 			lineLevel[i].Draw();
 		}
 		goalBox.Draw();
+		goalBox.effect[0].Draw();
 
-
-		//色んな色に対しての輝度中質方法が不明
+		//色んな色に対しての輝度抽出方法が不明
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, mainHandle);
 		RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
-		goalBox.effect.Draw();
+		for (int i = 0; i < goalBox.effect[1].lightRender.size(); ++i)
+		{
+			goalBox.effect[1].lightRender[i]->data.pipelineName = PIPELINE_NAME_SPRITE_GOAL_EFFECT_DEPTHOFF;
+		}
+		goalBox.effect[1].Draw();
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(mainHandle, addHandle);
 
 
@@ -792,7 +795,7 @@ void GameScene::Draw()
 			lineLevel[i].Draw();
 		}
 		goalBox.Draw();
-		goalBox.effect.Draw();
+		goalBox.effect[0].Draw();
 		//敵の描画処理----------------------------------------------------------------
 		for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
 		{

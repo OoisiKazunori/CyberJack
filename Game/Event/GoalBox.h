@@ -3,6 +3,7 @@
 #include"../Game/Interface/IOperationObject.h"
 #include"../KazLibrary/Render/KazRender.h"
 #include"../Game/Event/GoalBoxEffect.h"
+#include<array>
 
 class GoalBox :public IOperationObject
 {
@@ -13,9 +14,8 @@ public:
 	void Update();
 	void Draw();
 
-
 	//ゴールエフェクト
-	GoalBoxEffect effect;
+	std::array<GoalBoxEffect, 2> effect;
 private:
 	//移動-----------------------
 	XMVECTOR lerpRota;//角度のラープ

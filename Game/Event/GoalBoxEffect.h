@@ -15,10 +15,11 @@ public:
 	void Draw();
 
 	void Appear();
-private:
-	XMMATRIX *motherPtr;
+
 	static const int LIGHT_MAX_NUM = 8;
 	std::array<Sprite3DRenderPtr, LIGHT_MAX_NUM> lightRender;
+private:
+	XMMATRIX *motherPtr;
 	std::array<short, LIGHT_MAX_NUM> uvHandle;
 	GoalLightData uvData;
 
