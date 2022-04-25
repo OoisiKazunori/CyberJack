@@ -146,4 +146,5 @@ private:
 	bool lineDebugFlag;
 
 	bool bloomFlag;
+	std::vector<short> handles;
 };

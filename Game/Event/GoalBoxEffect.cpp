@@ -10,7 +10,7 @@ GoalBoxEffect::GoalBoxEffect()
 	{
 		lightRender[i] = std::make_unique<Sprite3DRender>(XMFLOAT2(0.0f, 0.0f));
 		lightRender[i]->data.handle = handle;
-		lightRender[i]->data.pipelineName = PIPELINE_NAME_SPRITE_GOAL_EFFECT;
+		lightRender[i]->data.pipelineName = PIPELINE_NAME_SPRITE_GOAL_EFFECT_MULTITEX;
 		uvHandle[i] = lightRender[i]->CreateConstBuffer(sizeof(GoalLightData), typeid(GoalLightData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
 	}
 

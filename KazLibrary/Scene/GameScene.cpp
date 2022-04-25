@@ -20,9 +20,20 @@ GameScene::GameScene()
 	model->data.color = { 255.0f,0.0f,0.0f,255.0f };
 
 
-	mainRenderTarget.data.handle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, BG_COLOR, DXGI_FORMAT_R8G8B8A8_UNORM);
+	//mainRenderTarget.data.handle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, BG_COLOR, DXGI_FORMAT_R8G8B8A8_UNORM);
 	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 
+	std::vector<MultiRenderTargetData> data;
+	data.push_back(MultiRenderTargetData());
+	data.push_back(MultiRenderTargetData());
+	data[0].graphSize = { WIN_X,WIN_Y };
+	data[0].backGroundColor = BG_COLOR;
+	data[1].graphSize = { WIN_X,WIN_Y };
+	data[1].backGroundColor = BG_COLOR;
+
+	handles =
+		RenderTargetStatus::Instance()->CreateMultiRenderTarget(data, DXGI_FORMAT_R8G8B8A8_UNORM);
+	mainRenderTarget.data.handle = handles[0];
 
 	addHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, XMFLOAT3(0.0f, 0.0f, 0.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
 	addRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
@@ -733,8 +744,8 @@ void GameScene::Draw()
 
 	if (bloomFlag)
 	{
-		RenderTargetStatus::Instance()->PrepareToChangeBarrier(mainHandle);
-		RenderTargetStatus::Instance()->ClearRenderTarget(mainHandle);
+		RenderTargetStatus::Instance()->PrepareToChangeBarrier(handles[0]);
+		RenderTargetStatus::Instance()->ClearRenderTarget(handles[0]);
 		cursor.Draw();
 		stage.Draw();
 		if (lineDebugFlag)
@@ -744,21 +755,12 @@ void GameScene::Draw()
 		player.Draw();
 		for (int i = 0; i < lineLevel.size(); ++i)
 		{
-			lineLevel[i].Draw();
+		//	lineLevel[i].Draw();
 		}
 		goalBox.Draw();
 		goalBox.effect[0].Draw();
 
 		//色んな色に対しての輝度抽出方法が不明
-		RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, mainHandle);
-		RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
-		for (int i = 0; i < goalBox.effect[1].lightRender.size(); ++i)
-		{
-			goalBox.effect[1].lightRender[i]->data.pipelineName = PIPELINE_NAME_SPRITE_GOAL_EFFECT_DEPTHOFF;
-		}
-		goalBox.effect[1].Draw();
-		RenderTargetStatus::Instance()->PrepareToChangeBarrier(mainHandle, addHandle);
-
 
 		//敵の描画処理----------------------------------------------------------------
 		for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
@@ -775,12 +777,12 @@ void GameScene::Draw()
 		}
 
 		//敵の描画処理----------------------------------------------------------------
-		RenderTargetStatus::Instance()->PrepareToCloseBarrier(mainHandle);
+		RenderTargetStatus::Instance()->PrepareToCloseBarrier(handles[0]);
 		RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
 		mainRenderTarget.Draw();
 
-		addRenderTarget.data.handle = buler->BlurImage(addHandle);
-		addRenderTarget.Draw();
+		//addRenderTarget.data.handle = buler->BlurImage(addHandle);
+		//addRenderTarget.Draw();
 	}
 	else
 	{

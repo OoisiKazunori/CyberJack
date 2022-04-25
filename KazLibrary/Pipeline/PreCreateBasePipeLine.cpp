@@ -336,6 +336,13 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FbxTwoRenderPixelShader.hlsl", "PSmain", "ps_5_0", SHADER_PIXCEL_FBX_RENDER_TWO);
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GoalEffectPixelShader.hlsl", "PSmain", "ps_5_0", SHADER_PIXCEL_SPRITE_GOAL_EFFECT);
+	
+	
+	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ColorTwoRenderPixelShader.hlsl", "PSmain", "ps_5_0", SHADER_PIXCEL_COLOR_MULTITEX);
+	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "SpriteTwoRenderPixelShader.hlsl", "PSmain", "ps_5_0", SHADER_PIXCEL_SPRITE_MULTITEX);
+	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ObjTwoRenderPixelShader.hlsl", "PSmain", "ps_5_0", SHADER_PIXCEL_OBJ_MULTITEX);
+	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GoalLightTwoRenderPixelShader.hlsl", "PSmain", "ps_5_0", SHADER_PIXCEL_GOALLIGHT_MULTITEX);
+	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogColorTwoRenderPixelShader.hlsl", "PSmain", "ps_5_0", SHADER_PIXCEL_FOG_COLOR_MULTITEX);
 
 	OutputDebugStringA("シェーダーのコンパイルを終了します\n");
 #pragma endregion
@@ -864,6 +871,51 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 #pragma endregion
 
 
+
+	//マルチパスのスプライト用
+#pragma region PIPELINE_DATA_NOCARING_BLENDALPHA_RENDERTARGET_TWO
+	{
+		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
+		//スプライト用
+		//サンプルマスク
+		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+
+		//ラスタライザ
+		//背面カリング、塗りつぶし、深度クリッピング有効
+		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
+		gPipeline.RasterizerState = rasterrize;
+		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+
+		//ブレンドモード
+		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
+		gPipeline.BlendState.RenderTarget[1] = alphaBlendDesc;
+
+		//図形の形状
+		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+
+		//その他設定
+		gPipeline.NumRenderTargets = 2;
+		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		gPipeline.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		gPipeline.SampleDesc.Count = 1;
+
+
+
+		//デプスステンシルステートの設定
+		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_BLENDALPHA_MULTIPASS_TWO);
+	}
+#pragma endregion
+
+
+
+
+
+
+
 	//コンピュートパイプライン
 	D3D12_COMPUTE_PIPELINE_STATE_DESC desc = {};
 	desc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
@@ -1328,9 +1380,64 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 #pragma endregion
 
 
+	//マルチテクスチャ用
+	//色パイプライン
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS,
+		SHADER_VERTEX_COLOR,
+		SHADER_PIXCEL_COLOR_MULTITEX,
+		PIPELINE_DATA_BACKCARING_ALPHABLEND_RNEDERTARGET_SECOND,
+		ROOTSIGNATURE_DATA_DRAW,
+		PIPELINE_NAME_COLOR_MULTITEX
+	);
+	//フォグ
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS,
+		SHADER_VERTEX_FOG_COLOR,
+		SHADER_PIXCEL_FOG_COLOR_MULTITEX,
+		PIPELINE_DATA_NOCARING_BLENDALPHA_MULTIPASS_TWO,
+		ROOTSIGNATURE_DATA_DRAW_DATA1,
+		PIPELINE_NAME_FOG_COLOR_MULTITEX
+	);
 
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS,
+		SHADER_VERTEX_COLOR,
+		SHADER_PIXCEL_COLOR_MULTITEX,
+		PIPELINE_DATA_BACKCARING_ALPHABLEND_RNEDERTARGET_SECOND,
+		ROOTSIGNATURE_DATA_DRAW,
+		PIPELINE_NAME_COLOR_MULTITEX
+	);
 
+	//スプライトパイプライン
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS_TEX,
+		SHADER_VERTEX_SPRITE,
+		SHADER_PIXCEL_SPRITE_MULTITEX,
+		PIPELINE_DATA_NOCARING_BLENDALPHA_MULTIPASS_TWO,
+		ROOTSIGNATURE_DATA_DRAW_TEX,
+		PIPELINE_NAME_SPRITE_MULTITEX
+	);
 
+	//Objパイプライン
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS_NORMAL_TEX,
+		SHADER_VERTEX_OBJ,
+		SHADER_PIXCEL_OBJ_MULTITEX,
+		PIPELINE_DATA_BACKCARING_ALPHABLEND_RNEDERTARGET_SECOND,
+		ROOTSIGNATURE_DATA_DRAW_TEX_DATA1,
+		PIPELINE_NAME_OBJ_MULTITEX
+	);
+
+	//ゴールエフェクト
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS_TEX,
+		SHADER_VERTEX_SPRITE,
+		SHADER_PIXCEL_GOALLIGHT_MULTITEX,
+		PIPELINE_DATA_NOCARING_BLENDALPHA_MULTIPASS_TWO,
+		ROOTSIGNATURE_DATA_DRAW_TEX_DATA1,
+		PIPELINE_NAME_SPRITE_GOAL_EFFECT_MULTITEX
+	);
 
 
 #pragma region パイプラインの設定の登録HDR用

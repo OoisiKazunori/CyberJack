@@ -6,6 +6,7 @@
 GoalBox::GoalBox()
 {
 	model = std::make_unique<ObjModelRender>();
+	model->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX;
 	iOperationData.Init(8);
 	prevHpNum = iOperationData.rockOnNum;
 
