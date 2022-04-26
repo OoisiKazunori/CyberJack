@@ -22,6 +22,7 @@ GameScene::GameScene()
 
 	//mainRenderTarget.data.handle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, BG_COLOR, DXGI_FORMAT_R8G8B8A8_UNORM);
 	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+	mainRenderTarget.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
 
 	std::vector<MultiRenderTargetData> data;
 	data.push_back(MultiRenderTargetData());

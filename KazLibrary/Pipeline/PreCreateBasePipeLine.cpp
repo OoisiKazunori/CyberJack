@@ -447,6 +447,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		//ブレンドモード
 		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
 		gPipeline.BlendState.RenderTarget[1] = alphaBlendDesc;
+		//gPipeline.BlendState.IndependentBlendEnable = true;
 
 		//図形の形状
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
@@ -665,7 +666,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 		//ブレンドモード
 		gPipeline.BlendState.RenderTarget[0] = addBlendDesc;
-		gPipeline.BlendState.AlphaToCoverageEnable = true;
+		gPipeline.BlendState.AlphaToCoverageEnable = false;
 
 
 		//図形の形状
@@ -677,7 +678,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		gPipeline.SampleDesc.Count = 1;
 
 		//デプスステンシルステートの設定
-		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
+		gPipeline.DepthStencilState.DepthEnable = false;							//深度テストを行う
 		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;		//小さければOK
 		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
@@ -890,6 +891,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		//ブレンドモード
 		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
 		gPipeline.BlendState.RenderTarget[1] = alphaBlendDesc;
+		//gPipeline.BlendState.IndependentBlendEnable = true;
 
 		//図形の形状
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
