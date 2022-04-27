@@ -52,4 +52,19 @@ public:
 	bool AliveOrNot();
 
 	IOperationObjectData iOperationData;//操作可能OBJ全員が持つ基本データ
+
+
+protected:
+	const float limitLinePosZ = -200.0f;//当たり判定を有効にするライン
+
+
+	/// <summary>
+	/// 指定のZ座標より小さい場所より行こうとしたらfalseを返す
+	/// </summary>
+	/// <param name="POS_Z">対象のZ座標</param>
+	bool EnableToHit(float POS_Z)
+	{
+		return limitLinePosZ<= POS_Z;
+	};
+
 };

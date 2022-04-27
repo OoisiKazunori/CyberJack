@@ -29,7 +29,7 @@ void IEnemy::DradEffect(XMVECTOR *POS, XMVECTOR *ROTATION, float *ALPHA)
 	}
 	else
 	{
-		XMVECTOR rota{ 5.0f,0.0f,5.0f };
+		XMVECTOR rota{ 5.0f,5.0f,5.0f };
 		*ROTATION += rota;
 		POS->m128_f32[1] -= 0.5f;
 		*ALPHA -= 5.0f;

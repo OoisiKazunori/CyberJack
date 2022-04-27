@@ -106,6 +106,7 @@ struct Obj3DData :public IData
 	XMMATRIX motherMat;
 	int pipelineName;
 	XMFLOAT4 color;
+	bool removeMaterialFlag;
 
 	AddTextureData addHandle;
 
@@ -117,6 +118,7 @@ struct Obj3DData :public IData
 		frontVector = { 0,0,1 };
 		pipelineName = static_cast<int>(PIPELINE_NAME_OBJ);
 		color = { 0.0f,0.0f,0.0f,255.0f };
+		removeMaterialFlag = false;
 		motherMat = XMMatrixIdentity();
 	}
 };

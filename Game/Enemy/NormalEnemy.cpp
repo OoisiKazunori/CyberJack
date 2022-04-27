@@ -35,9 +35,14 @@ void NormalEnemy::Update()
 	iEnemy_ModelRender->data.transform.pos.m128_f32[2] += -speed;
 
 	//死亡演出処理
-	if (!iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag || KeyBoradInputManager::Instance()->InputState(DIK_J))
+	//デバックキーor当たり判定内&&死亡時
+	if (EnableToHit(iEnemy_ModelRender->data.transform.pos.m128_f32[2]) &&!iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag || KeyBoradInputManager::Instance()->InputState(DIK_J))
 	{
-		//iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
+		iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME_MULTITEX;
+		iEnemy_ModelRender->data.removeMaterialFlag = true;
+		iEnemy_ModelRender->data.color.x = 255.0f;
+		iEnemy_ModelRender->data.color.y = 255.0f;
+		iEnemy_ModelRender->data.color.z = 255.0f;
 		DradEffect(&iEnemy_ModelRender->data.transform.pos, &iEnemy_ModelRender->data.transform.rotation, &iEnemy_ModelRender->data.color.w);
 	}
 	//死亡演出中に登場演出は行わない
@@ -52,6 +57,12 @@ void NormalEnemy::Update()
 		{
 			iEnemy_ModelRender->data.color.w = 255.0f;
 		}
+	}
+
+
+	if (!EnableToHit(iEnemy_ModelRender->data.transform.pos.m128_f32[2]))
+	{
+		iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag = false;
 	}
 }
 

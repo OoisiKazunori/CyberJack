@@ -106,7 +106,7 @@ void ObjModelRender::Draw()
 	}
 
 
-	if (data.pipelineName != PIPELINE_NAME_COLOR_WIREFLAME)
+	if (data.pipelineName != PIPELINE_NAME_COLOR_WIREFLAME && data.pipelineName != PIPELINE_NAME_COLOR_WIREFLAME_MULTITEX)
 	{
 
 		//マテリアルデータ
@@ -127,7 +127,7 @@ void ObjModelRender::Draw()
 		//バッファをコマンドリストに積む-----------------------------------------------------------------------------------------------------
 	}
 
-	SetConstBufferOnCmdList(pipeline);
+	SetConstBufferOnCmdList(pipeline, data.removeMaterialFlag);
 
 
 	//追加のテクスチャを送る---------------------------------------------------------------
