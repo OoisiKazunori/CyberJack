@@ -30,7 +30,7 @@ GameScene::GameScene()
 	data[0].graphSize = { WIN_X,WIN_Y };
 	data[0].backGroundColor = BG_COLOR;
 	data[1].graphSize = { WIN_X,WIN_Y };
-	data[1].backGroundColor = { 0.0f,0.0f,0.0f};
+	data[1].backGroundColor = { 0.0f,0.0f,0.0f };
 
 	handles =
 		RenderTargetStatus::Instance()->CreateMultiRenderTarget(data, DXGI_FORMAT_R8G8B8A8_UNORM);
@@ -39,7 +39,7 @@ GameScene::GameScene()
 	addHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, XMFLOAT3(0.0f, 0.0f, 0.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
 	addRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	addRenderTarget.data.pipelineName = PIPELINE_NAME_ADDBLEND;
-	
+
 	buler = std::make_unique<GaussianBuler>(XMFLOAT2(WIN_X, WIN_Y), XMFLOAT3(0.0f, 0.0f, 0.0f));
 
 
@@ -70,55 +70,13 @@ void GameScene::Init()
 
 	responeData[0][0].enemyType = ENEMY_TYPE_NORMAL;
 	responeData[0][0].layerLevel = 0;
-	responeData[0][0].flame = 360;
-	responeData[0][0].initPos = { 0.0f,10.0f,100.0f };
+	responeData[0][0].flame = 160;
+	responeData[0][0].initPos = { 0.0f,10.0f,300.0f };
 
 
-	//テスト用の敵挙動
-	for (int layerLevel = 0; layerLevel < 1; ++layerLevel)
-	{
-		for (int enemyNum = 0; enemyNum < responeData[layerLevel].size(); ++enemyNum)
-		{
-			responeData[layerLevel][enemyNum].enemyType = ENEMY_TYPE_NORMAL;
-			responeData[layerLevel][enemyNum].layerLevel = 0;
 
-			//0~60秒以内に出す
-			responeData[layerLevel][enemyNum].flame = KazMath::IntRand(3600, 0);
 
-			//プレイヤーからある程度離れた場所に登場させる
-			XMVECTOR tmp;
-			for (int dir = 0; dir < 3; ++dir)
-			{
-				int setAreaNum = KazMath::IntRand(2, 0);
-				//X軸とZ軸
-				if (dir != 1)
-				{
-					if (1 <= setAreaNum)
-					{
-						tmp.m128_f32[dir] = KazMath::FloatRand(100.0f, 20.0f);
-					}
-					else
-					{
-						tmp.m128_f32[dir] = KazMath::FloatRand(-20.0f, -100.0f);
-					}
-				}
-				//Y軸
-				else
-				{
-					if (1 <= setAreaNum)
-					{
-						tmp.m128_f32[dir] = KazMath::FloatRand(50.0f, 0.0f);
-					}
-					else
-					{
-						tmp.m128_f32[dir] = KazMath::FloatRand(0.0f, -50.0f);
-					}
-				}
-			}
-			responeData[layerLevel][enemyNum].initPos = tmp;
 
-		}
-	}
 
 	//操作可能OBJを纏めて生成する処理----------------------------------------------------------------
 	for (int enemyType = 0; enemyType < responeData.size(); ++enemyType)
@@ -189,7 +147,7 @@ void GameScene::Init()
 	testEnemyPos = { 0.0f,0.0f,100.0f };
 	mulValue = { 10.0f,30.0f };
 	mulValue2 = { 60.0f,60.0f };
-	cameraChangeFlag = false;
+	cameraChangeFlag = true;
 
 	forceCameraDirVel.m128_f32[0] = -90.0f;
 }
@@ -447,7 +405,6 @@ void GameScene::Update()
 	ImGui::Begin("Debug");
 	ImGui::Checkbox("DebugCamera", &cameraChangeFlag);
 	ImGui::Checkbox("DebugLine", &lineDebugFlag);
-	ImGui::Checkbox("DebugBloom", &bloomFlag);
 	ImGui::End();
 
 
@@ -750,78 +707,47 @@ void GameScene::Draw()
 
 	short mainHandle = mainRenderTarget.data.handle;
 
-	if (bloomFlag)
+
+	RenderTargetStatus::Instance()->PrepareToChangeBarrier(handles[0]);
+	RenderTargetStatus::Instance()->ClearRenderTarget(handles[0]);
+	//cursor.Draw();
+	stage.Draw();
+	if (lineDebugFlag)
 	{
-		RenderTargetStatus::Instance()->PrepareToChangeBarrier(handles[0]);
-		RenderTargetStatus::Instance()->ClearRenderTarget(handles[0]);
-		cursor.Draw();
-		stage.Draw();
-		if (lineDebugFlag)
-		{
-			bg.Draw();
-		}
-		player.Draw();
-		for (int i = 0; i < lineLevel.size(); ++i)
-		{
+		bg.Draw();
+	}
+	player.Draw();
+	for (int i = 0; i < lineLevel.size(); ++i)
+	{
 		//	lineLevel[i].Draw();
-		}
-		goalBox.Draw();
-		goalBox.effect[0].Draw();
-
-		//敵の描画処理----------------------------------------------------------------
-		for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
-		{
-			for (int enemyCount = 0; enemyCount < enemies[enemyType].size(); ++enemyCount)
-			{
-				//生成されている敵のみ描画処理を通す
-				bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
-				if (enableToUseDataFlag)
-				{
-					//enemies[enemyType][enemyCount]->Draw();
-				}
-			}
-		}
-
-
-		//輝度抽出
-		RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, handles[0]);
-		RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
-		luminaceTex.Draw();
-		RenderTargetStatus::Instance()->PrepareToCloseBarrier(addHandle);
-		RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
-		mainRenderTarget.Draw();
-		addRenderTarget.data.handle = buler->BlurImage(addHandle);
-		addRenderTarget.Draw();
 	}
-	else
+	goalBox.Draw();
+	goalBox.effect[0].Draw();
+
+	//敵の描画処理----------------------------------------------------------------
+	for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
 	{
-		stage.Draw();
-		if (lineDebugFlag)
+		for (int enemyCount = 0; enemyCount < enemies[enemyType].size(); ++enemyCount)
 		{
-			bg.Draw();
-		}
-		player.Draw();
-		for (int i = 0; i < lineLevel.size(); ++i)
-		{
-			lineLevel[i].Draw();
-		}
-		goalBox.Draw();
-		goalBox.effect[0].Draw();
-		//敵の描画処理----------------------------------------------------------------
-		for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
-		{
-			for (int enemyCount = 0; enemyCount < enemies[enemyType].size(); ++enemyCount)
+			//生成されている敵のみ描画処理を通す
+			bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
+			if (enableToUseDataFlag)
 			{
-				//生成されている敵のみ描画処理を通す
-				bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
-				if (enableToUseDataFlag)
-				{
-					//enemies[enemyType][enemyCount]->Draw();
-				}
+				enemies[enemyType][enemyCount]->Draw();
 			}
 		}
-		cursor.Draw();
 	}
+
+
+	//輝度抽出
+	RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, handles[0]);
+	RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
+	luminaceTex.Draw();
+	RenderTargetStatus::Instance()->PrepareToCloseBarrier(addHandle);
+	RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
+	mainRenderTarget.Draw();
+	addRenderTarget.data.handle = buler->BlurImage(addHandle);
+	addRenderTarget.Draw();
 }
 
 int GameScene::SceneChange()

@@ -16,6 +16,6 @@ public:
 	void Draw();
 
 private:
-	int generateTimer;
+
 };
 

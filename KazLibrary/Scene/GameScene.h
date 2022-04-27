@@ -146,6 +146,5 @@ private:
 	bool cameraChangeFlag;
 	bool lineDebugFlag;
 
-	bool bloomFlag;
 	std::vector<short> handles;
 };
