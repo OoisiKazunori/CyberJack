@@ -1,6 +1,7 @@
 #include "NormalEnemy.h"
 #include"../KazLibrary/Loader/ObjResourceMgr.h"
 #include"../KazLibrary/Helper/ResourceFilePass.h"
+#include"../KazLibrary/Input/KeyBoradInputManager.h"
 
 NormalEnemy::NormalEnemy()
 {
@@ -15,6 +16,7 @@ void NormalEnemy::Init(const XMVECTOR &POS)
 	iOperationData.Init(1);							//Žc‚èƒƒbƒNƒIƒ“”“™‚Ì‰Šú‰»
 
 	iEnemy_ModelRender->data.color.w = 0.0f;
+	iEnemy_ModelRender->data.transform.rotation.m128_f32[1] = 90.0f;
 }
 
 void NormalEnemy::Finalize()
@@ -28,25 +30,28 @@ void NormalEnemy::Update()
 		iEnemy_ModelRender->data.color = { 255.0f,0.0f,0.0f,255.0f };
 	}
 
-	if (iEnemy_ModelRender->data.color.w < 255.0f)
-	{
-		iEnemy_ModelRender->data.color.w += 5.0f;
-	}
-	else
-	{
-		iEnemy_ModelRender->data.color.w = 255.0f;
-	}
-	
-
 	//ˆÚ“®
 	float speed = 0.8f;
 	iEnemy_ModelRender->data.transform.pos.m128_f32[2] += -speed;
 
 	//Ž€–S‰‰oˆ—
-	if (!iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
+	if (!iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag || KeyBoradInputManager::Instance()->InputState(DIK_J))
 	{
 		//iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
 		DradEffect(&iEnemy_ModelRender->data.transform.pos, &iEnemy_ModelRender->data.transform.rotation, &iEnemy_ModelRender->data.color.w);
+	}
+	//Ž€–S‰‰o’†‚É“oê‰‰o‚Ís‚í‚È‚¢
+	else
+	{
+		//“oêˆ—
+		if (iEnemy_ModelRender->data.color.w < 255.0f)
+		{
+			iEnemy_ModelRender->data.color.w += 5.0f;
+		}
+		else
+		{
+			iEnemy_ModelRender->data.color.w = 255.0f;
+		}
 	}
 }
 
