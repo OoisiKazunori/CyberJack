@@ -25,13 +25,8 @@ void NormalEnemy::Finalize()
 
 void NormalEnemy::Update()
 {
-	if (iEnemy_EnemyStatusData->oprationObjData->rockOnNum <= 0)
-	{
-		iEnemy_ModelRender->data.color = { 255.0f,0.0f,0.0f,255.0f };
-	}
-
 	//ˆÚ“®
-	float speed = 0.8f;
+	float speed = 0.1f;
 	iEnemy_ModelRender->data.transform.pos.m128_f32[2] += -speed;
 
 	//€–S‰‰oˆ—

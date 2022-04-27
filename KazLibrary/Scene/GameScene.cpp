@@ -623,16 +623,41 @@ void GameScene::Update()
 				{
 					bool debug = false;
 				}
-
-
-				//敵が生きている&&ロックオンできる回数が0以下&&ロックオン入力がリリースされた時、敵は死亡する
-				if (releaseFlag && !aliveFlag && lockedFlag)
-				{
-					enemies[enemyType][enemyCount]->Dead();
-				}
 			}
 		}
 	}
+
+	//線がたどり着いたら敵を死亡させる
+	for (int i = 0; i < lineEffectArrayData.size(); ++i)
+	{
+		if (lineEffectArrayData[i].usedFlag)
+		{
+			int lineIndex = lineEffectArrayData[i].lineIndex;
+			int enemyTypeIndex = lineEffectArrayData[i].enemyTypeIndex;
+			int enemyIndex = lineEffectArrayData[i].enemyIndex;
+			//演出を合わせて死亡
+			if (lineLevel[lineIndex].lineReachObjFlag)
+			{
+				enemies[enemyTypeIndex][enemyIndex]->Dead();
+				lineEffectArrayData[i].Reset();
+			}
+		}
+	}
+
+	//線演出が終わった際にリンクのデータをリセットする
+	for (int i = 0; i < lineEffectArrayData.size(); ++i)
+	{
+		if (lineEffectArrayData[i].usedFlag)
+		{
+			int lineIndex = lineEffectArrayData[i].lineIndex;
+			if (lineLevel[lineIndex].allFinishFlag)
+			{
+				lineEffectArrayData[i].Reset();
+			}
+		}
+	}
+
+
 #pragma endregion
 
 
@@ -652,7 +677,6 @@ void GameScene::Update()
 			{
 				int lineIndex = lineEffectArrayData[i].lineIndex;
 				lineLevel[lineIndex].ReleaseShot();
-				lineEffectArrayData[i].Reset();
 			}
 		}
 	}
@@ -710,7 +734,7 @@ void GameScene::Draw()
 
 	RenderTargetStatus::Instance()->PrepareToChangeBarrier(handles[0]);
 	RenderTargetStatus::Instance()->ClearRenderTarget(handles[0]);
-	//cursor.Draw();
+
 	stage.Draw();
 	if (lineDebugFlag)
 	{
@@ -748,6 +772,8 @@ void GameScene::Draw()
 	mainRenderTarget.Draw();
 	addRenderTarget.data.handle = buler->BlurImage(addHandle);
 	addRenderTarget.Draw();
+
+	cursor.Draw();
 }
 
 int GameScene::SceneChange()

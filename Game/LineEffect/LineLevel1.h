@@ -59,6 +59,7 @@ public:
 	void Draw();
 
 	bool allFinishFlag;
+	bool lineReachObjFlag;
 	bool initFlag;
 	XMVECTOR playerPos;
 private:
