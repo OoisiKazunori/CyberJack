@@ -24,10 +24,9 @@ GoalBox::GoalBox()
 	moveRotaVel = { 200.0f,200.0f,200.0f };
 	moveVel = { 0.0f,0.0f,15.0f };
 
-	for (int i = 0; i < effect.size(); ++i)
-	{
-		effect[i].Init(&model->data.motherMat);
-	}
+
+	effect.Init(&model->data.motherMat);
+
 	//std::shared_ptr<XMMATRIX>data = std::make_shared<XMMATRIX>(model->data.motherMat);
 }
 
@@ -42,10 +41,8 @@ void GoalBox::Init()
 	model->data.transform.pos = lerpPos;
 	model->data.transform.rotation = lerpRota;
 
-	for (int i = 0; i < effect.size(); ++i)
-	{
-		effect[i].Init(&model->data.motherMat);
-	}
+	effect.Init(&model->data.motherMat);
+
 }
 
 void GoalBox::Update()
@@ -68,10 +65,9 @@ void GoalBox::Update()
 		//‰ñ“]‚³‚¹‚é
 		lerpRota = model->data.transform.rotation + moveRotaVel;
 
-		for (int i = 0; i < effect.size(); ++i)
-		{
-			effect[i].Appear();
-		}
+
+		effect.Appear();
+
 	}
 
 	//À•W‚Ìƒ‰[ƒv
@@ -86,19 +82,18 @@ void GoalBox::Update()
 	}
 	prevHpNum = iOperationData.rockOnNum;
 
-	for (int i = 0; i < effect.size(); ++i)
-	{
-		effect[i].Update();
-	}
+
+	effect.Update();
+
 
 
 	ImGui::Begin("Goal");
-	ImGui::InputFloat("RotaX",&moveRotaVel.m128_f32[0]);
-	ImGui::InputFloat("RotaY",&moveRotaVel.m128_f32[1]);
-	ImGui::InputFloat("RotaZ",&moveRotaVel.m128_f32[2]);
-	ImGui::InputFloat("Z",&moveVel.m128_f32[2]);
-	ImGui::InputFloat("MoveLerp",&lerpMoveVel);
-	ImGui::InputFloat("MoveRotaLerp",&lerpMoveRotaVel);
+	ImGui::InputFloat("RotaX", &moveRotaVel.m128_f32[0]);
+	ImGui::InputFloat("RotaY", &moveRotaVel.m128_f32[1]);
+	ImGui::InputFloat("RotaZ", &moveRotaVel.m128_f32[2]);
+	ImGui::InputFloat("Z", &moveVel.m128_f32[2]);
+	ImGui::InputFloat("MoveLerp", &lerpMoveVel);
+	ImGui::InputFloat("MoveRotaLerp", &lerpMoveRotaVel);
 	ImGui::End();
 }
 

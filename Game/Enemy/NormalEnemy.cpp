@@ -26,7 +26,7 @@ void NormalEnemy::Finalize()
 void NormalEnemy::Update()
 {
 	//ˆÚ“®
-	float speed = 0.1f;
+	float speed = 0.5f;
 	iEnemy_ModelRender->data.transform.pos.m128_f32[2] += -speed;
 
 	//€–S‰‰oˆ—

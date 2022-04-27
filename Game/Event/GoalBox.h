@@ -15,7 +15,7 @@ public:
 	void Draw();
 
 	//ゴールエフェクト
-	std::array<GoalBoxEffect, 2> effect;
+	GoalBoxEffect effect;
 private:
 	//移動-----------------------
 	XMVECTOR lerpRota;//角度のラープ

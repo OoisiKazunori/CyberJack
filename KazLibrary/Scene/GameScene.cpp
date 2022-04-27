@@ -71,7 +71,7 @@ void GameScene::Init()
 	responeData[0][0].enemyType = ENEMY_TYPE_NORMAL;
 	responeData[0][0].layerLevel = 0;
 	responeData[0][0].flame = 160;
-	responeData[0][0].initPos = { 0.0f,10.0f,300.0f };
+	responeData[0][0].initPos = { 20.0f,10.0f,300.0f };
 
 
 
@@ -743,10 +743,10 @@ void GameScene::Draw()
 	player.Draw();
 	for (int i = 0; i < lineLevel.size(); ++i)
 	{
-		//	lineLevel[i].Draw();
+		lineLevel[i].Draw();
 	}
 	goalBox.Draw();
-	goalBox.effect[0].Draw();
+	goalBox.effect.Draw();
 
 	//敵の描画処理----------------------------------------------------------------
 	for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
