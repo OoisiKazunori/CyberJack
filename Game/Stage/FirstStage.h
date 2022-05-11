@@ -13,9 +13,9 @@ public:
 	void Draw();
 
 private:
-	std::array<BoxPolygonRender, 16> stageDebugBox;
-	std::array<FogData, 16> fogData;
-	std::array<float, 16> constHandle;
+	std::array<BoxPolygonRender, 30> stageDebugBox;
+	std::array<FogData, 30> fogData;
+	std::array<float, 30> constHandle;
 
 	ParameterMgr stageParamLoader;
 };

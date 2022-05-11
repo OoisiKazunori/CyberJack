@@ -66,7 +66,7 @@ FirstStage::FirstStage()
 	stageParamLoader.LoadFile(KazFilePathName::StageParamPath + "StageParamData.json");
 
 
-	std::array <std::array<char, 20>, 20>data;
+	std::array <std::array<char, 6>, 30>data;
 	for (int i = 0; i < stageDebugBox.size(); ++i)
 	{
 		data[i][0] = 'B';
@@ -85,11 +85,8 @@ FirstStage::FirstStage()
 		}
 	}
 
-
-
 	if (false)
 	{
-
 		for (int i = 0; i < stageDebugBox.size(); ++i)
 		{
 			XMVECTOR pos = stageDebugBox[i].data.transform.pos;
@@ -122,17 +119,17 @@ FirstStage::FirstStage()
 		fogColor.PushBack(rapidjson::Value(fogData[0].fogdata.y), stageParamLoader.doc.GetAllocator());
 		fogColor.PushBack(rapidjson::Value(fogData[0].fogdata.z), stageParamLoader.doc.GetAllocator());
 		stageParamLoader.doc.AddMember("FogColor", fogColor, stageParamLoader.doc.GetAllocator());
-
+		stageParamLoader.ExportFile(KazFilePathName::StageParamPath + "StageParamData.json");
 	}
 
 	fogData[0].fogdata.x = BG_COLOR.x / 255.0f;
 	fogData[0].fogdata.y = BG_COLOR.y / 255.0f;
 	fogData[0].fogdata.z = BG_COLOR.z / 255.0f;
-	stageParamLoader.ExportFile(KazFilePathName::StageParamPath + "StageParamData.json");
 }
 
 void FirstStage::Update()
 {
+#pragma region ImGui
 	bool exportFlag = false;
 	bool importFlag = false;
 
@@ -221,14 +218,16 @@ void FirstStage::Update()
 			stageParamLoader.doc["FogColor"][1].SetFloat(fogData[i].fogdata.y);
 			stageParamLoader.doc["FogColor"][2].SetFloat(fogData[i].fogdata.z);
 		}
-
 		stageParamLoader.ExportFile(KazFilePathName::StageParamPath + "StageParamData.json");
 	}
+#pragma endregion
 
 	for (int i = 0; i < stageDebugBox.size(); ++i)
 	{
 		stageDebugBox[i].TransData(&fogData[i], constHandle[i], typeid(fogData[i]).name());
 	}
+
+	XMVECTOR vel = { 0.0f,0.0f,0.0f };
 }
 
 void FirstStage::Draw()

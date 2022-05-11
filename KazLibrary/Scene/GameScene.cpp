@@ -49,6 +49,8 @@ GameScene::GameScene()
 	luminaceTex.data.addHandle.handle[0] = handles[1];
 	luminaceTex.data.addHandle.paramType[0] = GRAPHICS_PRAMTYPE_TEX2;
 	luminaceTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+
+	CameraMgr::Instance()->CameraSetting(60.0f, 1000.0f);
 }
 
 GameScene::~GameScene()
@@ -680,23 +682,23 @@ void GameScene::Input()
 
 
 	//カメラの前後左右強制に向かせる処理
-	/*if (input->InputState(DIK_1))
+	if (input->InputState(DIK_Z))
 	{
 		forceCameraDirVel.m128_f32[0] = 0.0f;
 	}
-	if (input->InputState(DIK_2))
+	if (input->InputState(DIK_X))
 	{
 		forceCameraDirVel.m128_f32[0] = -90.0f;
 	}
-	if (input->InputState(DIK_3))
+	if (input->InputState(DIK_C))
 	{
 		forceCameraDirVel.m128_f32[0] = -180.0f;
 	}
-	if (input->InputState(DIK_4))
+	if (input->InputState(DIK_V))
 	{
 		forceCameraDirVel.m128_f32[0] = -270.0f;
 	}
-*/
+
 
 
 	XMVECTOR vel = {};
