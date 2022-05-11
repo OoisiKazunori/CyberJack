@@ -3,6 +3,17 @@
 #include"../KazLibrary/Collision/CollisionManager.h"
 
 /// <summary>
+/// “G‚Ìí—Ş
+/// </summary>
+enum eEnemyType
+{
+	ENEMY_TYPE_NONE = -1,
+	ENEMY_TYPE_NORMAL,
+	ENEMY_TYPE_MOTHER,
+	ENEMY_TYPE_KID
+};
+
+/// <summary>
 /// “G‚©‚ç‘¼‚ÌOBJ‚ğ¶¬‚·‚éÛ‚É“n‚·ƒf[ƒ^
 /// </summary>
 struct GenarateOtherObjData

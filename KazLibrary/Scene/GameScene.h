@@ -42,14 +42,6 @@ struct LineEffectData
 	}
 };
 
-enum eEnemyType
-{
-	ENEMY_TYPE_NONE = -1,
-	ENEMY_TYPE_NORMAL,
-	ENEMY_TYPE_MOTHER,
-	ENEMY_TYPE_KID
-};
-
 class GameScene :public SceneBase
 {
 public:

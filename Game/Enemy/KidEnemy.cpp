@@ -24,5 +24,5 @@ void KidEnemy::Update()
 
 void KidEnemy::Draw()
 {
-	iEnemy_ModelRender->Draw();
+	//iEnemy_ModelRender->Draw();
 }
