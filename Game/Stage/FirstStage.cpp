@@ -227,7 +227,35 @@ void FirstStage::Update()
 		stageDebugBox[i].TransData(&fogData[i], constHandle[i], typeid(fogData[i]).name());
 	}
 
-	XMVECTOR vel = { 0.0f,0.0f,0.0f };
+	XMVECTOR vel = { 0.0f,0.0f,-0.0f };
+	//Žè‘O’Œ
+	for (int i = 2; i < 9; ++i)
+	{
+		stageDebugBox[i].data.transform.pos += vel;
+		if (stageDebugBox[i].data.transform.pos.m128_f32[2] <= -200.0f)
+		{
+			stageDebugBox[i].data.transform.pos.m128_f32[2] = 800.0f;
+		}
+	}
+	for (int i = 16; i < 20; ++i)
+	{
+		stageDebugBox[i].data.transform.pos += vel;
+		if (stageDebugBox[i].data.transform.pos.m128_f32[2] <= -200.0f)
+		{
+			stageDebugBox[i].data.transform.pos.m128_f32[2] = 800.0f;
+		}
+	}
+	//Žè‘O’Œ
+
+	for (int i = 12; i < 16; ++i)
+	{
+		stageDebugBox[i].data.transform.pos += vel;
+		if (stageDebugBox[i].data.transform.pos.m128_f32[2] <= -350.0f)
+		{
+			stageDebugBox[i].data.transform.pos.m128_f32[2] = 600.0f;
+		}
+	}
+
 }
 
 void FirstStage::Draw()

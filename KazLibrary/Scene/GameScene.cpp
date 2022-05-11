@@ -50,7 +50,7 @@ GameScene::GameScene()
 	luminaceTex.data.addHandle.paramType[0] = GRAPHICS_PRAMTYPE_TEX2;
 	luminaceTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 
-	CameraMgr::Instance()->CameraSetting(60.0f, 1000.0f);
+	//CameraMgr::Instance()->CameraSetting(60.0f, 1000.0f);
 }
 
 GameScene::~GameScene()
