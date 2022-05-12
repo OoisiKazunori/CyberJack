@@ -43,6 +43,12 @@ struct LineEffectData
 	}
 };
 
+struct GradationData
+{
+	XMFLOAT4 firstColor;
+	XMFLOAT4 endColor;
+};
+
 class GameScene :public SceneBase
 {
 public:

@@ -346,6 +346,8 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "MultiPassLuminancePixelShader.hlsl", "PSmain", "ps_5_0", SHADER_PIXCEL_LUMINANCE_MULTI);
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineUvMultiTexPixelShader.hlsl", "PSmain", "ps_5_0", SHADER_PIXCEL_LINE_UV_MULTITEX);
 
+	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GradationPixelShader.hlsl", "PSmain", "ps_5_0", SHADER_PIXCEL_SPRITE_GRADATION);
+
 	OutputDebugStringA("シェーダーのコンパイルを終了します\n");
 #pragma endregion
 
@@ -1479,6 +1481,16 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_SPRITE_VHS
 	);
 
+
+	//板ポリの色付き
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS_TEX,
+		SHADER_VERTEX_SPRITE,
+		SHADER_PIXCEL_SPRITE_GRADATION,
+		PIPELINE_DATA_NOCARING_BLENDALPHA,
+		ROOTSIGNATURE_DATA_DRAW_DATA1,
+		PIPELINE_NAME_SPRITE_GRADATION
+	);
 
 
 

@@ -56,7 +56,7 @@ GameScene::GameScene()
 	XMVECTOR adjPos = { 50.0f,0.0f,0.0f };
 	vert[0].pos = XMFLOAT3(-800.0f, 0.0f, 700.0f);
 	vert[0].uv = { 0.0f,0.0f };
-	vert[1].pos = XMFLOAT3(800.0f,  0.0f, 700.0f);
+	vert[1].pos = XMFLOAT3(800.0f, 0.0f, 700.0f);
 	vert[1].uv = { 1.0f,0.0f };
 	vert[2].pos = XMFLOAT3(-800.0f, 0.0f, -700.0f);
 	vert[2].uv = { 0.0f,1.0f };
@@ -64,6 +64,15 @@ GameScene::GameScene()
 	vert[3].uv = { 1.0f,1.0f };
 	topPolygon = std::make_unique<PolygonRender>(vert);
 	initPFlag = false;
+
+	int handle = topPolygon->CreateConstBuffer(sizeof(GradationData), typeid(GradationData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+	topPolygon->data.pipelineName = PIPELINE_NAME_SPRITE_GRADATION;
+
+	GradationData gradData;
+	gradData.endColor = XMFLOAT4(0.24f, 0.09f, 0.62f, 1.0f);
+	gradData.firstColor = XMFLOAT4(0.24f, 0.09f, 0.62f, 1.0f);
+	topPolygon->TransData(&gradData, handle, typeid(gradData).name());
+
 }
 
 GameScene::~GameScene()
@@ -934,7 +943,14 @@ void GameScene::Update()
 		}
 
 		polygon = std::make_unique<PolygonRender>(vert);
+		int handle = polygon->CreateConstBuffer(sizeof(GradationData), typeid(GradationData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+
+		GradationData data;
+		data.endColor = XMFLOAT4(0.24f, 0.09f, 0.62f, 1.0f);
+		data.firstColor = XMFLOAT4(0.93f, 0.65f, 0.53f, 1.0f);
+		polygon->TransData(&data, handle, typeid(data).name());
 		CameraMgr::Instance()->CameraSetting(60.0f, 1000.0f);
+		polygon->data.pipelineName = PIPELINE_NAME_SPRITE_GRADATION;
 		initPFlag = true;
 	}
 
@@ -1188,7 +1204,7 @@ void GameScene::Draw()
 	}
 	topPolygon->data.transform.pos.m128_f32[1] = 400.0f;
 	topPolygon->Draw();
-	//stage.Draw();
+	stage.Draw();
 	if (lineDebugFlag)
 	{
 		bg.Draw();
