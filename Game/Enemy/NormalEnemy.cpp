@@ -17,7 +17,6 @@ void NormalEnemy::Init(const XMVECTOR &POS)
 
 	iEnemy_ModelRender->data.color.w = 0.0f;
 	iEnemy_ModelRender->data.transform.rotation.m128_f32[1] = 90.0f;
-
 }
 
 void NormalEnemy::Finalize()

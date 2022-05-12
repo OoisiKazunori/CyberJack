@@ -14,6 +14,7 @@
 #include"../KazLibrary/RenderTarget/RenderTargetStatus.h"
 #include"../KazLibrary/RenderTarget/GaussianBuler.h"
 #include"../Game/Stage/FirstStage.h"
+#include"../KazLibrary/Render/PolygonRender.h"
 
 struct ResponeData
 {
@@ -139,4 +140,7 @@ private:
 	bool lineDebugFlag;
 
 	std::vector<short> handles;
+
+	std::unique_ptr<PolygonRender> polygon;
+	bool initPFlag;
 };

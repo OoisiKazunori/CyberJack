@@ -95,7 +95,28 @@ struct Sprite3DData :public IData
 	}
 };
 
+struct Pera3DData :public IData
+{
+	KazMath::Transform3D transform;
+	bool billBoardFlag;
+	XMMATRIX motherMat;
+	int pipelineName;
 
+	bool changeSizeTypeFlag;
+	XMFLOAT4 size;
+	float alpha;
+
+	Pera3DData()
+	{
+		address = this;
+		pipelineName = static_cast<int>(PIPELINE_NAME_SPRITE);
+
+		alpha = 255.0f;
+		changeSizeTypeFlag = false;
+		size = { 1.0f,1.0f,1.0f,1.0 };
+		motherMat = XMMatrixIdentity();
+	}
+};
 
 struct Obj3DData :public IData
 {

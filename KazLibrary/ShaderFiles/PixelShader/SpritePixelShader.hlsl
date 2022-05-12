@@ -11,5 +11,7 @@ float4 PSmain(VSOutput input) : SV_TARGET
         //output.a = color.a;
     }
     
-    return output;
+    
+    
+    return float4(input.uv.x, input.uv.y, 1.0f, 1.0f);
 }

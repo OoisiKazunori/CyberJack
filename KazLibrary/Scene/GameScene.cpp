@@ -5,6 +5,7 @@
 #include"../Loader/ObjResourceMgr.h"
 #include"../Helper/ResourceFilePass.h"
 #include"../Game/Debug/ParameterMgr.h"
+#include"../Math/KazMath.h"
 
 GameScene::GameScene()
 {
@@ -51,6 +52,7 @@ GameScene::GameScene()
 	luminaceTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 
 	//CameraMgr::Instance()->CameraSetting(60.0f, 1000.0f);
+	initPFlag = false;
 }
 
 GameScene::~GameScene()
@@ -806,7 +808,6 @@ void GameScene::Update()
 
 
 
-
 #pragma region カメラ挙動
 
 	//左右の角度変更のイージング
@@ -889,6 +890,42 @@ void GameScene::Update()
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
 
 #pragma endregion
+
+
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_H) && !initPFlag)
+	{
+		XMVECTOR screenPos = { 0.0f,0.0f,1.0f };
+		XMVECTOR leftUpPos = KazMath::ConvertScreenPosToWorldPos(screenPos, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
+
+		screenPos = { WIN_X,0.0f,1.0f };
+		XMVECTOR rightUpPos = KazMath::ConvertScreenPosToWorldPos(screenPos, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
+
+		screenPos = { 0.0f,WIN_Y,1.0f };
+		XMVECTOR leftDownPos = KazMath::ConvertScreenPosToWorldPos(screenPos, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
+
+		screenPos = { WIN_X,WIN_Y,1.0f };
+		XMVECTOR rightDownPos = KazMath::ConvertScreenPosToWorldPos(screenPos, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
+
+		std::array<SpriteVertex, 4>vert;
+		vert[0].pos = KazMath::LoadVecotrToXMFLOAT3(leftUpPos);
+		vert[0].uv = { 0.0f,0.0f };
+		vert[1].pos = KazMath::LoadVecotrToXMFLOAT3(rightUpPos);
+		vert[1].uv = { 1.0f,0.0f };
+		vert[2].pos = KazMath::LoadVecotrToXMFLOAT3(leftDownPos);
+		vert[2].uv = { 0.0f,1.0f };
+		vert[3].pos = KazMath::LoadVecotrToXMFLOAT3(rightDownPos);
+		vert[3].uv = { 1.0f,1.0f };
+
+		for (int i = 0; i < vert.size(); ++i)
+		{
+			vert[i].pos.z = 0.0f;
+		}
+
+		polygon = std::make_unique<PolygonRender>(vert);
+		initPFlag = true;
+	}
+
+
 
 	//ゴールに触れ無かった場合に次のステージに移動する処理----------------------------------------------------------------
 	if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
@@ -1129,8 +1166,8 @@ void GameScene::Draw()
 	short mainHandle = mainRenderTarget.data.handle;
 
 
-	RenderTargetStatus::Instance()->PrepareToChangeBarrier(handles[0]);
-	RenderTargetStatus::Instance()->ClearRenderTarget(handles[0]);
+	//RenderTargetStatus::Instance()->PrepareToChangeBarrier(handles[0]);
+	//RenderTargetStatus::Instance()->ClearRenderTarget(handles[0]);
 
 	stage.Draw();
 	if (lineDebugFlag)
@@ -1158,19 +1195,22 @@ void GameScene::Draw()
 	}
 	goalBox.Draw();
 	goalBox.effect.Draw();
-
-
+	if (initPFlag)
+	{
+		polygon->data.transform.pos.m128_f32[2] = 550.0f;
+		polygon->Draw();
+	}
 	//輝度抽出
-	RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, handles[0]);
-	RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
-	luminaceTex.Draw();
-	RenderTargetStatus::Instance()->PrepareToCloseBarrier(addHandle);
-	RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
-	mainRenderTarget.Draw();
-	addRenderTarget.data.handle = buler->BlurImage(addHandle);
-	addRenderTarget.Draw();
+	//RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, handles[0]);
+	//RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
+	//luminaceTex.Draw();
+	//RenderTargetStatus::Instance()->PrepareToCloseBarrier(addHandle);
+	//RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
+	//mainRenderTarget.Draw();
+	//addRenderTarget.data.handle = buler->BlurImage(addHandle);
+	//addRenderTarget.Draw();
 
-	cursor.Draw();
+	//cursor.Draw();
 }
 
 int GameScene::SceneChange()
