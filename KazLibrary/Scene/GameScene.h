@@ -142,5 +142,6 @@ private:
 	std::vector<short> handles;
 
 	std::unique_ptr<PolygonRender> polygon;
+	std::unique_ptr<PolygonRender> topPolygon;
 	bool initPFlag;
 };

@@ -51,7 +51,18 @@ GameScene::GameScene()
 	luminaceTex.data.addHandle.paramType[0] = GRAPHICS_PRAMTYPE_TEX2;
 	luminaceTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 
-	//CameraMgr::Instance()->CameraSetting(60.0f, 1000.0f);
+
+	std::array<SpriteVertex, 4>vert;
+	XMVECTOR adjPos = { 50.0f,0.0f,0.0f };
+	vert[0].pos = XMFLOAT3(-800.0f, 0.0f, 700.0f);
+	vert[0].uv = { 0.0f,0.0f };
+	vert[1].pos = XMFLOAT3(800.0f,  0.0f, 700.0f);
+	vert[1].uv = { 1.0f,0.0f };
+	vert[2].pos = XMFLOAT3(-800.0f, 0.0f, -700.0f);
+	vert[2].uv = { 0.0f,1.0f };
+	vert[3].pos = XMFLOAT3(800.0f, 0.0f, -700.0f);
+	vert[3].uv = { 1.0f,1.0f };
+	topPolygon = std::make_unique<PolygonRender>(vert);
 	initPFlag = false;
 }
 
@@ -907,13 +918,14 @@ void GameScene::Update()
 		XMVECTOR rightDownPos = KazMath::ConvertScreenPosToWorldPos(screenPos, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
 
 		std::array<SpriteVertex, 4>vert;
-		vert[0].pos = KazMath::LoadVecotrToXMFLOAT3(leftUpPos);
+		XMVECTOR adjPos = { 50.0f,0.0f,0.0f };
+		vert[0].pos = KazMath::LoadVecotrToXMFLOAT3(leftUpPos - adjPos);
 		vert[0].uv = { 0.0f,0.0f };
-		vert[1].pos = KazMath::LoadVecotrToXMFLOAT3(rightUpPos);
+		vert[1].pos = KazMath::LoadVecotrToXMFLOAT3(rightUpPos + adjPos);
 		vert[1].uv = { 1.0f,0.0f };
-		vert[2].pos = KazMath::LoadVecotrToXMFLOAT3(leftDownPos);
+		vert[2].pos = KazMath::LoadVecotrToXMFLOAT3(leftDownPos - adjPos);
 		vert[2].uv = { 0.0f,1.0f };
-		vert[3].pos = KazMath::LoadVecotrToXMFLOAT3(rightDownPos);
+		vert[3].pos = KazMath::LoadVecotrToXMFLOAT3(rightDownPos + adjPos);
 		vert[3].uv = { 1.0f,1.0f };
 
 		for (int i = 0; i < vert.size(); ++i)
@@ -1174,7 +1186,9 @@ void GameScene::Draw()
 		polygon->data.transform.pos.m128_f32[2] = 650.0f;
 		polygon->Draw();
 	}
-	stage.Draw();
+	topPolygon->data.transform.pos.m128_f32[1] = 400.0f;
+	topPolygon->Draw();
+	//stage.Draw();
 	if (lineDebugFlag)
 	{
 		bg.Draw();
