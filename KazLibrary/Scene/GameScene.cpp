@@ -942,16 +942,29 @@ void GameScene::Update()
 			vert[i].pos.z = 0.0f;
 		}
 
-		polygon = std::make_unique<PolygonRender>(vert);
-		int handle = polygon->CreateConstBuffer(sizeof(GradationData), typeid(GradationData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
-
 		GradationData data;
 		data.endColor = XMFLOAT4(0.24f, 0.09f, 0.62f, 1.0f);
 		data.firstColor = XMFLOAT4(0.93f, 0.65f, 0.53f, 1.0f);
-		polygon->TransData(&data, handle, typeid(data).name());
+		for (int i = 0; i < polygon.size(); ++i)
+		{
+			polygon[i]= std::make_unique<PolygonRender>(vert);
+			int handle = polygon[i]->CreateConstBuffer(sizeof(GradationData), typeid(GradationData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+			polygon[i]->TransData(&data, handle, typeid(data).name());
+			polygon[i]->data.pipelineName = PIPELINE_NAME_SPRITE_GRADATION;
+		}
 		CameraMgr::Instance()->CameraSetting(60.0f, 1000.0f);
-		polygon->data.pipelineName = PIPELINE_NAME_SPRITE_GRADATION;
+
 		initPFlag = true;
+	}
+
+	if (initPFlag)
+	{
+		polygon[0]->data.transform.pos.m128_f32[2] = 650.0f;
+		polygon[1]->data.transform.pos.m128_f32[0] = 550.0f;
+		polygon[1]->data.transform.rotation.m128_f32[1] = 100.0f;
+		polygon[2]->data.transform.pos.m128_f32[0] = -550.0f;
+		polygon[2]->data.transform.rotation.m128_f32[1] = 100.0f;
+		polygon[3]->data.transform.pos.m128_f32[2] = -650.0f;
 	}
 
 
@@ -1199,8 +1212,10 @@ void GameScene::Draw()
 	//RenderTargetStatus::Instance()->ClearRenderTarget(handles[0]);
 	if (initPFlag)
 	{
-		polygon->data.transform.pos.m128_f32[2] = 650.0f;
-		polygon->Draw();
+		for (int i = 0; i < polygon.size(); ++i)
+		{
+			polygon[i]->Draw();
+		}
 	}
 	topPolygon->data.transform.pos.m128_f32[1] = 400.0f;
 	topPolygon->Draw();
