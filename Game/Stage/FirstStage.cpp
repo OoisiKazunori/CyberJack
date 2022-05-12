@@ -6,15 +6,9 @@ FirstStage::FirstStage()
 	for (int i = 0; i < stageDebugBox.size(); ++i)
 	{
 		stageDebugBox[i].data.pipelineName = PIPELINE_NAME_FOG_COLOR_MULTITEX;
-		constHandle[i] = stageDebugBox[i].CreateConstBuffer(sizeof(FogData), typeid(FogData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+		constHandle[i] = stageDebugBox[i].CreateConstBuffer(sizeof(FogD), typeid(FogD).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
 		stageDebugBox[i].data.color = { 48.0f,20.0f,57.0f,255.0f };
-
-		fogData[i].fogdata = { 0.0f,0.0f,0.0f,0.0f };
 	}
-
-	fogData[0].fogdata.x = 255.0f;
-	fogData[0].fogdata.y = 0.0f;
-	fogData[0].fogdata.z = 0.0f;
 
 	stageDebugBox[0].data.transform.pos = { 0.0f,-25.0f,0.0f };
 	stageDebugBox[0].data.transform.scale = { 60.0f,0.0f,2000.0f };
@@ -115,16 +109,16 @@ FirstStage::FirstStage()
 		}
 
 		rapidjson::Value fogColor(rapidjson::kArrayType);
-		fogColor.PushBack(rapidjson::Value(fogData[0].fogdata.x), stageParamLoader.doc.GetAllocator());
-		fogColor.PushBack(rapidjson::Value(fogData[0].fogdata.y), stageParamLoader.doc.GetAllocator());
-		fogColor.PushBack(rapidjson::Value(fogData[0].fogdata.z), stageParamLoader.doc.GetAllocator());
+		//fogColor.PushBack(rapidjson::Value(fogData[0].fogdata.x), stageParamLoader.doc.GetAllocator());
+		//fogColor.PushBack(rapidjson::Value(fogData[0].fogdata.y), stageParamLoader.doc.GetAllocator());
+		//fogColor.PushBack(rapidjson::Value(fogData[0].fogdata.z), stageParamLoader.doc.GetAllocator());
 		stageParamLoader.doc.AddMember("FogColor", fogColor, stageParamLoader.doc.GetAllocator());
 		stageParamLoader.ExportFile(KazFilePathName::StageParamPath + "StageParamData.json");
 	}
 
-	fogData[0].fogdata.x = BG_COLOR.x / 255.0f;
-	fogData[0].fogdata.y = BG_COLOR.y / 255.0f;
-	fogData[0].fogdata.z = BG_COLOR.z / 255.0f;
+	//fogData[0].fogdata.x = BG_COLOR.x / 255.0f;
+	//fogData[0].fogdata.y = BG_COLOR.y / 255.0f;
+	//fogData[0].fogdata.z = BG_COLOR.z / 255.0f;
 }
 
 void FirstStage::Update()
@@ -148,13 +142,13 @@ void FirstStage::Update()
 			ImGui::InputFloat("RotaX", &stageDebugBox[i].data.transform.rotation.m128_f32[0]);
 			ImGui::InputFloat("RotaY", &stageDebugBox[i].data.transform.rotation.m128_f32[1]);
 			ImGui::InputFloat("RotaZ", &stageDebugBox[i].data.transform.rotation.m128_f32[2]);
-			ImGui::InputFloat("FogDistiny", &fogData[i].fogdata.w);
+			//ImGui::InputFloat("FogDistiny", &fogData[i].fogdata.w);
 			ImGui::TreePop();
 		}
 	}
-	ImGui::InputFloat("FogColorX", &fogData[0].fogdata.x);
-	ImGui::InputFloat("FogColorY", &fogData[0].fogdata.y);
-	ImGui::InputFloat("FogColorZ", &fogData[0].fogdata.z);
+	//ImGui::InputFloat("FogColorX", &fogData[0].fogdata.x);
+	//ImGui::InputFloat("FogColorY", &fogData[0].fogdata.y);
+	//ImGui::InputFloat("FogColorZ", &fogData[0].fogdata.z);
 	if (ImGui::Button("Import"))
 	{
 		importFlag = true;
@@ -168,9 +162,9 @@ void FirstStage::Update()
 
 	for (int i = 1; i < stageDebugBox.size(); ++i)
 	{
-		fogData[i].fogdata.x = fogData[0].fogdata.x;
-		fogData[i].fogdata.y = fogData[0].fogdata.y;
-		fogData[i].fogdata.z = fogData[0].fogdata.z;
+		//fogData[i].fogdata.x = fogData[0].fogdata.x;
+		//fogData[i].fogdata.y = fogData[0].fogdata.y;
+		//fogData[i].fogdata.z = fogData[0].fogdata.z;
 	}
 
 	//ファイル読み込み
@@ -185,14 +179,14 @@ void FirstStage::Update()
 				stageDebugBox[i].data.transform.scale.m128_f32[axisIndex] = stageParamLoader.doc[name.c_str()]["Scale"][axisIndex].GetFloat();
 				stageDebugBox[i].data.transform.rotation.m128_f32[axisIndex] = stageParamLoader.doc[name.c_str()]["Rota"][axisIndex].GetFloat();
 			}
-			fogData[i].fogdata.w = stageParamLoader.doc[name.c_str()]["Fog"].GetFloat();
+			//fogData[i].fogdata.w = stageParamLoader.doc[name.c_str()]["Fog"].GetFloat();
 		}
 
 		for (int i = 0; i < stageDebugBox.size(); ++i)
 		{
-			fogData[i].fogdata.x = stageParamLoader.doc["FogColor"][0].GetFloat();
-			fogData[i].fogdata.y = stageParamLoader.doc["FogColor"][1].GetFloat();
-			fogData[i].fogdata.z = stageParamLoader.doc["FogColor"][2].GetFloat();
+			//fogData[i].fogdata.x = stageParamLoader.doc["FogColor"][0].GetFloat();
+			//fogData[i].fogdata.y = stageParamLoader.doc["FogColor"][1].GetFloat();
+			//fogData[i].fogdata.z = stageParamLoader.doc["FogColor"][2].GetFloat();
 		}
 	}
 
@@ -208,24 +202,20 @@ void FirstStage::Update()
 				stageParamLoader.doc[name.c_str()]["Scale"][axisIndex].SetFloat(stageDebugBox[i].data.transform.scale.m128_f32[axisIndex]);
 				stageParamLoader.doc[name.c_str()]["Rota"][axisIndex].SetFloat(stageDebugBox[i].data.transform.rotation.m128_f32[axisIndex]);
 			}
-			stageParamLoader.doc[name.c_str()]["Fog"].SetFloat(fogData[i].fogdata.w);
+			//stageParamLoader.doc[name.c_str()]["Fog"].SetFloat(fogData[i].fogdata.w);
 		}
 
 
 		for (int i = 0; i < stageDebugBox.size(); ++i)
 		{
-			stageParamLoader.doc["FogColor"][0].SetFloat(fogData[i].fogdata.x);
-			stageParamLoader.doc["FogColor"][1].SetFloat(fogData[i].fogdata.y);
-			stageParamLoader.doc["FogColor"][2].SetFloat(fogData[i].fogdata.z);
+			//stageParamLoader.doc["FogColor"][0].SetFloat(fogData[i].fogdata.x);
+			//stageParamLoader.doc["FogColor"][1].SetFloat(fogData[i].fogdata.y);
+			//stageParamLoader.doc["FogColor"][2].SetFloat(fogData[i].fogdata.z);
 		}
 		stageParamLoader.ExportFile(KazFilePathName::StageParamPath + "StageParamData.json");
 	}
 #pragma endregion
 
-	for (int i = 0; i < stageDebugBox.size(); ++i)
-	{
-		stageDebugBox[i].TransData(&fogData[i], constHandle[i], typeid(fogData[i]).name());
-	}
 
 	XMVECTOR vel = { 0.0f,0.0f,-1.0f };
 	//手前柱
@@ -247,6 +237,36 @@ void FirstStage::Update()
 	}
 	//手前柱
 
+
+
+	for (int i = 0; i < fogData.size(); ++i)
+	{
+		fogData[i].rateAndFogLine.z = 100.0f;
+		fogData[i].rateAndFogLine.w = 600.0f;
+
+		XMVECTOR screenPos = { 0.0f,0.0f,1.0f };
+		XMVECTOR leftUpPos = KazMath::ConvertScreenPosToWorldPos(screenPos, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
+		screenPos = { 0.0f,WIN_Y,1.0f };
+		XMVECTOR leftDownPos = KazMath::ConvertScreenPosToWorldPos(screenPos, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
+
+		fogData[i].rateAndFogLine.x = leftDownPos.m128_f32[1];
+		fogData[i].rateAndFogLine.y = leftUpPos.m128_f32[1];
+
+		XMFLOAT3 end(0.24f, 0.09f, 0.62f);
+		XMFLOAT3 first(0.93f, 0.65f, 0.53f);
+		XMFLOAT3 result;
+		result.x = end.x - first.x;
+		result.y = end.y - first.y;
+		result.z = end.z - first.z;
+		fogData[i].endColor = end;
+		fogData[i].subValue = result;
+	}
+
+
+	for (int i = 0; i < stageDebugBox.size(); ++i)
+	{
+		stageDebugBox[i].TransData(&fogData[i], constHandle[i], typeid(fogData[i]).name());
+	}
 
 }
 

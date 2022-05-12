@@ -1,5 +1,5 @@
 cbuffer fogBuffer : register(b1)
 {
-   //フォグカラー
+    //フォグカラー
     float4 fogData;
 }

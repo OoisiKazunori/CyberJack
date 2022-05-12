@@ -943,8 +943,8 @@ void GameScene::Update()
 		}
 
 		GradationData data;
-		data.endColor = XMFLOAT4(0.24f, 0.09f, 0.62f, 1.0f);
 		data.firstColor = XMFLOAT4(0.93f, 0.65f, 0.53f, 1.0f);
+		data.endColor = XMFLOAT4(0.24f, 0.09f, 0.62f, 1.0f);
 		for (int i = 0; i < polygon.size(); ++i)
 		{
 			polygon[i]= std::make_unique<PolygonRender>(vert);

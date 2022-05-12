@@ -66,7 +66,7 @@ struct ConstBufferDataSkin
 };
 
 /// <summary>
-/// dogData
+/// fogData
 /// xyz...Color
 /// w...Density
 /// </summary>
