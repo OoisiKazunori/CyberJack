@@ -922,6 +922,7 @@ void GameScene::Update()
 		}
 
 		polygon = std::make_unique<PolygonRender>(vert);
+		CameraMgr::Instance()->CameraSetting(60.0f, 1000.0f);
 		initPFlag = true;
 	}
 
@@ -1168,7 +1169,11 @@ void GameScene::Draw()
 
 	//RenderTargetStatus::Instance()->PrepareToChangeBarrier(handles[0]);
 	//RenderTargetStatus::Instance()->ClearRenderTarget(handles[0]);
-
+	if (initPFlag)
+	{
+		polygon->data.transform.pos.m128_f32[2] = 650.0f;
+		polygon->Draw();
+	}
 	stage.Draw();
 	if (lineDebugFlag)
 	{
@@ -1195,11 +1200,7 @@ void GameScene::Draw()
 	}
 	goalBox.Draw();
 	goalBox.effect.Draw();
-	if (initPFlag)
-	{
-		polygon->data.transform.pos.m128_f32[2] = 550.0f;
-		polygon->Draw();
-	}
+
 	//輝度抽出
 	//RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, handles[0]);
 	//RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
