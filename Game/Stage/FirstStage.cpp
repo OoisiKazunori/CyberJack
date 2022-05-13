@@ -237,7 +237,10 @@ void FirstStage::Update()
 	}
 	//Žè‘O’Œ
 
-
+	ImGui::Begin("Depth");
+	ImGui::SliderFloat("StartDepthFogX", &depthX.x, 0.0f, 500.0f);
+	ImGui::SliderFloat("EndDepthFogY", &depthX.y, 0.0f, 500.0f);
+	ImGui::End();
 
 	for (int i = 0; i < fogData.size(); ++i)
 	{
@@ -246,6 +249,20 @@ void FirstStage::Update()
 
 		fogData[i].rateAndFogLine.x = -401.0f;
 		fogData[i].rateAndFogLine.y = 407.0f;
+
+		fogData[i].depthX = depthX;
+
+		fogData[i].depthX.z = 0;
+		if (i == 2 || i == 4)
+		{
+			fogData[i].depthX.z = 1;
+		}
+		if (16 <= i && i <= 24)
+		{
+			fogData[i].depthX.z = 1;
+		}
+
+
 
 		XMFLOAT3 first(0.93f, 0.65f, 0.53f);
 		XMFLOAT3 end(0.24f, 0.09f, 0.62f);

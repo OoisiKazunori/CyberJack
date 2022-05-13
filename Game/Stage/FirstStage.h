@@ -14,6 +14,8 @@ struct FogD
 	float pad2;
 	//x...RataMin,y...RateMax,z...StartFogDepth,w...EndFogDepth
 	XMFLOAT4 rateAndFogLine;
+	XMFLOAT3 depthX;
+	float pad3;
 };
 
 class FirstStage
@@ -29,5 +31,6 @@ private:
 	std::array<float, 30> constHandle;
 
 	ParameterMgr stageParamLoader;
+	XMFLOAT3 depthX;
 };
 

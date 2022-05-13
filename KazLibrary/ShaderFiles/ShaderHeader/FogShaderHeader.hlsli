@@ -1,11 +1,7 @@
 
-float3 CalucurateFogValue(float3 INPUT, float3 FOG_COLOR, float3 SUB, float3 OBJ_COLOR, float MIN, float MAX, float START_FOG_DEPTH, float END_FOG_DEPTH)
+float3 CalucurateFogValue(float3 INPUT, float3 FOG_COLOR, float3 SUB, float3 OBJ_COLOR, float MIN, float MAX, float START_FOG_DEPTH, float END_FOG_DEPTH, float START_FOG_X_DEPTH, float END_FOG_X_DEPTH, float enable)
 {
-    //フォグがかかる始まる座標より手前ならフォグをかけない
-    if (INPUT.z <= START_FOG_DEPTH)
-    {
-        return OBJ_COLOR;
-    }
+    float3 result = float3(0.0f, 0.0f, 0.0f);
     
     //-になると割合が計算できないので、+にする
     float adjustPos = -MIN + INPUT.y;
@@ -13,19 +9,34 @@ float3 CalucurateFogValue(float3 INPUT, float3 FOG_COLOR, float3 SUB, float3 OBJ
     //グラデーションのの上下どのあたりにいるか決める
     float gradationValue = adjustPos / (MAX + -MIN);
 
-
     //フォグカラーとその差分に現在の位置を渡してグラデーションのどの色に当たるか決める
     float3 fogColor = FOG_COLOR + SUB * (1.0 - gradationValue);
+
+    float depthRate = 0.0f;
     
+    //X軸のフォグ
+    if (false)
+    //if (START_FOG_X_DEPTH <= abs(INPUT.x) && enable)
+    {
+        float rateMax = END_FOG_X_DEPTH - START_FOG_X_DEPTH;
+        //左右のX軸の深度
+        depthRate = (abs(INPUT.x) - START_FOG_X_DEPTH) / rateMax;
+    }
+    //フォグがかかる始まる座標より手前ならフォグをかけない
+    else if (START_FOG_DEPTH <= INPUT.z)
+    {
+        //深度の割合を決める
+        depthRate = (INPUT.z - START_FOG_DEPTH) / END_FOG_DEPTH;
+    }
+    else
+    {
+        return OBJ_COLOR;
+    }
     
-    //深度の割合を決める
-    float depthRate = (INPUT.z - START_FOG_DEPTH) / END_FOG_DEPTH;
     depthRate = saturate(depthRate);
-    
     //OBJカラーとフォグカラーの差分から深度を使ってどれくらいフォグかけるか決める
     float3 sub = fogColor - OBJ_COLOR;
-    float3 result = OBJ_COLOR + sub * depthRate;
-    
+    result = OBJ_COLOR + sub * depthRate;
     return saturate(result);
 }
 
