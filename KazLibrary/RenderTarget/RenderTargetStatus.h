@@ -78,6 +78,11 @@ public:
 	ID3D12Resource *GetBufferData(short HANDLE)const;
 	D3D12_GPU_DESCRIPTOR_HANDLE GetViewData(short HANDLE);
 
+
+	void DeleteRenderTarget(short HANDLE);
+	void DeleteMultiRenderTarget(const std::vector<short> &HANDLE);
+
+
 	ComPtr<ID3D12DescriptorHeap> multiPassRTVHeap;
 	ComPtr<ID3D12Resource> copyBuffer;
 
@@ -88,7 +93,7 @@ public:
 	int bbIndex;
 
 	//レンダーターゲットのハンドルからパス数を記録した配列
-	std::vector<std::vector<short>>renderTargetData;
+	std::array<std::vector<short>, 100>renderTargetData;
 private:
 
 	std::vector<ComPtr<ID3D12Resource>> backBuffers;

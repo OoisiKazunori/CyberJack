@@ -54,7 +54,7 @@ class Game
 {
 public:
 	Game();
-
+	~Game();
 	void Init();
 	void Finalize();
 	void Input();

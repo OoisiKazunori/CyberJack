@@ -75,6 +75,13 @@ Game::Game()
 
 }
 
+Game::~Game()
+{
+	//レンダーターゲットの破棄
+	RenderTargetStatus::Instance()->DeleteRenderTarget(addHandle);
+	RenderTargetStatus::Instance()->DeleteMultiRenderTarget(handles);
+}
+
 void Game::Init()
 {
 	player.Init(KazMath::Transform3D().pos);

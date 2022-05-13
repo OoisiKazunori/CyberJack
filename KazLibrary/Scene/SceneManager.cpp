@@ -15,7 +15,7 @@ SceneManager::SceneManager() {
 	scene.emplace_back(std::make_unique<ClassScene>());
 
 	nowScene = 0;
-	nextScene = 1;
+	nextScene = 0;
 	scene[nowScene]->Init();
 	itisInArrayFlag = true;
 }

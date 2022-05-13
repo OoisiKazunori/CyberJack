@@ -45,5 +45,12 @@ void GameScene::Draw()
 
 int GameScene::SceneChange()
 {
-	return SCENE_NONE;
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_0))
+	{
+		return SCENE_TITLE;
+	}
+	else
+	{
+		return SCENE_NONE;
+	}
 }

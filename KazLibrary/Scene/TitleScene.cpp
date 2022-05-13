@@ -32,7 +32,6 @@ void TitleScene::Input()
 
 void TitleScene::Update()
 {
-
 }
 
 void TitleScene::Draw()

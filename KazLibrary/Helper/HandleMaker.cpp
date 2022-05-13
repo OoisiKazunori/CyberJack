@@ -13,8 +13,8 @@ short HandleMaker::GetHandle()
 	//ハンドルの番号決定
 	if (1 <= deleteHandleNumber.size())
 	{
-		//解放された場所に優先的に確保する
-		handle = deleteHandleNumber[deleteHandleNumber.size() - 1];
+		//最初に解放された場所に優先的に確保する
+		handle = deleteHandleNumber[0];
 	}
 	else
 	{
@@ -26,7 +26,7 @@ short HandleMaker::GetHandle()
 	//配列の末尾から確保していくので末尾から消していく
 	if (deleteHandleNumber.size() != 0)
 	{
-		deleteHandleNumber.pop_back();
+		deleteHandleNumber.erase(deleteHandleNumber.begin());
 	}
 
 	//ハンドルが最大サイズを超えていたらエラー値を返す

@@ -131,7 +131,7 @@ void CreateGpuBuffer::ReleaseBuffer(short HANDLE)
 	short caluHandle = handle->CaluNowHandle(HANDLE);
 	if (KazHelper::IsitInAnArray(caluHandle, buffers.size()))
 	{
-		buffers[caluHandle]->Release();
+		buffers[caluHandle].Reset();
 		handle->DeleteHandle(HANDLE);
 	}
 }

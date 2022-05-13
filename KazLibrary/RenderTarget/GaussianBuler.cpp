@@ -47,6 +47,8 @@ GaussianBuler::GaussianBuler(XMFLOAT2 GRAPH_SIZE, XMFLOAT3 COLOR)
 
 GaussianBuler::~GaussianBuler()
 {
+	RenderTargetStatus::Instance()->DeleteRenderTarget(renderTargetHandle);
+	RenderTargetStatus::Instance()->DeleteRenderTarget(renderTargetHandle2);
 }
 
 short GaussianBuler::BlurImage(const short& TEXTURE_HANDLE, const short& CURRENT_RENDERTARGET_HANDLE)

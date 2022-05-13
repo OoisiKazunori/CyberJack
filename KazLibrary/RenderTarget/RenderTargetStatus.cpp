@@ -2,7 +2,7 @@
 #include"../DirectXCommon/DirectX12Device.h"
 #include"../DirectXCommon/DirectX12CmdList.h"
 #include"../Buffer/DescriptorHeapMgr.h"
-
+#include<algorithm>
 
 RenderTargetStatus::RenderTargetStatus()
 {
@@ -260,9 +260,9 @@ short RenderTargetStatus::CreateRenderTarget(const XMFLOAT2 &GRAPH_SIZE, const X
 		multiPassRTVHanlde
 	);
 
-	vector<short> handls;
-	handls.push_back(num);
-	renderTargetData.push_back(handls);
+	vector<short> handle;
+	handle.push_back(num);
+	renderTargetData[buffers->handle->CaluNowHandle(num)] = handle;
 	return num;
 }
 
@@ -278,6 +278,7 @@ std::vector<short> RenderTargetStatus::CreateMultiRenderTarget(const std::vector
 	const int ARRAY_SIZE = MULTIRENDER_TARGET_DATA.size();
 	std::vector<short> handles;
 
+	short buffNum = -1;
 	for (int i = 0; i < MULTIRENDER_TARGET_DATA.size(); ++i)
 	{
 		D3D12_RESOURCE_DESC resource = RenderTargetStatus::Instance()->copyBuffer->GetDesc();
@@ -298,16 +299,16 @@ std::vector<short> RenderTargetStatus::CreateMultiRenderTarget(const std::vector
 			&clearColor,
 			"ShaderResourceRenderTarget"
 		);
-		short num = buffers->CreateBuffer(data);
+		buffNum = buffers->CreateBuffer(data);
 
 
 		//DescriptorHeapMgr::Instance()->CreateBufferView(num, rtvDesc, buffers->GetBufferData(num).Get());
-		DescriptorHeapMgr::Instance()->CreateBufferView(num, srvDesc, buffers->GetBufferData(num).Get());
-		clearColors[buffers->handle->CaluNowHandle(num)] = { clearValue[0],clearValue[1],clearValue[2],clearValue[3] };
+		DescriptorHeapMgr::Instance()->CreateBufferView(buffNum, srvDesc, buffers->GetBufferData(buffNum).Get());
+		clearColors[buffers->handle->CaluNowHandle(buffNum)] = { clearValue[0],clearValue[1],clearValue[2],clearValue[3] };
 
 
 		multiPassRTVHanlde = multiPassRTVHeap->GetCPUDescriptorHandleForHeapStart();
-		for (int bufferNum = 0; bufferNum < buffers->handle->CaluNowHandle(num); bufferNum++)
+		for (int bufferNum = 0; bufferNum < buffers->handle->CaluNowHandle(buffNum); bufferNum++)
 		{
 			multiPassRTVHanlde.ptr
 				+= DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
@@ -319,16 +320,16 @@ std::vector<short> RenderTargetStatus::CreateMultiRenderTarget(const std::vector
 		rtvDesc.Format = FORMAT;
 		//SR‚ðŽg‚Á‚ÄRTV‚Ì¶¬
 		DirectX12Device::Instance()->dev->CreateRenderTargetView(
-			buffers->GetBufferData(num).Get(),
+			buffers->GetBufferData(buffNum).Get(),
 			&rtvDesc,
 			multiPassRTVHanlde
 		);
 
 
-		handles.push_back(num);
+		handles.push_back(buffNum);
 	}
 
-	renderTargetData.push_back(handles);
+	renderTargetData[buffers->handle->CaluNowHandle(buffNum)] = handles;
 	return handles;
 }
 
@@ -340,6 +341,49 @@ ID3D12Resource *RenderTargetStatus::GetBufferData(short HANDLE)const
 D3D12_GPU_DESCRIPTOR_HANDLE RenderTargetStatus::GetViewData(short HANDLE)
 {
 	return DescriptorHeapMgr::Instance()->GetGpuDescriptorView(HANDLE);
+}
+
+void RenderTargetStatus::DeleteRenderTarget(short HANDLE)
+{
+	buffers->ReleaseBuffer(HANDLE);
+	DescriptorHeapMgr::Instance()->Release(HANDLE);
+
+	for (int i = 0; i < renderTargetData.size(); ++i)
+	{
+		for (int renderTargetNum = 0; renderTargetNum < renderTargetData[i].size(); ++renderTargetNum)
+		{
+			if (renderTargetData[i][renderTargetNum] == HANDLE)
+			{
+				renderTargetData[i].clear();
+				renderTargetData[i].shrink_to_fit();
+				return;
+			}
+		}
+	}
+	
+}
+
+void RenderTargetStatus::DeleteMultiRenderTarget(const std::vector<short> &HANDLE)
+{
+	for (int i = 0; i < HANDLE.size(); ++i)
+	{
+		buffers->ReleaseBuffer(HANDLE[i]);
+		DescriptorHeapMgr::Instance()->Release(HANDLE[i]);
+	}
+
+
+	for (int i = 0; i < renderTargetData.size(); ++i)
+	{
+		for (int renderTargetNum = 0; renderTargetNum < renderTargetData[i].size(); ++renderTargetNum)
+		{
+			if (renderTargetData[i][renderTargetNum] == HANDLE[0])
+			{
+				renderTargetData[i].clear();
+				renderTargetData[i].shrink_to_fit();
+				return;
+			}
+		}
+	}
 }
 
 void RenderTargetStatus::ChangeBarrier(ID3D12Resource *RESOURCE, const D3D12_RESOURCE_STATES &BEFORE_STATE, const D3D12_RESOURCE_STATES &AFTER_STATE)
