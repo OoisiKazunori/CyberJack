@@ -15,8 +15,16 @@ void NormalEnemy::Init(const XMVECTOR &POS)
 	iEnemy_EnemyStatusData->hitBox.radius = 5.0f;	//当たり判定の大きさ変更
 	iOperationData.Init(1);							//残りロックオン数等の初期化
 
+	iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX;
+	iEnemy_ModelRender->data.removeMaterialFlag = false;
+	iEnemy_ModelRender->data.color.x = 255.0f;
+	iEnemy_ModelRender->data.color.y = 255.0f;
+	iEnemy_ModelRender->data.color.z = 255.0f;
 	iEnemy_ModelRender->data.color.w = 0.0f;
+	iEnemy_ModelRender->data.transform.rotation.m128_f32[0] = 0.0f;
 	iEnemy_ModelRender->data.transform.rotation.m128_f32[1] = 90.0f;
+	iEnemy_ModelRender->data.transform.rotation.m128_f32[2] = 0.0f;
+
 }
 
 void NormalEnemy::Finalize()

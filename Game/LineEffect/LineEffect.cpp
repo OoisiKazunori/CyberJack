@@ -3,10 +3,10 @@
 
 LineEffect::LineEffect()
 {
-	line.reset(new LineRender());//仮引数にtrue入れていた
+	line = std::make_unique<LineRender>();//仮引数にtrue入れていた
 
-	circle.reset(new Sprite3DRender);
-	releaseCircle.reset(new Sprite3DRender);
+	circle = std::make_unique<Sprite3DRender>();
+	releaseCircle = std::make_unique<Sprite3DRender>();
 	rockOnFlag = false;
 
 	circleTexHandle = TextureResourceMgr::Instance()->LoadGraph("Resource/Line/circle_fire.png");
@@ -19,8 +19,8 @@ LineEffect::LineEffect()
 
 
 	line->data.pipelineName = PIPELINE_NAME_LINE_UV_MULTITEX;		//線の色変える用のパイプライン
-	circle->data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA_MULTITEX;
-	releaseCircle->data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA_MULTITEX;
+	circle->data.pipelineName = PIPELINE_NAME_SPRITE_MULTITEX;
+	releaseCircle->data.pipelineName = PIPELINE_NAME_SPRITE_MULTITEX;
 
 	constBufferHandle = line->CreateConstBuffer(sizeof(ConstLineData), typeid(ConstLineData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
 
@@ -60,9 +60,6 @@ void LineEffect::RockOn(const XMVECTOR &START_POS, const XMVECTOR &END_POS, cons
 		releaseTime = 0.0f;
 
 
-		releaseCircle->data.transform.pos = { END_POS.m128_f32[0],END_POS.m128_f32[1] ,END_POS.m128_f32[2] };
-
-
 		releaseCircle->data.alpha = 255.0f;
 		circle->data.alpha = 255.0f;
 
@@ -94,6 +91,9 @@ void LineEffect::Update()
 {
 	startPos = playerPos + startPlayerDistance * value;
 	endPos = playerPos + endPlayerDistance * value;
+
+	//リリース時の円の座標
+	releaseCircle->data.transform.pos = endPos;
 
 
 	distance = endPos - startPos;

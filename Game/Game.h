@@ -30,6 +30,7 @@ struct ResponeData
 struct LineEffectData
 {
 	bool usedFlag;
+	XMVECTOR startPos;
 	int lineIndex;
 	int enemyTypeIndex;
 	int enemyIndex;
@@ -52,10 +53,16 @@ struct GradationData
 
 class Game
 {
+
 public:
+	//定数--------------------------
+	static const int LAYER_LEVEL_MAX = 10;				//レイヤーレベルの最大数
+	static const int ENEMY_NUM_MAX = 50;				//1レイヤーレベルに登場する敵の最大数
+
+
 	Game();
 	~Game();
-	void Init();
+	void Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> &RESPONE_DATA);
 	void Finalize();
 	void Input();
 	void Update();
@@ -111,9 +118,6 @@ private:
 	//プレイヤーが操作するもの----------------------------------------------------------------
 
 	//敵----------------------------------------------------------------
-	static const int LAYER_LEVEL_MAX = 10;				//レイヤーレベルの最大数
-	static const int ENEMY_NUM_MAX = 50;				//1レイヤーレベルに登場する敵の最大数
-
 	array<unique_ptr<IEnemy>, 2>enemy;					//敵(サンプル)
 	TestEnemy hitBox;									//敵(サンプル)
 	array<array<unique_ptr<IEnemy>, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> enemies;	//1ステージに生成する敵の総数
@@ -151,5 +155,10 @@ private:
 
 	std::unique_ptr<PolygonRender> topPolygon;
 	bool initPFlag;
+
+
+
+	std::array<BoxPolygonRender, 8> lineStartPoly;
+
 };
 

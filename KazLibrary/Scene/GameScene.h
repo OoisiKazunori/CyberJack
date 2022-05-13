@@ -19,4 +19,6 @@ public:
 private:
 	std::unique_ptr<Game> game;//ゲームに関するデータ
 
+	array<array<ResponeData, Game::ENEMY_NUM_MAX>, Game::LAYER_LEVEL_MAX>responeData;
+
 };

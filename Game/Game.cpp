@@ -82,7 +82,7 @@ Game::~Game()
 	RenderTargetStatus::Instance()->DeleteMultiRenderTarget(handles);
 }
 
-void Game::Init()
+void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> &RESPONE_DATA)
 {
 	player.Init(KazMath::Transform3D().pos);
 	cursor.Init();
@@ -95,403 +95,7 @@ void Game::Init()
 	BufferMemorySize enemySize = { 0,ENEMY_NUM_MAX };
 	BufferMemorySize eventSize = { ENEMY_NUM_MAX,ENEMY_NUM_MAX + 50 };
 
-	float z = 300.0f;
-
-#pragma region 敵の配置レベル1
-	int respoineIndex = 0;
-	int layerLevel = 0;
-	int time = 60;
-	//2-----------------------------------------------------------------
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = 0;
-	responeData[0][respoineIndex].flame = time * 3;
-	responeData[0][respoineIndex].initPos = { 20.0f,10.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = 0;
-	responeData[0][respoineIndex].flame = time * 3;
-	responeData[0][respoineIndex].initPos = { 60.0f,10.0f,z };
-	++respoineIndex;
-	//2-----------------------------------------------------------------
-
-	//2-----------------------------------------------------------------
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = 0;
-	responeData[0][respoineIndex].flame = time * 6;
-	responeData[0][respoineIndex].initPos = { -20.0f,10.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = 0;
-	responeData[0][respoineIndex].flame = time * 6;
-	responeData[0][respoineIndex].initPos = { -60.0f,10.0f,z };
-	++respoineIndex;
-	//2-----------------------------------------------------------------
-
-
-	//4-----------------------------------------------------------------
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = 0;
-	responeData[0][respoineIndex].flame = time * 9;
-	responeData[0][respoineIndex].initPos = { 20.0f,10.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = 0;
-	responeData[0][respoineIndex].flame = time * 9;
-	responeData[0][respoineIndex].initPos = { 40.0f,10.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = 0;
-	responeData[0][respoineIndex].flame = time * 9;
-	responeData[0][respoineIndex].initPos = { 60.0f,10.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = 0;
-	responeData[0][respoineIndex].flame = time * 9;
-	responeData[0][respoineIndex].initPos = { 80.0f,10.0f,z };
-	++respoineIndex;
-	//4-----------------------------------------------------------------
-
-
-
-
-
-
-	//4-----------------------------------------------------------------
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = 0;
-	responeData[0][respoineIndex].flame = time * 12;
-	responeData[0][respoineIndex].initPos = { -20.0f,10.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = 0;
-	responeData[0][respoineIndex].flame = time * 12;
-	responeData[0][respoineIndex].initPos = { -40.0f,10.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = 0;
-	responeData[0][respoineIndex].flame = time * 12;
-	responeData[0][respoineIndex].initPos = { -60.0f,10.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = 0;
-	responeData[0][respoineIndex].flame = time * 12;
-	responeData[0][respoineIndex].initPos = { -80.0f,10.0f,z };
-	++respoineIndex;
-	//4-----------------------------------------------------------------
-
-
-	//4-----------------------------------------------------------------
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = 0;
-	responeData[0][respoineIndex].flame = time * 15;
-	responeData[0][respoineIndex].initPos = { 20.0f,10.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = 0;
-	responeData[0][respoineIndex].flame = time * 15;
-	responeData[0][respoineIndex].initPos = { 40.0f,10.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = 0;
-	responeData[0][respoineIndex].flame = time * 15;
-	responeData[0][respoineIndex].initPos = { 60.0f,10.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = 0;
-	responeData[0][respoineIndex].flame = time * 15;
-	responeData[0][respoineIndex].initPos = { 80.0f,10.0f,z };
-	++respoineIndex;
-	//4-----------------------------------------------------------------
-
-
-	//4-----------------------------------------------------------------
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = 0;
-	responeData[0][respoineIndex].flame = time * 18;
-	responeData[0][respoineIndex].initPos = { -20.0f,10.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = 0;
-	responeData[0][respoineIndex].flame = time * 18;
-	responeData[0][respoineIndex].initPos = { -40.0f,10.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = 0;
-	responeData[0][respoineIndex].flame = time * 18;
-	responeData[0][respoineIndex].initPos = { -60.0f,10.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = 0;
-	responeData[0][respoineIndex].flame = time * 18;
-	responeData[0][respoineIndex].initPos = { -80.0f,10.0f,z };
-	++respoineIndex;
-	//4-----------------------------------------------------------------
-
-#pragma endregion
-
-#pragma region 敵の配置レベル2
-	respoineIndex = 0;
-	++layerLevel;
-	//5-----------------------------------------------------------------
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 3;
-	responeData[0][respoineIndex].initPos = { -40.0f,10.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 3;
-	responeData[0][respoineIndex].initPos = { -20.0f,10.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 3;
-	responeData[0][respoineIndex].initPos = { 0.0f,10.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 3;
-	responeData[0][respoineIndex].initPos = { 20.0f,10.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 3;
-	responeData[0][respoineIndex].initPos = { 40.0f,10.0f,z };
-	++respoineIndex;
-	//5-----------------------------------------------------------------
-
-	//2-----------------------------------------------------------------
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 6;
-	responeData[0][respoineIndex].initPos = { -20.0f,-10.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 6;
-	responeData[0][respoineIndex].initPos = { -40.0f,-10.0f,z };
-	++respoineIndex;
-	//2-----------------------------------------------------------------
-
-
-	//2-----------------------------------------------------------------
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 8;
-	responeData[0][respoineIndex].initPos = { 20.0f,-10.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 8;
-	responeData[0][respoineIndex].initPos = { 40.0f,-10.0f,z };
-	++respoineIndex;
-	//2-----------------------------------------------------------------
-
-	//3-----------------------------------------------------------------
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 11;
-	responeData[0][respoineIndex].initPos = { -20.0f,20.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 11;
-	responeData[0][respoineIndex].initPos = { -40.0f,20.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 11;
-	responeData[0][respoineIndex].initPos = { -60.0f,20.0f,z };
-	++respoineIndex;
-	//3-----------------------------------------------------------------
-
-
-	//3-----------------------------------------------------------------
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 14;
-	responeData[0][respoineIndex].initPos = { 20.0f,-10.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 14;
-	responeData[0][respoineIndex].initPos = { 40.0f,-10.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 14;
-	responeData[0][respoineIndex].initPos = { 60.0f,-10.0f,z };
-	++respoineIndex;
-	//3-----------------------------------------------------------------
-
-
-	//2-----------------------------------------------------------------
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 17;
-	responeData[0][respoineIndex].initPos = { 10.0f,20.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 17;
-	responeData[0][respoineIndex].initPos = { -10.0f,20.0f,z };
-	++respoineIndex;
-	//2-----------------------------------------------------------------
-
-
-	//2-----------------------------------------------------------------
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 19;
-	responeData[0][respoineIndex].initPos = { 10.0f,-10.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 19;
-	responeData[0][respoineIndex].initPos = { -10.0f,-10.0f,z };
-	++respoineIndex;
-	//2-----------------------------------------------------------------
-
-
-	//2-----------------------------------------------------------------
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 21;
-	responeData[0][respoineIndex].initPos = { -10.0f,20.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 21;
-	responeData[0][respoineIndex].initPos = { -10.0f,0.0f,z };
-	++respoineIndex;
-	//2-----------------------------------------------------------------
-
-
-	//2-----------------------------------------------------------------
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 23;
-	responeData[0][respoineIndex].initPos = { 10.0f,20.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 23;
-	responeData[0][respoineIndex].initPos = { 10.0f,0.0f,z };
-	++respoineIndex;
-	//2-----------------------------------------------------------------
-
-
-
-	//4-----------------------------------------------------------------
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 26;
-	responeData[0][respoineIndex].initPos = { -20.0f,20.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 26;
-	responeData[0][respoineIndex].initPos = { -20.0f,0.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 26;
-	responeData[0][respoineIndex].initPos = { -40.0f,20.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 26;
-	responeData[0][respoineIndex].initPos = { -40.0f,0.0f,z };
-	++respoineIndex;
-	//4-----------------------------------------------------------------
-
-
-
-	//4-----------------------------------------------------------------
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 29;
-	responeData[0][respoineIndex].initPos = { 20.0f,20.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 29;
-	responeData[0][respoineIndex].initPos = { 20.0f,0.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 29;
-	responeData[0][respoineIndex].initPos = { 40.0f,20.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 29;
-	responeData[0][respoineIndex].initPos = { 40.0f,0.0f,z };
-	++respoineIndex;
-	//4-----------------------------------------------------------------
-
-
-	//4-----------------------------------------------------------------
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 32;
-	responeData[0][respoineIndex].initPos = { -20.0f,20.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 32;
-	responeData[0][respoineIndex].initPos = { -20.0f,0.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 32;
-	responeData[0][respoineIndex].initPos = { 20.0f,20.0f,z };
-	++respoineIndex;
-
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;
-	responeData[0][respoineIndex].layerLevel = layerLevel;
-	responeData[0][respoineIndex].flame = time * 32;
-	responeData[0][respoineIndex].initPos = { 20.0f,0.0f,z };
-	++respoineIndex;
-	//4-----------------------------------------------------------------
-#pragma endregion
-
+	responeData = RESPONE_DATA;
 
 	//操作可能OBJを纏めて生成する処理----------------------------------------------------------------
 	for (int enemyType = 0; enemyType < responeData.size(); ++enemyType)
@@ -812,6 +416,27 @@ void Game::Update()
 	ImGui::End();
 
 
+	ImGui::Begin("StartLine");
+	for (int i = 0; i < lineStartPoly.size(); ++i)
+	{
+		lineStartPoly[i].data.pipelineName = PIPELINE_NAME_COLOR_MULTITEX;
+		std::string name = "Start" + std::to_string(i) + "X";
+		ImGui::InputFloat(name.c_str(), &lineStartPoly[i].data.transform.pos.m128_f32[0]);
+		name = "Start" + std::to_string(i) + "Y";
+		ImGui::InputFloat(name.c_str(), &lineStartPoly[i].data.transform.pos.m128_f32[1]);
+		name = "Start" + std::to_string(i) + "Z";
+		ImGui::InputFloat(name.c_str(), &lineStartPoly[i].data.transform.pos.m128_f32[2]);
+
+		lineStartPoly[i].data.transform.scale = { 0.1f,0.1f,0.1f };
+		lineStartPoly[i].data.color = { 255.0f,0.0f,0.0f,255.0f };
+		lineEffectArrayData[i].startPos = lineStartPoly[i].data.transform.pos;
+	}
+	ImGui::End();
+
+
+
+
+
 
 #pragma region カメラ挙動
 
@@ -896,7 +521,7 @@ void Game::Update()
 
 #pragma endregion
 
-
+	//背景の設置--------------------------
 	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_H) && !initPFlag)
 	{
 		XMVECTOR screenPos = { 0.0f,0.0f,1.0f };
@@ -951,7 +576,7 @@ void Game::Update()
 		polygon[2]->data.transform.rotation.m128_f32[1] = 100.0f;
 		polygon[3]->data.transform.pos.m128_f32[2] = -650.0f;
 	}
-
+	//背景の設置--------------------------
 
 
 	//ゴールに触れ無かった場合に次のステージに移動する処理----------------------------------------------------------------
@@ -1059,7 +684,7 @@ void Game::Update()
 					{
 						if (!lineEffectArrayData[i].usedFlag)
 						{
-							lineLevel[i].Attack2(player.pos, *enemyData->hitBox.center, {});
+							lineLevel[i].Attack2(lineEffectArrayData[i].startPos, *enemyData->hitBox.center, {});
 							lineEffectArrayData[i].usedFlag = true;
 							lineEffectArrayData[i].lineIndex = i;
 							lineEffectArrayData[i].enemyTypeIndex = enemyType;
@@ -1158,7 +783,10 @@ void Game::Update()
 
 	for (int i = 0; i < lineLevel.size(); ++i)
 	{
-		lineLevel[i].playerPos = player.pos;
+		if (lineEffectArrayData[i].usedFlag)
+		{
+			lineLevel[i].playerPos = lineEffectArrayData[i].startPos;
+		}
 		lineLevel[i].Update();
 	}
 
@@ -1194,6 +822,12 @@ void Game::Draw()
 
 	RenderTargetStatus::Instance()->PrepareToChangeBarrier(handles[0]);
 	RenderTargetStatus::Instance()->ClearRenderTarget(handles[0]);
+
+	for (int i = 0; i < lineStartPoly.size(); ++i)
+	{
+		lineStartPoly[i].Draw();
+	}
+
 	if (initPFlag)
 	{
 		for (int i = 0; i < polygon.size(); ++i)
