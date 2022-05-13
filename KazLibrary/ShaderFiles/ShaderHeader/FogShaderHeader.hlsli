@@ -7,34 +7,26 @@ float3 CalucurateFogValue(float3 INPUT, float3 FOG_COLOR, float3 SUB, float3 OBJ
         return OBJ_COLOR;
     }
     
-    //-の部分をプラスに修正する
-    float adjustPos = INPUT.y;
-    
-    //-なら最小値を現在地から引いた差分を割合を決める要素にする
-    //+なら最小値を現在地に足した物をを割合を決める要素にする
-    if (INPUT.y < 0.0f)
-    {
-        adjustPos = -MIN + INPUT.y;
-    }
-    else
-    {
-        adjustPos = MIN + INPUT.y;
-    }
-    
-    
+    //-になると割合が計算できないので、+にする
+    float adjustPos = -MIN + INPUT.y;
+
     //グラデーションのの上下どのあたりにいるか決める
     float gradationValue = adjustPos / (MAX + -MIN);
 
+
     //フォグカラーとその差分に現在の位置を渡してグラデーションのどの色に当たるか決める
-    float3 fogColor = FOG_COLOR + SUB * gradationValue;
+    float3 fogColor = FOG_COLOR + SUB * (1.0 - gradationValue);
+    
     
     //深度の割合を決める
-    float depthRate = INPUT.z / END_FOG_DEPTH;
+    float depthRate = (INPUT.z - START_FOG_DEPTH) / END_FOG_DEPTH;
+    depthRate = saturate(depthRate);
     
     //OBJカラーとフォグカラーの差分から深度を使ってどれくらいフォグかけるか決める
-    float3 sub = OBJ_COLOR - fogColor;
+    float3 sub = fogColor - OBJ_COLOR;
     float3 result = OBJ_COLOR + sub * depthRate;
-    return result;
+    
+    return saturate(result);
 }
 
 //失敗

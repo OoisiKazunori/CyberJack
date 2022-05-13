@@ -16,7 +16,7 @@ TwoRender PSmain(FogOutPut input)
 {
     float3 fog = CalucurateFogValue(input.fogFactor, endColor, subValue, color.xyz, rateAndFogLine.x, rateAndFogLine.y, rateAndFogLine.z, rateAndFogLine.w);
     
-    float4 result = float4(fog.xyz, color.a);
+    float4 result = float4(fog.xyz, 1.0f);
     TwoRender output;
     output.target0 = result;
     output.target1 = float4(0.0f, 0.0f, 0.0f, 0.0f);

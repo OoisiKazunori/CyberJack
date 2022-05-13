@@ -242,22 +242,17 @@ void FirstStage::Update()
 	for (int i = 0; i < fogData.size(); ++i)
 	{
 		fogData[i].rateAndFogLine.z = 100.0f;
-		fogData[i].rateAndFogLine.w = 600.0f;
+		fogData[i].rateAndFogLine.w = 300.0f;
 
-		XMVECTOR screenPos = { 0.0f,0.0f,1.0f };
-		XMVECTOR leftUpPos = KazMath::ConvertScreenPosToWorldPos(screenPos, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
-		screenPos = { 0.0f,WIN_Y,1.0f };
-		XMVECTOR leftDownPos = KazMath::ConvertScreenPosToWorldPos(screenPos, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
+		fogData[i].rateAndFogLine.x = -401.0f;
+		fogData[i].rateAndFogLine.y = 407.0f;
 
-		fogData[i].rateAndFogLine.x = leftDownPos.m128_f32[1];
-		fogData[i].rateAndFogLine.y = leftUpPos.m128_f32[1];
-
-		XMFLOAT3 end(0.24f, 0.09f, 0.62f);
 		XMFLOAT3 first(0.93f, 0.65f, 0.53f);
+		XMFLOAT3 end(0.24f, 0.09f, 0.62f);
 		XMFLOAT3 result;
-		result.x = end.x - first.x;
-		result.y = end.y - first.y;
-		result.z = end.z - first.z;
+		result.x = first.x - end.x;
+		result.y = first.y - end.y;
+		result.z = first.z - end.z;
 		fogData[i].endColor = end;
 		fogData[i].subValue = result;
 	}
