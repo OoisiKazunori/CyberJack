@@ -136,6 +136,7 @@ private:
 	ObjModelRenderPtr model;
 
 	GoalBox goalBox;
+	bool changeStageFlag;
 
 	//‰æ–ÊŒø‰Ê€”õ-----------------------
 	Sprite2DRender mainRenderTarget;

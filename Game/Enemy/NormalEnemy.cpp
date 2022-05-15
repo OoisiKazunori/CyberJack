@@ -71,5 +71,8 @@ void NormalEnemy::Update()
 
 void NormalEnemy::Draw()
 {
-	iEnemy_ModelRender->Draw();
+	if (1.0f <= iEnemy_ModelRender->data.color.w)
+	{
+		iEnemy_ModelRender->Draw();
+	}
 }

@@ -44,6 +44,7 @@ void GoalBoxEffect::Init(XMMATRIX *ADRESS)
 	{
 		lightRender[i]->data.alpha = 0.0f;
 	}
+	disappearFlag = false;
 }
 
 void GoalBoxEffect::Update()
@@ -60,19 +61,38 @@ void GoalBoxEffect::Update()
 	{
 		lightRender[i]->TransData(&uvData, uvHandle[i], typeid(GoalLightData).name());
 	}
+
+
 	//ìoèÍÇ≥ÇπÇÈ
-	for (int i = 0; i < drawHandle; ++i)
+	if (!disappearFlag)
 	{
-		if (lightRender[i]->data.alpha < 255.0f)
+		for (int i = 0; i < drawHandle; ++i)
 		{
-			lightRender[i]->data.alpha += 5.0f;
-		}
-		if (255.0f <= lightRender[i]->data.alpha)
-		{
-			lightRender[i]->data.alpha = 255.0f;
+			if (lightRender[i]->data.alpha < 255.0f)
+			{
+				lightRender[i]->data.alpha += 5.0f;
+			}
+			if (255.0f <= lightRender[i]->data.alpha)
+			{
+				lightRender[i]->data.alpha = 255.0f;
+			}
 		}
 	}
-
+	//è¡Ç¶ÇÈ
+	else
+	{
+		for (int i = 0; i < drawHandle; ++i)
+		{
+			if (0.0f <= lightRender[i]->data.alpha)
+			{
+				lightRender[i]->data.alpha -= 5.0f;
+			}
+			if (lightRender[i]->data.alpha <= 0.0f)
+			{
+				lightRender[i]->data.alpha = 0.0f;
+			}
+		}
+	}
 
 	//ImGui::Begin("Effect");
 	//for (int i = 0; i < lightRender.size(); ++i)
@@ -109,4 +129,9 @@ void GoalBoxEffect::Appear()
 	{
 		drawHandle = 8;
 	}
+}
+
+void GoalBoxEffect::Disappear()
+{
+	disappearFlag = true;
 }

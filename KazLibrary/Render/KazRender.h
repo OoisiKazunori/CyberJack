@@ -2,6 +2,7 @@
 #include"Sprite2DRender.h"
 #include"Sprite3DRender.h"
 #include"ObjModelRender.h"
+#include"PolygonRender.h"
 #include"FbxModelRender.h"
 #include"LineRender.h"
 #include"BoxPolygonRender.h"
@@ -16,3 +17,4 @@ typedef unique_ptr<ObjModelRender> ObjModelRenderPtr;
 typedef unique_ptr<FbxModelRender> FbxModelRenderPtr;
 typedef unique_ptr<BoxPolygonRender> BoxPolygonRenderPtr;
 typedef unique_ptr<LineRender> LineRenderPtr;
+typedef unique_ptr<PolygonRender> PolygonRenderPtr;

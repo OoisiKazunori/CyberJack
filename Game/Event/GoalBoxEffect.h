@@ -15,6 +15,7 @@ public:
 	void Draw();
 
 	void Appear();
+	void Disappear();
 
 	static const int LIGHT_MAX_NUM = 8;
 	std::array<Sprite3DRenderPtr, LIGHT_MAX_NUM> lightRender;
@@ -24,5 +25,6 @@ private:
 	GoalLightData uvData;
 
 	int drawHandle;
+	bool disappearFlag;
 };
 

@@ -169,6 +169,8 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	cameraChangeFlag = true;
 
 	forceCameraDirVel.m128_f32[0] = -90.0f;
+
+	goalBox.Init({ 20.0f,10.0f,10.0f });
 }
 
 void Game::Finalize()
@@ -809,6 +811,12 @@ void Game::Update()
 
 	goalBox.Update();
 
+	if (goalBox.portalEffect.AllHidden())
+	{
+		changeStageFlag = true;
+	}
+
+
 	//ゲームループの経過時間----------------------------------------------------------------
 	++gameFlame;
 	//ゲームループの経過時間----------------------------------------------------------------
@@ -827,17 +835,26 @@ void Game::Draw()
 	{
 		lineStartPoly[i].Draw();
 	}
-
-	if (initPFlag)
+	//デバックようにステージが切り替わったら周りを消す
+	if (!changeStageFlag)
 	{
-		for (int i = 0; i < polygon.size(); ++i)
+		if (initPFlag)
 		{
-			polygon[i]->Draw();
+			for (int i = 0; i < polygon.size(); ++i)
+			{
+				polygon[i]->Draw();
+			}
 		}
+		topPolygon->data.transform.pos.m128_f32[1] = 400.0f;
+		topPolygon->Draw();
+		stage.Draw();
+		goalBox.Draw();
 	}
-	topPolygon->data.transform.pos.m128_f32[1] = 400.0f;
-	topPolygon->Draw();
-	stage.Draw();
+	else
+	{
+	}
+
+
 	if (lineDebugFlag)
 	{
 		bg.Draw();
@@ -861,8 +878,7 @@ void Game::Draw()
 			}
 		}
 	}
-	goalBox.Draw();
-	goalBox.effect.Draw();
+	goalBox.lightEffect.Draw();
 
 	//輝度抽出
 	RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, handles[0]);
