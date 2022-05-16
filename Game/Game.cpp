@@ -593,7 +593,7 @@ void Game::Update()
 #pragma endregion
 
 
-#pragma region ロックオン
+#pragma region 敵ロックオン
 	for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
 	{
 		for (int enemyCount = 0; enemyCount < enemies[enemyType].size(); ++enemyCount)
@@ -607,7 +607,7 @@ void Game::Update()
 
 				//ロックオン判定
 				bool enableToLockOnNumFlag = cursor.LockOn();
-				bool enableToLockOnEnemyFlag = enemies[enemyType][enemyCount]->AliveOrNot() && !enemies[enemyType][enemyCount]->LockedOrNot();
+				bool enableToLockOnEnemyFlag = enemies[enemyType][enemyCount]->IsAlive() && !enemies[enemyType][enemyCount]->LockedOrNot();
 				bool hitFlag = CollisionManager::Instance()->CheckRayAndSphere(cursor.hitBox, enemyData->hitBox);
 				if (hitFlag &&
 					enableToLockOnNumFlag &&
@@ -632,25 +632,39 @@ void Game::Update()
 						}
 					}
 				}
-
-				bool releaseFlag = cursor.Release();
-				bool aliveFlag = enemies[enemyType][enemyCount]->AliveOrNot();
-				bool lockedFlag = enemies[enemyType][enemyCount]->LockedOrNot();
-				if (releaseFlag)
-				{
-					bool debug = false;
-				}
-				if (aliveFlag)
-				{
-					bool debug = false;
-				}
-				if (lockedFlag)
-				{
-					bool debug = false;
-				}
 			}
 		}
 	}
+
+
+#pragma region イベントロックオン
+	//ロックオン判定
+	bool enableToLockOnNumFlag = cursor.LockOn();
+	bool enableToLockOnEnemyFlag = goalBox.IsAlive() && !goalBox.LockedOrNot();
+	bool hitFlag = CollisionManager::Instance()->CheckRayAndSphere(cursor.hitBox, goalBox.hitBox);
+	if (hitFlag &&
+		enableToLockOnNumFlag &&
+		enableToLockOnEnemyFlag)
+	{
+		//カーソルのカウント数を増やす
+		cursor.Count();
+		goalBox.Hit();
+
+		//線演出をかける際にどの配列を使用するか決める
+		for (int i = 0; i < lineEffectArrayData.size(); ++i)
+		{
+			if (!lineEffectArrayData[i].usedFlag)
+			{
+				lineLevel[i].Attack2(lineEffectArrayData[i].startPos, *goalBox.hitBox.center, {});
+				lineEffectArrayData[i].usedFlag = true;
+				lineEffectArrayData[i].lineIndex = i;
+				lineEffectArrayData[i].eventType = 0;
+				break;
+			}
+		}
+	}
+#pragma endregion
+
 
 	//線がたどり着いたら敵を死亡させる
 	for (int i = 0; i < lineEffectArrayData.size(); ++i)
@@ -660,11 +674,33 @@ void Game::Update()
 			int lineIndex = lineEffectArrayData[i].lineIndex;
 			int enemyTypeIndex = lineEffectArrayData[i].enemyTypeIndex;
 			int enemyIndex = lineEffectArrayData[i].enemyIndex;
-			//演出を合わせて死亡
-			if (lineLevel[lineIndex].lineReachObjFlag)
+			int eventIndex = lineEffectArrayData[i].eventType;
+
+			if (eventIndex == -1)
 			{
-				enemies[enemyTypeIndex][enemyIndex]->Dead();
-				lineEffectArrayData[i].Reset();
+				//演出を合わせてダメージと死亡をやる
+				if (lineLevel[lineIndex].lineReachObjFlag && enemies[enemyTypeIndex][enemyIndex]->IsAlive())
+				{
+					lineEffectArrayData[i].Reset();
+				}
+				else if (lineLevel[lineIndex].lineReachObjFlag && !enemies[enemyTypeIndex][enemyIndex]->IsAlive())
+				{
+					enemies[enemyTypeIndex][enemyIndex]->Dead();
+					lineEffectArrayData[i].Reset();
+				}
+			}
+			else
+			{
+				//演出を合わせて死亡
+				if (lineLevel[lineIndex].lineReachObjFlag && goalBox.IsAlive())
+				{
+					lineEffectArrayData[i].Reset();
+				}
+				else if (lineLevel[lineIndex].lineReachObjFlag && !goalBox.IsAlive())
+				{
+					bool debug = false;
+					lineEffectArrayData[i].Reset();
+				}
 			}
 		}
 	}
@@ -686,7 +722,13 @@ void Game::Update()
 #pragma endregion
 
 
+
+
+
 #pragma region 更新処理
+
+	goalBox.releaseFlag = cursor.releaseFlag;
+
 	//更新処理----------------------------------------------------------------
 	player.Update();
 	cursor.Update();
@@ -713,10 +755,19 @@ void Game::Update()
 		if (lineEffectArrayData[i].usedFlag)
 		{
 			int lineIndex = lineEffectArrayData[i].lineIndex;
-			int enemyTypeIndex = lineEffectArrayData[i].enemyTypeIndex;
-			int enemyIndex = lineEffectArrayData[i].enemyIndex;
-			XMVECTOR pos = *enemies[enemyTypeIndex][enemyIndex]->GetData()->hitBox.center;
-			lineLevel[lineIndex].CalucurateDistance(player.pos, pos);
+			//イベントブロックかどうか判断する
+			if (lineEffectArrayData[i].eventType != -1)
+			{
+				XMVECTOR pos = *goalBox.hitBox.center;
+				lineLevel[lineIndex].CalucurateDistance(player.pos, pos);
+			}
+			else
+			{
+				int enemyTypeIndex = lineEffectArrayData[i].enemyTypeIndex;
+				int enemyIndex = lineEffectArrayData[i].enemyIndex;
+				XMVECTOR pos = *enemies[enemyTypeIndex][enemyIndex]->GetData()->hitBox.center;
+				lineLevel[lineIndex].CalucurateDistance(player.pos, pos);
+			}
 		}
 	}
 

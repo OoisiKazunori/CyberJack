@@ -36,13 +36,16 @@ struct LineEffectData
 	int lineIndex;
 	int enemyTypeIndex;
 	int enemyIndex;
+	int eventType;
 
 	void Reset()
 	{
+		startPos = {};
 		usedFlag = false;
 		lineIndex = -1;
 		enemyTypeIndex = -1;
 		enemyIndex = -1;
+		eventType = -1;
 	}
 };
 
@@ -141,7 +144,7 @@ private:
 	std::unique_ptr<GaussianBuler> buler;
 
 	int stageNum;
-	std::array<std::unique_ptr<IStage>, 1>stages;
+	std::array<std::unique_ptr<IStage>, 2>stages;
 	bool cameraChangeFlag;
 	bool lineDebugFlag;
 

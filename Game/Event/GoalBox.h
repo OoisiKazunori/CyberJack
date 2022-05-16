@@ -14,11 +14,16 @@ public:
 	void Init(const XMVECTOR &POS);
 	void Update();
 	void Draw();
+	
 
 	//ゴールエフェクト
 	GoalBoxEffect lightEffect;
 	GoalBoxPortalEffect portalEffect;
+	Sphere hitBox;
+	bool releaseFlag;
 private:
+	static const int HP = 8;
+
 	//移動-----------------------
 	XMVECTOR lerpRota;//角度のラープ
 	XMVECTOR lerpScale;//角度のラープ
@@ -37,5 +42,8 @@ private:
 
 	float addRota;
 	float addVel;
+
+	bool hitFlag;
+
 
 };

@@ -27,12 +27,14 @@ GoalBox::GoalBox()
 	goCenterPos = { 0.0f, 3.0f, 50.0f };
 	lightEffect.Init(&model->data.motherMat);
 
+	hitBox.center = &model->data.transform.pos;
+	hitBox.radius = 10.0f;
 	//std::shared_ptr<XMMATRIX>data = std::make_shared<XMMATRIX>(model->data.motherMat);
 }
 
 void GoalBox::Init(const XMVECTOR &POS)
 {
-	iOperationData.Init(8);
+	iOperationData.Init(HP);
 	prevHpNum = iOperationData.rockOnNum;
 
 
@@ -61,9 +63,35 @@ void GoalBox::Update()
 	{
 		Init({ 20.0f,10.0f,10.0f });
 	}
-	bool hitFlag = iOperationData.rockOnNum != prevHpNum;
-	//当たった際の挙動
+
+	bool reduceHpFlag = false;
+
+	//リリース時に残りロックオン数が前と違ったら当たった判定を出す
+	if (releaseFlag && iOperationData.rockOnNum != prevHpNum)
+	{
+		hitFlag = true;
+		prevHpNum = iOperationData.rockOnNum;
+	}
+
+	//当たった判定を出て、Hpが指定の回数分減らしたら酋長
 	if (hitFlag)
+	{
+		int result = ReduceHp(HP - iOperationData.rockOnNum);
+		//体力を減らす
+		if (result == 1)
+		{
+			reduceHpFlag = true;
+		}
+		//終了
+		else if (result == 2)
+		{
+			hitFlag = false;
+		}
+	}
+
+
+	//当たった際の挙動
+	if (reduceHpFlag)
 	{
 		//後ろに飛ぶ
 		lerpPos.m128_f32[2] = model->data.transform.pos.m128_f32[2] + moveVel.m128_f32[2];
@@ -73,7 +101,7 @@ void GoalBox::Update()
 	}
 
 	//全弾ヒットしたら演出消して画面中央に向かう
-	if (iOperationData.rockOnNum <= 0)
+	if (iOperationData.hp <= 0)
 	{
 		lightEffect.Disappear();
 		lerpPos = goCenterPos;
@@ -119,7 +147,6 @@ void GoalBox::Update()
 		XMVECTOR distance = lerpScale - model->data.transform.scale;
 		model->data.transform.scale += distance * 0.1f;
 	}
-	prevHpNum = iOperationData.rockOnNum;
 
 
 	lightEffect.Update();
