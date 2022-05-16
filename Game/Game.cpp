@@ -64,6 +64,7 @@ Game::Game()
 	CameraMgr::Instance()->CameraSetting(60.0f, 1000.0f);
 
 	stages[0] = std::make_unique<FirstStage>();
+	stages[1] = std::make_unique<SecondStage>();
 }
 
 Game::~Game()
@@ -130,7 +131,7 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	{
 		changeLayerLevelMaxTime[i] = 1000;
 	}
-	gameStageLevel = 1;
+	gameStageLevel = 0;
 	//ゲームループの初期化----------------------------------------------------------------
 
 
@@ -690,6 +691,7 @@ void Game::Update()
 	player.Update();
 	cursor.Update();
 	hitBox.Update();
+	goalBox.Update();
 	stages[stageNum]->Update();
 
 	//ロックオンのリリース処理
@@ -745,11 +747,13 @@ void Game::Update()
 #pragma endregion
 
 
-	goalBox.Update();
-
+	changeStageFlag = false;
+	//全部ゲーム画面が隠れきったら次のステージに移動する
 	if (goalBox.portalEffect.AllHidden())
 	{
 		changeStageFlag = true;
+		goalBox.Init({ 10.0f,10.0f,30.0f });
+		++stageNum;
 	}
 
 

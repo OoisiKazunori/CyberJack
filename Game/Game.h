@@ -12,10 +12,11 @@
 #include"../Game/Event/GoalBox.h"
 #include"../KazLibrary/RenderTarget/RenderTargetStatus.h"
 #include"../KazLibrary/RenderTarget/GaussianBuler.h"
-#include"../Game/Stage/FirstStage.h"
 #include"../KazLibrary/Render/PolygonRender.h"
 #include"../KazLibrary/Scene/SceneBase.h"
 #include"../Game/Interface/IStage.h"
+#include"../Game/Stage/FirstStage.h"
+#include"../Game/Stage/SecondStage.h"
 
 struct ResponeData
 {
