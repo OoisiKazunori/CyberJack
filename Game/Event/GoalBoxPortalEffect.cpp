@@ -15,6 +15,7 @@ void GoalBoxPortalEffect::Init(const XMVECTOR &POS)
 	sprite->data.transform.pos = POS;
 	sprite->data.transform.scale = { 0.5f,0.5f };
 	timer = 0;
+	lerpRota = { 0.0f,0.0f,0.0f };
 }
 
 void GoalBoxPortalEffect::Update()
@@ -30,6 +31,11 @@ void GoalBoxPortalEffect::Update()
 			sprite->data.transform.pos.m128_f32[2] -= 2.0f;
 		}
 
+		lerpRota.m128_f32[1] = 360.0f * 5.0f;
+		{
+			XMVECTOR distance = lerpRota - sprite->data.transform.rotation;
+			sprite->data.transform.rotation += distance * 0.1f;
+		}
 		++timer;
 	}
 }

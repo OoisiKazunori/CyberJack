@@ -15,8 +15,9 @@ public:
 	bool AllHidden();
 private:
 	Sprite3DRenderPtr sprite;
-	//PolygonRenderPtr sprite;
 	bool startFlag;
 	bool goBeforeFlag;
 	int timer;
+
+	XMVECTOR lerpRota;
 };
