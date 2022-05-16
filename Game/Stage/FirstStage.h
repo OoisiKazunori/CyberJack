@@ -2,8 +2,10 @@
 #include"../KazLibrary/DirectXCommon/Base.h"
 #include"../KazLibrary/Render/KazRender.h"
 #include"../Game/Debug/ParameterMgr.h"
+#include"../Game/Interface/IStage.h"
 #include<array>
 #include<vector>
+
 
 struct FogD
 {
@@ -18,12 +20,12 @@ struct FogD
 	float pad3;
 };
 
-class FirstStage
+class FirstStage :public IStage
 {
 public:
 	FirstStage();
-	void Update();
-	void Draw();
+	void Update()override;
+	void Draw()override;
 
 private:
 	std::array<BoxPolygonRender, 30> stageDebugBox;
@@ -32,7 +34,6 @@ private:
 
 	ParameterMgr stageParamLoader;
 	XMFLOAT3 depthX;
-
 
 	std::array<std::unique_ptr<PolygonRender>, 4>polygon;
 	std::unique_ptr<PolygonRender> topPolygon;

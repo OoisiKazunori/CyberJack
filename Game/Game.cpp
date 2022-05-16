@@ -62,6 +62,8 @@ Game::Game()
 	lineStartPoly[7].data.transform.pos = { 0.0f,-0.3f,-1.0f };
 
 	CameraMgr::Instance()->CameraSetting(60.0f, 1000.0f);
+
+	stages[0] = std::make_unique<FirstStage>();
 }
 
 Game::~Game()
@@ -160,6 +162,8 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	forceCameraDirVel.m128_f32[0] = -90.0f;
 
 	goalBox.Init({ 20.0f,10.0f,10.0f });
+
+	stageNum = 0;
 }
 
 void Game::Finalize()
@@ -686,7 +690,7 @@ void Game::Update()
 	player.Update();
 	cursor.Update();
 	hitBox.Update();
-	stage.Update();
+	stages[stageNum]->Update();
 
 	//ロックオンのリリース処理
 	if (cursor.releaseFlag)
@@ -770,7 +774,7 @@ void Game::Draw()
 	//デバックようにステージが切り替わったら周りを消す
 	if (!changeStageFlag)
 	{
-		stage.Draw();
+		stages[stageNum]->Draw();
 		goalBox.Draw();
 	}
 	else

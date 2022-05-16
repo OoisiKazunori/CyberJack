@@ -15,6 +15,7 @@
 #include"../Game/Stage/FirstStage.h"
 #include"../KazLibrary/Render/PolygonRender.h"
 #include"../KazLibrary/Scene/SceneBase.h"
+#include"../Game/Interface/IStage.h"
 
 struct ResponeData
 {
@@ -138,8 +139,8 @@ private:
 	short addHandle;
 	std::unique_ptr<GaussianBuler> buler;
 
-
-	FirstStage stage;
+	int stageNum;
+	std::array<std::unique_ptr<IStage>, 1>stages;
 	bool cameraChangeFlag;
 	bool lineDebugFlag;
 
