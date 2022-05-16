@@ -44,13 +44,6 @@ struct LineEffectData
 	}
 };
 
-struct GradationData
-{
-	XMFLOAT4 firstColor;
-	XMFLOAT4 endColor;
-};
-
-
 class Game
 {
 
@@ -151,11 +144,6 @@ private:
 	bool lineDebugFlag;
 
 	std::vector<short> handles;
-
-	std::array<std::unique_ptr<PolygonRender>, 4>polygon;
-
-	std::unique_ptr<PolygonRender> topPolygon;
-	bool initPFlag;
 
 
 

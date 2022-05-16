@@ -95,6 +95,11 @@ struct GoalLightData
 	XMFLOAT4 light;
 };
 
+struct GradationData
+{
+	XMFLOAT4 firstColor;
+	XMFLOAT4 endColor;
+};
 
 struct Material
 {

@@ -32,5 +32,9 @@ private:
 
 	ParameterMgr stageParamLoader;
 	XMFLOAT3 depthX;
+
+
+	std::array<std::unique_ptr<PolygonRender>, 4>polygon;
+	std::unique_ptr<PolygonRender> topPolygon;
 };
 

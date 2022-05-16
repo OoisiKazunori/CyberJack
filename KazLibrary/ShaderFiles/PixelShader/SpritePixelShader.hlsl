@@ -8,7 +8,7 @@ float4 PSmain(VSOutput input) : SV_TARGET
     float4 output = float4(tex.Sample(smp, input.uv));
     if (color.a < output.a)
     {
-        //output.a = color.a;
+        output.a = color.a;
     }
     return output;
 }

@@ -52,27 +52,16 @@ Game::Game()
 	luminaceTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 
 
-	std::array<SpriteVertex, 4>vert;
-	XMVECTOR adjPos = { 50.0f,0.0f,0.0f };
-	vert[0].pos = XMFLOAT3(-800.0f, 0.0f, 700.0f);
-	vert[0].uv = { 0.0f,0.0f };
-	vert[1].pos = XMFLOAT3(800.0f, 0.0f, 700.0f);
-	vert[1].uv = { 1.0f,0.0f };
-	vert[2].pos = XMFLOAT3(-800.0f, 0.0f, -700.0f);
-	vert[2].uv = { 0.0f,1.0f };
-	vert[3].pos = XMFLOAT3(800.0f, 0.0f, -700.0f);
-	vert[3].uv = { 1.0f,1.0f };
-	topPolygon = std::make_unique<PolygonRender>(vert);
-	initPFlag = false;
+	lineStartPoly[0].data.transform.pos = { 0.5f,0.15f,0.0f };
+	lineStartPoly[1].data.transform.pos = { -0.5f,0.0f,-0.5f };
+	lineStartPoly[2].data.transform.pos = { 0.5f,0.6f,0.5f };
+	lineStartPoly[3].data.transform.pos = { 0.5f,1.0f,0.0f };
+	lineStartPoly[4].data.transform.pos = { 0.5f,-1.0f,-1.0f };
+	lineStartPoly[5].data.transform.pos = { -0.5f,-1.0f,0.0f };
+	lineStartPoly[6].data.transform.pos = { 0.5f,0.3f,-0.3f };
+	lineStartPoly[7].data.transform.pos = { 0.0f,-0.3f,-1.0f };
 
-	int handle = topPolygon->CreateConstBuffer(sizeof(GradationData), typeid(GradationData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
-	topPolygon->data.pipelineName = PIPELINE_NAME_SPRITE_GRADATION;
-
-	GradationData gradData;
-	gradData.endColor = XMFLOAT4(0.24f, 0.09f, 0.62f, 1.0f);
-	gradData.firstColor = XMFLOAT4(0.24f, 0.09f, 0.62f, 1.0f);
-	topPolygon->TransData(&gradData, handle, typeid(gradData).name());
-
+	CameraMgr::Instance()->CameraSetting(60.0f, 1000.0f);
 }
 
 Game::~Game()
@@ -431,7 +420,7 @@ void Game::Update()
 
 		lineStartPoly[i].data.transform.scale = { 0.1f,0.1f,0.1f };
 		lineStartPoly[i].data.color = { 255.0f,0.0f,0.0f,255.0f };
-		lineEffectArrayData[i].startPos = lineStartPoly[i].data.transform.pos;
+		lineEffectArrayData[i].startPos = lineStartPoly[i].data.transform.pos + player.pos;
 	}
 	ImGui::End();
 
@@ -522,63 +511,6 @@ void Game::Update()
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
 
 #pragma endregion
-
-	//背景の設置--------------------------
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_H) && !initPFlag)
-	{
-		XMVECTOR screenPos = { 0.0f,0.0f,1.0f };
-		XMVECTOR leftUpPos = KazMath::ConvertScreenPosToWorldPos(screenPos, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
-
-		screenPos = { WIN_X,0.0f,1.0f };
-		XMVECTOR rightUpPos = KazMath::ConvertScreenPosToWorldPos(screenPos, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
-
-		screenPos = { 0.0f,WIN_Y,1.0f };
-		XMVECTOR leftDownPos = KazMath::ConvertScreenPosToWorldPos(screenPos, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
-
-		screenPos = { WIN_X,WIN_Y,1.0f };
-		XMVECTOR rightDownPos = KazMath::ConvertScreenPosToWorldPos(screenPos, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
-
-		std::array<SpriteVertex, 4>vert;
-		XMVECTOR adjPos = { 50.0f,0.0f,0.0f };
-		vert[0].pos = KazMath::LoadVecotrToXMFLOAT3(leftUpPos - adjPos);
-		vert[0].uv = { 0.0f,0.0f };
-		vert[1].pos = KazMath::LoadVecotrToXMFLOAT3(rightUpPos + adjPos);
-		vert[1].uv = { 1.0f,0.0f };
-		vert[2].pos = KazMath::LoadVecotrToXMFLOAT3(leftDownPos - adjPos);
-		vert[2].uv = { 0.0f,1.0f };
-		vert[3].pos = KazMath::LoadVecotrToXMFLOAT3(rightDownPos + adjPos);
-		vert[3].uv = { 1.0f,1.0f };
-
-		for (int i = 0; i < vert.size(); ++i)
-		{
-			vert[i].pos.z = 0.0f;
-		}
-
-		GradationData data;
-		data.firstColor = XMFLOAT4(0.93f, 0.65f, 0.53f, 1.0f);
-		data.endColor = XMFLOAT4(0.24f, 0.09f, 0.62f, 1.0f);
-		for (int i = 0; i < polygon.size(); ++i)
-		{
-			polygon[i] = std::make_unique<PolygonRender>(vert);
-			int handle = polygon[i]->CreateConstBuffer(sizeof(GradationData), typeid(GradationData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
-			polygon[i]->TransData(&data, handle, typeid(data).name());
-			polygon[i]->data.pipelineName = PIPELINE_NAME_SPRITE_GRADATION;
-		}
-		CameraMgr::Instance()->CameraSetting(60.0f, 1000.0f);
-
-		initPFlag = true;
-	}
-
-	if (initPFlag)
-	{
-		polygon[0]->data.transform.pos.m128_f32[2] = 650.0f;
-		polygon[1]->data.transform.pos.m128_f32[0] = 550.0f;
-		polygon[1]->data.transform.rotation.m128_f32[1] = 100.0f;
-		polygon[2]->data.transform.pos.m128_f32[0] = -550.0f;
-		polygon[2]->data.transform.rotation.m128_f32[1] = 100.0f;
-		polygon[3]->data.transform.pos.m128_f32[2] = -650.0f;
-	}
-	//背景の設置--------------------------
 
 
 	//ゴールに触れ無かった場合に次のステージに移動する処理----------------------------------------------------------------
@@ -831,22 +763,13 @@ void Game::Draw()
 	RenderTargetStatus::Instance()->PrepareToChangeBarrier(handles[0]);
 	RenderTargetStatus::Instance()->ClearRenderTarget(handles[0]);
 
-	for (int i = 0; i < lineStartPoly.size(); ++i)
-	{
-		lineStartPoly[i].Draw();
-	}
+	//for (int i = 0; i < lineStartPoly.size(); ++i)
+	//{
+	//	lineStartPoly[i].Draw();
+	//}
 	//デバックようにステージが切り替わったら周りを消す
 	if (!changeStageFlag)
 	{
-		if (initPFlag)
-		{
-			for (int i = 0; i < polygon.size(); ++i)
-			{
-				polygon[i]->Draw();
-			}
-		}
-		topPolygon->data.transform.pos.m128_f32[1] = 400.0f;
-		topPolygon->Draw();
 		stage.Draw();
 		goalBox.Draw();
 	}

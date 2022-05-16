@@ -32,6 +32,10 @@ GoalBoxEffect::GoalBoxEffect()
 	lightRender[5]->data.transform.rotation = { -10,0,130 };
 	lightRender[6]->data.transform.rotation = { 10,40,50 };
 	lightRender[7]->data.transform.rotation = { 0,40,230 };
+
+	disappearFlag = false;
+	motherPtr = nullptr;
+	drawHandle = 0;
 }
 
 void GoalBoxEffect::Init(XMMATRIX *ADRESS)
