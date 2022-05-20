@@ -170,6 +170,9 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	stageNum = 0;
 
 	initAppearFlag = false;
+
+	movieEffect.Init();
+
 }
 
 void Game::Finalize()
@@ -225,12 +228,6 @@ void Game::Input()
 
 #pragma endregion
 
-
-	if (inputController->InputTrigger(XINPUT_GAMEPAD_A))
-	{
-		bool debug = false;
-		debug = true;
-	}
 
 	if (input->InputTrigger(DIK_O))
 	{

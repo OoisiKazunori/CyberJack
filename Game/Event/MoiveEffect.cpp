@@ -14,6 +14,13 @@ MoiveEffect::MoiveEffect() :startFlag(false), lerpTopPos({ 0.0f,0.0f,0.0f }), le
 void MoiveEffect::Init()
 {
 	startFlag = false;
+
+	float texSpace = 50.0f;
+	lerpTopPos = { 0.0f,-texSpace,0.0f };
+	lerpButtomPos = { 0.0f,WIN_Y + texSpace,0.0f };
+
+	topTex.data.transform.pos = lerpTopPos;
+	buttomTex.data.transform.pos = lerpButtomPos;
 }
 
 void MoiveEffect::Update()
