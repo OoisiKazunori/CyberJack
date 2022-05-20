@@ -65,6 +65,7 @@ Game::Game()
 
 	stages[0] = std::make_unique<FirstStage>();
 	stages[1] = std::make_unique<SecondStage>();
+	stages[2] = std::make_unique<ThridStage>();
 }
 
 Game::~Game()
@@ -167,8 +168,7 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	goalBox.Init({ -10.0f,-100.0f,40.0f });
 	appearGoalBoxPos = { -10.0f,5.0f,40.0f };
 
-	stageNum = 1;
-
+	stageNum = 2;
 	initAppearFlag = false;
 
 	movieEffect.Init();
@@ -880,7 +880,6 @@ void Game::Draw()
 	//{
 	//	lineStartPoly[i].Draw();
 	//}
-	stages[stageNum]->Draw();
 	goalBox.Draw();
 
 
@@ -893,6 +892,8 @@ void Game::Draw()
 	{
 		lineLevel[i].Draw();
 	}
+	stages[stageNum]->Draw();
+
 
 	//敵の描画処理----------------------------------------------------------------
 	for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
@@ -922,8 +923,6 @@ void Game::Draw()
 	movieEffect.Draw();
 
 	cursor.Draw();
-
-	stages[stageNum]->Draw();
 }
 
 int Game::SceneChange()

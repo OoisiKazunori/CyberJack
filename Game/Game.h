@@ -17,6 +17,7 @@
 #include"../Game/Interface/IStage.h"
 #include"../Game/Stage/FirstStage.h"
 #include"../Game/Stage/SecondStage.h"
+#include"../Game/Stage/ThridStage.h"
 #include"../Game/Event/MoiveEffect.h"
 
 struct ResponeData
@@ -147,7 +148,7 @@ private:
 	std::unique_ptr<GaussianBuler> buler;
 
 	int stageNum;
-	std::array<std::unique_ptr<IStage>, 2>stages;
+	std::array<std::unique_ptr<IStage>, 3>stages;
 	bool cameraChangeFlag;
 	bool lineDebugFlag;
 
