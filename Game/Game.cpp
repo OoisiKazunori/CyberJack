@@ -447,7 +447,7 @@ void Game::Update()
 		leftRightAngleVel = { -90.0f,-90.0f,0.0f };
 		upDownAngleVel = { 0.0f,0.0f,0.0f };
 		targetPos = { 0.0f,3.0f,0.0f };
-
+		movieEffect.startFlag = true;
 		cursor.Disappear();
 	}
 
@@ -588,6 +588,7 @@ void Game::Update()
 		trackLeftRightAngleVel = leftRightAngleVel;
 		upDownAngleVel = { 0.0f,0.0f,0.0f };
 		trackUpDownAngleVel = upDownAngleVel;
+		movieEffect.startFlag = false;
 		cursor.Appear();
 	}
 
@@ -787,8 +788,6 @@ void Game::Update()
 
 
 #pragma endregion
-
-
 
 
 #pragma region 更新処理

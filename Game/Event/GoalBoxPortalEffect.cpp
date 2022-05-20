@@ -14,6 +14,7 @@ void GoalBoxPortalEffect::Init(const XMVECTOR &POS)
 	goBeforeFlag = false;
 	sprite->data.transform.pos = POS;
 	sprite->data.transform.scale = { 0.5f,0.5f };
+	sprite->data.transform.rotation = { 0.0f,0.0f,0.0f };
 	timer = 0;
 	lerpRota = { 0.0f,0.0f,0.0f };
 }

@@ -390,18 +390,16 @@ void Cursor::Update()
 		cursorAlpha -= sub;
 
 		//完全に消えたらカーソルの位置を初期化する----------------------------------------------
+		//カーソルもまだ動かさない
 		if (cursorAlpha <= 0)
 		{
 			dontMoveFlag = true;
 			honraiCameraMoveValue = { 0.0f,0.0f,0.0f };
-			cursorPos = { WIN_X / 2.0f,WIN_Y / 2.0f };
-		}
-		for (int i = 0; i < cursorEffectTex.size(); ++i)
-		{
-			if (cursorEffectTex[i].initFlag)
-			{
-				cursorEffectTex[i].cursorEffectTex->data.alpha = cursorAlpha;
-			}
+			honraiCursorPos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+			cursorPos = honraiCursorPos;
+			prevCursorPos = honraiCursorPos;
+			dontMoveCameraStartPos = { 490.0f,310.0f };
+			dontMoveCameraEndPos = { 640.0f,360.0f };
 		}
 		//完全に消えたらカーソルの位置を初期化する----------------------------------------------
 	}
@@ -445,7 +443,7 @@ void Cursor::Update()
 	//カーソル演出
 	for (int i = 0; i < cursorEffectTex.size(); ++i)
 	{
-		if (releaseFlag && !cursorEffectTex[i].initFlag)
+		if (releaseFlag && !cursorEffectTex[i].initFlag && !disappearFlag)
 		{
 			cursorEffectTex[i].cursorEffectTex->data.transform.pos = cursorPos;
 			cursorEffectTex[i].cursorEffectTex->data.alpha = 255.0f;
