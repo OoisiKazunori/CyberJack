@@ -15,12 +15,15 @@ public:
 	void Update();
 	void Draw();
 	
+	void Appear(const XMVECTOR &POS);
 
 	//ゴールエフェクト
 	GoalBoxEffect lightEffect;
 	GoalBoxPortalEffect portalEffect;
 	Sphere hitBox;
 	bool releaseFlag;
+	bool startPortalEffectFlag;
+
 private:
 	static const int HP = 8;
 
@@ -44,6 +47,5 @@ private:
 	float addVel;
 
 	bool hitFlag;
-
 
 };

@@ -50,7 +50,7 @@ void GoalBox::Init(const XMVECTOR &POS)
 	portalEffect.Init(goCenterPos + adj);
 	addRota = 0;
 
-
+	startPortalEffectFlag = false;
 }
 
 void GoalBox::Update()
@@ -89,6 +89,10 @@ void GoalBox::Update()
 		}
 	}
 
+	//èÌÇ…âÒì]Ç∑ÇÈ
+	lerpRota.m128_f32[0] += 1.0f;
+	lerpRota.m128_f32[1] += 1.0f;
+
 
 	//ìñÇΩÇ¡ÇΩç€ÇÃãììÆ
 	if (reduceHpFlag)
@@ -114,7 +118,7 @@ void GoalBox::Update()
 			addVel += 0.1f;
 		}
 		lerpRota.m128_f32[0] = 0.0f;
-		lerpRota.m128_f32[1] = addRota;
+		lerpRota.m128_f32[1] += addRota;
 		lerpRota.m128_f32[2] = 0.0f;
 
 
@@ -127,6 +131,7 @@ void GoalBox::Update()
 		if (60.0f * 10.0f <= addRota)
 		{
 			portalEffect.Start();
+			startPortalEffectFlag = true;
 		}
 	}
 
@@ -167,4 +172,9 @@ void GoalBox::Draw()
 {
 	model->Draw();
 	portalEffect.Draw();
+}
+
+void GoalBox::Appear(const XMVECTOR &POS)
+{
+	lerpPos = POS;
 }

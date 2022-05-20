@@ -158,7 +158,6 @@ GameScene::GameScene()
 #pragma endregion
 
 #pragma region 敵の配置レベル2
-	respoineIndex = 0;
 	++layerLevel;
 	//5-----------------------------------------------------------------
 	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_NORMAL;

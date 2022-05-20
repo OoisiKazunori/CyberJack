@@ -129,8 +129,10 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	//ゴールに触れ無かった場合に次のステージに移動する際の最大フレーム数
 	for (int i = 0; i < changeLayerLevelMaxTime.size(); ++i)
 	{
-		changeLayerLevelMaxTime[i] = 1000;
+		changeLayerLevelMaxTime[i] = 1800;
 	}
+	changeLayerLevelMaxTime[0] = 60 * 30;
+	changeLayerLevelMaxTime[1] = 60 * 36;
 	gameStageLevel = 0;
 	//ゲームループの初期化----------------------------------------------------------------
 
@@ -162,9 +164,12 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 
 	forceCameraDirVel.m128_f32[0] = -90.0f;
 
-	goalBox.Init({ 20.0f,10.0f,10.0f });
+	goalBox.Init({ -10.0f,-100.0f,40.0f });
+	appearGoalBoxPos = { -10.0f,5.0f,40.0f };
 
 	stageNum = 0;
+
+	initAppearFlag = false;
 }
 
 void Game::Finalize()
@@ -436,6 +441,17 @@ void Game::Update()
 
 #pragma region カメラ挙動
 
+	//カメラ固定
+	if (goalBox.startPortalEffectFlag)
+	{
+		trackLeftRightAngleVel = { -90.0f,-90.0f,0.0f };
+		trackUpDownAngleVel = { 0.0f,0.0f,0.0f };
+		targetPos = { 0.0f,3.0f,0.0f };
+
+		cursor.Disappear();
+	}
+
+
 	//左右の角度変更のイージング
 	{
 		XMVECTOR distance = leftRightAngleVel - trackLeftRightAngleVel;
@@ -513,18 +529,47 @@ void Game::Update()
 		eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
 		targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
 	}
+
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
 
 #pragma endregion
 
 
-	//ゴールに触れ無かった場合に次のステージに移動する処理----------------------------------------------------------------
-	if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
+	//敵が一通り生成終わった際に登場させる----------------------------------------------------------------
+	//if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame && !initAppearFlag)
+	if (100 <= gameFlame && !initAppearFlag)
 	{
-		//++gameStageLevel;
-		//gameFlame = 0;
+		goalBox.Appear(appearGoalBoxPos);
+		initAppearFlag = true;
 	}
-	//ゴールに触れ無かった場合に次のステージに移動する処理----------------------------------------------------------------
+	//敵が一通り生成終わった際に登場させる----------------------------------------------------------------
+
+	changeStageFlag = false;
+
+
+
+	//全部隠れたら次ステージの描画をする
+	if (goalBox.portalEffect.AllHidden())
+	{
+		//ゲームループの初期化----------------------------------------------
+		++gameStageLevel;
+		gameFlame = 0;
+		//ゲームループの初期化----------------------------------------------
+
+		//ステージの切り替え----------------------------------------------
+		++stageNum;
+		changeStageFlag = true;
+		//ステージの切り替え----------------------------------------------
+
+		//ゴールボックスの初期化----------------------------------------------
+		initAppearFlag = false;
+		goalBox.Init(appearGoalBoxPos);
+		//ゴールボックスの初期化----------------------------------------------
+
+		cursor.Appear();
+	}
+
+
 
 
 #pragma region 生成処理
@@ -797,15 +842,6 @@ void Game::Update()
 	//更新処理----------------------------------------------------------------
 #pragma endregion
 
-
-	changeStageFlag = false;
-	//全部ゲーム画面が隠れきったら次のステージに移動する
-	if (goalBox.portalEffect.AllHidden())
-	{
-		changeStageFlag = true;
-		goalBox.Init({ 10.0f,10.0f,30.0f });
-		++stageNum;
-	}
 
 
 	//ゲームループの経過時間----------------------------------------------------------------

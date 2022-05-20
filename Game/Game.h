@@ -55,7 +55,7 @@ class Game
 public:
 	//定数--------------------------
 	static const int LAYER_LEVEL_MAX = 10;				//レイヤーレベルの最大数
-	static const int ENEMY_NUM_MAX = 50;				//1レイヤーレベルに登場する敵の最大数
+	static const int ENEMY_NUM_MAX = 100;				//1レイヤーレベルに登場する敵の最大数
 
 
 	Game();
@@ -134,6 +134,8 @@ private:
 	ObjModelRenderPtr model;
 
 	GoalBox goalBox;
+	XMVECTOR appearGoalBoxPos;
+	bool initAppearFlag;
 	bool changeStageFlag;
 
 	//画面効果準備-----------------------
