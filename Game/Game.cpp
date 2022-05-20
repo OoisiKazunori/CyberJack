@@ -167,7 +167,7 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	goalBox.Init({ -10.0f,-100.0f,40.0f });
 	appearGoalBoxPos = { -10.0f,5.0f,40.0f };
 
-	stageNum = 0;
+	stageNum = 1;
 
 	initAppearFlag = false;
 
@@ -539,12 +539,12 @@ void Game::Update()
 
 	if (KeyBoradInputManager::Instance()->InputState(DIK_G))
 	{
-	//	cursor.Disappear();
+		//	cursor.Disappear();
 		movieEffect.startFlag = true;
 	}
 	if (KeyBoradInputManager::Instance()->InputState(DIK_B))
 	{
-	//	cursor.Appear();
+		//	cursor.Appear();
 		movieEffect.startFlag = false;
 	}
 
@@ -880,15 +880,8 @@ void Game::Draw()
 	//{
 	//	lineStartPoly[i].Draw();
 	//}
-	//デバックようにステージが切り替わったら周りを消す
-	if (!changeStageFlag)
-	{
-		stages[stageNum]->Draw();
-		goalBox.Draw();
-	}
-	else
-	{
-	}
+	stages[stageNum]->Draw();
+	goalBox.Draw();
 
 
 	if (lineDebugFlag)
@@ -929,6 +922,8 @@ void Game::Draw()
 	movieEffect.Draw();
 
 	cursor.Draw();
+
+	stages[stageNum]->Draw();
 }
 
 int Game::SceneChange()

@@ -1,12 +1,18 @@
 #include "SecondStage.h"
+#include"../KazLibrary/Imgui/MyImgui.h"
 
 SecondStage::SecondStage()
 {
 	stageParamLoader.LoadFile(KazFilePathName::StageParamPath + "StageParamData_SecondStage.json");
 
+	for (int i = 0; i < line.size(); ++i)
+	{
+		line[i].data.color = { 255.0f,255.0f,255.0f,255.0f };
+	}
+
 	if (false)
 	{
-		std::array <std::array<char, 6>, 50>data;
+		std::array <std::array<char, 7>, 50>data;
 		for (int i = 0; i < line.size(); ++i)
 		{
 			data[i][0] = 'L';
@@ -52,10 +58,66 @@ SecondStage::SecondStage()
 
 void SecondStage::Update()
 {
+#pragma region ImGui
+	bool exportFlag = false;
+	bool importFlag = false;
+
+	ImGui::Begin("Stage");
 	for (int i = 0; i < line.size(); ++i)
 	{
-		line[i].data;
+		string name = "Line" + std::to_string(i);
+		if (ImGui::TreeNode(name.c_str()))
+		{
+			ImGui::InputFloat("StartPosX", &line[i].data.startPos.m128_f32[0]);
+			ImGui::InputFloat("StartPosY", &line[i].data.startPos.m128_f32[1]);
+			ImGui::InputFloat("StartPosZ", &line[i].data.startPos.m128_f32[2]);
+			ImGui::InputFloat("EndPosX", &line[i].data.endPos.m128_f32[0]);
+			ImGui::InputFloat("EndPosY", &line[i].data.endPos.m128_f32[1]);
+			ImGui::InputFloat("EndPosZ", &line[i].data.endPos.m128_f32[2]);
+			ImGui::TreePop();
+		}
 	}
+
+	if (ImGui::Button("Import"))
+	{
+		importFlag = true;
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Export"))
+	{
+		exportFlag = true;
+	}
+	ImGui::End();
+
+	//ファイル読み込み
+	if (importFlag)
+	{
+		for (int i = 0; i < line.size(); ++i)
+		{
+			std::string name = "Line" + std::to_string(i);
+			for (int axisIndex = 0; axisIndex < 3; ++axisIndex)
+			{
+				line[i].data.startPos.m128_f32[axisIndex] = stageParamLoader.doc[name.c_str()]["StartPos"][axisIndex].GetFloat();
+				line[i].data.endPos.m128_f32[axisIndex] = stageParamLoader.doc[name.c_str()]["EndPos"][axisIndex].GetFloat();
+			}
+		}
+	}
+
+	//ファイル書き込み
+	if (exportFlag)
+	{
+		for (int i = 0; i < line.size(); ++i)
+		{
+			std::string name = "Line" + std::to_string(i);
+			for (int axisIndex = 0; axisIndex < 3; ++axisIndex)
+			{
+				stageParamLoader.doc[name.c_str()]["StartPos"][axisIndex].SetFloat(line[i].data.startPos.m128_f32[axisIndex]);
+				stageParamLoader.doc[name.c_str()]["EndPos"][axisIndex].SetFloat(line[i].data.endPos.m128_f32[axisIndex]);
+			}
+		}
+		stageParamLoader.ExportFile(KazFilePathName::StageParamPath + "StageParamData_SecondStage.json");
+	}
+#pragma endregion
 }
 
 void SecondStage::Draw()

@@ -11,7 +11,6 @@ public:
 	SecondStage();
 	void Update()override;
 	void Draw()override;
-
 private:
 	std::array<LineRender, 50> line;
 	ParameterMgr stageParamLoader;
