@@ -439,7 +439,7 @@ void GameScene::Draw()
 
 int GameScene::SceneChange()
 {
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_K))
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_K) || game->SceneChange() == 0)
 	{
 		return SCENE_TITLE;
 	}

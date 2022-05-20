@@ -24,10 +24,9 @@ void ThridStage::Update()
 	infomationTex.data.transform.pos = { 0.0f,0.0f,700.0f };
 
 	++timer;
-	if (60 <= timer)
+	if (timer % 60 == 0)
 	{
 		flashFlag = !flashFlag;
-		timer = 0;
 	}
 }
 

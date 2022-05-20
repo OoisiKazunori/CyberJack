@@ -137,6 +137,7 @@ private:
 
 	GoalBox goalBox;
 	XMVECTOR appearGoalBoxPos;
+	XMVECTOR responeGoalBoxPos;
 	bool initAppearFlag;
 	bool changeStageFlag;
 

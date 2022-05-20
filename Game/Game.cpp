@@ -165,10 +165,11 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 
 	forceCameraDirVel.m128_f32[0] = -90.0f;
 
-	goalBox.Init({ -10.0f,-100.0f,40.0f });
 	appearGoalBoxPos = { -10.0f,5.0f,40.0f };
+	responeGoalBoxPos = { -10.0f,-100.0f,40.0f };
+	goalBox.Init(responeGoalBoxPos);
 
-	stageNum = 2;
+	stageNum = 0;
 	initAppearFlag = false;
 
 	movieEffect.Init();
@@ -229,10 +230,6 @@ void Game::Input()
 #pragma endregion
 
 
-	if (input->InputTrigger(DIK_O))
-	{
-		sceneNum = 0;
-	}
 
 	bool upFlag = false;
 	bool downFlag = false;
@@ -242,6 +239,14 @@ void Game::Input()
 	bool releaseFlag = false;
 
 	const int DEAD_ZONE = 3000;
+	if (inputController->InputState(XINPUT_GAMEPAD_A))
+	{
+		doneFlag = true;
+	}
+	if (inputController->InputRelease(XINPUT_GAMEPAD_A))
+	{
+		releaseFlag = true;
+	}
 	if (inputController->InputStickState(LEFT_STICK, UP_SIDE, DEAD_ZONE))
 	{
 		upFlag = true;
@@ -258,15 +263,17 @@ void Game::Input()
 	{
 		rightFlag = true;
 	}
-	if (inputController->InputState(XINPUT_GAMEPAD_A))
-	{
-		doneFlag = true;
-	}
-	if (inputController->InputRelease(XINPUT_GAMEPAD_A))
-	{
-		releaseFlag = true;
-	}
 
+	//ゲーム終了処理
+	//三ステージ目で6秒後にタイトル画面に戻る許可を出す
+	if (inputController->InputTrigger(XINPUT_GAMEPAD_A) && 360 <= gameFlame && 2 <= gameStageLevel)
+	{
+		sceneNum = 0;
+	}
+	if (input->InputTrigger(DIK_O))
+	{
+		sceneNum = 0;
+	}
 
 
 	if (!upFlag && !downFlag && !leftFlag && !rightFlag)
@@ -577,7 +584,7 @@ void Game::Update()
 
 		//ゴールボックスの初期化----------------------------------------------
 		initAppearFlag = false;
-		goalBox.Init(appearGoalBoxPos);
+		goalBox.Init(responeGoalBoxPos);
 		//ゴールボックスの初期化----------------------------------------------
 
 
@@ -588,7 +595,6 @@ void Game::Update()
 		movieEffect.startFlag = false;
 		cursor.Appear();
 	}
-
 
 
 

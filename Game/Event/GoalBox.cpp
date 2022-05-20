@@ -51,6 +51,7 @@ void GoalBox::Init(const XMVECTOR &POS)
 	addRota = 0;
 
 	startPortalEffectFlag = false;
+	addVel = 0.0f;
 }
 
 void GoalBox::Update()
