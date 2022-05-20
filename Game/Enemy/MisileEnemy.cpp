@@ -15,6 +15,8 @@ void MisileEnemy::Finalize()
 
 void MisileEnemy::Update()
 {
+	iEnemy_ModelRender->data.transform.pos;
+
 
 }
 

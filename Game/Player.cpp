@@ -4,6 +4,8 @@ Player::Player()
 {
 	render = std::make_unique<BoxPolygonRender>();
 	render->data.pipelineName = PIPELINE_NAME_COLOR_MULTITEX;
+	hp = -1;
+	pos = {};
 }
 
 void Player::Init(const XMVECTOR &POS)
@@ -12,6 +14,7 @@ void Player::Init(const XMVECTOR &POS)
 	render->data.transform.pos = pos;
 	render->data.transform.scale = { 0.5f,1.3f,0.5f };
 	render->data.transform.rotation = { 35.0f,0.0f,1.0f };
+	hp = 2;
 }
 
 void Player::Finalize()
@@ -38,4 +41,9 @@ void Player::Update()
 void Player::Draw()
 {
 	render->Draw();
+}
+
+void Player::Hit()
+{
+	--hp;
 }

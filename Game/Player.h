@@ -12,10 +12,10 @@ public:
 	void Update();
 	void Draw();
 
+	void Hit();
 	XMVECTOR pos;
 private:
 	short hp;
 	BoxPolygonRenderPtr render;
-
 };
 
