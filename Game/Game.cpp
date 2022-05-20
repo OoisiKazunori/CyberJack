@@ -542,11 +542,13 @@ void Game::Update()
 
 	if (KeyBoradInputManager::Instance()->InputState(DIK_G))
 	{
-		cursor.Disappear();
+	//	cursor.Disappear();
+		movieEffect.startFlag = true;
 	}
 	if (KeyBoradInputManager::Instance()->InputState(DIK_B))
 	{
-		cursor.Appear();
+	//	cursor.Appear();
+		movieEffect.startFlag = false;
 	}
 
 
@@ -789,7 +791,6 @@ void Game::Update()
 
 
 
-
 #pragma region 更新処理
 
 	goalBox.releaseFlag = cursor.releaseFlag;
@@ -799,6 +800,7 @@ void Game::Update()
 	cursor.Update();
 	hitBox.Update();
 	goalBox.Update();
+	movieEffect.Update();
 	stages[stageNum]->Update();
 
 	//ロックオンのリリース処理
@@ -927,6 +929,8 @@ void Game::Draw()
 	mainRenderTarget.Draw();
 	addRenderTarget.data.handle = buler->BlurImage(addHandle);
 	addRenderTarget.Draw();
+
+	movieEffect.Draw();
 
 	cursor.Draw();
 }

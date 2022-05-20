@@ -197,11 +197,11 @@ namespace KazMath
 	XMFLOAT3 CaluTargetPosForDebug(XMFLOAT3 EYE_POS, float ANGLE);
 
 
-	bool MatrixEqualOrNot(const XMMATRIX &MAT_1,const XMMATRIX &MAT_2);
+	bool MatrixEqualOrNot(const XMMATRIX &MAT_1, const XMMATRIX &MAT_2);
 
 
-	XMMATRIX CaluSlopeMatrix(const XMVECTOR &Y,const XMVECTOR &Z);
-	XMMATRIX CaluFrontMatrix(const XMVECTOR &Y,const XMVECTOR &Z);
+	XMMATRIX CaluSlopeMatrix(const XMVECTOR &Y, const XMVECTOR &Z);
+	XMMATRIX CaluFrontMatrix(const XMVECTOR &Y, const XMVECTOR &Z);
 
 	int RadianToAngle(float RADIAN);
 	float AngleToRadian(float ANGLE);
@@ -210,5 +210,7 @@ namespace KazMath
 	XMMATRIX CaluMat(const KazMath::Transform3D &TRANSFORM, const XMVECTOR &Y_VEC, const XMVECTOR &Z_VEC, const XMMATRIX &VIEW_MAT, const XMMATRIX &PROJECT_MAT);
 	XMMATRIX CaluWorld(const KazMath::Transform3D &TRANSFORM, const XMVECTOR &Y_VEC, const XMVECTOR &Z_VEC);
 
+
+	void Larp(const float &BASE_TRANSFORM, float *TRANSFORM, float MUL);
 }
 

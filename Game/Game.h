@@ -17,6 +17,7 @@
 #include"../Game/Interface/IStage.h"
 #include"../Game/Stage/FirstStage.h"
 #include"../Game/Stage/SecondStage.h"
+#include"../Game/Event/MoiveEffect.h"
 
 struct ResponeData
 {
@@ -155,6 +156,9 @@ private:
 
 
 	std::array<BoxPolygonRender, 8> lineStartPoly;
+
+
+	MoiveEffect movieEffect;//ƒJƒƒ‰‚ªŒÅ’è‚É‚È‚Á‚Ä‰‰o‚ğ•`‰æ‚·‚é
 
 };
 

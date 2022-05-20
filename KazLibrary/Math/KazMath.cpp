@@ -655,3 +655,9 @@ XMMATRIX KazMath::CaluWorld(const KazMath::Transform3D &TRANSFORM, const XMVECTO
 	baseMatWorldData.matWorld *= baseMatWorldData.matTrans;
 	return baseMatWorldData.matWorld;
 }
+
+void KazMath::Larp(const float &BASE_TRANSFORM, float *TRANSFORM, float MUL)
+{
+	float distance = BASE_TRANSFORM - *TRANSFORM;
+	*TRANSFORM += distance * MUL;
+};
