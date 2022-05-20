@@ -39,6 +39,7 @@ private:
 	unique_ptr<DirtyFlag<bool>> flipYDirtyFlag;
 	unique_ptr<DirtyFlag<short>> textureHandleDirtyFlag;
 	unique_ptr<DirtyFlag<short>> animationHandleDirtyFlag;
+	unique_ptr<DirtyFlag<float>> alphaDrtyFlag;
 
 	unique_ptr<DirtySet> cameraViewDirtyFlag;
 	unique_ptr<DirtySet> cameraProjectionDirtyFlag;

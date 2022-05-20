@@ -444,8 +444,8 @@ void Game::Update()
 	//カメラ固定
 	if (goalBox.startPortalEffectFlag)
 	{
-		trackLeftRightAngleVel = { -90.0f,-90.0f,0.0f };
-		trackUpDownAngleVel = { 0.0f,0.0f,0.0f };
+		leftRightAngleVel = { -90.0f,-90.0f,0.0f };
+		upDownAngleVel = { 0.0f,0.0f,0.0f };
 		targetPos = { 0.0f,3.0f,0.0f };
 
 		cursor.Disappear();
@@ -500,13 +500,19 @@ void Game::Update()
 			limitValue = 2.5f;
 		}
 
-		honraiPlayerCameraPos.m128_f32[0] = 0.0f + (2.0f * -cursor.GetValue().m128_f32[0]);
-		honraiPlayerCameraPos.m128_f32[2] = 0.0f + (limitValue * cursor.GetValue().m128_f32[1]) * mul;
-
+		//ポータル演出開始したらプレイヤーの動きを固定する
+		XMFLOAT3 rate = { cursor.GetValue().m128_f32[0] ,cursor.GetValue().m128_f32[1],0.0f };
+		honraiPlayerCameraPos.m128_f32[0] = 0.0f + (2.0f * -rate.x);
+		honraiPlayerCameraPos.m128_f32[2] = 0.0f + (limitValue * rate.y) * mul;
 
 		if (0.0f <= honraiPlayerCameraPos.m128_f32[2])
 		{
 			honraiPlayerCameraPos.m128_f32[2] = 0.0f;
+		}
+
+		if (goalBox.startPortalEffectFlag)
+		{
+			honraiPlayerCameraPos = { 0.0f,0.0f,0.0f };
 		}
 		XMVECTOR distance = honraiPlayerCameraPos - player.pos;
 		player.pos += distance * 0.1f;
@@ -533,6 +539,15 @@ void Game::Update()
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
 
 #pragma endregion
+
+	if (KeyBoradInputManager::Instance()->InputState(DIK_G))
+	{
+		cursor.Disappear();
+	}
+	if (KeyBoradInputManager::Instance()->InputState(DIK_B))
+	{
+		cursor.Appear();
+	}
 
 
 	//敵が一通り生成終わった際に登場させる----------------------------------------------------------------
@@ -566,6 +581,11 @@ void Game::Update()
 		goalBox.Init(appearGoalBoxPos);
 		//ゴールボックスの初期化----------------------------------------------
 
+
+		leftRightAngleVel = { -90.0f,-90.0f,0.0f };
+		trackLeftRightAngleVel = leftRightAngleVel;
+		upDownAngleVel = { 0.0f,0.0f,0.0f };
+		trackUpDownAngleVel = upDownAngleVel;
 		cursor.Appear();
 	}
 

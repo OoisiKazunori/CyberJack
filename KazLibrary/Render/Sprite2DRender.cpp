@@ -26,6 +26,7 @@ Sprite2DRender::Sprite2DRender()
 
 	sizeDirtyFlag.reset(new DirtySet(data.size));
 
+	alphaDrtyFlag = std::make_unique<DirtyFlag<float>>(&data.alpha);
 
 
 	//データの定義-----------------------------------------------------------------------------------------------------
@@ -230,7 +231,7 @@ void Sprite2DRender::Draw()
 
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 	//行列
-	if (matrixDirtyFlag || matFlag)
+	if (matrixDirtyFlag || matFlag || alphaDrtyFlag->Dirty())
 	{
 		ConstBufferData constMap;
 		constMap.world = baseMatWorldData.matWorld;
@@ -286,6 +287,8 @@ void Sprite2DRender::Draw()
 	cameraBillBoardDirtyFlag->Record();
 	cameraProjectionDirtyFlag->Record();
 	cameraViewDirtyFlag->Record();
+
+	alphaDrtyFlag->Record();
 
 	sizeDirtyFlag->Record();
 	//DirtyFlagの更新-----------------------------------------------------------------------------------------------------
