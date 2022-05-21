@@ -287,10 +287,10 @@ XMVECTOR KazMath::ConvertWorldPosToScreenPos(XMVECTOR WORLD_POS, XMMATRIX VIEW_M
 	XMMATRIX mat;
 	XMVECTOR result = { -1,-1,-1 };
 
-	
-	XMMATRIX matRot = CaluRotaMatrix(XMFLOAT3( 0.0f,0.0f,0.0f ));
+
+	XMMATRIX matRot = CaluRotaMatrix(XMFLOAT3(0.0f, 0.0f, 0.0f));
 	XMMATRIX matTrans = CaluTransMatrix(WORLD_POS);
-	XMMATRIX matScale = CaluScaleMatrix(XMFLOAT3( 1.0f,1.0f,1.0f ));
+	XMMATRIX matScale = CaluScaleMatrix(XMFLOAT3(1.0f, 1.0f, 1.0f));
 
 	matWorld = XMMatrixIdentity();
 	matWorld *= matScale;
@@ -660,4 +660,41 @@ void KazMath::Larp(const float &BASE_TRANSFORM, float *TRANSFORM, float MUL)
 {
 	float distance = BASE_TRANSFORM - *TRANSFORM;
 	*TRANSFORM += distance * MUL;
+}
+
+const XMVECTOR &KazMath::SplinePosition(const std::vector<XMVECTOR> &points, size_t startIndex, float t, bool Loop)
+{
+	if (startIndex < 1)
+	{
+		return points[1];
+	}
+	XMVECTOR p0 = points[startIndex - 1];
+	XMVECTOR p1 = points[startIndex];
+	XMVECTOR p2;
+	XMVECTOR p3;
+	if (Loop == true)
+	{
+		if (startIndex > points.size() - 3)
+		{
+			p2 = points[1];
+			p3 = points[2];
+		}
+		else
+		{
+			p2 = points[startIndex + 1];
+			p3 = points[startIndex + 2];
+		}
+	}
+	else
+	{
+		if (startIndex > points.size() - 3)return points[points.size() - 3];
+		p2 = points[startIndex + 1];
+		p3 = points[startIndex + 2];
+	}
+	XMVECTOR anser = 0.5 * ((2 * p1 + (-p0 + p2) * t) +
+		(2 * p0 - 5 * p1 + 4 * p2 - p3) * (t * t) +
+		(-p0 + 3 * p1 - 3 * p2 + p3) * (t * t * t)
+	);
+
+	return anser;
 };

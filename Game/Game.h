@@ -163,5 +163,6 @@ private:
 
 	MoiveEffect movieEffect;//ƒJƒƒ‰‚ªŒÅ’è‚É‚È‚Á‚Ä‰‰o‚ğ•`‰æ‚·‚é
 
+
 };
 

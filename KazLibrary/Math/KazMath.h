@@ -212,5 +212,17 @@ namespace KazMath
 
 
 	void Larp(const float &BASE_TRANSFORM, float *TRANSFORM, float MUL);
+
+
+	/// <summary>
+	/// ƒXƒvƒ‰ƒCƒ“‹Èü
+	/// </summary>
+	/// <param name="points"></param>
+	/// <param name="startIndex"></param>
+	/// <param name="t"></param>
+	/// <param name="Loop"></param>
+	/// <returns></returns>
+	const XMVECTOR &SplinePosition(const std::vector<XMVECTOR> &points, size_t startIndex, float t, bool Loop);
+
 }
 

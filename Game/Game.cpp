@@ -6,6 +6,8 @@
 #include"../KazLibrary/Helper/ResourceFilePass.h"
 #include"../Game/Debug/ParameterMgr.h"
 #include"../KazLibrary/Math/KazMath.h"
+#include<cmath>
+#include<iostream>
 
 Game::Game()
 {
@@ -909,10 +911,6 @@ void Game::Draw()
 	RenderTargetStatus::Instance()->PrepareToChangeBarrier(handles[0]);
 	RenderTargetStatus::Instance()->ClearRenderTarget(handles[0]);
 
-	//for (int i = 0; i < lineStartPoly.size(); ++i)
-	//{
-	//	lineStartPoly[i].Draw();
-	//}
 	goalBox.Draw();
 
 
@@ -926,6 +924,7 @@ void Game::Draw()
 		lineLevel[i].Draw();
 	}
 	stages[stageNum]->Draw();
+
 
 
 	//敵の描画処理----------------------------------------------------------------

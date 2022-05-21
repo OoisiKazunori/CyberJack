@@ -39,7 +39,7 @@ void NormalEnemy::Update()
 
 	//死亡演出処理
 	//デバックキーor当たり判定内&&死亡時
-	if (EnableToHit(iEnemy_ModelRender->data.transform.pos.m128_f32[2]) &&!iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag || KeyBoradInputManager::Instance()->InputState(DIK_J))
+	if (EnableToHit(iEnemy_ModelRender->data.transform.pos.m128_f32[2]) &&!iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
 	{
 		iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME_MULTITEX;
 		iEnemy_ModelRender->data.removeMaterialFlag = true;
