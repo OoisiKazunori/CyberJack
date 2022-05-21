@@ -2,10 +2,10 @@
 #include"../KazLibrary/Render/KazRender.h"
 #include"../Game/Interface/IEnemy.h"
 
-class MisileEnemy :public IEnemy
+class SplineMisile :public IEnemy
 {
 public:
-	MisileEnemy();
+	SplineMisile();
 
 	void Init(const XMVECTOR &POS);
 	void Finalize();
@@ -23,7 +23,7 @@ private:
 	float timeRate;		//制御点間の時間
 	XMVECTOR position;	//現在地
 	BoxPolygonRender splineBox;
-	std::array<BoxPolygonRender, 6> pointsRender;
+	std::array<BoxPolygonRender, 3> pointsRender;
 	//スプライン曲線----------------------------------------------
 
 };

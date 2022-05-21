@@ -130,8 +130,8 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 					}
 					break;
 
-				case ENEMY_TYPE_MISILE:
-					enemies[enemyType][enemyCount] = std::make_unique<MisileEnemy>();
+				case ENEMY_TYPE_MISILE_SPLINE:
+					enemies[enemyType][enemyCount] = std::make_unique<SplineMisile>();
 					break;
 
 				default:
@@ -691,7 +691,7 @@ void Game::Update()
 					enemies[enemyType][enemyCount]->Init(responeData[enemyType][enemyCount].initPos);
 					break;
 
-				case ENEMY_TYPE_MISILE:
+				case ENEMY_TYPE_MISILE_SPLINE:
 					enemies[enemyType][enemyCount]->Init(responeData[enemyType][enemyCount].initPos);
 					break;
 				default:

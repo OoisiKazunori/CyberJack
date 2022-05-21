@@ -16,13 +16,13 @@ GameScene::GameScene()
 	float z = 300.0f;
 
 	//2-----------------------------------------------------------------
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_MISILE;
+	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_MISILE_SPLINE;
 	responeData[0][respoineIndex].layerLevel = 0;
 	responeData[0][respoineIndex].flame = time * 3;
 	responeData[0][respoineIndex].initPos = { 20.0f,10.0f,z };
 	++respoineIndex;
 
-	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_MISILE;
+	responeData[0][respoineIndex].enemyType = ENEMY_TYPE_MISILE_SPLINE;
 	responeData[0][respoineIndex].layerLevel = 0;
 	responeData[0][respoineIndex].flame = time * 3;
 	responeData[0][respoineIndex].initPos = { 60.0f,10.0f,z };

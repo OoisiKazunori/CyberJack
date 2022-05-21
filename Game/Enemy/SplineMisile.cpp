@@ -1,13 +1,13 @@
-#include "MisileEnemy.h"
+#include "SplineMisile.h"
 #include"../KazLibrary/Math/KazMath.h"
 
-MisileEnemy::MisileEnemy()
+SplineMisile::SplineMisile()
 {
-	maxTime = 120;
+	maxTime = 60 * 5;
 	splineBox.data.color = { 255.0f,0.0f,0.0f,255.0f };
 }
 
-void MisileEnemy::Init(const XMVECTOR &POS)
+void SplineMisile::Init(const XMVECTOR &POS)
 {
 	iEnemy_ModelRender->data.transform.pos = POS;
 	iEnemy_EnemyStatusData->timer = maxTime;
@@ -20,26 +20,35 @@ void MisileEnemy::Init(const XMVECTOR &POS)
 	points.clear();
 	points.shrink_to_fit();
 
+	XMVECTOR startPos = POS;
+	XMVECTOR endPos = { 0.0f,0.0f,0.0f };
+
+	XMVECTOR distance = startPos - endPos;
+	float addDistance = distance.m128_f32[2] / 4.0f;
+
+	distance.m128_f32[2] /= 2.0f;	//中間はZ距離の半分
+	distance.m128_f32[2] -= addDistance;
+
+
 	//スタート地点
-	points.push_back(POS);
-	points.push_back(POS);
+	points.push_back(startPos);
+	points.push_back(startPos);
 
 	//中間
-	points.push_back({ 0.0f,50.0f,50.0f });
-	points.push_back({ 0.0f,-30.0f,-50.0f });
+	points.push_back(distance);
 
 	//ゴール地点
-	points.push_back({ 0.0f,0.0f,0.0f });
-	points.push_back({ 0.0f,0.0f,0.0f });
+	points.push_back(endPos);
+	points.push_back(endPos);
 
-	pointTime = maxTime/ points.size();
+	pointTime = maxTime /( points.size() - 2);
 }
 
-void MisileEnemy::Finalize()
+void SplineMisile::Finalize()
 {
 }
 
-void MisileEnemy::Update()
+void SplineMisile::Update()
 {
 	--iEnemy_EnemyStatusData->timer;
 
@@ -82,7 +91,7 @@ void MisileEnemy::Update()
 	}
 }
 
-void MisileEnemy::Draw()
+void SplineMisile::Draw()
 {
 	for (int i = 0; i < pointsRender.size(); ++i)
 	{
