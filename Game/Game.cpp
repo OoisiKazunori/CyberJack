@@ -595,8 +595,8 @@ void Game::Update()
 
 
 	//敵が一通り生成終わった際に登場させる----------------------------------------------------------------
-	//if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame && !initAppearFlag)
-	if (100 <= gameFlame && !initAppearFlag)
+	if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame && !initAppearFlag)
+	//if (100 <= gameFlame && !initAppearFlag)
 	{
 		goalBox.Appear(appearGoalBoxPos);
 		initAppearFlag = true;

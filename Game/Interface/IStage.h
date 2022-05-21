@@ -7,7 +7,7 @@
 class IStage
 {
 public:
-	~IStage() {};
+	virtual ~IStage() {};
 	virtual void Update() = 0;
 	virtual void Draw() = 0;
 private:
