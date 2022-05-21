@@ -20,7 +20,6 @@ Game::Game()
 	model->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "hamster.obj");
 	model->data.color = { 255.0f,0.0f,0.0f,255.0f };
 
-
 	//mainRenderTarget.data.handle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, BG_COLOR, DXGI_FORMAT_R8G8B8A8_UNORM);
 	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	mainRenderTarget.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
@@ -42,7 +41,6 @@ Game::Game()
 	addRenderTarget.data.pipelineName = PIPELINE_NAME_ADDBLEND;
 
 	buler = std::make_unique<GaussianBuler>(XMFLOAT2(WIN_X, WIN_Y), XMFLOAT3(0.0f, 0.0f, 0.0f));
-
 
 
 	luminaceTex.data.pipelineName = PIPELINE_NAME_SPRITE_LUMI;
@@ -112,6 +110,10 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 						enemies[ENEMY_TYPE_KID][index] = std::make_unique<KidEnemy>();
 						++enemiesHandle[ENEMY_TYPE_KID];
 					}
+					break;
+
+				case ENEMY_TYPE_MISILE:
+					enemies[enemyType][enemyCount] = std::make_unique<MisileEnemy>();
 					break;
 
 				default:
@@ -645,13 +647,17 @@ void Game::Update()
 
 			if (enableToUseThisDataFlag && readyToInitDataFlag)
 			{
-				switch (enemyType)
+				switch (responeData[enemyType][enemyCount].enemyType)
 				{
 				case ENEMY_TYPE_NORMAL:
 					enemies[enemyType][enemyCount]->Init(responeData[enemyType][enemyCount].initPos);
 					break;
 
 				case ENEMY_TYPE_KID:
+					enemies[enemyType][enemyCount]->Init(responeData[enemyType][enemyCount].initPos);
+					break;
+
+				case ENEMY_TYPE_MISILE:
 					enemies[enemyType][enemyCount]->Init(responeData[enemyType][enemyCount].initPos);
 					break;
 				default:
@@ -791,6 +797,27 @@ void Game::Update()
 
 
 #pragma endregion
+
+
+	//攻撃----------------------------------------------
+	for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
+	{
+		for (int enemyCount = 0; enemyCount < enemies[enemyType].size(); ++enemyCount)
+		{
+			//生成されている、初期化している敵のみ更新処理を通す
+			bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
+			if (enableToUseDataFlag)
+			{
+				//時間が0秒以下ならプレイヤーに当たったと判断する
+				if (enemies[enemyType][enemyCount]->GetData()->timer <= 0)
+				{
+					player.Hit();
+					enemies[enemyType][enemyCount]->Dead();
+				}
+			}
+		}
+	}
+	//攻撃----------------------------------------------
 
 
 #pragma region 更新処理

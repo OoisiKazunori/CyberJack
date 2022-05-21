@@ -46,7 +46,7 @@ void NormalEnemy::Update()
 		iEnemy_ModelRender->data.color.x = 255.0f;
 		iEnemy_ModelRender->data.color.y = 255.0f;
 		iEnemy_ModelRender->data.color.z = 255.0f;
-		DradEffect(&iEnemy_ModelRender->data.transform.pos, &iEnemy_ModelRender->data.transform.rotation, &iEnemy_ModelRender->data.color.w);
+		DeadEffect(&iEnemy_ModelRender->data.transform.pos, &iEnemy_ModelRender->data.transform.rotation, &iEnemy_ModelRender->data.color.w);
 	}
 	//€–S‰‰o’†‚É“oê‰‰o‚Ís‚í‚È‚¢
 	else

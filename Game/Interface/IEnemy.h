@@ -10,6 +10,7 @@ enum eEnemyType
 	ENEMY_TYPE_NONE = -1,
 	ENEMY_TYPE_NORMAL,
 	ENEMY_TYPE_MOTHER,
+	ENEMY_TYPE_MISILE,
 	ENEMY_TYPE_KID
 };
 
@@ -42,15 +43,17 @@ struct EnemyData
 	/// <param name="HITBOX_POS_ADRESS">当たり判定用の座標アドレス</param>
 	/// <param name="RADIUS">当たり判定の大きさ</param>
 	/// <param name="MAX_ROCKON_NUM">ロックオン回数のアドレス</param>
-	EnemyData(XMVECTOR *HITBOX_POS_ADRESS,const float &RADIUS ,IOperationObjectData *OPERATION_DATA) :
+	EnemyData(XMVECTOR *HITBOX_POS_ADRESS, const float &RADIUS, IOperationObjectData *OPERATION_DATA) :
 		hitBox({ HITBOX_POS_ADRESS ,RADIUS }),
-		oprationObjData(OPERATION_DATA)
+		oprationObjData(OPERATION_DATA),
+		timer(1)
 	{
 	};
 
 	Sphere hitBox;							//敵の当たり判定
 	IOperationObjectData *oprationObjData;	//操作可能OBJが持つ基本データのアドレス
 	GenarateOtherObjData genarateData;		//追加で敵を生成する際に必要な情報
+	int timer;								//プレイヤーに当たるまでの時間
 };
 
 /// <summary>
@@ -96,7 +99,7 @@ public:
 	/// <summary>
 	/// 死亡演出
 	/// </summary>
-	void DradEffect(XMVECTOR *POS, XMVECTOR *ROTATION, float *ALPHA);
+	void DeadEffect(XMVECTOR *POS, XMVECTOR *ROTATION, float *ALPHA);
 
 	
 	/// <returns>敵の情報</returns>

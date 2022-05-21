@@ -21,7 +21,7 @@ void IEnemy::Dead()
 	iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag = false;
 }
 
-void IEnemy::DradEffect(XMVECTOR *POS, XMVECTOR *ROTATION, float *ALPHA)
+void IEnemy::DeadEffect(XMVECTOR *POS, XMVECTOR *ROTATION, float *ALPHA)
 {
 	if (*ALPHA <= 0)
 	{

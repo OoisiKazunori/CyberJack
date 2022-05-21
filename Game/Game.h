@@ -8,6 +8,7 @@
 #include"../Game/Interface/IEnemy.h"
 #include"../Game/Enemy/NormalEnemy.h"
 #include"../Game/Enemy/KidEnemy.h"
+#include"../Game/Enemy/MisileEnemy.h"
 #include"../Game/LineEffect/LineLevel1.h"
 #include"../Game/Event/GoalBox.h"
 #include"../KazLibrary/RenderTarget/RenderTargetStatus.h"
