@@ -109,4 +109,5 @@ public:
 
 	unique_ptr<EnemyData> iEnemy_EnemyStatusData;		//“G‚Ìó‘Ô‚ğ•Û‘¶‚·‚éƒf[ƒ^
 	ObjModelRenderPtr iEnemy_ModelRender;				//“G‚Ì•`‰æ
+	XMVECTOR lerpPos;
 };

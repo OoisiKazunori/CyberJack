@@ -774,7 +774,7 @@ void Game::Update()
 				lineLevel[i].Attack2(lineEffectArrayData[i].startPos, *goalBox.hitBox.center, {});
 				lineEffectArrayData[i].usedFlag = true;
 				lineEffectArrayData[i].lineIndex = i;
-				lineEffectArrayData[i].eventType = 0;
+				lineEffectArrayData[i].eventType = -1;
 				break;
 			}
 		}
@@ -1006,12 +1006,11 @@ void Game::Draw()
 			bg.Draw();
 		}
 		player.Draw();
+		stages[stageNum]->Draw();
 		for (int i = 0; i < lineLevel.size(); ++i)
 		{
 			lineLevel[i].Draw();
 		}
-		stages[stageNum]->Draw();
-
 
 
 		//敵の描画処理----------------------------------------------------------------

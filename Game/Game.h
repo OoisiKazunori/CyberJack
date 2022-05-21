@@ -42,6 +42,10 @@ struct LineEffectData
 	int enemyIndex;
 	int eventType;
 
+	LineEffectData() :startPos({}), usedFlag(false), lineIndex(-1), enemyTypeIndex(-1), enemyIndex(-1), eventType(-1)
+	{
+	}
+
 	void Reset()
 	{
 		startPos = {};

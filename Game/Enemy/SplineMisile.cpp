@@ -3,7 +3,7 @@
 
 SplineMisile::SplineMisile()
 {
-	maxTime = 60 * 5;
+	maxTime = 60 * 10;
 	splineBox.data.color = { 255.0f,0.0f,0.0f,255.0f };
 }
 
@@ -11,9 +11,12 @@ void SplineMisile::Init(const XMVECTOR &POS)
 {
 	iEnemy_ModelRender->data.transform.pos = POS;
 	iEnemy_EnemyStatusData->timer = maxTime;
+
+	iEnemy_EnemyStatusData->hitBox.radius = 30.0f;
+	iEnemy_EnemyStatusData->hitBox.center = &splineBox.data.transform.pos;
 	iOperationData.Init(1);
 
-	startIndex = 0;
+	startIndex = 1;
 	timeRate = 0.0f;
 
 
@@ -41,7 +44,7 @@ void SplineMisile::Init(const XMVECTOR &POS)
 	points.push_back(endPos);
 	points.push_back(endPos);
 
-	pointTime = maxTime /( points.size() - 2);
+	pointTime = maxTime /( points.size() - 3);
 }
 
 void SplineMisile::Finalize()
@@ -50,7 +53,10 @@ void SplineMisile::Finalize()
 
 void SplineMisile::Update()
 {
-	--iEnemy_EnemyStatusData->timer;
+	if (iOperationData.enableToHitFlag)
+	{
+		--iEnemy_EnemyStatusData->timer;
+	}
 
 	//ˆÚ“®ŽžŠÔ----------------------------------------------
 	timeRate = static_cast<float>(nowTime) / static_cast<float>(pointTime);
