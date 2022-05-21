@@ -66,6 +66,22 @@ Game::Game()
 	stages[0] = std::make_unique<FirstStage>();
 	stages[1] = std::make_unique<SecondStage>();
 	stages[2] = std::make_unique<ThridStage>();
+
+
+	blackTex.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "Black.png");
+	blackTex.data.pipelineName = PIPELINE_NAME_SPRITE_Z_ALWAYS;
+	blackTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+	blackTex.data.transform.scale = { 2000.0f,2000.0f };
+	blackTex.data.alpha = { 0.0f };
+
+
+	pressAButtonTex.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "PressAButton.png");
+	pressAButtonTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f + 100.0f };
+	pressAButtonTex.data.transform.scale = { 0.4f,0.4f };
+
+	gameOverTex.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::GameOverPath + "GameOver.png");
+	gameOverTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+	gameOverTex.data.transform.scale = { 1.2f,1.2f };
 }
 
 Game::~Game()
@@ -178,6 +194,12 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 
 	movieEffect.Init();
 
+
+	gameOverFlag = false;
+	readyToBlackOutFlag = false;
+	readyToBlackOutToGoTitleFlag = false;
+	flashFlag = false;
+	flashTimer = 0;
 }
 
 void Game::Finalize()
@@ -274,6 +296,14 @@ void Game::Input()
 	{
 		sceneNum = 0;
 	}
+
+	//ゲームオーバー画面でタイトル画面に戻る処理
+	if (inputController->InputTrigger(XINPUT_GAMEPAD_A) && gameOverFlag)
+	{
+		readyToBlackOutToGoTitleFlag = true;
+	}
+
+
 	if (input->InputTrigger(DIK_O))
 	{
 		sceneNum = 0;
@@ -372,6 +402,8 @@ void Game::Input()
 			addEnemiesHandle[i] = 0;;
 		}
 	}
+
+
 }
 
 void Game::Update()
@@ -821,6 +853,49 @@ void Game::Update()
 	}
 	//攻撃----------------------------------------------
 
+	if (!player.isAlive() && !gameOverFlag)
+	{
+		readyToBlackOutFlag = true;
+	}
+
+	if (readyToBlackOutFlag || readyToBlackOutToGoTitleFlag)
+	{
+		//暗転
+		if (blackTex.data.alpha <= 255.0f)
+		{
+			blackTex.data.alpha += 5.0f;
+		}
+		//タイトル画面に戻る
+		else if (readyToBlackOutToGoTitleFlag && 255.0f <= blackTex.data.alpha)
+		{
+			sceneNum = 0;
+		}
+		//ゲームオーバー画面を表示
+		else
+		{
+			gameOverFlag = true;
+			readyToBlackOutFlag = false;
+		}
+	}
+	else
+	{
+		//明転
+		if (0 <= blackTex.data.alpha)
+		{
+			blackTex.data.alpha -= 5.0f;
+		}
+	}
+	if (gameOverFlag)
+	{
+		++flashTimer;
+
+		if (60 <= flashTimer)
+		{
+			flashFlag = !flashFlag;
+			flashTimer = 0;
+		}
+	}
+
 
 #pragma region 更新処理
 
@@ -895,7 +970,11 @@ void Game::Update()
 	//更新処理----------------------------------------------------------------
 #pragma endregion
 
+	gameOverTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+	gameOverTex.data.transform.scale = { 1.2f,1.2f };
 
+	pressAButtonTex.data.transform.pos = { WIN_X / 2.0f-10.0f,WIN_Y / 2.0f + 100.0f };
+	pressAButtonTex.data.transform.scale = { 0.4f,0.4f };
 
 	//ゲームループの経過時間----------------------------------------------------------------
 	++gameFlame;
@@ -908,53 +987,66 @@ void Game::Draw()
 	short mainHandle = mainRenderTarget.data.handle;
 
 
-	RenderTargetStatus::Instance()->PrepareToChangeBarrier(handles[0]);
-	RenderTargetStatus::Instance()->ClearRenderTarget(handles[0]);
-
-	goalBox.Draw();
-
-
-	if (lineDebugFlag)
+	if (!gameOverFlag)
 	{
-		bg.Draw();
-	}
-	player.Draw();
-	for (int i = 0; i < lineLevel.size(); ++i)
-	{
-		lineLevel[i].Draw();
-	}
-	stages[stageNum]->Draw();
+
+		RenderTargetStatus::Instance()->PrepareToChangeBarrier(handles[0]);
+		RenderTargetStatus::Instance()->ClearRenderTarget(handles[0]);
+
+		goalBox.Draw();
 
 
-
-	//敵の描画処理----------------------------------------------------------------
-	for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
-	{
-		for (int enemyCount = 0; enemyCount < enemies[enemyType].size(); ++enemyCount)
+		if (lineDebugFlag)
 		{
-			//生成されている敵のみ描画処理を通す
-			bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
-			if (enableToUseDataFlag)
+			bg.Draw();
+		}
+		player.Draw();
+		for (int i = 0; i < lineLevel.size(); ++i)
+		{
+			lineLevel[i].Draw();
+		}
+		stages[stageNum]->Draw();
+
+
+
+		//敵の描画処理----------------------------------------------------------------
+		for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
+		{
+			for (int enemyCount = 0; enemyCount < enemies[enemyType].size(); ++enemyCount)
 			{
-				enemies[enemyType][enemyCount]->Draw();
+				//生成されている敵のみ描画処理を通す
+				bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
+				if (enableToUseDataFlag)
+				{
+					enemies[enemyType][enemyCount]->Draw();
+				}
 			}
 		}
+		goalBox.lightEffect.Draw();
+
+		//輝度抽出
+		RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, handles[0]);
+		RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
+		luminaceTex.Draw();
+		RenderTargetStatus::Instance()->PrepareToCloseBarrier(addHandle);
+		RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
+		mainRenderTarget.Draw();
+		addRenderTarget.data.handle = buler->BlurImage(addHandle);
+		addRenderTarget.Draw();
+
+		movieEffect.Draw();
+		cursor.Draw();
 	}
-	goalBox.lightEffect.Draw();
+	else
+	{
+		gameOverTex.Draw();
+		if (flashFlag)
+		{
+			pressAButtonTex.Draw();
+		}
+	}
 
-	//輝度抽出
-	RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, handles[0]);
-	RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
-	luminaceTex.Draw();
-	RenderTargetStatus::Instance()->PrepareToCloseBarrier(addHandle);
-	RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
-	mainRenderTarget.Draw();
-	addRenderTarget.data.handle = buler->BlurImage(addHandle);
-	addRenderTarget.Draw();
-
-	movieEffect.Draw();
-
-	cursor.Draw();
+	blackTex.Draw();
 }
 
 int Game::SceneChange()

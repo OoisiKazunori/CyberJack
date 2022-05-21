@@ -47,3 +47,8 @@ void Player::Hit()
 {
 	--hp;
 }
+
+bool Player::isAlive()
+{
+	return 0 < hp;
+}

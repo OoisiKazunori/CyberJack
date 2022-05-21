@@ -13,6 +13,8 @@ public:
 	void Draw();
 
 	void Hit();
+
+	bool isAlive();
 	XMVECTOR pos;
 private:
 	short hp;

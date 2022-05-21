@@ -164,5 +164,16 @@ private:
 	MoiveEffect movieEffect;//カメラが固定になって演出を描画する
 
 
+	//ゲームオーバー画面----------------------------------------------
+	Sprite2DRender gameOverTex;
+	Sprite2DRender pressAButtonTex;
+	Sprite2DRender blackTex;
+	bool gameOverFlag;
+	bool readyToBlackOutFlag;
+	bool readyToBlackOutToGoTitleFlag;
+	int flashTimer;
+	bool flashFlag;
+	//ゲームオーバー画面----------------------------------------------
+
 };
 
