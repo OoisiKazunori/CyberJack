@@ -111,9 +111,9 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	{
 		for (int enemyCount = 0; enemyCount < responeData[enemyType].size(); ++enemyCount)
 		{
-			if (responeData[enemyType][enemyCount].enemyType != -1)
+			if (responeData[enemyType][enemyCount].layerLevel != -1)
 			{
-				switch (responeData[enemyType][enemyCount].enemyType)
+				switch (enemyType)
 				{
 				case ENEMY_TYPE_NORMAL:
 					enemies[enemyType][enemyCount] = std::make_unique<NormalEnemy>();
@@ -130,8 +130,10 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 					}
 					break;
 
-				case ENEMY_TYPE_MISILE_SPLINE:
-					enemies[enemyType][enemyCount] = std::make_unique<SplineMisile>();
+				case ENEMY_TYPE_MISILE:
+					enemies[enemyType][enemyCount] = std::make_unique<NormalMisileEnemy>();
+					enemies[ENEMY_TYPE_MISILE_SPLINE][enemyCount] = std::make_unique<SplineMisile>();
+					++enemiesHandle[ENEMY_TYPE_MISILE_SPLINE];
 					break;
 
 				default:
@@ -652,7 +654,6 @@ void Game::Update()
 					int enemyTypeData = enemyData->genarateData.enemyType;
 					//最後に生成して次のハンドル
 					int nowHandle = addEnemiesHandle[enemyTypeData];
-					responeData[enemyTypeData][nowHandle].enemyType = enemyData->genarateData.enemyType;
 					//現在のレイヤーレベルに合わせる
 					responeData[enemyTypeData][nowHandle].layerLevel = gameStageLevel;
 					//現在のフレーム数+インターバルフレーム*個数で設定する
@@ -675,19 +676,23 @@ void Game::Update()
 	{
 		for (int enemyCount = 0; enemyCount < responeData[enemyType].size(); ++enemyCount)
 		{
-			bool enableToUseThisDataFlag = responeData[enemyType][enemyCount].enemyType != -1;
+			bool enableToUseThisDataFlag = responeData[enemyType][enemyCount].layerLevel != -1;
 			bool readyToInitDataFlag = responeData[enemyType][enemyCount].flame == gameFlame &&
 				responeData[enemyType][enemyCount].layerLevel == gameStageLevel;
 
 			if (enableToUseThisDataFlag && readyToInitDataFlag)
 			{
-				switch (responeData[enemyType][enemyCount].enemyType)
+				switch (enemyType)
 				{
 				case ENEMY_TYPE_NORMAL:
 					enemies[enemyType][enemyCount]->Init(responeData[enemyType][enemyCount].initPos);
 					break;
 
 				case ENEMY_TYPE_KID:
+					enemies[enemyType][enemyCount]->Init(responeData[enemyType][enemyCount].initPos);
+					break;
+
+				case ENEMY_TYPE_MISILE:
 					enemies[enemyType][enemyCount]->Init(responeData[enemyType][enemyCount].initPos);
 					break;
 

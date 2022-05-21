@@ -9,6 +9,7 @@
 #include"../Game/Enemy/NormalEnemy.h"
 #include"../Game/Enemy/KidEnemy.h"
 #include"../Game/Enemy/SplineMisile.h"
+#include"../Game/Enemy/NormalMisileEnemy.h"
 #include"../Game/LineEffect/LineLevel1.h"
 #include"../Game/Event/GoalBox.h"
 #include"../KazLibrary/RenderTarget/RenderTargetStatus.h"
@@ -23,13 +24,13 @@
 
 struct ResponeData
 {
-	ResponeData() :layerLevel(-1), flame(-1), enemyType(-1), initPos({})
+	ResponeData() :layerLevel(-1), flame(-1), initPos({})
 	{
 	}
 	int layerLevel;		//どのレイヤーレベルで現れるか
 	short flame;		//敵が現れるフレーム数
-	short enemyType;	//敵の種類
 	XMVECTOR initPos;	//初期座標
+	
 };
 
 struct LineEffectData
