@@ -63,7 +63,7 @@ Game::Game()
 
 	CameraMgr::Instance()->CameraSetting(60.0f, 1000.0f);
 
-	stages[0] = std::make_unique<FirstStage>();
+	stages[0] = std::make_unique<SecondStage>();
 	stages[1] = std::make_unique<SecondStage>();
 	stages[2] = std::make_unique<ThridStage>();
 
@@ -82,6 +82,7 @@ Game::Game()
 	gameOverTex.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::GameOverPath + "GameOver.png");
 	gameOverTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	gameOverTex.data.transform.scale = { 1.2f,1.2f };
+
 }
 
 Game::~Game()
@@ -582,17 +583,6 @@ void Game::Update()
 
 #pragma endregion
 
-	if (KeyBoradInputManager::Instance()->InputState(DIK_G))
-	{
-		//	cursor.Disappear();
-		movieEffect.startFlag = true;
-	}
-	if (KeyBoradInputManager::Instance()->InputState(DIK_B))
-	{
-		//	cursor.Appear();
-		movieEffect.startFlag = false;
-	}
-
 
 	//敵が一通り生成終わった際に登場させる----------------------------------------------------------------
 	if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame && !initAppearFlag)
@@ -604,9 +594,6 @@ void Game::Update()
 	//敵が一通り生成終わった際に登場させる----------------------------------------------------------------
 
 	changeStageFlag = false;
-
-
-
 	//全部隠れたら次ステージの描画をする
 	if (goalBox.portalEffect.AllHidden())
 	{
@@ -858,6 +845,8 @@ void Game::Update()
 	}
 	//攻撃----------------------------------------------
 
+
+	//ゲームオーバー----------------------------------------------
 	if (!player.isAlive() && !gameOverFlag)
 	{
 		readyToBlackOutFlag = true;
@@ -900,6 +889,7 @@ void Game::Update()
 			flashTimer = 0;
 		}
 	}
+	//ゲームオーバー----------------------------------------------
 
 
 #pragma region 更新処理
@@ -975,11 +965,6 @@ void Game::Update()
 	//更新処理----------------------------------------------------------------
 #pragma endregion
 
-	gameOverTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
-	gameOverTex.data.transform.scale = { 1.2f,1.2f };
-
-	pressAButtonTex.data.transform.pos = { WIN_X / 2.0f-10.0f,WIN_Y / 2.0f + 100.0f };
-	pressAButtonTex.data.transform.scale = { 0.4f,0.4f };
 
 	//ゲームループの経過時間----------------------------------------------------------------
 	++gameFlame;
