@@ -172,7 +172,6 @@ void GoalBox::Update()
 void GoalBox::Draw()
 {
 	model->Draw();
-	portalEffect.Draw();
 }
 
 void GoalBox::Appear(const XMVECTOR &POS)

@@ -358,6 +358,14 @@ void Game::Input()
 		forceCameraDirVel.m128_f32[0] = -270.0f;
 	}
 
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
+	{
+		stageNum = 0;
+	}
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_G))
+	{
+		stageNum = 1;
+	}
 
 
 	XMVECTOR vel = {};
@@ -987,7 +995,10 @@ void Game::Draw()
 		RenderTargetStatus::Instance()->ClearRenderTarget(handles[0]);
 
 		goalBox.Draw();
-
+		if (stageNum < 1)
+		{
+			goalBox.portalEffect.Draw();
+		}
 
 		if (lineDebugFlag)
 		{

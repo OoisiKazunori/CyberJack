@@ -1,6 +1,7 @@
 #include "GoalBoxPortalEffect.h"
 #include"../KazLibrary/Loader/TextureResourceMgr.h"
 #include"../KazLibrary/Helper/ResourceFilePass.h"
+#include"../KazLibrary/Imgui/MyImgui.h"
 
 GoalBoxPortalEffect::GoalBoxPortalEffect()
 {
@@ -13,7 +14,7 @@ void GoalBoxPortalEffect::Init(const XMVECTOR &POS)
 	startFlag = false;
 	goBeforeFlag = false;
 	sprite->data.transform.pos = POS;
-	sprite->data.transform.scale = { 0.1f,0.1f };
+	sprite->data.transform.scale = { 0.18f,0.18f };
 	sprite->data.transform.rotation = { 0.0f,0.0f,0.0f };
 	timer = 0;
 	lerpRota = { 0.0f,0.0f,0.0f };
@@ -31,6 +32,11 @@ void GoalBoxPortalEffect::Update()
 		{
 			sprite->data.transform.pos.m128_f32[2] -= 2.0f;
 		}
+		if (sprite->data.transform.pos.m128_f32[2] <= 12.2f)
+		{
+			sprite->data.transform.pos.m128_f32[2] = 12.2f;
+		}
+
 
 		lerpRota.m128_f32[1] = 360.0f * 5.0f;
 		{
@@ -40,8 +46,13 @@ void GoalBoxPortalEffect::Update()
 		++timer;
 	}
 
+	//‘JˆÚ’²®—p
+	//ImGui::Begin("Sprite");
+	//ImGui::InputFloat("PosZ", &sprite->data.transform.pos.m128_f32[2]);
+	//ImGui::InputFloat("ScaleX", &sprite->data.transform.scale.m128_f32[0]);
+	//ImGui::InputFloat("ScaleY", &sprite->data.transform.scale.m128_f32[1]);
+	//ImGui::End();
 
-	sprite->data.transform.scale = { 0.18f,0.18f };
 }
 
 void GoalBoxPortalEffect::Draw()
@@ -59,5 +70,5 @@ void GoalBoxPortalEffect::Start()
 
 bool GoalBoxPortalEffect::AllHidden()
 {
-	return 136 <= timer;
+	return sprite->data.transform.pos.m128_f32[2] <= 12.2f;
 }
