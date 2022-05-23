@@ -195,15 +195,14 @@ void SecondStage::Update()
 			line[i].data.endPos.m128_f32[2] = 1400.0f;
 		}
 	}
-
-	for (int i = 0; i < line.size(); i++)
-	{
-		line[i].data.cameraIndex = cameraIndex;
-	}
 }
 
 void SecondStage::Draw()
 {
+	for (int i = 0; i < line.size(); i++)
+	{
+		line[i].data.cameraIndex = cameraIndex;
+	}
 	for (int i = 0; i < line.size(); ++i)
 	{
 		line[i].Draw();

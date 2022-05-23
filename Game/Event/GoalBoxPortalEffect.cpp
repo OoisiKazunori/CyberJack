@@ -59,5 +59,5 @@ void GoalBoxPortalEffect::Start()
 
 bool GoalBoxPortalEffect::AllHidden()
 {
-	return 148 <= timer;
+	return 136 <= timer;
 }

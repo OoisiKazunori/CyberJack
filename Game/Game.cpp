@@ -907,7 +907,7 @@ void Game::Update()
 	goalBox.Update();
 	movieEffect.Update();
 	stages[stageNum]->Update();
-
+	stages[stageNum + 1]->Update();
 	//ロックオンのリリース処理
 	if (cursor.releaseFlag)
 	{
@@ -1032,13 +1032,12 @@ void Game::Draw()
 		cursor.Draw();
 
 
-		//if (goalBox.startPortalEffectFlag)
+		if (goalBox.startPortalEffectFlag)
 		{
 			RenderTargetStatus::Instance()->PrepareToChangeBarrier(potalTexHandle);
 			RenderTargetStatus::Instance()->ClearRenderTarget(potalTexHandle);
-			CameraMgr::Instance()->Camera({ 0.0f,0.0f,0.0f }, targetPos, { 0.0f,1.0f,0.0f }, 1);
+			CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 1);
 			stages[stageNum + 1]->SetCamera(1);
-			stages[stageNum + 1]->Update();
 			stages[stageNum + 1]->Draw();
 			RenderTargetStatus::Instance()->PrepareToCloseBarrier(potalTexHandle);
 			RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
