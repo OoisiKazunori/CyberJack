@@ -12,7 +12,7 @@ public:
 		return typeid(address).name();
 	}
 
-	int cameraIndex = 1;
+	int cameraIndex = 0;
 };
 
 struct AddTextureData

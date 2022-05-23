@@ -13,7 +13,7 @@ void GoalBoxPortalEffect::Init(const XMVECTOR &POS)
 	startFlag = false;
 	goBeforeFlag = false;
 	sprite->data.transform.pos = POS;
-	sprite->data.transform.scale = { 0.5f,0.5f };
+	sprite->data.transform.scale = { 0.1f,0.1f };
 	sprite->data.transform.rotation = { 0.0f,0.0f,0.0f };
 	timer = 0;
 	lerpRota = { 0.0f,0.0f,0.0f };
@@ -39,6 +39,9 @@ void GoalBoxPortalEffect::Update()
 		}
 		++timer;
 	}
+
+
+	sprite->data.transform.scale = { 0.18f,0.18f };
 }
 
 void GoalBoxPortalEffect::Draw()

@@ -13,8 +13,9 @@ public:
 
 	void Start();
 	bool AllHidden();
-private:
 	Sprite3DRenderPtr sprite;
+private:
+	
 	bool startFlag;
 	bool goBeforeFlag;
 	int timer;

@@ -152,6 +152,7 @@ private:
 	Sprite2DRender addRenderTarget;
 	Sprite2DRender luminaceTex;
 	short addHandle;
+	short potalTexHandle;
 	std::unique_ptr<GaussianBuler> buler;
 
 	int stageNum;

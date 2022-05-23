@@ -2,6 +2,8 @@
 #include"../Helper/OutPutDebugStringAndCheckResult.h"
 #include"../Helper/KazRenderHelper.h"
 #include"../Helper/KazHelper.h"
+#include"../Buffer/DescriptorHeapMgr.h"
+#include"../RenderTarget/RenderTargetStatus.h"
 
 Sprite3DRender::Sprite3DRender(const XMFLOAT2 &ANCHOR_POINT)
 {
@@ -132,40 +134,67 @@ void Sprite3DRender::Draw()
 	//読み込んだ画像のサイズを合わせる
 	if (textureHandleDirtyFlag || scaleDirtyFlag || localsizeDirtyFlag)
 	{
-		XMFLOAT2 tmpSize = {};
-		XMFLOAT4 tmpModiSize = {};
-		//サイズをXMFLOAT3からXMFLOAT2に直す
-		if (!data.changeSizeTypeFlag)
+		if (DescriptorHeapMgr::Instance()->GetType(data.handle) != DESCRIPTORHEAP_MEMORY_TEXTURE_RENDERTARGET)
 		{
-			tmpSize = { data.transform.scale.m128_f32[0], data.transform.scale.m128_f32[1] };
+
+			XMFLOAT2 tmpSize = {};
+			XMFLOAT4 tmpModiSize = {};
+			//サイズをXMFLOAT3からXMFLOAT2に直す
+			if (!data.changeSizeTypeFlag)
+			{
+				tmpSize = { data.transform.scale.m128_f32[0], data.transform.scale.m128_f32[1] };
+			}
+			else
+			{
+				tmpModiSize = data.size;
+			}
+
+
+			texSize.x = static_cast<float>(renderData.shaderResourceMgrInstance->GetTextureSize(data.handle).Width);
+			texSize.y = static_cast<float>(renderData.shaderResourceMgrInstance->GetTextureSize(data.handle).Height);
+
+
+			XMFLOAT2 leftUp, rightDown;
+			leftUp = { 0.0f,0.0f };
+			rightDown = { 1.0f,1.0f };
+
+			array<XMFLOAT2, 4>tmp;
+			//サイズ変更
+			if (!data.changeSizeTypeFlag)
+			{
+				tmp = KazRenderHelper::ChangePlaneScale(leftUp, rightDown, tmpSize, anchorPoint, texSize);
+			}
+			else
+			{
+				tmp = KazRenderHelper::ChangeModiPlaneScale(leftUp, rightDown, tmpModiSize, anchorPoint, texSize);
+			}
+
+
+			for (int i = 0; i < tmp.size(); i++)
+			{
+				vertices[i].pos = { tmp[i].x,tmp[i].y,0.0f };
+			}
+
 		}
+		//レンダーターゲットのテクスチャサイズ
 		else
 		{
-			tmpModiSize = data.size;
-		}
-		texSize.x = static_cast<float>(renderData.shaderResourceMgrInstance->GetTextureSize(data.handle).Width);
-		texSize.y = static_cast<float>(renderData.shaderResourceMgrInstance->GetTextureSize(data.handle).Height);
+			//サイズをXMFLOAT3からXMFLOAT2に直す
+			XMFLOAT2 tmpSize = { data.transform.scale.m128_f32[0], data.transform.scale.m128_f32[1] };
 
+			texSize.x = static_cast<float>(RenderTargetStatus::Instance()->GetBufferData(data.handle)->GetDesc().Width);
+			texSize.y = static_cast<float>(RenderTargetStatus::Instance()->GetBufferData(data.handle)->GetDesc().Height);
 
-		XMFLOAT2 leftUp, rightDown;
-		leftUp = { 0.0f,0.0f };
-		rightDown = { 1.0f,1.0f };
+			XMFLOAT2 leftUp, rightDown;
+			leftUp = { 0.0f,0.0f };
+			rightDown = { 1.0f,1.0f };
 
-		array<XMFLOAT2, 4>tmp;
-		//サイズ変更
-		if (!data.changeSizeTypeFlag)
-		{
-			tmp = KazRenderHelper::ChangePlaneScale(leftUp, rightDown, tmpSize, anchorPoint, texSize);
-		}
-		else
-		{
-			tmp = KazRenderHelper::ChangeModiPlaneScale(leftUp, rightDown, tmpModiSize, anchorPoint, texSize);
-		}
-
-
-		for (int i = 0; i < tmp.size(); i++)
-		{
-			vertices[i].pos = { tmp[i].x,tmp[i].y,0.0f };
+			//サイズ変更
+			array<XMFLOAT2, 4>tmp = KazRenderHelper::ChangePlaneScale(leftUp, rightDown, tmpSize, anchorPoint, texSize);
+			for (int i = 0; i < tmp.size(); i++)
+			{
+				vertices[i].pos = { tmp[i].x,tmp[i].y,0.0f };
+			}
 		}
 	}
 

@@ -83,6 +83,8 @@ Game::Game()
 	gameOverTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	gameOverTex.data.transform.scale = { 1.2f,1.2f };
 
+
+	potalTexHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, XMFLOAT3(0.0f, 0.0f, 0.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
 }
 
 Game::~Game()
@@ -90,6 +92,7 @@ Game::~Game()
 	//レンダーターゲットの破棄
 	RenderTargetStatus::Instance()->DeleteRenderTarget(addHandle);
 	RenderTargetStatus::Instance()->DeleteMultiRenderTarget(handles);
+	RenderTargetStatus::Instance()->DeleteRenderTarget(potalTexHandle);
 }
 
 void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> &RESPONE_DATA)
@@ -482,9 +485,6 @@ void Game::Update()
 
 
 
-
-
-
 #pragma region カメラ挙動
 
 	//カメラ固定
@@ -583,14 +583,14 @@ void Game::Update()
 	}
 
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 0);
-	CameraMgr::Instance()->Camera({ 0.0f,0.0f,0.0f }, targetPos, { 0.0f,1.0f,0.0f }, 1);
 
 #pragma endregion
 
 
+
 	//敵が一通り生成終わった際に登場させる----------------------------------------------------------------
-	if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame && !initAppearFlag)
-	//if (100 <= gameFlame && !initAppearFlag)
+	//if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame && !initAppearFlag)
+	if (100 <= gameFlame && !initAppearFlag)
 	{
 		goalBox.Appear(appearGoalBoxPos);
 		initAppearFlag = true;
@@ -624,7 +624,6 @@ void Game::Update()
 		movieEffect.startFlag = false;
 		cursor.Appear();
 	}
-
 
 
 #pragma region 生成処理
@@ -904,6 +903,7 @@ void Game::Update()
 	player.Update();
 	cursor.Update();
 	hitBox.Update();
+	goalBox.portalEffect.sprite->data.handle = potalTexHandle;
 	goalBox.Update();
 	movieEffect.Update();
 	stages[stageNum]->Update();
@@ -994,6 +994,7 @@ void Game::Draw()
 			bg.Draw();
 		}
 		player.Draw();
+		stages[stageNum]->SetCamera(0);
 		stages[stageNum]->Draw();
 		for (int i = 0; i < lineLevel.size(); ++i)
 		{
@@ -1022,12 +1023,26 @@ void Game::Draw()
 		luminaceTex.Draw();
 		RenderTargetStatus::Instance()->PrepareToCloseBarrier(addHandle);
 		RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
+
 		mainRenderTarget.Draw();
 		addRenderTarget.data.handle = buler->BlurImage(addHandle);
 		addRenderTarget.Draw();
 
 		movieEffect.Draw();
 		cursor.Draw();
+
+
+		//if (goalBox.startPortalEffectFlag)
+		{
+			RenderTargetStatus::Instance()->PrepareToChangeBarrier(potalTexHandle);
+			RenderTargetStatus::Instance()->ClearRenderTarget(potalTexHandle);
+			CameraMgr::Instance()->Camera({ 0.0f,0.0f,0.0f }, targetPos, { 0.0f,1.0f,0.0f }, 1);
+			stages[stageNum + 1]->SetCamera(1);
+			stages[stageNum + 1]->Update();
+			stages[stageNum + 1]->Draw();
+			RenderTargetStatus::Instance()->PrepareToCloseBarrier(potalTexHandle);
+			RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
+		}
 	}
 	else
 	{

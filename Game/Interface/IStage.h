@@ -10,6 +10,12 @@ public:
 	virtual ~IStage() {};
 	virtual void Update() = 0;
 	virtual void Draw() = 0;
-private:
+
+	void SetCamera(int CAMERA_INDEX)
+	{
+		cameraIndex = CAMERA_INDEX;
+	};
+protected:
+	int cameraIndex = 0;
 };
 

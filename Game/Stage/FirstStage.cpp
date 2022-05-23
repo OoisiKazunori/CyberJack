@@ -288,6 +288,7 @@ void FirstStage::Update()
 
 	for (int i = 0; i < stageDebugBox.size(); ++i)
 	{
+		stageDebugBox[i].data.cameraIndex = cameraIndex;
 		stageDebugBox[i].TransData(&fogData[i], constHandle[i], typeid(fogData[i]).name());
 	}
 
