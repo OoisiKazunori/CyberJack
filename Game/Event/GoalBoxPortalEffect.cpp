@@ -30,7 +30,7 @@ void GoalBoxPortalEffect::Update()
 		}
 		if (goBeforeFlag)
 		{
-			sprite->data.transform.pos.m128_f32[2] -= 2.0f;
+			sprite->data.transform.pos.m128_f32[2] -= 1.0f;
 		}
 		if (sprite->data.transform.pos.m128_f32[2] <= 12.2f)
 		{
