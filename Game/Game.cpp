@@ -167,6 +167,9 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	leftRightAngleVel = { -91.0f,-91.0f,0.0f };
 	upDownAngleVel = { -103.0f,-103.0f,0.0f };
 
+	trackLeftRightAngleVel = leftRightAngleVel;
+	trackUpDownAngleVel = upDownAngleVel;
+
 	baseEyePos = { 0.0f,5.0f,-10.0f };
 	baseTargetPos = { 0.0f,3.0f,0.0f };
 

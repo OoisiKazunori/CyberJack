@@ -101,7 +101,7 @@ void SplineMisile::Draw()
 {
 	for (int i = 0; i < pointsRender.size(); ++i)
 	{
-		pointsRender[i].Draw();
+		//pointsRender[i].Draw();
 	}
 	splineBox.Draw();
 }
