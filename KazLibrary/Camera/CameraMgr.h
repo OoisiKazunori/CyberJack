@@ -54,17 +54,17 @@ public:
 	/// ビュー行列を渡します
 	/// </summary>
 	/// <returns>ビュー行列</returns>
-	const XMMATRIX &GetViewMatrix(int CAMERA_INDEX = 1);
+	const XMMATRIX &GetViewMatrix(int CAMERA_INDEX = 0);
 
-	XMMATRIX *GetViewMatrixPointer(int CAMERA_INDEX = 1);
+	XMMATRIX *GetViewMatrixPointer(int CAMERA_INDEX = 0);
 
 	/// <summary>
 	/// ビルボード行列を渡します
 	/// </summary>
 	/// <returns>ビルボード行列</returns>
-	const XMMATRIX &GetMatBillBoard(int CAMERA_INDEX = 1);
+	const XMMATRIX &GetMatBillBoard(int CAMERA_INDEX = 0);
 
-	XMMATRIX *GetMatBillBoardPointer(int CAMERA_INDEX = 1);
+	XMMATRIX *GetMatBillBoardPointer(int CAMERA_INDEX = 0);
 
 
 	/// <summary>
