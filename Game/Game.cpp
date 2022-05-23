@@ -63,7 +63,7 @@ Game::Game()
 
 	CameraMgr::Instance()->CameraSetting(60.0f, 1000.0f);
 
-	stages[0] = std::make_unique<SecondStage>();
+	stages[0] = std::make_unique<FirstStage>();
 	stages[1] = std::make_unique<SecondStage>();
 	stages[2] = std::make_unique<ThridStage>();
 
@@ -979,7 +979,6 @@ void Game::Draw()
 
 	if (!gameOverFlag)
 	{
-
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(handles[0]);
 		RenderTargetStatus::Instance()->ClearRenderTarget(handles[0]);
 

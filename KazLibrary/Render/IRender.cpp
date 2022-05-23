@@ -19,12 +19,18 @@ const short IRender::CreateConstBuffer(const unsigned int &TRANSMISSION_DATA, co
 
 void IRender::TransData(void *DATA, const short &HANDLE, const string &ID)
 {
+	bool succeedFlag = false;
 	for (int i = 0; i < constBufferDataName.size(); i++)
 	{
 		if (*constBufferDataName[i] == ID)
 		{
 			gpuBuffer->TransData(HANDLE, DATA, *constBufferDataSize[i]);
+			succeedFlag = true;
 		}
+	}
+	if (!succeedFlag)
+	{
+		assert(0);
 	}
 }
 

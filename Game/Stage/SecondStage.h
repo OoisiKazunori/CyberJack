@@ -5,6 +5,12 @@
 #include"../KazLibrary/Render/KazRender.h"
 #include<array>
 
+struct FogHandle
+{
+	UINT32 handle;
+	FogData fogColor;
+};
+
 class SecondStage :public IStage
 {
 public:
@@ -12,7 +18,9 @@ public:
 	void Update()override;
 	void Draw()override;
 private:
-	std::array<LineRender, 50> line;
+	static const int JSON_ARRAY_NUM = 25;
+	std::array<LineRender, 150> line;
+	std::array<FogHandle, 150> handle;
 	ParameterMgr stageParamLoader;
 
 };

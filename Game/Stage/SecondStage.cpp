@@ -8,6 +8,13 @@ SecondStage::SecondStage()
 	for (int i = 0; i < line.size(); ++i)
 	{
 		line[i].data.color = { 255.0f,255.0f,255.0f,255.0f };
+		line[i].data.pipelineName = PIPELINE_NAME_FOG_LINE;
+
+		handle[i].handle = line[i].CreateConstBuffer(sizeof(FogData), typeid(FogData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+		handle[i].fogColor.fogdata = { 1.0f,1.0f,1.0f,0.4f };
+
+		FogData tmp = handle[i].fogColor;
+		line[i].TransData(&tmp, handle[i].handle, typeid(tmp).name());
 	}
 
 	if (false)
@@ -54,6 +61,53 @@ SecondStage::SecondStage()
 		}
 		stageParamLoader.ExportFile(KazFilePathName::StageParamPath + "StageParamData_SecondStage.json");
 	}
+
+	for (int i = 0; i < JSON_ARRAY_NUM; ++i)
+	{
+		std::string name = "Line" + std::to_string(i);
+		for (int axisIndex = 0; axisIndex < 3; ++axisIndex)
+		{
+			line[i].data.startPos.m128_f32[axisIndex] = stageParamLoader.doc[name.c_str()]["StartPos"][axisIndex].GetFloat();
+			line[i].data.endPos.m128_f32[axisIndex] = stageParamLoader.doc[name.c_str()]["EndPos"][axisIndex].GetFloat();
+		}
+	}
+
+
+	int index = 0;
+	int zIndex = 0;
+	for (int i = 25; i < line.size(); i++)
+	{
+		float z = -100 + zIndex * 50;
+		switch (index)
+		{
+		case 0:
+			line[i].data.startPos = { -150.0f,-100.0f,z };
+			line[i].data.endPos = { 150.0f,-100.0f,z };
+			++index;
+			break;
+
+		case 1:
+			line[i].data.startPos = { -150.0f,100.0f,z };
+			line[i].data.endPos = { 150.0f,100.0f,z };
+			++index;
+			break;
+
+		case 2:
+			line[i].data.startPos = { -150.0f,100.0f,z };
+			line[i].data.endPos = { -150.0f,-100.0f,z };
+			++index;
+			break;
+
+		case 3:
+			line[i].data.startPos = { 150.0f,100.0f,z };
+			line[i].data.endPos = { 150.0f,-100.0f,z };
+			++zIndex;
+			index = 0;
+			break;
+		default:
+			break;
+		}
+	}
 }
 
 void SecondStage::Update()
@@ -63,7 +117,7 @@ void SecondStage::Update()
 	bool importFlag = false;
 
 	ImGui::Begin("Stage");
-	for (int i = 0; i < line.size(); ++i)
+	for (int i = 0; i < JSON_ARRAY_NUM; ++i)
 	{
 		string name = "Line" + std::to_string(i);
 		if (ImGui::TreeNode(name.c_str()))
@@ -92,7 +146,7 @@ void SecondStage::Update()
 	//ファイル読み込み
 	if (importFlag)
 	{
-		for (int i = 0; i < line.size(); ++i)
+		for (int i = 0; i < JSON_ARRAY_NUM; ++i)
 		{
 			std::string name = "Line" + std::to_string(i);
 			for (int axisIndex = 0; axisIndex < 3; ++axisIndex)
@@ -106,7 +160,7 @@ void SecondStage::Update()
 	//ファイル書き込み
 	if (exportFlag)
 	{
-		for (int i = 0; i < line.size(); ++i)
+		for (int i = 0; i < JSON_ARRAY_NUM; ++i)
 		{
 			std::string name = "Line" + std::to_string(i);
 			for (int axisIndex = 0; axisIndex < 3; ++axisIndex)
@@ -117,7 +171,30 @@ void SecondStage::Update()
 		}
 		stageParamLoader.ExportFile(KazFilePathName::StageParamPath + "StageParamData_SecondStage.json");
 	}
+
+
 #pragma endregion
+	for (int i = 0; i < 4; i++)
+	{
+		line[i].data.startPos.m128_f32[2] += -1.0f;
+		line[i].data.endPos.m128_f32[2] += -1.0f;
+		if (line[i].data.startPos.m128_f32[2] <= -150.0f)
+		{
+			line[i].data.startPos.m128_f32[2] = 1400.0f;
+			line[i].data.endPos.m128_f32[2] = 1400.0f;
+		}
+	}
+
+	for (int i = 25; i < line.size(); i++)
+	{
+		line[i].data.startPos.m128_f32[2] += -1.0f;
+		line[i].data.endPos.m128_f32[2] += -1.0f;
+		if (line[i].data.startPos.m128_f32[2] <= -150.0f)
+		{
+			line[i].data.startPos.m128_f32[2] = 1400.0f;
+			line[i].data.endPos.m128_f32[2] = 1400.0f;
+		}
+	}
 }
 
 void SecondStage::Draw()

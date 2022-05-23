@@ -4,8 +4,8 @@
 
 float4 PSmain(ColorOutPut input) : SV_TARGET
 {
-    float3 fogC = float3(0.0862745121, 0.149019614, 0.145098045);
-    float4 fog = CaluFog(input.svpos, color, fogC, 0.004);
+    float3 fogC = float3(0.0f, 0.0f, 0.0f);
+    float4 fog = CaluFog(input.svpos, color, fogC, 0.003);
     fog.a = 1;
     return fog;
 }
