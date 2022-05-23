@@ -88,7 +88,7 @@ void FbxModelRender::Draw()
 		{
 			ConstBufferData constMap;
 			constMap.world = baseMatWorldData.matWorld;
-			constMap.view = renderData.cameraMgrInstance->GetViewMatrix();
+			constMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex);
 			constMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
 			constMap.color = { 0.0f,0.0f,0.0f,0.0f };
 			constMap.mat = constMap.world * constMap.view * constMap.viewproj;

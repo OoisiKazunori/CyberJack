@@ -78,11 +78,11 @@ void LineRender::Draw()
 
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 	//行列
-	if (cameraMatDirtyFlag)
+	if (cameraMatDirtyFlag || true)
 	{
 		ConstBufferData constMap;
 		constMap.world = baseMatWorldData.matWorld;
-		constMap.view = renderData.cameraMgrInstance->GetViewMatrix();
+		constMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex);
 		constMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
 		constMap.color = KazRenderHelper::SendColorDataToGPU(data.color);
 		constMap.mat = constMap.world * constMap.view * constMap.viewproj;

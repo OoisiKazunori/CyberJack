@@ -582,7 +582,8 @@ void Game::Update()
 		targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
 	}
 
-	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
+	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 0);
+	CameraMgr::Instance()->Camera({ 0.0f,0.0f,0.0f }, targetPos, { 0.0f,1.0f,0.0f }, 1);
 
 #pragma endregion
 

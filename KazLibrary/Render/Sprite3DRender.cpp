@@ -97,13 +97,13 @@ void Sprite3DRender::Draw()
 	bool textureHandleDirtyFlag = this->textureHandleDirtyFlag->Dirty();
 	bool animationHandleDirtyFlag = this->animationHandleDirtyFlag->Dirty();
 
-	bool verticesDirtyFlag = flipXDirtyFlag || flipYDirtyFlag || textureHandleDirtyFlag || animationHandleDirtyFlag || scaleDirtyFlag || localsizeDirtyFlag;
+	bool verticesDirtyFlag = flipXDirtyFlag || flipYDirtyFlag || textureHandleDirtyFlag || animationHandleDirtyFlag || scaleDirtyFlag || localsizeDirtyFlag || true;
 	//DirtyFlag検知-----------------------------------------------------------------------------------------------------
 
 
 
 	//行列計算-----------------------------------------------------------------------------------------------------
-	if (matrixDirtyFlag || matFlag)
+	if (matrixDirtyFlag || matFlag || true)
 	{
 		baseMatWorldData.matWorld = XMMatrixIdentity();
 		baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
@@ -112,7 +112,7 @@ void Sprite3DRender::Draw()
 		//ビルボード行列を掛ける
 		if (data.billBoardFlag)
 		{
-			baseMatWorldData.matWorld *= renderData.cameraMgrInstance->GetMatBillBoard();
+			baseMatWorldData.matWorld *= renderData.cameraMgrInstance->GetMatBillBoard(data.cameraIndex);
 		}
 		baseMatWorldData.matWorld *= baseMatWorldData.matScale;
 		baseMatWorldData.matWorld *= baseMatWorldData.matRota;
@@ -215,7 +215,7 @@ void Sprite3DRender::Draw()
 	//{
 	ConstBufferData constMap;
 	constMap.world = baseMatWorldData.matWorld;
-	constMap.view = renderData.cameraMgrInstance->GetViewMatrix();
+	constMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex);
 	constMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
 	constMap.color = { 0.0f,0.0f,0.0f,data.alpha / 255.0f };
 	constMap.mat = constMap.world * constMap.view * constMap.viewproj;

@@ -176,7 +176,7 @@ void BoxPolygonRender::Draw()
 	if (!instanceFlag)
 	{
 		//行列計算-----------------------------------------------------------------------------------------------------
-		if (matrixDirtyFlag || matFlag)
+		if (matrixDirtyFlag || matFlag || true)
 		{
 			baseMatWorldData.matWorld = XMMatrixIdentity();
 			baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
@@ -199,11 +199,11 @@ void BoxPolygonRender::Draw()
 
 		//バッファの転送-----------------------------------------------------------------------------------------------------
 		//行列
-		if (matrixDirtyFlag || matFlag || colorFlag)
+		if (matrixDirtyFlag || matFlag || colorFlag | true)
 		{
 			ConstBufferData constMap;
 			constMap.world = baseMatWorldData.matWorld;
-			constMap.view = renderData.cameraMgrInstance->GetViewMatrix();
+			constMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex);
 			constMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
 			constMap.color = KazRenderHelper::SendColorDataToGPU(data.color);
 			constMap.mat = constMap.world * constMap.view * constMap.viewproj;
