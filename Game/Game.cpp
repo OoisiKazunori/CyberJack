@@ -915,7 +915,11 @@ void Game::Update()
 	goalBox.Update();
 	movieEffect.Update();
 	stages[stageNum]->Update();
-	stages[stageNum + 1]->Update();
+	//配列外を超えない処理
+	if (stageNum + 1 < stages.size())
+	{
+		stages[stageNum + 1]->Update();
+	}
 	//ロックオンのリリース処理
 	if (cursor.releaseFlag)
 	{
@@ -995,10 +999,7 @@ void Game::Draw()
 		RenderTargetStatus::Instance()->ClearRenderTarget(handles[0]);
 
 		goalBox.Draw();
-		if (stageNum < 1)
-		{
-			goalBox.portalEffect.Draw();
-		}
+		goalBox.portalEffect.Draw();
 
 		if (lineDebugFlag)
 		{
