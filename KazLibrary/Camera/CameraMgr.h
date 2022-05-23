@@ -46,7 +46,7 @@ public:
 	/// <param name="EYE_POS">視点座標</param>
 	/// <param name="TARGET_POS">注視点</param>
 	/// <param name="UP">上ベクトル</param>
-	void Camera(XMFLOAT3 EYE_POS, XMFLOAT3 TARGET_POS, XMFLOAT3 UP);
+	void Camera(const XMFLOAT3 &EYE_POS, const XMFLOAT3 &TARGET_POS, const XMFLOAT3 &UP, int CAMERA_INDEX = 0);
 
 	XMMATRIX CreateCamera(XMFLOAT3 EYE_POS, XMFLOAT3 TARGET_POS, XMFLOAT3 UP);
 
@@ -54,22 +54,32 @@ public:
 	/// ビュー行列を渡します
 	/// </summary>
 	/// <returns>ビュー行列</returns>
-	XMMATRIX GetViewMatrix();
+	const XMMATRIX &GetViewMatrix(int CAMERA_INDEX = 1);
+
+	XMMATRIX *GetViewMatrixPointer(int CAMERA_INDEX = 1);
 
 	/// <summary>
 	/// ビルボード行列を渡します
 	/// </summary>
 	/// <returns>ビルボード行列</returns>
-	XMMATRIX GetMatBillBoard();
+	const XMMATRIX &GetMatBillBoard(int CAMERA_INDEX = 1);
+
+	XMMATRIX *GetMatBillBoardPointer(int CAMERA_INDEX = 1);
+
 
 	/// <summary>
 	/// 透視投影変換行列を受け取ります
 	/// </summary>
 	/// <returns>透視投影変換行列</returns>
-	XMMATRIX GetPerspectiveMatProjection();
+	const XMMATRIX &GetPerspectiveMatProjection();
+
+	XMMATRIX *GetPerspectiveMatProjectionPointer();
+
 
 	// 透視投影変換行列を視野角を指定して取得する。
-	XMMATRIX GetPerspectiveMatProjectionAngle(float angle);
+	const XMMATRIX &GetPerspectiveMatProjectionAngle(float angle);
+
+
 
 	XMMATRIX view;
 	XMMATRIX billBoard;
@@ -77,8 +87,9 @@ public:
 	XMMATRIX perspectiveMat;
 	XMMATRIX orthographicMatProjection;
 private:
-
-
+	static const int CAMERA_ARRAY_NUM = 2;
+	std::array<XMMATRIX, CAMERA_ARRAY_NUM> viewArray;
+	std::array<XMMATRIX, CAMERA_ARRAY_NUM> billBoardArray;
 };
 
 // ライトカメラ定数を送る用の構造体

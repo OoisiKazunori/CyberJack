@@ -21,6 +21,12 @@ CameraMgr::CameraMgr()
 		0.0f,
 		1.0f
 	);
+
+	for (int i = 0; i < CAMERA_ARRAY_NUM; ++i)
+	{
+		viewArray[i] = XMMatrixIdentity();
+		billBoardArray[i] = XMMatrixIdentity();
+	}
 }
 
 void CameraMgr::CameraSetting(float VIEWING_ANGLE, float FAR_SIDE)
@@ -34,7 +40,7 @@ void CameraMgr::CameraSetting(float VIEWING_ANGLE, float FAR_SIDE)
 		);
 }
 
-void CameraMgr::Camera(XMFLOAT3 EYE_POS, XMFLOAT3 TARGET_POS, XMFLOAT3 UP)
+void CameraMgr::Camera(const XMFLOAT3 &EYE_POS, const XMFLOAT3 &TARGET_POS, const XMFLOAT3 &UP, int CAMERA_INDEX)
 {
 	XMFLOAT3 eye = EYE_POS;
 	XMFLOAT3 target = TARGET_POS;
@@ -110,9 +116,9 @@ void CameraMgr::Camera(XMFLOAT3 EYE_POS, XMFLOAT3 TARGET_POS, XMFLOAT3 UP)
 	//全方位ビルボード
 	XMMATRIX matBillboard;
 	// Y軸回りビルボード行列
-	matBillboard.r[0] = cameraAxis.x;;
-	matBillboard.r[1] = cameraAxis.y;;
-	matBillboard.r[2] = cameraAxis.z;;
+	matBillboard.r[0] = cameraAxis.x;
+	matBillboard.r[1] = cameraAxis.y;
+	matBillboard.r[2] = cameraAxis.z;
 	matBillboard.r[3] = XMVectorSet(0, 0, 0, 1);
 
 #pragma region Y軸ビルボード行列
@@ -133,8 +139,10 @@ void CameraMgr::Camera(XMFLOAT3 EYE_POS, XMFLOAT3 TARGET_POS, XMFLOAT3 UP)
 	//matBillboard.r[3] = XMVectorSet(0, 0, 0, 1);
 #pragma endregion
 
-	view = matView;
-	billBoard = matBillboard;
+	viewArray[CAMERA_INDEX] = matView;
+	billBoardArray[CAMERA_INDEX] = matBillboard;
+	//view = matView;
+	//billBoard = matBillboard;
 }
 
 XMMATRIX CameraMgr::CreateCamera(XMFLOAT3 EYE_POS, XMFLOAT3 TARGET_POS, XMFLOAT3 UP)
@@ -213,22 +221,37 @@ XMMATRIX CameraMgr::CreateCamera(XMFLOAT3 EYE_POS, XMFLOAT3 TARGET_POS, XMFLOAT3
 	return matView;
 }
 
-XMMATRIX CameraMgr::GetViewMatrix()
+const XMMATRIX &CameraMgr::GetViewMatrix(int CAMERA_INDEX)
 {
-	return view;
+	return viewArray[CAMERA_INDEX];
 }
 
-XMMATRIX CameraMgr::GetMatBillBoard()
+XMMATRIX *CameraMgr::GetViewMatrixPointer(int CAMERA_INDEX)
 {
-	return billBoard;
+	return &viewArray[CAMERA_INDEX];
 }
 
-XMMATRIX CameraMgr::GetPerspectiveMatProjection()
+const XMMATRIX &CameraMgr::GetMatBillBoard(int CAMERA_INDEX)
+{
+	return billBoardArray[CAMERA_INDEX];
+}
+
+XMMATRIX *CameraMgr::GetMatBillBoardPointer(int CAMERA_INDEX)
+{
+	return &billBoardArray[CAMERA_INDEX];
+}
+
+const XMMATRIX &CameraMgr::GetPerspectiveMatProjection()
 {
 	return perspectiveMat;
 }
 
-XMMATRIX CameraMgr::GetPerspectiveMatProjectionAngle(float angle)
+XMMATRIX *CameraMgr::GetPerspectiveMatProjectionPointer()
+{
+	return &perspectiveMat;
+}
+
+const XMMATRIX &CameraMgr::GetPerspectiveMatProjectionAngle(float angle)
 {
 	XMMATRIX perspectiveMat =
 		XMMatrixPerspectiveFovLH(

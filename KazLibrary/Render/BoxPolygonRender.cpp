@@ -2,7 +2,6 @@
 
 BoxPolygonRender::BoxPolygonRender(bool INSTANCE_FLAG, int INSTANCE_NUM)
 {
-
 	gpuBuffer.reset(new CreateGpuBuffer);
 	positionDirtyFlag.reset(new DirtySet(data.transform.pos));
 	scaleDirtyFlag.reset(new DirtySet(data.transform.scale));
