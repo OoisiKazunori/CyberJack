@@ -22,8 +22,10 @@ namespace KazFilePathName
 
 	static string TestPath = RelativeResourcePath + "Test/";
 	static string CursorPath = RelativeResourcePath + "Cursor/";
+	static string HpPath = RelativeResourcePath + "Hp/";
 	static string GoalPath = RelativeResourcePath + "Goal/";
 	static string GameOverPath = RelativeResourcePath + "GameOver/";
+	static string StageUIPath = RelativeResourcePath + "StageUI/";
 
 
 	//デバックパス-----------------------

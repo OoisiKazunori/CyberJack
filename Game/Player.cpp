@@ -14,7 +14,9 @@ void Player::Init(const XMVECTOR &POS)
 	render->data.transform.pos = pos;
 	render->data.transform.scale = { 0.5f,1.3f,0.5f };
 	render->data.transform.rotation = { 35.0f,0.0f,1.0f };
-	hp = 2;
+	hp = 3;
+
+	hpUi.Init(hp);
 }
 
 void Player::Finalize()
@@ -36,11 +38,15 @@ void Player::Update()
 	ImGui::InputFloat("RotaY", &render->data.transform.rotation.m128_f32[1]);
 	ImGui::InputFloat("RotaZ", &render->data.transform.rotation.m128_f32[2]);
 	ImGui::End();
+
+	hpUi.Update();
+	hpUi.hp = hp;
 }
 
 void Player::Draw()
 {
 	render->Draw();
+	hpUi.Draw();
 }
 
 void Player::Hit()

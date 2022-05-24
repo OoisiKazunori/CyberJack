@@ -1,6 +1,7 @@
 #pragma once
 #include"../KazLibrary/DirectXCommon/Base.h"
 #include"../KazLibrary/Render/KazRender.h"
+#include"../Game/UI/PlayerHpUi.h"
 
 class Player
 {
@@ -19,5 +20,7 @@ public:
 private:
 	short hp;
 	BoxPolygonRenderPtr render;
+
+	PlayerHpUi hpUi;
 };
 
