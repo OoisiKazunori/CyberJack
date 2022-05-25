@@ -21,6 +21,9 @@ private:
 
 	XMVECTOR basePos, larpScale;
 
+	int areaNum;
+	int areaTimer;
+
 	std::array<int, 10> numberHandle;
 	Sprite2DRender flameTex;	//ウィンドウの描画
 	Sprite2DRender numberTex;	//数字の描画

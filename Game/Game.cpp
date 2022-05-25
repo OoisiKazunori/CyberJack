@@ -102,6 +102,8 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 
 	hitBox.Init({ 0.0f,0.0f,30.0f }, 1);
 
+	stageUI.Init();
+
 	sceneNum = SCENE_NONE;
 
 
@@ -209,6 +211,9 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	readyToBlackOutToGoTitleFlag = false;
 	flashFlag = false;
 	flashTimer = 0;
+
+	layerLevelEyePos = { -4.15f,3.0f,40.0f };
+	layerLevelTargetPos = { -4.15f,3.0f,45.0f };
 }
 
 void Game::Finalize()
@@ -356,15 +361,6 @@ void Game::Input()
 	if (input->InputState(DIK_V))
 	{
 		forceCameraDirVel.m128_f32[0] = -270.0f;
-	}
-
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_F))
-	{
-		stageNum = 0;
-	}
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_G))
-	{
-		stageNum = 1;
 	}
 
 
@@ -907,6 +903,16 @@ void Game::Update()
 
 	goalBox.releaseFlag = cursor.releaseFlag;
 
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_G))
+	{
+		stageUI.Init();
+	}
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_B))
+	{
+		stageUI.AnnounceStage(0);
+	}
+
+
 	//更新処理----------------------------------------------------------------
 	player.Update();
 	cursor.Update();
@@ -914,6 +920,7 @@ void Game::Update()
 	goalBox.portalEffect.sprite->data.handle = potalTexHandle;
 	goalBox.Update();
 	movieEffect.Update();
+	stageUI.Update();
 	stages[stageNum]->Update();
 	//配列外を超えない処理
 	if (stageNum + 1 < stages.size())
@@ -1048,12 +1055,20 @@ void Game::Draw()
 		{
 			RenderTargetStatus::Instance()->PrepareToChangeBarrier(potalTexHandle);
 			RenderTargetStatus::Instance()->ClearRenderTarget(potalTexHandle);
+
+			//float vel = subPotalSpritePos.m128_f32[2] - goalBox.portalEffect.sprite->data.transform.pos.m128_f32[2];
+
+			//layerCameraMove.y = -vel;
+			//layerLevelEyePos = KazMath::CaluEyePosForDebug(layerLevelEyePos, layerCameraMove, angle);
+			//layerLevelTargetPos = KazMath::CaluTargetPosForDebug(layerLevelEyePos, angle.x);
+
 			CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 1);
 			stages[stageNum + 1]->SetCamera(1);
 			stages[stageNum + 1]->Draw();
 			RenderTargetStatus::Instance()->PrepareToCloseBarrier(potalTexHandle);
 			RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
 		}
+		subPotalSpritePos.m128_f32[2] = goalBox.portalEffect.sprite->data.transform.pos.m128_f32[2];
 	}
 	else
 	{
@@ -1064,6 +1079,7 @@ void Game::Draw()
 		}
 	}
 
+	stageUI.Draw();
 	blackTex.Draw();
 }
 

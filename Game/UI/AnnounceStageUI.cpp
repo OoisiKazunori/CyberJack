@@ -43,9 +43,9 @@ void AnnounceStageUI::Update()
 		flameTex.data.transform.pos = basePos;
 		larpScale.m128_f32[0] = 4.0f;
 
-
+		float mul = 0.3f;
 		//ÉEÉBÉìÉhÉEÇâ°Ç…çLÇ∞ÇÈ
-		KazMath::Larp(larpScale.m128_f32[0], &flameTex.data.transform.scale.m128_f32[0], 0.4f);
+		KazMath::Larp(larpScale.m128_f32[0], &flameTex.data.transform.scale.m128_f32[0], mul);
 
 
 		if (3.9f <= flameTex.data.transform.scale.m128_f32[0])
@@ -57,10 +57,18 @@ void AnnounceStageUI::Update()
 		{
 			larpScale.m128_f32[1] = 1.0f;
 		}
-		KazMath::Larp(larpScale.m128_f32[1], &flameTex.data.transform.scale.m128_f32[1], 0.4f);
+		KazMath::Larp(larpScale.m128_f32[1], &flameTex.data.transform.scale.m128_f32[1], mul);
+
+
+		//ï∂éöÇàÍï∂éöÇ∏Ç¬ï`âÊÇ∑ÇÈ
+		areaNum;
+
+
 	}
 
-	//ï∂éöÇàÍï∂éöÇ∏Ç¬ï`âÊÇ∑ÇÈ
+
+
+	//ÇµÇŒÇÁÇ≠ï`âÊÇµÇΩÇÁìoèÍââèoÇ∆ãtÇÃéñÇÇ‚ÇÈ
 
 
 	ImGui::Begin("Layer");
