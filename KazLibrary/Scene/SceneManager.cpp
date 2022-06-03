@@ -30,38 +30,49 @@ void SceneManager::Update()
 	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
 
 	//�V�[���J�ڂ̋N��
-	if (nextScene != nowScene) {
+	if (nextScene != nowScene)
+	{
 		change.Start();
 	}
 
+
+	const int RESTART_NUM = -2;
+
 	//��ʂ��B�ꂽ�u��
-	if (change.AllHiden()) {
+	if (change.AllHiden())
+	{
 		scene[nowScene]->Finalize();
 		//�ʏ�̃V�[���؂�ւ�
-		if (nextScene != -2) {
+		if (nextScene != RESTART_NUM)
+		{
 			nowScene = nextScene;
 		}
 		//���V�[���̃��Z�b�g
-		else if (nextScene == -2) {
+		else if (nextScene == RESTART_NUM)
+		{
 			nextScene = nowScene;
 		}
 
-		if (KazHelper::IsitInAnArray(nowScene, scene.size())) {
+		if (KazHelper::IsitInAnArray(nowScene, scene.size()))
+		{
 			scene[nowScene]->Init();
 			itisInArrayFlag = true;
 		}
-		else {
+		else
+		{
 			itisInArrayFlag = false;
 		}
 	}
 
-	if (itisInArrayFlag) {
+	if (itisInArrayFlag)
+	{
 	
 		scene[nowScene]->Input();
 		scene[nowScene]->Update();
 
 		int sceneNum = scene[nowScene]->SceneChange();
-		if (sceneNum != SCENE_NONE) {
+		if (sceneNum != SCENE_NONE)
+		{
 			nextScene = sceneNum;
 		}
 	}

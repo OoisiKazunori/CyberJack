@@ -27,6 +27,7 @@ namespace KazFilePathName
 	static string GameOverPath = RelativeResourcePath + "GameOver/";
 	static string StageUIPath = RelativeResourcePath + "StageUI/";
 	static string TitlePath = RelativeResourcePath + "Title/";
+	static string SceneChangePath = RelativeResourcePath + "SceneChange/";
 
 
 	//デバックパス-----------------------

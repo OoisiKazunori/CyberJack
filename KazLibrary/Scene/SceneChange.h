@@ -6,7 +6,8 @@
 #include"../Helper/DirtyFlag.h"
 namespace ChangeScene {
 
-	class SceneChange {
+	class SceneChange
+	{
 	public:
 		SceneChange();
 
@@ -27,48 +28,16 @@ namespace ChangeScene {
 		/// <returns>true...‰B‚ê‚½,false...‰B‚ê‚Ä‚È‚¢</returns>
 		bool AllHiden();
 
-		/// <summary>
-		/// ‘JˆÚŠJn‚Ì•Ï”‚Ì‰Šú‰»
-		/// </summary>
-		void InitOutbound();
-
-		/// <summary>
-		/// ‘JˆÚØ‚è•Ô‚µ‚Ì•Ï”‚Ì‰Šú‰»
-		/// </summary>
-		void InitInbound();
-
-	private:
+private:
 		bool startFlag, finishFlag;
+		bool allHidenFlag;
+		bool initFlag;
 
-		KazMath::Transform2D noiseTransform;
-		//TextureRender noiseTex;
-		short handle;
+		float tmp;
+		float startOutInT[2];
 
-		int timer;
-
-		short eye_catch_handle_;
-		Sprite2DRenderPtr eye_catch_;
-
-		float pos_;
-
-		// •Ï‰»—¦
-		float t_;
-
-		// ‘JˆÚ‚ªn‚Ü‚Á‚½uŠÔ
-		bool start_trigger_;
-
-		// ‰æ–Ê‚ªØ‚è‘Ö‚í‚Á‚½uŠÔ
-		bool change_trigger_;
-
-		// ‰ŠúˆÊ’u
-		float initial_pos_;
-
-		// ‘ˆÚ“®—Ê
-		float total_movement_;
-
-		// ‘JˆÚ
-		bool is_inbound_;
-
-		unique_ptr<DirtyFlag<bool>>startDirtyFlag;
+		KazMath::Transform2D transform;
+		Sprite2DRender sceneTex;
+		int handle;
 	};
 }
