@@ -152,7 +152,7 @@ void AnnounceStageUI::AnnounceStage(int STAGE_NUM)
 	stageNum = STAGE_NUM;
 	startFlag = true;
 
-	std::vector<int>num = KazHelper::CountNumber(stageNum + 1, 2);
+	std::vector<int>num = KazHelper::CountNumber(stageNum, 2);
 
 	float scale = 1.45f;
 	areaTex[4].data.handle = numberHandle[num[0]];

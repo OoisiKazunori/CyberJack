@@ -4,7 +4,7 @@
 EventSprite::EventSprite()
 {
 	hitBox.center = &spriteRender.data.transform.pos;
-	hitBox.radius = 10.0f;
+	hitBox.radius = 40.0f;
 
 	selectHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TitlePath + "ChoseStart.png");
 	hitHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TitlePath + "Start_Done.png");

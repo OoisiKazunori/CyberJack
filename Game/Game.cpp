@@ -635,6 +635,9 @@ void Game::Update()
 		upDownAngleVel = { 0.0f,0.0f,0.0f };
 		trackUpDownAngleVel = upDownAngleVel;
 		movieEffect.startFlag = false;
+
+		stageUI.Init();
+		stageUI.AnnounceStage(stageNum + 1);
 		cursor.Appear();
 	}
 
@@ -1059,9 +1062,11 @@ void Game::Update()
 
 	//ゲームループの経過時間----------------------------------------------------------------
 	titleLogoTex.data.alpha = doneSprite.spriteRender.data.alpha;
-	if (titleLogoTex.data.alpha <= 0.0f)
+	if (titleLogoTex.data.alpha <= 0.0f && !stages[0]->startFlag)
 	{
 		gameStartFlag = true;
+		stageUI.Init();
+		stageUI.AnnounceStage(stageNum + 1);
 		stages[0]->startFlag = true;
 	}
 	if (gameStartFlag)
