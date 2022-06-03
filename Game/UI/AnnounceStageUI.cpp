@@ -24,8 +24,6 @@ AnnounceStageUI::AnnounceStageUI()
 	numberHandle[8] = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "CursorNum8.png");
 	numberHandle[9] = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "CursorNum9.png");
 
-	numberTex.data.handle = numberHandle[0];
-	numberTex.data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
 	basePos = { 640.0f,150.0f };
 }
 
@@ -139,7 +137,6 @@ void AnnounceStageUI::Update()
 
 void AnnounceStageUI::Draw()
 {
-	numberTex.Draw();
 	for (int i = 0; i < areaNum; ++i)
 	{
 		areaTex[i].Draw();

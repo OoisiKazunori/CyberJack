@@ -27,7 +27,6 @@ private:
 
 	std::array<int, 10> numberHandle;
 	Sprite2DRender flameTex;	//ウィンドウの描画
-	Sprite2DRender numberTex;	//数字の描画
 
 	std::array<Sprite2DRender, 6> areaTex;		//エリア文字の描画
 

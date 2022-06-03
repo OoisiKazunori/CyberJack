@@ -1,6 +1,6 @@
 #pragma once
 #include"../KazLibrary/DirectXCommon/Base.h"
-#include"../KazLibrary/Render/Sprite2DRender.h"
+#include"../KazLibrary/Render/KazRender.h"
 #include"../Event/WindowFlame.h"
 
 class TutorialWindow
@@ -11,6 +11,11 @@ public:
 	void Update();
 	void Draw();
 
+	void End();
 private:
 	WindowFlame windowFlame;
+
+	Sprite3DRender lStickUi,abuttonUi,attackUi;
+	LineRender line;
+	bool endFlag;
 };

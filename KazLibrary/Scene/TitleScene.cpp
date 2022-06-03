@@ -14,7 +14,7 @@ TitleScene::~TitleScene() {
 
 void TitleScene::Init()
 {
-	sceneNum = -1;
+	sceneNum = 1;
 }
 
 void TitleScene::Finalize()

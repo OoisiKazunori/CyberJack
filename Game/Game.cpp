@@ -1070,15 +1070,27 @@ void Game::Update()
 	titleLogoTex.data.alpha = doneSprite.spriteRender.data.alpha;
 	if (titleLogoTex.data.alpha <= 0.0f && !stages[0]->startFlag)
 	{
+		//ゲーム開始
 		gameStartFlag = true;
+		//ステージ番号知らせる
 		stageUI.Init();
 		stageUI.AnnounceStage(stageNum + 1);
+		//ゲーム開始
 		stages[0]->startFlag = true;
 	}
+
 	if (gameStartFlag)
 	{
 		++gameFlame;
 	}
+
+	//ちょっと遅らせる事で同時に起こる事柄を少なくし、混乱しないようにする
+	if (60 * 4 <= gameFlame)
+	{
+		//チュートリアル用のUI非表示
+		tutorialWindow.End();
+	}
+
 	//ゲームループの経過時間----------------------------------------------------------------
 
 

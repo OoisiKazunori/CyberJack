@@ -28,6 +28,7 @@ namespace KazFilePathName
 	static string StageUIPath = RelativeResourcePath + "StageUI/";
 	static string TitlePath = RelativeResourcePath + "Title/";
 	static string SceneChangePath = RelativeResourcePath + "SceneChange/";
+	static string TutorialPath = RelativeResourcePath + "Tutorial/";
 
 
 	//デバックパス-----------------------

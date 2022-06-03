@@ -74,7 +74,7 @@ void WindowFlame::Update()
 		KazMath::Larp(larpScale.m128_f32[1], &flameTex.data.transform.scale.m128_f32[1], mul);
 
 
-		if (flameTex.data.transform.scale.m128_f32[1] <= 0.2f)
+		if (flameTex.data.transform.scale.m128_f32[1] <= 0.11f)
 		{
 			//flameTex.data.transform.scale.m128_f32[1] = 0.1f;
 			larpScale.m128_f32[0] = 0.0f;
