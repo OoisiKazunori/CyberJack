@@ -6,8 +6,10 @@
 #include"../KazLibrary/Helper/ResourceFilePass.h"
 #include"../Game/Debug/ParameterMgr.h"
 #include"../KazLibrary/Math/KazMath.h"
+#include"../KazLibrary/Easing/easing.h"
 #include<cmath>
 #include<iostream>
+
 
 Game::Game()
 {
@@ -152,6 +154,7 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 
 
 	//ゲームループの初期化----------------------------------------------------------------
+	gameStartFlag = false;
 	gameFlame = 0;
 	//ゴールに触れ無かった場合に次のステージに移動する際の最大フレーム数
 	for (int i = 0; i < changeLayerLevelMaxTime.size(); ++i)
@@ -209,6 +212,14 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	readyToBlackOutToGoTitleFlag = false;
 	flashFlag = false;
 	flashTimer = 0;
+
+
+	titleLogoTex.data.alpha = 255.0f;
+	titleLogoTex.data.transform.pos = { 0.0f,50.0f,500.0f };
+	titleLogoTex.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TitlePath + "TitleName.png");
+	doneSprite.Init({ 0.0f,0.0f,500.0f }, TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TitlePath + "Start.png"));
+
+	startFlag = false;
 }
 
 void Game::Finalize()
@@ -594,8 +605,6 @@ void Game::Update()
 
 #pragma endregion
 
-
-
 	//敵が一通り生成終わった際に登場させる----------------------------------------------------------------
 	//if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame && !initAppearFlag)
 	if (100 <= gameFlame && !initAppearFlag)
@@ -752,32 +761,59 @@ void Game::Update()
 
 
 #pragma region イベントロックオン
-	//ロックオン判定
-	bool enableToLockOnNumFlag = cursor.LockOn();
-	bool enableToLockOnEnemyFlag = goalBox.IsAlive() && !goalBox.LockedOrNot();
-	bool hitFlag = CollisionManager::Instance()->CheckRayAndSphere(cursor.hitBox, goalBox.hitBox);
-	if (hitFlag &&
-		enableToLockOnNumFlag &&
-		enableToLockOnEnemyFlag)
 	{
-		//カーソルのカウント数を増やす
-		cursor.Count();
-		goalBox.Hit();
-
-		//線演出をかける際にどの配列を使用するか決める
-		for (int i = 0; i < lineEffectArrayData.size(); ++i)
+		//ロックオン判定
+		bool enableToLockOnNumFlag = cursor.LockOn();
+		bool enableToLockOnEnemyFlag = goalBox.IsAlive() && !goalBox.LockedOrNot();
+		bool hitFlag = CollisionManager::Instance()->CheckRayAndSphere(cursor.hitBox, goalBox.hitBox);
+		if (hitFlag &&
+			enableToLockOnNumFlag &&
+			enableToLockOnEnemyFlag)
 		{
-			if (!lineEffectArrayData[i].usedFlag)
+			//カーソルのカウント数を増やす
+			cursor.Count();
+			goalBox.Hit();
+
+			//線演出をかける際にどの配列を使用するか決める
+			for (int i = 0; i < lineEffectArrayData.size(); ++i)
 			{
-				lineLevel[i].Attack2(lineEffectArrayData[i].startPos, *goalBox.hitBox.center, {});
-				lineEffectArrayData[i].usedFlag = true;
-				lineEffectArrayData[i].lineIndex = i;
-				lineEffectArrayData[i].eventType = 0;
-				break;
+				if (!lineEffectArrayData[i].usedFlag)
+				{
+					lineLevel[i].Attack2(lineEffectArrayData[i].startPos, *goalBox.hitBox.center, {});
+					lineEffectArrayData[i].usedFlag = true;
+					lineEffectArrayData[i].lineIndex = i;
+					lineEffectArrayData[i].eventType = 0;
+					break;
+				}
 			}
 		}
 	}
+
+	{
+		//ロックオン判定
+		bool enableToLockOnNumFlag = cursor.LockOn();
+		bool enableToLockOnEnemyFlag = doneSprite.IsAlive() && !doneSprite.LockedOrNot();
+		bool hitFlag = CollisionManager::Instance()->CheckRayAndSphere(cursor.hitBox, doneSprite.hitBox);
+		if (hitFlag &&
+			enableToLockOnEnemyFlag &&
+			enableToLockOnNumFlag)
+		{
+			doneSprite.Hit();
+			startFlag = true;
+		}
+		else if (hitFlag)
+		{
+			doneSprite.selectingFlag = true;
+		}
+		else
+		{
+			doneSprite.selectingFlag = false;
+		}
+	}
 #pragma endregion
+
+
+
 
 
 	//線がたどり着いたら敵を死亡させる
@@ -903,6 +939,7 @@ void Game::Update()
 	//ゲームオーバー----------------------------------------------
 
 
+
 #pragma region 更新処理
 
 	goalBox.releaseFlag = cursor.releaseFlag;
@@ -915,6 +952,8 @@ void Game::Update()
 	goalBox.Update();
 	movieEffect.Update();
 	stages[stageNum]->Update();
+	doneSprite.Update();
+
 	//配列外を超えない処理
 	if (stageNum + 1 < stages.size())
 	{
@@ -982,9 +1021,48 @@ void Game::Update()
 #pragma endregion
 
 
+
+
+
+	if (1.0f <= titleT)
+	{
+		titleTReversFlag = false;
+	}
+	else if (titleT <= 0.0f)
+	{
+		titleTReversFlag = true;
+	}
+
+	float rate = 1.0f / 60.0f;
+	if (titleTReversFlag)
+	{
+		titleT += rate;
+	}
+	else
+	{
+		titleT += -rate;
+	}
+
+	titleLogoTex.data.transform.pos = { 0.0f,100.0f,500.0f };
+	titleLogoTex.data.transform.scale = { 0.8f,0.8f };
+	baseTitlePosY = 100.0f;
+	titleLogoTex.data.transform.pos.m128_f32[1] = baseTitlePosY + EasingMaker(Out, Cubic, titleT) * 50.0f;
+
+
+
 	//ゲームループの経過時間----------------------------------------------------------------
-	++gameFlame;
+	titleLogoTex.data.alpha = doneSprite.spriteRender.data.alpha;
+	if (titleLogoTex.data.alpha <= 0.0f)
+	{
+		gameStartFlag = true;
+		stages[0]->startFlag = true;
+	}
+	if (gameStartFlag)
+	{
+		++gameFlame;
+	}
 	//ゲームループの経過時間----------------------------------------------------------------
+
 
 }
 
@@ -1013,7 +1091,6 @@ void Game::Draw()
 			lineLevel[i].Draw();
 		}
 
-
 		//敵の描画処理----------------------------------------------------------------
 		for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
 		{
@@ -1028,6 +1105,9 @@ void Game::Draw()
 			}
 		}
 		goalBox.lightEffect.Draw();
+
+		doneSprite.Draw();
+		titleLogoTex.Draw();
 
 		//輝度抽出
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, handles[0]);

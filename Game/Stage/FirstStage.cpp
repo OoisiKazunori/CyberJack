@@ -1,5 +1,6 @@
 #include "FirstStage.h"
 #include"../KazLibrary/Imgui/MyImgui.h"
+#include"../KazLibrary/Easing/easing.h"
 
 FirstStage::FirstStage()
 {
@@ -137,8 +138,14 @@ FirstStage::FirstStage()
 			stageDebugBox[i].data.transform.pos.m128_f32[axisIndex] = stageParamLoader.doc[name.c_str()]["Pos"][axisIndex].GetFloat();
 			stageDebugBox[i].data.transform.scale.m128_f32[axisIndex] = stageParamLoader.doc[name.c_str()]["Scale"][axisIndex].GetFloat();
 			stageDebugBox[i].data.transform.rotation.m128_f32[axisIndex] = stageParamLoader.doc[name.c_str()]["Rota"][axisIndex].GetFloat();
+
+
+			stageYPos[i] = stageDebugBox[i].data.transform.pos;
 		}
 	}
+
+	t = 0.0f;
+
 }
 
 void FirstStage::Update()
@@ -227,6 +234,31 @@ void FirstStage::Update()
 		stageParamLoader.ExportFile(KazFilePathName::StageParamPath + "StageParamData.json");
 	}
 #pragma endregion
+
+
+	if (startFlag)
+	{
+		if (t <= 1.0f)
+		{
+			t += 1.0f / 60.0f;
+		}
+		if (1.0f <= t)
+		{
+			t = 1.0f;
+		}
+	}
+	else
+	{
+		t = 0.0f;
+	}
+
+	float mul = 800;
+	easeY = EasingMaker(Out, Cubic, t);
+	for (int i = 1; i < stageDebugBox.size(); ++i)
+	{
+		stageDebugBox[i].data.transform.pos.m128_f32[1] = stageYPos[i].m128_f32[1] + (-mul + easeY * mul);
+	}
+
 
 	XMVECTOR vel = { 0.0f,0.0f,-1.0f };
 	//Žè‘O’Œ

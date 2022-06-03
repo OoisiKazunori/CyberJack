@@ -29,6 +29,7 @@ public:
 
 private:
 	std::array<BoxPolygonRender, 30> stageDebugBox;
+	std::array<XMVECTOR, 30> stageYPos;
 	std::array<FogD, 30> fogData;
 	std::array<float, 30> constHandle;
 
@@ -37,5 +38,8 @@ private:
 
 	std::array<std::unique_ptr<PolygonRender>, 4>polygon;
 	std::unique_ptr<PolygonRender> topPolygon;
+
+	float easeY;
+	float t;
 };
 

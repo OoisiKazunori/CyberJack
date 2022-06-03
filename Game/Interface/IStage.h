@@ -15,6 +15,8 @@ public:
 	{
 		cameraIndex = CAMERA_INDEX;
 	};
+
+	bool startFlag = false;
 protected:
 	int cameraIndex = 0;
 };

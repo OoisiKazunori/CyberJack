@@ -21,6 +21,7 @@
 #include"../Game/Stage/SecondStage.h"
 #include"../Game/Stage/ThridStage.h"
 #include"../Game/Event/MoiveEffect.h"
+#include"../Game/Event/EventSprite.h"
 
 struct ResponeData
 {
@@ -78,6 +79,7 @@ public:
 
 private:
 	//ゲームループ----------------------------------------------------------------
+	bool gameStartFlag;						//ゲーム開始を知らせるフラグ
 	int sceneNum;							//次何処のシーンに飛ぶか
 	int gameFlame;							//1ステージの経過時間
 	int gameStageLevel;						//現在のステージのレベル
@@ -181,5 +183,15 @@ private:
 	bool flashFlag;
 	//ゲームオーバー画面----------------------------------------------
 
+
+	//タイトル画面----------------------------------------------
+	Sprite3DRender titleLogoTex;
+	float baseTitlePosY;
+	EventSprite doneSprite;
+	bool startFlag;
+
+	float titleT;
+	bool titleTReversFlag;
+	//タイトル画面----------------------------------------------
 };
 
