@@ -224,6 +224,10 @@ void LineEffect::Update()
 
 void LineEffect::Draw()
 {
+	if (rockOnFlag)
+	{
+		line->Draw();
+	}
 	if (rockOnFlag && !finishRockOnFlag)
 	{
 		circle->Draw();
@@ -234,11 +238,6 @@ void LineEffect::Draw()
 		releaseCircle->Draw();
 	}
 
-
-	if (rockOnFlag)
-	{
-		line->Draw();
-	}
 }
 
 void LineEffect::MoveLine(const XMVECTOR &VALUE)
