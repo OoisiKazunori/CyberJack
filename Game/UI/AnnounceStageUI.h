@@ -17,6 +17,7 @@ public:
 	void AnnounceStage(int STAGE_NUM);
 private:
 	bool startFlag;				//アナウンスを開始します
+	bool endFlag;
 	int stageNum;				//現在のステージ番号を表示します
 
 	XMVECTOR basePos, larpScale;
@@ -27,6 +28,9 @@ private:
 	std::array<int, 10> numberHandle;
 	Sprite2DRender flameTex;	//ウィンドウの描画
 	Sprite2DRender numberTex;	//数字の描画
-	Sprite2DRender areaTex;		//エリア文字の描画
+
+	std::array<Sprite2DRender, 6> areaTex;		//エリア文字の描画
+
+	int timer;
 };
 
