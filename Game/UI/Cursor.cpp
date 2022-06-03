@@ -17,8 +17,8 @@ Cursor::Cursor()
 	baseSpeed = 10.0f;
 	flameHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::CursorPath + "CursorBase.png");
 	cursorFlameTex->data.handle = flameHandle;
-	//cursorFlameTex->data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
-	cursorFlameTex->data.pipelineName = PIPELINE_NAME_SPRITE_MULTITEX;
+	cursorFlameTex->data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
+	//cursorFlameTex->data.pipelineName = PIPELINE_NAME_SPRITE_MULTITEX;
 
 
 	//numberTex->data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
