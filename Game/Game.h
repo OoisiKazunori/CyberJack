@@ -21,6 +21,7 @@
 #include"../Game/Stage/SecondStage.h"
 #include"../Game/Stage/ThridStage.h"
 #include"../Game/Event/MoiveEffect.h"
+#include"../Game/UI/AnnounceStageUI.h"
 #include"../Game/Event/EventSprite.h"
 
 struct ResponeData
@@ -109,6 +110,12 @@ private:
 	XMFLOAT2 mulValue2;							//カメラの上下左右の掛ける割合
 
 	XMVECTOR honraiPlayerCameraPos;
+
+	XMFLOAT3 layerLevelEyePos;
+	XMFLOAT3 layerLevelTargetPos;
+	XMFLOAT3 layerCameraMove;
+	XMVECTOR subPotalSpritePos;
+
 	//カメラ----------------------------------------------------------------
 
 	//カメラ挙動の確認
@@ -193,5 +200,9 @@ private:
 	float titleT;
 	bool titleTReversFlag;
 	//タイトル画面----------------------------------------------
+
+	//UI--------------------------------------
+	AnnounceStageUI stageUI;
+
 };
 

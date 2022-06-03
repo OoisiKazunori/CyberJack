@@ -60,5 +60,11 @@ namespace KazHelper
 
 	XMVECTOR GetScreenPos(XMFLOAT3 POS, XMFLOAT2 LEFTUP_POS = { 0.0f,0.0f });
 	XMFLOAT3 GetRightDownStagePos(XMFLOAT3 POS, XMFLOAT2 RIGHT_POS = { WIN_X - 400,WIN_Y });
+
+
+	int GetDigit(int NUM);
+
+	std::vector<int> CountNumber(int TIME, int ZERO = -1);
 }
+
 
