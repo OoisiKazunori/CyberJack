@@ -23,6 +23,7 @@
 #include"../Game/Event/MoiveEffect.h"
 #include"../Game/UI/AnnounceStageUI.h"
 #include"../Game/Event/EventSprite.h"
+#include"../Game/Event/TutorialWindow.h"
 
 struct ResponeData
 {
@@ -203,6 +204,9 @@ private:
 
 	//UI--------------------------------------
 	AnnounceStageUI stageUI;
+
+
+	TutorialWindow tutorialWindow;
 
 };
 

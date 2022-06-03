@@ -224,6 +224,9 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	titleLogoTex.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TitlePath + "TitleName.png");
 	doneSprite.Init({ 0.0f,0.0f,500.0f }, TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TitlePath + "Start.png"));
 
+
+	tutorialWindow.Init();
+
 	startFlag = false;
 }
 
@@ -963,6 +966,9 @@ void Game::Update()
 	stageUI.Update();
 	stages[stageNum]->Update();
 	doneSprite.Update();
+	tutorialWindow.Update();
+
+
 
 	//配列外を超えない処理
 	if (stageNum + 1 < stages.size())
@@ -1120,6 +1126,8 @@ void Game::Draw()
 
 		doneSprite.Draw();
 		titleLogoTex.Draw();
+
+		tutorialWindow.Draw();
 
 		//輝度抽出
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, handles[0]);
