@@ -45,7 +45,8 @@ private:
 
 	float addRota;
 	float addVel;
-
 	bool hitFlag;
+
+	int intervalTimer;
 
 };

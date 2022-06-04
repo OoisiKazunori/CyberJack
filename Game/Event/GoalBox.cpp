@@ -52,6 +52,8 @@ void GoalBox::Init(const XMVECTOR &POS)
 
 	startPortalEffectFlag = false;
 	addVel = 0.0f;
+
+	intervalTimer = 0;
 }
 
 void GoalBox::Update()
@@ -94,7 +96,7 @@ void GoalBox::Update()
 	lerpRota.m128_f32[0] += 1.0f;
 	lerpRota.m128_f32[1] += 1.0f;
 
-
+	lightEffect.Appear();
 	//当たった際の挙動
 	if (reduceHpFlag)
 	{
@@ -106,7 +108,14 @@ void GoalBox::Update()
 	}
 
 	//全弾ヒットしたら演出消して画面中央に向かう
-	if (iOperationData.hp <= 0)
+	const int NO_HP = 0;
+	if (iOperationData.hp <= NO_HP)
+	{
+		++intervalTimer;
+	}
+
+	const int INTERVAL_MAX_TIMER = 30;
+	if (INTERVAL_MAX_TIMER <= intervalTimer)
 	{
 		lightEffect.Disappear();
 		lerpPos = goCenterPos;

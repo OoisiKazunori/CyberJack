@@ -113,11 +113,10 @@ private:
 	struct RenderTargetHandle
 	{
 		unsigned int renderTargetNum;
-		unsigned int firstHandle;
-		RenderTargetHandle(unsigned int RENDER_TARGET_NUM, unsigned int FIRST_HANDLE) :renderTargetNum(RENDER_TARGET_NUM), firstHandle(FIRST_HANDLE)
+		std::vector<short> handles;
+		RenderTargetHandle(unsigned int RENDER_TARGET_NUM, std::vector<short> FIRST_HANDLE) :renderTargetNum(RENDER_TARGET_NUM), handles(FIRST_HANDLE)
 		{
 		};
 	};
-	const RenderTargetHandle &CountPass(short HANDLE);
+	std::vector<short> CountPass(short HANDLE);
 };
-

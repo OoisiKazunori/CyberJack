@@ -63,7 +63,7 @@ Game::Game()
 	lineStartPoly[6].data.transform.pos = { 0.5f,0.3f,-0.3f };
 	lineStartPoly[7].data.transform.pos = { 0.0f,-0.3f,-1.0f };
 
-	CameraMgr::Instance()->CameraSetting(60.0f, 1000.0f);
+	CameraMgr::Instance()->CameraSetting(60.0f, 1200.0f);
 
 	stages[0] = std::make_unique<FirstStage>();
 	stages[1] = std::make_unique<SecondStage>();
@@ -228,6 +228,7 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	tutorialWindow.Init();
 
 	startFlag = false;
+
 }
 
 void Game::Finalize()
@@ -604,6 +605,7 @@ void Game::Update()
 
 #pragma endregion
 
+	goalBox.Appear(appearGoalBoxPos);
 	//敵が一通り生成終わった際に登場させる----------------------------------------------------------------
 	if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame && !initAppearFlag)
 	//if (100 <= gameFlame && !initAppearFlag)

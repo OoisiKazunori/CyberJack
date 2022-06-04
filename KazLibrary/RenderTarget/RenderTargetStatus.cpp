@@ -103,7 +103,7 @@ void RenderTargetStatus::SwapResourceBarrier()
 
 void RenderTargetStatus::PrepareToChangeBarrier(const short &OPEN_RENDERTARGET_HANDLE, const short &CLOSE_RENDERTARGET_HANDLE)
 {
-	RenderTargetHandle openRendertargetPass = CountPass(OPEN_RENDERTARGET_HANDLE);
+	std::vector<short> openRendertargetPass = CountPass(OPEN_RENDERTARGET_HANDLE);
 
 
 	if (CLOSE_RENDERTARGET_HANDLE == -1)
@@ -114,42 +114,42 @@ void RenderTargetStatus::PrepareToChangeBarrier(const short &OPEN_RENDERTARGET_H
 	}
 	else
 	{
-		RenderTargetHandle closeRendertargetPass = CountPass(CLOSE_RENDERTARGET_HANDLE);
+		std::vector<short>  closeRendertargetPass = CountPass(CLOSE_RENDERTARGET_HANDLE);
 
-		for (int i = 0; i < closeRendertargetPass.renderTargetNum; ++i)
+		for (int i = 0; i < closeRendertargetPass.size(); ++i)
 		{
 			//指定のレンダータゲットを閉じる
-			ChangeBarrier(buffers->GetBufferData(closeRendertargetPass.firstHandle + i).Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+			ChangeBarrier(buffers->GetBufferData(closeRendertargetPass[i]).Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 		}
 	}
 
 
-	for (int i = 0; i < openRendertargetPass.renderTargetNum; ++i)
+	for (int i = 0; i < openRendertargetPass.size(); ++i)
 	{
 		//指定のレンダータゲットでバリアをあける
-		ChangeBarrier(buffers->GetBufferData(openRendertargetPass.firstHandle + i).Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
+		ChangeBarrier(buffers->GetBufferData(openRendertargetPass[i]).Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 	}
 
 
 	//レンダータゲットの設定
 	std::vector<D3D12_CPU_DESCRIPTOR_HANDLE>rtvHs;
-	for (int i = 0; i < openRendertargetPass.renderTargetNum; ++i)
+	for (int i = 0; i < openRendertargetPass.size(); ++i)
 	{
-		unsigned int handle = buffers->handle->CaluNowHandle(openRendertargetPass.firstHandle + i);
+		unsigned int handle = buffers->handle->CaluNowHandle(openRendertargetPass[i]);
 		D3D12_CPU_DESCRIPTOR_HANDLE rtvH = multiPassRTVHeap->GetCPUDescriptorHandleForHeapStart();
 		rtvH.ptr += DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV) * handle;
 		rtvHs.push_back(rtvH);
 	}
 
-	DirectX12CmdList::Instance()->cmdList->OMSetRenderTargets(openRendertargetPass.renderTargetNum, rtvHs.data(), false, &gDepth.dsvH[handle]);
+	DirectX12CmdList::Instance()->cmdList->OMSetRenderTargets(openRendertargetPass.size(), rtvHs.data(), false, &gDepth.dsvH[handle]);
 }
 
 void RenderTargetStatus::PrepareToCloseBarrier(const short &RENDERTARGET_HANDLE)
 {
-	RenderTargetHandle closeRendertargetPass = CountPass(RENDERTARGET_HANDLE);
-	for (int i = 0; i < closeRendertargetPass.renderTargetNum; ++i)
+	std::vector<short>  closeRendertargetPass = CountPass(RENDERTARGET_HANDLE);
+	for (int i = 0; i < closeRendertargetPass.size(); ++i)
 	{
-		ChangeBarrier(buffers->GetBufferData(closeRendertargetPass.firstHandle + i).Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+		ChangeBarrier(buffers->GetBufferData(closeRendertargetPass[i]).Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 	}
 }
 
@@ -182,26 +182,26 @@ void RenderTargetStatus::ClearRenderTarget(const short &RENDERTARGET_HANDLE)
 	gDepth.Clear(handle);
 	//レンダータゲットの設定
 
-	RenderTargetHandle openHandle = CountPass(RENDERTARGET_HANDLE);
-	for (int i = 0; i < openHandle.renderTargetNum; ++i)
+	std::vector<short>  openHandle = CountPass(RENDERTARGET_HANDLE);
+	for (int i = 0; i < openHandle.size(); ++i)
 	{
-		unsigned int handle = static_cast<unsigned int>(buffers->handle->CaluNowHandle(openHandle.firstHandle + i));
+		unsigned int handle = static_cast<unsigned int>(buffers->handle->CaluNowHandle(openHandle[i]));
 		D3D12_CPU_DESCRIPTOR_HANDLE rtvH = multiPassRTVHeap->GetCPUDescriptorHandleForHeapStart();
 		rtvH.ptr += DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV) * handle;
 
-		short clearHandle = buffers->handle->CaluNowHandle(openHandle.firstHandle + i);
+		short clearHandle = buffers->handle->CaluNowHandle(openHandle[i]);
 		float ClearColor[] = { clearColors[clearHandle].x,clearColors[clearHandle].y ,clearColors[clearHandle].z ,clearColors[clearHandle].w };
 		DirectX12CmdList::Instance()->cmdList->ClearRenderTargetView(rtvH, ClearColor, 0, nullptr);
 
 		XMUINT2 graphSize =
 		{
-			static_cast<uint32_t>(buffers->GetBufferData(openHandle.firstHandle + i)->GetDesc().Width),
-			static_cast<uint32_t>(buffers->GetBufferData(openHandle.firstHandle + i)->GetDesc().Height)
+			static_cast<uint32_t>(buffers->GetBufferData(openHandle[i])->GetDesc().Width),
+			static_cast<uint32_t>(buffers->GetBufferData(openHandle[i])->GetDesc().Height)
 		};
 		CD3DX12_RECT rect(0.0f, 0.0f, graphSize.x, graphSize.y);
 		CD3DX12_VIEWPORT viewport(0.0f, 0.0f, graphSize.x, graphSize.y);
-		DirectX12CmdList::Instance()->cmdList->RSSetViewports(openHandle.renderTargetNum, &viewport);
-		DirectX12CmdList::Instance()->cmdList->RSSetScissorRects(openHandle.renderTargetNum, &rect);
+		DirectX12CmdList::Instance()->cmdList->RSSetViewports(openHandle.size(), &viewport);
+		DirectX12CmdList::Instance()->cmdList->RSSetScissorRects(openHandle.size(), &rect);
 	}
 }
 
@@ -397,7 +397,7 @@ void RenderTargetStatus::ChangeBarrier(ID3D12Resource *RESOURCE, const D3D12_RES
 	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(1, &barrier);
 }
 
-const RenderTargetStatus::RenderTargetHandle &RenderTargetStatus::CountPass(short HANDLE)
+std::vector<short> RenderTargetStatus::CountPass(short HANDLE)
 {
 	for (int handleNum = 0; handleNum < renderTargetData.size(); ++handleNum)
 	{
@@ -405,7 +405,7 @@ const RenderTargetStatus::RenderTargetHandle &RenderTargetStatus::CountPass(shor
 		{
 			if (renderTargetData[handleNum][renderTargetNum] == HANDLE)
 			{
-				return	RenderTargetHandle(static_cast<unsigned int>(renderTargetData[handleNum].size()), static_cast<unsigned int>(renderTargetData[handleNum][0]));
+				return	renderTargetData[handleNum];
 			}
 		}
 	}
