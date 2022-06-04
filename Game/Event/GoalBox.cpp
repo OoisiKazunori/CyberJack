@@ -125,9 +125,9 @@ void GoalBox::Update()
 
 		if (60.0f * 5.0f <= addRota)
 		{
-			lerpScale.m128_f32[0] = 5.0f;
-			lerpScale.m128_f32[1] = 5.0f;
-			lerpScale.m128_f32[2] = 5.0f;
+			lerpScale.m128_f32[0] = 22.0f;
+			lerpScale.m128_f32[1] = 22.0f;
+			lerpScale.m128_f32[2] = 22.0f;
 		}
 		if (60.0f * 10.0f <= addRota)
 		{

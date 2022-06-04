@@ -22,7 +22,7 @@ Cursor::Cursor()
 
 
 	//numberTex->data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
-	numberTex->data.pipelineName = PIPELINE_NAME_SPRITE_MULTITEX;
+	numberTex->data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
 
 	//数字ハンドルの保存
 	numberHandle[0] = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::CursorPath + "CursorBase2.png");
@@ -388,7 +388,7 @@ void Cursor::Update()
 	{
 		int sub = 5;
 		cursorAlpha -= sub;
-
+		cursorFlameTex->data.pipelineName = PIPELINE_NAME_SPRITE_MULTITEX;
 		//完全に消えたらカーソルの位置を初期化する----------------------------------------------
 		//カーソルもまだ動かさない
 		if (cursorAlpha <= 0)
@@ -407,6 +407,7 @@ void Cursor::Update()
 	{
 		cursorAlpha = 255;
 		dontMoveFlag = false;
+		cursorFlameTex->data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
 	}
 
 	numberTex->data.alpha = cursorAlpha;

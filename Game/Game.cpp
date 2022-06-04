@@ -1166,7 +1166,7 @@ void Game::Draw()
 			//layerCameraMove.y = -vel;
 			//layerLevelEyePos = KazMath::CaluEyePosForDebug(layerLevelEyePos, layerCameraMove, angle);
 			//layerLevelTargetPos = KazMath::CaluTargetPosForDebug(layerLevelEyePos, angle.x);
-
+			
 			CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 1);
 			stages[stageNum + 1]->SetCamera(1);
 			stages[stageNum + 1]->Draw();
