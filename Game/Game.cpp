@@ -173,7 +173,7 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	trackingTargetPos = { 0.0f,0.0f,0.0f };
 	nowTargerPos = { 0.0f,0.0f,0.0f };
 	leftRightAngleVel = { -91.0f,-91.0f,0.0f };
-	upDownAngleVel = { -103.0f,-103.0f,0.0f };
+	upDownAngleVel = { 0.0f,0.0f,0.0f };
 
 	trackLeftRightAngleVel = leftRightAngleVel;
 	trackUpDownAngleVel = upDownAngleVel;
@@ -1049,7 +1049,7 @@ void Game::Update()
 		titleTReversFlag = true;
 	}
 
-	float rate = 1.0f / 60.0f;
+	float rate = 1.0f / 30.0f;
 	if (titleTReversFlag)
 	{
 		titleT += rate;

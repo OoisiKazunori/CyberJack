@@ -1,19 +1,23 @@
 #include "SplineMisile.h"
 #include"../KazLibrary/Math/KazMath.h"
+#include"../KazLibrary/Helper/ResourceFilePass.h"
 
 SplineMisile::SplineMisile()
 {
 	maxTime = 60 * 5;
 	splineBox.data.color = { 255.0f,0.0f,0.0f,255.0f };
+
+	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "misile.obj");
 }
 
 void SplineMisile::Init(const XMVECTOR &POS)
 {
 	iEnemy_ModelRender->data.transform.pos = POS;
+	iEnemy_ModelRender->data.transform.scale = { 1.3f,1.3f,1.3f };
 	iEnemy_EnemyStatusData->timer = maxTime;
 
 	iEnemy_EnemyStatusData->hitBox.radius = 5.0f;
-	iEnemy_EnemyStatusData->hitBox.center = &splineBox.data.transform.pos;
+	iEnemy_EnemyStatusData->hitBox.center = &iEnemy_ModelRender->data.transform.pos;
 	iOperationData.Init(1);
 
 	startIndex = 1;
@@ -85,9 +89,17 @@ void SplineMisile::Update()
 		pointsRender[i].data.transform.pos = points[i];
 	}
 
-	splineBox.data.transform.pos = position;
+	iEnemy_ModelRender->data.transform.pos = position;
 	//座標設定----------------------------------------------
 
+	//前ベクトルの設定----------------------------------------------
+	float nextTimeRate = static_cast<float>(nowTime + 1) / static_cast<float>(pointTime);
+	XMVECTOR nextpos = KazMath::SplinePosition(points, startIndex, nextTimeRate, true);
+
+	XMVECTOR upVector = nextpos - position;
+	upVector = XMVector3Normalize(upVector);
+	iEnemy_ModelRender->data.upVector = upVector;
+	//前ベクトルの設定----------------------------------------------
 
 
 	//死亡処理
@@ -103,5 +115,5 @@ void SplineMisile::Draw()
 	{
 		//pointsRender[i].Draw();
 	}
-	splineBox.Draw();
+	iEnemy_ModelRender->Draw();
 }

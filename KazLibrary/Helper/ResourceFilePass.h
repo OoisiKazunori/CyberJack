@@ -29,6 +29,7 @@ namespace KazFilePathName
 	static string TitlePath = RelativeResourcePath + "Title/";
 	static string SceneChangePath = RelativeResourcePath + "SceneChange/";
 	static string TutorialPath = RelativeResourcePath + "Tutorial/";
+	static string EnemyPath = RelativeResourcePath + "Enemy/";
 
 
 	//デバックパス-----------------------
