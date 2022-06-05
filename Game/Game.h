@@ -144,7 +144,7 @@ private:
 	//敵----------------------------------------------------------------
 
 	//線演出----------------------------------------------------------------
-	static const int LINE_MAX_ARRAY_NUM = 8;
+	static const int LINE_MAX_ARRAY_NUM = 16;
 	array<LineLevel1, LINE_MAX_ARRAY_NUM> lineLevel;			//直角に敵に線を伸ばしていく演出
 	array<LineEffectData, LINE_MAX_ARRAY_NUM>lineEffectArrayData;
 	XMVECTOR testEnemyPos;			//ロックオンする対象座標(テスト)

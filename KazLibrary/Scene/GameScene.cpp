@@ -171,13 +171,6 @@ GameScene::GameScene()
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].initPos = { -20.0f,10.0f,z };
 	++respoineIndex;
 
-	
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 3;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].initPos = { 0.0f,10.0f,z };
-	++respoineIndex;
-
-	
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 3;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].initPos = { 20.0f,10.0f,z };

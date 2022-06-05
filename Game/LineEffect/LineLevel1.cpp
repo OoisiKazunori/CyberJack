@@ -581,13 +581,12 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 
 
 		rockOnDistance = ENEMY_POS - PLAYER_POS;
-		lineReachObjFlag = false;
 		allFinishFlag = false;
 	}
 
 
 
-
+	lineReachObjFlag = false;
 	line[0]->StartEffect();
 
 }
@@ -665,6 +664,12 @@ void LineLevel1::Update()
 		}
 
 
+		//リリース時の演出が目標にたどり着いたらフラグを立てる
+		if (line[line.size() - 1]->finishReleaseFlag)
+		{
+			lineReachObjFlag = true;
+		}
+
 		//終了処理
 		if (line.size() - 1 <= count)
 		{
@@ -680,12 +685,6 @@ void LineLevel1::Update()
 			}
 		}
 
-
-		//リリース時の演出が目標にたどり着いたらフラグを立てる
-		if (line[line.size() - 1]->finishReleaseFlag)
-		{
-			lineReachObjFlag = true;
-		}
 	}
 
 }

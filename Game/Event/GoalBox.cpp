@@ -96,7 +96,6 @@ void GoalBox::Update()
 	lerpRota.m128_f32[0] += 1.0f;
 	lerpRota.m128_f32[1] += 1.0f;
 
-	lightEffect.Appear();
 	//“–‚½‚Á‚½Û‚Ì‹““®
 	if (reduceHpFlag)
 	{

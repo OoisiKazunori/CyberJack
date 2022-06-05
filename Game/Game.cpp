@@ -166,6 +166,7 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	changeLayerLevelMaxTime[0] = 60 * 30;
 	changeLayerLevelMaxTime[1] = 60 * 36;
 	gameStageLevel = 0;
+	stageNum = gameStageLevel;
 	//ゲームループの初期化----------------------------------------------------------------
 
 
@@ -203,7 +204,6 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	responeGoalBoxPos = { -10.0f,-100.0f,40.0f };
 	goalBox.Init(responeGoalBoxPos);
 
-	stageNum = 0;
 	initAppearFlag = false;
 
 	movieEffect.Init();
@@ -501,7 +501,13 @@ void Game::Update()
 		lineEffectArrayData[i].startPos = lineStartPoly[i].data.transform.pos + player.pos;
 	}
 	ImGui::End();
-
+	{
+		int lineArrayNum = lineStartPoly.size();
+		for (int i = lineArrayNum; i < lineArrayNum * 2; ++i)
+		{
+			lineEffectArrayData[i].startPos = lineStartPoly[i - lineArrayNum].data.transform.pos + player.pos;
+		}
+	}
 
 
 #pragma region カメラ挙動
@@ -604,8 +610,6 @@ void Game::Update()
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 0);
 
 #pragma endregion
-
-	goalBox.Appear(appearGoalBoxPos);
 	//敵が一通り生成終わった際に登場させる----------------------------------------------------------------
 	if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame && !initAppearFlag)
 	//if (100 <= gameFlame && !initAppearFlag)
@@ -738,7 +742,8 @@ void Game::Update()
 				bool hitFlag = CollisionManager::Instance()->CheckRayAndSphere(cursor.hitBox, enemyData->hitBox);
 				if (hitFlag &&
 					enableToLockOnNumFlag &&
-					enableToLockOnEnemyFlag)
+					enableToLockOnEnemyFlag &&
+					!cursor.releaseFlag)
 				{
 					//カーソルのカウント数を増やす
 					cursor.Count();
@@ -818,7 +823,7 @@ void Game::Update()
 
 
 
-
+#pragma region 線のロックオン解放
 
 	//線がたどり着いたら敵を死亡させる
 	for (int i = 0; i < lineEffectArrayData.size(); ++i)
@@ -835,12 +840,15 @@ void Game::Update()
 				//演出を合わせてダメージと死亡をやる
 				if (lineLevel[lineIndex].lineReachObjFlag && enemies[enemyTypeIndex][enemyIndex]->IsAlive())
 				{
-					lineEffectArrayData[i].Reset();
+					//lineEffectArrayData[i].Reset();
+					//lineLevel[lineIndex].lineReachObjFlag = false;
+					bool dbeig = false;
 				}
 				else if (lineLevel[lineIndex].lineReachObjFlag && !enemies[enemyTypeIndex][enemyIndex]->IsAlive())
 				{
 					enemies[enemyTypeIndex][enemyIndex]->Dead();
-					lineEffectArrayData[i].Reset();
+					//lineEffectArrayData[i].Reset();
+					//lineLevel[lineIndex].lineReachObjFlag = false;
 				}
 			}
 			else
@@ -848,12 +856,11 @@ void Game::Update()
 				//演出を合わせて死亡
 				if (lineLevel[lineIndex].lineReachObjFlag && goalBox.IsAlive())
 				{
-					lineEffectArrayData[i].Reset();
+					//lineEffectArrayData[i].Reset();
 				}
 				else if (lineLevel[lineIndex].lineReachObjFlag && !goalBox.IsAlive())
 				{
-					bool debug = false;
-					lineEffectArrayData[i].Reset();
+					//lineEffectArrayData[i].Reset();
 				}
 			}
 		}
@@ -871,6 +878,8 @@ void Game::Update()
 			}
 		}
 	}
+
+#pragma endregion
 
 
 #pragma endregion
@@ -1019,6 +1028,12 @@ void Game::Update()
 		{
 			lineLevel[i].playerPos = lineEffectArrayData[i].startPos;
 		}
+
+		if (!lineLevel[i].initFlag)
+		{
+			lineEffectArrayData[i].Reset();
+		}
+
 		lineLevel[i].Update();
 	}
 
@@ -1037,6 +1052,8 @@ void Game::Update()
 	}
 	//更新処理----------------------------------------------------------------
 #pragma endregion
+
+
 
 
 
