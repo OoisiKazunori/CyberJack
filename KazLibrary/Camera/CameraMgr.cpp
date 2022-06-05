@@ -115,7 +115,6 @@ void CameraMgr::Camera(const XMFLOAT3 &EYE_POS, const XMFLOAT3 &TARGET_POS, cons
 
 	//全方位ビルボード
 	XMMATRIX matBillboard;
-	// Y軸回りビルボード行列
 	matBillboard.r[0] = cameraAxis.x;
 	matBillboard.r[1] = cameraAxis.y;
 	matBillboard.r[2] = cameraAxis.z;

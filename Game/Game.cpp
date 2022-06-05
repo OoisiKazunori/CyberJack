@@ -822,6 +822,36 @@ void Game::Update()
 #pragma endregion
 
 
+	for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
+	{
+		for (int enemyCount = 0; enemyCount < enemies[enemyType].size(); ++enemyCount)
+		{
+			//生成されている、初期化している敵のみ更新処理を通す
+			bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
+			if (enableToUseDataFlag)
+			{
+				//敵のデータのポインタを代入
+				EnemyData *enemyData = enemies[enemyType][enemyCount]->GetData().get();
+
+				for (int i = 0; i < lineEffectArrayData.size(); ++i)
+				{
+					bool sameEnemyFlag = lineEffectArrayData[i].enemyTypeIndex == enemyType && lineEffectArrayData[i].enemyIndex == enemyCount;
+					if (lineEffectArrayData[i].usedFlag && sameEnemyFlag)
+					{
+						enemyData->oprationObjData->lockOnFlag = true;
+						break;
+					}
+					else
+					{
+						enemyData->oprationObjData->lockOnFlag = false;
+					}
+				}
+			}
+		}
+	}
+
+
+
 
 #pragma region 線のロックオン解放
 

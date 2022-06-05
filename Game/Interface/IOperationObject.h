@@ -8,6 +8,7 @@ struct IOperationObjectData
 	bool enableToHitFlag;	//判定が有効なのかどうか判断するフラグ
 	bool initFlag;			//既に初期化が通ったか判断するフラグ
 	int hp;					//OBJの体力
+	bool lockOnFlag;
 
 	IOperationObjectData()
 	{
@@ -15,6 +16,7 @@ struct IOperationObjectData
 		initFlag = false;
 		enableToHitFlag = false;
 		hp = -1;
+		lockOnFlag = false;
 	}
 
 	/// <summary>
@@ -27,6 +29,7 @@ struct IOperationObjectData
 		hp = MAX_ROCKON_NUM;
 		enableToHitFlag = true;
 		initFlag = true;
+		lockOnFlag = false;
 	};
 };
 

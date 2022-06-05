@@ -113,4 +113,6 @@ public:
 
 protected:
 
+	Sprite3DRender lockOnWindowRender;
+	void LockOnWindow();
 };

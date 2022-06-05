@@ -111,15 +111,18 @@ void Sprite3DRender::Draw()
 		baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
 		baseMatWorldData.matTrans = KazMath::CaluTransMatrix(data.transform.pos);
 		baseMatWorldData.matRota = KazMath::CaluRotaMatrix(data.transform.rotation);
+
+
+		baseMatWorldData.matWorld *= baseMatWorldData.matScale;
+		baseMatWorldData.matWorld *= baseMatWorldData.matRota;
 		//ビルボード行列を掛ける
 		if (data.billBoardFlag)
 		{
 			baseMatWorldData.matWorld *= renderData.cameraMgrInstance->GetMatBillBoard(data.cameraIndex);
 		}
-		baseMatWorldData.matWorld *= baseMatWorldData.matScale;
-		baseMatWorldData.matWorld *= baseMatWorldData.matRota;
 		baseMatWorldData.matWorld *= baseMatWorldData.matTrans;
 		baseMatWorldData.matWorld *= data.motherMat;
+
 
 		//親行列を掛ける
 		motherMat = baseMatWorldData.matWorld;

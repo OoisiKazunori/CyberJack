@@ -1,4 +1,5 @@
 #include "IEnemy.h"
+#include"../KazLibrary/Helper/ResourceFilePass.h"
 
 IEnemy::IEnemy()
 {
@@ -14,6 +15,12 @@ IEnemy::IEnemy()
 		&iOperationData
 	);
 	//“Gî•ñ‚Ì‰Šú‰»----------------------------------------------------------------
+
+	lockOnWindowRender.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::LinePath + "LockOn.png");
+	lockOnWindowRender.data.transform.scale = { 0.2f,0.2f };
+	lockOnWindowRender.data.billBoardFlag = true;
+	lockOnWindowRender.data.pipelineName = PIPELINE_NAME_SPRITE_Z_ALWAYS;
+
 }
 
 void IEnemy::Dead()
@@ -39,4 +46,13 @@ void IEnemy::DeadEffect(XMVECTOR *POS, XMVECTOR *ROTATION, float *ALPHA)
 const unique_ptr<EnemyData> &IEnemy::GetData()
 {
 	return iEnemy_EnemyStatusData;
+}
+
+void IEnemy::LockOnWindow()
+{
+	if (iEnemy_EnemyStatusData->oprationObjData->lockOnFlag && iOperationData.enableToHitFlag)
+	{
+		lockOnWindowRender.data.transform.pos = *iEnemy_EnemyStatusData->hitBox.center;
+		lockOnWindowRender.Draw();
+	}
 }
