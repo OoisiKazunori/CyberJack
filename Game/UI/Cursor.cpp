@@ -431,7 +431,8 @@ void Cursor::Update()
 	//カメラの制限
 	if (honraiCursorPos.m128_f32[0] <= 0.0f)
 	{
-		honraiCameraMoveValue.m128_f32[0] = limitValue.m128_f32[0];
+		float localLimit = 485.0f;
+		honraiCameraMoveValue.m128_f32[0] = localLimit;
 	}
 	if (WIN_X <= honraiCursorPos.m128_f32[0])
 	{
@@ -554,6 +555,12 @@ const XMVECTOR &Cursor::GetValue()
 	XMVECTOR rateMaxValue = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	//割合計算
 	XMVECTOR value = cameraMoveValue / rateMaxValue;
+
+	if (1.0f <= value.m128_f32[0])
+	{
+		bool debug = false;
+	}
+
 	//カメラの座標に合わせる為にX軸の符号を反転
 	value.m128_f32[0] *= -1.0f;
 	return value;

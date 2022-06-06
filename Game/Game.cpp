@@ -415,8 +415,6 @@ void Game::Input()
 
 
 	XMVECTOR cursorValue = cursor.GetValue();
-
-
 	nowTargerPos += vel;
 
 	upDownAngleVel =
