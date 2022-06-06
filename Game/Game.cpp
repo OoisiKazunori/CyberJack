@@ -479,28 +479,28 @@ void Game::Update()
 	ImGui::InputFloat("NO_MOVE_DISTANCE:Y", &cursor.NO_MOVE_DISTANCE.m128_f32[1]);
 	ImGui::End();*/
 
-	ImGui::Begin("Debug");
-	ImGui::Checkbox("DebugCamera", &cameraChangeFlag);
-	ImGui::Checkbox("DebugLine", &lineDebugFlag);
-	ImGui::End();
+	//ImGui::Begin("Debug");
+	//ImGui::Checkbox("DebugCamera", &cameraChangeFlag);
+	//ImGui::Checkbox("DebugLine", &lineDebugFlag);
+	//ImGui::End();
 
 
-	ImGui::Begin("StartLine");
+	//ImGui::Begin("StartLine");
 	for (int i = 0; i < lineStartPoly.size(); ++i)
 	{
 		lineStartPoly[i].data.pipelineName = PIPELINE_NAME_COLOR_MULTITEX;
 		std::string name = "Start" + std::to_string(i) + "X";
-		ImGui::InputFloat(name.c_str(), &lineStartPoly[i].data.transform.pos.m128_f32[0]);
+		//ImGui::InputFloat(name.c_str(), &lineStartPoly[i].data.transform.pos.m128_f32[0]);
 		name = "Start" + std::to_string(i) + "Y";
-		ImGui::InputFloat(name.c_str(), &lineStartPoly[i].data.transform.pos.m128_f32[1]);
+		//ImGui::InputFloat(name.c_str(), &lineStartPoly[i].data.transform.pos.m128_f32[1]);
 		name = "Start" + std::to_string(i) + "Z";
-		ImGui::InputFloat(name.c_str(), &lineStartPoly[i].data.transform.pos.m128_f32[2]);
+		//ImGui::InputFloat(name.c_str(), &lineStartPoly[i].data.transform.pos.m128_f32[2]);
 
 		lineStartPoly[i].data.transform.scale = { 0.1f,0.1f,0.1f };
 		lineStartPoly[i].data.color = { 255.0f,0.0f,0.0f,255.0f };
 		lineEffectArrayData[i].startPos = lineStartPoly[i].data.transform.pos + player.pos;
 	}
-	ImGui::End();
+	//ImGui::End();
 	{
 		int lineArrayNum = lineStartPoly.size();
 		for (int i = lineArrayNum; i < lineArrayNum * 2; ++i)
@@ -610,6 +610,8 @@ void Game::Update()
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 0);
 
 #pragma endregion
+
+
 	//敵が一通り生成終わった際に登場させる----------------------------------------------------------------
 	if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame && !initAppearFlag)
 	//if (100 <= gameFlame && !initAppearFlag)
@@ -852,6 +854,33 @@ void Game::Update()
 
 
 
+	for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
+	{
+		for (int enemyCount = 0; enemyCount < enemies[enemyType].size(); ++enemyCount)
+		{
+			//生成されている、初期化している敵のみ更新処理を通す
+			bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
+			if (enableToUseDataFlag)
+			{
+				//敵のデータのポインタを代入
+				EnemyData *enemyData = enemies[enemyType][enemyCount]->GetData().get();
+
+				for (int i = 0; i < lineEffectArrayData.size(); ++i)
+				{
+					bool sameEnemyFlag = lineEffectArrayData[i].enemyTypeIndex == enemyType && lineEffectArrayData[i].enemyIndex == enemyCount;
+					if (lineEffectArrayData[i].usedFlag && sameEnemyFlag && enemyData->outOfStageFlag)
+					{
+						int lineIndex = lineEffectArrayData[i].lineIndex;
+						lineLevel[lineIndex].Release();
+						cursor.SubCount(1);
+						break;
+					}
+				}
+			}
+		}
+	}
+
+
 
 #pragma region 線のロックオン解放
 
@@ -982,19 +1011,9 @@ void Game::Update()
 	//ゲームオーバー----------------------------------------------
 
 
-
 #pragma region 更新処理
 
 	goalBox.releaseFlag = cursor.releaseFlag;
-
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_G))
-	{
-		stageUI.Init();
-	}
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_B))
-	{
-		stageUI.AnnounceStage(0);
-	}
 
 
 	//更新処理----------------------------------------------------------------
@@ -1155,7 +1174,10 @@ void Game::Draw()
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(handles[0]);
 		RenderTargetStatus::Instance()->ClearRenderTarget(handles[0]);
 
-		goalBox.Draw();
+		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
+		{
+			goalBox.Draw();
+		}
 		goalBox.portalEffect.Draw();
 
 		if (lineDebugFlag)
@@ -1183,7 +1205,12 @@ void Game::Draw()
 				}
 			}
 		}
-		goalBox.lightEffect.Draw();
+
+		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
+		{
+			goalBox.lightEffect.Draw();
+		}
+
 
 		doneSprite.Draw();
 		titleLogoTex.Draw();

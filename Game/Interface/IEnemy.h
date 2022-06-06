@@ -47,7 +47,8 @@ struct EnemyData
 	EnemyData(XMVECTOR *HITBOX_POS_ADRESS, const float &RADIUS, IOperationObjectData *OPERATION_DATA) :
 		hitBox({ HITBOX_POS_ADRESS ,RADIUS }),
 		oprationObjData(OPERATION_DATA),
-		timer(1)
+		timer(1),
+		outOfStageFlag(false)
 	{
 	};
 
@@ -55,6 +56,7 @@ struct EnemyData
 	IOperationObjectData *oprationObjData;	//操作可能OBJが持つ基本データのアドレス
 	GenarateOtherObjData genarateData;		//追加で敵を生成する際に必要な情報
 	int timer;								//プレイヤーに当たるまでの時間
+	bool outOfStageFlag;					//ステージの範囲外に出てしまった
 };
 
 /// <summary>

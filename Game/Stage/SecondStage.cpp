@@ -116,7 +116,7 @@ void SecondStage::Update()
 	bool exportFlag = false;
 	bool importFlag = false;
 
-	ImGui::Begin("Stage");
+	/*ImGui::Begin("Stage");
 	for (int i = 0; i < JSON_ARRAY_NUM; ++i)
 	{
 		string name = "Line" + std::to_string(i);
@@ -141,7 +141,7 @@ void SecondStage::Update()
 	{
 		exportFlag = true;
 	}
-	ImGui::End();
+	ImGui::End();*/
 
 	//ƒtƒ@ƒCƒ‹“Ç‚Ýž‚Ý
 	if (importFlag)

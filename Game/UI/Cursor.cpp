@@ -479,7 +479,7 @@ void Cursor::Update()
 	//“–‚½‚è”»’è----------------------------------------------------------------
 
 
-	ImGui::Begin("Curosr");
+	/*ImGui::Begin("Curosr");
 	ImGui::InputFloat("Speed", &baseSpeed);
 	ImGui::InputFloat("KOCKBACK_MAX_VALUE_X", &KOCKBACK_MAX_VALUE.x);
 	ImGui::InputFloat("KOCKBACK_MAX_VALUE_Y", &KOCKBACK_MAX_VALUE.y);
@@ -492,7 +492,7 @@ void Cursor::Update()
 	ImGui::Text("KnockBackValY%f", knockBackVal.m128_f32[1]);
 	ImGui::Text("stickAngleX:%f", honraiStick.m128_f32[0]);
 	ImGui::Text("stickAngleY:%f", honraiStick.m128_f32[1]);
-	ImGui::End();
+	ImGui::End();*/
 
 }
 
@@ -556,4 +556,13 @@ void Cursor::Disappear()
 void Cursor::Appear()
 {
 	disappearFlag = false;
+}
+
+void Cursor::SubCount(int SUB_VALUE)
+{
+	lockOnNum -= SUB_VALUE;
+	if (lockOnNum <= -1)
+	{
+		lockOnNum = 0;
+	}
 }

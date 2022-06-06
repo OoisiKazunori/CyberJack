@@ -66,6 +66,7 @@ void NormalEnemy::Update()
 	if (!EnableToHit(iEnemy_ModelRender->data.transform.pos.m128_f32[2]))
 	{
 		iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag = false;
+		iEnemy_EnemyStatusData->outOfStageFlag = true;
 	}
 }
 

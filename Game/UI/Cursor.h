@@ -29,6 +29,12 @@ public:
 	void Disappear();
 	void Appear();
 
+	/// <summary>
+	/// ƒƒbƒNƒIƒ“”‚ğŒ¸‚ç‚·
+	/// </summary>
+	/// <param name="SUB_VALUE">Œ¸‚ç‚·•ª</param>
+	void SubCount(int SUB_VALUE);
+
 	XMVECTOR honraiCursorPos;
 	XMVECTOR cursorPos;
 	XMVECTOR prevCursorPos;

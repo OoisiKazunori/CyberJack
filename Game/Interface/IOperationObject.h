@@ -65,7 +65,7 @@ public:
 	IOperationObjectData iOperationData;//操作可能OBJ全員が持つ基本データ
 
 protected:
-	const float limitLinePosZ = -200.0f;//当たり判定を有効にするライン
+	const float limitLinePosZ = -10.0f;//当たり判定を有効にするライン
 	int timer;							//連続ヒットしてHpを減らす際に間隔をあける為に使用
 	int reduceHpNum;
 	bool startToReduceHpFlag;
@@ -76,7 +76,7 @@ protected:
 	/// <param name="POS_Z">対象のZ座標</param>
 	bool EnableToHit(float POS_Z)
 	{
-		return limitLinePosZ<= POS_Z;
+		return limitLinePosZ <= POS_Z;
 	};
 
 };

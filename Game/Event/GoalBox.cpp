@@ -167,14 +167,14 @@ void GoalBox::Update()
 	portalEffect.Update();
 
 
-	ImGui::Begin("Goal");
+	/*ImGui::Begin("Goal");
 	ImGui::InputFloat("RotaX", &moveRotaVel.m128_f32[0]);
 	ImGui::InputFloat("RotaY", &moveRotaVel.m128_f32[1]);
 	ImGui::InputFloat("RotaZ", &moveRotaVel.m128_f32[2]);
 	ImGui::InputFloat("Z", &moveVel.m128_f32[2]);
 	ImGui::InputFloat("MoveLerp", &lerpMoveVel);
 	ImGui::InputFloat("MoveRotaLerp", &lerpMoveRotaVel);
-	ImGui::End();
+	ImGui::End();*/
 }
 
 void GoalBox::Draw()

@@ -154,38 +154,38 @@ void FirstStage::Update()
 	bool exportFlag = false;
 	bool importFlag = false;
 
-	ImGui::Begin("Stage");
-	for (int i = 0; i < stageDebugBox.size(); ++i)
-	{
-		string name = "Box" + std::to_string(i);
-		if (ImGui::TreeNode(name.c_str()))
-		{
-			ImGui::InputFloat("PosX", &stageDebugBox[i].data.transform.pos.m128_f32[0]);
-			ImGui::InputFloat("PosY", &stageDebugBox[i].data.transform.pos.m128_f32[1]);
-			ImGui::InputFloat("PosZ", &stageDebugBox[i].data.transform.pos.m128_f32[2]);
-			ImGui::InputFloat("ScaleX", &stageDebugBox[i].data.transform.scale.m128_f32[0]);
-			ImGui::InputFloat("ScaleY", &stageDebugBox[i].data.transform.scale.m128_f32[1]);
-			ImGui::InputFloat("ScaleZ", &stageDebugBox[i].data.transform.scale.m128_f32[2]);
-			ImGui::InputFloat("RotaX", &stageDebugBox[i].data.transform.rotation.m128_f32[0]);
-			ImGui::InputFloat("RotaY", &stageDebugBox[i].data.transform.rotation.m128_f32[1]);
-			ImGui::InputFloat("RotaZ", &stageDebugBox[i].data.transform.rotation.m128_f32[2]);
-			//ImGui::InputFloat("FogDistiny", &fogData[i].fogdata.w);
-			ImGui::TreePop();
-		}
-	}
-	//ImGui::InputFloat("FogColorX", &fogData[0].fogdata.x);
-	//ImGui::InputFloat("FogColorY", &fogData[0].fogdata.y);
-	//ImGui::InputFloat("FogColorZ", &fogData[0].fogdata.z);
-	if (ImGui::Button("Import"))
-	{
-		importFlag = true;
-	}
-	ImGui::SameLine();
-	if (ImGui::Button("Export"))
-	{
-		exportFlag = true;
-	}
-	ImGui::End();
+	//ImGui::Begin("Stage");
+	//for (int i = 0; i < stageDebugBox.size(); ++i)
+	//{
+	//	string name = "Box" + std::to_string(i);
+	//	if (ImGui::TreeNode(name.c_str()))
+	//	{
+	//		ImGui::InputFloat("PosX", &stageDebugBox[i].data.transform.pos.m128_f32[0]);
+	//		ImGui::InputFloat("PosY", &stageDebugBox[i].data.transform.pos.m128_f32[1]);
+	//		ImGui::InputFloat("PosZ", &stageDebugBox[i].data.transform.pos.m128_f32[2]);
+	//		ImGui::InputFloat("ScaleX", &stageDebugBox[i].data.transform.scale.m128_f32[0]);
+	//		ImGui::InputFloat("ScaleY", &stageDebugBox[i].data.transform.scale.m128_f32[1]);
+	//		ImGui::InputFloat("ScaleZ", &stageDebugBox[i].data.transform.scale.m128_f32[2]);
+	//		ImGui::InputFloat("RotaX", &stageDebugBox[i].data.transform.rotation.m128_f32[0]);
+	//		ImGui::InputFloat("RotaY", &stageDebugBox[i].data.transform.rotation.m128_f32[1]);
+	//		ImGui::InputFloat("RotaZ", &stageDebugBox[i].data.transform.rotation.m128_f32[2]);
+	//		//ImGui::InputFloat("FogDistiny", &fogData[i].fogdata.w);
+	//		ImGui::TreePop();
+	//	}
+	//}
+	////ImGui::InputFloat("FogColorX", &fogData[0].fogdata.x);
+	////ImGui::InputFloat("FogColorY", &fogData[0].fogdata.y);
+	////ImGui::InputFloat("FogColorZ", &fogData[0].fogdata.z);
+	//if (ImGui::Button("Import"))
+	//{
+	//	importFlag = true;
+	//}
+	//ImGui::SameLine();
+	//if (ImGui::Button("Export"))
+	//{
+	//	exportFlag = true;
+	//}
+	//ImGui::End();
 
 	for (int i = 1; i < stageDebugBox.size(); ++i)
 	{
@@ -280,10 +280,10 @@ void FirstStage::Update()
 	}
 	//Žè‘O’Œ
 
-	ImGui::Begin("Depth");
-	ImGui::SliderFloat("StartDepthFogX", &depthX.x, 0.0f, 500.0f);
-	ImGui::SliderFloat("EndDepthFogY", &depthX.y, 0.0f, 500.0f);
-	ImGui::End();
+	//ImGui::Begin("Depth");
+	//ImGui::SliderFloat("StartDepthFogX", &depthX.x, 0.0f, 500.0f);
+	//ImGui::SliderFloat("EndDepthFogY", &depthX.y, 0.0f, 500.0f);
+	//ImGui::End();
 
 	for (int i = 0; i < fogData.size(); ++i)
 	{
