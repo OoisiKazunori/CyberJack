@@ -140,7 +140,7 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 
 				case ENEMY_TYPE_MISILE:
 					enemies[enemyType][enemyCount] = std::make_unique<NormalMisileEnemy>();
-					enemies[ENEMY_TYPE_MISILE_SPLINE][enemyCount] = std::make_unique<SplineMisile>();
+					enemies[ENEMY_TYPE_MISILE_SPLINE][enemiesHandle[ENEMY_TYPE_MISILE_SPLINE]] = std::make_unique<SplineMisile>();
 					++enemiesHandle[ENEMY_TYPE_MISILE_SPLINE];
 					break;
 
@@ -164,8 +164,8 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 		changeLayerLevelMaxTime[i] = 1800;
 	}
 	changeLayerLevelMaxTime[0] = 60 * 30;
-	changeLayerLevelMaxTime[1] = 60 * 36;
-	gameStageLevel = 0;
+	changeLayerLevelMaxTime[1] = 60 * 39;
+	gameStageLevel = 1;
 	stageNum = gameStageLevel;
 	//ゲームループの初期化----------------------------------------------------------------
 
@@ -950,7 +950,7 @@ void Game::Update()
 		for (int enemyCount = 0; enemyCount < enemies[enemyType].size(); ++enemyCount)
 		{
 			//生成されている、初期化している敵のみ更新処理を通す
-			bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
+			bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->enableToHitFlag;
 			if (enableToUseDataFlag)
 			{
 				//時間が0秒以下ならプレイヤーに当たったと判断する

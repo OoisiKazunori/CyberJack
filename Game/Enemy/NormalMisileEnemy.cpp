@@ -89,4 +89,5 @@ void NormalMisileEnemy::Update()
 void NormalMisileEnemy::Draw()
 {
 	iEnemy_ModelRender->Draw();
+	LockOnWindow();
 }

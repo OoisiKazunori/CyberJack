@@ -16,14 +16,14 @@ GameScene::GameScene()
 	float z = 300.0f;
 
 	//2-----------------------------------------------------------------
-	responeData[ENEMY_TYPE_MISILE][respoineIndex].layerLevel = 0;
-	responeData[ENEMY_TYPE_MISILE][respoineIndex].flame = time * 3;
-	responeData[ENEMY_TYPE_MISILE][respoineIndex].initPos = { 20.0f,10.0f,z };
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = 0;
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 3;
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].initPos = { 20.0f,10.0f,z };
 	++respoineIndex;
 
-	responeData[ENEMY_TYPE_MISILE][respoineIndex].layerLevel = 0;
-	responeData[ENEMY_TYPE_MISILE][respoineIndex].flame = time * 3;
-	responeData[ENEMY_TYPE_MISILE][respoineIndex].initPos = { 60.0f,10.0f,z };
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = 0;
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 3;
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].initPos = { 60.0f,10.0f,z };
 	++respoineIndex;
 	//2-----------------------------------------------------------------
 
@@ -200,15 +200,15 @@ GameScene::GameScene()
 
 	//2-----------------------------------------------------------------
 	
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 8;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].initPos = { 20.0f,-10.0f,z };
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].layerLevel = layerLevel;
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].flame = time * 8;
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].initPos = { 20.0f,-10.0f,z };
 	++respoineIndex;
 
 	
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 8;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].initPos = { 40.0f,-10.0f,z };
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].layerLevel = layerLevel;
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].flame = time * 8;
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].initPos = { 40.0f,-10.0f,z };
 	++respoineIndex;
 	//2-----------------------------------------------------------------
 
@@ -241,9 +241,9 @@ GameScene::GameScene()
 	++respoineIndex;
 
 	
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 14;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].initPos = { 40.0f,-10.0f,z };
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].layerLevel = layerLevel;
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].flame = time * 14;
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].initPos = { 40.0f,-10.0f,z };
 	++respoineIndex;
 
 	
@@ -277,9 +277,9 @@ GameScene::GameScene()
 	++respoineIndex;
 
 	
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 19;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].initPos = { -10.0f,-10.0f,z };
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].layerLevel = layerLevel;
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].flame = time * 19;
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].initPos = { -10.0f,-10.0f,z };
 	++respoineIndex;
 	//2-----------------------------------------------------------------
 
@@ -329,15 +329,15 @@ GameScene::GameScene()
 	++respoineIndex;
 
 	
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 26;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].initPos = { -40.0f,20.0f,z };
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].layerLevel = layerLevel;
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].flame = time * 26;
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].initPos = { -40.0f,20.0f,z };
 	++respoineIndex;
 
 	
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 26;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].initPos = { -40.0f,0.0f,z };
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].layerLevel = layerLevel;
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].flame = time * 26;
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].initPos = { -40.0f,0.0f,z };
 	++respoineIndex;
 	//4-----------------------------------------------------------------
 
@@ -384,15 +384,15 @@ GameScene::GameScene()
 	++respoineIndex;
 
 	
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 32;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].initPos = { 20.0f,20.0f,z };
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].layerLevel = layerLevel;
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].flame = time * 32;
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].initPos = { 20.0f,20.0f,z };
 	++respoineIndex;
 
 	
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 32;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].initPos = { 20.0f,0.0f,z };
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].layerLevel = layerLevel;
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].flame = time * 32;
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].initPos = { 20.0f,0.0f,z };
 	++respoineIndex;
 	//4-----------------------------------------------------------------
 #pragma endregion
