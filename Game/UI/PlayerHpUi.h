@@ -12,6 +12,7 @@ public:
 	void Update();
 	void Draw();
 
+	void Sub();
 	int hp;
 private:
 	int maxHp;
@@ -22,4 +23,8 @@ private:
 	std::array<int, 5> timer;
 	std::array<bool, 5> lerpFlag;
 	std::array<Sprite2DRender, 5> hpFlame;
+	Sprite2DRender hpBackGround;
+
+	int damageTimer;
+	bool subFlag;
 };

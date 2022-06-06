@@ -5,6 +5,7 @@
 
 NormalMisileEnemy::NormalMisileEnemy()
 {
+	shotSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Shot.wav", false);
 }
 
 void NormalMisileEnemy::Init(const XMVECTOR &POS)
@@ -26,6 +27,8 @@ void NormalMisileEnemy::Init(const XMVECTOR &POS)
 	iEnemy_ModelRender->data.transform.rotation.m128_f32[1] = 90.0f;
 	iEnemy_ModelRender->data.transform.rotation.m128_f32[2] = 0.0f;
 	initShotFlag = false;
+
+	initDeadSoundFlag = false;
 }
 
 void NormalMisileEnemy::Finalize()
@@ -43,6 +46,7 @@ void NormalMisileEnemy::Update()
 		//ノックバック
 		XMVECTOR kockBackVel = { 0.0f,0.0f,60.0f };
 		lerpPos = iEnemy_ModelRender->data.transform.pos + kockBackVel;
+		SoundManager::Instance()->PlaySoundMem(shotSoundHandle, 1);
 		initShotFlag = true;
 	}
 
@@ -56,6 +60,12 @@ void NormalMisileEnemy::Update()
 		iEnemy_ModelRender->data.color.y = 255.0f;
 		iEnemy_ModelRender->data.color.z = 255.0f;
 		DeadEffect(&iEnemy_ModelRender->data.transform.pos, &iEnemy_ModelRender->data.transform.rotation, &iEnemy_ModelRender->data.color.w);
+
+		if (!initDeadSoundFlag)
+		{
+			DeadSound();
+			initDeadSoundFlag = true;
+		}
 	}
 	//死亡演出中に登場演出は行わない
 	else

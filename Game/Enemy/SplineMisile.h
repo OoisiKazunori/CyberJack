@@ -26,5 +26,6 @@ private:
 	std::array<BoxPolygonRender, 3> pointsRender;
 	//ƒXƒvƒ‰ƒCƒ“‹Èü----------------------------------------------
 
+	bool hitFlag;
 };
 

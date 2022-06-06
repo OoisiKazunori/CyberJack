@@ -18,9 +18,15 @@ public:
 	bool isAlive();
 	XMVECTOR pos;
 private:
-	short hp;
+	short hp,prevHp;
+	bool redFlag;
+	int redTimer;
 	BoxPolygonRenderPtr render;
 
 	PlayerHpUi hpUi;
+
+
+	int damageSoundHandle;
+
 };
 

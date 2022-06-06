@@ -1,11 +1,17 @@
 #include "Player.h"
 #include"../KazLibrary/Imgui/MyImgui.h"
+#include"../KazLibrary/Sound/SoundManager.h"
+#include"../KazLibrary/Helper/ResourceFilePass.h"
+
 Player::Player()
 {
 	render = std::make_unique<BoxPolygonRender>();
 	render->data.pipelineName = PIPELINE_NAME_COLOR_MULTITEX;
 	hp = -1;
 	pos = {};
+
+	damageSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "PlayerDamage.wav");
+
 }
 
 void Player::Init(const XMVECTOR &POS)
@@ -17,6 +23,9 @@ void Player::Init(const XMVECTOR &POS)
 	hp = 3;
 
 	hpUi.Init(hp);
+	prevHp = hp;
+	redFlag = false;
+	redTimer = 0;
 }
 
 void Player::Finalize()
@@ -40,7 +49,41 @@ void Player::Update()
 	ImGui::End();*/
 
 	hpUi.Update();
-	hpUi.hp = hp;
+
+
+	//----------HPが減ったらプレイヤーを赤くする----------
+	if (hp != prevHp)
+	{
+		SoundManager::Instance()->PlaySoundMem(damageSoundHandle, 1);
+		redFlag = true;
+	}
+	prevHp = hp;
+
+
+	if (redFlag)
+	{
+		++redTimer;
+
+		if (60 <= redTimer)
+		{
+			redFlag = false;
+		}
+	}
+	else
+	{
+		redTimer = 0;
+	}
+
+	if (redFlag)
+	{
+		render->data.color = { 255.0f,0.0f,0.0f,255.0f };
+	}
+	else
+	{
+		render->data.color = { 255.0f,255.0f,255.0f,255.0f };
+	}
+	//----------HPが減ったらプレイヤーを赤くする----------
+
 }
 
 void Player::Draw()
@@ -52,6 +95,7 @@ void Player::Draw()
 void Player::Hit()
 {
 	--hp;
+	hpUi.Sub();
 }
 
 bool Player::isAlive()

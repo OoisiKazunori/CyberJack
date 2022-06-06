@@ -54,8 +54,10 @@ void SplineMisile::Init(const XMVECTOR &POS)
 	points.push_back(endPos);
 	points.push_back(endPos);
 
-	pointTime = maxTime /( points.size() - 3);
+	pointTime = maxTime / (points.size() - 3);
 
+	initDeadSoundFlag = false;
+	hitFlag = false;
 }
 
 void SplineMisile::Finalize()
@@ -64,11 +66,18 @@ void SplineMisile::Finalize()
 
 void SplineMisile::Update()
 {
+	//当たったら描画しなくなる
+	if (iEnemy_EnemyStatusData->timer <= 0)
+	{
+		iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag = false;
+		iOperationData.initFlag = false;
+		hitFlag = true;
+	}
 
 
 	//死亡演出処理
 	//デバックキーor当たり判定内&&死亡時
-	if (EnableToHit(iEnemy_ModelRender->data.transform.pos.m128_f32[2]) && !iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
+	if (EnableToHit(iEnemy_ModelRender->data.transform.pos.m128_f32[2]) && !iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag && !hitFlag)
 	{
 		iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME_MULTITEX;
 		iEnemy_ModelRender->data.removeMaterialFlag = true;
@@ -76,6 +85,12 @@ void SplineMisile::Update()
 		iEnemy_ModelRender->data.color.y = 255.0f;
 		iEnemy_ModelRender->data.color.z = 255.0f;
 		DeadEffect(&iEnemy_ModelRender->data.transform.pos, &iEnemy_ModelRender->data.transform.rotation, &iEnemy_ModelRender->data.color.w);
+
+		if (!initDeadSoundFlag)
+		{
+			DeadSound();
+			initDeadSoundFlag = true;
+		}
 	}
 	else
 	{
@@ -135,10 +150,10 @@ void SplineMisile::Update()
 
 void SplineMisile::Draw()
 {
-	for (int i = 0; i < pointsRender.size(); ++i)
-	{
+	//for (int i = 0; i < pointsRender.size(); ++i)
+	//{
 		//pointsRender[i].Draw();
-	}
+	//}
 	iEnemy_ModelRender->Draw();
 	LockOnWindow(iEnemy_ModelRender->data.transform.pos);
 }

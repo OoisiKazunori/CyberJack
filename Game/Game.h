@@ -207,6 +207,9 @@ private:
 	AnnounceStageUI stageUI;
 
 
+	int bgmSoundHandle, lockSoundHandle;
+	int doneSoundHandle;
+
 	TutorialWindow tutorialWindow;
 
 };

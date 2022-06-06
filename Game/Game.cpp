@@ -9,6 +9,7 @@
 #include"../KazLibrary/Easing/easing.h"
 #include<cmath>
 #include<iostream>
+#include"../KazLibrary/Sound/SoundManager.h"
 
 
 Game::Game()
@@ -87,6 +88,13 @@ Game::Game()
 
 
 	potalTexHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, XMFLOAT3(0.0f, 0.0f, 0.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
+
+
+	bgmSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Bgm.wav");
+	lockSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Lock.wav", false);
+	doneSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Done.wav");
+	SoundManager::Instance()->StopSoundMem(bgmSoundHandle);
+	SoundManager::Instance()->PlaySoundMem(bgmSoundHandle, 1, true);
 }
 
 Game::~Game()
@@ -165,7 +173,7 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	}
 	changeLayerLevelMaxTime[0] = 60 * 30;
 	changeLayerLevelMaxTime[1] = 60 * 39;
-	gameStageLevel = 1;
+	gameStageLevel = 0;
 	stageNum = gameStageLevel;
 	//ゲームループの初期化----------------------------------------------------------------
 
@@ -747,6 +755,9 @@ void Game::Update()
 					enableToLockOnEnemyFlag &&
 					!cursor.releaseFlag)
 				{
+					SoundManager::Instance()->PlaySoundMem(lockSoundHandle, 1);
+
+
 					//カーソルのカウント数を増やす
 					cursor.Count();
 					//敵が当たった情報を書く
@@ -807,9 +818,10 @@ void Game::Update()
 		bool hitFlag = CollisionManager::Instance()->CheckRayAndSphere(cursor.hitBox, doneSprite.hitBox);
 		if (hitFlag &&
 			enableToLockOnEnemyFlag &&
-			enableToLockOnNumFlag)
+			enableToLockOnNumFlag && !startFlag)
 		{
 			doneSprite.Hit();
+			SoundManager::Instance()->PlaySoundMem(doneSoundHandle, 1);
 			startFlag = true;
 		}
 		else if (hitFlag)
@@ -884,7 +896,9 @@ void Game::Update()
 				for (int i = 0; i < lineEffectArrayData.size(); ++i)
 				{
 					bool sameEnemyFlag = lineEffectArrayData[i].enemyTypeIndex == enemyType && lineEffectArrayData[i].enemyIndex == enemyCount;
-					if (lineEffectArrayData[i].usedFlag && sameEnemyFlag && enemyData->outOfStageFlag)
+					bool releaseFlag = enemyData->outOfStageFlag || enemyData->timer <= 0;
+
+					if (lineEffectArrayData[i].usedFlag && sameEnemyFlag && releaseFlag)
 					{
 						int lineIndex = lineEffectArrayData[i].lineIndex;
 						lineLevel[lineIndex].Release();
@@ -973,7 +987,7 @@ void Game::Update()
 				if (enemies[enemyType][enemyCount]->GetData()->timer <= 0)
 				{
 					player.Hit();
-					enemies[enemyType][enemyCount]->Dead();
+					//enemies[enemyType][enemyCount]->Dead();
 				}
 			}
 		}

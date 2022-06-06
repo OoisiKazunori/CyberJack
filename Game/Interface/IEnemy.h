@@ -1,6 +1,7 @@
 #pragma once
 #include"../Game/Interface/IOperationObject.h"
 #include"../KazLibrary/Collision/CollisionManager.h"
+#include"../KazLibrary/Sound/SoundManager.h"
 
 /// <summary>
 /// “G‚Ìí—Ş
@@ -108,10 +109,18 @@ public:
 	/// <returns>“G‚Ìî•ñ</returns>
 	const unique_ptr<EnemyData> &GetData();
 
+	void HitSound();
+	void DeadSound();
 
 	unique_ptr<EnemyData> iEnemy_EnemyStatusData;		//“G‚Ìó‘Ô‚ğ•Û‘¶‚·‚éƒf[ƒ^
 	ObjModelRenderPtr iEnemy_ModelRender;				//“G‚Ì•`‰æ
 	XMVECTOR lerpPos;
 
 protected:
+	bool initDeadSoundFlag;
+
+private:
+	int deadSoundHandle;
+	int damageSoundHandle;
+
 };

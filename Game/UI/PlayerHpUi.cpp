@@ -13,6 +13,9 @@ PlayerHpUi::PlayerHpUi()
 		hpTex[i].data.handle = hpHandle;
 		hpFlame[i].data.handle = hpFlameHandle;
 	}
+
+	hpBackGround.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::HpPath + "HpBackGround.png");
+	hpBackGround.data.transform.pos = { 200.0f,650.0f };
 }
 
 void PlayerHpUi::Init(int HP_MAX)
@@ -25,6 +28,7 @@ void PlayerHpUi::Init(int HP_MAX)
 	timer[2] = 0;
 	timer[3] = 15;
 	timer[4] = 20;
+	damageTimer = 0;
 }
 
 void PlayerHpUi::Update()
@@ -38,7 +42,7 @@ void PlayerHpUi::Update()
 		hp = maxHp;
 	}
 
-	//for (int i = 4; 0 <= i; --i)
+
 	for (int i = 0; i < 5; ++i)
 	{
 		++timer[i];
@@ -59,7 +63,6 @@ void PlayerHpUi::Update()
 	}
 
 
-
 	basePos = { 150.0f,650.0f };
 	for (int i = 0; i < maxHp; ++i)
 	{
@@ -70,7 +73,6 @@ void PlayerHpUi::Update()
 
 		KazMath::Larp(lerpScale[i].m128_f32[1], &hpTex[i].data.transform.scale.m128_f32[1], 0.2f);
 	}
-
 
 }
 
@@ -86,4 +88,11 @@ void PlayerHpUi::Draw()
 	{
 		hpFlame[i].Draw();
 	}
+
+	hpBackGround.Draw();
+}
+
+void PlayerHpUi::Sub()
+{
+	--hp;
 }

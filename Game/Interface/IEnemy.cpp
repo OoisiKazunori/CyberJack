@@ -13,7 +13,7 @@ IEnemy::IEnemy()
 		&iEnemy_ModelRender->data.transform.pos,
 		-1.0f,
 		&iOperationData
-	);
+		);
 	//“Gî•ñ‚Ì‰Šú‰»----------------------------------------------------------------
 
 	lockOnWindowRender.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::LinePath + "LockOn.png");
@@ -21,6 +21,8 @@ IEnemy::IEnemy()
 	lockOnWindowRender.data.billBoardFlag = true;
 	lockOnWindowRender.data.pipelineName = PIPELINE_NAME_SPRITE_Z_ALWAYS;
 
+	deadSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "EnemyDead.wav", false);
+	//damageSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "EnemyDamage.wav");
 }
 
 void IEnemy::Dead()
@@ -46,4 +48,14 @@ void IEnemy::DeadEffect(XMVECTOR *POS, XMVECTOR *ROTATION, float *ALPHA)
 const unique_ptr<EnemyData> &IEnemy::GetData()
 {
 	return iEnemy_EnemyStatusData;
+}
+
+void IEnemy::HitSound()
+{
+	SoundManager::Instance()->PlaySoundMem(damageSoundHandle, 1);
+}
+
+void IEnemy::DeadSound()
+{
+	SoundManager::Instance()->PlaySoundMem(deadSoundHandle, 1);
 }

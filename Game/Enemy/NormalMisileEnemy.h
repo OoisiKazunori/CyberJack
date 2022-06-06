@@ -14,4 +14,6 @@ public:
 private:
 	int shotTimer;//ƒ~ƒTƒCƒ‹”­Ë‚Ü‚Å‚ÌŠÔ
 	bool initShotFlag;
+
+	int shotSoundHandle;
 };

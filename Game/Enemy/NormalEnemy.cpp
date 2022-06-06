@@ -25,6 +25,7 @@ void NormalEnemy::Init(const XMVECTOR &POS)
 	iEnemy_ModelRender->data.transform.rotation.m128_f32[1] = 90.0f;
 	iEnemy_ModelRender->data.transform.rotation.m128_f32[2] = 0.0f;
 
+	initDeadSoundFlag = false;
 }
 
 void NormalEnemy::Finalize()
@@ -47,6 +48,12 @@ void NormalEnemy::Update()
 		iEnemy_ModelRender->data.color.y = 255.0f;
 		iEnemy_ModelRender->data.color.z = 255.0f;
 		DeadEffect(&iEnemy_ModelRender->data.transform.pos, &iEnemy_ModelRender->data.transform.rotation, &iEnemy_ModelRender->data.color.w);
+
+		if (!initDeadSoundFlag)
+		{
+			DeadSound();
+			initDeadSoundFlag = true;
+		}
 	}
 	//€–S‰‰o’†‚É“oê‰‰o‚Ís‚í‚È‚¢
 	else
