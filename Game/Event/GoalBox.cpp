@@ -180,6 +180,7 @@ void GoalBox::Update()
 void GoalBox::Draw()
 {
 	model->Draw();
+	LockOnWindow(model->data.transform.pos);
 }
 
 void GoalBox::Appear(const XMVECTOR &POS)

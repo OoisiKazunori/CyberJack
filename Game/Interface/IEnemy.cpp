@@ -47,12 +47,3 @@ const unique_ptr<EnemyData> &IEnemy::GetData()
 {
 	return iEnemy_EnemyStatusData;
 }
-
-void IEnemy::LockOnWindow()
-{
-	if (iEnemy_EnemyStatusData->oprationObjData->lockOnFlag && iOperationData.enableToHitFlag)
-	{
-		lockOnWindowRender.data.transform.pos = *iEnemy_EnemyStatusData->hitBox.center;
-		lockOnWindowRender.Draw();
-	}
-}

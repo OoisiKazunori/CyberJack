@@ -140,5 +140,5 @@ void SplineMisile::Draw()
 		//pointsRender[i].Draw();
 	}
 	iEnemy_ModelRender->Draw();
-	LockOnWindow();
+	LockOnWindow(iEnemy_ModelRender->data.transform.pos);
 }

@@ -114,7 +114,4 @@ public:
 	XMVECTOR lerpPos;
 
 protected:
-
-	Sprite3DRender lockOnWindowRender;
-	void LockOnWindow();
 };

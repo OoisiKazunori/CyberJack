@@ -1,4 +1,13 @@
 #include "IOperationObject.h"
+#include"../KazLibrary/Helper/ResourceFilePass.h"
+
+IOperationObject::IOperationObject()
+{
+	lockOnWindowRender.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::LinePath + "LockOn.png");
+	lockOnWindowRender.data.transform.scale = { 0.2f,0.2f };
+	lockOnWindowRender.data.billBoardFlag = true;
+	lockOnWindowRender.data.pipelineName = PIPELINE_NAME_SPRITE_Z_ALWAYS;
+}
 
 void IOperationObject::Hit()
 {
@@ -41,4 +50,13 @@ int IOperationObject::ReduceHp(int COUNT)
 		return 2;
 	}
 	return 0;
+}
+
+void IOperationObject::LockOnWindow(XMVECTOR POS)
+{
+	if (iOperationData.lockOnFlag && iOperationData.enableToHitFlag)
+	{
+		lockOnWindowRender.data.transform.pos = POS;
+		lockOnWindowRender.Draw();
+	}
 }

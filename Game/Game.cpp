@@ -852,6 +852,22 @@ void Game::Update()
 		}
 	}
 
+	for (int i = 0; i < lineEffectArrayData.size(); ++i)
+	{
+		bool sameEventFlag = lineEffectArrayData[i].eventType == 0 && lineEffectArrayData[i].lineIndex == i;
+		if (lineEffectArrayData[i].usedFlag && sameEventFlag)
+		{
+			goalBox.iOperationData.lockOnFlag = true;
+			break;
+		}
+		else
+		{
+			goalBox.iOperationData.lockOnFlag = false;
+		}
+	}
+
+
+
 
 
 	for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)

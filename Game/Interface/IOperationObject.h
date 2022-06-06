@@ -41,6 +41,8 @@ class IOperationObject
 public:
 	virtual ~IOperationObject() {};
 
+	IOperationObject();
+
 	/// <summary>
 	/// ロックオンの残り回数を減らします
 	/// </summary>
@@ -79,4 +81,7 @@ protected:
 		return limitLinePosZ <= POS_Z;
 	};
 
+	void LockOnWindow(XMVECTOR POS);
+
+	Sprite3DRender lockOnWindowRender;
 };
