@@ -30,6 +30,9 @@ GoalBox::GoalBox()
 	hitBox.center = &model->data.transform.pos;
 	hitBox.radius = 10.0f;
 	//std::shared_ptr<XMMATRIX>data = std::make_shared<XMMATRIX>(model->data.motherMat);
+
+	damageSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + ".wav", false);
+	warpSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "warp.wav", false);
 }
 
 void GoalBox::Init(const XMVECTOR &POS)
@@ -54,6 +57,7 @@ void GoalBox::Init(const XMVECTOR &POS)
 	addVel = 0.0f;
 
 	intervalTimer = 0;
+	initWarpSoundFlag = false;
 }
 
 void GoalBox::Update()
@@ -83,6 +87,7 @@ void GoalBox::Update()
 		//体力を減らす
 		if (result == 1)
 		{
+			SoundManager::Instance()->PlaySoundMem(damageSoundHandle, 1);
 			reduceHpFlag = true;
 		}
 		//終了
@@ -144,6 +149,11 @@ void GoalBox::Update()
 		}
 	}
 
+	if (20 < portalEffect.timer && !initWarpSoundFlag)
+	{
+		SoundManager::Instance()->PlaySoundMem(warpSoundHandle, 1);
+		initWarpSoundFlag = true;
+	}
 
 
 	//座標のラープ

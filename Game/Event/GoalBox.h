@@ -4,6 +4,7 @@
 #include"../KazLibrary/Render/KazRender.h"
 #include"../Game/Event/GoalBoxEffect.h"
 #include"../Game/Event/GoalBoxPortalEffect.h"
+#include"../KazLibrary/Sound/SoundManager.h"
 #include<array>
 
 class GoalBox :public IOperationObject
@@ -48,5 +49,9 @@ private:
 	bool hitFlag;
 
 	int intervalTimer;
+
+	int damageSoundHandle;
+	int warpSoundHandle;
+	bool initWarpSoundFlag;
 
 };

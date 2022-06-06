@@ -792,6 +792,8 @@ void Game::Update()
 			enableToLockOnNumFlag &&
 			enableToLockOnEnemyFlag)
 		{
+			SoundManager::Instance()->PlaySoundMem(lockSoundHandle, 1);
+
 			//カーソルのカウント数を増やす
 			cursor.Count();
 			goalBox.Hit();

@@ -14,11 +14,10 @@ public:
 	void Start();
 	bool AllHidden();
 	Sprite3DRenderPtr sprite;
-private:
-	
-	bool startFlag;
-	bool goBeforeFlag;
 	int timer;
+private:
+	bool goBeforeFlag;
+	bool startFlag;
 
 	XMVECTOR lerpRota;
 };
