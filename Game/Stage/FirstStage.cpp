@@ -273,9 +273,9 @@ void FirstStage::Update()
 	for (int i = 16; i < 24; ++i)
 	{
 		stageDebugBox[i].data.transform.pos += vel;
-		if (stageDebugBox[i].data.transform.pos.m128_f32[2] <= -50.0f)
+		if (stageDebugBox[i].data.transform.pos.m128_f32[2] <= -100.0f)
 		{
-			stageDebugBox[i].data.transform.pos.m128_f32[2] = 750.0f;
+			stageDebugBox[i].data.transform.pos.m128_f32[2] = 800.0f;
 		}
 	}
 	//Žè‘O’Œ

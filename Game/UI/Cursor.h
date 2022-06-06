@@ -106,5 +106,8 @@ private:
 	XMINT2 noTochFlag;
 	XMINT2 noTockTimer;
 	//ノックバック挙動-----------------------
+
+	int clickSoundHandle;
+	bool initClickSoundFlag;
 };
 

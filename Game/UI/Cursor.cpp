@@ -1,6 +1,7 @@
 #include "Cursor.h"
 #include"../KazLibrary/Helper/ResourceFilePass.h"
 #include"../KazLibrary/Imgui/MyImgui.h"
+#include"../KazLibrary/Sound/SoundManager.h"
 
 XMFLOAT2 Cursor::KOCKBACK_MAX_VALUE = { 200.0f,200.0f };
 XMFLOAT2 Cursor::KOCKBACK_VELOCITY = { 5.0f,5.0f };
@@ -51,6 +52,9 @@ Cursor::Cursor()
 		cursorEffectTex[i].cursorEffectTex->data.handle = flameHandle;
 		cursorEffectTex[i].cursorEffectTex->data.pipelineName = PIPELINE_NAME_SPRITE_MULTITEX;
 	}
+
+	clickSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Push.wav", false);
+	initClickSoundFlag = false;
 }
 
 void Cursor::Init()
@@ -99,12 +103,19 @@ void Cursor::Update()
 		lockOnNum = 8;
 	}
 
+	if (doneFlag && !initClickSoundFlag)
+	{
+		SoundManager::Instance()->PlaySoundMem(clickSoundHandle, 1);
+		initClickSoundFlag = true;
+	}
+
 	//ロックオン入力がリリースされたら初期化する
 	if (releaseFlag)
 	{
 		enableLockOnTimer = 0;
 		lockOnNum = 0;
 		notEnableLockOnFlag = false;
+		initClickSoundFlag = false;
 	}
 
 
