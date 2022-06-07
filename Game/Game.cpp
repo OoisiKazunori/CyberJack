@@ -1217,10 +1217,6 @@ void Game::Draw()
 		player.Draw();
 		stages[stageNum]->SetCamera(0);
 		stages[stageNum]->Draw();
-		for (int i = 0; i < lineLevel.size(); ++i)
-		{
-			lineLevel[i].Draw();
-		}
 
 		//敵の描画処理----------------------------------------------------------------
 		for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
@@ -1234,6 +1230,11 @@ void Game::Draw()
 					enemies[enemyType][enemyCount]->Draw();
 				}
 			}
+		}
+
+		for (int i = 0; i < lineLevel.size(); ++i)
+		{
+			lineLevel[i].Draw();
 		}
 
 		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
