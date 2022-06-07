@@ -61,7 +61,7 @@ void PlayerHpUi::Update()
 	{
 		++disappearTimer;
 
-		if (60 <= disappearTimer)
+		if (80 <= disappearTimer)
 		{
 			redHpUiNum -= subRedHpNum;
 			subRedHpNum = 0;

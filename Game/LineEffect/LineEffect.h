@@ -28,6 +28,9 @@ public:
 	bool finishReleaseFlag;
 	XMVECTOR playerPos;
 private:
+	const float NORMAL_LOCKON_SPEED = 6.0f;
+	const float RAPID_LOCKON_SPEED = 12.0f;
+
 	LineRenderPtr line;
 	Sprite3DRenderPtr circle;
 	Sprite3DRenderPtr releaseCircle;

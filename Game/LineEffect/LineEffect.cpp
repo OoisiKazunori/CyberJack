@@ -27,7 +27,7 @@ LineEffect::LineEffect()
 	finishFlag = false;
 	allFinishFlag = false;
 
-	lockOnSpeed = 6.0f;
+	lockOnSpeed = NORMAL_LOCKON_SPEED;
 	releaseSpeed = 10.0f;
 }
 
@@ -94,6 +94,12 @@ void LineEffect::Update()
 
 	//ƒŠƒŠ[ƒXŽž‚Ì‰~‚ÌÀ•W
 	releaseCircle->data.transform.pos = endPos;
+
+	if (releaseFlag)
+	{
+		lockOnSpeed = RAPID_LOCKON_SPEED;
+	}
+
 
 
 	distance = endPos - startPos;
