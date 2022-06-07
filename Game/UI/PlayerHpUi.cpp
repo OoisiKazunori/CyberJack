@@ -7,21 +7,27 @@ PlayerHpUi::PlayerHpUi()
 {
 	int hpHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::HpPath + "Hp.png");
 	int hpFlameHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::HpPath + "HpFlame.png");
+	int redHpHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::HpPath + "RedHp.png");
 
 	for (int i = 0; i < hpTex.size(); ++i)
 	{
 		hpTex[i].data.handle = hpHandle;
 		hpFlame[i].data.handle = hpFlameHandle;
+		redHpTex[i].data.handle = redHpHandle;
 	}
 
 	hpBackGround.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::HpPath + "HpBackGround.png");
 	hpBackGround.data.transform.pos = { 200.0f,650.0f };
+
 }
 
 void PlayerHpUi::Init(int HP_MAX)
 {
 	maxHp = HP_MAX;
 	hp = maxHp;
+	redHpUiNum = HP_MAX;
+	prevHp = hp;
+	disappearTimer = 0;
 
 	timer[0] = 10;
 	timer[1] = 5;
@@ -40,6 +46,32 @@ void PlayerHpUi::Update()
 	if (maxHp <= hp)
 	{
 		hp = maxHp;
+	}
+
+
+	if (hp != prevHp)
+	{
+		disappearFlag = true;
+		disappearTimer = 0;
+		subRedHpNum = prevHp - hp;
+	}
+	prevHp = hp;
+
+	if (disappearFlag)
+	{
+		++disappearTimer;
+
+		if (60 <= disappearTimer)
+		{
+			redHpUiNum -= subRedHpNum;
+			subRedHpNum = 0;
+			disappearFlag = false;
+		}
+	}
+
+	if (redHpUiNum <= 0)
+	{
+		redHpUiNum = 0;
 	}
 
 
@@ -72,6 +104,9 @@ void PlayerHpUi::Update()
 		hpFlame[i].data.transform.pos = pos;
 
 		KazMath::Larp(lerpScale[i].m128_f32[1], &hpTex[i].data.transform.scale.m128_f32[1], 0.2f);
+
+
+		redHpTex[i].data.transform = hpTex[i].data.transform;
 	}
 
 }
@@ -82,6 +117,11 @@ void PlayerHpUi::Draw()
 	for (int i = 0; i < hp; ++i)
 	{
 		hpTex[i].Draw();
+	}
+	//RedHp
+	for (int i = 0; i < redHpUiNum; ++i)
+	{
+		redHpTex[i].Draw();
 	}
 	//Hp‚ÌƒtƒŒ[ƒ€
 	for (int i = 0; i < maxHp; ++i)

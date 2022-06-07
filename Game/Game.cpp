@@ -171,7 +171,7 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	{
 		changeLayerLevelMaxTime[i] = 1800;
 	}
-	changeLayerLevelMaxTime[0] = 60 * 30;
+	changeLayerLevelMaxTime[0] = 60 * 28;
 	changeLayerLevelMaxTime[1] = 60 * 39;
 	gameStageLevel = 0;
 	stageNum = gameStageLevel;
@@ -329,7 +329,7 @@ void Game::Input()
 
 	//ゲーム終了処理
 	//三ステージ目で6秒後にタイトル画面に戻る許可を出す
-	if (inputController->InputTrigger(XINPUT_GAMEPAD_A) && 360 <= gameFlame && 2 <= gameStageLevel)
+	if (inputController->InputTrigger(XINPUT_GAMEPAD_A) && 2 <= gameStageLevel)
 	{
 		sceneNum = 0;
 	}

@@ -16,9 +16,14 @@ public:
 	int hp;
 private:
 	int maxHp;
+	int prevHp;
+	bool disappearFlag;
+	int disappearTimer;
+	int subRedHpNum;
 
 	XMVECTOR basePos;
 	std::array<Sprite2DRender, 5> hpTex;
+	std::array<Sprite2DRender, 5> redHpTex;
 	std::array<XMVECTOR, 5> lerpScale;
 	std::array<int, 5> timer;
 	std::array<bool, 5> lerpFlag;
@@ -27,4 +32,6 @@ private:
 
 	int damageTimer;
 	bool subFlag;
+
+	int redHpUiNum;
 };

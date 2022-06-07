@@ -28,7 +28,7 @@ GameScene::GameScene()
 	//2-----------------------------------------------------------------
 
 
-	respoineIndex = 0;
+	//respoineIndex = 0;
 	//2-----------------------------------------------------------------
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = 0;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 6;

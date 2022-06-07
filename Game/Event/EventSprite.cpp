@@ -46,7 +46,7 @@ void EventSprite::Update()
 	{
 		++timer;
 	}
-	if (120 <= timer)
+	if (60 <= timer)
 	{
 		spriteRender.data.alpha -= 5.0f;
 	}
