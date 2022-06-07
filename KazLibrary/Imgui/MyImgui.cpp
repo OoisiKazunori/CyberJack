@@ -45,9 +45,14 @@ void MyImgui::Create(HWND hwnd)
 
 void MyImgui::NewFlame() 
 {
+	auto &io = ImGui::GetIO();
+	// Enable docking(available in imgui `docking` branch at the moment)
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+
 }
 
 
