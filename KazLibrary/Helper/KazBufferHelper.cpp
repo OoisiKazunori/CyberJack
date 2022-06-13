@@ -106,6 +106,24 @@ KazBufferHelper::BufferResourceData KazBufferHelper::SetRWStructuredBuffer(const
 	return data;
 }
 
+KazBufferHelper::BufferResourceData KazBufferHelper::SetCommandBufferData(const unsigned int &BUFFER_SIZE, const string &BUFFER_NAME)
+{
+	D3D12_HEAP_PROPERTIES prop = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
+	D3D12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Buffer(BUFFER_SIZE);
+
+	KazBufferHelper::BufferResourceData data
+	(
+		prop,
+		D3D12_HEAP_FLAG_NONE,
+		resourceDesc,
+		D3D12_RESOURCE_STATE_COPY_DEST,
+		nullptr,
+		BUFFER_NAME
+	);
+
+	return data;
+}
+
 D3D12_VERTEX_BUFFER_VIEW KazBufferHelper::SetVertexBufferView(const D3D12_GPU_VIRTUAL_ADDRESS &GPU_ADDRESS, const unsigned int &BUFFER_SIZE, const unsigned int &ONE_VERTICES_SIZE)
 {
 	D3D12_VERTEX_BUFFER_VIEW view;

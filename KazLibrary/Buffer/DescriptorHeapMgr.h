@@ -15,7 +15,7 @@ public:
 	void CreateBufferView(const short &HANDLE, const D3D12_CONSTANT_BUFFER_VIEW_DESC &BUFFER_VIEW, ID3D12Resource *ADDRESS);
 	void CreateBufferView(const short &HANDLE, const D3D12_SHADER_RESOURCE_VIEW_DESC &BUFFER_VIEW, ID3D12Resource *ADDRESS);
 	void CreateBufferView(const short &HANDLE, const D3D12_RENDER_TARGET_VIEW_DESC &BUFFER_VIEW, ID3D12Resource *ADDRESS);
-	void CreateBufferView(const short &HANDLE, const D3D12_UNORDERED_ACCESS_VIEW_DESC &BUFFER_VIEW, ID3D12Resource *ADDRESS);
+	void CreateBufferView(const short &HANDLE, const D3D12_UNORDERED_ACCESS_VIEW_DESC &BUFFER_VIEW, ID3D12Resource *ADDRESS, ID3D12Resource *COUNTER_RESOURCE = nullptr);
 	void Release(const short &HANDLE);
 
 

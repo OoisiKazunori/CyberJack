@@ -74,6 +74,7 @@ namespace KazBufferHelper
 
 	KazBufferHelper::BufferResourceData SetRWStructuredBuffer(const unsigned int &BUFFER_SIZE, const string &BUFFER_NAME = "RWStructureBuffer");
 
+	KazBufferHelper::BufferResourceData SetCommandBufferData(const unsigned int &BUFFER_SIZE, const string &BUFFER_NAME = "CommandBuffer");
 
 
 	D3D12_VERTEX_BUFFER_VIEW SetVertexBufferView(const D3D12_GPU_VIRTUAL_ADDRESS &GPU_ADDRESS, const unsigned int &BUFFER_SIZE, const unsigned int &ONE_VERTICES_SIZE);

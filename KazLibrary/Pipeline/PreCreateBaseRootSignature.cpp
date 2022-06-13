@@ -355,8 +355,7 @@ PreCreateBaseRootSignature::PreCreateBaseRootSignature()
 	}
 
 
-	//SR‚ÆUAV
-
+	//SRV‚ÆUAV
 	{
 		RootSignatureData lineData;
 		lineData.paramData[0].param = 0;

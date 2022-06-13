@@ -22,6 +22,25 @@ struct CommonData
 	XMMATRIX projectionMat;
 };
 
+struct IndirectCommand
+{
+	D3D12_GPU_VIRTUAL_ADDRESS cbv;
+	D3D12_DRAW_ARGUMENTS drawArguments;
+};
+
+
+//à⁄ìÆèÓïÒ
+struct SceneConstantBuffer
+{
+	XMFLOAT4 velocity;
+	XMFLOAT4 offset;
+	XMFLOAT4 color;
+	XMFLOAT4X4 projection;
+	// Constant buffers are 256-byte aligned. Add padding in the struct to allow multiple buffers
+	// to be array-indexed.
+	float padding[36];
+};
+
 static const int INSTANCE_NUM_MAX = 800;
 class DebugScene :public SceneBase
 {
@@ -52,7 +71,14 @@ private:
 	BufferMemorySize size;
 
 
-	array<array<XMMATRIX, 800>, 13>matData;
-	BoxPolygonRenderPtr instanceBox;
-	array<int, 10000>test;
+	static const int TRIANGLE_ARRAY_NUM = 1024;
+	static const int FRAME_COUNT = 3;
+	static const int TRIANGLE_RESOURCE_COUNT = TRIANGLE_ARRAY_NUM * FRAME_COUNT;
+	static const int ComputeThreadBlockSize = TRIANGLE_ARRAY_NUM * FRAME_COUNT;
+	static const int CommandSizePerFrame = TRIANGLE_ARRAY_NUM * sizeof(IndirectCommand);
+
+	short commandBufferHandle;
+	ComPtr<ID3D12CommandSignature> commandSig;
+	std::array<SceneConstantBuffer, TRIANGLE_ARRAY_NUM> constantBufferData;
+	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 };
