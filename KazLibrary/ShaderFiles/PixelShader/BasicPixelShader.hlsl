@@ -2,5 +2,5 @@
 
 float4 PSmain(ColorOutPut input) : SV_TARGET
 {
-	return color;
+    return float4(1.0f, 1.0f, 1.0f, 1.0f);
 }

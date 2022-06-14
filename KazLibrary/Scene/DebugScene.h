@@ -28,6 +28,13 @@ struct IndirectCommand
 	D3D12_DRAW_ARGUMENTS drawArguments;
 };
 
+struct CSRootConstants
+{
+	float xOffset;
+	float zOffset;
+	float cullOffset;
+	float commandCount;
+};
 
 //à⁄ìÆèÓïÒ
 struct SceneConstantBuffer
@@ -69,6 +76,7 @@ private:
 
 	InputData inputData;
 	BufferMemorySize size;
+	BufferMemorySize cbvSize;
 
 
 	static const int TRIANGLE_ARRAY_NUM = 1024;
@@ -81,4 +89,7 @@ private:
 	ComPtr<ID3D12CommandSignature> commandSig;
 	std::array<SceneConstantBuffer, TRIANGLE_ARRAY_NUM> constantBufferData;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
+
+
+	CSRootConstants rootConst;
 };
