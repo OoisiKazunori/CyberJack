@@ -697,4 +697,42 @@ const XMVECTOR &KazMath::SplinePosition(const std::vector<XMVECTOR> &points, siz
 	);
 
 	return anser;
-};
+}
+
+bool KazMath::CheckRayAndCircle(const XMVECTOR &RAY_START_POS, const XMVECTOR &RAY_END_POS, const XMVECTOR &CIRCLE_CENTRAL_POS, float RADIUS)
+{
+	//線の長さと、それぞれの始点と終点から円の中心までの長さ
+	XMVECTOR startToCircle = CIRCLE_CENTRAL_POS - RAY_START_POS;
+	XMVECTOR rayLength = RAY_END_POS- RAY_START_POS;
+	XMVECTOR endToCircle = CIRCLE_CENTRAL_POS - RAY_END_POS;
+
+	//単位化しそのベクトルと線分の視点と円のベクトルとで外積を計算する
+	XMVECTOR normalRay = XMVector2Normalize(rayLength);
+	XMVECTOR cross = XMVector2Cross(normalRay, startToCircle);
+	
+	if (cross.m128_f32[0] <= RADIUS)
+	{
+		XMVECTOR dot1 = XMVector2Dot(startToCircle, rayLength);
+		XMVECTOR dot2 = XMVector2Dot(endToCircle, rayLength);
+
+		if (dot1.m128_f32[0] * dot2.m128_f32[0] <= 0.0f)
+		{
+			return true;
+		}
+
+		XMVECTOR startToCircleLength = XMVector2Length(startToCircle);
+		XMVECTOR endToCircleLength = XMVector2Length(endToCircle);
+		if (startToCircleLength.m128_f32[0] <= RADIUS || endToCircleLength.m128_f32[0] <= RADIUS)
+		{
+			return true;
+		}
+
+	}
+	else
+	{
+		return false;
+	}
+
+	return false;
+}
+;

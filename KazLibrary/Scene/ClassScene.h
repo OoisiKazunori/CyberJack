@@ -30,5 +30,14 @@ private:
 	BackGroundForDebug bg;
 
 	std::vector<short>multiHandle;
+
+	XMVECTOR rayStartPos = { 0.0f,0.0f,0.0f };
+	XMVECTOR rayEndPos = { 10.0f,0.0f,0.0f };
+	XMVECTOR circleCentralPos = { 5.0f,11.0f,0.0f };
+	float radius = 10.0f;
+	bool hitFlag = false;
+
+	Line2DRender line;
+	Circle2DRender circle;
 };
 
