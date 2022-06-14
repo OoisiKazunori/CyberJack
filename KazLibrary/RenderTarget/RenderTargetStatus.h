@@ -94,9 +94,13 @@ public:
 
 	//レンダーターゲットのハンドルからパス数を記録した配列
 	std::array<std::vector<short>, 100>renderTargetData;
-private:
+
+	void ChangeBarrier(ID3D12Resource *RESOURCE, const D3D12_RESOURCE_STATES &BEFORE_STATE, const D3D12_RESOURCE_STATES &AFTER_STATE);
 
 	std::vector<ComPtr<ID3D12Resource>> backBuffers;
+
+private:
+
 
 	array<XMFLOAT4, 100> clearColors;
 
@@ -108,7 +112,6 @@ private:
 
 	D3D12_DESCRIPTOR_HEAP_DESC heapDesc{};
 
-	void ChangeBarrier(ID3D12Resource *RESOURCE, const D3D12_RESOURCE_STATES &BEFORE_STATE, const D3D12_RESOURCE_STATES &AFTER_STATE);
 
 	struct RenderTargetHandle
 	{

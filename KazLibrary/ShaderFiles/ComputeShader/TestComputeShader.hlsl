@@ -1,47 +1,36 @@
-#define INSTANCE_FIRST_LEVEL 6
-#define INSTANCE_SECOND_LEVEL 1
-
-struct InputElement
+struct SceneConstantBuffer
 {
-    float3 pos[INSTANCE_SECOND_LEVEL];
+    float4 velocity;
+    float4 offset;
+    float4 color;
+    float4x4 projection;
+    float4 padding[9];
 };
 
-struct OutPutElement
+struct IndirectCommand
 {
-    matrix mat[INSTANCE_SECOND_LEVEL];
+    uint2 cbvAddress;
+    uint4 drawArguments;
 };
 
-struct InputData
+cbuffer RootConstants : register(b0)
 {
-    InputElement data[INSTANCE_FIRST_LEVEL];
+    float xOffset;        // Half the width of the triangles.
+    float zOffset;        // The z offset for the triangle vertices.
+    float cullOffset;    // The culling plane offset in homogenous space.
+    float commandCount;    // The number of commands to be processed.
 };
 
-struct OutPutData
-{
-    OutPutElement test[INSTANCE_FIRST_LEVEL];
-};
+//定数バッファ
+StructuredBuffer<SceneConstantBuffer> inputData : register(t0);
+//インダイレクトコマンド
+StructuredBuffer<IndirectCommand> indirectData : register(t1);
+//結果保存
+AppendStructuredBuffer<IndirectCommand> outputCommands : register(u0);
 
-// 入力データにアクセスするための変数
-StructuredBuffer<InputData> inputData : register(t0);
-// 出力先にアクセスするための変数
-RWStructuredBuffer<OutPutData> outputData : register(u1);
-
-cbuffer commonBuffer : register(b2)
+[numthreads(128, 1, 1)]
+void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
 {
-    matrix cameraMat;
-    matrix projectionMat;
-};
-
-[numthreads(1, 1, 1)]
-void CSmain(uint3 DTid : SV_DispatchThreadID)
-{
-    //float tmpInputData = inputData[0].data + 5.0f;
-    //outputData[0].data2 = tmpInputData;
-    uint firstLevel = DTid.r;
-    uint secondLevel = DTid.g;
-    
-    
-    matrix da = cameraMat;
-    inputData[0].data[firstLevel].pos[secondLevel];
-    outputData[0].test[firstLevel].mat[secondLevel] = da;
+    uint index = (groupId.x * 128) + groupIndex;
+    outputCommands.Append(indirectData[index]);
 }

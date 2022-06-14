@@ -107,10 +107,24 @@ void GraphicsRootSignature::CreateRootSignature(RootSignatureMode ROOTSIGNATURE,
 	}
 #pragma endregion
 
+	if (ROOTSIGNATURE != ROOTSIGNATURE_DATA_SRV_UAV)
+	{
+		CreateMyRootSignature(ROOTSIGNATURE_DATA.sample, rootparam.data(), rootparam.size(), ROOTSIGNATURE);
+	}
+	else
+	{
+		//コンピュートシェーダー用のルートシグネチャー(臨時用)
+		std::array <CD3DX12_DESCRIPTOR_RANGE1, 2> ranges{};
+		ranges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 2, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC);
+		ranges[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_VOLATILE);
 
-	CreateMyRootSignature(ROOTSIGNATURE_DATA.sample, rootparam.data(), rootparam.size(), ROOTSIGNATURE);
+		std::array<CD3DX12_ROOT_PARAMETER1, 2> computeRootParameters;
+		computeRootParameters[0].InitAsDescriptorTable(2, ranges.data());
+		computeRootParameters[1].InitAsConstants(4, 0);
+		CreateMyRootSignature(ROOTSIGNATURE_DATA.sample, computeRootParameters.data(), computeRootParameters.size(), ROOTSIGNATURE);
+	}
 
-	if (ROOTSIGNATURE == ROOTSIGNATURE_DATA_SRV_UAV_CBV)
+	if (ROOTSIGNATURE == ROOTSIGNATURE_DATA_SRV_UAV)
 	{
 		rootSignature[ROOTSIGNATURE]->SetName(L"ComputeRootSignature");
 	}
@@ -148,6 +162,29 @@ void GraphicsRootSignature::CreateMyRootSignature(D3D12_STATIC_SAMPLER_DESC SAMP
 		1,
 		&SAMPLER_DATA,
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+
+	//バージョン自動判定でのシリアライズ
+	ComPtr<ID3DBlob> rootSigBlob = nullptr;
+	ComPtr<ID3DBlob> errorBlob = nullptr;
+	D3DX12SerializeVersionedRootSignature(
+		&rootSignatureDesc,
+		D3D_ROOT_SIGNATURE_VERSION_1_0,
+		&rootSigBlob,
+		&errorBlob);
+
+	//ルートシグネチャの生成
+	DirectX12Device::Instance()->dev->CreateRootSignature(
+		0,
+		rootSigBlob->GetBufferPointer(),
+		rootSigBlob->GetBufferSize(),
+		IID_PPV_ARGS(&rootSignature[ROOTSIGNATURE])
+	);
+}
+
+void GraphicsRootSignature::CreateMyRootSignature(D3D12_STATIC_SAMPLER_DESC SAMPLER_DATA, D3D12_ROOT_PARAMETER1 *ROOT_PARAM_DATA, short DATA_MAX, RootSignatureMode ROOTSIGNATURE)
+{
+	CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDesc;
+	rootSignatureDesc.Init_1_1(DATA_MAX, ROOT_PARAM_DATA);
 
 	//バージョン自動判定でのシリアライズ
 	ComPtr<ID3DBlob> rootSigBlob = nullptr;

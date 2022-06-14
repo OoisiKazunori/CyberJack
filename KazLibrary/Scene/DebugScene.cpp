@@ -8,6 +8,7 @@
 #include"../KazLibrary/Buffer/DescriptorHeapMgr.h"
 #include"../KazLibrary/Loader/TextureResourceMgr.h"
 #include"../KazLibrary/Helper/ResourceFilePass.h"
+#include"../KazLibrary/RenderTarget/RenderTargetStatus.h"
 
 DebugScene::DebugScene()
 {
@@ -16,10 +17,10 @@ DebugScene::DebugScene()
 	buffer = std::make_unique<CreateGpuBuffer>();
 
 	//コマンドシグネチャの生成---------------------------
-	std::array<D3D12_INDIRECT_ARGUMENT_DESC, 1> args;
-	//args[0].Type = D3D12_INDIRECT_ARGUMENT_TYPE_CONSTANT_BUFFER_VIEW;//DrawIndexedInstanced命令を複数呼び出す
-	//args[0].ConstantBufferView.RootParameterIndex = 0;
-	args[0].Type = D3D12_INDIRECT_ARGUMENT_TYPE_DRAW;
+	std::array<D3D12_INDIRECT_ARGUMENT_DESC, 2> args{};
+	args[0].Type = D3D12_INDIRECT_ARGUMENT_TYPE_CONSTANT_BUFFER_VIEW;//DrawIndexedInstanced命令を複数呼び出す
+	args[0].ConstantBufferView.RootParameterIndex = 0;
+	args[1].Type = D3D12_INDIRECT_ARGUMENT_TYPE_DRAW;
 
 	//コマンドシグネチャの設定-------------------------
 	D3D12_COMMAND_SIGNATURE_DESC desc{};
@@ -28,7 +29,7 @@ DebugScene::DebugScene()
 	desc.ByteStride = sizeof(IndirectCommand); //サンプルだと一つだが、ここ本来描画分サイズを用意しないといけない気がするのだが...
 	//コマンドシグネチャの設定-------------------------
 
-	auto result = DirectX12Device::Instance()->dev->CreateCommandSignature(&desc, nullptr, IID_PPV_ARGS(&commandSig));
+	auto result = DirectX12Device::Instance()->dev->CreateCommandSignature(&desc, GraphicsRootSignature::Instance()->GetRootSignature(ROOTSIGNATURE_DATA_DRAW).Get(), IID_PPV_ARGS(&commandSig));
 	//コマンドシグネチャの生成---------------------------
 
 
@@ -73,6 +74,13 @@ DebugScene::DebugScene()
 		short handle = buffer->CreateBuffer(KazBufferHelper::SetVertexBufferData(size));
 		buffer->TransData(handle, vert.data(), size);
 
+		//ComPtr<ID3D12Resource> vertexBufferUpload;
+		//D3D12_SUBRESOURCE_DATA vertexData = {};
+		//vertexData.pData = reinterpret_cast<UINT8 *>(vert.data());
+		//vertexData.RowPitch = vert.size();
+		//vertexData.SlicePitch = vertexData.RowPitch;
+		//UpdateSubresources<1>(DirectX12CmdList::Instance()->cmdList.Get(), buffer->GetBufferData(handle).Get(), vertexBufferUpload.Get(), 0, 0, 1, &vertexData);
+
 		vertexBufferView = KazBufferHelper::SetVertexBufferView(buffer->GetGpuAddress(handle), size, sizeof(vert[0]));
 	}
 	//頂点バッファ関連-------------------------
@@ -104,34 +112,22 @@ DebugScene::DebugScene()
 		}
 		//コマンドバッファ生成-------------------------
 
+		size = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_TEXTURE_COMPUTEBUFFER);
+
 
 		//入力用バッファの生成-------------------------
 		//入力用のバッファ作成
 		inputHandle = buffer->CreateBuffer(KazBufferHelper::SetStructureBuffer(commandBufferSize));
-
 		//入力用バッファの生成-------------------------
 
 
 		//データのコピー-------------------------
-		D3D12_SUBRESOURCE_DATA commandData = {};
-		commandData.pData = reinterpret_cast<UINT8 *>(&commands[0]);
-		commandData.RowPitch = commandBufferSize;
-		commandData.SlicePitch = commandData.RowPitch;
-		UpdateSubresources<1>
-		(
-			DirectX12CmdList::Instance()->cmdList.Get(),
-			buffer->GetBufferData(commandBufferHandle).Get(),
-			buffer->GetBufferData(inputHandle).Get(),
-			0,
-			0,
-			1,
-			&commandData
-		);
+		buffer->TransData(inputHandle, constantBufferData.data(), commandBufferSize);
 		//データのコピー-------------------------
 
 
 		//コマンドバッファのSRV用意-------------------------
- 		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 		srvDesc.Format = DXGI_FORMAT_UNKNOWN;
 		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
 		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
@@ -141,6 +137,9 @@ DebugScene::DebugScene()
 
 		DescriptorHeapMgr::Instance()->CreateBufferView(commandBufferHandle, srvDesc, buffer->GetBufferData(commandBufferHandle).Get());
 		//コマンドバッファのSRV用意-------------------------
+
+
+
 
 
 		//出力用のバッファの生成---------------------------
@@ -158,11 +157,11 @@ DebugScene::DebugScene()
 		uavDesc.Buffer.CounterOffsetInBytes = bufferSize;
 		uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
 
-		DescriptorHeapMgr::Instance()->CreateBufferView(outPutHandle, uavDesc, buffer->GetBufferData(outPutHandle).Get(), buffer->GetBufferData(outPutHandle).Get());
+		DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + 1, uavDesc, buffer->GetBufferData(outPutHandle).Get(), buffer->GetBufferData(outPutHandle).Get());
 		//出力用のバッファの生成---------------------------
 
 		//リセット用のバッファ-------------------------
-		
+
 		//リセット用のバッファ-------------------------
 	}
 
@@ -222,7 +221,6 @@ DebugScene::~DebugScene()
 
 void DebugScene::Init()
 {
-
 }
 
 void DebugScene::Finalize()
@@ -233,27 +231,25 @@ void DebugScene::Update()
 {
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
 
+
+
+
+	//コンピュートシェーダーの計算-------------------------
 	//コンピュート用のパイプライン設定
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_TEST);
 
 	//入力用のデータ転送
-	buffer->TransData(inputHandle, &inputData, sizeof(InputData));
+	//buffer->TransData(inputHandle, &inputData, sizeof(InputData));
 
 	//入力用のバッファ設定
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(size.startSize));
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(0, buffer->GetBufferData(inputHandle)->GetGPUVirtualAddress());
 	//出力用のバッファ設定
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(size.startSize + 1));
 
-	//共通データのバッファ設定と転送
-	{
-		CommonData data;
-		data.cameraMat = CameraMgr::Instance()->GetViewMatrix();
-		data.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
-		buffer->TransData(commonHandle, &data, sizeof(CommonData));
-	}
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(2, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(size.startSize + 2));
 	//ディスパッチ
 	DirectX12CmdList::Instance()->cmdList->Dispatch(static_cast<UINT>(ceil(TRIANGLE_ARRAY_NUM / static_cast<float>(ComputeThreadBlockSize))), 1, 1);
+	//コンピュートシェーダーの計算-------------------------
+
 }
 
 void DebugScene::Draw()
@@ -261,6 +257,28 @@ void DebugScene::Draw()
 	//描画命令発行-------------------------
 	DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
+
+	int num = RenderTargetStatus::Instance()->bbIndex;
+	std::array<D3D12_RESOURCE_BARRIER, 1>barrier;
+	barrier[0] =
+	{
+		CD3DX12_RESOURCE_BARRIER::Transition(
+			//buffer->GetBufferData(commandBufferHandle).Get(),
+			RenderTargetStatus::Instance()->backBuffers[num].Get(),
+			D3D12_RESOURCE_STATE_RENDER_TARGET,
+			D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT
+		)
+	};
+	//barrier[1] =
+	//{
+	//	CD3DX12_RESOURCE_BARRIER::Transition(
+	//		RenderTargetStatus::Instance()->backBuffers[num].Get(),
+	//		D3D12_RESOURCE_STATE_RENDER_TARGET,
+	//		D3D12_RESOURCE_STATE_PRESENT
+	//	)
+	//};
+	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(barrier.size(), barrier.data());
+
 
 	DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
 	(
@@ -271,6 +289,13 @@ void DebugScene::Draw()
 		nullptr,
 		0
 	);
+
+
+	barrier[0].Transition.StateBefore = D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT;
+	barrier[0].Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	//barrier[1].Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	//barrier[1].Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(barrier.size(), barrier.data());
 	//描画命令発行-------------------------
 }
 

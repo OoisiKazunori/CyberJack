@@ -1045,7 +1045,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 		SHADER_COMPUTE_TEST,
 		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_SRV_UAV_CBV,
+		ROOTSIGNATURE_DATA_SRV_UAV,
 		PIPELINE_COMPUTE_NAME_TEST
 	);
 

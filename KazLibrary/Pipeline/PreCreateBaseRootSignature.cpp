@@ -362,19 +362,21 @@ PreCreateBaseRootSignature::PreCreateBaseRootSignature()
 		lineData.paramData[0].type = GRAPHICS_PRAMTYPE_DATA;
 		lineData.range[0] = GRAPHICS_RANGE_TYPE_SRV;
 
-		lineData.paramData[1].param = 1;
+		lineData.paramData[1].param = 0;
 		lineData.paramData[1].type = GRAPHICS_PRAMTYPE_DATA2;
 		lineData.range[1] = GRAPHICS_RANGE_TYPE_UAV;
 
-		lineData.paramData[2].param = 2;
-		lineData.paramData[2].type = GRAPHICS_PRAMTYPE_DATA3;
-		lineData.range[2] = GRAPHICS_RANGE_TYPE_CBV_DESC;
-
-		lineData.sample.AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
-
-		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_SRV_UAV_CBV, lineData, 3);
+		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_SRV_UAV, lineData, 2);
 	}
 
+	//CBV
+	{
+		RootSignatureData lineData;
+		lineData.paramData[0].param = 0;
+		lineData.paramData[0].type = GRAPHICS_PRAMTYPE_DATA;
+		lineData.range[0] = GRAPHICS_RANGE_TYPE_CBV;
+		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_CBV, lineData, 1);
+	}
 #pragma region 座標とテクスチャ二枚を送る
 	{
 		RootSignatureData spriteData;
