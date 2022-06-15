@@ -107,11 +107,14 @@ void GraphicsRootSignature::CreateRootSignature(RootSignatureMode ROOTSIGNATURE,
 	}
 #pragma endregion
 
-	if (ROOTSIGNATURE != ROOTSIGNATURE_DATA_SRV_UAV)
+	if (ROOTSIGNATURE == ROOTSIGNATURE_DATA_DRAW)
 	{
-		CreateMyRootSignature(ROOTSIGNATURE_DATA.sample, rootparam.data(), rootparam.size(), ROOTSIGNATURE);
+		CD3DX12_ROOT_PARAMETER1 rootParameters;
+		rootParameters.InitAsConstantBufferView(0, 0, D3D12_ROOT_DESCRIPTOR_FLAG_DATA_STATIC, D3D12_SHADER_VISIBILITY_VERTEX);
+		CreateMyRootSignature(ROOTSIGNATURE_DATA.sample, &rootParameters, 1, ROOTSIGNATURE);
+
 	}
-	else
+	else if(ROOTSIGNATURE == ROOTSIGNATURE_DATA_SRV_UAV)
 	{
 		//コンピュートシェーダー用のルートシグネチャー(臨時用)
 		std::array <CD3DX12_DESCRIPTOR_RANGE1, 2> ranges{};
@@ -123,6 +126,11 @@ void GraphicsRootSignature::CreateRootSignature(RootSignatureMode ROOTSIGNATURE,
 		computeRootParameters[1].InitAsConstants(4, 0);
 		CreateMyRootSignature(ROOTSIGNATURE_DATA.sample, computeRootParameters.data(), computeRootParameters.size(), ROOTSIGNATURE);
 	}
+	else
+	{
+		CreateMyRootSignature(ROOTSIGNATURE_DATA.sample, rootparam.data(), rootparam.size(), ROOTSIGNATURE);
+	}
+
 
 	if (ROOTSIGNATURE == ROOTSIGNATURE_DATA_SRV_UAV)
 	{
@@ -184,8 +192,14 @@ void GraphicsRootSignature::CreateMyRootSignature(D3D12_STATIC_SAMPLER_DESC SAMP
 void GraphicsRootSignature::CreateMyRootSignature(D3D12_STATIC_SAMPLER_DESC SAMPLER_DATA, D3D12_ROOT_PARAMETER1 *ROOT_PARAM_DATA, short DATA_MAX, RootSignatureMode ROOTSIGNATURE)
 {
 	CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDesc;
-	rootSignatureDesc.Init_1_1(DATA_MAX, ROOT_PARAM_DATA);
-
+	if (ROOTSIGNATURE == ROOTSIGNATURE_DATA_DRAW)
+	{
+		rootSignatureDesc.Init_1_1(DATA_MAX, ROOT_PARAM_DATA, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+	}
+	else
+	{
+		rootSignatureDesc.Init_1_1(DATA_MAX, ROOT_PARAM_DATA);
+	}
 	//バージョン自動判定でのシリアライズ
 	ComPtr<ID3DBlob> rootSigBlob = nullptr;
 	ComPtr<ID3DBlob> errorBlob = nullptr;

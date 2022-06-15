@@ -36,7 +36,7 @@ DebugScene::DebugScene()
 
 	//定数バッファの生成---------------------------
 	const UINT constantBufferDataSize = TRIANGLE_RESOURCE_COUNT * sizeof(SceneConstantBuffer);
-	constBuffHandle = buffer->CreateBuffer(KazBufferHelper::SetConstBufferData(constantBufferDataSize));
+	paramCBHandle = buffer->CreateBuffer(KazBufferHelper::SetConstBufferData(constantBufferDataSize));
 	{
 
 		//移動量の初期化
@@ -48,7 +48,7 @@ DebugScene::DebugScene()
 			XMStoreFloat4x4(&constantBufferData[n].projection, CameraMgr::Instance()->orthographicMatProjection);
 		}
 
-		buffer->TransData(constBuffHandle, &constantBufferData[0], TRIANGLE_ARRAY_NUM * sizeof(SceneConstantBuffer));
+		buffer->TransData(paramCBHandle, &constantBufferData[0], TRIANGLE_ARRAY_NUM * sizeof(SceneConstantBuffer));
 
 		//定数バッファのビューは作る
 		cbvSize = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_CBV);
@@ -61,11 +61,9 @@ DebugScene::DebugScene()
 		srvDesc.Buffer.StructureByteStride = sizeof(SceneConstantBuffer);
 		srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
 
-		DescriptorHeapMgr::Instance()->CreateBufferView(cbvSize.startSize, srvDesc, buffer->GetBufferData(constBuffHandle).Get());
+		DescriptorHeapMgr::Instance()->CreateBufferView(cbvSize.startSize, srvDesc, buffer->GetBufferData(paramCBHandle).Get());
 	}
 	//定数バッファの生成---------------------------
-
-
 
 
 	//頂点バッファ関連-------------------------
@@ -107,7 +105,7 @@ DebugScene::DebugScene()
 		commandBufferHandle = buffer->CreateBuffer(KazBufferHelper::SetCommandBufferData(commandBufferSize));
 		short uplod = buffer->CreateBuffer(KazBufferHelper::SetStructureBuffer(commandBufferSize));
 
-		D3D12_GPU_VIRTUAL_ADDRESS gpuAddress = buffer->GetGpuAddress(constBuffHandle);//定数バッファの生成がいる
+		D3D12_GPU_VIRTUAL_ADDRESS gpuAddress = buffer->GetGpuAddress(paramCBHandle);//定数バッファの生成がいる
 		UINT commandIndex = 0;
 		for (UINT frame = 0; frame < FRAME_COUNT; frame++)
 		{
@@ -132,8 +130,27 @@ DebugScene::DebugScene()
 		UpdateSubresources<1>(DirectX12CmdList::Instance()->cmdList.Get(), buffer->GetBufferData(commandBufferHandle).Get(), buffer->GetBufferData(uplod).Get(), 0, 0, 1, &commandData);
 
 
-
 		size = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_TEXTURE_COMPUTEBUFFER);
+
+
+		//コマンドバッファのSRV用意-------------------------
+		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+		srvDesc.Format = DXGI_FORMAT_UNKNOWN;
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+		srvDesc.Buffer.NumElements = TRIANGLE_ARRAY_NUM;
+		srvDesc.Buffer.StructureByteStride = sizeof(IndirectCommand);
+		srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
+
+		for (int i = 0; i < FRAME_COUNT; ++i)
+		{
+			srvDesc.Buffer.FirstElement = i * TRIANGLE_ARRAY_NUM;
+
+			//定数バッファのビューは作る
+			BufferMemorySize s = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_SRV);
+			DescriptorHeapMgr::Instance()->CreateBufferView(s.startSize + i, srvDesc, buffer->GetBufferData(commandBufferHandle).Get());
+		}
+		//コマンドバッファのSRV用意-------------------------
 
 
 		//入力用バッファの生成-------------------------
@@ -154,20 +171,6 @@ DebugScene::DebugScene()
 		//データのコピー-------------------------
 		buffer->TransData(inputHandle, constantBufferData.data(), commandBufferSize);
 		//データのコピー-------------------------
-
-
-		//コマンドバッファのSRV用意-------------------------
-		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-		srvDesc.Format = DXGI_FORMAT_UNKNOWN;
-		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
-		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-		srvDesc.Buffer.NumElements = TRIANGLE_ARRAY_NUM;
-		srvDesc.Buffer.StructureByteStride = sizeof(IndirectCommand);
-		srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
-
-		DescriptorHeapMgr::Instance()->CreateBufferView(commandBufferHandle, srvDesc, buffer->GetBufferData(commandBufferHandle).Get());
-		//コマンドバッファのSRV用意-------------------------
-
 
 
 
@@ -267,20 +270,20 @@ void DebugScene::Update()
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
 
 
-	//for (UINT n = 0; n < TRIANGLE_ARRAY_NUM; n++)
-	//{
-	//	const float offsetBounds = 2.5f;
+	for (UINT n = 0; n < TRIANGLE_ARRAY_NUM; n++)
+	{
+		const float offsetBounds = 2.5f;
 
-	//	// Animate the triangles.
-	//	constantBufferData[n].offset.x += constantBufferData[n].velocity.x;
-	//	if (constantBufferData[n].offset.x > offsetBounds)
-	//	{
-	//		constantBufferData[n].velocity.x = KazMath::FloatRand(0.01f, 0.02f);
-	//		constantBufferData[n].offset.x = -offsetBounds;
-	//	}
-	//	XMStoreFloat4x4(&constantBufferData[n].projection, CameraMgr::Instance()->orthographicMatProjection);
-	//}
-	//buffer->TransData(inputHandle, &constantBufferData, TRIANGLE_ARRAY_NUM * sizeof(SceneConstantBuffer));
+		// Animate the triangles.
+		constantBufferData[n].offset.x += constantBufferData[n].velocity.x;
+		if (constantBufferData[n].offset.x > offsetBounds)
+		{
+			constantBufferData[n].velocity.x = KazMath::FloatRand(0.01f, 0.02f);
+			constantBufferData[n].offset.x = -offsetBounds;
+		}
+		XMStoreFloat4x4(&constantBufferData[n].projection, CameraMgr::Instance()->orthographicMatProjection);
+	}
+	buffer->TransData(inputHandle, &constantBufferData, TRIANGLE_ARRAY_NUM * sizeof(SceneConstantBuffer));
 
 
 
@@ -288,21 +291,21 @@ void DebugScene::Update()
 
 	//コンピュートシェーダーの計算-------------------------
 	//コンピュート用のパイプライン設定
-	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_TEST);
+	//GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_TEST);
 
 	//入力用のデータ転送
 	//buffer->TransData(inputHandle, &inputData, sizeof(InputData));
 
 	//入力用のバッファ設定
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(cbvSize.startSize));
+	//DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(cbvSize.startSize));
 	//出力用のバッファ設定
 	//DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(size.startSize + 1));
 
 	//ルート定数
-	DirectX12CmdList::Instance()->cmdList->SetComputeRoot32BitConstants(1, 4, reinterpret_cast<void *>(&rootConst), 0);
+	//DirectX12CmdList::Instance()->cmdList->SetComputeRoot32BitConstants(1, 4, reinterpret_cast<void *>(&rootConst), 0);
 
 	//ディスパッチ
-	DirectX12CmdList::Instance()->cmdList->Dispatch(static_cast<UINT>(ceil(TRIANGLE_ARRAY_NUM / static_cast<float>(ComputeThreadBlockSize))), 1, 1);
+	//DirectX12CmdList::Instance()->cmdList->Dispatch(static_cast<UINT>(ceil(TRIANGLE_ARRAY_NUM / static_cast<float>(ComputeThreadBlockSize))), 1, 1);
 	//コンピュートシェーダーの計算-------------------------
 
 }
@@ -337,27 +340,22 @@ void DebugScene::Draw()
 
 
 	RenderTargetStatus::Instance()->gDepth.Clear(RenderTargetStatus::Instance()->handle);
-
 	RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
 	//セット-------------------------
 
 
 	GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_COLOR);
 
-	//シェーダーに渡すよう
-	DirectX12CmdList::Instance()->cmdList->SetGraphicsRootConstantBufferView(0, buffer->GetGpuAddress(constBuffHandle));
-
 	DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
 
-	//コマンドキューが必要
 	//PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Cull invisible triangles");
 	DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
 	(
 		commandSig.Get(),
 		TRIANGLE_ARRAY_NUM,
 		buffer->GetBufferData(commandBufferHandle).Get(),
-		CommandSizePerFrame,//リソースバリアの切り替えで値を変える必要があるかも
+		CommandSizePerFrame * num,//リソースバリアの切り替えで値を変える必要があるかも
 		nullptr,
 		0
 	);

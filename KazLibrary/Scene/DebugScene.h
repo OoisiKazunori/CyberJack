@@ -48,6 +48,11 @@ struct SceneConstantBuffer
 	float padding[36];
 };
 
+struct DrawConstantBuffer
+{
+	XMFLOAT4 projection;
+};
+
 static const int INSTANCE_NUM_MAX = 800;
 class DebugScene :public SceneBase
 {
@@ -80,7 +85,7 @@ private:
 
 
 	static const int TRIANGLE_ARRAY_NUM = 1024;
-	static const int FRAME_COUNT = 3;
+	static const int FRAME_COUNT = 2;
 	static const int TRIANGLE_RESOURCE_COUNT = TRIANGLE_ARRAY_NUM * FRAME_COUNT;
 	static const int ComputeThreadBlockSize = TRIANGLE_ARRAY_NUM * FRAME_COUNT;
 	static const int CommandSizePerFrame = TRIANGLE_ARRAY_NUM * sizeof(IndirectCommand);
@@ -93,5 +98,5 @@ private:
 
 	CSRootConstants rootConst;
 
-	short constBuffHandle;
+	short paramCBHandle;
 };
