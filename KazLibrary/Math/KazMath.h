@@ -224,5 +224,8 @@ namespace KazMath
 	/// <returns></returns>
 	const XMVECTOR &SplinePosition(const std::vector<XMVECTOR> &points, size_t startIndex, float t, bool Loop);
 
+
+	bool CheckRayAndCircle(const XMVECTOR &RAY_START_POS, const XMVECTOR &RAY_END_POS, const XMVECTOR &CIRCLE_CENTRAL_POS, float RADIUS);
+
 }
 

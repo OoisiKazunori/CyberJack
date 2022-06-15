@@ -4,6 +4,7 @@
 #include"../Loader/FbxModelResourceMgr.h"
 #include"../Helper/ResourceFilePass.h"
 #include"../RenderTarget/RenderTargetStatus.h"
+#include"../KazLibrary/Imgui/MyImgui.h"
 
 ClassScene::ClassScene()
 {
@@ -35,6 +36,10 @@ ClassScene::ClassScene()
 	data[1].graphSize = { WIN_X,WIN_Y };
 	data[1].backGroundColor = { 255.0f,0.0f,0.0f };
 	multiHandle = RenderTargetStatus::Instance()->CreateMultiRenderTarget(data, DXGI_FORMAT_R8G8B8A8_UNORM);
+
+
+	//circle.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "circle.png");
+	//circle.data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
 }
 
 ClassScene::~ClassScene()
@@ -114,29 +119,40 @@ void ClassScene::Update()
 	mainRenderTarget->TransData(&data, handle, typeid(data).name());
 
 	modelRender->data.isPlay = true;
+
+
+	hitFlag = KazMath::CheckRayAndCircle(rayStartPos, rayEndPos, circleCentralPos, radius);
+
+	ImGui::Begin("HitBox");
+	ImGui::SliderFloat("rayStartPosX", &rayStartPos.m128_f32[0], 0.0f, WIN_X);
+	ImGui::SliderFloat("rayStartPosY", &rayStartPos.m128_f32[1], 0.0f, WIN_Y);
+	ImGui::SliderFloat("rayEndPosX", &rayEndPos.m128_f32[0], 0.0f, WIN_X);
+	ImGui::SliderFloat("rayEndPosY", &rayEndPos.m128_f32[1], 0.0f, WIN_Y);
+	ImGui::SliderFloat("circleCentralPosX", &circleCentralPos.m128_f32[0], 0.0f, WIN_X);
+	ImGui::SliderFloat("circleCentralPosY", &circleCentralPos.m128_f32[1], 0.0f, WIN_Y);
+	ImGui::InputFloat("radius", &radius);
+	if (hitFlag)
+	{
+		ImGui::Text("Hit");
+		circle.data.color = { 255.0f,0.0f,0.0f,255.0f };
+	}
+	else
+	{
+		ImGui::Text("NoHit");
+		circle.data.color = { 255.0f,255.0f,255.0f,255.0f };
+	}
+	ImGui::End();
+
+	circle.data.transform.pos = circleCentralPos;
+	circle.data.radius = radius;
+	line.data.startPos = rayStartPos;
+	line.data.endPos = rayEndPos;
 }
 
 void ClassScene::Draw()
 {
-	RenderTargetStatus::Instance()->PrepareToChangeBarrier(multiHandle[0]);
-	RenderTargetStatus::Instance()->ClearRenderTarget(multiHandle[0]);
-	modelRender->Draw();
-	//bg.Draw();
-	//RenderTargetStatus::Instance()->PrepareToChangeBarrier(mainRenderTarget->data.handle, gameRenderTarget->data.handle);
-	//RenderTargetStatus::Instance()->ClearRenderTarget(mainRenderTarget->data.handle);
-	//gameRenderTarget->Draw();
-	RenderTargetStatus::Instance()->PrepareToCloseBarrier(multiHandle[0]);
-	RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
-
-	if (KeyBoradInputManager::Instance()->InputState(DIK_O))
-	{
-		mainRenderTarget->data.handle = multiHandle[1];
-	}
-	else
-	{
-		mainRenderTarget->data.handle = multiHandle[0];
-	}
-	mainRenderTarget->Draw();
+	circle.Draw();
+	line.Draw();
 }
 
 int ClassScene::SceneChange()

@@ -694,7 +694,48 @@ const XMVECTOR &KazMath::SplinePosition(const std::vector<XMVECTOR> &points, siz
 	XMVECTOR anser = 0.5 * ((2 * p1 + (-p0 + p2) * t) +
 		(2 * p0 - 5 * p1 + 4 * p2 - p3) * (t * t) +
 		(-p0 + 3 * p1 - 3 * p2 + p3) * (t * t * t)
-	);
+		);
 
 	return anser;
-};
+}
+
+bool KazMath::CheckRayAndCircle(const XMVECTOR &RAY_START_POS, const XMVECTOR &RAY_END_POS, const XMVECTOR &CIRCLE_CENTRAL_POS, float RADIUS)
+{
+	XMVECTOR vecANoraml = XMVector2Normalize(RAY_END_POS - RAY_START_POS);
+	XMVECTOR vecBNoraml = XMVector2Normalize(RAY_START_POS - RAY_END_POS);
+	XMVECTOR vecACircleNoraml = XMVector2Normalize(CIRCLE_CENTRAL_POS - RAY_START_POS);
+	XMVECTOR vecBCircleNoraml = XMVector2Normalize(CIRCLE_CENTRAL_POS - RAY_END_POS);
+
+	XMVECTOR dotA = XMVector2Dot(vecANoraml, vecACircleNoraml);
+	XMVECTOR dotB = XMVector2Dot(vecBNoraml, vecBCircleNoraml);
+
+
+	if (0.0f < dotA.m128_f32[0] * dotB.m128_f32[0])
+	{
+		XMVECTOR raylength = RAY_END_POS - RAY_START_POS;
+		XMVECTOR circleALength = CIRCLE_CENTRAL_POS - RAY_START_POS;
+
+		XMVECTOR cross = XMVector2Cross(raylength, circleALength) / XMVector2Length(raylength);
+
+		if (fabs(cross.m128_f32[0]) <= RADIUS)
+		{
+			return true;
+		}
+	}
+
+
+	XMVECTOR circleALength = XMVector2Length(RAY_START_POS - CIRCLE_CENTRAL_POS);
+	XMVECTOR circleBLength = XMVector2Length(RAY_END_POS - CIRCLE_CENTRAL_POS);
+
+	if (circleALength.m128_f32[0] <= RADIUS)
+	{
+		return true;
+	}
+	if (circleBLength.m128_f32[0] <= RADIUS)
+	{
+		return true;
+	}
+
+	return false;
+}
+;
