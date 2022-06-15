@@ -309,6 +309,7 @@ void DebugScene::Update()
 
 void DebugScene::Draw()
 {
+
 	//描画命令発行-------------------------
 	int num = RenderTargetStatus::Instance()->copySwapchain->GetCurrentBackBufferIndex();
 	RenderTargetStatus::Instance()->bbIndex = num;
@@ -350,7 +351,7 @@ void DebugScene::Draw()
 	DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
 
 	//コマンドキューが必要
-	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Cull invisible triangles");
+	//PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Cull invisible triangles");
 	DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
 	(
 		commandSig.Get(),
@@ -360,7 +361,7 @@ void DebugScene::Draw()
 		nullptr,
 		0
 	);
-	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
+	//PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
 	barriers[0].Transition.StateBefore = D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT;
 	barriers[0].Transition.StateAfter = D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
