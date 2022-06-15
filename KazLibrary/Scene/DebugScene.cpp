@@ -71,7 +71,7 @@ DebugScene::DebugScene()
 	//頂点バッファ関連-------------------------
 	{
 		const float TriangleHalfWidth = 0.05f;
-		const float TriangleDepth = 1.0f;
+		const float TriangleDepth = 0.0f;
 		const float CullingCutoff = 0.5f;
 		struct Vert
 		{
