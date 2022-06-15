@@ -328,7 +328,6 @@ void DebugScene::Draw()
 
 
 	//セット-------------------------
-
 	//レンダータゲットの設定
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvH;
 	rtvH = RenderTargetStatus::Instance()->rtvHeaps->GetCPUDescriptorHandleForHeapStart();
@@ -350,9 +349,8 @@ void DebugScene::Draw()
 	DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
 
-
-
-
+	//コマンドキューが必要
+	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Cull invisible triangles");
 	DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
 	(
 		commandSig.Get(),
@@ -362,7 +360,7 @@ void DebugScene::Draw()
 		nullptr,
 		0
 	);
-
+	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
 	barriers[0].Transition.StateBefore = D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT;
 	barriers[0].Transition.StateAfter = D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;

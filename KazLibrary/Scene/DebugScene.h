@@ -45,7 +45,7 @@ struct SceneConstantBuffer
 	XMFLOAT4X4 projection;
 	// Constant buffers are 256-byte aligned. Add padding in the struct to allow multiple buffers
 	// to be array-indexed.
-	//float padding[36];
+	float padding[36];
 };
 
 static const int INSTANCE_NUM_MAX = 800;
