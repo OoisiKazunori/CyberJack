@@ -98,19 +98,20 @@ public:
 	void ChangeBarrier(ID3D12Resource *RESOURCE, const D3D12_RESOURCE_STATES &BEFORE_STATE, const D3D12_RESOURCE_STATES &AFTER_STATE);
 
 	std::vector<ComPtr<ID3D12Resource>> backBuffers;
-
+	ComPtr<ID3D12DescriptorHeap> rtvHeaps;
+	D3D12_DESCRIPTOR_HEAP_DESC heapDesc{};
+	ComPtr<IDXGISwapChain4> copySwapchain;
 private:
 
 
 	array<XMFLOAT4, 100> clearColors;
 
 
-	ComPtr<IDXGISwapChain4> copySwapchain;
-	ComPtr<ID3D12DescriptorHeap> rtvHeaps;
+
+	
 	D3D12_CPU_DESCRIPTOR_HANDLE multiPassRTVHanlde;
 
 
-	D3D12_DESCRIPTOR_HEAP_DESC heapDesc{};
 
 
 	struct RenderTargetHandle

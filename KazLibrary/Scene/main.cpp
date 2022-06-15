@@ -78,8 +78,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	{
 		CheckMessageFlag = msg.CheckMessage();
 		imgui.NewFlame();
-		RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
-		RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
+		//RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
+		//RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
 		KeyBoradInputManager::Instance()->InputLog();
 		ControllerInputManager::Instance()->InputLog();
 #ifdef _DEBUG
@@ -90,7 +90,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		sm.Draw();
 	
 		imgui.Set();
-		RenderTargetStatus::Instance()->SwapResourceBarrier();
+		//RenderTargetStatus::Instance()->SwapResourceBarrier();
 
 		directX.ActCommand();
 	}

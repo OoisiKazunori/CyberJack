@@ -36,7 +36,7 @@ DebugScene::DebugScene()
 
 	//定数バッファの生成---------------------------
 	const UINT constantBufferDataSize = TRIANGLE_RESOURCE_COUNT * sizeof(SceneConstantBuffer);
-	short constBuffHandle = buffer->CreateBuffer(KazBufferHelper::SetConstBufferData(constantBufferDataSize));
+	constBuffHandle = buffer->CreateBuffer(KazBufferHelper::SetConstBufferData(constantBufferDataSize));
 	{
 
 		//移動量の初期化
@@ -48,7 +48,7 @@ DebugScene::DebugScene()
 			XMStoreFloat4x4(&constantBufferData[n].projection, CameraMgr::Instance()->orthographicMatProjection);
 		}
 
-		buffer->TransData(constBuffHandle, constantBufferData.data(), TRIANGLE_ARRAY_NUM * sizeof(SceneConstantBuffer));
+		buffer->TransData(constBuffHandle, &constantBufferData[0], TRIANGLE_ARRAY_NUM * sizeof(SceneConstantBuffer));
 
 		//定数バッファのビューは作る
 		cbvSize = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_CBV);
@@ -267,20 +267,20 @@ void DebugScene::Update()
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
 
 
-	for (UINT n = 0; n < TRIANGLE_ARRAY_NUM; n++)
-	{
-		const float offsetBounds = 2.5f;
+	//for (UINT n = 0; n < TRIANGLE_ARRAY_NUM; n++)
+	//{
+	//	const float offsetBounds = 2.5f;
 
-		// Animate the triangles.
-		constantBufferData[n].offset.x += constantBufferData[n].velocity.x;
-		if (constantBufferData[n].offset.x > offsetBounds)
-		{
-			constantBufferData[n].velocity.x = KazMath::FloatRand(0.01f, 0.02f);
-			constantBufferData[n].offset.x = -offsetBounds;
-		}
-		XMStoreFloat4x4(&constantBufferData[n].projection, CameraMgr::Instance()->orthographicMatProjection);
-	}
-	buffer->TransData(inputHandle, &constantBufferData, TRIANGLE_ARRAY_NUM * sizeof(SceneConstantBuffer));
+	//	// Animate the triangles.
+	//	constantBufferData[n].offset.x += constantBufferData[n].velocity.x;
+	//	if (constantBufferData[n].offset.x > offsetBounds)
+	//	{
+	//		constantBufferData[n].velocity.x = KazMath::FloatRand(0.01f, 0.02f);
+	//		constantBufferData[n].offset.x = -offsetBounds;
+	//	}
+	//	XMStoreFloat4x4(&constantBufferData[n].projection, CameraMgr::Instance()->orthographicMatProjection);
+	//}
+	//buffer->TransData(inputHandle, &constantBufferData, TRIANGLE_ARRAY_NUM * sizeof(SceneConstantBuffer));
 
 
 
@@ -310,23 +310,47 @@ void DebugScene::Update()
 void DebugScene::Draw()
 {
 	//描画命令発行-------------------------
+	int num = RenderTargetStatus::Instance()->copySwapchain->GetCurrentBackBufferIndex();
+	RenderTargetStatus::Instance()->bbIndex = num;
+
+	std::array<D3D12_RESOURCE_BARRIER, 2> barriers = {
+	CD3DX12_RESOURCE_BARRIER::Transition(
+		buffer->GetBufferData(commandBufferHandle).Get(),
+		D3D12_RESOURCE_STATE_COPY_DEST,
+		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT),
+	CD3DX12_RESOURCE_BARRIER::Transition(
+		RenderTargetStatus::Instance()->backBuffers[num].Get(),
+		D3D12_RESOURCE_STATE_PRESENT,
+		D3D12_RESOURCE_STATE_RENDER_TARGET)
+	};
+	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(barriers.size(), barriers.data());
+
+
+
+	//セット-------------------------
+
+	//レンダータゲットの設定
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvH;
+	rtvH = RenderTargetStatus::Instance()->rtvHeaps->GetCPUDescriptorHandleForHeapStart();
+	rtvH.ptr += num * DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(RenderTargetStatus::Instance()->heapDesc.Type);
+	DirectX12CmdList::Instance()->cmdList->OMSetRenderTargets(1, &rtvH, false, &RenderTargetStatus::Instance()->gDepth.dsvH[RenderTargetStatus::Instance()->handle]);
+
+
+	RenderTargetStatus::Instance()->gDepth.Clear(RenderTargetStatus::Instance()->handle);
+
+	RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
+	//セット-------------------------
+
+
 	GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_COLOR);
 
+	//シェーダーに渡すよう
+	DirectX12CmdList::Instance()->cmdList->SetGraphicsRootConstantBufferView(0, buffer->GetGpuAddress(constBuffHandle));
 
 	DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
 
-	int num = RenderTargetStatus::Instance()->bbIndex;
 
-	D3D12_RESOURCE_BARRIER barrier =
-	{
-		CD3DX12_RESOURCE_BARRIER::Transition(
-			buffer->GetBufferData(commandBufferHandle).Get(),
-			D3D12_RESOURCE_STATE_COPY_DEST,
-			D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT
-		)
-	};
-	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(1, &barrier);
 
 
 	DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
@@ -340,9 +364,11 @@ void DebugScene::Draw()
 	);
 
 
-	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT;
-	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_DEST;
-	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(1, &barrier);
+	barriers[0].Transition.StateBefore = D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT;
+	barriers[0].Transition.StateAfter = D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
+	barriers[1].Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	barriers[1].Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(barriers.size(), barriers.data());
 	//描画命令発行-------------------------
 }
 
