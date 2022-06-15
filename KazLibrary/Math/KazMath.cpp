@@ -694,43 +694,46 @@ const XMVECTOR &KazMath::SplinePosition(const std::vector<XMVECTOR> &points, siz
 	XMVECTOR anser = 0.5 * ((2 * p1 + (-p0 + p2) * t) +
 		(2 * p0 - 5 * p1 + 4 * p2 - p3) * (t * t) +
 		(-p0 + 3 * p1 - 3 * p2 + p3) * (t * t * t)
-	);
+		);
 
 	return anser;
 }
 
 bool KazMath::CheckRayAndCircle(const XMVECTOR &RAY_START_POS, const XMVECTOR &RAY_END_POS, const XMVECTOR &CIRCLE_CENTRAL_POS, float RADIUS)
 {
-	//線の長さと、それぞれの始点と終点から円の中心までの長さ
-	XMVECTOR startToCircle = CIRCLE_CENTRAL_POS - RAY_START_POS;
-	XMVECTOR rayLength = RAY_END_POS- RAY_START_POS;
-	XMVECTOR endToCircle = CIRCLE_CENTRAL_POS - RAY_END_POS;
+	XMVECTOR vecANoraml = XMVector2Normalize(RAY_END_POS - RAY_START_POS);
+	XMVECTOR vecBNoraml = XMVector2Normalize(RAY_START_POS - RAY_END_POS);
+	XMVECTOR vecACircleNoraml = XMVector2Normalize(CIRCLE_CENTRAL_POS - RAY_START_POS);
+	XMVECTOR vecBCircleNoraml = XMVector2Normalize(CIRCLE_CENTRAL_POS - RAY_END_POS);
 
-	//単位化しそのベクトルと線分の視点と円のベクトルとで外積を計算する
-	XMVECTOR normalRay = XMVector2Normalize(rayLength);
-	XMVECTOR cross = XMVector2Cross(normalRay, startToCircle);
-	
-	if (cross.m128_f32[0] <= RADIUS)
+	XMVECTOR dotA = XMVector2Dot(vecANoraml, vecACircleNoraml);
+	XMVECTOR dotB = XMVector2Dot(vecBNoraml, vecBCircleNoraml);
+
+
+	if (0.0f < dotA.m128_f32[0] * dotB.m128_f32[0])
 	{
-		XMVECTOR dot1 = XMVector2Dot(startToCircle, rayLength);
-		XMVECTOR dot2 = XMVector2Dot(endToCircle, rayLength);
+		XMVECTOR raylength = RAY_END_POS - RAY_START_POS;
+		XMVECTOR circleALength = CIRCLE_CENTRAL_POS - RAY_START_POS;
 
-		if (dot1.m128_f32[0] * dot2.m128_f32[0] <= 0.0f)
+		XMVECTOR cross = XMVector2Cross(raylength, circleALength) / XMVector2Length(raylength);
+
+		if (fabs(cross.m128_f32[0]) <= RADIUS)
 		{
 			return true;
 		}
-
-		XMVECTOR startToCircleLength = XMVector2Length(startToCircle);
-		XMVECTOR endToCircleLength = XMVector2Length(endToCircle);
-		if (startToCircleLength.m128_f32[0] <= RADIUS || endToCircleLength.m128_f32[0] <= RADIUS)
-		{
-			return true;
-		}
-
 	}
-	else
+
+
+	XMVECTOR circleALength = XMVector2Length(RAY_START_POS - CIRCLE_CENTRAL_POS);
+	XMVECTOR circleBLength = XMVector2Length(RAY_END_POS - CIRCLE_CENTRAL_POS);
+
+	if (circleALength.m128_f32[0] <= RADIUS)
 	{
-		return false;
+		return true;
+	}
+	if (circleBLength.m128_f32[0] <= RADIUS)
+	{
+		return true;
 	}
 
 	return false;
