@@ -50,7 +50,9 @@ DebugScene::DebugScene()
 			XMStoreFloat4x4(&constantBufferData[n].projection, XMMatrixTranspose(XMMatrixPerspectiveFovLH(XM_PIDIV4, m_aspectRatio, 0.01f, 20.0f)));
 		}
 
-		buffer->TransData(paramCBHandle, &constantBufferData[0], TRIANGLE_ARRAY_NUM * sizeof(SceneConstantBuffer));
+		pointer = buffer->GetMapAddres(paramCBHandle);
+		memcpy(pointer, &constantBufferData[0], TRIANGLE_ARRAY_NUM * sizeof(SceneConstantBuffer));
+		//buffer->TransData(paramCBHandle, &constantBufferData[0], TRIANGLE_ARRAY_NUM * sizeof(SceneConstantBuffer));
 
 		//定数バッファのビューは作る
 		cbvSize = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_CBV);
@@ -290,8 +292,10 @@ void DebugScene::Update()
 	}
 
 	int num = RenderTargetStatus::Instance()->copySwapchain->GetCurrentBackBufferIndex();
-	buffer->TransData(inputHandle, &constantBufferData, TRIANGLE_ARRAY_NUM * num * sizeof(SceneConstantBuffer));
+	//buffer->TransData(inputHandle, &constantBufferData, TRIANGLE_ARRAY_NUM * num * sizeof(SceneConstantBuffer));
 
+	UINT8 *destination = static_cast<UINT8 *>(pointer) + (TRIANGLE_ARRAY_NUM * num * sizeof(SceneConstantBuffer));
+	memcpy(destination, &constantBufferData[0], TRIANGLE_ARRAY_NUM * sizeof(SceneConstantBuffer));
 
 
 

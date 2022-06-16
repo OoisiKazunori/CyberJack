@@ -78,6 +78,7 @@ private:
 
 	unique_ptr<CreateGpuBuffer>buffer;
 	short inputHandle, outPutHandle, commonHandle;
+	void *pointer;
 
 	InputData inputData;
 	BufferMemorySize size;
