@@ -1,4 +1,4 @@
-#include "DebugScene.h"
+#include"DebugScene.h"
 #include"../Camera/CameraMgr.h"
 #include"../Input/KeyBoradInputManager.h"
 #include"../Math/KazMath.h"
@@ -25,7 +25,7 @@ DebugScene::DebugScene()
 	//コマンドシグネチャの設定-------------------------
 	D3D12_COMMAND_SIGNATURE_DESC desc{};
 	desc.pArgumentDescs = args.data();
-	desc.NumArgumentDescs = args.size();
+	desc.NumArgumentDescs = static_cast<UINT>(args.size());
 	desc.ByteStride = sizeof(IndirectCommand); //サンプルだと一つだが、ここ本来描画分サイズを用意しないといけない気がするのだが...
 	//コマンドシグネチャの設定-------------------------
 
@@ -88,7 +88,7 @@ DebugScene::DebugScene()
 		vert[1].pos = { TriangleHalfWidth, -TriangleHalfWidth, TriangleDepth };
 		vert[2].pos = { -TriangleHalfWidth, -TriangleHalfWidth, TriangleDepth };
 
-		int size = vert.size() * sizeof(Vert);
+		int size = static_cast<int>(vert.size()) * sizeof(Vert);
 		short handle = buffer->CreateBuffer(KazBufferHelper::SetVertexBufferData(size));
 		buffer->TransData(handle, vert.data(), size);
 
@@ -282,7 +282,7 @@ void DebugScene::Update()
 	{
 		const float offsetBounds = 2.5f;
 
-		// Animate the triangles.
+		// Animate the triangles
 		constantBufferData[n].offset.x += constantBufferData[n].velocity.x;
 		if (constantBufferData[n].offset.x > offsetBounds)
 		{
@@ -292,10 +292,9 @@ void DebugScene::Update()
 	}
 
 	int num = RenderTargetStatus::Instance()->copySwapchain->GetCurrentBackBufferIndex();
-	//buffer->TransData(inputHandle, &constantBufferData, TRIANGLE_ARRAY_NUM * num * sizeof(SceneConstantBuffer));
 
 	UINT8 *destination = static_cast<UINT8 *>(pointer) + (TRIANGLE_ARRAY_NUM * num * sizeof(SceneConstantBuffer));
-	memcpy(destination, &constantBufferData[0], TRIANGLE_ARRAY_NUM * sizeof(SceneConstantBuffer));
+	memcpy(destination, constantBufferData.data(), TRIANGLE_ARRAY_NUM * sizeof(SceneConstantBuffer));
 
 
 
@@ -338,7 +337,7 @@ void DebugScene::Draw()
 		D3D12_RESOURCE_STATE_PRESENT,
 		D3D12_RESOURCE_STATE_RENDER_TARGET)
 	};
-	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(barriers.size(), barriers.data());
+	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(static_cast<unsigned int>(barriers.size()), barriers.data());
 
 
 
@@ -355,7 +354,7 @@ void DebugScene::Draw()
 	//セット-------------------------
 
 
-	GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_COLOR);
+	GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE);
 
 	DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
@@ -376,7 +375,7 @@ void DebugScene::Draw()
 	barriers[0].Transition.StateAfter = D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
 	barriers[1].Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barriers[1].Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(barriers.size(), barriers.data());
+	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(static_cast<unsigned int>(barriers.size()), barriers.data());
 	//描画命令発行-------------------------
 }
 

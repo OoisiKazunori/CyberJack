@@ -1,3 +1,5 @@
+#include"../ShaderHeader/KazMathHeader.hlsli"
+
 struct SceneConstantBuffer
 {
     float4 velocity;
@@ -32,5 +34,13 @@ AppendStructuredBuffer<IndirectCommand> outputCommands : register(u0);
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
 {
     uint index = (groupId.x * 128) + groupIndex;
+    
+    matrix matTrans = Translate(float3(0.0f, 0.0f, 0.0f));
+    matrix matRot = RotateX(0.0f) * RotateY(0.0f) * RotateZ(0.0f);
+    matrix matScale = Scale(float3(0.1f, 0.1f, 0.1f));
+    
+    matrix matWorld = matScale * matRot * matTrans;
+    
+    
     outputCommands.Append(indirectData[index]);
 }

@@ -107,14 +107,7 @@ void GraphicsRootSignature::CreateRootSignature(RootSignatureMode ROOTSIGNATURE,
 	}
 #pragma endregion
 
-	if (ROOTSIGNATURE == ROOTSIGNATURE_DATA_DRAW)
-	{
-		CD3DX12_ROOT_PARAMETER1 rootParameters;
-		rootParameters.InitAsConstantBufferView(0, 0, D3D12_ROOT_DESCRIPTOR_FLAG_DATA_STATIC, D3D12_SHADER_VISIBILITY_VERTEX);
-		CreateMyRootSignature(ROOTSIGNATURE_DATA.sample, &rootParameters, 1, ROOTSIGNATURE);
-
-	}
-	else if(ROOTSIGNATURE == ROOTSIGNATURE_DATA_SRV_UAV)
+	if(ROOTSIGNATURE == ROOTSIGNATURE_DATA_SRV_UAV)
 	{
 		//コンピュートシェーダー用のルートシグネチャー(臨時用)
 		std::array <CD3DX12_DESCRIPTOR_RANGE1, 2> ranges{};

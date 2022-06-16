@@ -348,6 +348,10 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GradationPixelShader.hlsl", "PSmain", "ps_5_0", SHADER_PIXCEL_SPRITE_GRADATION);
 
+
+	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "VertexGPUParticleShader.hlsl", "VSmain", "vs_5_0", SHADER_VERTEX_GPUPARTICLE);
+	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GPUParticlePixelShader.hlsl", "PSmain", "ps_5_0", SHADER_PIXEL_GPUPARTICLE);
+
 	OutputDebugStringA("シェーダーのコンパイルを終了します\n");
 #pragma endregion
 
@@ -1049,6 +1053,15 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_COMPUTE_NAME_TEST
 	);
 
+	//GPUパーティクル用のパイプライン
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS,
+		SHADER_VERTEX_GPUPARTICLE,
+		SHADER_PIXEL_GPUPARTICLE,
+		PIPELINE_DATA_BACKCARING_ALPHABLEND,
+		ROOTSIGNATURE_DATA_DRAW,
+		PIPELINE_NAME_GPUPARTICLE
+	);
 
 	//色パイプライン
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
