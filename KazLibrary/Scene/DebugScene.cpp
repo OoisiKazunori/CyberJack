@@ -45,7 +45,9 @@ DebugScene::DebugScene()
 			constantBufferData[n].velocity = XMFLOAT4(KazMath::FloatRand(0.01f, 0.02f), 0.0f, 0.0f, 0.0f);
 			constantBufferData[n].offset = XMFLOAT4(KazMath::FloatRand(-5.0f, -1.5f), KazMath::FloatRand(-1.0f, 1.0f), KazMath::FloatRand(0.0f, 2.0f), 0.0f);
 			constantBufferData[n].color = XMFLOAT4(KazMath::FloatRand(0.5f, 1.0f), KazMath::FloatRand(0.5f, 1.0f), KazMath::FloatRand(0.5f, 1.0f), 1.0f);
-			XMStoreFloat4x4(&constantBufferData[n].projection, CameraMgr::Instance()->orthographicMatProjection);
+
+			float m_aspectRatio = static_cast<float>(WIN_X) / static_cast<float>(WIN_Y);
+			XMStoreFloat4x4(&constantBufferData[n].projection, XMMatrixTranspose(XMMatrixPerspectiveFovLH(XM_PIDIV4, m_aspectRatio, 0.01f, 20.0f)));
 		}
 
 		buffer->TransData(paramCBHandle, &constantBufferData[0], TRIANGLE_ARRAY_NUM * sizeof(SceneConstantBuffer));
@@ -61,7 +63,11 @@ DebugScene::DebugScene()
 		srvDesc.Buffer.StructureByteStride = sizeof(SceneConstantBuffer);
 		srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
 
-		DescriptorHeapMgr::Instance()->CreateBufferView(cbvSize.startSize, srvDesc, buffer->GetBufferData(paramCBHandle).Get());
+		for (UINT frame = 0; frame < FRAME_COUNT; frame++)
+		{
+			srvDesc.Buffer.FirstElement = frame * TRIANGLE_ARRAY_NUM;
+			DescriptorHeapMgr::Instance()->CreateBufferView(cbvSize.startSize + frame, srvDesc, buffer->GetBufferData(paramCBHandle).Get());
+		}
 	}
 	//定数バッファの生成---------------------------
 
@@ -69,7 +75,7 @@ DebugScene::DebugScene()
 	//頂点バッファ関連-------------------------
 	{
 		const float TriangleHalfWidth = 0.05f;
-		const float TriangleDepth = 0.0f;
+		const float TriangleDepth = 1.0f;
 		const float CullingCutoff = 0.5f;
 		struct Vert
 		{
@@ -281,9 +287,10 @@ void DebugScene::Update()
 			constantBufferData[n].velocity.x = KazMath::FloatRand(0.01f, 0.02f);
 			constantBufferData[n].offset.x = -offsetBounds;
 		}
-		XMStoreFloat4x4(&constantBufferData[n].projection, CameraMgr::Instance()->orthographicMatProjection);
 	}
-	buffer->TransData(inputHandle, &constantBufferData, TRIANGLE_ARRAY_NUM * sizeof(SceneConstantBuffer));
+
+	int num = RenderTargetStatus::Instance()->copySwapchain->GetCurrentBackBufferIndex();
+	buffer->TransData(inputHandle, &constantBufferData, TRIANGLE_ARRAY_NUM * num * sizeof(SceneConstantBuffer));
 
 
 
@@ -355,7 +362,7 @@ void DebugScene::Draw()
 		commandSig.Get(),
 		TRIANGLE_ARRAY_NUM,
 		buffer->GetBufferData(commandBufferHandle).Get(),
-		CommandSizePerFrame * num,//リソースバリアの切り替えで値を変える必要があるかも
+		CommandSizePerFrame * 0, //リソースバリアの切り替えで値を変える必要があるかも(offsetが入ると定数バッファの値が0になるので無し)
 		nullptr,
 		0
 	);
