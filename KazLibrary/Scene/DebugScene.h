@@ -93,6 +93,8 @@ private:
 	InputData inputData;
 	BufferMemorySize size;
 	BufferMemorySize cbvSize;
+	int uavHandle;
+	int srvHandle;
 
 
 	static const int TRIANGLE_ARRAY_NUM = 1024;

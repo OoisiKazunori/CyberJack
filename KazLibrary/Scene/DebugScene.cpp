@@ -13,7 +13,8 @@
 DebugScene::DebugScene()
 {
 	//short texHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "");
-
+	uavHandle = 0;
+	srvHandle = 0;
 	buffer = std::make_unique<CreateGpuBuffer>();
 
 	//コマンドシグネチャの生成---------------------------
@@ -91,13 +92,6 @@ DebugScene::DebugScene()
 		short handle = buffer->CreateBuffer(KazBufferHelper::SetVertexBufferData(size));
 		buffer->TransData(handle, vert.data(), size);
 
-		//ComPtr<ID3D12Resource> vertexBufferUpload;
-		//D3D12_SUBRESOURCE_DATA vertexData = {};
-		//vertexData.pData = reinterpret_cast<UINT8 *>(vert.data());
-		//vertexData.RowPitch = vert.size();
-		//vertexData.SlicePitch = vertexData.RowPitch;
-		//UpdateSubresources<1>(DirectX12CmdList::Instance()->cmdList.Get(), buffer->GetBufferData(handle).Get(), vertexBufferUpload.Get(), 0, 0, 1, &vertexData);
-
 		vertexBufferView = KazBufferHelper::SetVertexBufferView(buffer->GetGpuAddress(handle), size, sizeof(vert[0]));
 	}
 	//頂点バッファ関連-------------------------
@@ -137,9 +131,6 @@ DebugScene::DebugScene()
 		UpdateSubresources<1>(DirectX12CmdList::Instance()->cmdList.Get(), buffer->GetBufferData(commandBufferHandle).Get(), buffer->GetBufferData(uplod).Get(), 0, 0, 1, &commandData);
 
 
-		size = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_TEXTURE_COMPUTEBUFFER);
-
-
 		//コマンドバッファのSRV用意-------------------------
 		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 		srvDesc.Format = DXGI_FORMAT_UNKNOWN;
@@ -156,33 +147,35 @@ DebugScene::DebugScene()
 			//定数バッファのビューは作る
 			BufferMemorySize s = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_SRV);
 			DescriptorHeapMgr::Instance()->CreateBufferView(s.startSize + i, srvDesc, buffer->GetBufferData(commandBufferHandle).Get());
+			++srvHandle;
 		}
 		//コマンドバッファのSRV用意-------------------------
 
 
 #pragma region ComputeShader
-		int uavHandle = 1;
+
+
 		//入力用バッファの生成-------------------------
 		{
-			inputHandle = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(TRIANGLE_ARRAY_NUM * sizeof(InputData)));
+			inputHandle = buffer->CreateBuffer(KazBufferHelper::SetConstBufferData(TRIANGLE_ARRAY_NUM * sizeof(InputData), "InputParam"));
 
-			D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
-			uavDesc.Format = DXGI_FORMAT_UNKNOWN;
-			uavDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
-			uavDesc.Buffer.FirstElement = 0;
-			uavDesc.Buffer.NumElements = TRIANGLE_ARRAY_NUM;
-			uavDesc.Buffer.StructureByteStride = sizeof(InputData);
-			uavDesc.Buffer.CounterOffsetInBytes = 0;
-			uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
-			DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + uavHandle, uavDesc, buffer->GetBufferData(inputHandle).Get(), buffer->GetBufferData(inputHandle).Get());
+			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+			srvDesc.Format = DXGI_FORMAT_UNKNOWN;
+			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+			srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+			srvDesc.Buffer.NumElements = TRIANGLE_ARRAY_NUM;
+			srvDesc.Buffer.StructureByteStride = sizeof(InputData);
+			srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
+			BufferMemorySize s = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_SRV);
+			DescriptorHeapMgr::Instance()->CreateBufferView(s.startSize + srvHandle, srvDesc, buffer->GetBufferData(inputHandle).Get());
+			++srvHandle;
 		}
 		//入力用バッファの生成-------------------------
-		++uavHandle;
 
 
+		size = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_TEXTURE_COMPUTEBUFFER);
 
-
-
+		int uavHandle = 1;
 		//出力用のバッファの生成---------------------------
 		//行列系
 		{
@@ -290,21 +283,26 @@ void DebugScene::Update()
 
 	//コンピュートシェーダーの計算-------------------------
 	//コンピュート用のパイプライン設定
-	//GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_TEST);
+	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_TEST);
 
 	//入力用のデータ転送
 	//buffer->TransData(inputHandle, &inputData, sizeof(InputData));
 
 	//入力用のバッファ設定
-	//DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(cbvSize.startSize));
+	{
+		BufferMemorySize s = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_SRV);
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(s.startSize + (srvHandle - 1)));
+	}
 	//出力用のバッファ設定
-	//DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(size.startSize + 1));
+	//DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(2, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(size.startSize + 2));
+	//DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(3, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(size.startSize + 3));
+	//DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(4, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(size.startSize + 4));
 
 	//ルート定数
-	//DirectX12CmdList::Instance()->cmdList->SetComputeRoot32BitConstants(1, 4, reinterpret_cast<void *>(&rootConst), 0);
+	DirectX12CmdList::Instance()->cmdList->SetComputeRoot32BitConstants(1, 4, reinterpret_cast<void *>(&rootConst), 0);
 
 	//ディスパッチ
-	//DirectX12CmdList::Instance()->cmdList->Dispatch(static_cast<UINT>(ceil(TRIANGLE_ARRAY_NUM / static_cast<float>(ComputeThreadBlockSize))), 1, 1);
+	DirectX12CmdList::Instance()->cmdList->Dispatch(static_cast<UINT>(ceil(TRIANGLE_ARRAY_NUM / static_cast<float>(ComputeThreadBlockSize))), 1, 1);
 	//コンピュートシェーダーの計算-------------------------
 
 }
