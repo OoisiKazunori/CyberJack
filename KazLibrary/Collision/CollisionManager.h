@@ -2,67 +2,63 @@
 #include"../DirectXCommon/Base.h"
 #include"../Helper/ISinglton.h"
 #include"../Render/KazRender.h"
+#include"../KazLibrary/Math/KazMath.h"
 
 struct Triangle
 {
-	XMVECTOR p0;
-	XMVECTOR p1;
-	XMVECTOR p2;
-	XMVECTOR normal;
+	KazMath::Vec3<float> p0;
+	KazMath::Vec3<float> p1;
+	KazMath::Vec3<float> p2;
+	KazMath::Vec3<float> normal;
 
 	void ComputeNormal()
 	{
-		XMVECTOR p0_p1 = p1 - p0;
-		XMVECTOR p0_p2 = p2 - p0;
+		KazMath::Vec3<float> p0_p1 = p1 - p0;
+		KazMath::Vec3<float> p0_p2 = p2 - p0;
 
 		//外積により、2辺に垂直なベクトルを算出する
-		normal = XMVector3Cross(p0_p1, p0_p2);
-		normal = XMVector3Normalize(normal);
+		normal = p0_p1.Cross(p0_p2);
+		normal.Normalize();
 	}
 };
 
 struct Ray
 {
 	//始点座標
-	XMVECTOR start{ 0,0,0,1 };
+	KazMath::Vec3<float> start;
 	//方向
-	XMVECTOR dir{ 1,0,0,0 };
+	KazMath::Vec3<float> dir;
 
-	void NormlizeDir()
-	{
-		float length = static_cast<float>(pow(
-			(start.m128_f32[0] * start.m128_f32[0]) +
-			(start.m128_f32[1] * start.m128_f32[1]) +
-			(start.m128_f32[2] * start.m128_f32[2])
-			, 0.5
-		));
-
-		XMVECTOR normal;
-		normal = start / length;
-		dir = XMVectorSet(normal.m128_f32[0], start.m128_f32[1], start.m128_f32[2], start.m128_f32[3]);
-	}
+	Ray() :start(), dir({ 1.0f,0.0f,0.0f })
+	{};
 };
 
 struct Sphere
 {
 	// 中心座標
-	XMVECTOR* center;
+	KazMath::Vec3<float>* center;
 	// 半径
-	float radius = 1.0f;
+	float radius;
+
+	Sphere() : radius(1.0f), center(nullptr)
+	{};
 };
 
 struct Plane
 {
 	// 法線ベクトル
-	XMVECTOR normal = { 0,1,0 };
+	KazMath::Vec3<float> normal;
 	// 原点(0,0,0)からの距離
-	float distance = 0.0f;
+	float distance;
+
+	Plane() :normal({ 0.0f,1.0f,0.0f }), distance(0.0f)
+	{};
 };
 
 struct Square
 {
-	XMVECTOR center;
-	XMVECTOR size;
+	KazMath::Vec3<float> center;
+	KazMath::Vec3<float> size;
 };
 
 struct ModiRectangle
@@ -78,10 +74,10 @@ struct ModiRectangle
 
 	*/
 
-	XMVECTOR p0;
-	XMVECTOR p1;
-	XMVECTOR p2;
-	XMVECTOR p3;
+	KazMath::Vec3<float> p0;
+	KazMath::Vec3<float> p1;
+	KazMath::Vec3<float> p2;
+	KazMath::Vec3<float> p3;
 };
 
 class CollisionManager :public ISingleton<CollisionManager> {
@@ -96,7 +92,7 @@ public:
 	/// <param name="PLANE">板データ</param>
 	/// <param name="INTER">交点</param>
 	/// <returns>true...衝突する,false...衝突していない</returns>
-	bool CheckSphereAndPlane(const Sphere& SPHERE, const Plane& PLANE, XMVECTOR* INTER = nullptr);
+	bool CheckSphereAndPlane(const Sphere& SPHERE, const Plane& PLANE, KazMath::Vec3<float>* INTER = nullptr);
 
 	/// <summary>
 	/// 球と三角形の判定を取ります
@@ -105,7 +101,7 @@ public:
 	/// <param name="TRIANGLE">三角形データ</param>
 	/// <param name="INTER">交点</param>
 	/// <returns>true...衝突する,false...衝突していない</returns>
-	bool CheckSphereAndTriangle(const Sphere& SPHERE, const Triangle& TRIANGLE, XMVECTOR* INTER = nullptr);
+	bool CheckSphereAndTriangle(const Sphere& SPHERE, const Triangle& TRIANGLE, KazMath::Vec3<float> *INTER = nullptr);
 
 	/// <summary>
 	/// 線と板の判定を取ります
@@ -115,7 +111,7 @@ public:
 	/// <param name="DISTANCE">距離</param>
 	/// <param name="INTER">交点</param>
 	/// <returns>true...衝突する,false...衝突していない</returns>
-	bool CheckRayAndPlane(const Ray& RAY, const Plane& PLANE, float* DISTANCE, XMVECTOR* INTER);
+	bool CheckRayAndPlane(const Ray& RAY, const Plane& PLANE, float* DISTANCE, KazMath::Vec3<float> * INTER);
 
 	/// <summary>
 	/// 線と三角形の判定を取ります
@@ -125,7 +121,7 @@ public:
 	/// <param name="DISTANCE">距離</param>
 	/// <param name="INTER">交点</param>
 	/// <returns>true...衝突する,false...衝突していない</returns>
-	bool CheckRayAndTriange(const Ray& RAY, const Triangle& TRIANGLE, float* DISTANCE = nullptr, XMVECTOR* INTER = nullptr);
+	bool CheckRayAndTriange(const Ray& RAY, const Triangle& TRIANGLE, float* DISTANCE = nullptr, KazMath::Vec3<float> * INTER = nullptr);
 
 	/// <summary>
 	/// 線と球の判定を取ります
@@ -135,7 +131,7 @@ public:
 	/// <param name="DISTANCE">距離</param>
 	/// <param name="INTER">交点</param>
 	/// <returns>true...衝突する,false...衝突していない</returns>
-	bool CheckRayAndSphere(const Ray& RAY, const Sphere& SPHERE, float* DISTANCE = nullptr, XMVECTOR* INTER = nullptr);
+	bool CheckRayAndSphere(const Ray& RAY, const Sphere& SPHERE, float* DISTANCE = nullptr, KazMath::Vec3<float> * INTER = nullptr);
 
 
 	/// <summary>
@@ -166,7 +162,7 @@ public:
 private:
 
 	//点と三角形の最近接点
-	void ClosestPtPoint2Triangle(const XMVECTOR& point, const Triangle& triangle, XMVECTOR* closest);
+	void ClosestPtPoint2Triangle(const KazMath::Vec3<float> &point, const Triangle &triangle, KazMath::Vec3<float> *closest);
 
 
 	float CaluCross(XMFLOAT2 a, XMFLOAT2 b, XMFLOAT2 c)

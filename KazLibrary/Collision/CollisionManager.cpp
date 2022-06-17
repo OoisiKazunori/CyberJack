@@ -1,5 +1,4 @@
 #include"../Collision/CollisionManager.h"
-#include "../Math/KazMath.h"
 
 CollisionManager::CollisionManager()
 {
@@ -9,13 +8,13 @@ CollisionManager::~CollisionManager()
 {
 }
 
-bool CollisionManager::CheckSphereAndPlane(const Sphere &SPHERE, const Plane &PLANE, XMVECTOR *INTER)
+bool CollisionManager::CheckSphereAndPlane(const Sphere &SPHERE, const Plane &PLANE, KazMath::Vec3<float> *INTER)
 {
 	//座標系の原点から球の中心座標への距離
-	XMVECTOR distV = XMVector3Dot(*SPHERE.center, PLANE.normal);
+	float distV = SPHERE.center->Dot(PLANE.normal);
 
 	//平面の原点距離を減算する事で、平面と球の中心との距離が出る
-	float dist = distV.m128_f32[0] - PLANE.distance;
+	float dist = distV - PLANE.distance;
 
 	//距離の絶対値が半径より大きければ当たってない
 	if (fabs(dist) > SPHERE.radius)
@@ -28,27 +27,27 @@ bool CollisionManager::CheckSphereAndPlane(const Sphere &SPHERE, const Plane &PL
 	if (INTER)
 	{
 		//平面上の疑似接点を、疑似交点とする
-		*INTER = -dist * PLANE.normal + *SPHERE.center;
+		*INTER = PLANE.normal * -dist + *SPHERE.center;
 	}
 	return true;
 }
 
-bool CollisionManager::CheckSphereAndTriangle(const Sphere &SPHERE, const Triangle &TRIANGLE, XMVECTOR *INTER)
+bool CollisionManager::CheckSphereAndTriangle(const Sphere &SPHERE, const Triangle &TRIANGLE, KazMath::Vec3<float> *INTER)
 {
-	XMVECTOR p;
+	KazMath::Vec3<float> p;
 
 	//球の中心に対する最近接点である三角形上にある点pを見つける
 	ClosestPtPoint2Triangle(*SPHERE.center, TRIANGLE, &p);
 
 	//点pと球の中心の差分ベクトル
-	XMVECTOR v = p - *SPHERE.center;
+	KazMath::Vec3<float> v = p - *SPHERE.center;
 
 	//距離の二乗を求める
 	//(同じベクトル同士の内積は三平方の定理のルート内部の式と一致する)
-	v = XMVector3Dot(v, v);
+	float d = v.Dot(v);
 
 	//球と三角形の距離が半径以下なら当たっていない
-	if (v.m128_f32[0] > SPHERE.radius * SPHERE.radius)
+	if (d > SPHERE.radius * SPHERE.radius)
 	{
 		return false;
 	}
@@ -61,12 +60,12 @@ bool CollisionManager::CheckSphereAndTriangle(const Sphere &SPHERE, const Triang
 
 }
 
-bool CollisionManager::CheckRayAndPlane(const Ray &RAY, const Plane &PLANE, float *DISTANCE, XMVECTOR *INTER)
+bool CollisionManager::CheckRayAndPlane(const Ray &RAY, const Plane &PLANE, float *DISTANCE, KazMath::Vec3<float> *INTER)
 {
 	//イプシオン...誤差吸収用の0に近い微小な値
 	const float epsion = 1.0 - 5.0f;
 	//面法線とレイの方向ベクトルの内積
-	float d1 = XMVector3Dot(PLANE.normal, RAY.dir).m128_f32[0];
+	float d1 = PLANE.normal.Dot(RAY.dir);
 	//裏面に当たらない
 	if (d1 > -epsion)
 	{
@@ -75,7 +74,7 @@ bool CollisionManager::CheckRayAndPlane(const Ray &RAY, const Plane &PLANE, floa
 
 	//始点と平面の距離(平面の法線方向)
 	//面法線とレイの始点座標(位置ベクトル)の内積
-	float d2 = XMVector3Dot(PLANE.normal, RAY.dir).m128_f32[0];
+	float d2 = PLANE.normal.Dot(RAY.dir);
 
 	//始点と平面の距離(平面の法線方向)
 	float dist = d2 - PLANE.distance;
@@ -98,20 +97,20 @@ bool CollisionManager::CheckRayAndPlane(const Ray &RAY, const Plane &PLANE, floa
 	//交点を計算
 	if (INTER)
 	{
-		*INTER = RAY.start + t * RAY.dir;
+		*INTER = RAY.start + RAY.dir * t;
 	}
 
 	return true;
 }
 
-bool CollisionManager::CheckRayAndTriange(const Ray &RAY, const Triangle &TRIANGLE, float *DISTANCE, XMVECTOR *INTER)
+bool CollisionManager::CheckRayAndTriange(const Ray &RAY, const Triangle &TRIANGLE, float *DISTANCE, KazMath::Vec3<float> *INTER)
 {
 	//三角形が載っている平面を算出
 	Plane plane;
-	XMVECTOR interPlane;
+	KazMath::Vec3<float> interPlane;
 
 	plane.normal = TRIANGLE.normal;
-	plane.distance = XMVector3Dot(TRIANGLE.normal, TRIANGLE.p0).m128_f32[0];
+	plane.distance = TRIANGLE.normal.Dot(TRIANGLE.p0);
 
 	//Rayと平面が当たっていなければ、当たっていない
 	if (!CheckRayAndPlane(RAY, plane, DISTANCE, &interPlane))
@@ -122,39 +121,39 @@ bool CollisionManager::CheckRayAndTriange(const Ray &RAY, const Triangle &TRIANG
 	//Rayと平面が当たっていたので、距離と交点が書き込まれた
 	//Rayと平面の好転が三角形の内側にあるか判定
 	const float epsilon = 1.0 - 5.0f;
-	XMVECTOR m;
 
 	//辺p0_p1について
-	XMVECTOR pt_p0 = TRIANGLE.p0 - interPlane;
-	XMVECTOR p0_p1 = TRIANGLE.p1 - TRIANGLE.p0;
-	m = XMVector3Cross(pt_p0, p0_p1);
+	KazMath::Vec3<float> pt_p0 = TRIANGLE.p0 - interPlane;
+	KazMath::Vec3<float> p0_p1 = TRIANGLE.p1 - TRIANGLE.p0;
+	KazMath::Vec3<float> m;
+	m = pt_p0.Cross(p0_p1);
 
 	//辺の外側であれば当たっていないので判定を打ち切る
-	if (XMVector3Dot(m, TRIANGLE.normal).m128_f32[0] < -epsilon)
+	if (m.Dot(TRIANGLE.normal) < -epsilon)
 	{
 		return false;
 	}
 
 
 	//辺p1_p2について
-	XMVECTOR pt_p1 = TRIANGLE.p1 - interPlane;
-	XMVECTOR p1_p2 = TRIANGLE.p1 - TRIANGLE.p2;
-	m = XMVector3Cross(pt_p1, p1_p2);
+	KazMath::Vec3<float> pt_p1 = TRIANGLE.p1 - interPlane;
+	KazMath::Vec3<float> p1_p2 = TRIANGLE.p1 - TRIANGLE.p2;
+	m = pt_p1.Cross(p1_p2);
 
 	//辺の外側であれば当たっていないので判定を打ち切る
-	if (XMVector3Dot(m, TRIANGLE.normal).m128_f32[0] < -epsilon)
+	if (m.Dot(TRIANGLE.normal) < -epsilon)
 	{
 		return false;
 	}
 
 
 	//辺p2_p0について
-	XMVECTOR pt_p2 = TRIANGLE.p2 - interPlane;
-	XMVECTOR p2_p0 = TRIANGLE.p2 - TRIANGLE.p0;
-	m = XMVector3Cross(pt_p2, p2_p0);
+	KazMath::Vec3<float> pt_p2 = TRIANGLE.p2 - interPlane;
+	KazMath::Vec3<float> p2_p0 = TRIANGLE.p2 - TRIANGLE.p0;
+	m = pt_p2.Cross(p2_p0);
 
 	//辺の外側であれば当たっていないので判定を打ち切る
-	if (XMVector3Dot(m, TRIANGLE.normal).m128_f32[0] < -epsilon)
+	if (m.Dot(TRIANGLE.normal) < -epsilon)
 	{
 		return false;
 	}
@@ -168,11 +167,11 @@ bool CollisionManager::CheckRayAndTriange(const Ray &RAY, const Triangle &TRIANG
 	return true;
 }
 
-bool CollisionManager::CheckRayAndSphere(const Ray &RAY, const Sphere &SPHERE, float *DISTANCE, XMVECTOR *INTER)
+bool CollisionManager::CheckRayAndSphere(const Ray &RAY, const Sphere &SPHERE, float *DISTANCE, KazMath::Vec3<float> *INTER)
 {
-	XMVECTOR m = RAY.start - *SPHERE.center;
-	float b = XMVector3Dot(m, RAY.dir).m128_f32[0];
-	float c = XMVector3Dot(m, m).m128_f32[0] - SPHERE.radius * SPHERE.radius;
+	KazMath::Vec3<float> m = RAY.start - *SPHERE.center;
+	float b = m.Dot(RAY.dir);
+	float c = m.Dot(m) - SPHERE.radius * SPHERE.radius;
 
 	//Rayの始点がSphereの外側にあり(c>0),RayがSphereから離れていく方向を指している場合(b>0),当たらない
 	if (c > 0.0f && b > 0.0f)
@@ -206,20 +205,14 @@ bool CollisionManager::CheckRayAndSphere(const Ray &RAY, const Sphere &SPHERE, f
 
 	if (INTER)
 	{
-		*INTER = RAY.start + t * RAY.dir;
+		*INTER = RAY.start + RAY.dir * t;
 	}
 	return true;
 }
 
 bool CollisionManager::CheckSphereAndSphere(const Sphere &SPHERE_1, const Sphere &SPHERE_2)
 {
-	XMVECTOR tmp;
-	tmp.m128_f32[0] = SPHERE_1.center->m128_f32[0] - SPHERE_2.center->m128_f32[0];
-	tmp.m128_f32[1] = SPHERE_1.center->m128_f32[1] - SPHERE_2.center->m128_f32[1];
-	tmp.m128_f32[2] = SPHERE_1.center->m128_f32[2] - SPHERE_2.center->m128_f32[2];
-
-
-	float distance = sqrtf(pow(tmp.m128_f32[0], 2) + pow(tmp.m128_f32[1], 2) + pow(tmp.m128_f32[2], 2));
+	float distance = SPHERE_1.center->Distance(*SPHERE_2.center);
 	float sumRadist = SPHERE_1.radius + SPHERE_2.radius;
 
 	return (distance <= sumRadist);
@@ -227,11 +220,14 @@ bool CollisionManager::CheckSphereAndSphere(const Sphere &SPHERE_1, const Sphere
 
 bool CollisionManager::CheckSquareAndSquare(const Square &SQUARE_1, const Square &SQUARE_2)
 {
-	XMVECTOR adjPos[2] = { SQUARE_1.size / 2.0f,SQUARE_2.size / 2.0f };
+	std::array<KazMath::Vec3<float>, 2> size = { SQUARE_1.size / 2.0f,SQUARE_2.size / 2.0f };
 	int x = 0, y = 2;
-	bool isHit = fabs(SQUARE_1.center.m128_f32[x] - SQUARE_2.center.m128_f32[x]) <= adjPos[0].m128_f32[x] + adjPos[1].m128_f32[x]
-		&& fabs(SQUARE_1.center.m128_f32[y] - SQUARE_2.center.m128_f32[y]) <= adjPos[0].m128_f32[y] + adjPos[1].m128_f32[y];
-	return isHit;
+
+	KazMath::Vec3<float>distance = SQUARE_1.center - SQUARE_2.center;
+	const int square1 = 0;
+	const int square2 = 1;
+	bool isHitFlag = fabs(distance.x) <= size[square1].x + size[square2].x && fabs(distance.y) <= size[square1].y + size[square2].y;
+	return isHitFlag;
 }
 
 bool CollisionManager::CheckThicklineAndSphere(const Sphere &SPHERE, const ModiRectangle &RECTANGLE)
@@ -263,31 +259,31 @@ bool CollisionManager::CheckThicklineAndSphere(const Sphere &SPHERE, const ModiR
 	Sphere sphereBuff = SPHERE;
 	ModiRectangle rectangleBuff = RECTANGLE;
 
-	sphereBuff.center->m128_f32[1] = SPHERE.center->m128_f32[2];
-	sphereBuff.center->m128_f32[2] = SPHERE.center->m128_f32[1];
+	sphereBuff.center->y = SPHERE.center->z;
+	sphereBuff.center->z = SPHERE.center->y;
 
-	rectangleBuff.p0.m128_f32[1] = RECTANGLE.p0.m128_f32[2];
-	rectangleBuff.p0.m128_f32[2] = RECTANGLE.p0.m128_f32[1];
+	rectangleBuff.p0.y = RECTANGLE.p0.z;
+	rectangleBuff.p0.z = RECTANGLE.p0.y;
 
-	rectangleBuff.p1.m128_f32[1] = RECTANGLE.p1.m128_f32[2];
-	rectangleBuff.p1.m128_f32[2] = RECTANGLE.p1.m128_f32[1];
+	rectangleBuff.p1.y = RECTANGLE.p1.z;
+	rectangleBuff.p1.z = RECTANGLE.p1.y;
 
-	rectangleBuff.p2.m128_f32[1] = RECTANGLE.p2.m128_f32[2];
-	rectangleBuff.p2.m128_f32[2] = RECTANGLE.p2.m128_f32[1];
+	rectangleBuff.p2.y = RECTANGLE.p2.z;
+	rectangleBuff.p2.z = RECTANGLE.p2.y;
 
-	rectangleBuff.p3.m128_f32[1] = RECTANGLE.p3.m128_f32[2];
-	rectangleBuff.p3.m128_f32[2] = RECTANGLE.p3.m128_f32[1];
+	rectangleBuff.p3.y = RECTANGLE.p3.z;
+	rectangleBuff.p3.z = RECTANGLE.p3.y;
 
 
 	// 矩形データを保存する。
 	ModiRectangle rectangleBuffBuff = rectangleBuff;
 
 	// 円の半径を保存する変数
-	XMVECTOR sphereRadius = { sphereBuff.radius, sphereBuff.radius, sphereBuff.radius };
+	KazMath::Vec3<float> sphereRadius = { sphereBuff.radius, sphereBuff.radius, sphereBuff.radius };
 
 	// 頂点を計算する際にデータを一時保存する変数
-	XMVECTOR dataBuff = {};
-	XMVECTOR dataBuff2 = {};
+	KazMath::Vec3<float> dataBuff = {};
+	KazMath::Vec3<float> dataBuff2 = {};
 
 
 	/*-- 矩形を拡張する。 --*/
@@ -297,10 +293,10 @@ bool CollisionManager::CheckThicklineAndSphere(const Sphere &SPHERE, const ModiR
 
 		// p1からp0までの方向ベクトルを求め、正規化させる。
 		dataBuff = rectangleBuffBuff.p0 - rectangleBuffBuff.p1;
-		dataBuff = XMVector2Normalize(dataBuff);
+		dataBuff.Normalize();
 		// p3からp0までの方向ベクトルを求め、正規化させる。
 		dataBuff2 = rectangleBuffBuff.p0 - rectangleBuffBuff.p3;
-		dataBuff2 = XMVector2Normalize(dataBuff2);
+		dataBuff2.Normalize();
 
 		//// 足して正規化する
 		//dataBuff += dataBuff2;
@@ -316,10 +312,10 @@ bool CollisionManager::CheckThicklineAndSphere(const Sphere &SPHERE, const ModiR
 
 		// p2からp1までの方向ベクトルを求め、正規化させる。
 		dataBuff = rectangleBuffBuff.p1 - rectangleBuffBuff.p2;
-		dataBuff = XMVector2Normalize(dataBuff);
+		dataBuff.Normalize();
 		// p0からp1までの方向ベクトルを求め、正規化させる。
 		dataBuff2 = rectangleBuffBuff.p1 - rectangleBuffBuff.p0;
-		dataBuff2 = XMVector2Normalize(dataBuff2);
+		dataBuff2.Normalize();
 
 		//// 足して正規化する
 		//dataBuff += dataBuff2;
@@ -335,10 +331,10 @@ bool CollisionManager::CheckThicklineAndSphere(const Sphere &SPHERE, const ModiR
 
 		// p3からp2までの方向ベクトルを求め、正規化させる。
 		dataBuff = rectangleBuffBuff.p2 - rectangleBuffBuff.p3;
-		dataBuff = XMVector2Normalize(dataBuff);
+		dataBuff.Normalize();
 		// p1からp2までの方向ベクトルを求め、正規化させる。
 		dataBuff2 = rectangleBuffBuff.p2 - rectangleBuffBuff.p1;
-		dataBuff2 = XMVector2Normalize(dataBuff2);
+		dataBuff2.Normalize();
 
 		//// 足して正規化する
 		//dataBuff += dataBuff2;
@@ -354,10 +350,10 @@ bool CollisionManager::CheckThicklineAndSphere(const Sphere &SPHERE, const ModiR
 
 		// p0からp1までの方向ベクトルを求め、正規化させる。
 		dataBuff = rectangleBuffBuff.p3 - rectangleBuffBuff.p0;
-		dataBuff = XMVector2Normalize(dataBuff);
+		dataBuff.Normalize();
 		// p2からp3までの方向ベクトルを求め、正規化させる。
 		dataBuff2 = rectangleBuffBuff.p3 - rectangleBuffBuff.p2;
-		dataBuff2 = XMVector2Normalize(dataBuff2);
+		dataBuff2.Normalize();
 
 		//// 足して正規化する
 		//dataBuff += dataBuff2;
@@ -371,11 +367,11 @@ bool CollisionManager::CheckThicklineAndSphere(const Sphere &SPHERE, const ModiR
 	/*-- 拡張した矩形と円の中心点を外積の左右判定を使って当たり判定を行う。 --*/
 
 	// 判定を保存するようの変数
-	vector<bool> isHit;
+	std::vector<bool> isHit;
 
 	// 外積判定をする際にベクトルを保存するための変数
-	XMVECTOR vTvVec = {};	// 頂点と頂点のベクトル
-	XMVECTOR vTPVec = {};	// 頂点と中心点のベクトル
+	KazMath::Vec3<float> vTvVec = {};	// 頂点と頂点のベクトル
+	KazMath::Vec3<float> vTPVec = {};	// 頂点と中心点のベクトル
 
 	// 結果を保存する変数
 	float crossResultBuff = 0;
@@ -385,14 +381,13 @@ bool CollisionManager::CheckThicklineAndSphere(const Sphere &SPHERE, const ModiR
 
 		// 頂点と頂点ベクトルを求めて正規化
 		vTvVec = rectangleBuffBuff.p1 - rectangleBuffBuff.p0;
-		vTvVec = XMVector2Normalize(vTvVec);
+		vTvVec.Normalize();
 		// 頂点と中心点のベクトルを求めて正規化
 		vTPVec = *sphereBuff.center - rectangleBuffBuff.p0;
-		vTPVec = XMVector2Normalize(vTPVec);
+		vTPVec.Normalize();
 
 		// 外積を計算 +の場合右判定
-		float a = XMVector2Cross(vTvVec, vTPVec).m128_f32[0];
-		isHit.push_back(XMVector2Cross(vTvVec, vTPVec).m128_f32[0] < 0);
+		isHit.push_back(vTvVec.Cross(vTPVec).x < 0);
 
 	}
 
@@ -401,13 +396,13 @@ bool CollisionManager::CheckThicklineAndSphere(const Sphere &SPHERE, const ModiR
 
 		// 頂点と頂点ベクトルを求めて正規化
 		vTvVec = rectangleBuffBuff.p2 - rectangleBuffBuff.p1;
-		vTvVec = XMVector2Normalize(vTvVec);
+		vTvVec.Normalize();
 		// 頂点と中心点のベクトルを求めて正規化
 		vTPVec = *sphereBuff.center - rectangleBuffBuff.p1;
-		vTPVec = XMVector2Normalize(vTPVec);
+		vTPVec.Normalize();
 
 		// 外積を計算 +の場合右判定
-		isHit.push_back(XMVector2Cross(vTvVec, vTPVec).m128_f32[0] < 0);
+		isHit.push_back(vTvVec.Cross(vTPVec).x < 0);
 
 	}
 
@@ -416,13 +411,13 @@ bool CollisionManager::CheckThicklineAndSphere(const Sphere &SPHERE, const ModiR
 
 		// 頂点と頂点ベクトルを求めて正規化
 		vTvVec = rectangleBuffBuff.p3 - rectangleBuffBuff.p2;
-		vTvVec = XMVector2Normalize(vTvVec);
+		vTvVec.Normalize();
 		// 頂点と中心点のベクトルを求めて正規化
 		vTPVec = *sphereBuff.center - rectangleBuffBuff.p2;
-		vTPVec = XMVector2Normalize(vTPVec);
+		vTPVec.Normalize();
 
 		// 外積を計算 +の場合右判定
-		isHit.push_back(XMVector2Cross(vTvVec, vTPVec).m128_f32[0] < 0);
+		isHit.push_back(vTvVec.Cross(vTPVec).x < 0);
 
 	}
 
@@ -431,38 +426,37 @@ bool CollisionManager::CheckThicklineAndSphere(const Sphere &SPHERE, const ModiR
 
 		// 頂点と頂点ベクトルを求めて正規化
 		vTvVec = rectangleBuffBuff.p0 - rectangleBuffBuff.p3;
-		vTvVec = XMVector2Normalize(vTvVec);
+		vTvVec.Normalize();
 		// 頂点と中心点のベクトルを求めて正規化
 		vTPVec = *sphereBuff.center - rectangleBuffBuff.p3;
-		vTPVec = XMVector2Normalize(vTPVec);
+		vTPVec.Normalize();
 
 		// 外積を計算 +の場合右判定
-		isHit.push_back(XMVector2Cross(vTvVec, vTPVec).m128_f32[0] < 0);
+		isHit.push_back(vTvVec.Cross(vTPVec).x < 0);
 
 	}
 
 	// 結果を計算
 	bool isHitResult = true;
-	for (int i = 0; i < 4; ++i) {
-
+	for (int i = 0; i < 4; ++i)
+	{
 		isHitResult = isHit[i] && isHitResult;
-
 	}
 
 
 	return isHitResult;
 }
-void CollisionManager::ClosestPtPoint2Triangle(const XMVECTOR &point, const Triangle &triangle, XMVECTOR *closest)
+void CollisionManager::ClosestPtPoint2Triangle(const KazMath::Vec3<float> &point, const Triangle &triangle, KazMath::Vec3<float> *closest)
 {
 	// pointがp0の外側の頂点領域の中にあるかどうかチェック
-	XMVECTOR p0_p1 = triangle.p1 - triangle.p0;
-	XMVECTOR p0_p2 = triangle.p2 - triangle.p0;
-	XMVECTOR p0_pt = point - triangle.p0;
+	KazMath::Vec3<float> p0_p1 = triangle.p1 - triangle.p0;
+	KazMath::Vec3<float> p0_p2 = triangle.p2 - triangle.p0;
+	KazMath::Vec3<float> p0_pt = point - triangle.p0;
 
-	XMVECTOR d1 = XMVector3Dot(p0_p1, p0_pt);
-	XMVECTOR d2 = XMVector3Dot(p0_p2, p0_pt);
+	float d1 = p0_p1.Dot(p0_pt);
+	float d2 = p0_p2.Dot(p0_pt);
 
-	if (d1.m128_f32[0] <= 0.0f && d2.m128_f32[0] <= 0.0f)
+	if (d1 <= 0.0f && d2 <= 0.0f)
 	{
 		// p0が最近傍
 		*closest = triangle.p0;
@@ -470,12 +464,12 @@ void CollisionManager::ClosestPtPoint2Triangle(const XMVECTOR &point, const Tria
 	}
 
 	// pointがp1の外側の頂点領域の中にあるかどうかチェック
-	XMVECTOR p1_pt = point - triangle.p1;
+	KazMath::Vec3<float> p1_pt = point - triangle.p1;
 
-	XMVECTOR d3 = XMVector3Dot(p0_p1, p1_pt);
-	XMVECTOR d4 = XMVector3Dot(p0_p2, p1_pt);
+	float d3 = p0_p1.Dot(p1_pt);
+	float d4 = p0_p2.Dot(p1_pt);
 
-	if (d3.m128_f32[0] >= 0.0f && d4.m128_f32[0] <= d3.m128_f32[0])
+	if (d3 >= 0.0f && d4 <= d3)
 	{
 		// p1が最近傍
 		*closest = triangle.p1;
@@ -483,40 +477,40 @@ void CollisionManager::ClosestPtPoint2Triangle(const XMVECTOR &point, const Tria
 	}
 
 	// pointがp0_p1の辺領域の中にあるかどうかチェックし、あればpointのp0_p1上に対する射影を返す
-	float vc = d1.m128_f32[0] * d4.m128_f32[0] - d3.m128_f32[0] * d2.m128_f32[0];
-	if (vc <= 0.0f && d1.m128_f32[0] >= 0.0f && d3.m128_f32[0] <= 0.0f)
+	float vc = d1 * d4 - d3 * d2;
+	if (vc <= 0.0f && d1 >= 0.0f && d3 <= 0.0f)
 	{
-		float v = d1.m128_f32[0] / (d1.m128_f32[0] - d3.m128_f32[0]);
-		*closest = triangle.p0 + v * p0_p1;
+		float v = d1 / (d1 - d3);
+		*closest = triangle.p0 + p0_p1 * v;
 		return;
 	}
 
 	// pointがp2の外側の頂点領域の中にあるかどうかチェック
-	XMVECTOR p2_pt = point - triangle.p2;
+	KazMath::Vec3<float> p2_pt = point - triangle.p2;
 
-	XMVECTOR d5 = XMVector3Dot(p0_p1, p2_pt);
-	XMVECTOR d6 = XMVector3Dot(p0_p2, p2_pt);
-	if (d6.m128_f32[0] >= 0.0f && d5.m128_f32[0] <= d6.m128_f32[0])
+	float d5 = p0_p1.Dot(p2_pt);
+	float d6 = p0_p2.Dot(p2_pt);
+	if (d6 >= 0.0f && d5 <= d6)
 	{
 		*closest = triangle.p2;
 		return;
 	}
 
 	// pointがp0_p2の辺領域の中にあるかどうかチェックし、あればpointのp0_p2上に対する射影を返す
-	float vb = d5.m128_f32[0] * d2.m128_f32[0] - d1.m128_f32[0] * d6.m128_f32[0];
-	if (vb <= 0.0f && d2.m128_f32[0] >= 0.0f && d6.m128_f32[0] <= 0.0f)
+	float vb = d5 * d2 - d1 * d6;
+	if (vb <= 0.0f && d2 >= 0.0f && d6 <= 0.0f)
 	{
-		float w = d2.m128_f32[0] / (d2.m128_f32[0] - d6.m128_f32[0]);
-		*closest = triangle.p0 + w * p0_p2;
+		float w = d2 / (d2 - d6);
+		*closest = triangle.p0 + p0_p2 * w;
 		return;
 	}
 
 	// pointがp1_p2の辺領域の中にあるかどうかチェックし、あればpointのp1_p2上に対する射影を返す
-	float va = d3.m128_f32[0] * d6.m128_f32[0] - d5.m128_f32[0] * d4.m128_f32[0];
-	if (va <= 0.0f && (d4.m128_f32[0] - d3.m128_f32[0]) >= 0.0f && (d5.m128_f32[0] - d6.m128_f32[0]) >= 0.0f)
+	float va = d3 * d6 - d5 * d4;
+	if (va <= 0.0f && (d4 - d3) >= 0.0f && (d5 - d6) >= 0.0f)
 	{
-		float w = (d4.m128_f32[0] - d3.m128_f32[0]) / ((d4.m128_f32[0] - d3.m128_f32[0]) + (d5.m128_f32[0] - d6.m128_f32[0]));
-		*closest = triangle.p1 + w * (triangle.p2 - triangle.p1);
+		float w = (d4 - d3) / ((d4 - d3) + (d5 - d6));
+		*closest = triangle.p1 + (triangle.p2 - triangle.p1) * w;
 		return;
 	}
 
