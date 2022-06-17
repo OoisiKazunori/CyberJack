@@ -120,7 +120,7 @@ std::vector<int> KazHelper::CountNumber(int TIME, int ZERO)
 	{
 		float result = tmp % 10;
 		Number[i] = result;
-		tmp /= 10.0f;
+		tmp /= 10;
 	}
 	for (int i = 0; i < Number.size(); i++)
 	{

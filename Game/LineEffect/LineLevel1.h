@@ -46,10 +46,10 @@ class LineLevel1
 public:
 	LineLevel1();
 
-	void CalucurateDistance(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS);
+	void CalucurateDistance(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::Vec3<float> &ENEMY_POS);
 
-	void Attack(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, const EnemyMoveData &FLAG_DATA);
-	void Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, const EnemyMoveData &FLAG_DATA);
+	void Attack(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::Vec3<float> &ENEMY_POS, const EnemyMoveData &FLAG_DATA);
+	void Attack2(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::Vec3<float> &ENEMY_POS, const EnemyMoveData &FLAG_DATA);
 
 	void ReleaseShot();
 
@@ -61,23 +61,28 @@ public:
 	bool allFinishFlag;
 	bool lineReachObjFlag;
 	bool initFlag;
-	XMVECTOR playerPos;
+	KazMath::Vec3<float> playerPos;
 private:
-	vector<XMVECTOR> limitPos;
+	std::vector<KazMath::Vec3<float>> limitPos;
 	vector<BoxPolygonRenderPtr> limitPolygon;
 	vector<unique_ptr<LineEffect>> line;
 
 	array<int, 3> countVec;
 
-	XMVECTOR rockOnDistance;//ロックオンした際の敵の座標
-	XMVECTOR distanceValue;//ロックオン時の距離と現在のプレイヤーと敵の距離の割合
+	KazMath::Vec3<float> rockOnDistance;//ロックオンした際の敵の座標
+	KazMath::Vec3<float> distanceValue;//ロックオン時の距離と現在のプレイヤーと敵の距離の割合
 
-	XMVECTOR CalucurateMoveVector(const int &RANDM_NUM, const float &LENGTH);
+	KazMath::Vec3<float> CalucurateMoveVector(const int &RANDM_NUM, const float &LENGTH);
 	int CalucurateDirection(const int &MOVE_VEC, const int &MOVE_VEC_MAX_NUM);
 	int CalucurateDirection2(const int &MOVE_VEC, const int &MOVE_VEC_MAX_NUM);
 
 	eLineMove CaluRandom(int DONT_USE, int OLD_NUM);
 
-	XMVECTOR firstDir(eSurface SURFACE);
+	KazMath::Vec3<float> firstDir(eSurface SURFACE);
+
+	bool IsMinus(float VALUE)
+	{
+		return VALUE < 0;
+	}
 };
 

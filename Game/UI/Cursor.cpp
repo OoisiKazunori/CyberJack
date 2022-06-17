@@ -5,7 +5,7 @@
 
 XMFLOAT2 Cursor::KOCKBACK_MAX_VALUE = { 200.0f,200.0f };
 XMFLOAT2 Cursor::KOCKBACK_VELOCITY = { 5.0f,5.0f };
-XMVECTOR Cursor::NO_MOVE_DISTANCE = { 150.0f,50.0f };
+KazMath::Vec2<float> Cursor::NO_MOVE_DISTANCE = { 150.0f,50.0f };
 
 Cursor::Cursor()
 {
@@ -36,10 +36,10 @@ Cursor::Cursor()
 	numberHandle[7] = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::CursorPath + "CursorNum7.png");
 	numberHandle[8] = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::CursorPath + "CursorNumMax.png");
 
-	cursorPos = { WIN_X / 2.0f,WIN_Y / 2.0f,0.0f };
-	limitValue = { 570.0f,WIN_Y / 2.0f,0.0f };
+	cursorPos = { static_cast<float>(WIN_X) / 2.0f,static_cast<float>(WIN_Y) / 2.0f };
+	limitValue = { 570.0f,static_cast<float>(WIN_Y) / 2.0f };
 
-	XMVECTOR scale = { 2.0f,2.0f };
+	KazMath::Vec2<float> scale = { 2.0f,2.0f };
 	cursorFlameTex->data.transform.scale = scale;
 	numberTex->data.transform.scale = scale;
 	stopFlag = { 0,0 };
@@ -59,8 +59,8 @@ Cursor::Cursor()
 
 void Cursor::Init()
 {
-	honraiCursorPos = { WIN_X / 2.0f,WIN_Y / 2.0f,0.0f };
-	cursorPos = { WIN_X / 2.0f,WIN_Y / 2.0f,0.0f };
+	honraiCursorPos = { static_cast<float>(WIN_X) / 2.0f,static_cast<float>(WIN_Y) / 2.0f };
+	cursorPos = { static_cast<float>(WIN_X) / 2.0f,static_cast<float>(WIN_Y) / 2.0f };
 
 	cursorFlameTex->data.transform.scale = baseScale;
 	numberTex->data.transform.scale = baseScale;
@@ -71,7 +71,7 @@ void Cursor::Init()
 
 }
 
-void Cursor::Input(bool UP_FLAG, bool DOWN_FLAG, bool LEFT_FLAG, bool RIGHT_FLAG, bool DONE_FLAG, bool RELEASE_FLAG, const XMVECTOR &ANGLE)
+void Cursor::Input(bool UP_FLAG, bool DOWN_FLAG, bool LEFT_FLAG, bool RIGHT_FLAG, bool DONE_FLAG, bool RELEASE_FLAG, const KazMath::Vec2<float> &ANGLE)
 {
 	if (!dontMoveFlag)
 	{
@@ -91,7 +91,7 @@ void Cursor::Input(bool UP_FLAG, bool DOWN_FLAG, bool LEFT_FLAG, bool RIGHT_FLAG
 		rightFlag = false;
 		doneFlag = false;
 		releaseFlag = false;
-		stickAngle = { 0.0f,0.0f,0.0f };
+		stickAngle = { 0.0f,0.0f };
 	}
 }
 
@@ -150,97 +150,97 @@ void Cursor::Update()
 
 
 	//移動----------------------------------------------------------------
-	vel = { 0.0f,0.0f,0.0f };
+	vel = { 0.0f,0.0f };
 
 
 	prevCursorPos = cursorPos;
 
-	XMVECTOR honraiStick = stickAngle;
+	KazMath::Vec2<float> honraiStick = stickAngle;
 	//デットライン-----------------------
-	if (fabs(stickAngle.m128_f32[0]) < deadLine)
+	if (fabs(stickAngle.x) < deadLine)
 	{
-		stickAngle.m128_f32[0] = 0.0f;
+		stickAngle.x = 0.0f;
 	}
 	else
 	{
-		stickAngle.m128_f32[0] += -deadLine;
+		stickAngle.x += -deadLine;
 	}
-	if (fabs(stickAngle.m128_f32[1]) < deadLine)
+	if (fabs(stickAngle.y) < deadLine)
 	{
-		stickAngle.m128_f32[1] = 0.0f;
+		stickAngle.y = 0.0f;
 	}
 	else
 	{
-		stickAngle.m128_f32[1] += -deadLine;
+		stickAngle.y += -deadLine;
 	}
 	//デットライン-----------------------
 
 
-	if (1.0f - deadLine <= fabs(stickAngle.m128_f32[0]))
+	if (1.0f - deadLine <= fabs(stickAngle.x))
 	{
-		bool flag = signbit(stickAngle.m128_f32[0]);
+		bool flag = signbit(stickAngle.x);
 		if (flag)
 		{
-			stickAngle.m128_f32[0] = -1.0f + deadLine;
+			stickAngle.x = -1.0f + deadLine;
 		}
 		else
 		{
-			stickAngle.m128_f32[0] = 1.0f - deadLine;
+			stickAngle.x = 1.0f - deadLine;
 		}
 	}
-	if (1.0f - deadLine <= fabs(stickAngle.m128_f32[1]))
+	if (1.0f - deadLine <= fabs(stickAngle.y))
 	{
-		bool flag = signbit(stickAngle.m128_f32[1]);
+		bool flag = signbit(stickAngle.y);
 		if (flag)
 		{
-			stickAngle.m128_f32[1] = -1.0f + deadLine;
+			stickAngle.y = -1.0f + deadLine;
 		}
 		else
 		{
-			stickAngle.m128_f32[1] = 1.0f - deadLine;
+			stickAngle.y = 1.0f - deadLine;
 		}
 	}
 
 
 	//スティックの操作からカーソルのスピードを調整
-	speed.x = baseSpeed * -stickAngle.m128_f32[0];
-	speed.y = baseSpeed * stickAngle.m128_f32[1];
+	speed.x = baseSpeed * -stickAngle.x;
+	speed.y = baseSpeed * stickAngle.y;
 
 
 	if (leftFlag)
 	{
-		vel.m128_f32[0] = -speed.x;
-		knockBackVal.m128_f32[0] += KOCKBACK_VELOCITY.x;
+		vel.x = -speed.x;
+		knockBackVal.x += KOCKBACK_VELOCITY.x;
 		noTochFlag.x = 1;
 	}
 	if (rightFlag)
 	{
-		vel.m128_f32[0] = -speed.x;
-		knockBackVal.m128_f32[0] += KOCKBACK_VELOCITY.x;
+		vel.x = -speed.x;
+		knockBackVal.x += KOCKBACK_VELOCITY.x;
 		noTochFlag.x = 1;
 	}
 
 	if (upFlag)
 	{
-		vel.m128_f32[1] = -speed.y;
-		knockBackVal.m128_f32[1] += KOCKBACK_VELOCITY.y;
+		vel.y = -speed.y;
+		knockBackVal.y += KOCKBACK_VELOCITY.y;
 		noTochFlag.y = 1;
 	}
 	if (downFlag)
 	{
-		vel.m128_f32[1] = -speed.y;
-		knockBackVal.m128_f32[1] += KOCKBACK_VELOCITY.y;
+		vel.y = -speed.y;
+		knockBackVal.y += KOCKBACK_VELOCITY.y;
 		noTochFlag.y = 1;
 	}
 
 	//ノックバックの制限
-	if (KOCKBACK_MAX_VALUE.x <= knockBackVal.m128_f32[0])
+	if (KOCKBACK_MAX_VALUE.x <= knockBackVal.x)
 	{
-		knockBackVal.m128_f32[0] = KOCKBACK_MAX_VALUE.x;
+		knockBackVal.x = KOCKBACK_MAX_VALUE.x;
 	}
-	if (KOCKBACK_MAX_VALUE.y <= knockBackVal.m128_f32[1])
+	if (KOCKBACK_MAX_VALUE.y <= knockBackVal.y)
 	{
-		knockBackVal.m128_f32[1] = KOCKBACK_MAX_VALUE.y;
+		knockBackVal.y = KOCKBACK_MAX_VALUE.y;
 	}
 
 
@@ -260,7 +260,7 @@ void Cursor::Update()
 	else
 	{
 		noTockTimer.x = 0;
-		oldVel.m128_f32[0] = vel.m128_f32[0];
+		oldVel.x = vel.x;
 	}
 
 
@@ -271,64 +271,64 @@ void Cursor::Update()
 	else
 	{
 		noTockTimer.y = 0;
-		oldVel.m128_f32[1] = vel.m128_f32[1];
+		oldVel.y = vel.y;
 	}
 
 
 	//ノックバックの処理
 	if (5 <= noTockTimer.x && false)
 	{
-		if (signbit(oldVel.m128_f32[0]))
+		if (signbit(oldVel.x))
 		{
-			vel.m128_f32[0] = knockBackVal.m128_f32[0];
+			vel.x = knockBackVal.x;
 		}
 		else
 		{
-			vel.m128_f32[0] = -knockBackVal.m128_f32[0];
+			vel.x = -knockBackVal.x;
 		}
-		knockBackVal.m128_f32[0] = 0.0f;
+		knockBackVal.x = 0.0f;
 	}
 	if (5 <= noTockTimer.y && false)
 	{
-		if (signbit(oldVel.m128_f32[1]))
+		if (signbit(oldVel.y))
 		{
-			vel.m128_f32[1] = knockBackVal.m128_f32[1];
+			vel.y = knockBackVal.y;
 		}
 		else
 		{
-			vel.m128_f32[1] = -knockBackVal.m128_f32[1];
+			vel.y = -knockBackVal.y;
 		}
-		knockBackVal.m128_f32[1] = 0.0f;
+		knockBackVal.y = 0.0f;
 	}
 
 	honraiCursorPos += vel;
 
 	//画面外から出ないようにする処理
-	if (honraiCursorPos.m128_f32[0] < 0.0f)
+	if (honraiCursorPos.x < 0.0f)
 	{
-		honraiCursorPos.m128_f32[0] = 0.0f;
+		honraiCursorPos.x = 0.0f;
 	}
-	if (WIN_X < honraiCursorPos.m128_f32[0])
+	if (WIN_X < honraiCursorPos.x)
 	{
-		honraiCursorPos.m128_f32[0] = WIN_X;
+		honraiCursorPos.x = WIN_X;
 	}
 
-	if (honraiCursorPos.m128_f32[1] < 0.0f)
+	if (honraiCursorPos.y < 0.0f)
 	{
-		honraiCursorPos.m128_f32[1] = 0.0f;
+		honraiCursorPos.y = 0.0f;
 	}
-	if (WIN_Y < honraiCursorPos.m128_f32[1])
+	if (WIN_Y < honraiCursorPos.y)
 	{
-		honraiCursorPos.m128_f32[1] = WIN_Y;
+		honraiCursorPos.y = WIN_Y;
 	}
 
 
 	//補間
-	XMVECTOR distance = honraiCursorPos - cursorPos;
+	KazMath::Vec2<float> distance = honraiCursorPos - cursorPos;
 	cursorPos += distance * 0.5f;
 
-	cursorFlameTex->data.transform.pos = { cursorPos.m128_f32[0],cursorPos.m128_f32[1] };
-	numberTex->data.transform.pos = { cursorPos.m128_f32[0],cursorPos.m128_f32[1] };
+	cursorFlameTex->data.transform.pos = { cursorPos.x,cursorPos.y };
+	numberTex->data.transform.pos = { cursorPos.x,cursorPos.y };
 	//移動----------------------------------------------------------------
 
 
@@ -336,8 +336,8 @@ void Cursor::Update()
 	//追尾
 	{
 		//カーソルの位置が始点と終点以内だった場合、無操作範囲の追尾をやめてカメラ移動量を追加しない
-		if (dontMoveCameraStartPos.m128_f32[0] < cursorPos.m128_f32[0] &&
-			cursorPos.m128_f32[0] < dontMoveCameraEndPos.m128_f32[0])
+		if (dontMoveCameraStartPos.x < cursorPos.x &&
+			cursorPos.x < dontMoveCameraEndPos.x)
 		{
 
 		}
@@ -345,27 +345,27 @@ void Cursor::Update()
 		else
 		{
 			{
-				float cursorStartDistanceX = dontMoveCameraStartPos.m128_f32[0] - cursorPos.m128_f32[0];
-				float cursorEndDistanceX = dontMoveCameraEndPos.m128_f32[0] - cursorPos.m128_f32[0];
+				float cursorStartDistanceX = dontMoveCameraStartPos.x - cursorPos.x;
+				float cursorEndDistanceX = dontMoveCameraEndPos.x - cursorPos.x;
 				//終点より始点の方が近かったら始点を基準に動かす
 				if (fabs(cursorStartDistanceX) < fabs(cursorEndDistanceX))
 				{
-					dontMoveCameraStartPos.m128_f32[0] = cursorPos.m128_f32[0];
-					dontMoveCameraEndPos.m128_f32[0] = cursorPos.m128_f32[0] + NO_MOVE_DISTANCE.m128_f32[0];
+					dontMoveCameraStartPos.x = cursorPos.x;
+					dontMoveCameraEndPos.x = cursorPos.x + NO_MOVE_DISTANCE.x;
 				}
 				//始点より終点の方が近かったら終点を基準に動かす
 				else
 				{
-					dontMoveCameraStartPos.m128_f32[0] = cursorPos.m128_f32[0] - NO_MOVE_DISTANCE.m128_f32[0];
-					dontMoveCameraEndPos.m128_f32[0] = cursorPos.m128_f32[0];
+					dontMoveCameraStartPos.x = cursorPos.x - NO_MOVE_DISTANCE.x;
+					dontMoveCameraEndPos.x = cursorPos.x;
 				}
 			}
 			//移動量をカメラに追加していく
-			honraiCameraMoveValue.m128_f32[0] += prevCursorPos.m128_f32[0] - cursorPos.m128_f32[0];
+			honraiCameraMoveValue.x += prevCursorPos.x - cursorPos.x;
 		}
 
-		if (dontMoveCameraStartPos.m128_f32[1] < cursorPos.m128_f32[1] &&
-			cursorPos.m128_f32[1] < dontMoveCameraEndPos.m128_f32[1])
+		if (dontMoveCameraStartPos.y < cursorPos.y &&
+			cursorPos.y < dontMoveCameraEndPos.y)
 		{
 
 		}
@@ -373,23 +373,23 @@ void Cursor::Update()
 		else
 		{
 			{
-				float cursorStartDistanceY = dontMoveCameraStartPos.m128_f32[1] - cursorPos.m128_f32[1];
-				float cursorEndDistanceY = dontMoveCameraEndPos.m128_f32[1] - cursorPos.m128_f32[1];
+				float cursorStartDistanceY = dontMoveCameraStartPos.y - cursorPos.y;
+				float cursorEndDistanceY = dontMoveCameraEndPos.y - cursorPos.y;
 				//終点より始点の方が近かったら始点を基準に動かす
 				if (fabs(cursorStartDistanceY) < fabs(cursorEndDistanceY))
 				{
-					dontMoveCameraStartPos.m128_f32[1] = cursorPos.m128_f32[1];
-					dontMoveCameraEndPos.m128_f32[1] = cursorPos.m128_f32[1] + NO_MOVE_DISTANCE.m128_f32[1];
+					dontMoveCameraStartPos.y = cursorPos.y;
+					dontMoveCameraEndPos.y = cursorPos.y + NO_MOVE_DISTANCE.y;
 				}
 				//始点より終点の方が近かったら終点を基準に動かす
 				else
 				{
-					dontMoveCameraStartPos.m128_f32[1] = cursorPos.m128_f32[1] - NO_MOVE_DISTANCE.m128_f32[1];
-					dontMoveCameraEndPos.m128_f32[1] = cursorPos.m128_f32[1];
+					dontMoveCameraStartPos.y = cursorPos.y - NO_MOVE_DISTANCE.y;
+					dontMoveCameraEndPos.y = cursorPos.y;
 				}
 			}
 			//移動量をカメラに追加していく
-			honraiCameraMoveValue.m128_f32[1] += prevCursorPos.m128_f32[1] - cursorPos.m128_f32[1];
+			honraiCameraMoveValue.y += prevCursorPos.y - cursorPos.y;
 		}
 	}
 
@@ -405,7 +405,7 @@ void Cursor::Update()
 		if (cursorAlpha <= 0)
 		{
 			dontMoveFlag = true;
-			honraiCameraMoveValue = { 0.0f,0.0f,0.0f };
+			honraiCameraMoveValue = { 0.0f,0.0f };
 			honraiCursorPos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 			cursorPos = honraiCursorPos;
 			prevCursorPos = honraiCursorPos;
@@ -429,26 +429,26 @@ void Cursor::Update()
 
 
 	//カメラの制限
-	if (honraiCursorPos.m128_f32[0] <= 0.0f)
+	if (honraiCursorPos.x <= 0.0f)
 	{
 		float localLimit = 485.0f;
-		honraiCameraMoveValue.m128_f32[0] = localLimit;
+		honraiCameraMoveValue.x = localLimit;
 	}
-	if (WIN_X <= honraiCursorPos.m128_f32[0])
+	if (WIN_X <= honraiCursorPos.x)
 	{
-		honraiCameraMoveValue.m128_f32[0] = -limitValue.m128_f32[0];
+		honraiCameraMoveValue.x = -limitValue.x;
 	}
 
-	if (honraiCursorPos.m128_f32[1] <= 0.0f)
+	if (honraiCursorPos.y <= 0.0f)
 	{
-		honraiCameraMoveValue.m128_f32[1] = limitValue.m128_f32[1] - NO_MOVE_DISTANCE.m128_f32[1];
+		honraiCameraMoveValue.y = limitValue.y - NO_MOVE_DISTANCE.y;
 	}
-	if (WIN_Y <= honraiCursorPos.m128_f32[1])
+	if (WIN_Y <= honraiCursorPos.y)
 	{
-		honraiCameraMoveValue.m128_f32[1] = -limitValue.m128_f32[1];
+		honraiCameraMoveValue.y = -limitValue.y;
 	}
 
-	XMVECTOR cameraDistance = honraiCameraMoveValue - cameraMoveValue;
+	KazMath::Vec2<float> cameraDistance = honraiCameraMoveValue - cameraMoveValue;
 	cameraMoveValue += cameraDistance * 0.5f;
 
 	//カメラ無操作-----------------------
@@ -471,7 +471,7 @@ void Cursor::Update()
 		if (cursorEffectTex[i].initFlag)
 		{
 			cursorEffectTex[i].cursorEffectTex->data.alpha -= 255.0f / 10.0f;
-			XMVECTOR addSize = { 0.1f,0.1f };
+			KazMath::Vec2<float> addSize = { 0.1f,0.1f };
 			cursorEffectTex[i].cursorEffectTex->data.transform.scale += addSize;
 		}
 		if (cursorEffectTex[i].cursorEffectTex->data.alpha <= 0.0f)
@@ -482,12 +482,14 @@ void Cursor::Update()
 
 
 	//当たり判定----------------------------------------------------------------
-	XMVECTOR nearPos = { cursorPos.m128_f32[0],cursorPos.m128_f32[1],0.0f,0.0f };
-	XMVECTOR farPos = { cursorPos.m128_f32[0],cursorPos.m128_f32[1],1.0f,0.0f };
-	XMVECTOR endPos = KazMath::ConvertScreenPosToWorldPos(farPos, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
+	KazMath::Vec3<float> nearPos = { cursorPos.x,cursorPos.y,0.0f };
+	KazMath::Vec3<float> farPos = { cursorPos.x,cursorPos.y,1.0f };
+	KazMath::Vec3<float> endPos = KazMath::ConvertScreenPosToWorldPos(farPos, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
 
 	hitBox.start = KazMath::ConvertScreenPosToWorldPos(nearPos, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
-	hitBox.dir = XMVector3Normalize(endPos - hitBox.start);
+	KazMath::Vec3<float> dir(endPos - hitBox.start);
+	dir.Normalize();
+	hitBox.dir = dir;
 	//当たり判定----------------------------------------------------------------
 
 
@@ -500,10 +502,10 @@ void Cursor::Update()
 	ImGui::InputFloat("deadLine", &deadLine);
 	ImGui::Text("NowSpeed:%f", speed);
 	ImGui::Text("MaxSpeed:%f", baseSpeed * (1.0 - deadLine));
-	ImGui::Text("KnockBackValX%f", knockBackVal.m128_f32[0]);
-	ImGui::Text("KnockBackValY%f", knockBackVal.m128_f32[1]);
-	ImGui::Text("stickAngleX:%f", honraiStick.m128_f32[0]);
-	ImGui::Text("stickAngleY:%f", honraiStick.m128_f32[1]);
+	ImGui::Text("KnockBackValX%f", knockBackVal.x);
+	ImGui::Text("KnockBackValY%f", knockBackVal.y);
+	ImGui::Text("stickAngleX:%f", honraiStick.x);
+	ImGui::Text("stickAngleY:%f", honraiStick.y);
 	ImGui::End();*/
 
 }
@@ -549,20 +551,20 @@ const int &Cursor::GetCount()
 	return lockOnNum;
 }
 
-const XMVECTOR &Cursor::GetValue()
+const KazMath::Vec2<float> &Cursor::GetValue()
 {
 	//画面中央を0,0の中心座標とする
-	XMVECTOR rateMaxValue = { WIN_X / 2.0f,WIN_Y / 2.0f };
+	KazMath::Vec2<float> rateMaxValue = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	//割合計算
-	XMVECTOR value = cameraMoveValue / rateMaxValue;
+	KazMath::Vec2<float> value = cameraMoveValue / rateMaxValue;
 
-	if (1.0f <= value.m128_f32[0])
+	if (1.0f <= value.x)
 	{
 		bool debug = false;
 	}
 
 	//カメラの座標に合わせる為にX軸の符号を反転
-	value.m128_f32[0] *= -1.0f;
+	value.x *= -1.0f;
 	return value;
 }
 

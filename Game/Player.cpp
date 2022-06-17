@@ -14,7 +14,7 @@ Player::Player()
 
 }
 
-void Player::Init(const XMVECTOR &POS)
+void Player::Init(const KazMath::Vec3<float> &POS)
 {
 	pos = POS;
 	render->data.transform.pos = pos;

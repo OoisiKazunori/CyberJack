@@ -31,7 +31,7 @@ struct GenarateOtherObjData
 		initPos = {};
 	}
 	int enemyType;			//どの種類を登場させるか
-	XMVECTOR initPos;		//登場させる座標
+	KazMath::Vec3<float> initPos;		//登場させる座標
 };
 
 /// <summary>
@@ -45,7 +45,7 @@ struct EnemyData
 	/// <param name="HITBOX_POS_ADRESS">当たり判定用の座標アドレス</param>
 	/// <param name="RADIUS">当たり判定の大きさ</param>
 	/// <param name="MAX_ROCKON_NUM">ロックオン回数のアドレス</param>
-	EnemyData(XMVECTOR *HITBOX_POS_ADRESS, const float &RADIUS, IOperationObjectData *OPERATION_DATA) :
+	EnemyData(KazMath::Vec3<float> *HITBOX_POS_ADRESS, const float &RADIUS, IOperationObjectData *OPERATION_DATA) :
 		hitBox({ HITBOX_POS_ADRESS ,RADIUS }),
 		oprationObjData(OPERATION_DATA),
 		timer(1),
@@ -80,7 +80,7 @@ public:
 	/// 初期化処理
 	/// </summary>
 	/// <param name="POS">初期座標</param>
-	virtual void Init(const XMVECTOR &POS) = 0;
+	virtual void Init(const KazMath::Vec3<float> &POS) = 0;
 
 	/// <summary>
 	/// 終了処理
@@ -103,7 +103,7 @@ public:
 	/// <summary>
 	/// 死亡演出
 	/// </summary>
-	void DeadEffect(XMVECTOR *POS, XMVECTOR *ROTATION, float *ALPHA);
+	void DeadEffect(KazMath::Vec3<float> *POS, KazMath::Vec3<float> *ROTATION, float *ALPHA);
 
 	
 	/// <returns>敵の情報</returns>

@@ -17,7 +17,7 @@ IEnemy::IEnemy()
 	//“Gî•ñ‚Ì‰Šú‰»----------------------------------------------------------------
 
 	lockOnWindowRender.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::LinePath + "LockOn.png");
-	lockOnWindowRender.data.transform.scale = { 0.2f,0.2f };
+	lockOnWindowRender.data.transform.scale = { 0.2f,0.2f,1.0f };
 	lockOnWindowRender.data.billBoardFlag = true;
 	lockOnWindowRender.data.pipelineName = PIPELINE_NAME_SPRITE_Z_ALWAYS;
 
@@ -30,7 +30,7 @@ void IEnemy::Dead()
 	iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag = false;
 }
 
-void IEnemy::DeadEffect(XMVECTOR *POS, XMVECTOR *ROTATION, float *ALPHA)
+void IEnemy::DeadEffect(KazMath::Vec3<float> *POS, KazMath::Vec3<float> *ROTATION, float *ALPHA)
 {
 	if (*ALPHA <= 0)
 	{
@@ -38,9 +38,9 @@ void IEnemy::DeadEffect(XMVECTOR *POS, XMVECTOR *ROTATION, float *ALPHA)
 	}
 	else
 	{
-		XMVECTOR rota{ 5.0f,5.0f,5.0f };
+		KazMath::Vec3<float> rota{ 5.0f,5.0f,5.0f };
 		*ROTATION += rota;
-		POS->m128_f32[1] -= 0.5f;
+		POS->y -= 0.5f;
 		*ALPHA -= 5.0f;
 	}
 }

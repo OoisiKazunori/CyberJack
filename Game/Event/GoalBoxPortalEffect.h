@@ -7,7 +7,7 @@ class GoalBoxPortalEffect
 public:
 	GoalBoxPortalEffect();
 
-	void Init(const XMVECTOR &POS);
+	void Init(const KazMath::Vec3<float> &POS);
 	void Update();
 	void Draw();
 
@@ -19,5 +19,5 @@ private:
 	bool goBeforeFlag;
 	bool startFlag;
 
-	XMVECTOR lerpRota;
+	KazMath::Vec3<float> lerpRota;
 };

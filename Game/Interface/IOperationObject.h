@@ -81,7 +81,7 @@ protected:
 		return limitLinePosZ <= POS_Z;
 	};
 
-	void LockOnWindow(XMVECTOR POS);
+	void LockOnWindow(const KazMath::Vec3<float> &POS);
 
 	Sprite3DRender lockOnWindowRender;
 };

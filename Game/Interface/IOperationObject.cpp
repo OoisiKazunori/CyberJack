@@ -4,7 +4,7 @@
 IOperationObject::IOperationObject()
 {
 	lockOnWindowRender.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::LinePath + "LockOn.png");
-	lockOnWindowRender.data.transform.scale = { 0.2f,0.2f };
+	lockOnWindowRender.data.transform.scale = { 0.2f,0.2f,1.0f };
 	lockOnWindowRender.data.billBoardFlag = true;
 	lockOnWindowRender.data.pipelineName = PIPELINE_NAME_SPRITE_Z_ALWAYS;
 }
@@ -52,7 +52,7 @@ int IOperationObject::ReduceHp(int COUNT)
 	return 0;
 }
 
-void IOperationObject::LockOnWindow(XMVECTOR POS)
+void IOperationObject::LockOnWindow(const KazMath::Vec3<float> &POS)
 {
 	if (iOperationData.lockOnFlag && iOperationData.enableToHitFlag)
 	{

@@ -13,34 +13,38 @@ LineLevel1::LineLevel1()
 	allFinishFlag = false;
 }
 
-void LineLevel1::CalucurateDistance(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS)
+void LineLevel1::CalucurateDistance(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::Vec3<float> &ENEMY_POS)
 {
-	XMVECTOR distance(ENEMY_POS - PLAYER_POS);
+	KazMath::Vec3<float> distance(ENEMY_POS - PLAYER_POS);
 
 	distanceValue = distance / rockOnDistance;
 
 
-	for (int i = 0; i < 3; ++i)
+	if (isnan<float>(distanceValue.x) || isinf<float>(distanceValue.x))
 	{
-		if (isnan<float>(distanceValue.m128_f32[i]) || isinf<float>(distanceValue.m128_f32[i]))
-		{
-			distanceValue.m128_f32[i] = 0.0f;
-		}
+		distanceValue.x = 0.0f;
 	}
-
+	if (isnan<float>(distanceValue.y) || isinf<float>(distanceValue.y))
+	{
+		distanceValue.y = 0.0f;
+	}
+	if (isnan<float>(distanceValue.z) || isinf<float>(distanceValue.z))
+	{
+		distanceValue.z = 0.0f;
+	}
 }
 
-void LineLevel1::Attack(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, const EnemyMoveData &FLAG_DATA)
+void LineLevel1::Attack(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::Vec3<float> &ENEMY_POS, const EnemyMoveData &FLAG_DATA)
 {
 	if (!initFlag)
 	{
 		//1,2....プレイア－と敵との座標を算出する
-		XMVECTOR adj = { 30.0f,30.0f,30.0f };
-		XMVECTOR distance = (ENEMY_POS - PLAYER_POS) + adj;
+		KazMath::Vec3<float> adj = { 30.0f,30.0f,30.0f };
+		KazMath::Vec3<float> distance = (ENEMY_POS - PLAYER_POS) + adj;
 
 		//3...敵との距離を考慮していくつ線を作るか決める
 		const int randomMinNum = 3;
-		int randomMaxNum = distance.m128_f32[2] / 10;
+		int randomMaxNum = distance.z / 10;
 		//最大値が最小値を下回ないようにする
 		if (randomMaxNum < randomMinNum)
 		{
@@ -89,9 +93,9 @@ void LineLevel1::Attack(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, c
 			if (i == limitPos.size() - 3)
 			{
 				//高さがあっているかどうか確認,合っていないなら高さを合わせる
-				if (limitPos[i].m128_f32[1] != ENEMY_POS.m128_f32[1])
+				if (limitPos[i].y != ENEMY_POS.y)
 				{
-					limitPos[i].m128_f32[1] = ENEMY_POS.m128_f32[1];
+					limitPos[i].y = ENEMY_POS.y;
 				}
 				continue;
 			}
@@ -99,7 +103,7 @@ void LineLevel1::Attack(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, c
 			if (i == limitPos.size() - 2)
 			{
 				//敵のX軸を合わせる
-				limitPos[i].m128_f32[0] = ENEMY_POS.m128_f32[0];
+				limitPos[i].x = ENEMY_POS.x;
 				continue;
 			}
 
@@ -135,7 +139,7 @@ void LineLevel1::Attack(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, c
 	}
 }
 
-void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, const EnemyMoveData &FLAG_DATA)
+void LineLevel1::Attack2(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::Vec3<float> &ENEMY_POS, const EnemyMoveData &FLAG_DATA)
 {
 	if (!initFlag)
 	{
@@ -151,13 +155,13 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 			= static_cast<eSurface>(KazMath::Rand<int>(6, 0));
 
 		//2.自分の座標を見て、刺す面は見えている位置かどうか確認する
-		bool xMinusFlag = signbit(ENEMY_POS.m128_f32[0]);
-		bool yMinusFlag = signbit(ENEMY_POS.m128_f32[1]);
-		bool zMinusFlag = signbit(ENEMY_POS.m128_f32[2]);
+		bool xMinusFlag = signbit(ENEMY_POS.x);
+		bool yMinusFlag = signbit(ENEMY_POS.y);
+		bool zMinusFlag = signbit(ENEMY_POS.z);
 		//同じ高さにいるかどうか
-		bool yEqualFlag = ENEMY_POS.m128_f32[1] <= 1.0f && -1.0f <= ENEMY_POS.m128_f32[1];
+		bool yEqualFlag = ENEMY_POS.y <= 1.0f && -1.0f <= ENEMY_POS.y;
 		//真正面かどうか
-		bool frontFlag = ENEMY_POS.m128_f32[0] == PLAYER_POS.m128_f32[0];
+		bool frontFlag = ENEMY_POS.x == PLAYER_POS.x;
 
 		//どれがマイナスかでどの面が見えているかどうか分かる
 		array<eSurface, 3> canLook;
@@ -213,24 +217,24 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 			}
 		}
 
-		XMVECTOR goalPos = ENEMY_POS;
+		KazMath::Vec3<float> goalPos = ENEMY_POS;
 
 		//ゴール座標から順に制御点にプッシュするための座標を記録する
-		vector<XMVECTOR> endLimitPos;
+		std::vector<KazMath::Vec3<float>> endLimitPos;
 		if (true)
 		{
 			//true...プレイヤーから見えている面の場合,false...プレイヤーから見えていない面の場合
 			if (canLookFlag)
 			{
 				//垂直に線を伸ばす...乱数で伸ばす
-				XMVECTOR dir = firstDir(surface);
+				KazMath::Vec3<float> dir = firstDir(surface);
 				goalPos += dir;
 				endLimitPos.push_back(goalPos);
 			}
 			else
 			{
 				//垂直に線を伸ばす...乱数で伸ばす
-				XMVECTOR dir = firstDir(surface);
+				KazMath::Vec3<float> dir = firstDir(surface);
 				goalPos += dir;
 				endLimitPos.push_back(goalPos);
 
@@ -297,51 +301,58 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 					//true...プレイヤーの方向に線を伸ばす,false...乱数で線を伸ばす
 					if (2 <= limitCount[moveVector])
 					{
-						//XMVECTOR dir;
+						//KazMath::Vec3<float> dir;
 						//余剰分の距離を入れる
-						XMVECTOR addDistance = { 10.0f,10.0f,10.0f };
+						KazMath::Vec3<float> addDistance = { 10.0f,10.0f,10.0f };
 
 
 						//ゴール座標と敵との距離
-						XMVECTOR distance = ENEMY_POS - goalPos;
+						KazMath::Vec3<float> distance = ENEMY_POS - goalPos;
 						//敵とプレイヤーの距離
-						XMVECTOR distance2 = ENEMY_POS - PLAYER_POS;
+						KazMath::Vec3<float> distance2 = ENEMY_POS - PLAYER_POS;
 
 
 						//+軸か-軸かを判断するもの-----------------------
 						//敵とゴール座標
 						array<bool, 3> minusFlags;
-						for (int i = 0; i < minusFlags.size(); ++i)
+						minusFlags[0] = IsMinus(distance.x);
+						if (minusFlags[0])
 						{
-							if (distance.m128_f32[i] < 0)
-							{
-								minusFlags[i] = true;
-								distance.m128_f32[i] = (float)fabs(distance.m128_f32[i]);
-							}
-							else
-							{
-								minusFlags[i] = false;
-							}
+							distance.x = fabs(distance.x);
 						}
+						minusFlags[1] = IsMinus(distance.y);
+						if (minusFlags[1])
+						{
+							distance.y = fabs(distance.y);
+						}
+						minusFlags[2] = IsMinus(distance.z);
+						if (minusFlags[2])
+						{
+							distance.z = fabs(distance.z);
+						}
+
 
 						//プレイヤーと敵座標
 						array<bool, 3> minusFlags2;
-						for (int i = 0; i < minusFlags2.size(); ++i)
+						minusFlags2[0] = IsMinus(distance2.x);
+						if (minusFlags2[0])
 						{
-							if (distance2.m128_f32[i] < 0)
-							{
-								minusFlags2[i] = true;
-								distance2.m128_f32[i] = (float)fabs(distance2.m128_f32[i]);
-							}
-							else
-							{
-								minusFlags2[i] = false;
-							}
+							distance2.x = fabs(distance2.x);
+						}
+						minusFlags2[1] = IsMinus(distance2.y);
+						if (minusFlags2[1])
+						{
+							distance2.y = fabs(distance2.y);
+						}
+						minusFlags2[2] = IsMinus(distance.z);
+						if (minusFlags2[2])
+						{
+							distance2.z = fabs(distance2.z);
 						}
 						//+軸か-軸かを判断するもの-----------------------
 
 						//伸ばす距離
-						XMVECTOR vec = {};
+						KazMath::Vec3<float> vec = {};
 						/*
 						敵の座標より手前に座標を持ってくる
 						正し、プレイヤーより線を越えてはいけないので比較する
@@ -353,7 +364,7 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 							{
 								//プレイヤーと敵との距離内かつ敵より前の座標を配置する
 								//どれくらい超えているか確認
-								XMVECTOR tmp;
+								KazMath::Vec3<float> tmp;
 								tmp.m128_f32[axis] = distance2.m128_f32[axis] - distance.m128_f32[axis];
 								tmp.m128_f32[axis] = (float)fabs(tmp.m128_f32[axis]);
 
@@ -376,22 +387,22 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 						switch (moveVector)
 						{
 						case LINE_MOVE_LEFT:
-							dirVec = vec.m128_f32[0];
+							dirVec = vec.x;
 							break;
 						case LINE_MOVE_RIGHT:
-							dirVec = vec.m128_f32[0];
+							dirVec = vec.x;
 							break;
 						case LINE_MOVE_UP:
-							dirVec = vec.m128_f32[1];
+							dirVec = vec.y;
 							break;
 						case LINE_MOVE_DOWN:
-							dirVec = vec.m128_f32[1];
+							dirVec = vec.y;
 							break;
 						case LINE_MOVE_STRAIGHT:
-							dirVec = vec.m128_f32[2];
+							dirVec = vec.z;
 							break;
 						case LINE_MOVE_BACK:
-							dirVec = vec.m128_f32[2];
+							dirVec = vec.z;
 							break;
 						default:
 							break;
@@ -425,9 +436,9 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 					}
 
 					//三つの条件いずれかが当てはまればループから抜け出す
-					bool nearXFlag = abs(goalPos.m128_f32[0]) < abs(ENEMY_POS.m128_f32[0]);
-					bool nearYFlag = abs(goalPos.m128_f32[1]) < abs(ENEMY_POS.m128_f32[1]);
-					bool nearZFlag = abs(goalPos.m128_f32[2]) < abs(ENEMY_POS.m128_f32[2]);
+					bool nearXFlag = abs(goalPos.x) < abs(ENEMY_POS.x);
+					bool nearYFlag = abs(goalPos.y) < abs(ENEMY_POS.y);
+					bool nearZFlag = abs(goalPos.z) < abs(ENEMY_POS.z);
 					if (nearXFlag || nearZFlag || nearYFlag)
 					{
 						break;
@@ -445,7 +456,7 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 		//goalPos = ENEMY_POS;
 		//通常処理開始----------------------------------------------------------------
 		//1.プレイヤーと敵の距離を算出する
-		XMVECTOR distance = goalPos - PLAYER_POS;
+		KazMath::Vec3<float> distance = goalPos - PLAYER_POS;
 		array<bool, 3> minusFlags;
 
 		for (int i = 0; i < minusFlags.size(); ++i)
@@ -498,7 +509,7 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 			if (countVec[eVec] <= limitRandom)
 			{
 				//3.「その軸の残り距離を割る数」を乱数で算出
-				XMVECTOR dir = { 0.0f,0.0f,0.0f };
+				KazMath::Vec3<float> dir = { 0.0f,0.0f,0.0f };
 				dir.m128_f32[eVec] = distance.m128_f32[eVec] / KazMath::Rand<int>(3, 1);
 
 				//4.伸ばす距離で残り距離を引く
@@ -510,14 +521,14 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 				}
 
 				//4.一つ前の制御点の座標から足した距離を次の制御点の座標とする
-				XMVECTOR tmp = limitPos[limitPos.size() - 1];
+				KazMath::Vec3<float> tmp = limitPos[limitPos.size() - 1];
 				limitPos.push_back(tmp + dir);
 			}
 			else
 			{
 				//5.同じ軸に一定回数以上割ったら、残り距離を0にする
-				XMVECTOR tmp = limitPos[limitPos.size() - 1];
-				XMVECTOR dir = { 0.0f, 0.0f, 0.0f };
+				KazMath::Vec3<float> tmp = limitPos[limitPos.size() - 1];
+				KazMath::Vec3<float> dir = { 0.0f, 0.0f, 0.0f };
 				dir.m128_f32[eVec] = distance.m128_f32[eVec];
 				distance.m128_f32[eVec] -= dir.m128_f32[eVec];
 				if (minusFlags[eVec])
@@ -551,8 +562,8 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 			line[i].reset(new LineEffect);
 
 
-			XMVECTOR startPlayerdistance = limitPos[i] - PLAYER_POS;
-			XMVECTOR endPlayerdistance = limitPos[i + 1] - PLAYER_POS;
+			KazMath::Vec3<float> startPlayerdistance = limitPos[i] - PLAYER_POS;
+			KazMath::Vec3<float> endPlayerdistance = limitPos[i + 1] - PLAYER_POS;
 
 			line[i]->RockOn(limitPos[i], limitPos[i + 1], startPlayerdistance, endPlayerdistance);
 		}
@@ -705,9 +716,9 @@ void LineLevel1::Draw()
 	}
 }
 
-XMVECTOR LineLevel1::CalucurateMoveVector(const int &RANDM_NUM, const float &LENGTH)
+KazMath::Vec3<float> LineLevel1::CalucurateMoveVector(const int &RANDM_NUM, const float &LENGTH)
 {
-	XMVECTOR vel{};
+	KazMath::Vec3<float> vel{};
 	EnumLineMove moveType = static_cast<EnumLineMove>(RANDM_NUM);
 
 	switch (moveType)
@@ -821,31 +832,31 @@ eLineMove LineLevel1::CaluRandom(int DONT_USE, int OLD_NUM)
 	return eVec;
 }
 
-XMVECTOR LineLevel1::firstDir(eSurface SURFACE)
+KazMath::Vec3<float> LineLevel1::firstDir(eSurface SURFACE)
 {
-	XMVECTOR dir = { 0.0f,0.0f,0.0f };
+	KazMath::Vec3<float> dir = { 0.0f,0.0f,0.0f };
 	float vec = KazMath::Rand<float>(30.0f, 10.0f);
 	switch (SURFACE)
 	{
 	case SURFACE_NONE:
 		break;
 	case SURFACE_LEFT:
-		dir += XMVectorSet(-vec, 0.0f, 0.0f, 0.0f);
+		dir.x += -vec;
 		break;
 	case SURFACE_RIGHT:
-		dir += XMVectorSet(vec, 0.0f, 0.0f, 0.0f);
+		dir.x += vec;
 		break;
 	case SURFACE_FRONT:
-		dir += XMVectorSet(0.0f, 0.0f, -vec, 0.0f);
+		dir.z += -vec;
 		break;
 	case SURFACE_BACK:
-		dir += XMVectorSet(0.0f, 0.0f, vec, 0.0f);
+		dir.z += vec;
 		break;
 	case SURFACE_TOP:
-		dir += XMVectorSet(0.0f, vec, 0.0f, 0.0f);
+		dir.y += vec;
 		break;
 	case SURFACE_BUTTOM:
-		dir += XMVectorSet(0.0f, -vec, 0.0f, 0.0f);
+		dir.y += -vec;
 		break;
 	default:
 		break;

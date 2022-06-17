@@ -12,11 +12,11 @@ class GoalBox :public IOperationObject
 public:
 	GoalBox();
 
-	void Init(const XMVECTOR &POS);
+	void Init(const KazMath::Vec3<float> &POS);
 	void Update();
 	void Draw();
 	
-	void Appear(const XMVECTOR &POS);
+	void Appear(const KazMath::Vec3<float> &POS);
 
 	//ゴールエフェクト
 	GoalBoxEffect lightEffect;
@@ -29,15 +29,15 @@ private:
 	static const int HP = 8;
 
 	//移動-----------------------
-	XMVECTOR lerpRota;//角度のラープ
-	XMVECTOR lerpScale;//角度のラープ
-	XMVECTOR lerpPos; //座標のラープ
-	XMVECTOR moveVel; //当たった際にどれくらい移動するか
-	XMVECTOR moveRotaVel;//当たった際にどれくらいまわるか
+	KazMath::Vec3<float> lerpRota;//角度のラープ
+	KazMath::Vec3<float> lerpScale;//角度のラープ
+	KazMath::Vec3<float> lerpPos; //座標のラープ
+	KazMath::Vec3<float> moveVel; //当たった際にどれくらい移動するか
+	KazMath::Vec3<float> moveRotaVel;//当たった際にどれくらいまわるか
 	float lerpMoveVel;		//ラープの速度
 	float lerpMoveRotaVel;	//ラープの速度
 
-	XMVECTOR goCenterPos;//全弾ヒット時にゴール地点に向かう
+	KazMath::Vec3<float> goCenterPos;//全弾ヒット時にゴール地点に向かう
 
 
 	int prevHpNum;//前フレームの体力

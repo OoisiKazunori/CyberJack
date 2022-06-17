@@ -35,7 +35,7 @@ GoalBox::GoalBox()
 	warpSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "warp.wav", false);
 }
 
-void GoalBox::Init(const XMVECTOR &POS)
+void GoalBox::Init(const KazMath::Vec3<float> &POS)
 {
 	iOperationData.Init(HP);
 	prevHpNum = iOperationData.rockOnNum;
@@ -49,7 +49,7 @@ void GoalBox::Init(const XMVECTOR &POS)
 	model->data.transform.rotation = lerpRota;
 
 	lightEffect.Init(&model->data.motherMat);
-	XMVECTOR adj = { 0.0f,0.0f,-5.0f };
+	KazMath::Vec3<float> adj = { 0.0f,0.0f,-5.0f };
 	portalEffect.Init(goCenterPos + adj);
 	addRota = 0;
 
@@ -98,14 +98,14 @@ void GoalBox::Update()
 	}
 
 	//í‚É‰ñ“]‚·‚é
-	lerpRota.m128_f32[0] += 1.0f;
-	lerpRota.m128_f32[1] += 1.0f;
+	lerpRota.x += 1.0f;
+	lerpRota.y += 1.0f;
 
 	//“–‚½‚Á‚½Û‚Ì‹““®
 	if (reduceHpFlag)
 	{
 		//Œã‚ë‚É”ò‚Ô
-		lerpPos.m128_f32[2] = model->data.transform.pos.m128_f32[2] + moveVel.m128_f32[2];
+		lerpPos.z = model->data.transform.pos.z + moveVel.z;
 		//‰ñ“]‚³‚¹‚é
 		lerpRota = model->data.transform.rotation + moveRotaVel;
 		lightEffect.Appear();
@@ -124,23 +124,21 @@ void GoalBox::Update()
 		lightEffect.Disappear();
 		lerpPos = goCenterPos;
 
-		if (static_cast<int>(model->data.transform.pos.m128_f32[0]) == static_cast<int>(goCenterPos.m128_f32[0]) &&
-			static_cast<int>(model->data.transform.pos.m128_f32[1]) == static_cast<int>(goCenterPos.m128_f32[1]) &&
-			static_cast<int>(model->data.transform.pos.m128_f32[2]) == static_cast<int>(goCenterPos.m128_f32[2]))
+		if (static_cast<int>(model->data.transform.pos.x) == static_cast<int>(goCenterPos.x) &&
+			static_cast<int>(model->data.transform.pos.y) == static_cast<int>(goCenterPos.y) &&
+			static_cast<int>(model->data.transform.pos.z) == static_cast<int>(goCenterPos.z))
 		{
 			addRota += addVel;
 			addVel += 0.1f;
 		}
-		lerpRota.m128_f32[0] = 0.0f;
-		lerpRota.m128_f32[1] += addRota;
-		lerpRota.m128_f32[2] = 0.0f;
+		lerpRota.x = 0.0f;
+		lerpRota.y += addRota;
+		lerpRota.z = 0.0f;
 
 
 		if (60.0f * 5.0f <= addRota)
 		{
-			lerpScale.m128_f32[0] = 22.0f;
-			lerpScale.m128_f32[1] = 22.0f;
-			lerpScale.m128_f32[2] = 22.0f;
+			lerpScale = { 22.0f ,22.0f,22.0f };
 		}
 		if (60.0f * 10.0f <= addRota)
 		{
@@ -158,17 +156,17 @@ void GoalBox::Update()
 
 	//À•W‚Ìƒ‰[ƒv
 	{
-		XMVECTOR distance = lerpPos - model->data.transform.pos;
+		KazMath::Vec3<float> distance = lerpPos - model->data.transform.pos;
 		model->data.transform.pos += distance * lerpMoveVel;
 	}
 	//‰ñ“]‚Ìƒ‰[ƒv
 	{
-		XMVECTOR distance = lerpRota - model->data.transform.rotation;
+		KazMath::Vec3<float> distance = lerpRota - model->data.transform.rotation;
 		model->data.transform.rotation += distance * lerpMoveRotaVel;
 	}
 
 	{
-		XMVECTOR distance = lerpScale - model->data.transform.scale;
+		KazMath::Vec3<float> distance = lerpScale - model->data.transform.scale;
 		model->data.transform.scale += distance * 0.1f;
 	}
 
@@ -193,7 +191,7 @@ void GoalBox::Draw()
 	LockOnWindow(model->data.transform.pos);
 }
 
-void GoalBox::Appear(const XMVECTOR &POS)
+void GoalBox::Appear(const KazMath::Vec3<float> &POS)
 {
 	lerpPos = POS;
 }

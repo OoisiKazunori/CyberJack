@@ -9,7 +9,7 @@ public:
 	Cursor();
 
 	void Init();
-	void Input(bool UP_FLAG, bool DOWN_FLAG, bool LEFT_FLAG, bool RIGHT_FLAG, bool DONE_FLAG, bool RELEASE_FLAG, const XMVECTOR &ANGLE);
+	void Input(bool UP_FLAG, bool DOWN_FLAG, bool LEFT_FLAG, bool RIGHT_FLAG, bool DONE_FLAG, bool RELEASE_FLAG, const KazMath::Vec2<float> &ANGLE);
 	void Update();
 	void Draw();
 
@@ -24,7 +24,7 @@ public:
 	void Count();
 	const int &GetCount();
 
-	const XMVECTOR &GetValue();
+	const KazMath::Vec2<float> &GetValue();
 
 	void Disappear();
 	void Appear();
@@ -35,23 +35,23 @@ public:
 	/// <param name="SUB_VALUE">減らす分</param>
 	void SubCount(int SUB_VALUE);
 
-	XMVECTOR honraiCursorPos;
-	XMVECTOR cursorPos;
-	XMVECTOR prevCursorPos;
-	XMVECTOR vel;
+	KazMath::Vec2<float> honraiCursorPos;
+	KazMath::Vec2<float> cursorPos;
+	KazMath::Vec2<float> prevCursorPos;
+	KazMath::Vec2<float> vel;
 	Ray hitBox;
 	XMINT2 stopFlag;
 	bool releaseFlag;
 
 
-	XMVECTOR honraiCameraMoveValue;//上下左右にカメラをどれくらい動かすかの値を保存する(本来ポズ)
-	XMVECTOR cameraMoveValue;//上下左右にカメラをどれくらい動かすかの値を保存する
-	XMVECTOR dontMoveCameraStartPos;//カメラの無操作開始地点
-	XMVECTOR dontMoveCameraEndPos;//カメラの無操作終了地点
+	KazMath::Vec2<float> honraiCameraMoveValue;//上下左右にカメラをどれくらい動かすかの値を保存する(本来ポズ)
+	KazMath::Vec2<float> cameraMoveValue;//上下左右にカメラをどれくらい動かすかの値を保存する
+	KazMath::Vec2<float> dontMoveCameraStartPos;//カメラの無操作開始地点
+	KazMath::Vec2<float> dontMoveCameraEndPos;//カメラの無操作終了地点
 
-	XMVECTOR limitValue;//カメラの端の値
+	KazMath::Vec2<float> limitValue;//カメラの端の値
 
-	static XMVECTOR NO_MOVE_DISTANCE;//XYそれぞれどこまでの範囲ならカーソル動かしてもカメラに影響が出ないか
+	static KazMath::Vec2<float> NO_MOVE_DISTANCE;//XYそれぞれどこまでの範囲ならカーソル動かしてもカメラに影響が出ないか
 
 private:
 	//ロックオン数----------------------------------------------------------------
@@ -62,7 +62,7 @@ private:
 
 	//移動----------------------------------------------------------------
 	bool upFlag, downFlag, leftFlag, rightFlag,doneFlag;
-	XMVECTOR stickAngle;
+	KazMath::Vec2<float> stickAngle;
 	float deadLine;
 	float baseSpeed;
 	XMFLOAT2 speed;
@@ -93,14 +93,14 @@ private:
 	Sprite2DRenderPtr cursorFlameTex, numberTex;	//スクリーン座標の描画
 	array<short, LOCKON_MAX_NUM + 1> numberHandle;			//数字用の画像ハンドル
 	short flameHandle;
-	XMVECTOR baseScale;
+	KazMath::Vec2<float> baseScale;
 
-	XMVECTOR oldPos;
-	XMVECTOR oldVel;
+	KazMath::Vec2<float> oldPos;
+	KazMath::Vec2<float> oldVel;
 
 
 	//ノックバック挙動-----------------------
-	XMVECTOR knockBackVal;	//反転移動用の移動量
+	KazMath::Vec2<float> knockBackVal;	//反転移動用の移動量
 	static XMFLOAT2 KOCKBACK_MAX_VALUE;		//ノックバックの最大量(値が決まったらconstにする)
 	static XMFLOAT2 KOCKBACK_VELOCITY;		//ノックバックの加算量(値が決まったらconstにする)
 	XMINT2 noTochFlag;

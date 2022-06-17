@@ -7,7 +7,7 @@ class Player
 {
 public:
 	Player();
-	void Init(const XMVECTOR &POS);
+	void Init(const KazMath::Vec3<float> &POS);
 	void Finalize();
 	void Input();
 	void Update();
@@ -16,7 +16,7 @@ public:
 	void Hit();
 
 	bool isAlive();
-	XMVECTOR pos;
+	KazMath::Vec3<float> pos;
 private:
 	short hp,prevHp;
 	bool redFlag;

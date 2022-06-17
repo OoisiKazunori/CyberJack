@@ -181,8 +181,8 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	eyePos = { 0.0f,5.0f,-10.0f };
 	trackingTargetPos = { 0.0f,0.0f,0.0f };
 	nowTargerPos = { 0.0f,0.0f,0.0f };
-	leftRightAngleVel = { -91.0f,-91.0f,0.0f };
-	upDownAngleVel = { 0.0f,0.0f,0.0f };
+	leftRightAngleVel = { -91.0f,-91.0f };
+	upDownAngleVel = { 0.0f,0.0f };
 
 	trackLeftRightAngleVel = leftRightAngleVel;
 	trackUpDownAngleVel = upDownAngleVel;
@@ -206,7 +206,7 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	mulValue2 = { 60.0f,60.0f };
 	cameraChangeFlag = true;
 
-	forceCameraDirVel.m128_f32[0] = -90.0f;
+	forceCameraDirVel.x = -90.0f;
 
 	appearGoalBoxPos = { -10.0f,5.0f,40.0f };
 	responeGoalBoxPos = { -10.0f,-100.0f,40.0f };
@@ -352,9 +352,9 @@ void Game::Input()
 		bool debug = false;
 	}
 
-	XMVECTOR joyStick;
-	joyStick.m128_f32[0] = inputController->GetJoyStickLXNum(0) / 32767.0f;
-	joyStick.m128_f32[1] = inputController->GetJoyStickLYNum(0) / 32767.0f;
+	KazMath::Vec2<float> joyStick;
+	joyStick.x = inputController->GetJoyStickLXNum(0) / 32767.0f;
+	joyStick.y = inputController->GetJoyStickLYNum(0) / 32767.0f;
 
 	cursor.Input
 	(
@@ -371,61 +371,61 @@ void Game::Input()
 	//カメラの前後左右強制に向かせる処理
 	if (input->InputState(DIK_Z))
 	{
-		forceCameraDirVel.m128_f32[0] = 0.0f;
+		forceCameraDirVel.x = 0.0f;
 	}
 	if (input->InputState(DIK_X))
 	{
-		forceCameraDirVel.m128_f32[0] = -90.0f;
+		forceCameraDirVel.x = -90.0f;
 	}
 	if (input->InputState(DIK_C))
 	{
-		forceCameraDirVel.m128_f32[0] = -180.0f;
+		forceCameraDirVel.x = -180.0f;
 	}
 	if (input->InputState(DIK_V))
 	{
-		forceCameraDirVel.m128_f32[0] = -270.0f;
+		forceCameraDirVel.x = -270.0f;
 	}
 
 
-	XMVECTOR vel = {};
-	XMVECTOR verticalVel = {};
-	XMVECTOR besideVel = {};
+	KazMath::Vec3<float> vel = {};
+	KazMath::Vec3<float> verticalVel = {};
+	KazMath::Vec3<float> besideVel = {};
 
 	float speed = 1.0f;
 	if (upFlag)
 	{
-		vel.m128_f32[1] = -speed;
+		vel.y = -speed;
 		verticalVel = { -speed,-speed,0.0f };
 	}
 	if (downFlag)
 	{
-		vel.m128_f32[1] = speed;
+		vel.y = speed;
 		verticalVel = { speed,speed,0.0f };
 	}
 	if (leftFlag)
 	{
-		vel.m128_f32[0] = -speed;
+		vel.x = -speed;
 		besideVel = { speed,speed,0.0f };
 	}
 	if (rightFlag)
 	{
-		vel.m128_f32[0] = speed;
+		vel.x = speed;
 		besideVel = { -speed,-speed,0.0f };
 	}
 
 
-	XMVECTOR cursorValue = cursor.GetValue();
+	KazMath::Vec2<float> cursorValue = cursor.GetValue();
 	nowTargerPos += vel;
 
 	upDownAngleVel =
 	{
-		mulValue.x * -cursorValue.m128_f32[1],
-		mulValue.y * -cursorValue.m128_f32[1]
+		mulValue.x * -cursorValue.y,
+		mulValue.y * -cursorValue.y
 	};
 	leftRightAngleVel =
 	{
-		forceCameraDirVel.m128_f32[0] + mulValue2.x * -cursorValue.m128_f32[0],
-		forceCameraDirVel.m128_f32[0] + mulValue2.y * -cursorValue.m128_f32[0]
+		forceCameraDirVel.x + mulValue2.x * -cursorValue.x,
+		forceCameraDirVel.x + mulValue2.y * -cursorValue.x
 	};
 
 	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_R))
@@ -444,20 +444,20 @@ void Game::Update()
 {
 	/*ImGui::Begin("Camera");
 	ImGui::Text("Target");
-	ImGui::InputFloat("TargetX", &baseTargetPos.m128_f32[0]);
-	ImGui::InputFloat("TargetY", &baseTargetPos.m128_f32[1]);
-	ImGui::InputFloat("TargetZ", &baseTargetPos.m128_f32[2]);
+	ImGui::InputFloat("TargetX", &baseTargetPos.x);
+	ImGui::InputFloat("TargetY", &baseTargetPos.y);
+	ImGui::InputFloat("TargetZ", &baseTargetPos.z);
 	ImGui::Text("Central_Side");
-	ImGui::InputFloat("CentralX", &centralPos.m128_f32[0]);
-	ImGui::InputFloat("CentralY", &centralPos.m128_f32[1]);
-	ImGui::InputFloat("CentralZ", &centralPos.m128_f32[2]);
+	ImGui::InputFloat("CentralX", &centralPos.x);
+	ImGui::InputFloat("CentralY", &centralPos.y);
+	ImGui::InputFloat("CentralZ", &centralPos.z);
 	ImGui::Text("Central_UpDown");
-	ImGui::InputFloat("Central2X", &centralPos2.m128_f32[0]);
-	ImGui::InputFloat("Central2Y", &centralPos2.m128_f32[1]);
-	ImGui::InputFloat("Central2Z", &centralPos2.m128_f32[2]);
+	ImGui::InputFloat("Central2X", &centralPos2.x);
+	ImGui::InputFloat("Central2Y", &centralPos2.y);
+	ImGui::InputFloat("Central2Z", &centralPos2.z);
 	ImGui::Text("Force");
-	ImGui::InputFloat("forceCameraDirVel0", &forceCameraDirVel.m128_f32[0]);
-	ImGui::InputFloat("forceCameraDirVel1", &forceCameraDirVel.m128_f32[1]);
+	ImGui::InputFloat("forceCameraDirVel0", &forceCameraDirVel.x);
+	ImGui::InputFloat("forceCameraDirVel1", &forceCameraDirVel.y);
 	ImGui::Text("Circle");
 	ImGui::InputFloat("R", &r);
 	ImGui::InputFloat("R2", &r2);
@@ -466,23 +466,23 @@ void Game::Update()
 	ImGui::InputFloat("mulValueY", &mulValue.y);
 	ImGui::InputFloat("mulValue2X", &mulValue2.x);
 	ImGui::InputFloat("mulValue2Y", &mulValue2.y);
-	ImGui::Text("leftRightAngleVel:X%f,Y:%f", leftRightAngleVel.m128_f32[0], leftRightAngleVel.m128_f32[1]);
-	ImGui::Text("upDownAngleVel:X%f,Y:%f", upDownAngleVel.m128_f32[0], upDownAngleVel.m128_f32[1]);
-	ImGui::Text("trackUpDownAngleVel:X%f,Y:%f", trackUpDownAngleVel.m128_f32[0], trackUpDownAngleVel.m128_f32[1]);
-	ImGui::Text("trackLeftRightAngleVel:X%f,Y:%f", trackLeftRightAngleVel.m128_f32[0], trackLeftRightAngleVel.m128_f32[1]);
+	ImGui::Text("leftRightAngleVel:X%f,Y:%f", leftRightAngleVel.x, leftRightAngleVel.y);
+	ImGui::Text("upDownAngleVel:X%f,Y:%f", upDownAngleVel.x, upDownAngleVel.y);
+	ImGui::Text("trackUpDownAngleVel:X%f,Y:%f", trackUpDownAngleVel.x, trackUpDownAngleVel.y);
+	ImGui::Text("trackLeftRightAngleVel:X%f,Y:%f", trackLeftRightAngleVel.x, trackLeftRightAngleVel.y);
 	ImGui::End();*/
 
 
 	//操作感に関わる設定
 	/*ImGui::Begin("Move");
-	ImGui::Text("dontMoveCameraStartPos:X%f,Y:%f", cursor.dontMoveCameraStartPos.m128_f32[0], cursor.dontMoveCameraStartPos.m128_f32[1]);
-	ImGui::Text("dontMoveCameraEndPos:X%f,Y:%f", cursor.dontMoveCameraEndPos.m128_f32[0], cursor.dontMoveCameraEndPos.m128_f32[1]);
-	ImGui::Text("CursorPos:X%f,Y:%f", cursor.cursorPos.m128_f32[0], cursor.cursorPos.m128_f32[1]);
-	ImGui::Text("CameraMoveValue:X%f,Y:%f", cursor.cameraMoveValue.m128_f32[0], cursor.cameraMoveValue.m128_f32[1]);
-	ImGui::InputFloat("limitValue:X", &cursor.limitValue.m128_f32[0]);
-	ImGui::InputFloat("limitValue:Y", &cursor.limitValue.m128_f32[1]);
-	ImGui::InputFloat("NO_MOVE_DISTANCE:X", &cursor.NO_MOVE_DISTANCE.m128_f32[0]);
-	ImGui::InputFloat("NO_MOVE_DISTANCE:Y", &cursor.NO_MOVE_DISTANCE.m128_f32[1]);
+	ImGui::Text("dontMoveCameraStartPos:X%f,Y:%f", cursor.dontMoveCameraStartPos.x, cursor.dontMoveCameraStartPos.y);
+	ImGui::Text("dontMoveCameraEndPos:X%f,Y:%f", cursor.dontMoveCameraEndPos.x, cursor.dontMoveCameraEndPos.y);
+	ImGui::Text("CursorPos:X%f,Y:%f", cursor.cursorPos.x, cursor.cursorPos.y);
+	ImGui::Text("CameraMoveValue:X%f,Y:%f", cursor.cameraMoveValue.x, cursor.cameraMoveValue.y);
+	ImGui::InputFloat("limitValue:X", &cursor.limitValue.x);
+	ImGui::InputFloat("limitValue:Y", &cursor.limitValue.y);
+	ImGui::InputFloat("NO_MOVE_DISTANCE:X", &cursor.NO_MOVE_DISTANCE.x);
+	ImGui::InputFloat("NO_MOVE_DISTANCE:Y", &cursor.NO_MOVE_DISTANCE.y);
 	ImGui::End();*/
 
 	//ImGui::Begin("Debug");
@@ -496,11 +496,11 @@ void Game::Update()
 	{
 		lineStartPoly[i].data.pipelineName = PIPELINE_NAME_COLOR_MULTITEX;
 		std::string name = "Start" + std::to_string(i) + "X";
-		//ImGui::InputFloat(name.c_str(), &lineStartPoly[i].data.transform.pos.m128_f32[0]);
+		//ImGui::InputFloat(name.c_str(), &lineStartPoly[i].data.transform.pos.x);
 		name = "Start" + std::to_string(i) + "Y";
-		//ImGui::InputFloat(name.c_str(), &lineStartPoly[i].data.transform.pos.m128_f32[1]);
+		//ImGui::InputFloat(name.c_str(), &lineStartPoly[i].data.transform.pos.y);
 		name = "Start" + std::to_string(i) + "Z";
-		//ImGui::InputFloat(name.c_str(), &lineStartPoly[i].data.transform.pos.m128_f32[2]);
+		//ImGui::InputFloat(name.c_str(), &lineStartPoly[i].data.transform.pos.z);
 
 		lineStartPoly[i].data.transform.scale = { 0.1f,0.1f,0.1f };
 		lineStartPoly[i].data.color = { 255.0f,0.0f,0.0f,255.0f };
@@ -521,8 +521,8 @@ void Game::Update()
 	//カメラ固定
 	if (goalBox.startPortalEffectFlag)
 	{
-		leftRightAngleVel = { -90.0f,-90.0f,0.0f };
-		upDownAngleVel = { 0.0f,0.0f,0.0f };
+		leftRightAngleVel = { -90.0f,-90.0f };
+		upDownAngleVel = { 0.0f,0.0f };
 		targetPos = { 0.0f,3.0f,0.0f };
 		movieEffect.startFlag = true;
 		cursor.Disappear();
@@ -531,38 +531,38 @@ void Game::Update()
 
 	//左右の角度変更のイージング
 	{
-		XMVECTOR distance = leftRightAngleVel - trackLeftRightAngleVel;
+		KazMath::Vec2<float> distance = leftRightAngleVel - trackLeftRightAngleVel;
 		trackLeftRightAngleVel += distance * 0.1f;
 	}
 	//上下の角度変更のイージング
 	{
-		XMVECTOR distance = upDownAngleVel - trackUpDownAngleVel;
+		KazMath::Vec2<float> distance = upDownAngleVel - trackUpDownAngleVel;
 		trackUpDownAngleVel += distance * 0.1f;
 	}
 	//左右の回転
 	besidePoly->data.transform.pos =
 	{
-		cosf(KazMath::AngleToRadian(trackLeftRightAngleVel.m128_f32[0])) * r,
+		cosf(KazMath::AngleToRadian(trackLeftRightAngleVel.x)) * r,
 		0.0f,
-		sinf(KazMath::AngleToRadian(trackLeftRightAngleVel.m128_f32[1])) * r
+		sinf(KazMath::AngleToRadian(trackLeftRightAngleVel.y)) * r
 	};
 	//上下の回転
 	verticlaPoly->data.transform.pos =
 	{
 		0.0f,
-		trackUpDownAngleVel.m128_f32[0],
+		trackUpDownAngleVel.x,
 		0.0f,
 	};
 
 
 	//注視点の自動
-	//baseTargetPos.m128_f32[2] = 0.0f + 1.0f * -cursor.GetValue().m128_f32[1];
-	//if (baseTargetPos.m128_f32[2] <= 0.0f)
+	//baseTargetPos.z = 0.0f + 1.0f * -cursor.GetValue().y;
+	//if (baseTargetPos.z <= 0.0f)
 	//{
-	//	baseTargetPos.m128_f32[2] = 0.0f;
+	//	baseTargetPos.z = 0.0f;
 	//}
 
-	//centralPos.m128_f32[2] = 0.0f + 3.0f * -cursor.GetValue().m128_f32[1];
+	//centralPos.z = 0.0f + 3.0f * -cursor.GetValue().y;
 
 
 
@@ -571,27 +571,27 @@ void Game::Update()
 		float mul = 1.0f;
 		float limitValue = 3.0f;
 		//上下でプレイヤーのいる位置を変える
-		if (0.1f <= cursor.GetValue().m128_f32[1])
+		if (0.1f <= cursor.GetValue().y)
 		{
 			mul *= -1.0f;
 			limitValue = 2.5f;
 		}
 
 		//ポータル演出開始したらプレイヤーの動きを固定する
-		XMFLOAT3 rate = { cursor.GetValue().m128_f32[0] ,cursor.GetValue().m128_f32[1],0.0f };
-		honraiPlayerCameraPos.m128_f32[0] = 0.0f + (2.0f * -rate.x);
-		honraiPlayerCameraPos.m128_f32[2] = 0.0f + (limitValue * rate.y) * mul;
+		XMFLOAT3 rate = { cursor.GetValue().x ,cursor.GetValue().y,0.0f };
+		honraiPlayerCameraPos.x = 0.0f + (2.0f * -rate.x);
+		honraiPlayerCameraPos.z = 0.0f + (limitValue * rate.y) * mul;
 
-		if (0.0f <= honraiPlayerCameraPos.m128_f32[2])
+		if (0.0f <= honraiPlayerCameraPos.z)
 		{
-			honraiPlayerCameraPos.m128_f32[2] = 0.0f;
+			honraiPlayerCameraPos.z = 0.0f;
 		}
 
 		if (goalBox.startPortalEffectFlag)
 		{
 			honraiPlayerCameraPos = { 0.0f,0.0f,0.0f };
 		}
-		XMVECTOR distance = honraiPlayerCameraPos - player.pos;
+		KazMath::Vec3<float> distance = honraiPlayerCameraPos - player.pos;
 		player.pos += distance * 0.1f;
 	}
 
@@ -603,8 +603,8 @@ void Game::Update()
 
 	if (cameraChangeFlag)
 	{
-		eyePos = KazMath::LoadVecotrToXMFLOAT3(cameraPoly->data.transform.pos);
-		targetPos = KazMath::LoadVecotrToXMFLOAT3(baseTargetPos);
+		eyePos = cameraPoly->data.transform.pos;
+		targetPos = baseTargetPos;
 	}
 	else
 	{
@@ -620,7 +620,7 @@ void Game::Update()
 
 	//敵が一通り生成終わった際に登場させる----------------------------------------------------------------
 	if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame && !initAppearFlag)
-	//if (100 <= gameFlame && !initAppearFlag)
+		//if (100 <= gameFlame && !initAppearFlag)
 	{
 		goalBox.Appear(appearGoalBoxPos);
 		initAppearFlag = true;
@@ -647,9 +647,9 @@ void Game::Update()
 		//ゴールボックスの初期化----------------------------------------------
 
 
-		leftRightAngleVel = { -90.0f,-90.0f,0.0f };
+		leftRightAngleVel = { -90.0f,-90.0f };
 		trackLeftRightAngleVel = leftRightAngleVel;
-		upDownAngleVel = { 0.0f,0.0f,0.0f };
+		upDownAngleVel = { 0.0f,0.0f };
 		trackUpDownAngleVel = upDownAngleVel;
 		movieEffect.startFlag = false;
 
@@ -1087,14 +1087,14 @@ void Game::Update()
 			//イベントブロックかどうか判断する
 			if (lineEffectArrayData[i].eventType != -1)
 			{
-				XMVECTOR pos = *goalBox.hitBox.center;
+				KazMath::Vec3<float> pos = *goalBox.hitBox.center;
 				lineLevel[lineIndex].CalucurateDistance(player.pos, pos);
 			}
 			else
 			{
 				int enemyTypeIndex = lineEffectArrayData[i].enemyTypeIndex;
 				int enemyIndex = lineEffectArrayData[i].enemyIndex;
-				XMVECTOR pos = *enemies[enemyTypeIndex][enemyIndex]->GetData()->hitBox.center;
+				KazMath::Vec3<float> pos = *enemies[enemyTypeIndex][enemyIndex]->GetData()->hitBox.center;
 				lineLevel[lineIndex].CalucurateDistance(player.pos, pos);
 			}
 		}
@@ -1158,9 +1158,9 @@ void Game::Update()
 	}
 
 	titleLogoTex.data.transform.pos = { 0.0f,100.0f,500.0f };
-	titleLogoTex.data.transform.scale = { 0.8f,0.8f };
+	titleLogoTex.data.transform.scale = { 0.8f,0.8f,1.0f };
 	baseTitlePosY = 100.0f;
-	titleLogoTex.data.transform.pos.m128_f32[1] = baseTitlePosY + EasingMaker(Out, Cubic, titleT) * 50.0f;
+	titleLogoTex.data.transform.pos.y = baseTitlePosY + EasingMaker(Out, Cubic, titleT) * 50.0f;
 
 
 
@@ -1268,19 +1268,19 @@ void Game::Draw()
 			RenderTargetStatus::Instance()->PrepareToChangeBarrier(potalTexHandle);
 			RenderTargetStatus::Instance()->ClearRenderTarget(potalTexHandle);
 
-			//float vel = subPotalSpritePos.m128_f32[2] - goalBox.portalEffect.sprite->data.transform.pos.m128_f32[2];
+			//float vel = subPotalSpritePos.z - goalBox.portalEffect.sprite->data.transform.pos.z;
 
 			//layerCameraMove.y = -vel;
 			//layerLevelEyePos = KazMath::CaluEyePosForDebug(layerLevelEyePos, layerCameraMove, angle);
 			//layerLevelTargetPos = KazMath::CaluTargetPosForDebug(layerLevelEyePos, angle.x);
-			
+
 			CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 1);
 			stages[stageNum + 1]->SetCamera(1);
 			stages[stageNum + 1]->Draw();
 			RenderTargetStatus::Instance()->PrepareToCloseBarrier(potalTexHandle);
 			RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
 		}
-		subPotalSpritePos.m128_f32[2] = goalBox.portalEffect.sprite->data.transform.pos.m128_f32[2];
+		subPotalSpritePos.z = goalBox.portalEffect.sprite->data.transform.pos.z;
 	}
 	else
 	{
