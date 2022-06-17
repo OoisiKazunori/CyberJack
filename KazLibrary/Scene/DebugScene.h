@@ -5,15 +5,28 @@
 #include"../KazLibrary/Buffer/CreateGpuBuffer.h"
 #include"../KazLibrary/Render/KazRender.h"
 
+/// <summary>
+/// パーティクルの移動系
+/// </summary>
 struct InputData
 {
-	XMFLOAT3 pos;
-	float pad;
+	XMFLOAT4 velocity;
+	XMFLOAT4 offset;
+	XMFLOAT4 color;
 };
 
+/// <summary>
+/// コマンドバッファのアドレスの参照先
+/// </summary>
 struct OutPutData
 {
 	XMMATRIX mat;
+	XMFLOAT4 color;
+};
+
+struct 
+{
+
 };
 
 struct CommonData

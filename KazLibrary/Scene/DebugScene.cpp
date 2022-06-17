@@ -52,7 +52,6 @@ DebugScene::DebugScene()
 
 		pointer = buffer->GetMapAddres(paramCBHandle);
 		memcpy(pointer, &constantBufferData[0], TRIANGLE_ARRAY_NUM * sizeof(SceneConstantBuffer));
-		//buffer->TransData(paramCBHandle, &constantBufferData[0], TRIANGLE_ARRAY_NUM * sizeof(SceneConstantBuffer));
 
 		//定数バッファのビューは作る
 		cbvSize = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_CBV);
@@ -161,6 +160,7 @@ DebugScene::DebugScene()
 		//コマンドバッファのSRV用意-------------------------
 
 
+#pragma region コンピュートシェーダーでの計算
 		//入力用バッファの生成-------------------------
 		KazBufferHelper::BufferResourceData bufferSet
 		(
@@ -179,7 +179,6 @@ DebugScene::DebugScene()
 		//データのコピー-------------------------
 		buffer->TransData(inputHandle, constantBufferData.data(), commandBufferSize);
 		//データのコピー-------------------------
-
 
 
 
@@ -204,6 +203,8 @@ DebugScene::DebugScene()
 		//リセット用のバッファ-------------------------
 
 		//リセット用のバッファ-------------------------
+#pragma endregion
+
 	}
 
 
@@ -365,7 +366,7 @@ void DebugScene::Draw()
 		commandSig.Get(),
 		TRIANGLE_ARRAY_NUM,
 		buffer->GetBufferData(commandBufferHandle).Get(),
-		CommandSizePerFrame * 0, //リソースバリアの切り替えで値を変える必要があるかも(offsetが入ると定数バッファの値が0になるので無し)
+		CommandSizePerFrame * num, //リソースバリアの切り替えで値を変える必要があるかも(offsetが入ると定数バッファの値が0になるので無し)
 		nullptr,
 		0
 	);
