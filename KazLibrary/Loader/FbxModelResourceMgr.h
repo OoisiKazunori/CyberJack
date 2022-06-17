@@ -1,6 +1,6 @@
 #pragma once
 #pragma warning(push)
-#pragma warning(disable:4996)
+#pragma warning(disable:4023)
 #include"fbxsdk.h"
 #pragma warning(pop)
 #include"../DirectXCommon/Base.h"

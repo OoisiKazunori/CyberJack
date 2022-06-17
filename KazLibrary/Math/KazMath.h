@@ -2,7 +2,7 @@
 #include"../DirectXCommon/Base.h"
 
 #pragma warning(push)
-#pragma warning(disable:4996)
+#pragma warning(disable:4023)
 #include"fbxsdk.h"
 #pragma warning(pop)
 
