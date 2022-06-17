@@ -241,6 +241,13 @@ namespace KazMath
 				me.x * rhs.y - rhs.x * me.y);
 		}
 
+		void Abs()
+		{
+			x = fabs(x);
+			y = fabs(y);
+			z = fabs(z);
+		}
+
 #pragma region オペレーター演算子
 		Vec3 operator-()const
 		{

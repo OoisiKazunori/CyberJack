@@ -307,48 +307,17 @@ void LineLevel1::Attack2(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::
 
 
 						//ゴール座標と敵との距離
-						KazMath::Vec3<float> distance = ENEMY_POS - goalPos;
+						KazMath::Vec3<float> enemyToGoalDistance = ENEMY_POS - goalPos;
 						//敵とプレイヤーの距離
-						KazMath::Vec3<float> distance2 = ENEMY_POS - PLAYER_POS;
+						KazMath::Vec3<float> playerToEnemyDistance = ENEMY_POS - PLAYER_POS;
 
 
 						//+軸か-軸かを判断するもの-----------------------
 						//敵とゴール座標
-						array<bool, 3> minusFlags;
-						minusFlags[0] = IsMinus(distance.x);
-						if (minusFlags[0])
-						{
-							distance.x = fabs(distance.x);
-						}
-						minusFlags[1] = IsMinus(distance.y);
-						if (minusFlags[1])
-						{
-							distance.y = fabs(distance.y);
-						}
-						minusFlags[2] = IsMinus(distance.z);
-						if (minusFlags[2])
-						{
-							distance.z = fabs(distance.z);
-						}
-
+						enemyToGoalDistance.Abs();
 
 						//プレイヤーと敵座標
-						array<bool, 3> minusFlags2;
-						minusFlags2[0] = IsMinus(distance2.x);
-						if (minusFlags2[0])
-						{
-							distance2.x = fabs(distance2.x);
-						}
-						minusFlags2[1] = IsMinus(distance2.y);
-						if (minusFlags2[1])
-						{
-							distance2.y = fabs(distance2.y);
-						}
-						minusFlags2[2] = IsMinus(distance.z);
-						if (minusFlags2[2])
-						{
-							distance2.z = fabs(distance2.z);
-						}
+						playerToEnemyDistance.Abs();
 						//+軸か-軸かを判断するもの-----------------------
 
 						//伸ばす距離
@@ -360,25 +329,25 @@ void LineLevel1::Attack2(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::
 						//true...敵との距離の方よりプレイヤーとの距離の方が短い
 						for (int axis = 0; axis < 3; ++axis)
 						{
-							if (distance2.m128_f32[axis] <= distance.m128_f32[axis] + addDistance.m128_f32[axis])
+							if (playerToEnemyDistance.m128_f32[axis] <= enemyToGoalDistance.m128_f32[axis] + addDistance.m128_f32[axis])
 							{
 								//プレイヤーと敵との距離内かつ敵より前の座標を配置する
 								//どれくらい超えているか確認
 								KazMath::Vec3<float> tmp;
-								tmp.m128_f32[axis] = distance2.m128_f32[axis] - distance.m128_f32[axis];
+								tmp.m128_f32[axis] = playerToEnemyDistance.m128_f32[axis] - enemyToGoalDistance.m128_f32[axis];
 								tmp.m128_f32[axis] = (float)fabs(tmp.m128_f32[axis]);
 
 								//敵とゴール座標との距離に超えた距離を引く
 								//tmpの軸が0出ない限り、超えた距離を引く
 								if (0.1f <= tmp.m128_f32[axis])
 								{
-									vec.m128_f32[axis] = distance.m128_f32[axis] - tmp.m128_f32[axis];
+									vec.m128_f32[axis] = enemyToGoalDistance.m128_f32[axis] - tmp.m128_f32[axis];
 								}
 							}
 							else
 							{
 								//越えなければそのまま使う
-								vec = distance + addDistance;
+								vec = enemyToGoalDistance + addDistance;
 							}
 						}
 
