@@ -160,7 +160,7 @@ DebugScene::DebugScene()
 		//コマンドバッファのSRV用意-------------------------
 
 
-#pragma region コンピュートシェーダーでの計算
+#pragma region ComputeShader
 		//入力用バッファの生成-------------------------
 		KazBufferHelper::BufferResourceData bufferSet
 		(
@@ -255,11 +255,6 @@ DebugScene::DebugScene()
 	//DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + 2, commonDesc, buffer->GetBufferData(commonHandle).Get());
 	////入力用と出力用のバッファ生成---------------------------
 
-
-	rootConst.xOffset = 0.05f;
-	rootConst.zOffset = 1.0f;
-	rootConst.cullOffset = 0.5f;
-	rootConst.commandCount = TRIANGLE_ARRAY_NUM;
 }
 
 DebugScene::~DebugScene()
@@ -298,6 +293,11 @@ void DebugScene::Update()
 	memcpy(destination, constantBufferData.data(), TRIANGLE_ARRAY_NUM * sizeof(SceneConstantBuffer));
 
 
+
+	rootConst.view = CameraMgr::Instance()->GetViewMatrix();
+	rootConst.projection = CameraMgr::Instance()->GetPerspectiveMatProjection();
+	rootConst.size = DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	rootConst.gpuAddress;
 
 
 	//コンピュートシェーダーの計算-------------------------

@@ -107,15 +107,17 @@ void GraphicsRootSignature::CreateRootSignature(RootSignatureMode ROOTSIGNATURE,
 	}
 #pragma endregion
 
-	if(ROOTSIGNATURE == ROOTSIGNATURE_DATA_SRV_UAV)
+	if (ROOTSIGNATURE == ROOTSIGNATURE_DATA_SRV_UAV)
 	{
 		//コンピュートシェーダー用のルートシグネチャー(臨時用)
-		std::array <CD3DX12_DESCRIPTOR_RANGE1, 2> ranges{};
-		ranges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 2, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_STATIC);
-		ranges[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_DATA_VOLATILE);
+		std::array <CD3DX12_DESCRIPTOR_RANGE, 4> ranges{};
+		ranges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+		ranges[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0);
+		ranges[2].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 1);
+		ranges[3].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 2);
 
-		std::array<CD3DX12_ROOT_PARAMETER1, 2> computeRootParameters;
-		computeRootParameters[0].InitAsDescriptorTable(2, ranges.data());
+		std::array<CD3DX12_ROOT_PARAMETER, 2> computeRootParameters;
+		computeRootParameters[0].InitAsDescriptorTable(ranges.size(), ranges.data());
 		computeRootParameters[1].InitAsConstants(4, 0);
 		CreateMyRootSignature(ROOTSIGNATURE_DATA.sample, computeRootParameters.data(), computeRootParameters.size(), ROOTSIGNATURE);
 	}

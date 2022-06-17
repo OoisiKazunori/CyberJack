@@ -10,8 +10,9 @@
 /// </summary>
 struct InputData
 {
+	XMFLOAT3 pos;
+	float pad;
 	XMFLOAT4 velocity;
-	XMFLOAT4 offset;
 	XMFLOAT4 color;
 };
 
@@ -22,11 +23,6 @@ struct OutPutData
 {
 	XMMATRIX mat;
 	XMFLOAT4 color;
-};
-
-struct 
-{
-
 };
 
 struct CommonData
@@ -43,10 +39,11 @@ struct IndirectCommand
 
 struct CSRootConstants
 {
-	float xOffset;
-	float zOffset;
-	float cullOffset;
-	float commandCount;
+	XMMATRIX view;
+	XMMATRIX projection;
+	float size;
+	float gpuAddress;
+	XMFLOAT2 pad;
 };
 
 //à⁄ìÆèÓïÒ
