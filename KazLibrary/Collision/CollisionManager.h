@@ -30,12 +30,12 @@ struct Ray
 
 	void NormlizeDir()
 	{
-		double length = pow(
+		float length = static_cast<float>(pow(
 			(start.m128_f32[0] * start.m128_f32[0]) +
 			(start.m128_f32[1] * start.m128_f32[1]) +
 			(start.m128_f32[2] * start.m128_f32[2])
 			, 0.5
-		);
+		));
 
 		XMVECTOR normal;
 		normal = start / length;

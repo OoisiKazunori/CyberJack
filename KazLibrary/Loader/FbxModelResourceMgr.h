@@ -1,6 +1,9 @@
 #pragma once
-#include"../DirectXCommon/Base.h"
+#pragma warning(push)
+#pragma warning(disable:4996)
 #include"fbxsdk.h"
+#pragma warning(pop)
+#include"../DirectXCommon/Base.h"
 #include"../Helper/ISinglton.h"
 #include"../Helper/HandleMaker.h"
 #include"../Buffer/CreateGpuBuffer.h"

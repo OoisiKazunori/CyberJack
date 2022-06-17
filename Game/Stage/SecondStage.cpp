@@ -77,7 +77,7 @@ SecondStage::SecondStage()
 	int zIndex = 0;
 	for (int i = 25; i < line.size(); i++)
 	{
-		float z = -100 + zIndex * 50;
+		float z = static_cast<float>(-100 + zIndex * 50);
 		switch (index)
 		{
 		case 0:

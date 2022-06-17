@@ -9,7 +9,7 @@ CollisionManager::~CollisionManager()
 {
 }
 
-bool CollisionManager::CheckSphereAndPlane(const Sphere& SPHERE, const Plane& PLANE, XMVECTOR* INTER)
+bool CollisionManager::CheckSphereAndPlane(const Sphere &SPHERE, const Plane &PLANE, XMVECTOR *INTER)
 {
 	//座標系の原点から球の中心座標への距離
 	XMVECTOR distV = XMVector3Dot(*SPHERE.center, PLANE.normal);
@@ -33,7 +33,7 @@ bool CollisionManager::CheckSphereAndPlane(const Sphere& SPHERE, const Plane& PL
 	return true;
 }
 
-bool CollisionManager::CheckSphereAndTriangle(const Sphere& SPHERE, const Triangle& TRIANGLE, XMVECTOR* INTER)
+bool CollisionManager::CheckSphereAndTriangle(const Sphere &SPHERE, const Triangle &TRIANGLE, XMVECTOR *INTER)
 {
 	XMVECTOR p;
 
@@ -61,7 +61,7 @@ bool CollisionManager::CheckSphereAndTriangle(const Sphere& SPHERE, const Triang
 
 }
 
-bool CollisionManager::CheckRayAndPlane(const Ray& RAY, const Plane& PLANE, float* DISTANCE, XMVECTOR* INTER)
+bool CollisionManager::CheckRayAndPlane(const Ray &RAY, const Plane &PLANE, float *DISTANCE, XMVECTOR *INTER)
 {
 	//イプシオン...誤差吸収用の0に近い微小な値
 	const float epsion = 1.0 - 5.0f;
@@ -104,7 +104,7 @@ bool CollisionManager::CheckRayAndPlane(const Ray& RAY, const Plane& PLANE, floa
 	return true;
 }
 
-bool CollisionManager::CheckRayAndTriange(const Ray& RAY, const Triangle& TRIANGLE, float* DISTANCE, XMVECTOR* INTER)
+bool CollisionManager::CheckRayAndTriange(const Ray &RAY, const Triangle &TRIANGLE, float *DISTANCE, XMVECTOR *INTER)
 {
 	//三角形が載っている平面を算出
 	Plane plane;
@@ -168,7 +168,7 @@ bool CollisionManager::CheckRayAndTriange(const Ray& RAY, const Triangle& TRIANG
 	return true;
 }
 
-bool CollisionManager::CheckRayAndSphere(const Ray& RAY, const Sphere& SPHERE, float* DISTANCE, XMVECTOR* INTER)
+bool CollisionManager::CheckRayAndSphere(const Ray &RAY, const Sphere &SPHERE, float *DISTANCE, XMVECTOR *INTER)
 {
 	XMVECTOR m = RAY.start - *SPHERE.center;
 	float b = XMVector3Dot(m, RAY.dir).m128_f32[0];
@@ -211,7 +211,7 @@ bool CollisionManager::CheckRayAndSphere(const Ray& RAY, const Sphere& SPHERE, f
 	return true;
 }
 
-bool CollisionManager::CheckSphereAndSphere(const Sphere& SPHERE_1, const Sphere& SPHERE_2)
+bool CollisionManager::CheckSphereAndSphere(const Sphere &SPHERE_1, const Sphere &SPHERE_2)
 {
 	XMVECTOR tmp;
 	tmp.m128_f32[0] = SPHERE_1.center->m128_f32[0] - SPHERE_2.center->m128_f32[0];
@@ -225,7 +225,7 @@ bool CollisionManager::CheckSphereAndSphere(const Sphere& SPHERE_1, const Sphere
 	return (distance <= sumRadist);
 }
 
-bool CollisionManager::CheckSquareAndSquare(const Square& SQUARE_1, const Square& SQUARE_2)
+bool CollisionManager::CheckSquareAndSquare(const Square &SQUARE_1, const Square &SQUARE_2)
 {
 	XMVECTOR adjPos[2] = { SQUARE_1.size / 2.0f,SQUARE_2.size / 2.0f };
 	int x = 0, y = 2;
@@ -296,18 +296,18 @@ bool CollisionManager::CheckThicklineAndSphere(const Sphere &SPHERE, const ModiR
 	{
 
 		// p1からp0までの方向ベクトルを求め、正規化させる。
-		dataBuff = KazMath::SubXMVECTOR(rectangleBuffBuff.p0, rectangleBuffBuff.p1);
+		dataBuff = rectangleBuffBuff.p0 - rectangleBuffBuff.p1;
 		dataBuff = XMVector2Normalize(dataBuff);
 		// p3からp0までの方向ベクトルを求め、正規化させる。
-		dataBuff2 = KazMath::SubXMVECTOR(rectangleBuffBuff.p0, rectangleBuffBuff.p3);
+		dataBuff2 = rectangleBuffBuff.p0 - rectangleBuffBuff.p3;
 		dataBuff2 = XMVector2Normalize(dataBuff2);
 
 		//// 足して正規化する
 		//dataBuff += dataBuff2;
 		//dataBuff = XMVector2Normalize(dataBuff);
 
-		rectangleBuffBuff.p0 += KazMath::MulXMVECTOR(dataBuff, sphereRadius);
-		rectangleBuffBuff.p0 += KazMath::MulXMVECTOR(dataBuff2, sphereRadius);
+		rectangleBuffBuff.p0 += dataBuff * sphereRadius;
+		rectangleBuffBuff.p0 += dataBuff2 * sphereRadius;
 
 	}
 
@@ -315,18 +315,18 @@ bool CollisionManager::CheckThicklineAndSphere(const Sphere &SPHERE, const ModiR
 	{
 
 		// p2からp1までの方向ベクトルを求め、正規化させる。
-		dataBuff = KazMath::SubXMVECTOR(rectangleBuffBuff.p1, rectangleBuffBuff.p2);
+		dataBuff = rectangleBuffBuff.p1 - rectangleBuffBuff.p2;
 		dataBuff = XMVector2Normalize(dataBuff);
 		// p0からp1までの方向ベクトルを求め、正規化させる。
-		dataBuff2 = KazMath::SubXMVECTOR(rectangleBuffBuff.p1, rectangleBuffBuff.p0);
+		dataBuff2 = rectangleBuffBuff.p1 - rectangleBuffBuff.p0;
 		dataBuff2 = XMVector2Normalize(dataBuff2);
 
 		//// 足して正規化する
 		//dataBuff += dataBuff2;
 		//dataBuff = XMVector2Normalize(dataBuff);
 
-		rectangleBuffBuff.p1 += KazMath::MulXMVECTOR(dataBuff, sphereRadius);
-		rectangleBuffBuff.p1 += KazMath::MulXMVECTOR(dataBuff2, sphereRadius);
+		rectangleBuffBuff.p1 += dataBuff * sphereRadius;
+		rectangleBuffBuff.p1 += dataBuff2 * sphereRadius;
 
 	}
 
@@ -334,18 +334,18 @@ bool CollisionManager::CheckThicklineAndSphere(const Sphere &SPHERE, const ModiR
 	{
 
 		// p3からp2までの方向ベクトルを求め、正規化させる。
-		dataBuff = KazMath::SubXMVECTOR(rectangleBuffBuff.p2, rectangleBuffBuff.p3);
+		dataBuff = rectangleBuffBuff.p2 - rectangleBuffBuff.p3;
 		dataBuff = XMVector2Normalize(dataBuff);
 		// p1からp2までの方向ベクトルを求め、正規化させる。
-		dataBuff2 = KazMath::SubXMVECTOR(rectangleBuffBuff.p2, rectangleBuffBuff.p1);
+		dataBuff2 = rectangleBuffBuff.p2 - rectangleBuffBuff.p1;
 		dataBuff2 = XMVector2Normalize(dataBuff2);
 
 		//// 足して正規化する
 		//dataBuff += dataBuff2;
 		//dataBuff = XMVector2Normalize(dataBuff);
 
-		rectangleBuffBuff.p2 += KazMath::MulXMVECTOR(dataBuff, sphereRadius);
-		rectangleBuffBuff.p2 += KazMath::MulXMVECTOR(dataBuff2, sphereRadius);
+		rectangleBuffBuff.p2 += dataBuff * sphereRadius;
+		rectangleBuffBuff.p2 += dataBuff2 * sphereRadius;
 
 	}
 
@@ -353,18 +353,18 @@ bool CollisionManager::CheckThicklineAndSphere(const Sphere &SPHERE, const ModiR
 	{
 
 		// p0からp1までの方向ベクトルを求め、正規化させる。
-		dataBuff = KazMath::SubXMVECTOR(rectangleBuffBuff.p3, rectangleBuffBuff.p0);
+		dataBuff = rectangleBuffBuff.p3 - rectangleBuffBuff.p0;
 		dataBuff = XMVector2Normalize(dataBuff);
 		// p2からp3までの方向ベクトルを求め、正規化させる。
-		dataBuff2 = KazMath::SubXMVECTOR(rectangleBuffBuff.p3, rectangleBuffBuff.p2);
+		dataBuff2 = rectangleBuffBuff.p3 - rectangleBuffBuff.p2;
 		dataBuff2 = XMVector2Normalize(dataBuff2);
 
 		//// 足して正規化する
 		//dataBuff += dataBuff2;
 		//dataBuff = XMVector2Normalize(dataBuff);
 
-		rectangleBuffBuff.p3 += KazMath::MulXMVECTOR(dataBuff, sphereRadius);
-		rectangleBuffBuff.p3 += KazMath::MulXMVECTOR(dataBuff2, sphereRadius);
+		rectangleBuffBuff.p3 += dataBuff * sphereRadius;
+		rectangleBuffBuff.p3 += dataBuff2 * sphereRadius;
 
 	}
 
@@ -384,10 +384,10 @@ bool CollisionManager::CheckThicklineAndSphere(const Sphere &SPHERE, const ModiR
 	{
 
 		// 頂点と頂点ベクトルを求めて正規化
-		vTvVec = KazMath::SubXMVECTOR(rectangleBuffBuff.p1, rectangleBuffBuff.p0);
+		vTvVec = rectangleBuffBuff.p1 - rectangleBuffBuff.p0;
 		vTvVec = XMVector2Normalize(vTvVec);
 		// 頂点と中心点のベクトルを求めて正規化
-		vTPVec = KazMath::SubXMVECTOR(*sphereBuff.center, rectangleBuffBuff.p0);
+		vTPVec = *sphereBuff.center - rectangleBuffBuff.p0;
 		vTPVec = XMVector2Normalize(vTPVec);
 
 		// 外積を計算 +の場合右判定
@@ -400,10 +400,10 @@ bool CollisionManager::CheckThicklineAndSphere(const Sphere &SPHERE, const ModiR
 	{
 
 		// 頂点と頂点ベクトルを求めて正規化
-		vTvVec = KazMath::SubXMVECTOR(rectangleBuffBuff.p2, rectangleBuffBuff.p1);
+		vTvVec = rectangleBuffBuff.p2 - rectangleBuffBuff.p1;
 		vTvVec = XMVector2Normalize(vTvVec);
 		// 頂点と中心点のベクトルを求めて正規化
-		vTPVec = KazMath::SubXMVECTOR(*sphereBuff.center, rectangleBuffBuff.p1);
+		vTPVec = *sphereBuff.center - rectangleBuffBuff.p1;
 		vTPVec = XMVector2Normalize(vTPVec);
 
 		// 外積を計算 +の場合右判定
@@ -415,10 +415,10 @@ bool CollisionManager::CheckThicklineAndSphere(const Sphere &SPHERE, const ModiR
 	{
 
 		// 頂点と頂点ベクトルを求めて正規化
-		vTvVec = KazMath::SubXMVECTOR(rectangleBuffBuff.p3, rectangleBuffBuff.p2);
+		vTvVec = rectangleBuffBuff.p3 - rectangleBuffBuff.p2;
 		vTvVec = XMVector2Normalize(vTvVec);
 		// 頂点と中心点のベクトルを求めて正規化
-		vTPVec = KazMath::SubXMVECTOR(*sphereBuff.center, rectangleBuffBuff.p2);
+		vTPVec = *sphereBuff.center - rectangleBuffBuff.p2;
 		vTPVec = XMVector2Normalize(vTPVec);
 
 		// 外積を計算 +の場合右判定
@@ -430,10 +430,10 @@ bool CollisionManager::CheckThicklineAndSphere(const Sphere &SPHERE, const ModiR
 	{
 
 		// 頂点と頂点ベクトルを求めて正規化
-		vTvVec = KazMath::SubXMVECTOR(rectangleBuffBuff.p0, rectangleBuffBuff.p3);
+		vTvVec = rectangleBuffBuff.p0 - rectangleBuffBuff.p3;
 		vTvVec = XMVector2Normalize(vTvVec);
 		// 頂点と中心点のベクトルを求めて正規化
-		vTPVec = KazMath::SubXMVECTOR(*sphereBuff.center, rectangleBuffBuff.p3);
+		vTPVec = *sphereBuff.center - rectangleBuffBuff.p3;
 		vTPVec = XMVector2Normalize(vTPVec);
 
 		// 外積を計算 +の場合右判定
@@ -452,7 +452,7 @@ bool CollisionManager::CheckThicklineAndSphere(const Sphere &SPHERE, const ModiR
 
 	return isHitResult;
 }
-void CollisionManager::ClosestPtPoint2Triangle(const XMVECTOR& point, const Triangle& triangle, XMVECTOR* closest)
+void CollisionManager::ClosestPtPoint2Triangle(const XMVECTOR &point, const Triangle &triangle, XMVECTOR *closest)
 {
 	// pointがp0の外側の頂点領域の中にあるかどうかチェック
 	XMVECTOR p0_p1 = triangle.p1 - triangle.p0;

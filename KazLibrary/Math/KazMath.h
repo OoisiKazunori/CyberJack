@@ -1,9 +1,354 @@
 #pragma once
 #include"../DirectXCommon/Base.h"
+
+#pragma warning(push)
+#pragma warning(disable:4996)
 #include"fbxsdk.h"
+#pragma warning(pop)
 
 namespace KazMath
 {
+
+#pragma region Vec2
+	template<typename T>
+	struct Vec2
+	{
+		T x, y;
+
+		Vec2()
+		{
+			x = 0;
+			y = 0;
+		};
+		Vec2(T X, T Y) :x(X), y(Y) {};
+
+		float Length()const
+		{
+			return sqrt(pow(x, 2) + pow(y, 2));
+		};
+		float Distance(const Vec2 &To)const
+		{
+			return sqrt(pow(To.x - x, 2) + pow(To.y - y, 2));
+		};
+		Vec2<float> GetNormal()const
+		{
+			float len = Length();
+			if (len == 0.0f)return Vec2<float>(0.0, 0.0);
+			return Vec2<float>(x / len, y / len);
+		};
+		void Normalize()
+		{
+			float len = Length();
+			x /= len;
+			y /= len;
+		};
+		XMFLOAT2 ConvertXMFLOAT2()
+		{
+			return DirectX::XMFLOAT2(x, y);
+		};
+
+		Vec2<int>Int()const
+		{
+			return Vec2<int>(x, y);
+		}
+		Vec2<float>Float()const
+		{
+			return Vec2<float>((float)x, (float)y);
+		}
+
+		float Dot(const Vec2<float> &rhs)const
+		{
+			auto me = Float();
+			return me.x * rhs.x + me.y * rhs.y;
+		}
+		float Cross(const Vec2<float> &rhs)const
+		{
+			auto me = Float();
+			return me.x * rhs.y - me.y * rhs.x;
+		}
+
+#pragma region オペレーター演算子
+		Vec2 operator-() const
+		{
+			return Vec2(-x, -y);
+		}
+		Vec2 operator+(const Vec2 &rhs) const
+		{
+			return Vec2(x + rhs.x, y + rhs.y);
+		};
+		Vec2 operator-(const Vec2 &rhs)const
+		{
+			return Vec2(x - rhs.x, y - rhs.y);
+		};
+		Vec2 operator*(const Vec2 &rhs)const
+		{
+			return Vec2(x * rhs.x, y * rhs.y);
+		};
+		Vec2 operator*(const float &rhs)const
+		{
+			return Vec2(x * rhs, y * rhs);
+		};
+		Vec2 operator/(const Vec2 &rhs)const
+		{
+			return Vec2(x / rhs.x, y / rhs.y);
+		};
+		Vec2 operator/(const float &rhs)const
+		{
+			return Vec2(x / rhs, y / rhs);
+		};
+		Vec2 operator%(const Vec2 &rhs) const
+		{
+			return Vec2(fmodf(x, rhs.x), fmodf(y, rhs.y));
+		};
+		void operator=(const Vec2 &rhs)
+		{
+			x = rhs.x;
+			y = rhs.y;
+		};
+		bool operator==(const Vec2 &rhs)const
+		{
+			return (x == rhs.x && y == rhs.y);
+		};
+		bool operator!=(const Vec2 &rhs)const
+		{
+			return !(*this == rhs);
+		};
+		void operator+=(const Vec2 &rhs)
+		{
+			x += rhs.x;
+			y += rhs.y;
+		};
+		void operator-=(const Vec2 &rhs)
+		{
+			x -= rhs.x;
+			y -= rhs.y;
+		};
+		void operator*=(const Vec2 &rhs)
+		{
+			x *= rhs.x;
+			y *= rhs.y;
+		};
+		void operator/=(const Vec2 &rhs)
+		{
+			x /= rhs.x;
+			y /= rhs.y;
+		};
+		void operator%=(const Vec2 &rhs)
+		{
+			x = fmodf(x, rhs.x);
+			y = fmodf(y, rhs.y);
+		};
+
+		void operator+=(const float &rhs)
+		{
+			x += rhs;
+			y += rhs;
+		};
+		void operator-=(const float &rhs)
+		{
+			x -= rhs;
+			y -= rhs;
+		};
+		void operator*=(const float &rhs)
+		{
+			x *= rhs;
+			y *= rhs;
+		};
+		void operator/=(const float &rhs)
+		{
+			x /= rhs;
+			y /= rhs;
+		};
+		void operator%=(const float &rhs)
+		{
+			x = fmodf(x, rhs);
+			y = fmodf(y, rhs);
+		};
+
+		bool operator<(const Vec2<T> &rhs)
+		{
+			return x < rhs.x &&y < rhs.y;
+		}
+#pragma endregion
+	};
+#pragma endregion
+
+#pragma region Vec3
+	template<typename T>
+	struct Vec3
+	{
+		T x, y, z;
+
+		Vec3() 
+		{
+			x = 0;
+			y = 0;
+			z = 0;
+		};
+		Vec3(T X, T Y, T Z) :x(X), y(Y), z(Z) {};
+		float Length() const
+		{
+			return sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2));
+		};
+		Vec3(Vec2<T>XY, T Z) :x(XY.x), y(XY.y), z(Z) {};
+
+		float Distance(const Vec3 &To)const
+		{
+			return sqrt(pow(To.x - x, 2) + pow(To.y - y, 2) + pow(To.z - z, 2));
+		};
+		Vec3<float> GetNormal()const
+		{
+			float len = Length();
+			if (len == 0.0f)return Vec3(0, 0, 0);
+			return Vec3<float>(x / len, y / len, z / len);
+		};
+		void Normalize()
+		{
+			float len = Length();
+			x /= len;
+			y /= len;
+			z /= len;
+		};
+		XMFLOAT3 ConvertXMFLOAT3()
+		{
+			return DirectX::XMFLOAT3(x, y, z);
+		};
+		XMVECTOR ConvertXMVECTOR()
+		{
+			return XMVECTOR(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), 0.0f);
+		};
+
+		Vec3<int>Int()const
+		{
+			return Vec3<int>(x, y, z); 
+		}
+		Vec3<float>Float()const
+		{ 
+			return Vec3<float>((float)x, (float)y, (float)z);
+		}
+
+		float Dot(const Vec3<float> &rhs)const
+		{
+			auto me = Float();
+			return me.x * rhs.x + me.y * rhs.y + me.z * rhs.z;
+		}
+		Vec3<float>Cross(const Vec3<float> &rhs)const
+		{
+			auto me = Float();
+			return Vec3<float>(
+				me.y * rhs.z - rhs.y * me.z,
+				me.z * rhs.x - rhs.z * me.x,
+				me.x * rhs.y - rhs.x * me.y);
+		}
+
+#pragma region オペレーター演算子
+		Vec3 operator-()const
+		{
+			return Vec3(-x, -y, -z);
+		}
+		Vec3 operator+(const Vec3 &rhs)const
+		{
+			return Vec3(x + rhs.x, y + rhs.y, z + rhs.z);
+		};
+		Vec3 operator-(const Vec3 &rhs)const
+		{
+			return Vec3(x - rhs.x, y - rhs.y, z - rhs.z);
+		};
+		Vec3 operator*(const Vec3 &rhs) const
+		{
+			return Vec3(x * rhs.x, y * rhs.y, z * rhs.z);
+		};
+		Vec3 operator*(const float &rhs)const
+		{
+			return Vec3(x * rhs, y * rhs, z * rhs);
+		};
+		Vec3 operator/(const Vec3 &rhs)const
+		{
+			return Vec3(x / rhs.x, y / rhs.y, z / rhs.z);
+		};
+		Vec3 operator/(const float &rhs)const
+		{
+			return Vec3(x / rhs, y / rhs, z / rhs);
+		};
+		Vec3 operator%(const Vec3 &rhs)const
+		{
+			return Vec3(fmodf(x, rhs.x), fmodf(y, rhs.y), fmodf(z, rhs.z));
+		};
+		void operator=(const Vec3 &rhs)
+		{
+			x = rhs.x;
+			y = rhs.y;
+			z = rhs.z;
+		};
+		bool operator==(const Vec3 &rhs)const
+		{
+			return (x == rhs.x && y == rhs.y && z == rhs.z);
+		};
+		bool operator!=(const Vec3 &rhs)const
+		{
+			return !(*this == rhs);
+		};
+		void operator+=(const Vec3 &rhs)
+		{
+			x += rhs.x;
+			y += rhs.y;
+			z += rhs.z;
+		};
+		void operator+=(const float &rhs)
+		{
+			x += rhs;
+			y += rhs;
+			z += rhs;
+		};
+		void operator-=(const Vec3 &rhs)
+		{
+			x -= rhs.x;
+			y -= rhs.y;
+			z -= rhs.z;
+		};
+		void operator-=(const float &rhs)
+		{
+			x -= rhs;
+			y -= rhs;
+			z -= rhs;
+		};
+		void operator*=(const Vec3 &rhs)
+		{
+			x *= rhs.x;
+			y *= rhs.y;
+			z *= rhs.z;
+		};
+		void operator*=(const float &rhs)
+		{
+			x *= rhs;
+			y *= rhs;
+			z *= rhs;
+		};
+		void operator/=(const Vec3 &rhs)
+		{
+			x /= rhs.x;
+			y /= rhs.y;
+			z /= rhs.z;
+		};
+		void operator/=(const float &rhs)
+		{
+			x /= rhs;
+			y /= rhs;
+			z /= rhs;
+		};
+		void operator%=(const Vec3 &rhs)
+		{
+			x = fmodf(x, rhs.x);
+			y = fmodf(y, rhs.y);
+			z = fmodf(z, rhs.z);
+		};
+#pragma endregion
+	};
+#pragma endregion
+
+
+
+
 	/// <summary>
 	/// 3D空間上でオブジェクトを動かす際のデータです
 	/// </summary>
@@ -53,34 +398,29 @@ namespace KazMath
 	static const float PI_2F = 3.1415926540f;
 	static const XMMATRIX MAT_IDENTITY = XMMatrixIdentity();
 
-	XMFLOAT3 AddXMFLOAT3(XMFLOAT3 NUM_1, XMFLOAT3 NUM_2);
-	XMFLOAT2 AddXMFLOAT2(XMFLOAT2 NUM_1, XMFLOAT2 NUM_2);
-	XMFLOAT3 SubXMFLOAT3(XMFLOAT3 NUM_1, XMFLOAT3 NUM_2);
-	XMFLOAT2 SubXMFLOAT2(XMFLOAT2 NUM_1, XMFLOAT2 NUM_2);
-	XMFLOAT3 DivXMFLOAT3(XMFLOAT3 NUM_1, XMFLOAT3 NUM_2);
-	XMFLOAT3 MulXMFLOAT3(XMFLOAT3 NUM_1, XMFLOAT3 NUM_2);
-
-	XMVECTOR AddXMVECTOR(XMVECTOR NUM_1, XMVECTOR NUM_2);
-	XMVECTOR SubXMVECTOR(XMVECTOR NUM_1, XMVECTOR NUM_2);
-	XMVECTOR DivXMVECTOR(XMVECTOR NUM_1, XMVECTOR NUM_2);
-	XMVECTOR MulXMVECTOR(XMVECTOR NUM_1, XMVECTOR NUM_2);
 
 	XMVECTOR LoadFloat3ToVector(XMFLOAT3 NUM_2);
 	XMFLOAT3 LoadVecotrToXMFLOAT3(XMVECTOR NUM_1);
 
-	XMFLOAT3 XMFLOAT3Normalize(XMFLOAT3 NUM_1);
 
 	XMVECTOR CalculateScreenToWorld(XMVECTOR pout, XMMATRIX View, XMMATRIX Prj);
 
-	XMFLOAT2 CaluAngle(XMFLOAT2 POS, float Angle, XMFLOAT2 CPos);
-	XMFLOAT3 CaluAngle3D(XMFLOAT3 POS, float ANGLE, XMFLOAT3 CENTRAL_POS);
-	XMFLOAT2 NewRota(float ANGLE, XMFLOAT2 POS);
+	template<typename T>
+	Vec2<T> CaluAngle(const Vec2<T> &POS, float Angle, const Vec2<T> &CPos);
+	template<typename T>
+	Vec3<T> CaluAngle3D(const Vec3<T> &POS, float ANGLE, const Vec3<T> &CENTRAL_POS);
 
-	int IntRand(int MAX_NUM, int MIN_NUM);
-	float FloatRand(float MAX_NUM, float MIN_NUM);
+	template<typename T>
+	T Rand(T MAX_NUM, T MIN_NUM);
+
 	void ConvertMatrixFromFbx(XMMATRIX *DST, const FbxAMatrix &SRC);
 
-	float ConvertSecondToFlame(float SECOND);
+	/// <summary>
+	/// 秒数をフレームに直します
+	/// </summary>
+	/// <param name="SECOND">秒数</param>
+	/// <returns>フレーム</returns>
+	int ConvertSecondToFlame(int SECOND);
 
 	/// <summary>
 	/// 目標地点に到達するまでの移動量を計算します
@@ -90,7 +430,8 @@ namespace KazMath
 	/// <param name="FLAME">一秒あたりの時間</param>
 	/// <param name="MAX_FLAME">到達時間</param>
 	/// <returns>目標地点までの移動量</returns>
-	XMFLOAT3 CaluAPointToBPointVel(XMFLOAT3 A_POINT, XMFLOAT3 B_POINT, float FLAME, float MAX_FLAME);
+	template <typename T>
+	Vec3<T> CaluAPointToBPointVel(const Vec3<T> &A_POINT, const Vec3<T> &B_POINT, int FLAME, int MAX_FLAME);
 
 	/// <summary>
 	/// スクリーン座標からワールド座標に変換します
@@ -99,7 +440,7 @@ namespace KazMath
 	/// <param name="VIEW_MAT">ビュー行列</param>
 	/// <param name="PROJECTION_MAT">プロジェクション行列</param>
 	/// <returns>ワールド座標</returns>
-	XMVECTOR ConvertScreenPosToWorldPos(XMVECTOR SCREEN_POS, XMMATRIX VIEW_MAT, XMMATRIX PROJECTION_MAT);
+	Vec3<float> ConvertScreenPosToWorldPos(const Vec3<float> &SCREEN_POS, XMMATRIX VIEW_MAT, XMMATRIX PROJECTION_MAT);
 
 	/// <summary>
 	/// ワールド座標からスクリーン座標に変換します
@@ -212,6 +553,18 @@ namespace KazMath
 
 
 	void Larp(const float &BASE_TRANSFORM, float *TRANSFORM, float MUL);
+
+	template<typename T>
+	float GetSinFloat(T VALUE)
+	{
+		return static_cast<float>(sin(static_cast<float>VALUE));
+	};
+
+	template<typename T>
+	float GetCosFloat(T VALUE)
+	{
+		return static_cast<float>(cos(static_cast<float>VALUE));
+	};
 
 
 	/// <summary>

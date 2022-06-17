@@ -1,92 +1,5 @@
 #include "../Math/KazMath.h"
-
-XMFLOAT3 KazMath::AddXMFLOAT3(XMFLOAT3 NUM_1, XMFLOAT3 NUM_2)
-{
-	XMFLOAT3 num;
-	num.x = NUM_1.x + NUM_2.x;
-	num.y = NUM_1.y + NUM_2.y;
-	num.z = NUM_1.z + NUM_2.z;
-	return num;
-}
-
-XMFLOAT2 KazMath::AddXMFLOAT2(XMFLOAT2 NUM_1, XMFLOAT2 NUM_2)
-{
-	XMFLOAT2 num;
-	num.x = NUM_1.x + NUM_2.x;
-	num.y = NUM_1.y + NUM_2.y;
-	return num;
-}
-
-XMFLOAT3 KazMath::SubXMFLOAT3(XMFLOAT3 NUM_1, XMFLOAT3 NUM_2)
-{
-	XMFLOAT3 num;
-	num.x = NUM_1.x - NUM_2.x;
-	num.y = NUM_1.y - NUM_2.y;
-	num.z = NUM_1.z - NUM_2.z;
-	return num;
-}
-
-XMFLOAT2 KazMath::SubXMFLOAT2(XMFLOAT2 NUM_1, XMFLOAT2 NUM_2)
-{
-	XMFLOAT2 num;
-	num.x = NUM_1.x - NUM_2.x;
-	num.y = NUM_1.y - NUM_2.y;
-	return num;
-}
-
-XMFLOAT3 KazMath::DivXMFLOAT3(XMFLOAT3 NUM_1, XMFLOAT3 NUM_2)
-{
-	XMFLOAT3 num;
-	num.x = NUM_1.x / NUM_2.x;
-	num.y = NUM_1.y / NUM_2.y;
-	num.z = NUM_1.z / NUM_2.z;
-	return num;
-}
-
-XMFLOAT3 KazMath::MulXMFLOAT3(XMFLOAT3 NUM_1, XMFLOAT3 NUM_2)
-{
-	XMFLOAT3 num;
-	num.x = NUM_1.x * NUM_2.x;
-	num.y = NUM_1.y * NUM_2.y;
-	num.z = NUM_1.z * NUM_2.z;
-	return num;
-}
-
-XMVECTOR KazMath::AddXMVECTOR(XMVECTOR NUM_1, XMVECTOR NUM_2)
-{
-	XMVECTOR num;
-	num.m128_f32[0] = NUM_1.m128_f32[0] + NUM_2.m128_f32[0];
-	num.m128_f32[1] = NUM_1.m128_f32[1] + NUM_2.m128_f32[1];
-	num.m128_f32[2] = NUM_1.m128_f32[2] + NUM_2.m128_f32[2];
-	return num;
-}
-
-XMVECTOR KazMath::SubXMVECTOR(XMVECTOR NUM_1, XMVECTOR NUM_2)
-{
-	XMVECTOR num;
-	num.m128_f32[0] = NUM_1.m128_f32[0] - NUM_2.m128_f32[0];
-	num.m128_f32[1] = NUM_1.m128_f32[1] - NUM_2.m128_f32[1];
-	num.m128_f32[2] = NUM_1.m128_f32[2] - NUM_2.m128_f32[2];
-	return num;
-}
-
-XMVECTOR KazMath::DivXMVECTOR(XMVECTOR NUM_1, XMVECTOR NUM_2)
-{
-	XMVECTOR num;
-	num.m128_f32[0] = NUM_1.m128_f32[0] / NUM_2.m128_f32[0];
-	num.m128_f32[1] = NUM_1.m128_f32[1] / NUM_2.m128_f32[1];
-	num.m128_f32[2] = NUM_1.m128_f32[2] / NUM_2.m128_f32[2];
-	return num;
-}
-
-XMVECTOR KazMath::MulXMVECTOR(XMVECTOR NUM_1, XMVECTOR NUM_2)
-{
-	XMVECTOR num;
-	num.m128_f32[0] = NUM_1.m128_f32[0] * NUM_2.m128_f32[0];
-	num.m128_f32[1] = NUM_1.m128_f32[1] * NUM_2.m128_f32[1];
-	num.m128_f32[2] = NUM_1.m128_f32[2] * NUM_2.m128_f32[2];
-	return num;
-}
+#include<cmath>//sqrt
 
 XMVECTOR KazMath::LoadFloat3ToVector(XMFLOAT3 NUM_2)
 {
@@ -104,13 +17,6 @@ XMFLOAT3 KazMath::LoadVecotrToXMFLOAT3(XMVECTOR NUM_1)
 	num.y = NUM_1.m128_f32[1];
 	num.z = NUM_1.m128_f32[2];
 	return num;
-}
-
-XMFLOAT3 KazMath::XMFLOAT3Normalize(XMFLOAT3 NUM_1)
-{
-	XMVECTOR a = KazMath::LoadFloat3ToVector(NUM_1);
-	a = XMVector3Normalize(a);
-	return KazMath::LoadVecotrToXMFLOAT3(a);
 }
 
 XMVECTOR KazMath::CalculateScreenToWorld(XMVECTOR pout, XMMATRIX View, XMMATRIX Prj)
@@ -139,10 +45,11 @@ XMVECTOR KazMath::CalculateScreenToWorld(XMVECTOR pout, XMMATRIX View, XMMATRIX 
 	return pout;
 }
 
-XMFLOAT2 KazMath::CaluAngle(XMFLOAT2 POS, float Angle, XMFLOAT2 CPos)
+template<typename T>
+KazMath::Vec2<T> KazMath::CaluAngle(const KazMath::Vec2<T> &POS, float Angle, const KazMath::Vec2<T> &CPos)
 {
-	XMFLOAT2 V, oldV;
-	XMFLOAT2 calu;
+	KazMath::Vec2<T> V, oldV;
+	KazMath::Vec2<T> calu;
 	double Radian;
 
 	oldV = POS;
@@ -152,69 +59,47 @@ XMFLOAT2 KazMath::CaluAngle(XMFLOAT2 POS, float Angle, XMFLOAT2 CPos)
 	double Cos = cos(Radian);
 	double Sin = sin(Radian);
 
-	V = SubXMFLOAT2(POS, CPos);
+	V = POS - CPos;
 
 	calu.x = V.x * Cos - V.y * Sin;
 	calu.y = V.x * Sin + V.y * Cos;
-	calu = AddXMFLOAT2(calu, CPos);
+	calu = calu + CPos;
 
 
-	XMFLOAT2 result = SubXMFLOAT2(oldV, calu);
+	Vec2<float> result = oldV - calu;
 	return result;
 }
 
-XMFLOAT3 KazMath::CaluAngle3D(XMFLOAT3 POS, float ANGLE, XMFLOAT3 CENTRAL_POS)
+template<typename T>
+const KazMath::Vec3<T> &CaluAngle3D(const KazMath::Vec3<T> &POS, float ANGLE, const KazMath::Vec3<T> &CENTRAL_POS)
 {
-	XMFLOAT3 V, oldV;
-	XMFLOAT3 calu;
+	KazMath::Vec3<T> V, oldV;
+	KazMath::Vec3<T> calu;
 	float Radian;
 
 	oldV = POS;
+	Radian = ANGLE * PI_2F / 180.0f;
 
-	Radian = ANGLE * PI_2F / 180;
-	float Cos = cos(Radian);
-	float Sin = sin(Radian);
+	T Cos = static_cast<T>(cos(Radian));
+	T Sin = static_cast<T>(sin(Radian));
 
-	V = SubXMFLOAT3(POS, CENTRAL_POS);
+	V = POS - CENTRAL_POS;
 
 	calu.x = V.x * Cos - V.y * Sin;
 	calu.y = V.x * Sin + V.y * Cos;
-	calu = AddXMFLOAT3(calu, CENTRAL_POS);
+	calu = calu + CENTRAL_POS;
 
 
-	XMFLOAT3 result = SubXMFLOAT3(oldV, calu);
-
-	result.z = 0;
-
-	return result;
-}
-
-XMFLOAT2 KazMath::NewRota(float ANGLE, XMFLOAT2 POS)
-{
-	float radian = ANGLE * PI_2F / 180;
-	float nSin = sin(radian);
-	float nCos = cos(radian);
-
-
-	XMFLOAT2 result;
-	result.x = nCos * POS.x - nSin * POS.y;
-	result.y = nSin * POS.x + nCos * POS.y;
+	KazMath::Vec3<T> result = oldV - calu;
+	result.z = static_cast<T>(0);
 
 	return result;
 }
 
-int KazMath::IntRand(int MAX_NUM, int MIN_NUM)
+template<typename T>
+T KazMath::Rand(T MAX_NUM, T MIN_NUM)
 {
-	float randNum = rand() % MAX_NUM;
-	randNum += MIN_NUM;
-
-	return randNum;
-}
-
-float KazMath::FloatRand(float MAX_NUM, float MIN_NUM)
-{
-	float result = (MAX_NUM - MIN_NUM) * rand() / RAND_MAX + MIN_NUM;
-	return result;
+	return (MAX_NUM - MIN_NUM) * rand() / RAND_MAX + MIN_NUM;
 }
 
 void KazMath::ConvertMatrixFromFbx(XMMATRIX *DST, const FbxAMatrix &SRC)
@@ -228,27 +113,21 @@ void KazMath::ConvertMatrixFromFbx(XMMATRIX *DST, const FbxAMatrix &SRC)
 	}
 }
 
-float KazMath::ConvertSecondToFlame(float SECOND)
+int KazMath::ConvertSecondToFlame(int SECOND)
 {
 	float result = SECOND * 60;
 	return result;
 }
 
-XMFLOAT3 KazMath::CaluAPointToBPointVel(XMFLOAT3 A_POINT, XMFLOAT3 B_POINT, float FLAME, float MAX_FLAME)
+template <typename T>
+KazMath::Vec3<T> KazMath::CaluAPointToBPointVel(const KazMath::Vec3<T> &A_POINT, const KazMath::Vec3<T> &B_POINT, int FLAME, int MAX_FLAME)
 {
-	XMFLOAT3 distance = SubXMFLOAT3(A_POINT, B_POINT);
-	XMFLOAT3 result;
-
-	XMFLOAT3 mul = {
-		FLAME / MAX_FLAME,
-		FLAME / MAX_FLAME,
-		FLAME / MAX_FLAME
-	};
-	result = MulXMFLOAT3(distance, mul);
-	return result;
+	Vec3<T> distance = A_POINT - B_POINT;
+	Vec3<T> mul = static_cast<float>(FLAME) / static_cast<float>(MAXFLAME);
+	return distance * mul;
 }
 
-XMVECTOR KazMath::ConvertScreenPosToWorldPos(XMVECTOR SCREEN_POS, XMMATRIX VIEW_MAT, XMMATRIX PROJECTION_MAT)
+KazMath::Vec3<float> KazMath::ConvertScreenPosToWorldPos(const KazMath::Vec3<float> &SCREEN_POS, XMMATRIX VIEW_MAT, XMMATRIX PROJECTION_MAT)
 {
 	//äeçsóÒÇÃãtçsóÒÇéZèo
 	XMMATRIX InvView, InvPrj, InvViewport;
@@ -264,7 +143,7 @@ XMVECTOR KazMath::ConvertScreenPosToWorldPos(XMVECTOR SCREEN_POS, XMMATRIX VIEW_
 	InvViewport = XMMatrixInverse(nullptr, VP);
 
 	//ãtïœä∑
-	XMVECTOR result = SCREEN_POS;
+	XMVECTOR result = { SCREEN_POS.x,SCREEN_POS.y,SCREEN_POS.z };
 	result = XMVector3TransformCoord(result, InvViewport);
 	result = XMVector3TransformCoord(result, InvPrj);
 	result = XMVector3TransformCoord(result, InvView);

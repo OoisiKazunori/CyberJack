@@ -46,7 +46,7 @@ void LineLevel1::Attack(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, c
 		{
 			randomMaxNum = randomMinNum;
 		}
-		int lineNum = KazMath::IntRand(randomMaxNum, randomMinNum);
+		int lineNum = KazMath::Rand<int>(randomMaxNum, randomMinNum);
 
 
 		//4...線の数+1で制御点の数を決める.......<-仕様変更ポイント
@@ -106,7 +106,7 @@ void LineLevel1::Attack(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, c
 			//2.前の制御点から見て直線状に制御点を配置する
 			if (i < limitPos.size() - 2)
 			{
-				limitPos[i] += CalucurateMoveVector(moveVector, KazMath::FloatRand(50.0f, 60.0f));
+				limitPos[i] += CalucurateMoveVector(moveVector, KazMath::Rand<float>(50.0f, 60.0f));
 			}
 		}
 
@@ -148,7 +148,7 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 		//ゴール座標算出を開始----------------------------------------------------------------
 		//1.どの面に刺すか決める
 		eSurface surface //SURFACE_RIGHT;
-			= static_cast<eSurface>(KazMath::IntRand(6, 0));
+			= static_cast<eSurface>(KazMath::Rand<int>(6, 0));
 
 		//2.自分の座標を見て、刺す面は見えている位置かどうか確認する
 		bool xMinusFlag = signbit(ENEMY_POS.m128_f32[0]);
@@ -466,7 +466,7 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 
 
 		//ゴールまでの線を伸ばす処理をループさせる
-		int limitRandom = KazMath::IntRand(2, 0);
+		int limitRandom = KazMath::Rand<int>(2, 0);
 		eLineMove oldVec = LINE_MOVE_NONE;
 		while (1)
 		{
@@ -499,7 +499,7 @@ void LineLevel1::Attack2(const XMVECTOR &PLAYER_POS, const XMVECTOR &ENEMY_POS, 
 			{
 				//3.「その軸の残り距離を割る数」を乱数で算出
 				XMVECTOR dir = { 0.0f,0.0f,0.0f };
-				dir.m128_f32[eVec] = distance.m128_f32[eVec] / KazMath::IntRand(3, 1);
+				dir.m128_f32[eVec] = distance.m128_f32[eVec] / KazMath::Rand<int>(3, 1);
 
 				//4.伸ばす距離で残り距離を引く
 				distance.m128_f32[eVec] -= dir.m128_f32[eVec];
@@ -739,7 +739,7 @@ XMVECTOR LineLevel1::CalucurateMoveVector(const int &RANDM_NUM, const float &LEN
 
 int LineLevel1::CalucurateDirection(const int &MOVE_VEC, const int &MOVE_VEC_MAX_NUM)
 {
-	int random = KazMath::IntRand(MOVE_VEC_MAX_NUM, 0);
+	int random = KazMath::Rand<int>(MOVE_VEC_MAX_NUM, 0);
 	while (1)
 	{
 		//左右交互に制御点が置かれようとしたらフラグを立てる
@@ -763,7 +763,7 @@ int LineLevel1::CalucurateDirection(const int &MOVE_VEC, const int &MOVE_VEC_MAX
 		//true...乱数を入れ直し,false...被りなしを確認、ループを抜ける
 		if (lineGoBackFlag || lineGoUpFlag || lineSameFlag || lineGoFrontFlag)
 		{
-			random = KazMath::IntRand(MOVE_VEC_MAX_NUM, 0);
+			random = KazMath::Rand<int>(MOVE_VEC_MAX_NUM, 0);
 		}
 		else
 		{
@@ -775,7 +775,7 @@ int LineLevel1::CalucurateDirection(const int &MOVE_VEC, const int &MOVE_VEC_MAX
 
 int LineLevel1::CalucurateDirection2(const int &MOVE_VEC, const int &MOVE_VEC_MAX_NUM)
 {
-	int random = KazMath::IntRand(MOVE_VEC_MAX_NUM, 0);
+	int random = KazMath::Rand<int>(MOVE_VEC_MAX_NUM, 0);
 	while (true)
 	{
 		//左右交互に制御点が置かれようとしたらフラグを立てる
@@ -794,7 +794,7 @@ int LineLevel1::CalucurateDirection2(const int &MOVE_VEC, const int &MOVE_VEC_MA
 		//true...乱数を入れ直し,false...被りなしを確認、ループを抜ける
 		if (lineGoBackFlag || lineGoUpFlag || lineSameFlag)
 		{
-			random = KazMath::IntRand(MOVE_VEC_MAX_NUM, 0);
+			random = KazMath::Rand<int>(MOVE_VEC_MAX_NUM, 0);
 		}
 		else
 		{
@@ -810,7 +810,7 @@ eLineMove LineLevel1::CaluRandom(int DONT_USE, int OLD_NUM)
 	eLineMove eVec;
 	while (1)
 	{
-		int random = KazMath::IntRand(LINE_MOVE_Z + 1, LINE_MOVE_X);
+		int random = KazMath::Rand<int>(LINE_MOVE_Z + 1, LINE_MOVE_X);
 		if (DONT_USE != random && OLD_NUM != random)
 		{
 			eVec = static_cast<eLineMove>(random);
@@ -824,7 +824,7 @@ eLineMove LineLevel1::CaluRandom(int DONT_USE, int OLD_NUM)
 XMVECTOR LineLevel1::firstDir(eSurface SURFACE)
 {
 	XMVECTOR dir = { 0.0f,0.0f,0.0f };
-	float vec = KazMath::FloatRand(30.0f, 10.0f);
+	float vec = KazMath::Rand<float>(30.0f, 10.0f);
 	switch (SURFACE)
 	{
 	case SURFACE_NONE:
