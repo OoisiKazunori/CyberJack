@@ -87,7 +87,7 @@ private:
 	//BackGroundForDebug bg;
 
 	unique_ptr<CreateGpuBuffer>buffer;
-	short inputHandle, outPutHandle, commonHandle;
+	short inputHandle, updateInputHandle, outputMatHandle, drawCommandHandle;
 	void *pointer;
 
 	InputData inputData;

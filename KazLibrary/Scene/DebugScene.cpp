@@ -161,43 +161,81 @@ DebugScene::DebugScene()
 
 
 #pragma region ComputeShader
+		int uavHandle = 1;
 		//入力用バッファの生成-------------------------
-		KazBufferHelper::BufferResourceData bufferSet
-		(
-			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-			D3D12_HEAP_FLAG_NONE,
-			CD3DX12_RESOURCE_DESC::Buffer(commandBufferSize),
-			D3D12_RESOURCE_STATE_GENERIC_READ,
-			nullptr,
-			"InputBuffer"
-		);
-		//入力用のバッファ作成
-		inputHandle = buffer->CreateBuffer(bufferSet);
+		{
+			inputHandle = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(TRIANGLE_ARRAY_NUM * sizeof(InputData)));
+
+			D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
+			uavDesc.Format = DXGI_FORMAT_UNKNOWN;
+			uavDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
+			uavDesc.Buffer.FirstElement = 0;
+			uavDesc.Buffer.NumElements = TRIANGLE_ARRAY_NUM;
+			uavDesc.Buffer.StructureByteStride = sizeof(InputData);
+			uavDesc.Buffer.CounterOffsetInBytes = 0;
+			uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
+			DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + uavHandle, uavDesc, buffer->GetBufferData(inputHandle).Get(), buffer->GetBufferData(inputHandle).Get());
+		}
 		//入力用バッファの生成-------------------------
+		++uavHandle;
 
 
-		//データのコピー-------------------------
-		buffer->TransData(inputHandle, constantBufferData.data(), commandBufferSize);
-		//データのコピー-------------------------
 
 
 
 		//出力用のバッファの生成---------------------------
-		outPutHandle = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(commandBufferSize));
+		//行列系
+		{
+			outputMatHandle = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(TRIANGLE_ARRAY_NUM * sizeof(OutPutData)));
 
-		const UINT alignment = D3D12_UAV_COUNTER_PLACEMENT_ALIGNMENT;
-		const UINT64 bufferSize = (CommandSizePerFrame + (alignment - 1)) & ~(alignment - 1);
+			D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
+			uavDesc.Format = DXGI_FORMAT_UNKNOWN;
+			uavDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
+			uavDesc.Buffer.FirstElement = 0;
+			uavDesc.Buffer.NumElements = TRIANGLE_ARRAY_NUM;
+			uavDesc.Buffer.StructureByteStride = sizeof(OutPutData);
+			uavDesc.Buffer.CounterOffsetInBytes = 0;
+			uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
 
-		D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
-		uavDesc.Format = DXGI_FORMAT_UNKNOWN;
-		uavDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
-		uavDesc.Buffer.FirstElement = 0;
-		uavDesc.Buffer.NumElements = TRIANGLE_ARRAY_NUM;
-		uavDesc.Buffer.StructureByteStride = sizeof(IndirectCommand);
-		uavDesc.Buffer.CounterOffsetInBytes = bufferSize;
-		uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
+			DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + uavHandle, uavDesc, buffer->GetBufferData(outputMatHandle).Get(), buffer->GetBufferData(outputMatHandle).Get());
+		}
+		++uavHandle;
 
-		DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + 1, uavDesc, buffer->GetBufferData(outPutHandle).Get(), buffer->GetBufferData(outPutHandle).Get());
+
+		//移動量更新
+		{
+			updateInputHandle = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(TRIANGLE_ARRAY_NUM * sizeof(InputData)));
+
+			D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
+			uavDesc.Format = DXGI_FORMAT_UNKNOWN;
+			uavDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
+			uavDesc.Buffer.FirstElement = 0;
+			uavDesc.Buffer.NumElements = TRIANGLE_ARRAY_NUM;
+			uavDesc.Buffer.StructureByteStride = sizeof(InputData);
+			uavDesc.Buffer.CounterOffsetInBytes = 0;
+			uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
+
+			DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + uavHandle, uavDesc, buffer->GetBufferData(updateInputHandle).Get(), buffer->GetBufferData(updateInputHandle).Get());
+		}
+		++uavHandle;
+
+
+		//DrawIndirect
+		{
+			drawCommandHandle = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(TRIANGLE_ARRAY_NUM * sizeof(IndirectCommand)));
+
+			D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
+			uavDesc.Format = DXGI_FORMAT_UNKNOWN;
+			uavDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
+			uavDesc.Buffer.FirstElement = 0;
+			uavDesc.Buffer.NumElements = TRIANGLE_ARRAY_NUM;
+			uavDesc.Buffer.StructureByteStride = sizeof(IndirectCommand);
+			uavDesc.Buffer.CounterOffsetInBytes = 0;
+			uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
+
+			DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + uavHandle, uavDesc, buffer->GetBufferData(drawCommandHandle).Get(), buffer->GetBufferData(drawCommandHandle).Get());
+		}
+		++uavHandle;
 		//出力用のバッファの生成---------------------------
 
 		//リセット用のバッファ-------------------------
@@ -206,55 +244,6 @@ DebugScene::DebugScene()
 #pragma endregion
 
 	}
-
-
-
-
-
-
-	////出力用のバッファ生成---------------------------
-	//int num = 1000000;
-	////共通用のバッファ
-	//commonHandle = buffer->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(CommonData)));
-
-	////データを入力してみる
-	////inputData = 1;
-
-	////二つのバッファをデスクリプタヒープに登録
-	//size = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_TEXTURE_COMPUTEBUFFER);
-
-	////仮設定
-	//D3D12_SHADER_RESOURCE_VIEW_DESC inputDesc = {};
-	//inputDesc.Format = DXGI_FORMAT_UNKNOWN;
-	//inputDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
-	//inputDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	//inputDesc.Buffer.FirstElement = 0;
-	//inputDesc.Buffer.NumElements = static_cast<UINT>(1);
-	//inputDesc.Buffer.StructureByteStride = sizeof(InputData) * num;
-	//inputDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
-
-
-	////仮設定
-	//D3D12_UNORDERED_ACCESS_VIEW_DESC outPutDesc = {};
-	//outPutDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
-	//outPutDesc.Format = DXGI_FORMAT_UNKNOWN;
-	//outPutDesc.Buffer.NumElements = static_cast<UINT>(1);
-	//outPutDesc.Buffer.StructureByteStride = sizeof(OutPutData) * num;
-	//outPutDesc.Buffer.CounterOffsetInBytes = 0;
-
-
-
-	//D3D12_CONSTANT_BUFFER_VIEW_DESC commonDesc;
-	//commonDesc.BufferLocation = buffer->GetBufferData(commonHandle)->GetGPUVirtualAddress();
-	//commonDesc.SizeInBytes = (UINT)buffer->GetBufferData(commonHandle)->GetDesc().Width;
-
-
-	//DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize, inputDesc, buffer->GetBufferData(inputHandle).Get());
-	//DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + 1, outPutDesc, buffer->GetBufferData(outPutHandle).Get());
-	////後で第三引数を消そう
-	//DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + 2, commonDesc, buffer->GetBufferData(commonHandle).Get());
-	////入力用と出力用のバッファ生成---------------------------
-
 }
 
 DebugScene::~DebugScene()
@@ -293,11 +282,10 @@ void DebugScene::Update()
 	memcpy(destination, constantBufferData.data(), TRIANGLE_ARRAY_NUM * sizeof(SceneConstantBuffer));
 
 
-
 	rootConst.view = CameraMgr::Instance()->GetViewMatrix();
 	rootConst.projection = CameraMgr::Instance()->GetPerspectiveMatProjection();
 	rootConst.size = DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	rootConst.gpuAddress;
+	rootConst.gpuAddress = buffer->GetGpuAddress(outputMatHandle);
 
 
 	//コンピュートシェーダーの計算-------------------------
