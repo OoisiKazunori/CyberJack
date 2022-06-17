@@ -70,7 +70,8 @@ bool ControllerInputManager::InputState(int BUTTON)
 
 bool ControllerInputManager::InputRelease(int BUTTON)
 {
-	if (initReleaseFlag) {
+	if (initReleaseFlag)
+	{
 		if ((oldState[0].Gamepad.wButtons & BUTTON) && !(state[0].Gamepad.wButtons & BUTTON))
 		{
 			return true;
@@ -79,6 +80,10 @@ bool ControllerInputManager::InputRelease(int BUTTON)
 		{
 			return false;
 		}
+	}
+	else
+	{
+		return false;
 	}
 }
 
@@ -215,6 +220,8 @@ bool ControllerInputManager::InputStickTrigger(ControllerStickSide STICK_TYPE, C
 
 #pragma endregion
 	}
+
+	return false;
 }
 
 bool ControllerInputManager::InputStickState(ControllerStickSide STICK_TYPE, ControllerSide SIDE, int DEAD_ZONE)
@@ -343,11 +350,14 @@ bool ControllerInputManager::InputStickState(ControllerStickSide STICK_TYPE, Con
 		}
 #pragma endregion
 	}
+	
+	return false;
 }
 
 bool ControllerInputManager::InputStickRelease(ControllerStickSide STICK_TYPE, ControllerSide SIDE, int DEAD_ZONE)
 {
-	if (initReleaseFlag) {
+	if (initReleaseFlag)
+	{
 
 		if (STICK_TYPE == LEFT_STICK)
 		{
@@ -474,6 +484,7 @@ bool ControllerInputManager::InputStickRelease(ControllerStickSide STICK_TYPE, C
 #pragma endregion
 		}
 	}
+	return false;
 }
 
 const int ControllerInputManager::GetJoyStickLXNum(int PAD_NUMBER)
@@ -547,6 +558,8 @@ bool ControllerInputManager::InputShoulderTrigger(ControllerShoulderSide SIDE, i
 	default:
 		break;
 	}
+
+	return false;
 }
 
 bool ControllerInputManager::InputShoulderState(ControllerShoulderSide SIDE, int DEAD_ZONE)
@@ -579,6 +592,9 @@ bool ControllerInputManager::InputShoulderState(ControllerShoulderSide SIDE, int
 	default:
 		break;
 	}
+
+	return false;
+
 }
 
 bool ControllerInputManager::InputShoulderRelease(ControllerShoulderSide SIDE, int DEAD_ZONE)
@@ -615,4 +631,7 @@ bool ControllerInputManager::InputShoulderRelease(ControllerShoulderSide SIDE, i
 		}
 
 	}
+
+	return false;
+
 }

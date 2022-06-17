@@ -169,6 +169,8 @@ D3D12_GPU_VIRTUAL_ADDRESS CreateGpuBuffer::GetGpuAddress(short HANDLE)
 	{
 		return buffers[caluHandle]->GetGPUVirtualAddress();
 	}
+
+	return static_cast<UINT64>(-1);
 }
 
 void *CreateGpuBuffer::GetMapAddres(short HANDLE)

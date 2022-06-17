@@ -58,6 +58,7 @@ bool CollisionManager::CheckSphereAndTriangle(const Sphere &SPHERE, const Triang
 		*INTER = p;
 	}
 
+	return false;
 }
 
 bool CollisionManager::CheckRayAndPlane(const Ray &RAY, const Plane &PLANE, float *DISTANCE, KazMath::Vec3<float> *INTER)
