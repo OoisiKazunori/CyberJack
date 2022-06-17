@@ -6,14 +6,6 @@
 namespace KazHelper
 {
 	/// <summary>
-	/// newされたオブジェクトを安全に削除します
-	/// </summary>
-	/// <typeparam name="T">テンプレート型</typeparam>
-	/// <param name="OBJECT">削除したいオブジェクト</param>
-	template<typename T>
-	void SaftyDelete(T *OBJECT);
-
-	/// <summary>
 	/// 数値が配列の最大を超えるかどうか調べます
 	/// </summary>
 	/// <param name="NUM">調べたい数値</param>
@@ -55,11 +47,12 @@ namespace KazHelper
 	/// </summary>
 	/// <param name="POS">調べる座標</param>
 	/// <returns>true...画面内,false...画面外</returns>
-	bool IsInScreen(XMFLOAT3 POS);
+	template <typename T>
+	bool IsInScreen(const KazMath::Vec3<T> &POS);
 
+	KazMath::Vec3<float> GetScreenPos(const KazMath::Vec3<float> &POS, const KazMath::Vec2<float> &LEFTUP_POS = { 0.0f,0.0f });
 
-	XMVECTOR GetScreenPos(XMFLOAT3 POS, XMFLOAT2 LEFTUP_POS = { 0.0f,0.0f });
-	XMFLOAT3 GetRightDownStagePos(XMFLOAT3 POS, XMFLOAT2 RIGHT_POS = { WIN_X - 400,WIN_Y });
+	KazMath::Vec3<float> GetRightDownStagePos(const KazMath::Vec3<float> &POS, const KazMath::Vec2<float> &RIGHT_POS = { static_cast<float>(WIN_X) - 400.0f,static_cast<float>(WIN_Y) });
 
 
 	int GetDigit(int NUM);

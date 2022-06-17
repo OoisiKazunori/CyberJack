@@ -354,15 +354,15 @@ namespace KazMath
 	/// </summary>
 	struct Transform3D
 	{
-		XMVECTOR pos;
-		XMVECTOR scale;
-		XMVECTOR rotation;
+		Vec3<float> pos;
+		Vec3<float> scale;
+		Vec3<float> rotation;
 
 		Transform3D()
 		{
-			pos = { 0,0,0 };
-			scale = { 1,1,1 };
-			rotation = { 0,0,0 };
+			pos = { 0.0f,0.0f,0.0f };
+			scale = { 1.0f,1.0f,1.0f };
+			rotation = { 0.0f,0.0f,0.0f };
 		};
 	};
 
@@ -371,14 +371,14 @@ namespace KazMath
 	/// </summary>
 	struct Transform2D
 	{
-		XMVECTOR pos;
-		XMVECTOR scale;
+		Vec2<float> pos;
+		Vec2<float> scale;
 		float rotation;
 		Transform2D()
 		{
-			pos = { 0,0 };
-			scale = { 1,1 };
-			rotation = 0;
+			pos = { 0.0f,0.0f };
+			scale = { 1.0f,1.0f };
+			rotation = 0.0f;
 		};
 	};
 
@@ -391,7 +391,7 @@ namespace KazMath
 	};
 
 
-	static const float COLOR_MAX_VALUE = 255;
+	static const float COLOR_MAX_VALUE = 255.0f;
 
 
 
@@ -440,7 +440,8 @@ namespace KazMath
 	/// <param name="VIEW_MAT">ビュー行列</param>
 	/// <param name="PROJECTION_MAT">プロジェクション行列</param>
 	/// <returns>ワールド座標</returns>
-	Vec3<float> ConvertScreenPosToWorldPos(const Vec3<float> &SCREEN_POS, XMMATRIX VIEW_MAT, XMMATRIX PROJECTION_MAT);
+	template <typename T>
+	Vec3<T> ConvertScreenPosToWorldPos(const Vec3<T> &SCREEN_POS, XMMATRIX VIEW_MAT, XMMATRIX PROJECTION_MAT);
 
 	/// <summary>
 	/// ワールド座標からスクリーン座標に変換します
@@ -449,7 +450,8 @@ namespace KazMath
 	/// <param name="VIEW_MAT">ビュー行列</param>
 	/// <param name="PROJECTION_MAT">プロジェクション行列</param>
 	/// <returns>スクリーン座標</returns>
-	XMVECTOR ConvertWorldPosToScreenPos(XMVECTOR WORLD_POS, XMMATRIX VIEW_MAT, XMMATRIX PROJECTION_MAT);
+	template <typename T>
+	Vec3<T> ConvertWorldPosToScreenPos(const Vec3<T> &WORLD_POS, XMMATRIX VIEW_MAT, XMMATRIX PROJECTION_MAT);
 
 
 	/// <summary>
@@ -457,42 +459,42 @@ namespace KazMath
 	/// </summary>
 	/// <param name="ROTATION">角度</param>
 	/// <returns>回転行列</returns>
-	XMMATRIX CaluRotaMatrix(XMFLOAT3 ROTATION);
+	XMMATRIX CaluRotaMatrix(const Vec3<float> &ROTATION);
 
 	/// <summary>
 	/// スケーリング行列を計算します
 	/// </summary>
 	/// <param name="SCALE">大きさ</param>
 	/// <returns>スケーリング行列</returns>
-	XMMATRIX CaluScaleMatrix(XMFLOAT3 SCALE);
+	XMMATRIX CaluScaleMatrix(const Vec3<float> &SCALE);
 
 	/// <summary>
 	/// 平行移動行列を計算します
 	/// </summary>
 	/// <param name="POS">座標</param>
 	/// <returns>平行移動行列</returns>
-	XMMATRIX CaluTransMatrix(XMFLOAT3 POS);
+	XMMATRIX CaluTransMatrix(const Vec3<float> &POS);
 
 	/// <summary>
 	/// 回転行列を計算します
 	/// </summary>
 	/// <param name="ROTATION">角度</param>
 	/// <returns>回転行列</returns>
-	XMMATRIX CaluRotaMatrix(XMVECTOR ROTATION);
+	XMMATRIX CaluRotaMatrix(const Vec3<float> &ROTATION);
 
 	/// <summary>
 	/// スケーリング行列を計算します
 	/// </summary>
 	/// <param name="SCALE">大きさ</param>
 	/// <returns>スケーリング行列</returns>
-	XMMATRIX CaluScaleMatrix(XMVECTOR SCALE);
+	XMMATRIX CaluScaleMatrix(const Vec3<float> &SCALE);
 
 	/// <summary>
 	/// 平行移動行列を計算します
 	/// </summary>
 	/// <param name="POS">座標</param>
 	/// <returns>平行移動行列</returns>
-	XMMATRIX CaluTransMatrix(XMVECTOR POS);
+	XMMATRIX CaluTransMatrix(const Vec3<float> &POS);
 
 
 	/// <summary>
@@ -527,7 +529,8 @@ namespace KazMath
 	/// <param name="EYE_POS">視点座標</param>
 	/// <param name="ANGLE">角度</param>
 	/// <returns>デバック用の視点座標</returns>
-	XMFLOAT3 CaluEyePosForDebug(XMFLOAT3 EYE_POS, XMFLOAT3 MOVE, XMFLOAT2 ANGLE);
+	template<typename T>
+	Vec3<T> CaluEyePosForDebug(const Vec3<T> &EYE_POS, const Vec3<float> &MOVE, const Vec2<float> &ANGLE);
 
 	/// <summary>
 	/// デバック用の注視点を計算します
@@ -535,24 +538,28 @@ namespace KazMath
 	/// <param name="EYE_POS">視点座標</param>
 	/// <param name="ANGLE">角度</param>
 	/// <returns>デバック用の注視点</returns>
-	XMFLOAT3 CaluTargetPosForDebug(XMFLOAT3 EYE_POS, float ANGLE);
+	template<typename T>
+	Vec3<T> CaluTargetPosForDebug(const Vec3<T> &EYE_POS, float ANGLE);
 
 
 	bool MatrixEqualOrNot(const XMMATRIX &MAT_1, const XMMATRIX &MAT_2);
 
+	template<typename T>
+	XMMATRIX CaluSlopeMatrix(const Vec3<T> &Y,const Vec3<T> &Z);
 
-	XMMATRIX CaluSlopeMatrix(const XMVECTOR &Y, const XMVECTOR &Z);
-	XMMATRIX CaluFrontMatrix(const XMVECTOR &Y, const XMVECTOR &Z);
+	template<typename T>
+	XMMATRIX CaluFrontMatrix(const Vec3<T> &Y, const Vec3<T> &Z);
 
 	int RadianToAngle(float RADIAN);
-	float AngleToRadian(float ANGLE);
+	float AngleToRadian(int ANGLE);
+
+	template<typename T>
+	XMMATRIX CaluMat(const KazMath::Transform3D &TRANSFORM, const Vec3<T> &Y_VEC, const Vec3<T> &Z_VEC, const XMMATRIX &VIEW_MAT, const XMMATRIX &PROJECT_MAT);
+	template<typename T>
+	XMMATRIX CaluWorld(const KazMath::Transform3D &TRANSFORM, const Vec3<T> &Y_VEC, const Vec3<T> &Z_VEC);
 
 
-	XMMATRIX CaluMat(const KazMath::Transform3D &TRANSFORM, const XMVECTOR &Y_VEC, const XMVECTOR &Z_VEC, const XMMATRIX &VIEW_MAT, const XMMATRIX &PROJECT_MAT);
-	XMMATRIX CaluWorld(const KazMath::Transform3D &TRANSFORM, const XMVECTOR &Y_VEC, const XMVECTOR &Z_VEC);
-
-
-	void Larp(const float &BASE_TRANSFORM, float *TRANSFORM, float MUL);
+	void Larp(float BASE_TRANSFORM, float *TRANSFORM, float MUL);
 
 	template<typename T>
 	float GetSinFloat(T VALUE)
@@ -566,6 +573,12 @@ namespace KazMath
 		return static_cast<float>(cos(static_cast<float>VALUE));
 	};
 
+	template<typename T>
+	Vec3<T>CastXMVECTOR(const XMVECTOR &VALUE)
+	{
+		Vec3<T> result(static_cast<T>(VALUE.m128_f32[0]), static_cast<T>(VALUE.m128_f32[1]), static_cast<T>(VALUE.m128_f32[2]));
+		return result;
+	};
 
 	/// <summary>
 	/// スプライン曲線
@@ -575,7 +588,8 @@ namespace KazMath
 	/// <param name="t"></param>
 	/// <param name="Loop"></param>
 	/// <returns></returns>
-	const XMVECTOR &SplinePosition(const std::vector<XMVECTOR> &points, size_t startIndex, float t, bool Loop);
+	template <typename T>
+	Vec3<T> SplinePosition(const std::vector<Vec3<T>> &points, size_t startIndex, float t, bool Loop);
 
 }
 

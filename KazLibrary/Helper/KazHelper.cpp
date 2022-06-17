@@ -1,20 +1,10 @@
 #include "KazHelper.h"
 #include"../Camera/CameraMgr.h"
 
-template<typename T>
-void KazHelper::SaftyDelete(T *OBJECT)
-{
-	if (*OBJECT != nullptr)
-	{
-		delete OBJECT;
-		OBJECT = nullptr;
-	}
-}
-
 bool KazHelper::DirtyFlag(XMFLOAT3 VALUE, XMFLOAT3 OLD_VALUE)
 {
-	if (VALUE.x != OLD_VALUE.x||
-		VALUE.y != OLD_VALUE.y||
+	if (VALUE.x != OLD_VALUE.x ||
+		VALUE.y != OLD_VALUE.y ||
 		VALUE.z != OLD_VALUE.z)
 	{
 		return true;
@@ -50,56 +40,48 @@ bool KazHelper::DirtyFlag(float VALUE, float OLD_VALUE)
 	}
 }
 
-bool KazHelper::IsInScreen(XMFLOAT3 POS)
+template <typename T>
+bool KazHelper::IsInScreen(const KazMath::Vec3<T> &POS)
 {
-	XMVECTOR tmp = KazMath::LoadFloat3ToVector(POS);
-	XMVECTOR tmp2 = KazMath::ConvertWorldPosToScreenPos(tmp, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
-	XMFLOAT3 screenPos = KazMath::LoadVecotrToXMFLOAT3(tmp2);
+	KazMath::Vec3<T> screenPos = KazMath::ConvertWorldPosToScreenPos(POS, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
 
 	bool outFlag = true;
-	if (screenPos.x <= 0)
+	if (screenPos.x <= static_cast<T>(0))
 	{
 		outFlag = false;
 	}
-	if (screenPos.y <= 0)
+	if (screenPos.y <= static_cast<T>(0))
 	{
 		outFlag = false;
 	}
-	if (WIN_X <= screenPos.x)
+	if (static_cast<T>(WIN_X) <= screenPos.x)
 	{
 		outFlag = false;
 	}
-	if (WIN_Y <= screenPos.y)
+	if (static_cast<T>(WIN_Y) <= screenPos.y)
 	{
 		outFlag = false;
 	}
 	return outFlag;
 }
 
-XMVECTOR KazHelper::GetScreenPos(XMFLOAT3 POS, XMFLOAT2 LEFTUP_POS)
+KazMath::Vec3<float> KazHelper::GetScreenPos(const KazMath::Vec3<float> &POS, const KazMath::Vec2<float> &LEFTUP_POS)
 {
-	XMVECTOR tmp = KazMath::LoadFloat3ToVector(POS);
-	XMVECTOR tmp2 = KazMath::ConvertWorldPosToScreenPos(tmp, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
-	XMFLOAT3 playerScreenPos = KazMath::LoadVecotrToXMFLOAT3(tmp2);
+	KazMath::Vec3<float>screenPos = KazMath::ConvertWorldPosToScreenPos(POS, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
 
-	//¶ãA‰Eã
-	XMVECTOR leftUp =
-		KazMath::ConvertScreenPosToWorldPos({ LEFTUP_POS.x,LEFTUP_POS.y,playerScreenPos.z }, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
+	KazMath::Vec3<float> leftUpPos = KazMath::ConvertScreenPosToWorldPos(KazMath::Vec3<float>(LEFTUP_POS.x, LEFTUP_POS.y, screenPos.z), CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
 
-	return leftUp;
+	return leftUpPos;
 }
 
-XMFLOAT3 KazHelper::GetRightDownStagePos(XMFLOAT3 POS, XMFLOAT2 RIGHT_POS)
+KazMath::Vec3<float> KazHelper::GetRightDownStagePos(const KazMath::Vec3<float> &POS, const KazMath::Vec2<float> &RIGHT_POS)
 {
-	XMVECTOR tmp = KazMath::LoadFloat3ToVector(POS);
-	XMVECTOR tmp2 = KazMath::ConvertWorldPosToScreenPos(tmp, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
-	XMFLOAT3 playerScreenPos = KazMath::LoadVecotrToXMFLOAT3(tmp2);
+	KazMath::Vec3<float>screenPos = KazMath::ConvertWorldPosToScreenPos(POS, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
 
-	XMVECTOR rightDown =
-		KazMath::ConvertScreenPosToWorldPos({ RIGHT_POS.x,RIGHT_POS.y,playerScreenPos.z }, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
+	KazMath::Vec3<float> rightDown =
+		KazMath::ConvertScreenPosToWorldPos(KazMath::Vec3<float>(RIGHT_POS.x,RIGHT_POS.y, screenPos.z), CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
 
-	XMFLOAT3 result = KazMath::LoadVecotrToXMFLOAT3(rightDown);
-	return result;
+	return rightDown;
 }
 
 int KazHelper::GetDigit(int NUM)
