@@ -68,8 +68,8 @@ SecondStage::SecondStage()
 		for (int axisIndex = 0; axisIndex < 3; ++axisIndex)
 		{
 			int x = 0;
-			int y = 0;
-			int z = 0;
+			int y = 1;
+			int z = 2;
 			line[i].data.startPos.x = stageParamLoader.doc[name.c_str()]["StartPos"][x].GetFloat();
 			line[i].data.endPos.x = stageParamLoader.doc[name.c_str()]["EndPos"][x].GetFloat();
 

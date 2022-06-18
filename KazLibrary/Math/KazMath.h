@@ -723,6 +723,7 @@ namespace KazMath
 
 	int RadianToAngle(float RADIAN);
 	float AngleToRadian(int ANGLE);
+	float AngleToRadian(float ANGLE);
 
 	template<typename T>
 	XMMATRIX CaluMat(const KazMath::Transform3D &TRANSFORM, const Vec3<T> &Y_VEC, const Vec3<T> &Z_VEC, const XMMATRIX &VIEW_MAT, const XMMATRIX &PROJECT_MAT);

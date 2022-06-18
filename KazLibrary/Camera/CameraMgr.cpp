@@ -111,7 +111,7 @@ void CameraMgr::Camera(const KazMath::Vec3<float> &EYE_POS, const KazMath::Vec3<
 	const int y = 1;
 	const int z = 2;
 	// 一つのベクトルにまとめる
-	XMVECTOR translation = { tX.m128_f32[x], tY.m128_f32[y], tZ.m128_f32[z] };
+	XMVECTOR translation = { tX.m128_f32[x], tY.m128_f32[y], tZ.m128_f32[z],1.0f };
 	// ビュー行列に平行移動成分を設定
 	matView.r[3] = translation;
 #pragma endregion

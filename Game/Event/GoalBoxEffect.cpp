@@ -8,7 +8,7 @@ GoalBoxEffect::GoalBoxEffect()
 	int handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::GoalPath + "GoalEffect.png");
 	for (int i = 0; i < lightRender.size(); ++i)
 	{
-		lightRender[i] = std::make_unique<Sprite3DRender>();
+		lightRender[i] = std::make_unique<Sprite3DRender>(KazMath::Vec2<float>(0.0f, 0.0f));
 		lightRender[i]->data.handle = handle;
 		lightRender[i]->data.pipelineName = PIPELINE_NAME_SPRITE_GOAL_EFFECT_MULTITEX;
 		uvHandle[i] = lightRender[i]->CreateConstBuffer(sizeof(GoalLightData), typeid(GoalLightData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);

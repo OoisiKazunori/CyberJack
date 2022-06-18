@@ -129,10 +129,10 @@ KazMath::Vec3<float> KazMath::ConvertScreenPosToWorldPos(const KazMath::Vec3<flo
 
 	XMMATRIX VP;
 	VP = XMMatrixIdentity();
-	VP.r[0].m128_f32[0] =  WIN_X / 2.0f;
+	VP.r[0].m128_f32[0] = WIN_X / 2.0f;
 	VP.r[1].m128_f32[1] = -WIN_Y / 2.0f;
-	VP.r[3].m128_f32[0] =  WIN_X / 2.0f;
-	VP.r[3].m128_f32[1] =  WIN_Y / 2.0f;
+	VP.r[3].m128_f32[0] = WIN_X / 2.0f;
+	VP.r[3].m128_f32[1] = WIN_Y / 2.0f;
 	InvViewport = XMMatrixInverse(nullptr, VP);
 
 	//ãtïœä∑
@@ -307,11 +307,11 @@ XMMATRIX KazMath::CaluSlopeMatrix(const Vec3<float> &Y, const Vec3<float> &Z)
 
 	if (Y.z == 1.0f)
 	{
-		axisZ = { 0,-1,0 };
+		axisZ = { 0.0f,-1.0f,0.0f };
 	}
 	else if (Y.z == -1.0f)
 	{
-		axisZ = { 0,1,0 };
+		axisZ = { 0.0f,1.0f,0.0f };
 	}
 
 	//àÍâÒñ⁄ÇÃäOêœ.......XÇãÅÇﬂÇÈ
@@ -412,6 +412,12 @@ float KazMath::AngleToRadian(int ANGLE)
 	return radian;
 }
 
+float KazMath::AngleToRadian(float ANGLE)
+{
+	float radian = ANGLE * (PI_2F / 180.0f);
+	return radian;
+}
+
 template <typename T>
 inline XMMATRIX KazMath::CaluMat(const KazMath::Transform3D &TRANSFORM, const Vec3<T> &Y_VEC, const Vec3<T> &Z_VEC, const XMMATRIX &VIEW_MAT, const XMMATRIX &PROJECT_MAT)
 {
@@ -481,37 +487,39 @@ KazMath::Vec3<float> KazMath::SplinePosition(const std::vector<Vec3<float>> &poi
 	{
 		return points[1];
 	}
-	KazMath::Vec3<float> p0 = points[startIndex - 1];
-	KazMath::Vec3<float> p1 = points[startIndex];
-	KazMath::Vec3<float> p2;
-	KazMath::Vec3<float> p3;
+	XMVECTOR p0 = points[startIndex - 1].ConvertXMVECTOR();
+	XMVECTOR p1 = points[startIndex].ConvertXMVECTOR();
+	XMVECTOR p2;
+	XMVECTOR p3;
+
+	size_t subIndex = 3;
 	if (Loop == true)
 	{
-		if (startIndex > points.size() - 3)
+		if (startIndex > points.size() - subIndex)
 		{
-			p2 = points[1];
-			p3 = points[2];
+			p2 = points[1].ConvertXMVECTOR();
+			p3 = points[2].ConvertXMVECTOR();
 		}
 		else
 		{
-			p2 = points[startIndex + 1];
-			p3 = points[startIndex + 2];
+			p2 = points[startIndex + 1].ConvertXMVECTOR();
+			p3 = points[startIndex + 2].ConvertXMVECTOR();
 		}
 	}
 	else
 	{
 		int size = static_cast<int>(points.size());
 		if (startIndex > size - 3)return points[size - 3];
-		p2 = points[startIndex + 1];
-		p3 = points[startIndex + 2];
+		p2 = points[startIndex + 1].ConvertXMVECTOR();
+		p3 = points[startIndex + 2].ConvertXMVECTOR();
 	}
+	XMVECTOR anser2 = 0.5 * ((2 * p1 + (-p0 + p2) * t) +
+		(2 * p0 - 5 * p1 + 4 * p2 - p3) * (t * t) +
+		(-p0 + 3 * p1 - 3 * p2 + p3) * (t * t * t)
+		);
 
-	KazMath::Vec3<float> a((p1 * 2.0f + (-p0 + p2) * t) * 0.5f);
-	KazMath::Vec3<float> b((p0 * 2.0f - p1 * 5.0f + p2 * 4.0f - p3) * ((t * t)));
-	KazMath::Vec3<float> c((-p0 + p1 * 3.0f - p2 * 3.0f + p3) * (t * t * t));
-
-	KazMath::Vec3<float> anser = a + b + c;
-	return anser;
+	Vec3<float>result = { anser2.m128_f32[0],anser2.m128_f32[1],anser2.m128_f32[2] };
+	return result;
 };
 
 KazMath::Vec3<float> KazMath::ConvertWorldPosToScreenPos(const KazMath::Vec3<float> &WORLD_POS, XMMATRIX VIEW_MAT, XMMATRIX PROJECTION_MAT)

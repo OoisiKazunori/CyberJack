@@ -5,9 +5,9 @@
 #include"../Buffer/DescriptorHeapMgr.h"
 #include"../RenderTarget/RenderTargetStatus.h"
 
-Sprite3DRender::Sprite3DRender()
+Sprite3DRender::Sprite3DRender(const KazMath::Vec2<float> ANCHOR_POINT)
 {
-	anchorPoint = KazMath::Vec2<float>(0.5f, 0.5f);
+	anchorPoint = ANCHOR_POINT;
 
 	gpuBuffer = std::make_unique<CreateGpuBuffer>();
 

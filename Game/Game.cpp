@@ -177,7 +177,7 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	}
 	changeLayerLevelMaxTime[0] = 60 * 28;
 	changeLayerLevelMaxTime[1] = 60 * 39;
-	gameStageLevel = 0;
+	gameStageLevel = 1;
 	stageNum = gameStageLevel;
 	//ゲームループの初期化----------------------------------------------------------------
 
@@ -546,9 +546,9 @@ void Game::Update()
 	//左右の回転
 	besidePoly->data.transform.pos =
 	{
-		cosf(KazMath::AngleToRadian(static_cast<int>(trackLeftRightAngleVel.x))) * r,
+		cosf(KazMath::AngleToRadian(trackLeftRightAngleVel.x)) * r,
 		0.0f,
-		sinf(KazMath::AngleToRadian(static_cast<int>(trackLeftRightAngleVel.y))) * r
+		sinf(KazMath::AngleToRadian(trackLeftRightAngleVel.y)) * r
 	};
 	//上下の回転
 	verticlaPoly->data.transform.pos =

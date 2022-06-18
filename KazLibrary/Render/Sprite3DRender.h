@@ -9,7 +9,7 @@
 class Sprite3DRender : public IRender
 {
 public:
-	Sprite3DRender();
+	Sprite3DRender(const KazMath::Vec2<float> ANCHOR_POINT = { 0.5f,0.5f });
 	~Sprite3DRender();
 	void Draw();
 
