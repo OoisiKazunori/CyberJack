@@ -69,8 +69,12 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
         outputPos = 0.0f;
     }
     
+    outputPos.x = 0.0f;
     matrix matTrans = Translate(outputPos);
-    matrix matRot = RotateZ(0.0f) * RotateX(0.0f) * RotateY(0.0f);
+    matrix matRot = MatrixIdentity();
+    matRot *= RotateZ(0.0f);
+    matRot *= RotateX(0.0f);
+    matRot *= RotateY(0.0f);
     matrix matScale = Scale(float3(1.0f, 1.0f, 1.0f));
     matrix matWorld = matScale * matRot * matTrans;
     //ç¿ïWåvéZ-------------------------

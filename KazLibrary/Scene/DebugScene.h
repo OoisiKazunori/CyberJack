@@ -147,10 +147,10 @@ private:
 	XMMATRIX RotateX(float ANGLE)
 	{
 		float lsin = sin(ANGLE);
-		float lcos = sin(ANGLE);
+		float lcos = cos(ANGLE);
 
 		XMMATRIX result;
-		XMVECTOR first = { 0.0f, 0.0f, 0.0f, 0.0f };
+		XMVECTOR first = { 1.0f, 0.0f, 0.0f, 0.0f };
 		XMVECTOR second = { 0.0f, lcos, lsin, 0.0f };
 		XMVECTOR third = { 0.0f, -lsin, lcos, 0.0f };
 		XMVECTOR forth = { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -165,7 +165,7 @@ private:
 	XMMATRIX RotateY(float ANGLE)
 	{
 		float lsin = sin(ANGLE);
-		float lcos = sin(ANGLE);
+		float lcos = cos(ANGLE);
 
 		XMMATRIX result;
 		XMVECTOR first = { lcos, 0.0f, -lsin, 0.0f };
@@ -184,7 +184,7 @@ private:
 	XMMATRIX RotateZ(float ANGLE)
 	{
 		float lsin = sin(ANGLE);
-		float lcos = sin(ANGLE);
+		float lcos = cos(ANGLE);
 
 		XMMATRIX result;
 		XMVECTOR first = { lcos, lsin, 0.0f, 0.0f };
@@ -206,7 +206,6 @@ private:
 		rota *= RotateZ(ANGLE.z);
 		rota *= RotateX(ANGLE.x);
 		rota *= RotateY(ANGLE.y);
-
 		return rota;
 	}
 };

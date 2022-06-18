@@ -171,21 +171,22 @@ DebugScene::DebugScene()
 			XMVECTOR scale = { 1.0f,1.0f,1.0f,0.0f };
 			XMVECTOR rota = { 0.0f,0.0f,0.0f,0.0f };
 			XMMATRIX matWorld = {};
+			XMMATRIX matWorld2 = {};
 
 			//行列計算の正解
 			{
 				XMMATRIX trans = KazMath::CaluTransMatrix(pos);
+				XMMATRIX trans2 = Translate(KazMath::LoadVecotrToXMFLOAT3(pos));
 				XMMATRIX scaleM = KazMath::CaluScaleMatrix(scale);
+				XMMATRIX scaleM2 = Scale(KazMath::LoadVecotrToXMFLOAT3(scale));
 				XMMATRIX rotaM = KazMath::CaluRotaMatrix(rota);
+				XMMATRIX rotaM2 = Rotate(KazMath::LoadVecotrToXMFLOAT3(rota));
 				matWorld = scaleM * rotaM * trans;
+				matWorld2 = scaleM2 * rotaM2 * trans2;
 			}
 
 			//シェーダー側で計算しようとしている行列計算
 			{
-				XMMATRIX trans = Translate(KazMath::LoadVecotrToXMFLOAT3(pos));
-				XMMATRIX scaleM = Scale(KazMath::LoadVecotrToXMFLOAT3(scale));
-				XMMATRIX rotaM = Rotate(KazMath::LoadVecotrToXMFLOAT3(rota));
-				matWorld = scaleM * rotaM * trans;
 			}
 
 			buffer->TransData(inputHandle, data.data(), TRIANGLE_ARRAY_NUM * sizeof(InputData));

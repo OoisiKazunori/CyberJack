@@ -39,10 +39,10 @@ matrix Scale(float3 VECTOR)
 matrix RotateX(float ANGLE)
 {
     float lsin = sin(ANGLE);
-    float lcos = sin(ANGLE);
+    float lcos = cos(ANGLE);
         
     matrix result;
-    result[0] = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    result[0] = float4(1.0f, 0.0f, 0.0f, 0.0f);
     result[1] = float4(0.0f, lcos, lsin, 0.0f);
     result[2] = float4(0.0f, -lsin, lcos, 0.0f);
     result[3] = float4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -52,7 +52,7 @@ matrix RotateX(float ANGLE)
 matrix RotateY(float ANGLE)
 {
     float lsin = sin(ANGLE);
-    float lcos = sin(ANGLE);
+    float lcos = cos(ANGLE);
     
     matrix result;
     result[0] = float4(lcos, 0.0f, -lsin, 0.0f);
@@ -65,11 +65,22 @@ matrix RotateY(float ANGLE)
 matrix RotateZ(float ANGLE)
 {
     float lsin = sin(ANGLE);
-    float lcos = sin(ANGLE);
+    float lcos = cos(ANGLE);
     
     matrix result;
     result[0] = float4(lcos, lsin, 0.0f, 0.0f);
     result[1] = float4(-lsin, lcos, 0.0f, 0.0f);
+    result[2] = float4(0.0f, 0.0f, 1.0f, 0.0f);
+    result[3] = float4(0.0f, 0.0f, 0.0f, 1.0f);
+    return result;
+}
+
+    
+matrix MatrixIdentity()
+{
+    matrix result;
+    result[0] = float4(1.0f, 0.0f, 0.0f, 0.0f);
+    result[1] = float4(0.0f, 1.0f, 0.0f, 0.0f);
     result[2] = float4(0.0f, 0.0f, 1.0f, 0.0f);
     result[3] = float4(0.0f, 0.0f, 0.0f, 1.0f);
     return result;
