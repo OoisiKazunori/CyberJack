@@ -355,6 +355,7 @@ PreCreateBaseRootSignature::PreCreateBaseRootSignature()
 	}
 
 
+
 	{
 		RootSignatureData lineData;
 		lineData.paramData[0].param = 0;

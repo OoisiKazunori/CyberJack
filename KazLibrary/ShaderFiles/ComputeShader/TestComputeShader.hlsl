@@ -18,7 +18,7 @@ struct IndirectCommand
 
 struct InputData
 {
-    float3 pos;
+    float4 pos;
     float4 velocity;
     float4 color;
 };
@@ -30,13 +30,13 @@ struct OutputData
 };
 
 
-cbuffer RootConstants : register(b0)
-{
-    matrix view;        //ビュー行列
-    matrix projection;  //プロジェクション行列
-    float increSize;    //インクリメントのサイズ
-    float gpuAddress;   //構造体バッファの先頭アドレス
-};
+//cbuffer RootConstants : register(b0)
+//{
+//    matrix view;        //ビュー行列
+//    matrix projection;  //プロジェクション行列
+//    float increSize;    //インクリメントのサイズ
+//    float gpuAddress;   //構造体バッファの先頭アドレス
+//};
 
 //入力用のバッファ-------------------------
 StructuredBuffer<InputData> inputBuffer : register(t0);
@@ -51,15 +51,17 @@ AppendStructuredBuffer<InputData> updateInputData : register(u1);
 AppendStructuredBuffer<IndirectCommand> outputCommands : register(u2);
 //出力用のバッファ-------------------------
 
-[numthreads(128, 1, 1)]
+static const int NUM = 128;
+
+[numthreads(NUM, 1, 1)]
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
 {
-    uint index = (groupId.x * 128) + groupIndex;
+    uint index = (groupId.x * NUM) + groupIndex;
     
    
     
     //座標計算-------------------------
-    float3 outputPos = inputBuffer[index].pos;
+    float3 outputPos = inputBuffer[index].pos.xyz;
     
     outputPos += float3(1.0f, 0.0f, 0.0f);
     if (50.0f <= outputPos.x)
@@ -78,9 +80,13 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     OutputData outputMat;
     outputMat.mat = matWorld;
     outputMat.color = float4(1.0f,1.0f,1.0f,1.0f);
-    
     matrixData.Append(outputMat);
-    updateInputData.Append(inputBuffer[index]);
+    
+    InputData inputData;
+    inputData.pos = float4(outputPos.xyz, 0.0f);
+    inputData.velocity = inputBuffer[index].velocity;
+    inputData.color = inputBuffer[index].color;
+    updateInputData.Append(inputData);
     //座標出力-------------------------
     
     

@@ -10,8 +10,7 @@
 /// </summary>
 struct InputData
 {
-	XMFLOAT3 pos;
-	float pad;
+	XMFLOAT4 pos;
 	XMFLOAT4 velocity;
 	XMFLOAT4 color;
 };

@@ -116,9 +116,12 @@ void GraphicsRootSignature::CreateRootSignature(RootSignatureMode ROOTSIGNATURE,
 		ranges[2].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 1);
 		ranges[3].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 2);
 
-		std::array<CD3DX12_ROOT_PARAMETER, 2> computeRootParameters;
-		computeRootParameters[0].InitAsDescriptorTable(ranges.size(), ranges.data());
-		computeRootParameters[1].InitAsConstants(4, 0);
+		std::array<CD3DX12_ROOT_PARAMETER, 4> computeRootParameters;
+		computeRootParameters[0].InitAsDescriptorTable(1, &ranges[0]);
+		computeRootParameters[1].InitAsDescriptorTable(1, &ranges[1]);
+		computeRootParameters[2].InitAsDescriptorTable(1, &ranges[2]);
+		computeRootParameters[3].InitAsDescriptorTable(1, &ranges[3]);
+		//computeRootParameters[1].InitAsConstants(4, 0);
 		CreateMyRootSignature(ROOTSIGNATURE_DATA.sample, computeRootParameters.data(), computeRootParameters.size(), ROOTSIGNATURE);
 	}
 	else

@@ -9,6 +9,7 @@
 #include"../KazLibrary/Loader/TextureResourceMgr.h"
 #include"../KazLibrary/Helper/ResourceFilePass.h"
 #include"../KazLibrary/RenderTarget/RenderTargetStatus.h"
+#include"../Imgui/MyImgui.h"
 
 DebugScene::DebugScene()
 {
@@ -157,7 +158,16 @@ DebugScene::DebugScene()
 
 		//入力用バッファの生成-------------------------
 		{
-			inputHandle = buffer->CreateBuffer(KazBufferHelper::SetConstBufferData(TRIANGLE_ARRAY_NUM * sizeof(InputData), "InputParam"));
+			inputHandle = buffer->CreateBuffer(KazBufferHelper::SetStructureBuffer(TRIANGLE_ARRAY_NUM * sizeof(InputData), "InputParam"));
+
+			std::array<InputData, TRIANGLE_ARRAY_NUM> data;
+			for (int i = 0; i < TRIANGLE_ARRAY_NUM; ++i)
+			{
+				data[i].pos = { KazMath::FloatRand(10.0f,0.0f),KazMath::FloatRand(10.0f,0.0f),KazMath::FloatRand(10.0f,0.0f),0.0f };
+				data[i].velocity = { KazMath::FloatRand(10.0f,0.0f),KazMath::FloatRand(10.0f,0.0f),KazMath::FloatRand(10.0f,0.0f),0.0f };
+				data[i].color = { KazMath::FloatRand(10.0f,0.0f),KazMath::FloatRand(10.0f,0.0f),KazMath::FloatRand(10.0f,0.0f),KazMath::FloatRand(10.0f,0.0f) };
+			}
+			buffer->TransData(inputHandle, data.data(), TRIANGLE_ARRAY_NUM * sizeof(InputData));
 
 			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 			srvDesc.Format = DXGI_FORMAT_UNKNOWN;
@@ -235,7 +245,6 @@ DebugScene::DebugScene()
 
 		//リセット用のバッファ-------------------------
 #pragma endregion
-
 	}
 }
 
@@ -293,17 +302,22 @@ void DebugScene::Update()
 		BufferMemorySize s = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_SRV);
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(s.startSize + (srvHandle - 1)));
 	}
-	//出力用のバッファ設定
-	//DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(2, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(size.startSize + 2));
-	//DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(3, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(size.startSize + 3));
-	//DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(4, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(size.startSize + 4));
 
+	//出力用のバッファ設定
+	{
+		BufferMemorySize s = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_TEXTURE_COMPUTEBUFFER);
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(s.startSize + 1));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(2, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(s.startSize + 2));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(3, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(s.startSize + 3));
+	}
 	//ルート定数
-	DirectX12CmdList::Instance()->cmdList->SetComputeRoot32BitConstants(1, 4, reinterpret_cast<void *>(&rootConst), 0);
+	//DirectX12CmdList::Instance()->cmdList->SetComputeRoot32BitConstants(1, 4, reinterpret_cast<void *>(&rootConst), 0);
 
 	//ディスパッチ
 	DirectX12CmdList::Instance()->cmdList->Dispatch(static_cast<UINT>(ceil(TRIANGLE_ARRAY_NUM / static_cast<float>(ComputeThreadBlockSize))), 1, 1);
 	//コンピュートシェーダーの計算-------------------------
+
+	//std::array<OutPutData, TRIANGLE_ARRAY_NUM> *result = static_cast<std::array<OutPutData, TRIANGLE_ARRAY_NUM> *>(buffer->GetMapAddres(outputMatHandle));
 
 }
 
