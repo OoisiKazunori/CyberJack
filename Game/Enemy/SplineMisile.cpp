@@ -10,7 +10,7 @@ SplineMisile::SplineMisile()
 	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "misile.obj");
 }
 
-void SplineMisile::Init(const XMVECTOR &POS)
+void SplineMisile::Init(const KazMath::Vec3<float> &POS)
 {
 	iEnemy_ModelRender->data.transform.pos = POS;
 	iEnemy_ModelRender->data.transform.scale = { 1.3f,1.3f,1.3f };
@@ -33,14 +33,14 @@ void SplineMisile::Init(const XMVECTOR &POS)
 	points.clear();
 	points.shrink_to_fit();
 
-	XMVECTOR startPos = POS;
-	XMVECTOR endPos = { 0.0f,0.0f,0.0f };
+	KazMath::Vec3<float> startPos = POS;
+	KazMath::Vec3<float> endPos = { 0.0f,0.0f,0.0f };
 
-	XMVECTOR distance = startPos - endPos;
-	float addDistance = distance.m128_f32[2] / 4.0f;
+	KazMath::Vec3<float> distance = startPos - endPos;
+	float addDistance = distance.z / 4.0f;
 
-	distance.m128_f32[2] /= 2.0f;	//中間はZ距離の半分
-	distance.m128_f32[2] -= addDistance;
+	distance.z /= 2.0f;	//中間はZ距離の半分
+	distance.z -= addDistance;
 
 
 	//スタート地点
@@ -54,7 +54,7 @@ void SplineMisile::Init(const XMVECTOR &POS)
 	points.push_back(endPos);
 	points.push_back(endPos);
 
-	pointTime = maxTime / (points.size() - 3);
+	pointTime = maxTime / (static_cast<int>(points.size() )- 3);
 
 	initDeadSoundFlag = false;
 	hitFlag = false;
@@ -77,7 +77,7 @@ void SplineMisile::Update()
 
 	//死亡演出処理
 	//デバックキーor当たり判定内&&死亡時
-	if (EnableToHit(iEnemy_ModelRender->data.transform.pos.m128_f32[2]) && !iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag && !hitFlag)
+	if (EnableToHit(iEnemy_ModelRender->data.transform.pos.z) && !iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag && !hitFlag)
 	{
 		iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME_MULTITEX;
 		iEnemy_ModelRender->data.removeMaterialFlag = true;
@@ -121,7 +121,7 @@ void SplineMisile::Update()
 
 
 		//座標設定----------------------------------------------
-		position = KazMath::SplinePosition(points, startIndex, timeRate, true);
+		position = KazMath::SplinePosition(points, static_cast<size_t>(startIndex), timeRate, true);
 
 		for (int i = 0; i < pointsRender.size(); ++i)
 		{
@@ -133,10 +133,10 @@ void SplineMisile::Update()
 
 		//前ベクトルの設定----------------------------------------------
 		float nextTimeRate = static_cast<float>(nowTime + 1) / static_cast<float>(pointTime);
-		XMVECTOR nextpos = KazMath::SplinePosition(points, startIndex, nextTimeRate, true);
+		KazMath::Vec3<float> nextpos = KazMath::SplinePosition(points, startIndex, nextTimeRate, true);
 
-		XMVECTOR upVector = nextpos - position;
-		upVector = XMVector3Normalize(upVector);
+		KazMath::Vec3<float> upVector = nextpos - position;
+		upVector.Normalize();
 		iEnemy_ModelRender->data.upVector = upVector;
 		//前ベクトルの設定----------------------------------------------
 	}

@@ -44,7 +44,7 @@ void LineLevel1::Attack(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::V
 
 		//3...敵との距離を考慮していくつ線を作るか決める
 		const int randomMinNum = 3;
-		int randomMaxNum = distance.z / 10;
+		int randomMaxNum = static_cast<int>(distance.z) / 10;
 		//最大値が最小値を下回ないようにする
 		if (randomMaxNum < randomMinNum)
 		{
@@ -67,13 +67,13 @@ void LineLevel1::Attack(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::V
 			//最初の制御点はプレイヤー座標
 			if (i == 0)
 			{
-				limitPos[i] = PLAYER_POS;
+				limitPos[i] = PLAYER_POS.ConvertXMVECTOR();
 				continue;
 			}
 			//最後の制御点はエネミー座標
 			if (i == limitPos.size() - 1)
 			{
-				limitPos[i] = ENEMY_POS;
+				limitPos[i] = ENEMY_POS.ConvertXMVECTOR();
 				continue;
 			}
 
@@ -93,9 +93,9 @@ void LineLevel1::Attack(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::V
 			if (i == limitPos.size() - 3)
 			{
 				//高さがあっているかどうか確認,合っていないなら高さを合わせる
-				if (limitPos[i].y != ENEMY_POS.y)
+				if (limitPos[i].m128_f32[1] != ENEMY_POS.y)
 				{
-					limitPos[i].y = ENEMY_POS.y;
+					limitPos[i].m128_f32[1] = ENEMY_POS.y;
 				}
 				continue;
 			}
@@ -103,14 +103,14 @@ void LineLevel1::Attack(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::V
 			if (i == limitPos.size() - 2)
 			{
 				//敵のX軸を合わせる
-				limitPos[i].x = ENEMY_POS.x;
+				limitPos[i].m128_f32[0] = ENEMY_POS.x;
 				continue;
 			}
 
 			//2.前の制御点から見て直線状に制御点を配置する
 			if (i < limitPos.size() - 2)
 			{
-				limitPos[i] += CalucurateMoveVector(moveVector, KazMath::Rand<float>(50.0f, 60.0f));
+				limitPos[i] += CalucurateMoveVector(moveVector, KazMath::Rand<float>(50.0f, 60.0f)).ConvertXMVECTOR();
 			}
 		}
 
@@ -134,7 +134,7 @@ void LineLevel1::Attack(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::V
 
 	for (int i = 0; i < limitPolygon.size(); i++)
 	{
-		limitPolygon[i]->data.transform.pos = limitPos[i];
+		limitPolygon[i]->data.transform.pos = KazMath::Vec3<float>(limitPos[i].m128_f32[0],limitPos[i].m128_f32[1],limitPos[i].m128_f32[2]);
 		limitPolygon[i]->data.color = { 255.0f,255.0f,255.0f,255.0f };
 	}
 }
@@ -303,25 +303,33 @@ void LineLevel1::Attack2(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::
 					{
 						//KazMath::Vec3<float> dir;
 						//余剰分の距離を入れる
-						KazMath::Vec3<float> addDistance = { 10.0f,10.0f,10.0f };
+						XMVECTOR addDistance = { 10.0f,10.0f,10.0f };
 
 
 						//ゴール座標と敵との距離
-						KazMath::Vec3<float> enemyToGoalDistance = ENEMY_POS - goalPos;
+						XMVECTOR enemyToGoalDistance = ENEMY_POS.ConvertXMVECTOR() - goalPos.ConvertXMVECTOR();
 						//敵とプレイヤーの距離
-						KazMath::Vec3<float> playerToEnemyDistance = ENEMY_POS - PLAYER_POS;
+						XMVECTOR playerToEnemyDistance = ENEMY_POS.ConvertXMVECTOR() - PLAYER_POS.ConvertXMVECTOR();
 
 
-						//+軸か-軸かを判断するもの-----------------------
+						//絶対値-----------------------
+						const int x = 0;
+						const int y = 0;
+						const int z = 0;
+
 						//敵とゴール座標
-						enemyToGoalDistance.Abs();
+						enemyToGoalDistance.m128_f32[x] = fabs(enemyToGoalDistance.m128_f32[x]);
+						enemyToGoalDistance.m128_f32[y] = fabs(enemyToGoalDistance.m128_f32[y]);
+						enemyToGoalDistance.m128_f32[z] = fabs(enemyToGoalDistance.m128_f32[z]);
 
 						//プレイヤーと敵座標
-						playerToEnemyDistance.Abs();
-						//+軸か-軸かを判断するもの-----------------------
+						playerToEnemyDistance.m128_f32[x] = fabs(playerToEnemyDistance.m128_f32[x]);
+						playerToEnemyDistance.m128_f32[y] = fabs(playerToEnemyDistance.m128_f32[y]);
+						playerToEnemyDistance.m128_f32[z] = fabs(playerToEnemyDistance.m128_f32[z]);
+						//絶対値----------------------
 
 						//伸ばす距離
-						KazMath::Vec3<float> vec = {};
+						XMVECTOR vec = {};
 						/*
 						敵の座標より手前に座標を持ってくる
 						正し、プレイヤーより線を越えてはいけないので比較する
@@ -333,9 +341,9 @@ void LineLevel1::Attack2(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::
 							{
 								//プレイヤーと敵との距離内かつ敵より前の座標を配置する
 								//どれくらい超えているか確認
-								KazMath::Vec3<float> tmp;
+								XMVECTOR tmp;
 								tmp.m128_f32[axis] = playerToEnemyDistance.m128_f32[axis] - enemyToGoalDistance.m128_f32[axis];
-								tmp.m128_f32[axis] = (float)fabs(tmp.m128_f32[axis]);
+								tmp.m128_f32[axis] = fabs(tmp.m128_f32[axis]);
 
 								//敵とゴール座標との距離に超えた距離を引く
 								//tmpの軸が0出ない限り、超えた距離を引く
@@ -356,22 +364,22 @@ void LineLevel1::Attack2(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::
 						switch (moveVector)
 						{
 						case LINE_MOVE_LEFT:
-							dirVec = vec.x;
+							dirVec = vec.m128_f32[x];
 							break;
 						case LINE_MOVE_RIGHT:
-							dirVec = vec.x;
+							dirVec = vec.m128_f32[x];
 							break;
 						case LINE_MOVE_UP:
-							dirVec = vec.y;
+							dirVec = vec.m128_f32[y];
 							break;
 						case LINE_MOVE_DOWN:
-							dirVec = vec.y;
+							dirVec = vec.m128_f32[y];
 							break;
 						case LINE_MOVE_STRAIGHT:
-							dirVec = vec.z;
+							dirVec = vec.m128_f32[z];
 							break;
 						case LINE_MOVE_BACK:
-							dirVec = vec.z;
+							dirVec = vec.m128_f32[z];
 							break;
 						default:
 							break;
@@ -396,7 +404,7 @@ void LineLevel1::Attack2(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::
 						//どの方向に線を伸ばすか-----------------------
 
 
-					
+
 					}
 					else
 					{
@@ -425,7 +433,7 @@ void LineLevel1::Attack2(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::
 		//goalPos = ENEMY_POS;
 		//通常処理開始----------------------------------------------------------------
 		//1.プレイヤーと敵の距離を算出する
-		KazMath::Vec3<float> distance = goalPos - PLAYER_POS;
+		XMVECTOR distance = goalPos.ConvertXMVECTOR() - PLAYER_POS.ConvertXMVECTOR();
 		array<bool, 3> minusFlags;
 
 		for (int i = 0; i < minusFlags.size(); ++i)
@@ -433,7 +441,7 @@ void LineLevel1::Attack2(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::
 			if (distance.m128_f32[i] < 0)
 			{
 				minusFlags[i] = true;
-				distance.m128_f32[i] = (float)fabs(distance.m128_f32[i]);
+				distance.m128_f32[i] = fabs(distance.m128_f32[i]);
 			}
 			else
 			{
@@ -442,7 +450,7 @@ void LineLevel1::Attack2(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::
 		}
 
 		//(最初の制御点の位置はプレイヤー座標)
-		limitPos.push_back(PLAYER_POS);
+		limitPos.push_back(PLAYER_POS.ConvertXMVECTOR());
 
 
 		//ゴールまでの線を伸ばす処理をループさせる
@@ -463,7 +471,7 @@ void LineLevel1::Attack2(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::
 			}
 			if (2 <= count)
 			{
-				limitPos.push_back(goalPos);
+				limitPos.push_back(goalPos.ConvertXMVECTOR());
 				initFlag = true;
 				break;
 			}
@@ -478,7 +486,7 @@ void LineLevel1::Attack2(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::
 			if (countVec[eVec] <= limitRandom)
 			{
 				//3.「その軸の残り距離を割る数」を乱数で算出
-				KazMath::Vec3<float> dir = { 0.0f,0.0f,0.0f };
+				XMVECTOR dir = { 0.0f,0.0f,0.0f };
 				dir.m128_f32[eVec] = distance.m128_f32[eVec] / KazMath::Rand<int>(3, 1);
 
 				//4.伸ばす距離で残り距離を引く
@@ -490,14 +498,14 @@ void LineLevel1::Attack2(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::
 				}
 
 				//4.一つ前の制御点の座標から足した距離を次の制御点の座標とする
-				KazMath::Vec3<float> tmp = limitPos[limitPos.size() - 1];
+				XMVECTOR tmp = limitPos[limitPos.size() - 1];
 				limitPos.push_back(tmp + dir);
 			}
 			else
 			{
 				//5.同じ軸に一定回数以上割ったら、残り距離を0にする
-				KazMath::Vec3<float> tmp = limitPos[limitPos.size() - 1];
-				KazMath::Vec3<float> dir = { 0.0f, 0.0f, 0.0f };
+				XMVECTOR tmp = limitPos[limitPos.size() - 1];
+				XMVECTOR dir = { 0.0f, 0.0f, 0.0f };
 				dir.m128_f32[eVec] = distance.m128_f32[eVec];
 				distance.m128_f32[eVec] -= dir.m128_f32[eVec];
 				if (minusFlags[eVec])
@@ -510,11 +518,11 @@ void LineLevel1::Attack2(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::
 
 
 		//ゴール座標から敵までの座標を追加していく
-		for (int i = endLimitPos.size() - 1; 0 <= i; --i)
+		for (int i = static_cast<int>(endLimitPos.size()) - 1; 0 <= i; --i)
 		{
-			limitPos.push_back(endLimitPos[i]);
+			limitPos.push_back(endLimitPos[i].ConvertXMVECTOR());
 		}
-		limitPos.push_back(ENEMY_POS);
+		limitPos.push_back(ENEMY_POS.ConvertXMVECTOR());
 
 
 
@@ -522,38 +530,41 @@ void LineLevel1::Attack2(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::
 		limitPolygon.resize(limitPos.size());
 		for (int i = 0; i < limitPolygon.size(); i++)
 		{
-			limitPolygon[i].reset(new BoxPolygonRender);
+			limitPolygon[i] = std::make_unique<BoxPolygonRender>();
 		}
 
 		line.resize(limitPos.size() - 1);
 		for (int i = 0; i < line.size(); i++)
 		{
-			line[i].reset(new LineEffect);
+			line[i] = std::make_unique<LineEffect>();
 
+			KazMath::Vec3<float> lLimitPos, lLimitPos2;
+			lLimitPos = KazMath::Vec3<float>(limitPos[i].m128_f32[0], limitPos[i].m128_f32[1], limitPos[i].m128_f32[2]);
+			lLimitPos2 = KazMath::Vec3<float>(limitPos[i + 1].m128_f32[0], limitPos[i + 1].m128_f32[1], limitPos[i + 1].m128_f32[2]);
 
-			KazMath::Vec3<float> startPlayerdistance = limitPos[i] - PLAYER_POS;
-			KazMath::Vec3<float> endPlayerdistance = limitPos[i + 1] - PLAYER_POS;
-
-			line[i]->RockOn(limitPos[i], limitPos[i + 1], startPlayerdistance, endPlayerdistance);
+			KazMath::Vec3<float> startPlayerdistance = lLimitPos - PLAYER_POS;
+			KazMath::Vec3<float> endPlayerdistance = lLimitPos2 - PLAYER_POS;
+			
+			line[i]->RockOn(lLimitPos, lLimitPos2, startPlayerdistance, endPlayerdistance);
 		}
 
 
 
 		for (int i = 0; i < limitPolygon.size(); i++)
 		{
-			limitPolygon[i]->data.transform.pos = limitPos[i];
-			limitPolygon[i]->data.transform.scale = { 0.5f,2.0f,0.5f };
+			limitPolygon[i]->data.transform.pos = KazMath::Vec3<float>(limitPos[i].m128_f32[0], limitPos[i].m128_f32[1], limitPos[i].m128_f32[2]);
+			limitPolygon[i]->data.transform.scale = KazMath::Vec3<float>(0.5f, 2.0f, 0.5f);
 			limitPolygon[i]->data.color = { 255.0f,0.0f,0.0f,255.0f };
 		}
 
-		int count = endLimitPos.size();
-		for (int i = limitPolygon.size() - 1; 0 <= i; --i)
+		int count = static_cast<int>(endLimitPos.size());
+		for (int i = static_cast<int>(limitPolygon.size()) - 1; 0 <= i; --i)
 		{
 			if (count <= 0)
 			{
 				break;
 			}
-			limitPolygon[i]->data.transform.scale = { 2.0f,0.5f,0.5f };
+			limitPolygon[i]->data.transform.scale = KazMath::Vec3<float>(2.0f, 0.5f, 0.5f);
 			limitPolygon[i]->data.color = { 0.0f,255.0f,0.0f,255.0f };
 			--count;
 		}
@@ -693,22 +704,22 @@ KazMath::Vec3<float> LineLevel1::CalucurateMoveVector(const int &RANDM_NUM, cons
 	switch (moveType)
 	{
 	case LINE_MOVE_LEFT:
-		vel = { -LENGTH,0.0f,0.0f };
+		vel = KazMath::Vec3<float>(-LENGTH, 0.0f, 0.0f);
 		break;
 	case LINE_MOVE_RIGHT:
-		vel = { LENGTH,0.0f,0.0f };
+		vel = KazMath::Vec3<float>(LENGTH, 0.0f, 0.0f);
 		break;
 	case LINE_MOVE_UP:
-		vel = { 0.0f,LENGTH,0.0f };
+		vel = KazMath::Vec3<float>(0.0f, LENGTH, 0.0f);
 		break;
 	case LINE_MOVE_DOWN:
-		vel = { 0.0f,-LENGTH,0.0f };
+		vel = KazMath::Vec3<float>(0.0f, -LENGTH, 0.0f);
 		break;
 	case LINE_MOVE_STRAIGHT:
-		vel = { 0.0f,0.0f,-LENGTH };
+		vel = KazMath::Vec3<float>(0.0f, 0.0f, -LENGTH);
 		break;
 	case LINE_MOVE_BACK:
-		vel = { 0.0f,0.0f,LENGTH };
+		vel = KazMath::Vec3<float>(0.0f, 0.0f, LENGTH);
 		break;
 	default:
 		break;

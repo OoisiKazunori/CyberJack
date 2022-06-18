@@ -17,8 +17,8 @@ public:
 private:
 	array<SpriteVertex, 4> vertices;
 	array<USHORT, 6> indices;
-	XMFLOAT2 anchorPoint;
-	XMFLOAT2 texSize;
+	KazMath::Vec2<float> anchorPoint;
+	KazMath::Vec2<int> texSize;
 
 	PipeLineNames pipeline;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;

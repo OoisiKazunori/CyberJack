@@ -49,7 +49,7 @@ short ObjResourceMgr::LoadModel(string RESOURCE)
 	unsigned int indexCountNum = 0;
 
 	string filePass = RESOURCE;
-	for (int i = RESOURCE.length() - 1; 0 < i; i--)
+	for (size_t i = RESOURCE.length() - 1; 0 < i; i--)
 	{
 		if (filePass[i] == '/')
 		{
@@ -191,8 +191,8 @@ short ObjResourceMgr::LoadModel(string RESOURCE)
 
 
 	//頂点データとインデックスバッファの生成、転送---------------------------------------
-	int vertByte = vert.size() * sizeof(Vertex);
-	int indexByte = indi.size() * sizeof(unsigned short);
+	int vertByte = KazBufferHelper::GetBufferSize<int>(vert.size(), sizeof(Vertex));
+	int indexByte = KazBufferHelper::GetBufferSize<int>(indi.size(), sizeof(unsigned short));
 
 	short vertHandle = modelDataBuffers->CreateBuffer
 	(
@@ -222,7 +222,7 @@ short ObjResourceMgr::LoadModel(string RESOURCE)
 	resource[setHandle].indexBufferView = KazBufferHelper::SetIndexBufferView(modelDataBuffers->GetGpuAddress(indexHandle), indexByte);
 	//頂点バッファビューとインデックスバッファビューの設定---------------------------------------
 
-	resource[setHandle].indexNum = indi.size();
+	resource[setHandle].indexNum = static_cast<UINT>(indi.size());
 
 
 

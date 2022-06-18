@@ -45,7 +45,7 @@ Game::Game()
 	addRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	addRenderTarget.data.pipelineName = PIPELINE_NAME_ADDBLEND;
 
-	buler = std::make_unique<GaussianBuler>(XMFLOAT2(WIN_X, WIN_Y), XMFLOAT3(0.0f, 0.0f, 0.0f));
+	buler = std::make_unique<GaussianBuler>(KazMath::Vec2<UINT>(WIN_X, WIN_Y), XMFLOAT3(0.0f, 0.0f, 0.0f));
 
 
 	luminaceTex.data.pipelineName = PIPELINE_NAME_SPRITE_LUMI;
@@ -110,15 +110,19 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	player.Init(KazMath::Transform3D().pos);
 	cursor.Init();
 
-	hitBox.Init({ 0.0f,0.0f,30.0f }, 1);
 
 	stageUI.Init();
 
 	sceneNum = SCENE_NONE;
 
+	const int NO_ENEMY_NUM = 0;
+	BufferMemorySize enemySize;
+	enemySize.startSize = NO_ENEMY_NUM;
+	enemySize.endSize = ENEMY_NUM_MAX;
 
-	BufferMemorySize enemySize = { 0,ENEMY_NUM_MAX };
-	BufferMemorySize eventSize = { ENEMY_NUM_MAX,ENEMY_NUM_MAX + 50 };
+	BufferMemorySize eventSize;
+	enemySize.startSize = ENEMY_NUM_MAX;
+	enemySize.endSize = ENEMY_NUM_MAX + 50;
 
 	responeData = RESPONE_DATA;
 
@@ -508,7 +512,7 @@ void Game::Update()
 	}
 	//ImGui::End();
 	{
-		int lineArrayNum = lineStartPoly.size();
+		int lineArrayNum = static_cast<int>(lineStartPoly.size());
 		for (int i = lineArrayNum; i < lineArrayNum * 2; ++i)
 		{
 			lineEffectArrayData[i].startPos = lineStartPoly[i - lineArrayNum].data.transform.pos + player.pos;
@@ -542,9 +546,9 @@ void Game::Update()
 	//左右の回転
 	besidePoly->data.transform.pos =
 	{
-		cosf(KazMath::AngleToRadian(trackLeftRightAngleVel.x)) * r,
+		cosf(KazMath::AngleToRadian(static_cast<int>(trackLeftRightAngleVel.x))) * r,
 		0.0f,
-		sinf(KazMath::AngleToRadian(trackLeftRightAngleVel.y)) * r
+		sinf(KazMath::AngleToRadian(static_cast<int>(trackLeftRightAngleVel.y))) * r
 	};
 	//上下の回転
 	verticlaPoly->data.transform.pos =
@@ -1049,7 +1053,6 @@ void Game::Update()
 	//更新処理----------------------------------------------------------------
 	player.Update();
 	cursor.Update();
-	hitBox.Update();
 	goalBox.portalEffect.sprite->data.handle = potalTexHandle;
 	goalBox.Update();
 	movieEffect.Update();

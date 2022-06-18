@@ -18,9 +18,9 @@ public:
 	int SceneChange();
 
 private:
-	XMFLOAT3 debugCameraMove;
-	XMFLOAT3 eyePos, targetPos;
-	XMFLOAT2 angle;
+	KazMath::Vec3<float> debugCameraMove;
+	KazMath::Vec3<float> eyePos, targetPos;
+	KazMath::Vec2<float> angle;
 
 	int handle;
 	constBufferVhsData data;

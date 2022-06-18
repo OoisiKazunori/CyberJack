@@ -98,12 +98,12 @@ void PlayerHpUi::Update()
 	basePos = { 150.0f,650.0f };
 	for (int i = 0; i < maxHp; ++i)
 	{
-		XMVECTOR space = { i * 70.0f,0.0f,0.0f };
-		XMVECTOR pos = basePos + space;
+		KazMath::Vec2<float> space = { i * 70.0f,0.0f };
+		KazMath::Vec2<float> pos = basePos + space;
 		hpTex[i].data.transform.pos = pos;
 		hpFlame[i].data.transform.pos = pos;
 
-		KazMath::Larp(lerpScale[i].m128_f32[1], &hpTex[i].data.transform.scale.m128_f32[1], 0.2f);
+		KazMath::Larp(lerpScale[i].y, &hpTex[i].data.transform.scale.y, 0.2f);
 
 
 		redHpTex[i].data.transform = hpTex[i].data.transform;

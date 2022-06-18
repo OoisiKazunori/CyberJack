@@ -40,11 +40,11 @@ void CameraMgr::CameraSetting(float VIEWING_ANGLE, float FAR_SIDE)
 		);
 }
 
-void CameraMgr::Camera(const XMFLOAT3 &EYE_POS, const XMFLOAT3 &TARGET_POS, const XMFLOAT3 &UP, int CAMERA_INDEX)
+void CameraMgr::Camera(const KazMath::Vec3<float> &EYE_POS, const KazMath::Vec3<float> &TARGET_POS, const KazMath::Vec3<float> &UP, int CAMERA_INDEX)
 {
-	XMFLOAT3 eye = EYE_POS;
-	XMFLOAT3 target = TARGET_POS;
-	XMFLOAT3 up = UP;
+	XMFLOAT3 eye = { EYE_POS.x,EYE_POS.y,EYE_POS.z };
+	XMFLOAT3 target = { TARGET_POS.x,TARGET_POS.y ,TARGET_POS.z };
+	XMFLOAT3 up = { UP.x,UP.y,UP.z };
 	CameraAxis cameraAxis;
 
 
@@ -107,8 +107,11 @@ void CameraMgr::Camera(const XMFLOAT3 &EYE_POS, const XMFLOAT3 &TARGET_POS, cons
 	XMVECTOR tX = XMVector3Dot(cameraAxis.x, reverseEyePosition);	// X成分
 	XMVECTOR tY = XMVector3Dot(cameraAxis.y, reverseEyePosition);	// Y成分
 	XMVECTOR tZ = XMVector3Dot(cameraAxis.z, reverseEyePosition);	// Z成分
+	const int x = 0;
+	const int y = 1;
+	const int z = 2;
 	// 一つのベクトルにまとめる
-	XMVECTOR translation = XMVectorSet(tX.m128_f32[0], tY.m128_f32[1], tZ.m128_f32[2], 1.0f);
+	XMVECTOR translation = { tX.m128_f32[x], tY.m128_f32[y], tZ.m128_f32[z] };
 	// ビュー行列に平行移動成分を設定
 	matView.r[3] = translation;
 #pragma endregion
@@ -144,11 +147,11 @@ void CameraMgr::Camera(const XMFLOAT3 &EYE_POS, const XMFLOAT3 &TARGET_POS, cons
 	//billBoard = matBillboard;
 }
 
-XMMATRIX CameraMgr::CreateCamera(XMFLOAT3 EYE_POS, XMFLOAT3 TARGET_POS, XMFLOAT3 UP)
+XMMATRIX CameraMgr::CreateCamera(const KazMath::Vec3<float> &EYE_POS, const KazMath::Vec3<float> &TARGET_POS, const KazMath::Vec3<float> &UP)
 {
-	XMFLOAT3 eye = EYE_POS;
-	XMFLOAT3 target = TARGET_POS;
-	XMFLOAT3 up = UP;
+	XMFLOAT3 eye = { EYE_POS.x,EYE_POS.y,EYE_POS.z };
+	XMFLOAT3 target = { TARGET_POS.x, TARGET_POS.y, TARGET_POS.z };
+	XMFLOAT3 up = { UP.x,UP.y,UP.z };
 	CameraAxis cameraAxis;
 
 
@@ -211,8 +214,11 @@ XMMATRIX CameraMgr::CreateCamera(XMFLOAT3 EYE_POS, XMFLOAT3 TARGET_POS, XMFLOAT3
 	XMVECTOR tX = XMVector3Dot(cameraAxis.x, reverseEyePosition);	// X成分
 	XMVECTOR tY = XMVector3Dot(cameraAxis.y, reverseEyePosition);	// Y成分
 	XMVECTOR tZ = XMVector3Dot(cameraAxis.z, reverseEyePosition);	// Z成分
+	const int x = 0;
+	const int y = 1;
+	const int z = 2;
 	// 一つのベクトルにまとめる
-	XMVECTOR translation = XMVectorSet(tX.m128_f32[0], tY.m128_f32[1], tZ.m128_f32[2], 1.0f);
+	XMVECTOR translation = XMVectorSet(tX.m128_f32[x], tY.m128_f32[y], tZ.m128_f32[z], 1.0f);
 	// ビュー行列に平行移動成分を設定
 	matView.r[3] = translation;
 #pragma endregion
@@ -250,7 +256,7 @@ XMMATRIX *CameraMgr::GetPerspectiveMatProjectionPointer()
 	return &perspectiveMat;
 }
 
-const XMMATRIX &CameraMgr::GetPerspectiveMatProjectionAngle(float angle)
+XMMATRIX CameraMgr::GetPerspectiveMatProjectionAngle(float angle)
 {
 	XMMATRIX perspectiveMat =
 		XMMatrixPerspectiveFovLH(

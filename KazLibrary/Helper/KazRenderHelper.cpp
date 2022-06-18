@@ -1,10 +1,10 @@
 #include "KazRenderHelper.h"
 
-array<XMFLOAT2, 4> KazRenderHelper::ChangePlaneScale(const XMFLOAT2 &LEFTUP_POS, const XMFLOAT2 &RIGHTDOWN_POS, const XMFLOAT2 &SCALE, const XMFLOAT2 &ANCHOR_POINT, const XMFLOAT2 &TEX_SIZE)
+array<KazMath::Vec2<float>, 4> KazRenderHelper::ChangePlaneScale(const KazMath::Vec2<float> &LEFTUP_POS, const KazMath::Vec2<float> &RIGHTDOWN_POS, const KazMath::Vec2<float> &SCALE, const KazMath::Vec2<float> &ANCHOR_POINT, const KazMath::Vec2<int> &TEX_SIZE)
 {
 	//ì«Ç›çûÇ›
-	float width = TEX_SIZE.x;
-	float height = TEX_SIZE.y;
+	float width = static_cast<float>(TEX_SIZE.x);
+	float height = static_cast<float>(TEX_SIZE.y);
 
 
 	float left = (LEFTUP_POS.x - ANCHOR_POINT.x) * width * SCALE.x;
@@ -13,7 +13,7 @@ array<XMFLOAT2, 4> KazRenderHelper::ChangePlaneScale(const XMFLOAT2 &LEFTUP_POS,
 	float down = (RIGHTDOWN_POS.y - ANCHOR_POINT.y) * height * SCALE.y;
 
 
-	array<XMFLOAT2, 4>pos;
+	array<KazMath::Vec2<float>, 4>pos;
 	pos[0] = { left, down };
 	pos[1] = { left, up };
 	pos[2] = { right, down };
@@ -21,7 +21,7 @@ array<XMFLOAT2, 4> KazRenderHelper::ChangePlaneScale(const XMFLOAT2 &LEFTUP_POS,
 	return pos;
 }
 
-array<XMFLOAT2, 4> KazRenderHelper::ChangeModiPlaneScale(const XMFLOAT2 &LEFTUP_POS, const XMFLOAT2 &RIGHTDOWN_POS, const XMFLOAT4 &SCALE, const XMFLOAT2 &ANCHOR_POINT, const XMFLOAT2 &TEX_SIZE)
+array<KazMath::Vec2<float>, 4> KazRenderHelper::ChangeModiPlaneScale(const KazMath::Vec2<float> &LEFTUP_POS, const KazMath::Vec2<float> &RIGHTDOWN_POS, const XMFLOAT4 &SCALE, const XMFLOAT2 &ANCHOR_POINT, const XMFLOAT2 &TEX_SIZE)
 {
 	//ì«Ç›çûÇ›
 	float width = TEX_SIZE.x;
@@ -34,7 +34,7 @@ array<XMFLOAT2, 4> KazRenderHelper::ChangeModiPlaneScale(const XMFLOAT2 &LEFTUP_
 	float down = (RIGHTDOWN_POS.y - ANCHOR_POINT.y) * height * SCALE.w;
 
 
-	array<XMFLOAT2, 4>pos;
+	array<KazMath::Vec2<float>, 4>pos;
 	pos[0] = { left, down };
 	pos[1] = { left, up };
 	pos[2] = { right, down };
@@ -69,16 +69,16 @@ void KazRenderHelper::FlipYUv(XMFLOAT2 *UV_LEFTUP_POS, XMFLOAT2 *UV_LEFTDOWN_POS
 	UV_RIGHTDOWN_POS->y = rightUp.y;
 }
 
-void KazRenderHelper::VerticesCut(XMFLOAT2 DIV_SIZE, XMFLOAT2 DIV_LEFTUP_POS, XMFLOAT3 *LEFTUP_POS, XMFLOAT3 *LEFTDOWN_POS, XMFLOAT3 *RIGHTUP_POS, XMFLOAT3 *RIGHTDOWN_POS, const XMFLOAT2 &SCALE, const XMFLOAT2 &ANCHOR_POINT)
+void KazRenderHelper::VerticesCut(const KazMath::Vec2<int> &DIV_SIZE, const KazMath::Vec2<int> &DIV_LEFTUP_POS, XMFLOAT3 *LEFTUP_POS, XMFLOAT3 *LEFTDOWN_POS, XMFLOAT3 *RIGHTUP_POS, XMFLOAT3 *RIGHTDOWN_POS, const KazMath::Vec2<float> &SCALE, const KazMath::Vec2<float> &ANCHOR_POINT)
 {
-	XMFLOAT2 texSize = DIV_SIZE;
-	XMFLOAT2 divGraphPos = DIV_LEFTUP_POS;
+	KazMath::Vec2<int> texSize = DIV_SIZE;
+	KazMath::Vec2<int> divGraphPos = DIV_LEFTUP_POS;
 
 
-	XMFLOAT2 leftUp, rightDown;
+	KazMath::Vec2<float> leftUp, rightDown;
 	leftUp = { 0.0f,0.0f };
 	rightDown = { 1.0f,1.0f };
-	array<XMFLOAT2, 4>tmp = ChangePlaneScale(leftUp, rightDown, SCALE, ANCHOR_POINT, DIV_SIZE);
+	array<KazMath::Vec2<float>, 4>tmp = ChangePlaneScale(leftUp, rightDown, SCALE, ANCHOR_POINT, DIV_SIZE);
 
 
 
@@ -91,17 +91,17 @@ void KazRenderHelper::VerticesCut(XMFLOAT2 DIV_SIZE, XMFLOAT2 DIV_LEFTUP_POS, XM
 	*RIGHTDOWN_POS = { tmp[1].x,tmp[1].y,0.0f };
 }
 
-void KazRenderHelper::UVCut(XMFLOAT2 UV_DIV_LEFTUP_POS, XMFLOAT2 DIV_SIZE, XMFLOAT2 TEX_SIZE, XMFLOAT2 *LEFTUP_POS, XMFLOAT2 *LEFTDOWN_POS, XMFLOAT2 *RIGHTUP_POS, XMFLOAT2 *RIGHTDOWN_POS)
+void KazRenderHelper::UVCut(const KazMath::Vec2<int> &UV_DIV_LEFTUP_POS, const KazMath::Vec2<int> &DIV_SIZE, const KazMath::Vec2<int> &TEX_SIZE, XMFLOAT2 *LEFTUP_POS, XMFLOAT2 *LEFTDOWN_POS, XMFLOAT2 *RIGHTUP_POS, XMFLOAT2 *RIGHTDOWN_POS)
 {
-	float texX = UV_DIV_LEFTUP_POS.x;
-	float texY = UV_DIV_LEFTUP_POS.y;
-	float texHeight = DIV_SIZE.y;
-	float texWidth = DIV_SIZE.x;
+	int texX = UV_DIV_LEFTUP_POS.x;
+	int texY = UV_DIV_LEFTUP_POS.y;
+	int texHeight = DIV_SIZE.y;
+	int texWidth = DIV_SIZE.x;
 
-	float tex_left = texX / TEX_SIZE.x;
-	float tex_right = (texX + texWidth) / TEX_SIZE.x;
-	float tex_top = texY / TEX_SIZE.y;
-	float tex_bottom = (texY + texHeight) / TEX_SIZE.y;
+	float tex_left =		static_cast<float>(texX / TEX_SIZE.x);
+	float tex_right =		static_cast<float>((texX + texWidth) / TEX_SIZE.x);
+	float tex_top =		static_cast<float>(texY / TEX_SIZE.y);
+	float tex_bottom =	static_cast<float>((texY + texHeight) / TEX_SIZE.y);
 
 	*LEFTUP_POS = { tex_right,tex_top };
 	*LEFTDOWN_POS = { tex_right,tex_bottom };

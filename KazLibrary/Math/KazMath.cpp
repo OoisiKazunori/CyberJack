@@ -30,8 +30,8 @@ XMVECTOR KazMath::CalculateScreenToWorld(XMVECTOR pout, XMMATRIX View, XMMATRIX 
 	VP = XMMatrixIdentity();
 	VP.r[0].m128_f32[0] = WIN_X / 2.0f;
 	VP.r[1].m128_f32[1] = -WIN_Y / 2.0f;
-	VP.r[3].m128_f32[0] = WIN_X / 2.0f;
-	VP.r[3].m128_f32[1] = WIN_Y / 2.0f;
+	VP.r[2].m128_f32[2] = WIN_X / 2.0f;
+	VP.r[3].m128_f32[3] = WIN_Y / 2.0f;
 	InvViewport = XMMatrixInverse(nullptr, VP);
 
 
@@ -46,7 +46,7 @@ XMVECTOR KazMath::CalculateScreenToWorld(XMVECTOR pout, XMMATRIX View, XMMATRIX 
 }
 
 template<typename T>
-KazMath::Vec2<T> KazMath::CaluAngle(const KazMath::Vec2<T> &POS, float Angle, const KazMath::Vec2<T> &CPos)
+inline KazMath::Vec2<T> KazMath::CaluAngle(const KazMath::Vec2<T> &POS, float Angle, const KazMath::Vec2<T> &CPos)
 {
 	KazMath::Vec2<T> V, oldV;
 	KazMath::Vec2<T> calu;
@@ -71,7 +71,7 @@ KazMath::Vec2<T> KazMath::CaluAngle(const KazMath::Vec2<T> &POS, float Angle, co
 }
 
 template<typename T>
-KazMath::Vec3<T> CaluAngle3D(const KazMath::Vec3<T> &POS, float ANGLE, const KazMath::Vec3<T> &CENTRAL_POS)
+inline KazMath::Vec3<T> CaluAngle3D(const KazMath::Vec3<T> &POS, float ANGLE, const KazMath::Vec3<T> &CENTRAL_POS)
 {
 	KazMath::Vec3<T> V, oldV;
 	KazMath::Vec3<T> calu;
@@ -96,12 +96,6 @@ KazMath::Vec3<T> CaluAngle3D(const KazMath::Vec3<T> &POS, float ANGLE, const Kaz
 	return result;
 }
 
-template<typename T>
-T KazMath::Rand(T MAX_NUM, T MIN_NUM)
-{
-	return (MAX_NUM - MIN_NUM) * rand() / RAND_MAX + MIN_NUM;
-}
-
 void KazMath::ConvertMatrixFromFbx(XMMATRIX *DST, const FbxAMatrix &SRC)
 {
 	for (int i = 0; i < 4; i++)
@@ -119,15 +113,14 @@ int KazMath::ConvertSecondToFlame(int SECOND)
 }
 
 template <typename T>
-KazMath::Vec3<T> KazMath::CaluAPointToBPointVel(const KazMath::Vec3<T> &A_POINT, const KazMath::Vec3<T> &B_POINT, int FLAME, int MAX_FLAME)
+inline KazMath::Vec3<T> KazMath::CaluAPointToBPointVel(const KazMath::Vec3<T> &A_POINT, const KazMath::Vec3<T> &B_POINT, int FLAME, int MAX_FLAME)
 {
 	Vec3<T> distance = A_POINT - B_POINT;
 	Vec3<T> mul = static_cast<float>(FLAME) / static_cast<float>(MAXFLAME);
 	return distance * mul;
 }
 
-template <typename T>
-KazMath::Vec3<T> KazMath::ConvertScreenPosToWorldPos(const KazMath::Vec3<T> &SCREEN_POS, XMMATRIX VIEW_MAT, XMMATRIX PROJECTION_MAT)
+KazMath::Vec3<float> KazMath::ConvertScreenPosToWorldPos(const KazMath::Vec3<float> &SCREEN_POS, XMMATRIX VIEW_MAT, XMMATRIX PROJECTION_MAT)
 {
 	//äeçsóÒÇÃãtçsóÒÇéZèo
 	XMMATRIX InvView, InvPrj, InvViewport;
@@ -136,10 +129,10 @@ KazMath::Vec3<T> KazMath::ConvertScreenPosToWorldPos(const KazMath::Vec3<T> &SCR
 
 	XMMATRIX VP;
 	VP = XMMatrixIdentity();
-	VP.r[0].m128_f32[0] = WIN_X / 2.0f;
+	VP.r[0].m128_f32[0] =  WIN_X / 2.0f;
 	VP.r[1].m128_f32[1] = -WIN_Y / 2.0f;
-	VP.r[3].m128_f32[0] = WIN_X / 2.0f;
-	VP.r[3].m128_f32[1] = WIN_Y / 2.0f;
+	VP.r[3].m128_f32[0] =  WIN_X / 2.0f;
+	VP.r[3].m128_f32[1] =  WIN_Y / 2.0f;
 	InvViewport = XMMatrixInverse(nullptr, VP);
 
 	//ãtïœä∑
@@ -148,40 +141,7 @@ KazMath::Vec3<T> KazMath::ConvertScreenPosToWorldPos(const KazMath::Vec3<T> &SCR
 	result = XMVector3TransformCoord(result, InvPrj);
 	result = XMVector3TransformCoord(result, InvView);
 
-	return KazMath::CastXMVECTOR<T>(result);
-}
-
-template <typename T>
-KazMath::Vec3<T> ConvertWorldPosToScreenPos(const KazMath::Vec3<T> &WORLD_POS, XMMATRIX VIEW_MAT, XMMATRIX PROJECTION_MAT)
-{
-	XMMATRIX View = VIEW_MAT, Prj = PROJECTION_MAT, InvViewport, matWorld;
-
-	XMMATRIX VP;
-	VP = XMMatrixIdentity();
-	VP.r[0].m128_f32[0] = WIN_X / 2.0f;
-	VP.r[1].m128_f32[1] = -WIN_Y / 2.0f;
-	VP.r[3].m128_f32[0] = WIN_X / 2.0f;
-	VP.r[3].m128_f32[1] = WIN_Y / 2.0f;
-	InvViewport = VP;
-
-	XMMATRIX mat;
-	XMVECTOR result = { -1,-1,-1 };
-
-	XMMATRIX matRot = CaluRotaMatrix(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	XMMATRIX matTrans = CaluTransMatrix(WORLD_POS);
-	XMMATRIX matScale = CaluScaleMatrix(XMFLOAT3(1.0f, 1.0f, 1.0f));
-
-	matWorld = XMMatrixIdentity();
-	matWorld *= matScale;
-	matWorld *= matRot;
-	matWorld *= matTrans;
-
-
-	mat = matWorld * View * Prj;
-	mat *= InvViewport;
-
-	result = XMVector3TransformCoord(result, mat);
-	return KazMath::CastXMVECTOR<T>(result);
+	return KazMath::CastXMVECTOR<float>(result);
 }
 
 XMMATRIX KazMath::CaluRotaMatrix(const Vec3<float> &ROTATION)
@@ -205,29 +165,6 @@ XMMATRIX KazMath::CaluTransMatrix(const Vec3<float> &POS)
 	XMMATRIX matTrans;
 	matTrans = XMMatrixTranslation(POS.x, POS.y, POS.z);
 
-	return matTrans;
-}
-
-XMMATRIX KazMath::CaluRotaMatrix(const Vec3<float> &ROTATION)
-{
-	XMMATRIX matRot = XMMatrixIdentity();
-	matRot *= XMMatrixRotationZ(XMConvertToRadians(ROTATION.z));
-	matRot *= XMMatrixRotationX(XMConvertToRadians(ROTATION.x));
-	matRot *= XMMatrixRotationY(XMConvertToRadians(ROTATION.y));
-	return matRot;
-}
-
-XMMATRIX KazMath::CaluScaleMatrix(const Vec3<float> &SCALE)
-{
-	XMMATRIX matScale = XMMatrixIdentity();
-	matScale = XMMatrixScaling(SCALE.x, SCALE.y, SCALE.z);
-	return matScale;
-}
-
-XMMATRIX KazMath::CaluTransMatrix(const Vec3<float> &POS)
-{
-	XMMATRIX matTrans;
-	matTrans = XMMatrixTranslation(POS.x, POS.y, POS.z);
 	return matTrans;
 }
 
@@ -278,13 +215,12 @@ void KazMath::CalcWeightsTableFromGaussian(float *weightsTbl, int sizeOfWeightsT
 	}
 }
 
-template<typename T>
-KazMath::Vec3<T> KazMath::CaluEyePosForDebug(const Vec3<T> &EYE_POS, const Vec3<float> &MOVE, const Vec2<float> &ANGLE)
+KazMath::Vec3<float> KazMath::CaluEyePosForDebug(const Vec3<float> &EYE_POS, const Vec3<float> &MOVE, const Vec2<float> &ANGLE)
 {
-	Vec3<T> resultPos = EYE_POS;
+	Vec3<float> resultPos = EYE_POS;
 
 	float rad = ANGLE.x * 3.14f / 180.0f;
-	float rad_2 = ANGLE.y * 3.14 / 180.0f;
+	float rad_2 = ANGLE.y * 3.14f / 180.0f;
 
 
 	float speed = 1;
@@ -318,15 +254,14 @@ KazMath::Vec3<T> KazMath::CaluEyePosForDebug(const Vec3<T> &EYE_POS, const Vec3<
 	return resultPos;
 }
 
-template<typename T>
-KazMath::Vec3<T> KazMath::CaluTargetPosForDebug(const Vec3<T> &EYE_POS, float ANGLE)
+KazMath::Vec3<float> KazMath::CaluTargetPosForDebug(const Vec3<float> &EYE_POS, float ANGLE)
 {
 	float rad = ANGLE * 3.14f / 180.0f;
 
-	Vec3<T> target;
-	target.x = EYE_POS.x + static_cast<T>(5.0f * sin(rad));
+	Vec3<float> target;
+	target.x = EYE_POS.x + static_cast<float>(5.0f * sin(rad));
 	target.y = EYE_POS.y;
-	target.z = EYE_POS.z + static_cast<T>(5.0f * cos(rad));
+	target.z = EYE_POS.z + static_cast<float>(5.0f * cos(rad));
 
 	return target;
 }
@@ -349,8 +284,7 @@ bool KazMath::MatrixEqualOrNot(const XMMATRIX &MAT_1, const XMMATRIX &MAT_2)
 	return tupleDirtyFlag;
 }
 
-template<typename T>
-XMMATRIX KazMath::CaluSlopeMatrix(const Vec3<T> &Y, const Vec3<T> &Z)
+XMMATRIX KazMath::CaluSlopeMatrix(const Vec3<float> &Y, const Vec3<float> &Z)
 {
 	XMMATRIX matSlope;
 	/*
@@ -366,16 +300,16 @@ XMMATRIX KazMath::CaluSlopeMatrix(const Vec3<T> &Y, const Vec3<T> &Z)
 	XMVECTOR resultX;
 	XMVECTOR resultY;
 	XMVECTOR resultZ;
-	XMVECTOR axisX, axisY, axisZ;
+	XMVECTOR axisY, axisZ;
 
-	axisZ = Z;
-	axisY = Y;
+	axisZ = Z.ConvertXMVECTOR();
+	axisY = Y.ConvertXMVECTOR();
 
-	if (Y.m128_f32[2] == 1.0f)
+	if (Y.z == 1.0f)
 	{
 		axisZ = { 0,-1,0 };
 	}
-	else if (Y.m128_f32[2] == -1.0f)
+	else if (Y.z == -1.0f)
 	{
 		axisZ = { 0,1,0 };
 	}
@@ -407,8 +341,7 @@ XMMATRIX KazMath::CaluSlopeMatrix(const Vec3<T> &Y, const Vec3<T> &Z)
 	return matSlope;
 }
 
-template<typename T>
-XMMATRIX KazMath::CaluFrontMatrix(const Vec3<T> &Y, const Vec3<T> &Z)
+XMMATRIX KazMath::CaluFrontMatrix(const Vec3<float> &Y, const Vec3<float> &Z)
 {
 	XMMATRIX matSlope;
 	/*
@@ -424,17 +357,17 @@ XMMATRIX KazMath::CaluFrontMatrix(const Vec3<T> &Y, const Vec3<T> &Z)
 	XMVECTOR resultX;
 	XMVECTOR resultY;
 	XMVECTOR resultZ;
-	XMVECTOR axisX, axisY, axisZ;
+	XMVECTOR axisY, axisZ;
 
-	axisZ = Z;
-	axisY = Y;
+	axisZ = Z.ConvertXMVECTOR();
+	axisY = Y.ConvertXMVECTOR();
 
 	//ïÅíióvëf
-	if (Z.m128_f32[2] == 1.0f)
+	if (Z.z == 1.0f)
 	{
 		axisY = { 0,1,0 };
 	}
-	else if (Z.m128_f32[2] == -1.0f)
+	else if (Z.z == -1.0f)
 	{
 		axisY = { 0,1,0 };
 	}
@@ -480,7 +413,7 @@ float KazMath::AngleToRadian(int ANGLE)
 }
 
 template <typename T>
-XMMATRIX KazMath::CaluMat(const KazMath::Transform3D &TRANSFORM, const Vec3<T> &Y_VEC, const Vec3<T> &Z_VEC, const XMMATRIX &VIEW_MAT, const XMMATRIX &PROJECT_MAT)
+inline XMMATRIX KazMath::CaluMat(const KazMath::Transform3D &TRANSFORM, const Vec3<T> &Y_VEC, const Vec3<T> &Z_VEC, const XMMATRIX &VIEW_MAT, const XMMATRIX &PROJECT_MAT)
 {
 	BaseMatWorldData baseMatWorldData;
 	baseMatWorldData.matWorld = XMMatrixIdentity();
@@ -491,15 +424,15 @@ XMMATRIX KazMath::CaluMat(const KazMath::Transform3D &TRANSFORM, const Vec3<T> &
 	baseMatWorldData.matWorld = XMMatrixIdentity();
 	baseMatWorldData.matWorld *= baseMatWorldData.matScale;
 	baseMatWorldData.matWorld *= baseMatWorldData.matRota;
-	if (Y_VEC.m128_f32[0] != 0.0f ||
-		Y_VEC.m128_f32[1] != 1.0f ||
-		Y_VEC.m128_f32[2] != 0.0f)
+	if (Y_VEC.x != 0.0f ||
+		Y_VEC.y != 1.0f ||
+		Y_VEC.z != 0.0f)
 	{
 		baseMatWorldData.matWorld *= KazMath::CaluSlopeMatrix(Y_VEC, { 0.0f,0.0f,1.0f });
 	}
-	if (Z_VEC.m128_f32[0] != 0.0f ||
-		Z_VEC.m128_f32[1] != 0.0f ||
-		Z_VEC.m128_f32[2] != 1.0f)
+	if (Z_VEC.x != 0.0f ||
+		Z_VEC.y != 0.0f ||
+		Z_VEC.z != 1.0f)
 	{
 		baseMatWorldData.matWorld *= KazMath::CaluFrontMatrix({ 0.0f,1.0f,0.0f }, Z_VEC);
 	}
@@ -509,7 +442,7 @@ XMMATRIX KazMath::CaluMat(const KazMath::Transform3D &TRANSFORM, const Vec3<T> &
 }
 
 template<typename T>
-XMMATRIX KazMath::CaluWorld(const KazMath::Transform3D &TRANSFORM, const Vec3<T> &Y_VEC, const Vec3<T> &Z_VEC)
+inline XMMATRIX KazMath::CaluWorld(const KazMath::Transform3D &TRANSFORM, const Vec3<T> &Y_VEC, const Vec3<T> &Z_VEC)
 {
 	BaseMatWorldData baseMatWorldData;
 	baseMatWorldData.matWorld = XMMatrixIdentity();
@@ -520,15 +453,15 @@ XMMATRIX KazMath::CaluWorld(const KazMath::Transform3D &TRANSFORM, const Vec3<T>
 	baseMatWorldData.matWorld = XMMatrixIdentity();
 	baseMatWorldData.matWorld *= baseMatWorldData.matScale;
 	baseMatWorldData.matWorld *= baseMatWorldData.matRota;
-	if (Y_VEC.m128_f32[0] != 0.0f ||
-		Y_VEC.m128_f32[1] != 1.0f ||
-		Y_VEC.m128_f32[2] != 0.0f)
+	if (Y_VEC.x != 0.0f ||
+		Y_VEC.y != 1.0f ||
+		Y_VEC.z != 0.0f)
 	{
 		baseMatWorldData.matWorld *= KazMath::CaluSlopeMatrix(Y_VEC, { 0.0f,0.0f,1.0f });
 	}
-	if (Z_VEC.m128_f32[0] != 0.0f ||
-		Z_VEC.m128_f32[1] != 0.0f ||
-		Z_VEC.m128_f32[2] != 1.0f)
+	if (Z_VEC.x != 0.0f ||
+		Z_VEC.y != 0.0f ||
+		Z_VEC.z != 1.0f)
 	{
 		baseMatWorldData.matWorld *= KazMath::CaluFrontMatrix({ 0.0f,1.0f,0.0f }, Z_VEC);
 	}
@@ -542,17 +475,16 @@ void KazMath::Larp(float BASE_TRANSFORM, float *TRANSFORM, float MUL)
 	*TRANSFORM += distance * MUL;
 }
 
-template <typename T>
-KazMath::Vec3<T> KazMath::SplinePosition(const std::vector<Vec3<T>> &points, size_t startIndex, float t, bool Loop)
+KazMath::Vec3<float> KazMath::SplinePosition(const std::vector<Vec3<float>> &points, size_t startIndex, float t, bool Loop)
 {
 	if (startIndex < 1)
 	{
 		return points[1];
 	}
-	XMVECTOR p0 = points[startIndex - 1];
-	XMVECTOR p1 = points[startIndex];
-	XMVECTOR p2;
-	XMVECTOR p3;
+	KazMath::Vec3<float> p0 = points[startIndex - 1];
+	KazMath::Vec3<float> p1 = points[startIndex];
+	KazMath::Vec3<float> p2;
+	KazMath::Vec3<float> p3;
 	if (Loop == true)
 	{
 		if (startIndex > points.size() - 3)
@@ -568,14 +500,48 @@ KazMath::Vec3<T> KazMath::SplinePosition(const std::vector<Vec3<T>> &points, siz
 	}
 	else
 	{
-		if (startIndex > points.size() - 3)return points[points.size() - 3];
+		int size = static_cast<int>(points.size());
+		if (startIndex > size - 3)return points[size - 3];
 		p2 = points[startIndex + 1];
 		p3 = points[startIndex + 2];
 	}
-	XMVECTOR anser = 0.5 * ((2 * p1 + (-p0 + p2) * t) +
-		(2 * p0 - 5 * p1 + 4 * p2 - p3) * (t * t) +
-		(-p0 + 3 * p1 - 3 * p2 + p3) * (t * t * t)
-	);
 
+	KazMath::Vec3<float> a((p1 * 2.0f + (-p0 + p2) * t) * 0.5f);
+	KazMath::Vec3<float> b((p0 * 2.0f - p1 * 5.0f + p2 * 4.0f - p3) * ((t * t)));
+	KazMath::Vec3<float> c((-p0 + p1 * 3.0f - p2 * 3.0f + p3) * (t * t * t));
+
+	KazMath::Vec3<float> anser = a + b + c;
 	return anser;
+};
+
+KazMath::Vec3<float> KazMath::ConvertWorldPosToScreenPos(const KazMath::Vec3<float> &WORLD_POS, XMMATRIX VIEW_MAT, XMMATRIX PROJECTION_MAT)
+{
+	XMMATRIX View = VIEW_MAT, Prj = PROJECTION_MAT, InvViewport, matWorld;
+
+	XMMATRIX VP;
+	VP = XMMatrixIdentity();
+	VP.r[0].m128_f32[0] = static_cast<float>(WIN_X) / 2.0f;
+	VP.r[1].m128_f32[1] = -static_cast<float>(WIN_Y) / 2.0f;
+	VP.r[3].m128_f32[0] = static_cast<float>(WIN_X) / 2.0f;
+	VP.r[3].m128_f32[1] = static_cast<float>(WIN_Y) / 2.0f;
+	InvViewport = VP;
+
+	XMMATRIX mat;
+	XMVECTOR result = { -1.0f,-1.0f,-1.0f,-1.0f };
+
+	XMMATRIX matRot = KazMath::CaluRotaMatrix(KazMath::Vec3<float>(0.0f, 0.0f, 0.0f));
+	XMMATRIX matTrans = KazMath::CaluTransMatrix(WORLD_POS);
+	XMMATRIX matScale = KazMath::CaluScaleMatrix(KazMath::Vec3<float>(1.0f, 1.0f, 1.0f));
+
+	matWorld = XMMatrixIdentity();
+	matWorld *= matScale;
+	matWorld *= matRot;
+	matWorld *= matTrans;
+
+
+	mat = matWorld * View * Prj;
+	mat *= InvViewport;
+
+	result = XMVector3TransformCoord(result, mat);
+	return KazMath::CastXMVECTOR<float>(result);
 };

@@ -90,7 +90,8 @@ bool KeyBoradInputManager::InputState(int BUTTON)
 
 bool KeyBoradInputManager::InputRelease(int BUTTON)
 {
-	if (initReleaseFlag) {
+	if (initReleaseFlag)
+	{
 		if (!key[BUTTON] && oldKey[BUTTON])
 		{
 			return true;
@@ -100,6 +101,8 @@ bool KeyBoradInputManager::InputRelease(int BUTTON)
 			return false;
 		}
 	}
+
+	return false;
 }
 
 bool KeyBoradInputManager::NotInput(int MAX_SECOND)
@@ -186,6 +189,7 @@ bool KeyBoradInputManager::MouseInputRelease(MouseInputNumber CLICK)
 			return false;
 		}
 	}
+	return false;
 }
 
 XMFLOAT2 KeyBoradInputManager::GetMousePoint()
@@ -197,7 +201,7 @@ XMFLOAT2 KeyBoradInputManager::GetMousePoint()
 
 
 	XMFLOAT2 mousePos;
-	mousePos.x = WinAPIMousePos.x;
-	mousePos.y = WinAPIMousePos.y;
+	mousePos.x = static_cast<float>(WinAPIMousePos.x);
+	mousePos.y = static_cast<float>(WinAPIMousePos.y);
 	return mousePos;
 }

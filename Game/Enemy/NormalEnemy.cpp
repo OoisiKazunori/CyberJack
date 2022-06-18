@@ -7,7 +7,7 @@ NormalEnemy::NormalEnemy()
 {
 }
 
-void NormalEnemy::Init(const XMVECTOR &POS)
+void NormalEnemy::Init(const KazMath::Vec3<float> &POS)
 {
 	iEnemy_ModelRender->data.transform.pos = POS;	//座標の初期化
 	iEnemy_ModelRender->data.transform.scale = { 10.0f,10.0f,10.0f };
@@ -21,9 +21,9 @@ void NormalEnemy::Init(const XMVECTOR &POS)
 	iEnemy_ModelRender->data.color.y = 255.0f;
 	iEnemy_ModelRender->data.color.z = 255.0f;
 	iEnemy_ModelRender->data.color.w = 0.0f;
-	iEnemy_ModelRender->data.transform.rotation.m128_f32[0] = 0.0f;
-	iEnemy_ModelRender->data.transform.rotation.m128_f32[1] = 90.0f;
-	iEnemy_ModelRender->data.transform.rotation.m128_f32[2] = 0.0f;
+	iEnemy_ModelRender->data.transform.rotation.x = 0.0f;
+	iEnemy_ModelRender->data.transform.rotation.y = 90.0f;
+	iEnemy_ModelRender->data.transform.rotation.z = 0.0f;
 
 	initDeadSoundFlag = false;
 }
@@ -36,11 +36,11 @@ void NormalEnemy::Update()
 {
 	//移動
 	float speed = 0.5f;
-	iEnemy_ModelRender->data.transform.pos.m128_f32[2] += -speed;
+	iEnemy_ModelRender->data.transform.pos.z += -speed;
 
 	//死亡演出処理
 	//デバックキーor当たり判定内&&死亡時
-	if (EnableToHit(iEnemy_ModelRender->data.transform.pos.m128_f32[2]) &&!iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
+	if (EnableToHit(iEnemy_ModelRender->data.transform.pos.z) &&!iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
 	{
 		iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME_MULTITEX;
 		iEnemy_ModelRender->data.removeMaterialFlag = true;
@@ -70,7 +70,7 @@ void NormalEnemy::Update()
 	}
 
 
-	if (!EnableToHit(iEnemy_ModelRender->data.transform.pos.m128_f32[2]))
+	if (!EnableToHit(iEnemy_ModelRender->data.transform.pos.z))
 	{
 		iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag = false;
 		iEnemy_EnemyStatusData->outOfStageFlag = true;

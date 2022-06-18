@@ -20,7 +20,7 @@ void ThridStage::Init()
 void ThridStage::Update()
 {
 	pressAButtonTex.data.transform.pos = { 0.0f,-100.0f,700.0f };
-	pressAButtonTex.data.transform.scale = { 0.8f,0.8f };
+	pressAButtonTex.data.transform.scale = { 0.8f,0.8f,1.0f };
 	infomationTex.data.transform.pos = { 0.0f,0.0f,700.0f };
 
 	++timer;

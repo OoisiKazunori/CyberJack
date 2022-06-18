@@ -108,8 +108,10 @@ HRESULT WinApi::CreateMyWindow(int WINDOW_SIZE_X, int WINDOW_SIZE_Y)
 	CheckError = ShowWindow(hwnd, SW_SHOW);
 	if (!CheckError) 
 	{
-		//return -1;
+		return S_FALSE;
 	}
+
+	return S_OK;
 }
 
 void WinApi::UnregisterWindowClass()

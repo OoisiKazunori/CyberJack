@@ -4,7 +4,7 @@ KidEnemy::KidEnemy()
 {
 }
 
-void KidEnemy::Init(const XMVECTOR &POS)
+void KidEnemy::Init(const KazMath::Vec3<float> &POS)
 {
 	iEnemy_ModelRender->data.transform.pos = POS;	//À•W‚Ì‰Šú‰»
 	iEnemy_EnemyStatusData->hitBox.radius = 5.0f;	//“–‚½‚è”»’è‚Ì‘å‚«‚³•ÏX

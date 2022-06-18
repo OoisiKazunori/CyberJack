@@ -98,7 +98,7 @@ void SoundMgr::SoundPlayWave(IXAudio2 *XAUDIO2, const SoundData &SOUNDDATA, int 
 	buf.Flags = XAUDIO2_END_OF_STREAM;
 	buf.LoopCount = ROOP;
 
-	pSourceVoice->SetVolume(0.8);
+	pSourceVoice->SetVolume(0.8f);
 
 	result = pSourceVoice->SubmitSourceBuffer(&buf);
 	result = pSourceVoice->Start();

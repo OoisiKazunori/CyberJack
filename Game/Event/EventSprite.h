@@ -11,7 +11,7 @@ public:
 
 	EventSprite();
 
-	void Init(const XMVECTOR &POS, int HANDLE);
+	void Init(const KazMath::Vec3<float> &POS, int HANDLE);
 	void Update();
 	void Draw();
 

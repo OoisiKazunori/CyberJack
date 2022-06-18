@@ -421,8 +421,8 @@ void Cursor::Update()
 		cursorFlameTex->data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
 	}
 
-	numberTex->data.alpha = cursorAlpha;
-	cursorFlameTex->data.alpha = cursorAlpha;
+	numberTex->data.alpha = static_cast<float>(cursorAlpha);
+	cursorFlameTex->data.alpha = static_cast<float>(cursorAlpha);
 	//カーソルを消す----------------------------------------------
 
 
@@ -551,7 +551,7 @@ const int &Cursor::GetCount()
 	return lockOnNum;
 }
 
-const KazMath::Vec2<float> &Cursor::GetValue()
+KazMath::Vec2<float> Cursor::GetValue()
 {
 	//画面中央を0,0の中心座標とする
 	KazMath::Vec2<float> rateMaxValue = { WIN_X / 2.0f,WIN_Y / 2.0f };

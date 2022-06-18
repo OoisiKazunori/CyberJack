@@ -11,7 +11,7 @@ SceneChange::SceneChange()
 {
 	sceneTex.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::SceneChangePath + "SceneChange.png");
 	sceneTex.data.pipelineName = PIPELINE_NAME_SPRITE_Z_ALWAYS;
-	transform.pos.m128_f32[1] = WIN_Y / 2.0f;
+	transform.pos.y = WIN_Y / 2.0f;
 }
 
 void SceneChange::Init()
@@ -29,11 +29,11 @@ void SceneChange::Update()
 	if (startFlag)
 	{
 		//“ü‚è
-		if (startOutInT[0] < 1.0)
+		if (startOutInT[0] < 1.0f)
 		{
-			Rate(&startOutInT[0], 0.03, 1.0);
-			transform.pos.m128_f32[0] = WIN_X + (WIN_X / 2) + EasingMaker(Out, Cubic, startOutInT[0]) * -WIN_X;
-			tmp = transform.pos.m128_f32[0];
+			Rate(&startOutInT[0], 0.03f, 1.0f);
+			transform.pos.x = WIN_X + (WIN_X / 2) + EasingMaker(Out, Cubic, startOutInT[0]) * -WIN_X;
+			tmp = transform.pos.x;
 		}
 		//I‚í‚è
 		else
@@ -45,8 +45,8 @@ void SceneChange::Update()
 				initFlag = true;
 			}
 
-			Rate(&startOutInT[1], 0.03, 1.0);
-			transform.pos.m128_f32[0] = tmp + EasingMaker(In, Cubic, startOutInT[1]) * -WIN_X;
+			Rate(&startOutInT[1], 0.03f, 1.0f);
+			transform.pos.x = tmp + EasingMaker(In, Cubic, startOutInT[1]) * static_cast<float>(-WIN_X);
 		}
 
 		if (1.0 <= startOutInT[1])
@@ -59,7 +59,7 @@ void SceneChange::Update()
 		initFlag = false;
 		startOutInT[0] = 0;
 		startOutInT[1] = 0;
-		transform.pos.m128_f32[0] = WIN_X + (WIN_X / 2);
+		transform.pos.x = WIN_X + (WIN_X / 2);
 	}
 
 	sceneTex.data.transform = transform;

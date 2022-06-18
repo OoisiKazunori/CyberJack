@@ -4,7 +4,6 @@
 #include<memory>
 #include"../Game/Player.h"
 #include"../Game/UI/Cursor.h"
-#include"../Game/Debug/TestEnemy.h"
 #include"../Game/Interface/IEnemy.h"
 #include"../Game/Enemy/NormalEnemy.h"
 #include"../Game/Enemy/KidEnemy.h"
@@ -135,7 +134,6 @@ private:
 
 	//敵----------------------------------------------------------------
 	array<unique_ptr<IEnemy>, 2>enemy;					//敵(サンプル)
-	TestEnemy hitBox;									//敵(サンプル)
 	array<array<unique_ptr<IEnemy>, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> enemies;	//1ステージに生成する敵の総数
 	array<int, 10> enemiesHandle;						//0から順番に初期化する際に必要
 	array<int, 10> addEnemiesHandle;					//0から順番に追加で初期化する際に必要

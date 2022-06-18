@@ -20,7 +20,7 @@ private:
 	bool endFlag;
 	int stageNum;				//現在のステージ番号を表示します
 
-	XMVECTOR basePos, larpScale;
+	KazMath::Vec2<float> basePos, larpScale;
 
 	int areaNum;
 	int areaTimer;

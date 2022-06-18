@@ -3,11 +3,12 @@
 #include"../Pipeline/GraphicsDepthTest.h"
 #include"../Helper/ISinglton.h"
 #include"../Buffer/CreateGpuBuffer.h"
+#include"../KazLibrary/Math/KazMath.h"
 
 struct MultiRenderTargetData
 {
 	XMFLOAT3 backGroundColor;
-	XMFLOAT2 graphSize;
+	KazMath::Vec2<UINT> graphSize;
 	MultiRenderTargetData()
 	{};
 };
@@ -73,7 +74,7 @@ public:
 	void ClearRenderTarget(const short &RENDERTARGET_HANDLE);
 
 
-	short CreateRenderTarget(const XMFLOAT2 &GRAPH_SIZE, const XMFLOAT3 &CLEAR_COLOR, const DXGI_FORMAT &FORMAT);
+	short CreateRenderTarget(const KazMath::Vec2<UINT> &GRAPH_SIZE, const XMFLOAT3 &CLEAR_COLOR, const DXGI_FORMAT &FORMAT);
 	std::vector<short> CreateMultiRenderTarget(const std::vector<MultiRenderTargetData> &MULTIRENDER_TARGET_DATA, const DXGI_FORMAT &FORMAT);
 	ID3D12Resource *GetBufferData(short HANDLE)const;
 	D3D12_GPU_DESCRIPTOR_HANDLE GetViewData(short HANDLE);

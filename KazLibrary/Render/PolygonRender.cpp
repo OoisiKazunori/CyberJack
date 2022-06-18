@@ -30,9 +30,9 @@ PolygonRender::PolygonRender(const array<SpriteVertex, 4> &DATA)
 
 	vertices = DATA;
 
-
-	VertByte = vertices.size() * sizeof(SpriteVertex);
-	IndexByte = indices.size() * sizeof(unsigned short);
+	
+	VertByte = KazBufferHelper::GetBufferSize<UINT>(vertices.size(), sizeof(SpriteVertex));
+	IndexByte = KazBufferHelper::GetBufferSize<UINT>(indices.size(), sizeof(unsigned short));
 
 
 	//バッファ生成-----------------------------------------------------------------------------------------------------
@@ -130,7 +130,7 @@ void PolygonRender::Draw()
 	renderData.cmdListInstance->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	renderData.cmdListInstance->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
 	renderData.cmdListInstance->cmdList->IASetIndexBuffer(&indexBufferView);
-	renderData.cmdListInstance->cmdList->DrawIndexedInstanced(indices.size(), 1, 0, 0, 0);
+	renderData.cmdListInstance->cmdList->DrawIndexedInstanced(static_cast<UINT>(indices.size()), 1, 0, 0, 0);
 	//描画命令-----------------------------------------------------------------------------------------------------
 
 

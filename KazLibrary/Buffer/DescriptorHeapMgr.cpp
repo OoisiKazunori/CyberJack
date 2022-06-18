@@ -134,11 +134,15 @@ const D3D12_CPU_DESCRIPTOR_HANDLE DescriptorHeapMgr::GetCpuDescriptorView(const 
 	}
 }
 
-const BufferMemorySize DescriptorHeapMgr::GetSize(const BufferMemory &TYPE)
+BufferMemorySize DescriptorHeapMgr::GetSize(const BufferMemory &TYPE)const
 {
 	if (TYPE != DESCRIPTORHEAP_MEMORY_MAX)
 	{
 		return heapMaxSizes[TYPE];
+	}
+	else
+	{
+		return BufferMemorySize();
 	}
 };
 
@@ -157,4 +161,5 @@ int DescriptorHeapMgr::GetType(const short &HANDLE)
 			return i;
 		}
 	}
+	return -1;
 }

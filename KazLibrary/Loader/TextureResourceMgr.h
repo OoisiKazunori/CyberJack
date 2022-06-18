@@ -7,14 +7,15 @@
 #include"../Helper/ISinglton.h"
 #include"../Pipeline/GraphicsRootSignature.h"
 #include"../Buffer/CreateGpuBuffer.h"
+#include"../KazLibrary/Math/KazMath.h"
 
 /// <summary>
 /// 画像の分割をする際にどの座標からどれくらいのサイズでUV切り取りをするか記録したもの
 /// </summary>
 struct DivGraphData
 {
-	vector<XMFLOAT2> divLeftUp;
-	XMFLOAT2 divSize;
+	std::vector<KazMath::Vec2<int>> divLeftUp;
+	KazMath::Vec2<int> divSize;
 	short handle;
 };
 
@@ -46,8 +47,8 @@ public:
 	/// <returns>ハンドル</returns>
 	short LoadDivGraph(string RESOURCE, 
 		unsigned int ALL_NUM,
-		unsigned int DIV_WIDTH_NUM, unsigned int DIV_HEIGHT_NUM,
-		unsigned int TEXSIZE_WIDTH, unsigned int TEXSIZE_HEIGHT
+		int DIV_WIDTH_NUM, int DIV_HEIGHT_NUM,
+		int TEXSIZE_WIDTH, int TEXSIZE_HEIGHT
 	);
 
 	/// <summary>

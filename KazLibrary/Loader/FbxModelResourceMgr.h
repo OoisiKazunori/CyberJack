@@ -105,7 +105,7 @@ public:
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 	D3D12_INDEX_BUFFER_VIEW indexBufferView;
 	vector<short> textureHandle;
-	short indicisNum;
+	UINT indicisNum;
 	XMFLOAT3 ambient = { 1.0f,1.0f,1.0f };
 	XMFLOAT3 diffuse = { 1.0f,1.0f,1.0f };
 	vector<Model::Bone> bone;

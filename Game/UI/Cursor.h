@@ -24,7 +24,7 @@ public:
 	void Count();
 	const int &GetCount();
 
-	const KazMath::Vec2<float> &GetValue();
+	KazMath::Vec2<float> GetValue();
 
 	void Disappear();
 	void Appear();

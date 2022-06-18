@@ -176,10 +176,10 @@ void GoalBox::Update()
 
 
 	/*ImGui::Begin("Goal");
-	ImGui::InputFloat("RotaX", &moveRotaVel.m128_f32[0]);
-	ImGui::InputFloat("RotaY", &moveRotaVel.m128_f32[1]);
-	ImGui::InputFloat("RotaZ", &moveRotaVel.m128_f32[2]);
-	ImGui::InputFloat("Z", &moveVel.m128_f32[2]);
+	ImGui::InputFloat("RotaX", &moveRotaVel.x);
+	ImGui::InputFloat("RotaY", &moveRotaVel.y);
+	ImGui::InputFloat("RotaZ", &moveRotaVel.z);
+	ImGui::InputFloat("Z", &moveVel.z);
 	ImGui::InputFloat("MoveLerp", &lerpMoveVel);
 	ImGui::InputFloat("MoveRotaLerp", &lerpMoveRotaVel);
 	ImGui::End();*/

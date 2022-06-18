@@ -90,8 +90,8 @@ void RenderTargetStatus::ClearDoubuleBuffer(XMFLOAT3 COLOR)
 	rtvH.ptr += bbIndex * DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(heapDesc.Type);
 	DirectX12CmdList::Instance()->cmdList->ClearRenderTargetView(rtvH, ClearColor, 0, nullptr);
 
-	CD3DX12_RECT rect(0.0f, 0.0f, WIN_X, WIN_Y);
-	CD3DX12_VIEWPORT viewport(0.0f, 0.0f, WIN_X, WIN_Y);
+	CD3DX12_RECT rect(0, 0, static_cast<long>(WIN_X), static_cast<long>(WIN_Y));
+	CD3DX12_VIEWPORT viewport(0.0f, 0.0f, static_cast<float>(WIN_X), static_cast<float>(WIN_Y));
 	DirectX12CmdList::Instance()->cmdList->RSSetViewports(1, &viewport);
 	DirectX12CmdList::Instance()->cmdList->RSSetScissorRects(1, &rect);
 }
@@ -141,7 +141,7 @@ void RenderTargetStatus::PrepareToChangeBarrier(const short &OPEN_RENDERTARGET_H
 		rtvHs.push_back(rtvH);
 	}
 
-	DirectX12CmdList::Instance()->cmdList->OMSetRenderTargets(openRendertargetPass.size(), rtvHs.data(), false, &gDepth.dsvH[handle]);
+	DirectX12CmdList::Instance()->cmdList->OMSetRenderTargets(static_cast<UINT>(openRendertargetPass.size()), rtvHs.data(), false, &gDepth.dsvH[handle]);
 }
 
 void RenderTargetStatus::PrepareToCloseBarrier(const short &RENDERTARGET_HANDLE)
@@ -198,14 +198,14 @@ void RenderTargetStatus::ClearRenderTarget(const short &RENDERTARGET_HANDLE)
 			static_cast<uint32_t>(buffers->GetBufferData(openHandle[i])->GetDesc().Width),
 			static_cast<uint32_t>(buffers->GetBufferData(openHandle[i])->GetDesc().Height)
 		};
-		CD3DX12_RECT rect(0.0f, 0.0f, graphSize.x, graphSize.y);
-		CD3DX12_VIEWPORT viewport(0.0f, 0.0f, graphSize.x, graphSize.y);
-		DirectX12CmdList::Instance()->cmdList->RSSetViewports(openHandle.size(), &viewport);
-		DirectX12CmdList::Instance()->cmdList->RSSetScissorRects(openHandle.size(), &rect);
+		CD3DX12_RECT rect(0, 0, graphSize.x, graphSize.y);
+		CD3DX12_VIEWPORT viewport(0.0f, 0.0f, static_cast<float>(graphSize.x), static_cast<float>(graphSize.y));
+		DirectX12CmdList::Instance()->cmdList->RSSetViewports(static_cast<UINT>(openHandle.size()), &viewport);
+		DirectX12CmdList::Instance()->cmdList->RSSetScissorRects(static_cast<UINT>(openHandle.size()), &rect);
 	}
 }
 
-short RenderTargetStatus::CreateRenderTarget(const XMFLOAT2 &GRAPH_SIZE, const XMFLOAT3 &CLEAR_COLOR, const DXGI_FORMAT &FORMAT)
+short RenderTargetStatus::CreateRenderTarget(const KazMath::Vec2<UINT> &GRAPH_SIZE, const XMFLOAT3 &CLEAR_COLOR, const DXGI_FORMAT &FORMAT)
 {
 	//ƒrƒ…[‚Ì¶¬
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
@@ -218,7 +218,7 @@ short RenderTargetStatus::CreateRenderTarget(const XMFLOAT2 &GRAPH_SIZE, const X
 
 	D3D12_RESOURCE_DESC resource = RenderTargetStatus::Instance()->copyBuffer->GetDesc();
 	resource.Height = GRAPH_SIZE.y;
-	resource.Width = GRAPH_SIZE.x;
+	resource.Width = static_cast<UINT64>(GRAPH_SIZE.x);
 	resource.Format = FORMAT;
 	float clearValue[] = { CLEAR_COLOR.x / 255.0f,CLEAR_COLOR.y / 255.0f ,CLEAR_COLOR.z / 255.0f,1.0f };
 	D3D12_CLEAR_VALUE clearColor = CD3DX12_CLEAR_VALUE(FORMAT, clearValue);
@@ -237,7 +237,6 @@ short RenderTargetStatus::CreateRenderTarget(const XMFLOAT2 &GRAPH_SIZE, const X
 	short num = buffers->CreateBuffer(data);
 
 
-	//DescriptorHeapMgr::Instance()->CreateBufferView(num, rtvDesc, buffers->GetBufferData(num).Get());
 	DescriptorHeapMgr::Instance()->CreateBufferView(num, srvDesc, buffers->GetBufferData(num).Get());
 	clearColors[buffers->handle->CaluNowHandle(num)] = { clearValue[0],clearValue[1],clearValue[2],clearValue[3] };
 
@@ -275,7 +274,7 @@ std::vector<short> RenderTargetStatus::CreateMultiRenderTarget(const std::vector
 	srvDesc.Texture2D.MipLevels = 1;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 
-	const int ARRAY_SIZE = MULTIRENDER_TARGET_DATA.size();
+	const int ARRAY_SIZE = static_cast<int>(MULTIRENDER_TARGET_DATA.size());
 	std::vector<short> handles;
 
 	short buffNum = -1;
@@ -283,7 +282,7 @@ std::vector<short> RenderTargetStatus::CreateMultiRenderTarget(const std::vector
 	{
 		D3D12_RESOURCE_DESC resource = RenderTargetStatus::Instance()->copyBuffer->GetDesc();
 		resource.Height = MULTIRENDER_TARGET_DATA[i].graphSize.y;
-		resource.Width = MULTIRENDER_TARGET_DATA[i].graphSize.x;
+		resource.Width = static_cast<UINT64>(MULTIRENDER_TARGET_DATA[i].graphSize.x);
 		resource.Format = FORMAT;
 		float clearValue[] = { MULTIRENDER_TARGET_DATA[i].backGroundColor.x / 255.0f,MULTIRENDER_TARGET_DATA[i].backGroundColor.y / 255.0f ,MULTIRENDER_TARGET_DATA[i].backGroundColor.z / 255.0f,1.0f };
 		D3D12_CLEAR_VALUE clearColor = CD3DX12_CLEAR_VALUE(FORMAT, clearValue);
@@ -405,9 +404,10 @@ std::vector<short> RenderTargetStatus::CountPass(short HANDLE)
 		{
 			if (renderTargetData[handleNum][renderTargetNum] == HANDLE)
 			{
-				return	renderTargetData[handleNum];
+				return renderTargetData[handleNum];
 			}
 		}
 	}
 	assert(0);
+	return std::vector<short>();
 }

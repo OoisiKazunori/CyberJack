@@ -88,7 +88,7 @@ short TextureResourceMgr::LoadGraph(std::string RESOURCE) {
 	srvDesc.Format = metadata.format;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = metadata.mipLevels;
+	srvDesc.Texture2D.MipLevels = static_cast<UINT>(metadata.mipLevels);
 
 
 
@@ -109,7 +109,7 @@ short TextureResourceMgr::LoadGraph(std::string RESOURCE) {
 	return num;
 }
 
-short TextureResourceMgr::LoadDivGraph(string RESOURCE, unsigned int ALL_NUM, unsigned int DIV_WIDTH_NUM, unsigned int DIV_HEIGHT_NUM, unsigned int TEXSIZE_WIDTH, unsigned int TEXSIZE_HEIGHT)
+short TextureResourceMgr::LoadDivGraph(string RESOURCE, unsigned int ALL_NUM, int DIV_WIDTH_NUM, int DIV_HEIGHT_NUM, int TEXSIZE_WIDTH, int TEXSIZE_HEIGHT)
 {
 	//既に作ってあるバッファと名前が被ったら被ったハンドルを返し、被らなかったら生成
 	for (int i = 0; i < handleName.size(); i++)
@@ -179,8 +179,8 @@ short TextureResourceMgr::LoadDivGraph(string RESOURCE, unsigned int ALL_NUM, un
 
 	//画像切り取りの情報
 	divData.push_back({});
-	int arrayNum = divData.size() - 1;
-	divData[arrayNum].divSize = { (float)TEXSIZE_WIDTH,(float)TEXSIZE_HEIGHT };
+	int arrayNum = static_cast<int>(divData.size()) - 1;
+	divData[arrayNum].divSize = { TEXSIZE_WIDTH,TEXSIZE_HEIGHT };
 	divData[arrayNum].handle = num;
 
 	for (int y = 0; y < DIV_HEIGHT_NUM; y++)
@@ -188,7 +188,7 @@ short TextureResourceMgr::LoadDivGraph(string RESOURCE, unsigned int ALL_NUM, un
 		for (int x = 0; x < DIV_WIDTH_NUM; x++)
 		{
 			//uv切り取りに必要な左上の点
-			divData[arrayNum].divLeftUp.push_back({ 0 + (float)TEXSIZE_WIDTH * x,0 + (float)TEXSIZE_HEIGHT * y });
+			divData[arrayNum].divLeftUp.push_back({ 0 + TEXSIZE_WIDTH * x,0 + TEXSIZE_HEIGHT * y });
 		}
 	}
 

@@ -63,7 +63,7 @@ public:
 	bool initFlag;
 	KazMath::Vec3<float> playerPos;
 private:
-	std::vector<KazMath::Vec3<float>> limitPos;
+	std::vector<XMVECTOR> limitPos;
 	vector<BoxPolygonRenderPtr> limitPolygon;
 	vector<unique_ptr<LineEffect>> line;
 

@@ -14,15 +14,15 @@ TutorialWindow::TutorialWindow()
 
 
 	lStickUi.data.transform.pos = { 14.7f,2.0f,14.5f };
-	lStickUi.data.transform.scale = { 0.18f,0.2f };
+	lStickUi.data.transform.scale = { 0.18f,0.2f,1.0f };
 	lStickUi.data.transform.rotation = { 0.0f,20.0f,0.0f };
 
 	abuttonUi.data.transform.pos = { 14.7f,0.0f,14.5f };
-	abuttonUi.data.transform.scale = { 0.18f,0.2f };
+	abuttonUi.data.transform.scale = { 0.18f,0.2f,1.0f };
 	abuttonUi.data.transform.rotation = { 0.0f,20.0f,0.0f };
 
 	attackUi.data.transform.pos = { 14.7f,-2.0f,14.5f };
-	attackUi.data.transform.scale = { 0.2f,0.2f };
+	attackUi.data.transform.scale = { 0.2f,0.2f,1.0f };
 	attackUi.data.transform.rotation = { 0.0f,20.0f,0.0f };
 
 }

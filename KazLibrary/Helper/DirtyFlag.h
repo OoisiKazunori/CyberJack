@@ -41,17 +41,26 @@ public:
 	{
 	}
 
-	DirtySet(XMVECTOR &DATA)
+	DirtySet(KazMath::Vec3<float> &DATA)
 	{
 		shared_ptr<DirtyFlag<float>> tmp;
 		shared_ptr<DirtyFlag<float>> tmp1;
 		shared_ptr<DirtyFlag<float>> tmp2;
-		tmp.reset(new DirtyFlag<float>(&DATA.m128_f32[0]));
-		tmp1.reset(new DirtyFlag<float>(&DATA.m128_f32[1]));
-		tmp2.reset(new DirtyFlag<float>(&DATA.m128_f32[2]));
+		tmp.reset(new DirtyFlag<float>(&DATA.x));
+		tmp1.reset(new DirtyFlag<float>(&DATA.y));
+		tmp2.reset(new DirtyFlag<float>(&DATA.z));
 		floatDirtyFlag.push_back(tmp);
 		floatDirtyFlag.push_back(tmp1);
 		floatDirtyFlag.push_back(tmp2);
+	};
+	DirtySet(KazMath::Vec2<float> &DATA)
+	{
+		shared_ptr<DirtyFlag<float>> tmp;
+		shared_ptr<DirtyFlag<float>> tmp1;
+		tmp.reset(new DirtyFlag<float>(&DATA.x));
+		tmp1.reset(new DirtyFlag<float>(&DATA.y));
+		floatDirtyFlag.push_back(tmp);
+		floatDirtyFlag.push_back(tmp1);
 	};
 	DirtySet(XMFLOAT4 &DATA)
 	{

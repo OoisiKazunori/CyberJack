@@ -3,12 +3,16 @@
 
 struct BufferMemorySize
 {
-	short startSize;
-	short endSize;
+	int startSize;
+	int endSize;
+
+	BufferMemorySize() :startSize(-1), endSize(-1)
+	{};
 };
 
 enum BufferMemory
 {
+	DESCRIPTORHEAP_MEMORY_NONE = -1,
 	DESCRIPTORHEAP_MEMORY_TEXTURE_SPRITE,
 	DESCRIPTORHEAP_MEMORY_TEXTURE_OBJ,
 	DESCRIPTORHEAP_MEMORY_TEXTURE_FBX,
@@ -79,5 +83,13 @@ namespace KazBufferHelper
 	D3D12_VERTEX_BUFFER_VIEW SetVertexBufferView(const D3D12_GPU_VIRTUAL_ADDRESS &GPU_ADDRESS, const unsigned int &BUFFER_SIZE, const unsigned int &ONE_VERTICES_SIZE);
 
 	D3D12_INDEX_BUFFER_VIEW SetIndexBufferView(const D3D12_GPU_VIRTUAL_ADDRESS &GPU_ADDRESS, const unsigned int &BUFFER_SIZE);
+
+
+	template<typename T>
+	T GetBufferSize(size_t BUFFER_SIZE, unsigned long long STRUCTURE_SIZE)
+	{
+		return static_cast<T>(BUFFER_SIZE * static_cast<int>(STRUCTURE_SIZE));
+	};
+
 }
 

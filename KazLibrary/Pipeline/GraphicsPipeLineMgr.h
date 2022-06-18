@@ -338,7 +338,7 @@ private:
 
 	bool geo;
 	template <typename T>
-	bool IsitSafe(T NAME, unsigned short SIZE);
+	bool IsitSafe(T NAME, size_t SIZE);
 };
 
 

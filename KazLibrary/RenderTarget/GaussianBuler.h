@@ -20,7 +20,7 @@ public:
 	/// </summary>
 	/// <param name="GRAPH_SIZE">生成する画像サイズ</param>
 	/// <param name="COLOR">画像の背景の色</param>
-	GaussianBuler(XMFLOAT2 GRAPH_SIZE, XMFLOAT3 COLOR);
+	GaussianBuler(const KazMath::Vec2<UINT> &GRAPH_SIZE, XMFLOAT3 COLOR);
 	~GaussianBuler();
 
 	/// <summary>
@@ -32,7 +32,7 @@ public:
 	short BlurImage(const short &RENDERTARGET_HANDLE, const short &CURRENT_RENDERTARGET_HANDLE = -1);
 
 private:
-	XMFLOAT2 graphSize;
+	KazMath::Vec2<UINT> graphSize;
 
 	//ガウシアンブラーした結果
 	array<Sprite2DRender, 2> tex;

@@ -11,7 +11,7 @@ EventSprite::EventSprite()
 
 }
 
-void EventSprite::Init(const XMVECTOR &POS, int HANDLE)
+void EventSprite::Init(const KazMath::Vec3<float> &POS, int HANDLE)
 {
 	noHitHandle = HANDLE;
 	spriteRender.data.handle = noHitHandle;
@@ -23,7 +23,7 @@ void EventSprite::Init(const XMVECTOR &POS, int HANDLE)
 
 	selectingFlag = false;
 
-	spriteRender.data.transform.scale = { 0.5f,0.5f };
+	spriteRender.data.transform.scale = { 0.5f,0.5f,1.0f };
 	spriteRender.data.alpha = 255.0f;
 }
 
@@ -56,8 +56,8 @@ void EventSprite::Update()
 		deadFlag = true;
 	}
 
-	spriteRender.data.transform.pos.m128_f32[1] = 10.0f;
-	spriteRender.data.transform.pos.m128_f32[2] = 200.0f;
+	spriteRender.data.transform.pos.y = 10.0f;
+	spriteRender.data.transform.pos.z = 200.0f;
 }
 
 void EventSprite::Draw()

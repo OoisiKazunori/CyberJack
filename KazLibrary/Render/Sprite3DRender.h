@@ -4,12 +4,12 @@
 #include"../Math/KazMath.h"
 #include"../Helper/DirtyFlag.h"
 #include"../Render/RenderData.h"
-
+#include"../KazLibrary/Math/KazMath.h"
 
 class Sprite3DRender : public IRender
 {
 public:
-	Sprite3DRender(const XMFLOAT2 &ANCHOR_POINT = { 0.5f,0.5f });
+	Sprite3DRender();
 	~Sprite3DRender();
 	void Draw();
 
@@ -18,8 +18,8 @@ public:
 private:
 	array<SpriteVertex, 4> vertices;
 	array<USHORT,6> indices;
-	XMFLOAT2 anchorPoint;
-	XMFLOAT2 texSize;
+	KazMath::Vec2<float> anchorPoint;
+	KazMath::Vec2<int> texSize;
 
 	PipeLineNames pipeline;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;

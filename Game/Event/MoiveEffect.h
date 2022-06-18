@@ -15,6 +15,6 @@ public:
 private:
 	Sprite2DRender topTex, buttomTex;//上下にテクスチャを描画する　←　ポリゴンに変更
 
-	XMVECTOR lerpTopPos, lerpButtomPos;//座標
+	KazMath::Vec2<float> lerpTopPos, lerpButtomPos;//座標
 };
 

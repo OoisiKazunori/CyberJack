@@ -12,4 +12,8 @@ bool Msg::CheckMessage()
 	{
 		return false;
 	}
+	else
+	{
+		return true;
+	}
 }

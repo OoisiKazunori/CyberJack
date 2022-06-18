@@ -14,19 +14,19 @@ public:
 	LineEffect();
 	~LineEffect();
 
-	void RockOn(const XMVECTOR &START_POS, const XMVECTOR &END_POS, const XMVECTOR &START_PLAYER_DISTANCE, const XMVECTOR &END_PLAYER_DISTANCE);
+	void RockOn(const KazMath::Vec3<float> &START_POS, const KazMath::Vec3<float> &END_POS, const KazMath::Vec3<float> &START_PLAYER_DISTANCE, const KazMath::Vec3<float> &END_PLAYER_DISTANCE);
 	void StartEffect();
 	void ReleaseEffect();
 	void Finalize();
 	void Update();
 	void Draw();
 
-	void MoveLine(const XMVECTOR &VALUE);
+	void MoveLine(const KazMath::Vec3<float> &VALUE);
 	bool FinishFlag();
 
 	bool finishRockOnFlag;
 	bool finishReleaseFlag;
-	XMVECTOR playerPos;
+	KazMath::Vec3<float> playerPos;
 private:
 	const float NORMAL_LOCKON_SPEED = 6.0f;
 	const float RAPID_LOCKON_SPEED = 12.0f;
@@ -38,10 +38,10 @@ private:
 	ConstLineData lineData;
 
 	bool rockOnFlag;
-	XMVECTOR startPos, endPos;
-	XMVECTOR startPlayerDistance, endPlayerDistance;
-	XMVECTOR distance;
-	XMVECTOR value;
+	KazMath::Vec3<float> startPos, endPos;
+	KazMath::Vec3<float> startPlayerDistance, endPlayerDistance;
+	KazMath::Vec3<float> distance;
+	KazMath::Vec3<float> value;
 
 	float rate,lockOnTime,releaseTime;
 	float lockOnSpeed,releaseSpeed;

@@ -36,9 +36,9 @@ FirstStage::FirstStage()
 		{
 			for (int i = 0; i < stageDebugBox.size(); ++i)
 			{
-				XMVECTOR pos = stageDebugBox[i].data.transform.pos;
-				XMVECTOR scale = stageDebugBox[i].data.transform.scale;
-				XMVECTOR rota = stageDebugBox[i].data.transform.rotation;
+				XMVECTOR pos = stageDebugBox[i].data.transform.pos.ConvertXMVECTOR();
+				XMVECTOR scale = stageDebugBox[i].data.transform.scale.ConvertXMVECTOR();
+				XMVECTOR rota = stageDebugBox[i].data.transform.rotation.ConvertXMVECTOR();
 
 				//Box–ˆ‚Ìƒƒ“ƒo•Ï”‚ð’Ç‰Á
 				rapidjson::Value posArray(rapidjson::kArrayType);
@@ -97,12 +97,12 @@ FirstStage::FirstStage()
 			polygon[i]->data.pipelineName = PIPELINE_NAME_SPRITE_GRADATION;
 		}
 
-		polygon[0]->data.transform.pos.m128_f32[2] = 650.0f;
-		polygon[1]->data.transform.pos.m128_f32[0] = 550.0f;
-		polygon[1]->data.transform.rotation.m128_f32[1] = 100.0f;
-		polygon[2]->data.transform.pos.m128_f32[0] = -550.0f;
-		polygon[2]->data.transform.rotation.m128_f32[1] = 100.0f;
-		polygon[3]->data.transform.pos.m128_f32[2] = -650.0f;
+		polygon[0]->data.transform.pos.z = 650.0f;
+		polygon[1]->data.transform.pos.x = 550.0f;
+		polygon[1]->data.transform.rotation.y = 100.0f;
+		polygon[2]->data.transform.pos.x = -550.0f;
+		polygon[2]->data.transform.rotation.y = 100.0f;
+		polygon[3]->data.transform.pos.z = -650.0f;
 	}
 
 	{
@@ -126,7 +126,7 @@ FirstStage::FirstStage()
 		gradData.firstColor = XMFLOAT4(0.24f, 0.09f, 0.62f, 1.0f);
 		topPolygon->TransData(&gradData, handle, typeid(gradData).name());
 
-		topPolygon->data.transform.pos.m128_f32[1] = 400.0f;
+		topPolygon->data.transform.pos.y = 400.0f;
 	}
 
 
@@ -135,9 +135,27 @@ FirstStage::FirstStage()
 		std::string name = "Box" + std::to_string(i);
 		for (int axisIndex = 0; axisIndex < 3; ++axisIndex)
 		{
-			stageDebugBox[i].data.transform.pos.m128_f32[axisIndex] = stageParamLoader.doc[name.c_str()]["Pos"][axisIndex].GetFloat();
-			stageDebugBox[i].data.transform.scale.m128_f32[axisIndex] = stageParamLoader.doc[name.c_str()]["Scale"][axisIndex].GetFloat();
-			stageDebugBox[i].data.transform.rotation.m128_f32[axisIndex] = stageParamLoader.doc[name.c_str()]["Rota"][axisIndex].GetFloat();
+			switch (axisIndex)
+			{
+			case 0:
+				stageDebugBox[i].data.transform.pos.x = stageParamLoader.doc[name.c_str()]["Pos"][axisIndex].GetFloat();
+				stageDebugBox[i].data.transform.scale.x = stageParamLoader.doc[name.c_str()]["Scale"][axisIndex].GetFloat();
+				stageDebugBox[i].data.transform.rotation.x = stageParamLoader.doc[name.c_str()]["Rota"][axisIndex].GetFloat();
+				break;
+			case 1:
+				stageDebugBox[i].data.transform.pos.y = stageParamLoader.doc[name.c_str()]["Pos"][axisIndex].GetFloat();
+				stageDebugBox[i].data.transform.scale.y = stageParamLoader.doc[name.c_str()]["Scale"][axisIndex].GetFloat();
+				stageDebugBox[i].data.transform.rotation.y = stageParamLoader.doc[name.c_str()]["Rota"][axisIndex].GetFloat();
+				break;
+			case 2:
+				stageDebugBox[i].data.transform.pos.z = stageParamLoader.doc[name.c_str()]["Pos"][axisIndex].GetFloat();
+				stageDebugBox[i].data.transform.scale.z = stageParamLoader.doc[name.c_str()]["Scale"][axisIndex].GetFloat();
+				stageDebugBox[i].data.transform.rotation.z = stageParamLoader.doc[name.c_str()]["Rota"][axisIndex].GetFloat();
+
+				break;
+			default:
+				break;
+			}
 
 
 			stageYPos[i] = stageDebugBox[i].data.transform.pos;
@@ -160,15 +178,15 @@ void FirstStage::Update()
 	//	string name = "Box" + std::to_string(i);
 	//	if (ImGui::TreeNode(name.c_str()))
 	//	{
-	//		ImGui::InputFloat("PosX", &stageDebugBox[i].data.transform.pos.m128_f32[0]);
-	//		ImGui::InputFloat("PosY", &stageDebugBox[i].data.transform.pos.m128_f32[1]);
-	//		ImGui::InputFloat("PosZ", &stageDebugBox[i].data.transform.pos.m128_f32[2]);
-	//		ImGui::InputFloat("ScaleX", &stageDebugBox[i].data.transform.scale.m128_f32[0]);
-	//		ImGui::InputFloat("ScaleY", &stageDebugBox[i].data.transform.scale.m128_f32[1]);
-	//		ImGui::InputFloat("ScaleZ", &stageDebugBox[i].data.transform.scale.m128_f32[2]);
-	//		ImGui::InputFloat("RotaX", &stageDebugBox[i].data.transform.rotation.m128_f32[0]);
-	//		ImGui::InputFloat("RotaY", &stageDebugBox[i].data.transform.rotation.m128_f32[1]);
-	//		ImGui::InputFloat("RotaZ", &stageDebugBox[i].data.transform.rotation.m128_f32[2]);
+	//		ImGui::InputFloat("PosX", &stageDebugBox[i].data.transform.pos.x);
+	//		ImGui::InputFloat("PosY", &stageDebugBox[i].data.transform.pos.y);
+	//		ImGui::InputFloat("PosZ", &stageDebugBox[i].data.transform.pos.z);
+	//		ImGui::InputFloat("ScaleX", &stageDebugBox[i].data.transform.scale.x);
+	//		ImGui::InputFloat("ScaleY", &stageDebugBox[i].data.transform.scale.y);
+	//		ImGui::InputFloat("ScaleZ", &stageDebugBox[i].data.transform.scale.z);
+	//		ImGui::InputFloat("RotaX", &stageDebugBox[i].data.transform.rotation.x);
+	//		ImGui::InputFloat("RotaY", &stageDebugBox[i].data.transform.rotation.y);
+	//		ImGui::InputFloat("RotaZ", &stageDebugBox[i].data.transform.rotation.z);
 	//		//ImGui::InputFloat("FogDistiny", &fogData[i].fogdata.w);
 	//		ImGui::TreePop();
 	//	}
@@ -202,9 +220,27 @@ void FirstStage::Update()
 			std::string name = "Box" + std::to_string(i);
 			for (int axisIndex = 0; axisIndex < 3; ++axisIndex)
 			{
-				stageDebugBox[i].data.transform.pos.m128_f32[axisIndex] = stageParamLoader.doc[name.c_str()]["Pos"][axisIndex].GetFloat();
-				stageDebugBox[i].data.transform.scale.m128_f32[axisIndex] = stageParamLoader.doc[name.c_str()]["Scale"][axisIndex].GetFloat();
-				stageDebugBox[i].data.transform.rotation.m128_f32[axisIndex] = stageParamLoader.doc[name.c_str()]["Rota"][axisIndex].GetFloat();
+				switch (axisIndex)
+				{
+				case 0:
+					stageDebugBox[i].data.transform.pos.x = stageParamLoader.doc[name.c_str()]["Pos"][axisIndex].GetFloat();
+					stageDebugBox[i].data.transform.scale.x = stageParamLoader.doc[name.c_str()]["Scale"][axisIndex].GetFloat();
+					stageDebugBox[i].data.transform.rotation.x = stageParamLoader.doc[name.c_str()]["Rota"][axisIndex].GetFloat();
+					break;
+				case 1:
+					stageDebugBox[i].data.transform.pos.y = stageParamLoader.doc[name.c_str()]["Pos"][axisIndex].GetFloat();
+					stageDebugBox[i].data.transform.scale.y = stageParamLoader.doc[name.c_str()]["Scale"][axisIndex].GetFloat();
+					stageDebugBox[i].data.transform.rotation.y = stageParamLoader.doc[name.c_str()]["Rota"][axisIndex].GetFloat();
+					break;
+				case 2:
+					stageDebugBox[i].data.transform.pos.z = stageParamLoader.doc[name.c_str()]["Pos"][axisIndex].GetFloat();
+					stageDebugBox[i].data.transform.scale.z = stageParamLoader.doc[name.c_str()]["Scale"][axisIndex].GetFloat();
+					stageDebugBox[i].data.transform.rotation.z = stageParamLoader.doc[name.c_str()]["Rota"][axisIndex].GetFloat();
+
+					break;
+				default:
+					break;
+				}
 			}
 		}
 	}
@@ -217,9 +253,27 @@ void FirstStage::Update()
 			std::string name = "Box" + std::to_string(i);
 			for (int axisIndex = 0; axisIndex < 3; ++axisIndex)
 			{
-				stageParamLoader.doc[name.c_str()]["Pos"][axisIndex].SetFloat(stageDebugBox[i].data.transform.pos.m128_f32[axisIndex]);
-				stageParamLoader.doc[name.c_str()]["Scale"][axisIndex].SetFloat(stageDebugBox[i].data.transform.scale.m128_f32[axisIndex]);
-				stageParamLoader.doc[name.c_str()]["Rota"][axisIndex].SetFloat(stageDebugBox[i].data.transform.rotation.m128_f32[axisIndex]);
+				switch (axisIndex)
+				{
+				case 0:
+					stageParamLoader.doc[name.c_str()]["Pos"][axisIndex].SetFloat(stageDebugBox[i].data.transform.pos.x);
+					stageParamLoader.doc[name.c_str()]["Scale"][axisIndex].SetFloat(stageDebugBox[i].data.transform.scale.y);
+					stageParamLoader.doc[name.c_str()]["Rota"][axisIndex].SetFloat(stageDebugBox[i].data.transform.rotation.z);
+					break;
+				case 1:
+					stageParamLoader.doc[name.c_str()]["Pos"][axisIndex].SetFloat(stageDebugBox[i].data.transform.pos.x);
+					stageParamLoader.doc[name.c_str()]["Scale"][axisIndex].SetFloat(stageDebugBox[i].data.transform.scale.y);
+					stageParamLoader.doc[name.c_str()]["Rota"][axisIndex].SetFloat(stageDebugBox[i].data.transform.rotation.z);
+					break;
+				case 2:
+					stageParamLoader.doc[name.c_str()]["Pos"][axisIndex].SetFloat(stageDebugBox[i].data.transform.pos.x);
+					stageParamLoader.doc[name.c_str()]["Scale"][axisIndex].SetFloat(stageDebugBox[i].data.transform.scale.y);
+					stageParamLoader.doc[name.c_str()]["Rota"][axisIndex].SetFloat(stageDebugBox[i].data.transform.rotation.z);
+
+					break;
+				default:
+					break;
+				}
 			}
 			//stageParamLoader.doc[name.c_str()]["Fog"].SetFloat(fogData[i].fogdata.w);
 		}
@@ -256,26 +310,26 @@ void FirstStage::Update()
 	easeY = EasingMaker(Out, Cubic, t);
 	for (int i = 1; i < stageDebugBox.size(); ++i)
 	{
-		stageDebugBox[i].data.transform.pos.m128_f32[1] = stageYPos[i].m128_f32[1] + (-mul + easeY * mul);
+		stageDebugBox[i].data.transform.pos.y = stageYPos[i].y + (-mul + easeY * mul);
 	}
 
 
-	XMVECTOR vel = { 0.0f,0.0f,-1.0f };
+	const KazMath::Vec3<float> vel = { 0.0f,0.0f,-1.0f };
 	//Žè‘O’Œ
 	for (int i = 5; i < 16; ++i)
 	{
 		stageDebugBox[i].data.transform.pos += vel;
-		if (stageDebugBox[i].data.transform.pos.m128_f32[2] <= -200.0f)
+		if (stageDebugBox[i].data.transform.pos.z <= -200.0f)
 		{
-			stageDebugBox[i].data.transform.pos.m128_f32[2] = 800.0f;
+			stageDebugBox[i].data.transform.pos.z = 800.0f;
 		}
 	}
 	for (int i = 16; i < 24; ++i)
 	{
 		stageDebugBox[i].data.transform.pos += vel;
-		if (stageDebugBox[i].data.transform.pos.m128_f32[2] <= -100.0f)
+		if (stageDebugBox[i].data.transform.pos.z <= -100.0f)
 		{
-			stageDebugBox[i].data.transform.pos.m128_f32[2] = 800.0f;
+			stageDebugBox[i].data.transform.pos.z = 800.0f;
 		}
 	}
 	//Žè‘O’Œ

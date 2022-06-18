@@ -41,8 +41,8 @@ SecondStage::SecondStage()
 
 		for (int i = 0; i < line.size(); ++i)
 		{
-			XMVECTOR startPos = line[i].data.startPos;
-			XMVECTOR endPos = line[i].data.endPos;
+			XMVECTOR startPos = line[i].data.startPos.ConvertXMVECTOR();
+			XMVECTOR endPos = line[i].data.endPos.ConvertXMVECTOR();
 
 			//Line–ˆ‚Ìƒƒ“ƒo•Ï”‚ð’Ç‰Á
 			rapidjson::Value startPosArray(rapidjson::kArrayType);
@@ -67,8 +67,17 @@ SecondStage::SecondStage()
 		std::string name = "Line" + std::to_string(i);
 		for (int axisIndex = 0; axisIndex < 3; ++axisIndex)
 		{
-			line[i].data.startPos.m128_f32[axisIndex] = stageParamLoader.doc[name.c_str()]["StartPos"][axisIndex].GetFloat();
-			line[i].data.endPos.m128_f32[axisIndex] = stageParamLoader.doc[name.c_str()]["EndPos"][axisIndex].GetFloat();
+			int x = 0;
+			int y = 0;
+			int z = 0;
+			line[i].data.startPos.x = stageParamLoader.doc[name.c_str()]["StartPos"][x].GetFloat();
+			line[i].data.endPos.x = stageParamLoader.doc[name.c_str()]["EndPos"][x].GetFloat();
+
+			line[i].data.startPos.y = stageParamLoader.doc[name.c_str()]["StartPos"][y].GetFloat();
+			line[i].data.endPos.y = stageParamLoader.doc[name.c_str()]["EndPos"][y].GetFloat();
+
+			line[i].data.startPos.z = stageParamLoader.doc[name.c_str()]["StartPos"][z].GetFloat();
+			line[i].data.endPos.z = stageParamLoader.doc[name.c_str()]["EndPos"][z].GetFloat();
 		}
 	}
 
@@ -122,12 +131,12 @@ void SecondStage::Update()
 		string name = "Line" + std::to_string(i);
 		if (ImGui::TreeNode(name.c_str()))
 		{
-			ImGui::InputFloat("StartPosX", &line[i].data.startPos.m128_f32[0]);
-			ImGui::InputFloat("StartPosY", &line[i].data.startPos.m128_f32[1]);
-			ImGui::InputFloat("StartPosZ", &line[i].data.startPos.m128_f32[2]);
-			ImGui::InputFloat("EndPosX", &line[i].data.endPos.m128_f32[0]);
-			ImGui::InputFloat("EndPosY", &line[i].data.endPos.m128_f32[1]);
-			ImGui::InputFloat("EndPosZ", &line[i].data.endPos.m128_f32[2]);
+			ImGui::InputFloat("StartPosX", &line[i].data.startPos.x);
+			ImGui::InputFloat("StartPosY", &line[i].data.startPos.y);
+			ImGui::InputFloat("StartPosZ", &line[i].data.startPos.z);
+			ImGui::InputFloat("EndPosX", &line[i].data.endPos.x);
+			ImGui::InputFloat("EndPosY", &line[i].data.endPos.y);
+			ImGui::InputFloat("EndPosZ", &line[i].data.endPos.z);
 			ImGui::TreePop();
 		}
 	}
@@ -149,11 +158,18 @@ void SecondStage::Update()
 		for (int i = 0; i < JSON_ARRAY_NUM; ++i)
 		{
 			std::string name = "Line" + std::to_string(i);
-			for (int axisIndex = 0; axisIndex < 3; ++axisIndex)
-			{
-				line[i].data.startPos.m128_f32[axisIndex] = stageParamLoader.doc[name.c_str()]["StartPos"][axisIndex].GetFloat();
-				line[i].data.endPos.m128_f32[axisIndex] = stageParamLoader.doc[name.c_str()]["EndPos"][axisIndex].GetFloat();
-			}
+			
+			int x = 0;
+			int y = 0;
+			int z = 0;
+			line[i].data.startPos.x = stageParamLoader.doc[name.c_str()]["StartPos"][x].GetFloat();
+			line[i].data.endPos.x = stageParamLoader.doc[name.c_str()]["EndPos"][x].GetFloat();
+
+			line[i].data.startPos.y = stageParamLoader.doc[name.c_str()]["StartPos"][y].GetFloat();
+			line[i].data.endPos.y = stageParamLoader.doc[name.c_str()]["EndPos"][y].GetFloat();
+
+			line[i].data.startPos.z = stageParamLoader.doc[name.c_str()]["StartPos"][z].GetFloat();
+			line[i].data.endPos.z = stageParamLoader.doc[name.c_str()]["EndPos"][z].GetFloat();
 		}
 	}
 
@@ -165,8 +181,8 @@ void SecondStage::Update()
 			std::string name = "Line" + std::to_string(i);
 			for (int axisIndex = 0; axisIndex < 3; ++axisIndex)
 			{
-				stageParamLoader.doc[name.c_str()]["StartPos"][axisIndex].SetFloat(line[i].data.startPos.m128_f32[axisIndex]);
-				stageParamLoader.doc[name.c_str()]["EndPos"][axisIndex].SetFloat(line[i].data.endPos.m128_f32[axisIndex]);
+				stageParamLoader.doc[name.c_str()]["StartPos"][axisIndex].SetFloat(line[i].data.startPos.ConvertXMVECTOR().m128_f32[axisIndex]);
+				stageParamLoader.doc[name.c_str()]["EndPos"][axisIndex].SetFloat(line[i].data.endPos.ConvertXMVECTOR().m128_f32[axisIndex]);
 			}
 		}
 		stageParamLoader.ExportFile(KazFilePathName::StageParamPath + "StageParamData_SecondStage.json");
@@ -176,23 +192,23 @@ void SecondStage::Update()
 #pragma endregion
 	for (int i = 0; i < 4; i++)
 	{
-		line[i].data.startPos.m128_f32[2] += -1.0f;
-		line[i].data.endPos.m128_f32[2] += -1.0f;
-		if (line[i].data.startPos.m128_f32[2] <= -150.0f)
+		line[i].data.startPos.z += -1.0f;
+		line[i].data.endPos.z += -1.0f;
+		if (line[i].data.startPos.z <= -150.0f)
 		{
-			line[i].data.startPos.m128_f32[2] = 1400.0f;
-			line[i].data.endPos.m128_f32[2] = 1400.0f;
+			line[i].data.startPos.z = 1400.0f;
+			line[i].data.endPos.z = 1400.0f;
 		}
 	}
 
 	for (int i = 25; i < line.size(); i++)
 	{
-		line[i].data.startPos.m128_f32[2] += -1.0f;
-		line[i].data.endPos.m128_f32[2] += -1.0f;
-		if (line[i].data.startPos.m128_f32[2] <= -150.0f)
+		line[i].data.startPos.z += -1.0f;
+		line[i].data.endPos.z += -1.0f;
+		if (line[i].data.startPos.z <= -150.0f)
 		{
-			line[i].data.startPos.m128_f32[2] = 1400.0f;
-			line[i].data.endPos.m128_f32[2] = 1400.0f;
+			line[i].data.startPos.z = 1400.0f;
+			line[i].data.endPos.z = 1400.0f;
 		}
 	}
 }

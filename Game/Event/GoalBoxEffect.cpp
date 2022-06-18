@@ -8,30 +8,30 @@ GoalBoxEffect::GoalBoxEffect()
 	int handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::GoalPath + "GoalEffect.png");
 	for (int i = 0; i < lightRender.size(); ++i)
 	{
-		lightRender[i] = std::make_unique<Sprite3DRender>(XMFLOAT2(0.0f, 0.0f));
+		lightRender[i] = std::make_unique<Sprite3DRender>();
 		lightRender[i]->data.handle = handle;
 		lightRender[i]->data.pipelineName = PIPELINE_NAME_SPRITE_GOAL_EFFECT_MULTITEX;
 		uvHandle[i] = lightRender[i]->CreateConstBuffer(sizeof(GoalLightData), typeid(GoalLightData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
 	}
 
 
-	lightRender[0]->data.transform.pos = { 0,-0.5,0 };
-	lightRender[1]->data.transform.pos = { -0.5,0,0 };
-	lightRender[2]->data.transform.pos = { 0,0.5,0 };
-	lightRender[3]->data.transform.pos = { 0.5,0,0 };
-	lightRender[4]->data.transform.pos = { 0.5,0,0, };
-	lightRender[5]->data.transform.pos = { 0,-0.2,0, };
-	lightRender[6]->data.transform.pos = { -0.5,0,0 };
-	lightRender[7]->data.transform.pos = { 0,0,0 };
+	lightRender[0]->data.transform.pos = { 0.0f,-0.5f,0.0f };
+	lightRender[1]->data.transform.pos = { -0.5f,0.0f,0.0f };
+	lightRender[2]->data.transform.pos = { 0.0f,0.5f,0.0f };
+	lightRender[3]->data.transform.pos = { 0.5f,0.0f,0.0f };
+	lightRender[4]->data.transform.pos = { 0.5f,0.0f,0.0f };
+	lightRender[5]->data.transform.pos = { 0.0f,-0.2f,0.0f };
+	lightRender[6]->data.transform.pos = { -0.5f,0.0f,0.0f };
+	lightRender[7]->data.transform.pos = { 0.0f,0.0f,0.0f };
 
-	lightRender[0]->data.transform.rotation = { 0,-40,90 };
-	lightRender[1]->data.transform.rotation = { -70,0,0 };
-	lightRender[2]->data.transform.rotation = { 0,40,270 };
-	lightRender[3]->data.transform.rotation = { -50,0,180 };
-	lightRender[4]->data.transform.rotation = { 0,180,10 };
-	lightRender[5]->data.transform.rotation = { -10,0,130 };
-	lightRender[6]->data.transform.rotation = { 10,40,50 };
-	lightRender[7]->data.transform.rotation = { 0,40,230 };
+	lightRender[0]->data.transform.rotation = { 0.0f,-40.0f,90.0f };
+	lightRender[1]->data.transform.rotation = { -70.0f,0.0f,0.0f };
+	lightRender[2]->data.transform.rotation = { 0.0f,40.0f,270.0f };
+	lightRender[3]->data.transform.rotation = { -50.0f,0.0f,180.0f };
+	lightRender[4]->data.transform.rotation = { 0.0f,180.0f,10.0f };
+	lightRender[5]->data.transform.rotation = { -10.0f,0.0f,130.0f };
+	lightRender[6]->data.transform.rotation = { 10.0f,40.0f,50.0f };
+	lightRender[7]->data.transform.rotation = { 0.0f,40.0f,230.0f };
 
 	disappearFlag = false;
 	motherPtr = nullptr;
@@ -103,15 +103,15 @@ void GoalBoxEffect::Update()
 	//{
 	//	{
 	//		std::string name = "X" + std::to_string(i);
-	//		ImGui::InputFloat(name.c_str(), &lightRender[i]->data.transform.pos.m128_f32[0]);
+	//		ImGui::InputFloat(name.c_str(), &lightRender[i]->data.transform.pos.x);
 	//	}
 	//	{
 	//		std::string name = "Y" + std::to_string(i);
-	//		ImGui::InputFloat(name.c_str(), &lightRender[i]->data.transform.pos.m128_f32[1]);
+	//		ImGui::InputFloat(name.c_str(), &lightRender[i]->data.transform.pos.y);
 	//	}
 	//	{
 	//		std::string name = "Z" + std::to_string(i);
-	//		ImGui::InputFloat(name.c_str(), &lightRender[i]->data.transform.pos.m128_f32[2]);
+	//		ImGui::InputFloat(name.c_str(), &lightRender[i]->data.transform.pos.z);
 	//	}
 	//}
 	//ImGui::End();

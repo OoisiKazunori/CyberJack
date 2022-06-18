@@ -1,8 +1,9 @@
-#include "DebugScene.h"
+#include"DebugScene.h"
 #include"../Camera/CameraMgr.h"
 #include"../Input/KeyBoradInputManager.h"
 #include"../Math/KazMath.h"
 #include"../Helper/KazHelper.h"
+#include"../Helper/KazBufferHelper.h"
 #include"../KazLibrary/Pipeline/GraphicsPipeLineMgr.h"
 #include"../KazLibrary/DirectXCommon/DirectX12CmdList.h"
 #include"../KazLibrary/Buffer/DescriptorHeapMgr.h"
@@ -16,20 +17,20 @@ DebugScene::DebugScene()
 	buffer = std::make_unique<CreateGpuBuffer>();
 
 	int num = 1000000;
-	//å…¥åŠ›ç”¨ã®ãƒãƒƒãƒ•ã‚¡ä½œæˆ
+	//“ü—Í—p‚Ìƒoƒbƒtƒ@ì¬
 	inputHandle = buffer->CreateBuffer(KazBufferHelper::SetStructureBuffer(sizeof(InputData) * num));
-	//å‡ºåŠ›ç”¨ã®ãƒãƒƒãƒ•ã‚¡ä½œæˆ
+	//o—Í—p‚Ìƒoƒbƒtƒ@ì¬
 	outPutHandle = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(OutPutData) * num));
-	//å…±é€šç”¨ã®ãƒãƒƒãƒ•ã‚¡
+	//‹¤’Ê—p‚Ìƒoƒbƒtƒ@
 	commonHandle = buffer->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(CommonData)));
 
-	//ãƒ‡ãƒ¼ã‚¿ã‚’å…¥åŠ›ã—ã¦ã¿ã‚‹
+	//ƒf[ƒ^‚ð“ü—Í‚µ‚Ä‚Ý‚é
 	//inputData = 1;
 
-	//äºŒã¤ã®ãƒãƒƒãƒ•ã‚¡ã‚’ãƒ‡ã‚¹ã‚¯ãƒªãƒ—ã‚¿ãƒ’ãƒ¼ãƒ—ã«ç™»éŒ²
+	//“ñ‚Â‚Ìƒoƒbƒtƒ@‚ðƒfƒXƒNƒŠƒvƒ^ƒq[ƒv‚É“o˜^
 	size = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_TEXTURE_COMPUTEBUFFER);
 
-	//ä»®è¨­å®š
+	//‰¼Ý’è
 	D3D12_SHADER_RESOURCE_VIEW_DESC inputDesc = {};
 	inputDesc.Format = DXGI_FORMAT_UNKNOWN;
 	inputDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
@@ -40,7 +41,7 @@ DebugScene::DebugScene()
 	inputDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
 
 
-	//ä»®è¨­å®š
+	//‰¼Ý’è
 	D3D12_UNORDERED_ACCESS_VIEW_DESC outPutDesc = {};
 	outPutDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
 	outPutDesc.Format = DXGI_FORMAT_UNKNOWN;
@@ -57,19 +58,13 @@ DebugScene::DebugScene()
 
 	DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize, inputDesc, buffer->GetBufferData(inputHandle).Get());
 	DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + 1, outPutDesc, buffer->GetBufferData(outPutHandle).Get());
-	//å¾Œã§ç¬¬ä¸‰å¼•æ•°ã‚’æ¶ˆãã†
+	//Œã‚Å‘æŽOˆø”‚ðÁ‚»‚¤
 	DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + 2, commonDesc, buffer->GetBufferData(commonHandle).Get());
 
 
 	instanceBox = std::make_unique<BoxPolygonRender>(true, INSTANCE_NUM_MAX);
 	instanceBox->data.pipelineName = PIPELINE_NAME_INSTANCE_COLOR;
-	instanceBox->CreateConstBuffer(matData.size() * sizeof(XMMATRIX), typeid(XMMATRIX).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
-
-	for (int i = 0; i < matData.size(); ++i)
-	{
-		matData[i];
-		//instanceBox[i]->TransData(, , );
-	}
+	instanceBox->CreateConstBuffer(KazBufferHelper::GetBufferSize<UINT>(matData.size(), sizeof(XMMATRIX)), typeid(XMMATRIX).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
 
 }
 
@@ -90,18 +85,18 @@ void DebugScene::Update()
 {
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
 
-	//ã‚³ãƒ³ãƒ”ãƒ¥ãƒ¼ãƒˆç”¨ã®ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³è¨­å®š
+	//ƒRƒ“ƒsƒ…[ƒg—p‚ÌƒpƒCƒvƒ‰ƒCƒ“Ý’è
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_TEST);
 
-	//å…¥åŠ›ç”¨ã®ãƒ‡ãƒ¼ã‚¿è»¢é€
+	//“ü—Í—p‚Ìƒf[ƒ^“]‘—
 	buffer->TransData(inputHandle, &inputData, sizeof(InputData));
 
-	//å…¥åŠ›ç”¨ã®ãƒãƒƒãƒ•ã‚¡è¨­å®š
+	//“ü—Í—p‚Ìƒoƒbƒtƒ@Ý’è
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(size.startSize));
-	//å‡ºåŠ›ç”¨ã®ãƒãƒƒãƒ•ã‚¡è¨­å®š
+	//o—Í—p‚Ìƒoƒbƒtƒ@Ý’è
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(size.startSize + 1));
 
-	//å…±é€šãƒ‡ãƒ¼ã‚¿ã®ãƒãƒƒãƒ•ã‚¡è¨­å®šã¨è»¢é€
+	//‹¤’Êƒf[ƒ^‚Ìƒoƒbƒtƒ@Ý’è‚Æ“]‘—
 	{
 		CommonData data;
 		data.cameraMat = CameraMgr::Instance()->GetViewMatrix();
@@ -109,7 +104,7 @@ void DebugScene::Update()
 		buffer->TransData(commonHandle, &data, sizeof(CommonData));
 	}
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(2, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(size.startSize + 2));
-	//ãƒ‡ã‚£ã‚¹ãƒ‘ãƒƒãƒ
+	//ƒfƒBƒXƒpƒbƒ`
 	DirectX12CmdList::Instance()->cmdList->Dispatch(100, 10, 1);
 }
 
@@ -122,10 +117,9 @@ void DebugScene::Input()
 {
 	KeyBoradInputManager *input = KeyBoradInputManager::Instance();
 
-#pragma region ã‚«ãƒ¡ãƒ©æ“ä½œ
+#pragma region Camera
 	debugCameraMove = { 0,0,0 };
 	float debugSpeed = 1;
-	//ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½Ú“ï¿½
 	if (input->InputState(DIK_D))
 	{
 		debugCameraMove.x = -debugSpeed;
@@ -136,7 +130,6 @@ void DebugScene::Input()
 	}
 	if (input->InputState(DIK_W))
 	{
-		//yï¿½È‚Ì‚É‘Oï¿½Éiï¿½ï¿½....
 		debugCameraMove.y = debugSpeed;
 	}
 	if (input->InputState(DIK_S))
@@ -144,8 +137,6 @@ void DebugScene::Input()
 		debugCameraMove.y = -debugSpeed;
 	}
 
-
-	//ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½pï¿½x
 	if (input->InputState(DIK_RIGHTARROW))
 	{
 		angle.x += debugSpeed;
@@ -169,68 +160,6 @@ void DebugScene::Input()
 #pragma endregion
 
 }
-
-//ï¿½Rï¿½ï¿½ï¿½gï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½[ï¿½Î‰ï¿½
-//void DebugScene::Input(ControllerInputManager *INPUT)
-//{
-//#pragma region ï¿½fï¿½oï¿½bï¿½N
-//	//ï¿½fï¿½oï¿½bï¿½Nï¿½ï¿½ï¿½[ï¿½h
-//	if (INPUT->InputTrigger(XINPUT_GAMEPAD_B))
-//	{
-//		debugFlag = !debugFlag;
-//	}
-//
-//	if (debugFlag)
-//	{
-//		debugCameraMove = { 0,0,0 };
-//		float debugSpeed = 1;
-//		//ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½Ú“ï¿½
-//		if (INPUT->InputStickState(LEFT_STICK, RIGHT_SIDE))
-//		{
-//			debugCameraMove.x = -debugSpeed;
-//		}
-//		if (INPUT->InputStickState(LEFT_STICK, LEFT_SIDE))
-//		{
-//			debugCameraMove.x = debugSpeed;
-//		}
-//		if (INPUT->InputStickState(LEFT_STICK, UP_SIDE))
-//		{
-//			debugCameraMove.y = debugSpeed;
-//		}
-//		if (INPUT->InputStickState(LEFT_STICK, DOWN_SIDE))
-//		{
-//			debugCameraMove.y = -debugSpeed;
-//		}
-//
-//
-//
-//		//ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½pï¿½x
-//		if (INPUT->InputStickState(RIGHT_STICK, RIGHT_SIDE))
-//		{
-//			angle.x += debugSpeed;
-//		}
-//		if (INPUT->InputStickState(RIGHT_STICK, LEFT_SIDE))
-//		{
-//			angle.x += -debugSpeed;
-//		}
-//
-//		if (INPUT->InputStickState(RIGHT_STICK, UP_SIDE))
-//		{
-//			angle.y += debugSpeed;
-//		}
-//		if (INPUT->InputStickState(RIGHT_STICK, DOWN_SIDE))
-//		{
-//			angle.y += -debugSpeed;
-//		}
-//
-//
-//	}
-//#pragma endregion
-//
-//	eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
-//	targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
-//
-//}
 
 int DebugScene::SceneChange()
 {

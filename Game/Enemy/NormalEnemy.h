@@ -10,7 +10,7 @@ class NormalEnemy:public IEnemy
 public:
 	NormalEnemy();
 
-	void Init(const XMVECTOR &POS);
+	void Init(const KazMath::Vec3<float> &POS);
 	void Finalize();
 	void Update();
 	void Draw();

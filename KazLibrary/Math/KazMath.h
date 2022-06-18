@@ -44,7 +44,12 @@ namespace KazMath
 		};
 		XMFLOAT2 ConvertXMFLOAT2()
 		{
-			return DirectX::XMFLOAT2(x, y);
+			return DirectX::XMFLOAT2(static_cast<float>(x), static_cast<float>(y));
+		};
+		XMVECTOR ConvertXMVECTOR()
+		{
+			DirectX::XMVECTOR result = { static_cast<float>(x), static_cast<float>(y), 0.0f, 0.0f };
+			return result;
 		};
 
 		Vec2<int>Int()const
@@ -179,7 +184,7 @@ namespace KazMath
 	{
 		T x, y, z;
 
-		Vec3() 
+		Vec3()
 		{
 			x = 0;
 			y = 0;
@@ -188,13 +193,19 @@ namespace KazMath
 		Vec3(T X, T Y, T Z) :x(X), y(Y), z(Z) {};
 		float Length() const
 		{
-			return sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2));
+			return static_cast<float>(sqrt(pow(x, 2.0f) + pow(y, 2.0f) + pow(z, 2.0f)));
 		};
 		Vec3(Vec2<T>XY, T Z) :x(XY.x), y(XY.y), z(Z) {};
 
 		float Distance(const Vec3 &To)const
 		{
-			return sqrt(pow(To.x - x, 2) + pow(To.y - y, 2) + pow(To.z - z, 2));
+			Vec3 lpow;
+			lpow.x = { static_cast<float>(pow(To.x - x, 2.0f)) };
+			lpow.y = { static_cast<float>(pow(To.y - y, 2.0f)) };
+			lpow.z = { static_cast<float>(pow(To.z - z, 2.0f)) };
+
+
+			return static_cast<float>(sqrt(lpow.x + lpow.y + lpow.z));
 		};
 		Vec3<float> GetNormal()const
 		{
@@ -209,21 +220,22 @@ namespace KazMath
 			y /= len;
 			z /= len;
 		};
-		XMFLOAT3 ConvertXMFLOAT3()
+		XMFLOAT3 ConvertXMFLOAT3()const
 		{
-			return DirectX::XMFLOAT3(x, y, z);
+			return DirectX::XMFLOAT3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
 		};
-		XMVECTOR ConvertXMVECTOR()
+		XMVECTOR ConvertXMVECTOR()const
 		{
-			return XMVECTOR(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), 0.0f);
+			XMVECTOR result = { static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), 0.0f };
+			return result;
 		};
 
 		Vec3<int>Int()const
 		{
-			return Vec3<int>(x, y, z); 
+			return Vec3<int>(x, y, z);
 		}
 		Vec3<float>Float()const
-		{ 
+		{
 			return Vec3<float>((float)x, (float)y, (float)z);
 		}
 
@@ -349,11 +361,174 @@ namespace KazMath
 			y = fmodf(y, rhs.y);
 			z = fmodf(z, rhs.z);
 		};
+
+#pragma endregion
+	};
+#pragma endregion
+
+#pragma region Vec4
+	template<typename T>
+	struct Vec4
+	{
+		T x, y, z, a;
+
+		Vec4()
+		{
+			x = 0;
+			y = 0;
+			z = 0;
+			a = 0;
+		};
+		Vec4(T X, T Y, T Z, T A) :x(X), y(Y), z(Z), a(A) {};
+
+		XMFLOAT3 ConvertXMFLOAT3()
+		{
+			return DirectX::XMFLOAT3(x, y, z);
+		};
+		XMVECTOR ConvertXMVECTOR()
+		{
+			XMVECTOR result = { static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), static_cast<float>(a) };
+			return result;
+		};
+
+		Vec4<int>Int()const
+		{
+			return Vec4<int>(x, y, z);
+		}
+		Vec4<float>Float()const
+		{
+			return Vec4<float>((float)x, (float)y, (float)z);
+		}
+
+		void Abs()
+		{
+			x = fabs(x);
+			y = fabs(y);
+			z = fabs(z);
+		}
+
+#pragma region オペレーター演算子
+		Vec4 operator-()const
+		{
+			return Vec4(-x, -y, -z);
+		}
+		Vec4 operator+(const Vec4 &rhs)const
+		{
+			return Vec4(x + rhs.x, y + rhs.y, z + rhs.z);
+		};
+		Vec4 operator-(const Vec4 &rhs)const
+		{
+			return Vec4(x - rhs.x, y - rhs.y, z - rhs.z);
+		};
+		Vec4 operator*(const Vec4 &rhs) const
+		{
+			return Vec4(x * rhs.x, y * rhs.y, z * rhs.z);
+		};
+		Vec4 operator*(const float &rhs)const
+		{
+			return Vec4(x * rhs, y * rhs, z * rhs);
+		};
+		Vec4 operator/(const Vec4 &rhs)const
+		{
+			return Vec4(x / rhs.x, y / rhs.y, z / rhs.z);
+		};
+		Vec4 operator/(const float &rhs)const
+		{
+			return Vec4(x / rhs, y / rhs, z / rhs);
+		};
+		Vec4 operator%(const Vec4 &rhs)const
+		{
+			return Vec4(fmodf(x, rhs.x), fmodf(y, rhs.y), fmodf(z, rhs.z));
+		};
+		void operator=(const Vec4 &rhs)
+		{
+			x = rhs.x;
+			y = rhs.y;
+			z = rhs.z;
+		};
+		bool operator==(const Vec4 &rhs)const
+		{
+			return (x == rhs.x && y == rhs.y && z == rhs.z);
+		};
+		bool operator!=(const Vec4 &rhs)const
+		{
+			return !(*this == rhs);
+		};
+		void operator+=(const Vec4 &rhs)
+		{
+			x += rhs.x;
+			y += rhs.y;
+			z += rhs.z;
+		};
+		void operator+=(const float &rhs)
+		{
+			x += rhs;
+			y += rhs;
+			z += rhs;
+		};
+		void operator-=(const Vec4 &rhs)
+		{
+			x -= rhs.x;
+			y -= rhs.y;
+			z -= rhs.z;
+		};
+		void operator-=(const float &rhs)
+		{
+			x -= rhs;
+			y -= rhs;
+			z -= rhs;
+		};
+		void operator*=(const Vec4 &rhs)
+		{
+			x *= rhs.x;
+			y *= rhs.y;
+			z *= rhs.z;
+		};
+		void operator*=(const float &rhs)
+		{
+			x *= rhs;
+			y *= rhs;
+			z *= rhs;
+		};
+		void operator/=(const Vec4 &rhs)
+		{
+			x /= rhs.x;
+			y /= rhs.y;
+			z /= rhs.z;
+		};
+		void operator/=(const float &rhs)
+		{
+			x /= rhs;
+			y /= rhs;
+			z /= rhs;
+		};
+		void operator%=(const Vec4 &rhs)
+		{
+			x = fmodf(x, rhs.x);
+			y = fmodf(y, rhs.y);
+			z = fmodf(z, rhs.z);
+		};
 #pragma endregion
 	};
 #pragma endregion
 
 
+	struct Color
+	{
+		Vec4<int> intColor;
+		Vec4<float> floatColor;
+
+		Color(int R, int G, int B, int A) :intColor({ R,G,B,A }), floatColor({ static_cast<float>(R) / 255.0f,static_cast<float>(G) / 255.0f ,static_cast<float>(B) / 255.0f ,static_cast<float>(A) / 255.0f })
+		{};
+		Color(float R, float G, float B, float A) :intColor({ static_cast<int>(R * 255.0f),static_cast<int>(G * 255.0f),static_cast<int>(B * 255.0f),static_cast<int>(A * 255.0f) }), floatColor({ R,G,B,A })
+		{};
+
+		void operator=(const Color &rhs)
+		{
+			intColor = rhs.intColor;
+			floatColor = rhs.floatColor;
+		}
+	};
 
 
 	/// <summary>
@@ -367,9 +542,9 @@ namespace KazMath
 
 		Transform3D()
 		{
-			pos = { 0.0f,0.0f,0.0f };
-			scale = { 1.0f,1.0f,1.0f };
-			rotation = { 0.0f,0.0f,0.0f };
+			pos = Vec3<float>(0.0f, 0.0f, 0.0f);
+			scale = Vec3<float>(1.0f, 1.0f, 1.0f);
+			rotation = Vec3<float>(0.0f, 0.0f, 0.0f);
 		};
 	};
 
@@ -418,7 +593,10 @@ namespace KazMath
 	Vec3<T> CaluAngle3D(const Vec3<T> &POS, float ANGLE, const Vec3<T> &CENTRAL_POS);
 
 	template<typename T>
-	T Rand(T MAX_NUM, T MIN_NUM);
+	T Rand(T MAX_NUM, T MIN_NUM)
+	{
+		return (MAX_NUM - MIN_NUM) * rand() / RAND_MAX + MIN_NUM;
+	}
 
 	void ConvertMatrixFromFbx(XMMATRIX *DST, const FbxAMatrix &SRC);
 
@@ -447,18 +625,8 @@ namespace KazMath
 	/// <param name="VIEW_MAT">ビュー行列</param>
 	/// <param name="PROJECTION_MAT">プロジェクション行列</param>
 	/// <returns>ワールド座標</returns>
-	template <typename T>
-	Vec3<T> ConvertScreenPosToWorldPos(const Vec3<T> &SCREEN_POS, XMMATRIX VIEW_MAT, XMMATRIX PROJECTION_MAT);
+	Vec3<float> ConvertScreenPosToWorldPos(const Vec3<float> &SCREEN_POS, XMMATRIX VIEW_MAT, XMMATRIX PROJECTION_MAT);
 
-	/// <summary>
-	/// ワールド座標からスクリーン座標に変換します
-	/// </summary>
-	/// <param name="SCREEN_POS">ワールド座標</param>
-	/// <param name="VIEW_MAT">ビュー行列</param>
-	/// <param name="PROJECTION_MAT">プロジェクション行列</param>
-	/// <returns>スクリーン座標</returns>
-	template <typename T>
-	Vec3<T> ConvertWorldPosToScreenPos(const Vec3<T> &WORLD_POS, XMMATRIX VIEW_MAT, XMMATRIX PROJECTION_MAT);
 
 
 	/// <summary>
@@ -536,8 +704,7 @@ namespace KazMath
 	/// <param name="EYE_POS">視点座標</param>
 	/// <param name="ANGLE">角度</param>
 	/// <returns>デバック用の視点座標</returns>
-	template<typename T>
-	Vec3<T> CaluEyePosForDebug(const Vec3<T> &EYE_POS, const Vec3<float> &MOVE, const Vec2<float> &ANGLE);
+	Vec3<float> CaluEyePosForDebug(const Vec3<float> &EYE_POS, const Vec3<float> &MOVE, const Vec2<float> &ANGLE);
 
 	/// <summary>
 	/// デバック用の注視点を計算します
@@ -545,17 +712,14 @@ namespace KazMath
 	/// <param name="EYE_POS">視点座標</param>
 	/// <param name="ANGLE">角度</param>
 	/// <returns>デバック用の注視点</returns>
-	template<typename T>
-	Vec3<T> CaluTargetPosForDebug(const Vec3<T> &EYE_POS, float ANGLE);
+	Vec3<float> CaluTargetPosForDebug(const Vec3<float> &EYE_POS, float ANGLE);
 
 
 	bool MatrixEqualOrNot(const XMMATRIX &MAT_1, const XMMATRIX &MAT_2);
 
-	template<typename T>
-	XMMATRIX CaluSlopeMatrix(const Vec3<T> &Y,const Vec3<T> &Z);
+	XMMATRIX CaluSlopeMatrix(const Vec3<float> &Y, const Vec3<float> &Z);
 
-	template<typename T>
-	XMMATRIX CaluFrontMatrix(const Vec3<T> &Y, const Vec3<T> &Z);
+	XMMATRIX CaluFrontMatrix(const Vec3<float> &Y, const Vec3<float> &Z);
 
 	int RadianToAngle(float RADIAN);
 	float AngleToRadian(int ANGLE);
@@ -595,8 +759,17 @@ namespace KazMath
 	/// <param name="t"></param>
 	/// <param name="Loop"></param>
 	/// <returns></returns>
-	template <typename T>
-	Vec3<T> SplinePosition(const std::vector<Vec3<T>> &points, size_t startIndex, float t, bool Loop);
+	Vec3<float> SplinePosition(const std::vector<Vec3<float>> &points, size_t startIndex, float t, bool Loop);
+
+
+	/// <summary>
+	/// ワールド座標からスクリーン座標に変換します
+	/// </summary>
+	/// <param name="SCREEN_POS">ワールド座標</param>
+	/// <param name="VIEW_MAT">ビュー行列</param>
+	/// <param name="PROJECTION_MAT">プロジェクション行列</param>
+	/// <returns>スクリーン座標</returns>
+	Vec3<float> ConvertWorldPosToScreenPos(const Vec3<float> &WORLD_POS, XMMATRIX VIEW_MAT, XMMATRIX PROJECTION_MAT);
 
 }
 

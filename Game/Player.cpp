@@ -40,12 +40,12 @@ void Player::Update()
 {
 	render->data.transform.pos = pos;
 	/*ImGui::Begin("Player");
-	ImGui::InputFloat("ScaleX", &render->data.transform.scale.m128_f32[0]);
-	ImGui::InputFloat("ScaleY", &render->data.transform.scale.m128_f32[1]);
-	ImGui::InputFloat("ScaleZ", &render->data.transform.scale.m128_f32[2]);
-	ImGui::InputFloat("RotaX", &render->data.transform.rotation.m128_f32[0]);
-	ImGui::InputFloat("RotaY", &render->data.transform.rotation.m128_f32[1]);
-	ImGui::InputFloat("RotaZ", &render->data.transform.rotation.m128_f32[2]);
+	ImGui::InputFloat("ScaleX", &render->data.transform.scale.x);
+	ImGui::InputFloat("ScaleY", &render->data.transform.scale.y);
+	ImGui::InputFloat("ScaleZ", &render->data.transform.scale.z);
+	ImGui::InputFloat("RotaX", &render->data.transform.rotation.x);
+	ImGui::InputFloat("RotaY", &render->data.transform.rotation.y);
+	ImGui::InputFloat("RotaZ", &render->data.transform.rotation.z);
 	ImGui::End();*/
 
 	hpUi.Update();

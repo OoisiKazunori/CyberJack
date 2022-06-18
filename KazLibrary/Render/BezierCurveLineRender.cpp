@@ -55,9 +55,9 @@
 //	XMVECTOR b = XMVectorSet(CONTROL_POINT.x, CONTROL_POINT.y, CONTROL_POINT.z, 1);
 //	XMVECTOR a_b_Distance = b - a;
 //
-//	speed[0].x = a_b_Distance.m128_f32[0] / div;
-//	speed[0].y = a_b_Distance.m128_f32[1] / div;
-//	speed[0].z = a_b_Distance.m128_f32[2] / div;
+//	speed[0].x = a_b_Distance.x / div;
+//	speed[0].y = a_b_Distance.y / div;
+//	speed[0].z = a_b_Distance.z / div;
 //
 //
 //	//êßå‰ì_2~3Ç÷
@@ -65,9 +65,9 @@
 //	XMVECTOR d = XMVectorSet(POS2.x, POS2.y, POS2.z, 1);
 //	XMVECTOR c_d_Distance = d - c;
 //
-//	speed[1].x = c_d_Distance.m128_f32[0] / div;
-//	speed[1].y = c_d_Distance.m128_f32[1] / div;
-//	speed[1].z = c_d_Distance.m128_f32[2] / div;
+//	speed[1].x = c_d_Distance.x / div;
+//	speed[1].y = c_d_Distance.y / div;
+//	speed[1].z = c_d_Distance.z / div;
 //
 //
 //

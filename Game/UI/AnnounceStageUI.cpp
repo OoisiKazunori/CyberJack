@@ -52,23 +52,23 @@ void AnnounceStageUI::Update()
 	if (startFlag)
 	{
 		flameTex.data.transform.pos = basePos;
-		larpScale.m128_f32[0] = 4.0f;
+		larpScale.x = 4.0f;
 
 		float mul = 0.3f;
 		//ウィンドウを横に広げる
-		KazMath::Larp(larpScale.m128_f32[0], &flameTex.data.transform.scale.m128_f32[0], mul);
+		KazMath::Larp(larpScale.x, &flameTex.data.transform.scale.x, mul);
 
 
-		if (3.9f <= flameTex.data.transform.scale.m128_f32[0])
+		if (3.9f <= flameTex.data.transform.scale.x)
 		{
-			flameTex.data.transform.scale.m128_f32[0] = 4.0f;
+			flameTex.data.transform.scale.x = 4.0f;
 		}
 		//ウィンドウを縦に広げる
-		if (static_cast<int>(larpScale.m128_f32[0]) == static_cast<int>(flameTex.data.transform.scale.m128_f32[0]))
+		if (static_cast<int>(larpScale.x) == static_cast<int>(flameTex.data.transform.scale.x))
 		{
-			larpScale.m128_f32[1] = 1.0f;
+			larpScale.y = 1.0f;
 		}
-		KazMath::Larp(larpScale.m128_f32[1], &flameTex.data.transform.scale.m128_f32[1], mul);
+		KazMath::Larp(larpScale.y, &flameTex.data.transform.scale.y, mul);
 
 
 
@@ -101,36 +101,36 @@ void AnnounceStageUI::Update()
 	if (endFlag)
 	{
 		flameTex.data.transform.pos = basePos;
-		larpScale.m128_f32[1] = 0.1f;
+		larpScale.y = 0.1f;
 
 		float mul = 0.3f;
 		//ウィンドウの縦を狭める
-		KazMath::Larp(larpScale.m128_f32[1], &flameTex.data.transform.scale.m128_f32[1], mul);
+		KazMath::Larp(larpScale.y, &flameTex.data.transform.scale.y, mul);
 
 
-		if (flameTex.data.transform.scale.m128_f32[1] <= 0.2f)
+		if (flameTex.data.transform.scale.y <= 0.2f)
 		{
-			//flameTex.data.transform.scale.m128_f32[1] = 0.1f;
-			larpScale.m128_f32[0] = 0.0f;
+			//flameTex.data.transform.scale.y = 0.1f;
+			larpScale.x = 0.0f;
 		}
 		//ウィンドウの横を無くす
-		if (flameTex.data.transform.scale.m128_f32[0] <= 0.0f)
+		if (flameTex.data.transform.scale.x <= 0.0f)
 		{
-			larpScale.m128_f32[1] = 0.0f;
+			larpScale.y = 0.0f;
 			endFlag = false;
 		}
-		KazMath::Larp(larpScale.m128_f32[0], &flameTex.data.transform.scale.m128_f32[0], mul);
+		KazMath::Larp(larpScale.x, &flameTex.data.transform.scale.x, mul);
 	}
 
 
 
 	//ImGui::Begin("Layer");
-	//ImGui::InputFloat("PosX", &areaTex.data.transform.pos.m128_f32[0]);
-	//ImGui::InputFloat("PosY", &areaTex.data.transform.pos.m128_f32[1]);
-	//ImGui::InputFloat("PosZ", &areaTex.data.transform.pos.m128_f32[2]);
-	//ImGui::InputFloat("ScaleX", &areaTex.data.transform.scale.m128_f32[0]);
-	//ImGui::InputFloat("ScaleY", &areaTex.data.transform.scale.m128_f32[1]);
-	//ImGui::InputFloat("ScaleZ", &areaTex.data.transform.scale.m128_f32[2]);
+	//ImGui::InputFloat("PosX", &areaTex.data.transform.pos.x);
+	//ImGui::InputFloat("PosY", &areaTex.data.transform.pos.y);
+	//ImGui::InputFloat("PosZ", &areaTex.data.transform.pos.z);
+	//ImGui::InputFloat("ScaleX", &areaTex.data.transform.scale.x);
+	//ImGui::InputFloat("ScaleY", &areaTex.data.transform.scale.y);
+	//ImGui::InputFloat("ScaleZ", &areaTex.data.transform.scale.z);
 	//ImGui::End();
 
 }

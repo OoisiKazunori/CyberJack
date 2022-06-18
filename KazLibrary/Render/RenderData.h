@@ -124,8 +124,8 @@ struct Obj3DData :public IData
 {
 	KazMath::Transform3D transform;
 	short handle;
-	XMVECTOR upVector;
-	XMVECTOR frontVector;
+	KazMath::Vec3<float> upVector;
+	KazMath::Vec3<float> frontVector;
 	XMMATRIX motherMat;
 	int pipelineName;
 	XMFLOAT4 color;
@@ -148,8 +148,8 @@ struct Obj3DData :public IData
 
 struct LineDrawData :public IData
 {
-	XMVECTOR startPos;
-	XMVECTOR endPos;
+	KazMath::Vec3<float> startPos;
+	KazMath::Vec3<float> endPos;
 	XMFLOAT4 color;
 	XMMATRIX motherMat;
 	int pipelineName;

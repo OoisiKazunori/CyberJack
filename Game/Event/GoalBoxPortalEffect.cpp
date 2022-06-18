@@ -48,9 +48,9 @@ void GoalBoxPortalEffect::Update()
 
 	//‘JˆÚ’²®—p
 	//ImGui::Begin("Sprite");
-	//ImGui::InputFloat("PosZ", &sprite->data.transform.pos.m128_f32[2]);
-	//ImGui::InputFloat("ScaleX", &sprite->data.transform.scale.m128_f32[0]);
-	//ImGui::InputFloat("ScaleY", &sprite->data.transform.scale.m128_f32[1]);
+	//ImGui::InputFloat("PosZ", &sprite->data.transform.pos.z);
+	//ImGui::InputFloat("ScaleX", &sprite->data.transform.scale.x);
+	//ImGui::InputFloat("ScaleY", &sprite->data.transform.scale.y);
 	//ImGui::End();
 
 }

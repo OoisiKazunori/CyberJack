@@ -60,7 +60,7 @@ void ClassScene::Input()
 	//	ControllerInputManager *inputController = ControllerInputManager::Instance();
 
 #pragma region カメラ操作
-	debugCameraMove = { 0,0,0 };
+	debugCameraMove = { 0.0f,0.0f,0.0f };
 	float debugSpeed = 1;
 	//�J�����ړ�
 	if (input->InputState(DIK_D))

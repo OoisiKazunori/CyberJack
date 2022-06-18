@@ -214,7 +214,7 @@ RootSignatureMode GraphicsPipeLineMgr::GetRootSignatureName(PipeLineNames PIPELI
 }
 
 template <typename T>
-inline bool GraphicsPipeLineMgr::IsitSafe(T NAME,unsigned short SIZE)
+inline bool GraphicsPipeLineMgr::IsitSafe(T NAME, size_t SIZE)
 {
 	if (0 <= NAME && NAME < SIZE)
 	{

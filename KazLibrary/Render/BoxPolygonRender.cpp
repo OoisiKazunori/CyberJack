@@ -2,7 +2,7 @@
 
 BoxPolygonRender::BoxPolygonRender(bool INSTANCE_FLAG, int INSTANCE_NUM)
 {
-	gpuBuffer.reset(new CreateGpuBuffer);
+	gpuBuffer = std::make_unique<CreateGpuBuffer>();
 	positionDirtyFlag.reset(new DirtySet(data.transform.pos));
 	scaleDirtyFlag.reset(new DirtySet(data.transform.scale));
 	rotationDirtyFlag.reset(new DirtySet(data.transform.rotation));
@@ -87,7 +87,7 @@ BoxPolygonRender::BoxPolygonRender(bool INSTANCE_FLAG, int INSTANCE_NUM)
 
 
 	//法線ベクトル
-	for (int i = 0; i < IndexLEN / 3; i++)
+	for (unsigned int i = 0; i < IndexLEN / 3; i++)
 	{
 		USHORT index[3];
 

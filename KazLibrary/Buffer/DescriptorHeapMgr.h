@@ -19,7 +19,7 @@ public:
 	void Release(const short &HANDLE);
 
 
-	const BufferMemorySize GetSize(const BufferMemory &TYPE);
+	BufferMemorySize GetSize(const BufferMemory &TYPE)const;
 	const D3D12_GPU_DESCRIPTOR_HANDLE GetGpuDescriptorView(const short &HANDLE);
 	const D3D12_CPU_DESCRIPTOR_HANDLE GetCpuDescriptorView(const short &HANDLE);
 	void SetDescriptorHeap();

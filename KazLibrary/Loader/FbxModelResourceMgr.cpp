@@ -49,10 +49,10 @@ short FbxModelResourceMgr::LoadModel(const string &MODEL_NAME)
 
 
 
-
+	
 	//リソースに保管
-	unsigned short vertByte = model->vertices.size() * sizeof(Model::VertexPosNormalUvSkin);
-	unsigned short indexByte = model->indices.size() * sizeof(unsigned short);
+	unsigned short vertByte = KazBufferHelper::GetBufferSize<unsigned short>(model->vertices.size(), sizeof(Model::VertexPosNormalUvSkin));
+	unsigned short indexByte = KazBufferHelper::GetBufferSize<unsigned short>(model->indices.size(), sizeof(unsigned short));
 
 
 	short num = handle->GetHandle();
@@ -77,7 +77,7 @@ short FbxModelResourceMgr::LoadModel(const string &MODEL_NAME)
 	modelResource[num]->diffuse = model->diffuse;
 	modelResource[num]->ambient = model->ambient;
 
-	modelResource[num]->indicisNum = model->indices.size();
+	modelResource[num]->indicisNum = static_cast<UINT>(model->indices.size());
 
 	modelResource[num]->bone = model->bones;
 
@@ -110,6 +110,10 @@ const FbxResourceD* FbxModelResourceMgr::GetResourceData(const short &HANDLE)
 	if (KazHelper::IsitInAnArray(HANDLE, modelResource.size()))
 	{
 		return modelResource[HANDLE];
+	}
+	else
+	{
+		return nullptr;
 	}
 }
 
@@ -387,8 +391,9 @@ string FbxModelResourceMgr::ExtractFileName(const string &PATH)
 {
 	size_t pos1;
 
+	std::string search = "\\";
 	//区切り文字'￥￥'が出てくる一番最後の部分を検索
-	pos1 = PATH.rfind('¥¥');
+	pos1 = PATH.rfind(search);
 	if (pos1 != string::npos)
 	{
 		return PATH.substr(pos1 + 1, PATH.size() - pos1 - 1);
@@ -535,8 +540,4 @@ void FbxModelResourceMgr::ParseSkin(Model *MODEL, FbxMesh *FBX_MESH)
 			}
 		}
 	}
-
-
-	bones[0].fbxCluster;
-
 }

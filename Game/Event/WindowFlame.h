@@ -10,7 +10,7 @@ class WindowFlame
 public:
 	WindowFlame();
 
-	void Init(const KazMath::Transform3D &POS, const XMVECTOR &SCALE, bool APPEAR_WINDOW);
+	void Init(const KazMath::Transform3D &POS, const KazMath::Vec2<float> &SCALE, bool APPEAR_WINDOW);
 	void Update();
 	void Draw();
 
@@ -21,11 +21,11 @@ private:
 	bool endFlag;
 	int stageNum;				//現在のステージ番号を表示します
 
-	XMVECTOR basePos, larpScale;
+	KazMath::Vec3<float> basePos, larpScale;
 
 	std::array<int, 10> numberHandle;
 	Sprite3DRender flameTex;	//ウィンドウの描画
 
-	XMVECTOR lerpMaxScale;
+	KazMath::Vec2<float> lerpMaxScale;
 };
 

@@ -108,7 +108,7 @@ void GraphicsRootSignature::CreateRootSignature(RootSignatureMode ROOTSIGNATURE,
 #pragma endregion
 
 
-	CreateMyRootSignature(ROOTSIGNATURE_DATA.sample, rootparam.data(), rootparam.size(), ROOTSIGNATURE);
+	CreateMyRootSignature(ROOTSIGNATURE_DATA.sample, rootparam.data(), static_cast<UINT>(rootparam.size()), ROOTSIGNATURE);
 
 	if (ROOTSIGNATURE == ROOTSIGNATURE_DATA_SRV_UAV_CBV)
 	{
@@ -139,7 +139,7 @@ const ComPtr<ID3D12RootSignature> GraphicsRootSignature::GetRootSignature(RootSi
 	return rootSignature[ROOT_SIGNATURE];
 }
 
-void GraphicsRootSignature::CreateMyRootSignature(D3D12_STATIC_SAMPLER_DESC SAMPLER_DATA, D3D12_ROOT_PARAMETER *ROOT_PARAM_DATA, short DATA_MAX, RootSignatureMode ROOTSIGNATURE)
+void GraphicsRootSignature::CreateMyRootSignature(D3D12_STATIC_SAMPLER_DESC SAMPLER_DATA, D3D12_ROOT_PARAMETER *ROOT_PARAM_DATA, UINT DATA_MAX, RootSignatureMode ROOTSIGNATURE)
 {
 	CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDesc;
 	rootSignatureDesc.Init_1_0(

@@ -7,7 +7,7 @@ Sprite2DRender::Sprite2DRender()
 {
 	anchorPoint = { 0.5f,0.5f };
 
-	gpuBuffer.reset(new CreateGpuBuffer);
+	gpuBuffer = std::make_unique<CreateGpuBuffer>();
 
 	positionDirtyFlag.reset(new DirtySet(data.transform.pos));
 	scaleDirtyFlag.reset(new DirtySet(data.transform.scale));
@@ -31,15 +31,15 @@ Sprite2DRender::Sprite2DRender()
 
 	//データの定義-----------------------------------------------------------------------------------------------------
 	//頂点データ
-	KazRenderHelper::InitVerticesPos(&vertices[0].pos, &vertices[1].pos, &vertices[2].pos, &vertices[3].pos, anchorPoint);
+	KazRenderHelper::InitVerticesPos(&vertices[0].pos, &vertices[1].pos, &vertices[2].pos, &vertices[3].pos, anchorPoint.ConvertXMFLOAT2());
 	KazRenderHelper::InitUvPos(&vertices[0].uv, &vertices[1].uv, &vertices[2].uv, &vertices[3].uv);
 	//インデックスデータ
 	indices = KazRenderHelper::InitIndciesForPlanePolygon();
 	//データの定義-----------------------------------------------------------------------------------------------------
 
 
-	VertByte = vertices.size() * sizeof(SpriteVertex);
-	IndexByte = indices.size() * sizeof(unsigned short);
+	VertByte = KazBufferHelper::GetBufferSize<UINT>(vertices.size(), sizeof(SpriteVertex));
+	IndexByte = KazBufferHelper::GetBufferSize<UINT>(indices.size(), sizeof(sizeof(unsigned short)));
 
 
 	//バッファ生成-----------------------------------------------------------------------------------------------------
@@ -108,7 +108,7 @@ void Sprite2DRender::Draw()
 	{
 		baseMatWorldData.matWorld = XMMatrixIdentity();
 		baseMatWorldData.matWorld *= XMMatrixRotationZ(XMConvertToRadians(data.transform.rotation));
-		baseMatWorldData.matWorld *= XMMatrixTranslationFromVector(data.transform.pos);
+		baseMatWorldData.matWorld *= XMMatrixTranslationFromVector(data.transform.pos.ConvertXMVECTOR());
 
 		//親行列を掛ける
 		motherMat = baseMatWorldData.matWorld;
@@ -127,34 +127,34 @@ void Sprite2DRender::Draw()
 		if (DescriptorHeapMgr::Instance()->GetType(data.handle) != DESCRIPTORHEAP_MEMORY_TEXTURE_RENDERTARGET)
 		{
 			//サイズをXMFLOAT3からXMFLOAT2に直す
-			XMFLOAT2 tmpSize = {};
+			KazMath::Vec2<float> tmpSize = {};
 			XMFLOAT4 tmpModiSize = {};
 			//サイズをXMFLOAT3からXMFLOAT2に直す
 			if (!data.changeSizeTypeFlag)
 			{
-				tmpSize = { data.transform.scale.m128_f32[0], data.transform.scale.m128_f32[1] };
+				tmpSize =  data.transform.scale;
 			}
 			else
 			{
 				tmpModiSize = data.size;
 			}
-			texSize.x = static_cast<float>(renderData.shaderResourceMgrInstance->GetTextureSize(data.handle).Width);
-			texSize.y = static_cast<float>(renderData.shaderResourceMgrInstance->GetTextureSize(data.handle).Height);
+			texSize.x = static_cast<int>(renderData.shaderResourceMgrInstance->GetTextureSize(data.handle).Width);
+			texSize.y = static_cast<int>(renderData.shaderResourceMgrInstance->GetTextureSize(data.handle).Height);
 
 
-			XMFLOAT2 leftUp, rightDown;
+			KazMath::Vec2<float> leftUp, rightDown;
 			leftUp = { 0.0f,0.0f };
 			rightDown = { 1.0f,1.0f };
 
 			//サイズ変更
-			array<XMFLOAT2, 4>tmp;
+			array<KazMath::Vec2<float>, 4>tmp;
 			if (!data.changeSizeTypeFlag)
 			{
 				tmp = KazRenderHelper::ChangePlaneScale(leftUp, rightDown, tmpSize, anchorPoint, texSize);
 			}
 			else
 			{
-				tmp = KazRenderHelper::ChangeModiPlaneScale(leftUp, rightDown, tmpModiSize, anchorPoint, texSize);
+				tmp = KazRenderHelper::ChangeModiPlaneScale(leftUp, rightDown, tmpModiSize, anchorPoint.ConvertXMFLOAT2(), texSize.ConvertXMFLOAT2());
 			}
 			
 			for (int i = 0; i < tmp.size(); i++)
@@ -166,17 +166,17 @@ void Sprite2DRender::Draw()
 		else
 		{
 			//サイズをXMFLOAT3からXMFLOAT2に直す
-			XMFLOAT2 tmpSize = { data.transform.scale.m128_f32[0], data.transform.scale.m128_f32[1] };
+			KazMath::Vec2<float> tmpSize = data.transform.scale;
 
-			texSize.x = static_cast<float>(RenderTargetStatus::Instance()->GetBufferData(data.handle)->GetDesc().Width);
-			texSize.y = static_cast<float>(RenderTargetStatus::Instance()->GetBufferData(data.handle)->GetDesc().Height);
+			texSize.x = static_cast<int>(RenderTargetStatus::Instance()->GetBufferData(data.handle)->GetDesc().Width);
+			texSize.y = static_cast<int>(RenderTargetStatus::Instance()->GetBufferData(data.handle)->GetDesc().Height);
 
-			XMFLOAT2 leftUp, rightDown;
+			KazMath::Vec2<float> leftUp, rightDown;
 			leftUp = { 0.0f,0.0f };
 			rightDown = { 1.0f,1.0f };
 
 			//サイズ変更
-			array<XMFLOAT2, 4>tmp = KazRenderHelper::ChangePlaneScale(leftUp, rightDown, tmpSize, anchorPoint, texSize);
+			array<KazMath::Vec2<float>, 4>tmp = KazRenderHelper::ChangePlaneScale(leftUp, rightDown, tmpSize, anchorPoint, texSize);
 			for (int i = 0; i < tmp.size(); i++)
 			{
 				vertices[i].pos = { tmp[i].x,-tmp[i].y,0.0f };
@@ -187,8 +187,8 @@ void Sprite2DRender::Draw()
 	//UV切り取り
 	if (animationHandleDirtyFlag || matrixDirtyFlag)
 	{
-		XMFLOAT2 divSize = renderData.shaderResourceMgrInstance->GetDivData(data.handle).divSize;
-		XMFLOAT2 tmpSize = { data.transform.scale.m128_f32[0], data.transform.scale.m128_f32[1] };
+		KazMath::Vec2<int> divSize = renderData.shaderResourceMgrInstance->GetDivData(data.handle).divSize;
+		KazMath::Vec2<float>  tmpSize = { data.transform.scale.x, data.transform.scale.y };
 
 
 		bool isItSafeToUseAnimationHandleFlag = KazHelper::IsitInAnArray(data.animationHandle, renderData.shaderResourceMgrInstance->GetDivData(data.handle).divLeftUp.size());
@@ -197,7 +197,7 @@ void Sprite2DRender::Draw()
 
 		if (isItSafeToUseDivDataFlag && isItSafeToUseAnimationHandleFlag)
 		{
-			XMFLOAT2 divLeftUpPos = renderData.shaderResourceMgrInstance->GetDivData(data.handle).divLeftUp[data.animationHandle];
+			KazMath::Vec2<int> divLeftUpPos = renderData.shaderResourceMgrInstance->GetDivData(data.handle).divLeftUp[data.animationHandle];
 			KazRenderHelper::VerticesCut(divSize, divLeftUpPos, &vertices[0].pos, &vertices[1].pos, &vertices[2].pos, &vertices[3].pos, tmpSize, anchorPoint);
 			KazRenderHelper::UVCut(divLeftUpPos, divSize, texSize, &vertices[0].uv, &vertices[1].uv, &vertices[2].uv, &vertices[3].uv);
 
@@ -270,7 +270,7 @@ void Sprite2DRender::Draw()
 	renderData.cmdListInstance->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	renderData.cmdListInstance->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
 	renderData.cmdListInstance->cmdList->IASetIndexBuffer(&indexBufferView);
-	renderData.cmdListInstance->cmdList->DrawIndexedInstanced(indices.size(), 1, 0, 0, 0);
+	renderData.cmdListInstance->cmdList->DrawIndexedInstanced(static_cast<UINT>(indices.size()), 1, 0, 0, 0);
 	//描画命令-----------------------------------------------------------------------------------------------------
 
 

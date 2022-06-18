@@ -72,7 +72,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 	OutputDebugStringA("ゲームのメインループを開始します\n");
-	srand(time(NULL));
+	srand(static_cast<UINT>(time(NULL)));
 
 	while (CheckMessageFlag)
 	{

@@ -21,10 +21,10 @@ private:
 	int disappearTimer;
 	int subRedHpNum;
 
-	XMVECTOR basePos;
+	KazMath::Vec2<float> basePos;
 	std::array<Sprite2DRender, 5> hpTex;
 	std::array<Sprite2DRender, 5> redHpTex;
-	std::array<XMVECTOR, 5> lerpScale;
+	std::array<KazMath::Vec2<float>, 5> lerpScale;
 	std::array<int, 5> timer;
 	std::array<bool, 5> lerpFlag;
 	std::array<Sprite2DRender, 5> hpFlame;

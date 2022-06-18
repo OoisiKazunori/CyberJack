@@ -40,25 +40,24 @@ bool KazHelper::DirtyFlag(float VALUE, float OLD_VALUE)
 	}
 }
 
-template <typename T>
-bool KazHelper::IsInScreen(const KazMath::Vec3<T> &POS)
+bool KazHelper::IsInScreen(const KazMath::Vec3<float> &POS)
 {
-	KazMath::Vec3<T> screenPos = KazMath::ConvertWorldPosToScreenPos(POS, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
+	KazMath::Vec3<float> screenPos = KazMath::ConvertWorldPosToScreenPos(POS, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
 
 	bool outFlag = true;
-	if (screenPos.x <= static_cast<T>(0))
+	if (screenPos.x <= static_cast<float>(0))
 	{
 		outFlag = false;
 	}
-	if (screenPos.y <= static_cast<T>(0))
+	if (screenPos.y <= static_cast<float>(0))
 	{
 		outFlag = false;
 	}
-	if (static_cast<T>(WIN_X) <= screenPos.x)
+	if (static_cast<float>(WIN_X) <= screenPos.x)
 	{
 		outFlag = false;
 	}
-	if (static_cast<T>(WIN_Y) <= screenPos.y)
+	if (static_cast<float>(WIN_Y) <= screenPos.y)
 	{
 		outFlag = false;
 	}
@@ -99,8 +98,6 @@ int KazHelper::GetDigit(int NUM)
 
 std::vector<int> KazHelper::CountNumber(int TIME, int ZERO)
 {
-	float score = TIME;
-
 	int haveZero = 0;
 
 	//0–„‚ß‚·‚é
@@ -115,10 +112,10 @@ std::vector<int> KazHelper::CountNumber(int TIME, int ZERO)
 
 	std::vector<int> Number(haveZero);
 
-	int tmp = score;
+	int tmp = TIME;
 	for (int i = 0; tmp > 0; i++)
 	{
-		float result = tmp % 10;
+		int result = tmp % 10;
 		Number[i] = result;
 		tmp /= 10;
 	}

@@ -38,7 +38,7 @@ LineEffect::~LineEffect()
 	allFinishFlag = false;
 }
 
-void LineEffect::RockOn(const XMVECTOR &START_POS, const XMVECTOR &END_POS, const XMVECTOR &START_PLAYER_DISTANCE, const XMVECTOR &END_PLAYER_DISTANCE)
+void LineEffect::RockOn(const KazMath::Vec3<float> &START_POS, const KazMath::Vec3<float> &END_POS, const KazMath::Vec3<float> &START_PLAYER_DISTANCE, const KazMath::Vec3<float> &END_PLAYER_DISTANCE)
 {
 	if (!rockOnFlag)
 	{
@@ -106,9 +106,9 @@ void LineEffect::Update()
 
 	for (int i = 0; i < 3; ++i)
 	{
-		if (distance.m128_f32[i] != 0.0f)
+		if (distance.ConvertXMVECTOR().m128_f32[i] != 0.0f)
 		{
-			rate = distance.m128_f32[i];
+			rate = distance.ConvertXMVECTOR().m128_f32[i];
 			axis = i;
 			break;
 		}
@@ -134,7 +134,20 @@ void LineEffect::Update()
 			distance *= -1;
 		}
 		line->data.endPos = endPos;
-		line->data.endPos.m128_f32[axis] = startPos.m128_f32[axis] + distance;
+		switch (axis)
+		{
+		case 0:
+			line->data.endPos.x = startPos.x + distance;
+			break;
+		case 1:
+			line->data.endPos.y = startPos.y + distance;
+			break;
+		case 2:
+			line->data.endPos.z = startPos.z + distance;
+			break;
+		default:
+			break;
+		}
 
 		if (lockOnTime < rate)
 		{
@@ -246,7 +259,7 @@ void LineEffect::Draw()
 
 }
 
-void LineEffect::MoveLine(const XMVECTOR &VALUE)
+void LineEffect::MoveLine(const KazMath::Vec3<float> &VALUE)
 {
 	value = VALUE;
 }

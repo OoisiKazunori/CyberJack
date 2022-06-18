@@ -13,20 +13,23 @@ float EasingMaker(int ChooseType, int ChooseEase, float t) {
 	}
 	else if (ChooseType == Out)
 	{
-		return 1 - FuncPtr[ChooseEase](1 - t);
+		return 1.0f - FuncPtr[ChooseEase](1.0f - t);
 	}
 	else if (ChooseType == InOut)
 	{
-		if (t < 0.5)
+		if (t < 0.5f)
 		{
-			return FuncPtr[ChooseEase](2 * t) / 2;
+			return FuncPtr[ChooseEase](2.0f * t) / 2.0f;
 		}
 		else
 		{
-			return 1 - FuncPtr[ChooseEase](2 - 2 * t) / 2;
+			return 1.0f - FuncPtr[ChooseEase](2.0f - 2.0f * t) / 2.0f;
 		}
 	}
-
+	else
+	{
+		return -1.0f;
+	}
 }
 
 
@@ -38,7 +41,7 @@ float InLinear(float t)
 }
 float InSmooth(float t)
 {
-	return t * t * (3 - t) / 2;
+	return t * t * (3.0f - t) / 2.0f;
 }
 float InQuad(float t)
 {
@@ -58,37 +61,37 @@ float InQuint(float t)
 }
 float InSine(float t)
 {
-	return 1 - cos(t * 3.14 / 2);
+	return 1.0f - static_cast<float>(cos(t * 3.14f / 2.0f));
 }
 float InCirc(float t)
 {
-	return 1 - sqrt(Max(0, 1 - t * t));
+	return 1.0f - static_cast<float>(sqrt(Max(0, 1.0f - t * t)));
 }
 float InExp(float t)
 {
-	return pow(2, -(1 - t) * 10);
+	return static_cast<float>(pow(2.0f, -(1.0f - t) * 10.0f));
 }
 float InBack(float t)
 {
-	return t * t * (2.70158 * t - 1.70158);
+	return t * t * (2.70158f * t - 1.70158f);
 }
 float InSoftBack(float t)
 {
-	return t * t * (2 * t - 1);
+	return t * t * (2.0f * t - 1.0f);
 }
 float InElastic(float t)
 {
-	return 56 * t * t * t * t * t - 105 * t * t * t * t + 60 * t * t * t - 10 * t * t;
+	return 56.0f * t * t * t * t * t - 105.0f * t * t * t * t + 60.0f * t * t * t - 10.0f * t * t;
 }
 float InBounce(float t)
 {
-	float pow2, bounce = 4;
+	float pow2, bounce = 4.0f;
 
-	while (t < ((pow2 = pow(2, --bounce)) - 1) / 11) {
-
+	while (t < ((pow2 = static_cast<float>(pow(2.0f, --bounce))) - 1.0f) / 11.0f)
+	{
 	}
 
-	return 1 / pow(4, 3 - bounce) - 7.5625 * pow((pow2 * 3 - 2) / 22 - t, 2);
+	return static_cast<float>(1.0f / pow(4.0f, 3.0f - bounce) - 7.5625f * pow((pow2 * 3.0f - 2.0f) / 22.0f - t, 2.0f));
 }
 
 

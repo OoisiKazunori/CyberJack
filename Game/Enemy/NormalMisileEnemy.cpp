@@ -8,7 +8,7 @@ NormalMisileEnemy::NormalMisileEnemy()
 	shotSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Shot.wav", false);
 }
 
-void NormalMisileEnemy::Init(const XMVECTOR &POS)
+void NormalMisileEnemy::Init(const KazMath::Vec3<float> &POS)
 {
 	iEnemy_ModelRender->data.transform.pos = POS;	//座標の初期化
 	lerpPos = POS;	//座標の初期化
@@ -23,9 +23,9 @@ void NormalMisileEnemy::Init(const XMVECTOR &POS)
 	iEnemy_ModelRender->data.color.y = 255.0f;
 	iEnemy_ModelRender->data.color.z = 255.0f;
 	iEnemy_ModelRender->data.color.w = 0.0f;
-	iEnemy_ModelRender->data.transform.rotation.m128_f32[0] = 0.0f;
-	iEnemy_ModelRender->data.transform.rotation.m128_f32[1] = 90.0f;
-	iEnemy_ModelRender->data.transform.rotation.m128_f32[2] = 0.0f;
+	iEnemy_ModelRender->data.transform.rotation.x = 0.0f;
+	iEnemy_ModelRender->data.transform.rotation.y = 90.0f;
+	iEnemy_ModelRender->data.transform.rotation.z = 0.0f;
 	initShotFlag = false;
 
 	initDeadSoundFlag = false;
@@ -44,7 +44,7 @@ void NormalMisileEnemy::Update()
 		iEnemy_EnemyStatusData->genarateData.enemyType = ENEMY_TYPE_MISILE_SPLINE;
 
 		//ノックバック
-		XMVECTOR kockBackVel = { 0.0f,0.0f,60.0f };
+		KazMath::Vec3<float> kockBackVel = { 0.0f,0.0f,60.0f };
 		lerpPos = iEnemy_ModelRender->data.transform.pos + kockBackVel;
 		SoundManager::Instance()->PlaySoundMem(shotSoundHandle, 1);
 		initShotFlag = true;
@@ -52,7 +52,7 @@ void NormalMisileEnemy::Update()
 
 	//死亡演出処理
 	//デバックキーor当たり判定内&&死亡時
-	if (EnableToHit(iEnemy_ModelRender->data.transform.pos.m128_f32[2]) && !iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
+	if (EnableToHit(iEnemy_ModelRender->data.transform.pos.z) && !iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
 	{
 		iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME_MULTITEX;
 		iEnemy_ModelRender->data.removeMaterialFlag = true;
@@ -82,13 +82,13 @@ void NormalMisileEnemy::Update()
 
 
 		++shotTimer;
-		XMVECTOR vel = { 0.0f,0.0f,-1.0f };
+		KazMath::Vec3<float> vel = { 0.0f,0.0f,-1.0f };
 		lerpPos += vel;
 	}
 
-	KazMath::Larp(lerpPos.m128_f32[2], &iEnemy_ModelRender->data.transform.pos.m128_f32[2], 0.1f);
+	KazMath::Larp(lerpPos.z, &iEnemy_ModelRender->data.transform.pos.z, 0.1f);
 
-	if (!EnableToHit(iEnemy_ModelRender->data.transform.pos.m128_f32[2]))
+	if (!EnableToHit(iEnemy_ModelRender->data.transform.pos.z))
 	{
 		iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag = false;
 		iEnemy_EnemyStatusData->outOfStageFlag = true;

@@ -211,7 +211,7 @@ private:
 	friend ISingleton<GraphicsRootSignature>;
 
 
-	void CreateMyRootSignature(D3D12_STATIC_SAMPLER_DESC SAMPLER_DATA, D3D12_ROOT_PARAMETER *ROOT_PARAM_DATA, short DATA_MAX, RootSignatureMode ROOTSIGNATURE);
+	void CreateMyRootSignature(D3D12_STATIC_SAMPLER_DESC SAMPLER_DATA, D3D12_ROOT_PARAMETER *ROOT_PARAM_DATA, UINT DATA_MAX, RootSignatureMode ROOTSIGNATURE);
 
 	RootSignatureMode CheckEnum(RootSignatureMode MODE)
 	{

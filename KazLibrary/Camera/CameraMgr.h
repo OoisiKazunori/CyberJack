@@ -1,6 +1,7 @@
 #pragma once
 #include"../DirectXCommon/Base.h"
 #include"../Helper/ISinglton.h"
+#include"../KazLibrary/Math/KazMath.h"
 
 enum CameraType
 {
@@ -46,9 +47,9 @@ public:
 	/// <param name="EYE_POS">視点座標</param>
 	/// <param name="TARGET_POS">注視点</param>
 	/// <param name="UP">上ベクトル</param>
-	void Camera(const XMFLOAT3 &EYE_POS, const XMFLOAT3 &TARGET_POS, const XMFLOAT3 &UP, int CAMERA_INDEX = 0);
+	void Camera(const KazMath::Vec3<float> &EYE_POS, const KazMath::Vec3<float> &TARGET_POS, const KazMath::Vec3<float> &UP, int CAMERA_INDEX = 0);
 
-	XMMATRIX CreateCamera(XMFLOAT3 EYE_POS, XMFLOAT3 TARGET_POS, XMFLOAT3 UP);
+	XMMATRIX CreateCamera(const KazMath::Vec3<float> &EYE_POS,const KazMath::Vec3<float> &TARGET_POS,const KazMath::Vec3<float> &UP);
 
 	/// <summary>
 	/// ビュー行列を渡します
@@ -77,7 +78,7 @@ public:
 
 
 	// 透視投影変換行列を視野角を指定して取得する。
-	const XMMATRIX &GetPerspectiveMatProjectionAngle(float angle);
+	XMMATRIX GetPerspectiveMatProjectionAngle(float angle);
 
 
 

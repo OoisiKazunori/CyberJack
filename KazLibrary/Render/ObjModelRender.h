@@ -58,17 +58,18 @@ private:
 		for (; itr != smoothData.end(); ++itr)
 		{
 			vector<unsigned short> &v = itr->second;
-			XMVECTOR normal = {};
+			KazMath::Vec3<float> normal = {};
 			for (unsigned short index : v)
 			{
 				unsigned short tmp = index;
-				normal += XMVectorSet(DATA[tmp].normal.x, DATA[tmp].normal.y, DATA[tmp].normal.z, 0);
+				normal += KazMath::Vec3<float>(DATA[tmp].normal.x, DATA[tmp].normal.y, DATA[tmp].normal.z);
 			}
-			normal = XMVector3Normalize(normal / (float)v.size());
+			normal /= static_cast<float>(v.size());
+			normal.Normalize();
 
 			for (unsigned short index : v)
 			{
-				DATA[index].normal = { normal.m128_f32[0],normal.m128_f32[1],normal.m128_f32[2] };
+				DATA[index].normal = { normal.x,normal.y,normal.z };
 			}
 		}
 	}

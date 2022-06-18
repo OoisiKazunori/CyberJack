@@ -19,7 +19,7 @@ ObjModelRender::ObjModelRender(bool INSTANCE_FLAG, int INSTANCE_NUM, bool MATERI
 	cameraProjectionDirtyFlag.reset(new DirtySet(renderData.cameraMgrInstance->perspectiveMat));
 
 
-	gpuBuffer.reset(new CreateGpuBuffer);
+	gpuBuffer = std::make_unique<CreateGpuBuffer>();
 
 	if (!instanceFlag)
 	{
@@ -68,17 +68,17 @@ void ObjModelRender::Draw()
 			baseMatWorldData.matWorld = XMMatrixIdentity();
 			baseMatWorldData.matWorld *= baseMatWorldData.matScale;
 			baseMatWorldData.matWorld *= baseMatWorldData.matRota;
-			if (data.upVector.m128_f32[0] != 0.0f ||
-				data.upVector.m128_f32[1] != 1.0f ||
-				data.upVector.m128_f32[2] != 0.0f)
+			if (data.upVector.x != 0.0f ||
+				data.upVector.y != 1.0f ||
+				data.upVector.z != 0.0f)
 			{
 				baseMatWorldData.matWorld *= KazMath::CaluSlopeMatrix(data.upVector, { 0.0f,0.0f,1.0f });
 			}
-			if (data.frontVector.m128_f32[0] != 0.0f ||
-				data.frontVector.m128_f32[1] != 0.0f ||
-				data.frontVector.m128_f32[2] != 1.0f)
+			if (data.frontVector.x != 0.0f ||
+				data.frontVector.y != 0.0f ||
+				data.frontVector.z != 1.0f)
 			{
-				baseMatWorldData.matWorld *= KazMath::CaluFrontMatrix({ 0.0f,1.0f,0.0f }, data.frontVector);
+				baseMatWorldData.matWorld *= KazMath::CaluFrontMatrix(KazMath::Vec3<float>(0.0f,1.0f,0.0f), data.frontVector);
 			}
 			baseMatWorldData.matWorld *= baseMatWorldData.matTrans;
 			//baseMatWorldData.matWorld *= data.motherMat;

@@ -1,7 +1,7 @@
 #include"../RenderTarget/GaussianBuler.h"
 #include"../Math/KazMath.h"
 
-GaussianBuler::GaussianBuler(XMFLOAT2 GRAPH_SIZE, XMFLOAT3 COLOR)
+GaussianBuler::GaussianBuler(const KazMath::Vec2<UINT> &GRAPH_SIZE, XMFLOAT3 COLOR)
 {
 	buffers.reset(new CreateGpuBuffer);
 
@@ -27,8 +27,8 @@ GaussianBuler::GaussianBuler(XMFLOAT2 GRAPH_SIZE, XMFLOAT3 COLOR)
 	}
 
 	graphSize = GRAPH_SIZE;
-	rect = CD3DX12_RECT(0.0f, 0.0f, graphSize.x, graphSize.y);
-	viewport = CD3DX12_VIEWPORT(0.0f, 0.0f, graphSize.x, graphSize.y);
+	rect = CD3DX12_RECT(0, 0, static_cast<LONG>(graphSize.x), static_cast<LONG>(graphSize.y));
+	viewport = CD3DX12_VIEWPORT(0.0f, 0.0f, static_cast<float>(graphSize.x), static_cast<float>(graphSize.y));
 
 
 	renderTargetHandle =
@@ -94,8 +94,8 @@ short GaussianBuler::BlurImage(const short& TEXTURE_HANDLE, const short& CURRENT
 		RenderTargetStatus::Instance()->ClearRenderTarget(CURRENT_RENDERTARGET_HANDLE);
 	}
 
-	CD3DX12_RECT Rect(0.0f, 0.0f, WIN_X, WIN_Y);
-	CD3DX12_VIEWPORT Viewport(0.0f, 0.0f, WIN_X, WIN_Y);
+	CD3DX12_RECT Rect(0, 0, static_cast<long>(WIN_X), static_cast<long>(WIN_Y));
+	CD3DX12_VIEWPORT Viewport(0.0f, 0.0f, static_cast<float>(WIN_X), static_cast<float>(WIN_Y));
 	renderData.cmdListInstance->cmdList->RSSetViewports(1, &Viewport);
 	renderData.cmdListInstance->cmdList->RSSetScissorRects(1, &Rect);
 

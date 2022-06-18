@@ -2,7 +2,7 @@
 
 LineRender::LineRender()
 {
-	gpuBuffer.reset(new CreateGpuBuffer);
+	gpuBuffer = std::make_unique<CreateGpuBuffer>();
 
 	positionDirtyFlag[0].reset(new DirtySet(data.startPos));
 	positionDirtyFlag[1].reset(new DirtySet(data.endPos));
@@ -24,8 +24,8 @@ LineRender::LineRender()
 	vertices[1].tickness.x = 0.5;
 	vertices[1].tickness.y = 0.5;
 
-	vertByte = vertices.size() * sizeof(LineVertex);
-
+	
+	vertByte = KazBufferHelper::GetBufferSize<UINT>(vertices.size(), sizeof(LineVertex));
 
 	//バッファ生成-----------------------------------------------------------------------------------------------------
 	//頂点バッファ
@@ -70,8 +70,8 @@ void LineRender::Draw()
 
 	if (positionDirtyFlag)
 	{
-		vertices[0].pos = KazMath::LoadVecotrToXMFLOAT3(data.startPos);
-		vertices[1].pos = KazMath::LoadVecotrToXMFLOAT3(data.endPos);
+		vertices[0].pos = data.startPos.ConvertXMFLOAT3();
+		vertices[1].pos = data.endPos.ConvertXMFLOAT3();
 	}
 	baseMatWorldData.matWorld *= data.motherMat;
 
@@ -105,7 +105,7 @@ void LineRender::Draw()
 	//描画命令-----------------------------------------------------------------------------------------------------
 	renderData.cmdListInstance->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 	renderData.cmdListInstance->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
-	renderData.cmdListInstance->cmdList->DrawInstanced(vertices.size(), 1, 0, 0);
+	renderData.cmdListInstance->cmdList->DrawInstanced(static_cast<UINT>(vertices.size()), 1, 0, 0);
 	//描画命令-----------------------------------------------------------------------------------------------------
 
 
