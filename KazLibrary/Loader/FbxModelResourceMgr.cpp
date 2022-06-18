@@ -57,7 +57,7 @@ short FbxModelResourceMgr::LoadModel(const string &MODEL_NAME)
 
 	short num = handle->GetHandle();
 
-	modelResource.push_back(new FbxResourceD);
+	modelResource.push_back(new FbxResourceData);
 	modelResource[num]->buffers.reset(new CreateGpuBuffer);
 	short vertBuffetHandle = modelResource[num]->buffers->CreateBuffer(KazBufferHelper::SetVertexBufferData(vertByte));
 	short indexBufferHandle = modelResource[num]->buffers->CreateBuffer(KazBufferHelper::SetIndexBufferData(indexByte));
@@ -105,7 +105,7 @@ short FbxModelResourceMgr::LoadModel(const string &MODEL_NAME)
 	return num;
 }
 
-const FbxResourceD* FbxModelResourceMgr::GetResourceData(const short &HANDLE)
+const FbxResourceData* FbxModelResourceMgr::GetResourceData(const short &HANDLE)
 {
 	if (KazHelper::IsitInAnArray(HANDLE, modelResource.size()))
 	{
@@ -117,11 +117,11 @@ const FbxResourceD* FbxModelResourceMgr::GetResourceData(const short &HANDLE)
 	}
 }
 
-void FbxModelResourceMgr::ParseNodeRecursive(Model *MODEL, FbxNode *FBX_NODE, NewNode *PARENT)
+void FbxModelResourceMgr::ParseNodeRecursive(Model *MODEL, FbxNode *FBX_NODE, Node *PARENT)
 {
 	//モデルにノードを追加
 	MODEL->nodes.emplace_back();
-	NewNode &node = MODEL->nodes.back();
+	Node &node = MODEL->nodes.back();
 	//ノード名を取得
 	string name = FBX_NODE->GetName();
 
@@ -472,7 +472,7 @@ void FbxModelResourceMgr::ParseSkin(Model *MODEL, FbxMesh *FBX_MESH)
 	//list、頂点が影響を受けるボーンの全リスト
 	//vector、それを全頂点分
 	//問題
-	vector<list<NewWeightSet>> weightLists(MODEL->vertices.size());
+	vector<list<WeightSet>> weightLists(MODEL->vertices.size());
 
 	//全てのボーンについて
 	for (int i = 0; i < clusterCount; i++)
@@ -495,7 +495,7 @@ void FbxModelResourceMgr::ParseSkin(Model *MODEL, FbxMesh *FBX_MESH)
 			//スキンウェイト
 			float weight = (float)controlPointWeights[j];
 			//その頂点の影響を受けるボーンリストに、ボーンとウェイトのペアを追加
-			weightLists[vertIndex].emplace_back(NewWeightSet{ (UINT)i,weight });
+			weightLists[vertIndex].emplace_back(WeightSet{ (UINT)i,weight });
 		}
 	}
 

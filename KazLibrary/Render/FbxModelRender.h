@@ -23,7 +23,7 @@ private:
 	short indexBufferHandle;
 
 	array<short, 2> constBufferHandle;
-	const FbxResourceD *resourceData;
+	const FbxResourceData *resourceData;
 
 
 

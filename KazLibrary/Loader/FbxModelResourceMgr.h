@@ -10,7 +10,7 @@
 
 
 
-struct NewWeightSet
+struct WeightSet
 {
 	UINT index;
 	float weight;
@@ -20,12 +20,14 @@ struct NewWeightSet
 /// <summary>
 /// ノード一つ分の情報
 /// </summary>
-struct NewNode
+struct Node
 {
 	/// <summary>
 	/// 名前
 	/// </summary>
 	string name;
+
+	XMFLOAT2 pad;
 	//ローカルスケール
 	XMVECTOR scaling = { 1.0f,1.0f,1.0f,0.0f };
 	//ローカル回転角
@@ -37,7 +39,7 @@ struct NewNode
 	//グローバル変形行列
 	XMMATRIX globalTransform;
 	//親ノード
-	NewNode *parent = nullptr;
+	Node *parent = nullptr;
 };
 
 /// <summary>
@@ -76,11 +78,11 @@ private:
 	};	
 
 	string name;
-	vector<NewNode>nodes;
+	vector<Node>nodes;
 	vector<Bone>bones;
 
 
-	NewNode *meshNode = nullptr;
+	Node *meshNode = nullptr;
 	vector<VertexPosNormalUvSkin>vertices;
 	vector<unsigned short>indices;
 
@@ -98,7 +100,7 @@ public:
 };
 
 
-struct FbxResourceD
+struct FbxResourceData
 {
 public:
 	unique_ptr<CreateGpuBuffer> buffers;
@@ -122,14 +124,14 @@ public:
 
 	short LoadModel(const string &MODEL_NAME);
 
-	const FbxResourceD* GetResourceData(const short &HANDLE);
+	const FbxResourceData* GetResourceData(const short &HANDLE);
 
 private:
 	FbxManager *fbxManager;
 	FbxImporter *fbxImporter;
 	FbxScene *fbxScene;
 
-	vector<FbxResourceD*>modelResource;
+	vector<FbxResourceData*>modelResource;
 
 	unique_ptr<HandleMaker> handle;
 
@@ -139,7 +141,7 @@ private:
 	/// </summary>
 	/// <param name="MODEL">読み込み先のモデルオブジェクト</param>
 	/// <param name="FBX_NODE">解析対象のノード</param>
-	void ParseNodeRecursive(Model *MODEL, FbxNode *FBX_NODE, NewNode *PARENT = nullptr);
+	void ParseNodeRecursive(Model *MODEL, FbxNode *FBX_NODE, Node *PARENT = nullptr);
 
 	/// <summary>
 	/// メッシュ読み取り
