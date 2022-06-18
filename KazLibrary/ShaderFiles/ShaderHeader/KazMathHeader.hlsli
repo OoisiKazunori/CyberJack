@@ -16,7 +16,6 @@ matrix LoadVecToMatrix(float3 POS)
     return output;
 }
 
-    
 matrix Translate(float3 VECTOR)
 {
     matrix result;

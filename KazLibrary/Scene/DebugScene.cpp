@@ -163,10 +163,31 @@ DebugScene::DebugScene()
 			std::array<InputData, TRIANGLE_ARRAY_NUM> data;
 			for (int i = 0; i < TRIANGLE_ARRAY_NUM; ++i)
 			{
-				data[i].pos = { KazMath::FloatRand(10.0f,0.0f),KazMath::FloatRand(10.0f,0.0f),KazMath::FloatRand(10.0f,0.0f),0.0f };
-				data[i].velocity = { KazMath::FloatRand(10.0f,0.0f),KazMath::FloatRand(10.0f,0.0f),KazMath::FloatRand(10.0f,0.0f),0.0f };
+				data[i].pos = { 1.0f,1.0f,1.0f,0.0f };
+				data[i].velocity = { 0.0f,0.0f,0.0f,0.0f };
 				data[i].color = { KazMath::FloatRand(10.0f,0.0f),KazMath::FloatRand(10.0f,0.0f),KazMath::FloatRand(10.0f,0.0f),KazMath::FloatRand(10.0f,0.0f) };
 			}
+			XMVECTOR pos = { data[0].pos.x,data[0].pos.y,data[0].pos.z,0.0f };
+			XMVECTOR scale = { 1.0f,1.0f,1.0f,0.0f };
+			XMVECTOR rota = { 0.0f,0.0f,0.0f,0.0f };
+			XMMATRIX matWorld = {};
+
+			//行列計算の正解
+			{
+				XMMATRIX trans = KazMath::CaluTransMatrix(pos);
+				XMMATRIX scaleM = KazMath::CaluScaleMatrix(scale);
+				XMMATRIX rotaM = KazMath::CaluRotaMatrix(rota);
+				matWorld = scaleM * rotaM * trans;
+			}
+
+			//シェーダー側で計算しようとしている行列計算
+			{
+				XMMATRIX trans = Translate(KazMath::LoadVecotrToXMFLOAT3(pos));
+				XMMATRIX scaleM = Scale(KazMath::LoadVecotrToXMFLOAT3(scale));
+				XMMATRIX rotaM = Rotate(KazMath::LoadVecotrToXMFLOAT3(rota));
+				matWorld = scaleM * rotaM * trans;
+			}
+
 			buffer->TransData(inputHandle, data.data(), TRIANGLE_ARRAY_NUM * sizeof(InputData));
 
 			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};

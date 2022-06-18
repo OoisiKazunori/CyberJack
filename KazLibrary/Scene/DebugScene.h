@@ -111,4 +111,102 @@ private:
 	CSRootConstants rootConst;
 
 	short paramCBHandle;
+
+
+
+	XMMATRIX Translate(XMFLOAT3 VECTOR)
+	{
+		XMMATRIX result;
+		XMVECTOR first = { 1.0f, 0.0f, 0.0f, 0.0f };
+		XMVECTOR second = { 0.0f, 1.0f, 0.0f, 0.0f };
+		XMVECTOR third = { 0.0f, 0.0f, 1.0f, 0.0f };
+		XMVECTOR forth = { VECTOR.x, VECTOR.y, VECTOR.z, 1.0f };
+
+		result.r[0] = first;
+		result.r[1] = second;
+		result.r[2] = third;
+		result.r[3] = forth;
+		return result;
+	}
+
+	XMMATRIX Scale(XMFLOAT3 VECTOR)
+	{
+		XMMATRIX result;
+		XMVECTOR first = { VECTOR.x, 0.0f, 0.0f, 0.0f };
+		XMVECTOR second = { 0.0f, VECTOR.y, 0.0f, 0.0f };
+		XMVECTOR third = { 0.0f, 0.0f, VECTOR.z, 0.0f };
+		XMVECTOR forth = { 0.0f, 0.0f, 0.0f, 1.0f };
+
+		result.r[0] = first;
+		result.r[1] = second;
+		result.r[2] = third;
+		result.r[3] = forth;
+		return result;
+	}
+
+	XMMATRIX RotateX(float ANGLE)
+	{
+		float lsin = sin(ANGLE);
+		float lcos = sin(ANGLE);
+
+		XMMATRIX result;
+		XMVECTOR first = { 0.0f, 0.0f, 0.0f, 0.0f };
+		XMVECTOR second = { 0.0f, lcos, lsin, 0.0f };
+		XMVECTOR third = { 0.0f, -lsin, lcos, 0.0f };
+		XMVECTOR forth = { 0.0f, 0.0f, 0.0f, 1.0f };
+
+		result.r[0] = first;
+		result.r[1] = second;
+		result.r[2] = third;
+		result.r[3] = forth;
+		return result;
+	}
+
+	XMMATRIX RotateY(float ANGLE)
+	{
+		float lsin = sin(ANGLE);
+		float lcos = sin(ANGLE);
+
+		XMMATRIX result;
+		XMVECTOR first = { lcos, 0.0f, -lsin, 0.0f };
+		XMVECTOR second = { 0.0f, 1.0f, 0.0f, 0.0f };
+		XMVECTOR third = { lsin, 0.0f, lcos, 0.0f };
+		XMVECTOR forth = { 0.0f, 0.0f, 0.0f, 1.0f };
+
+		result.r[0] = first;
+		result.r[1] = second;
+		result.r[2] = third;
+		result.r[3] = forth;
+
+		return result;
+	}
+
+	XMMATRIX RotateZ(float ANGLE)
+	{
+		float lsin = sin(ANGLE);
+		float lcos = sin(ANGLE);
+
+		XMMATRIX result;
+		XMVECTOR first = { lcos, lsin, 0.0f, 0.0f };
+		XMVECTOR second = { -lsin, lcos, 0.0f, 0.0f };
+		XMVECTOR third = { 0.0f, 0.0f, 1.0f, 0.0f };
+		XMVECTOR forth = { 0.0f, 0.0f, 0.0f, 1.0f };
+
+		result.r[0] = first;
+		result.r[1] = second;
+		result.r[2] = third;
+		result.r[3] = forth;
+
+		return result;
+	}
+
+	XMMATRIX Rotate(XMFLOAT3 ANGLE)
+	{
+		XMMATRIX rota = XMMatrixIdentity();
+		rota *= RotateZ(ANGLE.z);
+		rota *= RotateX(ANGLE.x);
+		rota *= RotateY(ANGLE.y);
+
+		return rota;
+	}
 };

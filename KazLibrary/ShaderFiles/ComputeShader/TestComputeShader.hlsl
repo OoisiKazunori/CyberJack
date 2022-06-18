@@ -63,14 +63,14 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     //座標計算-------------------------
     float3 outputPos = inputBuffer[index].pos.xyz;
     
-    outputPos += float3(1.0f, 0.0f, 0.0f);
+    //outputPos += float3(1.0f, 0.0f, 0.0f);
     if (50.0f <= outputPos.x)
     {
         outputPos = 0.0f;
     }
     
     matrix matTrans = Translate(outputPos);
-    matrix matRot = RotateX(0.0f) * RotateY(0.0f) * RotateZ(0.0f);
+    matrix matRot = RotateZ(0.0f) * RotateX(0.0f) * RotateY(0.0f);
     matrix matScale = Scale(float3(1.0f, 1.0f, 1.0f));
     matrix matWorld = matScale * matRot * matTrans;
     //座標計算-------------------------
