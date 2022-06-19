@@ -89,7 +89,7 @@ private:
 
 	XMFLOAT3 ambient = { 1.0f,1.0f,1.0f };
 	XMFLOAT3 diffuse = { 1.0f,1.0f,1.0f };
-	vector<short> textureHandle;
+	vector<RESOURCE_HANDLE> textureHandle;
 public:
 	friend class FbxModelResourceMgr;
 
@@ -103,17 +103,21 @@ public:
 struct FbxResourceData
 {
 public:
-	unique_ptr<CreateGpuBuffer> buffers;
+	std::unique_ptr<CreateGpuBuffer> buffers;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 	D3D12_INDEX_BUFFER_VIEW indexBufferView;
-	vector<short> textureHandle;
+	std::vector<RESOURCE_HANDLE> textureHandle;
 	UINT indicisNum;
-	XMFLOAT3 ambient = { 1.0f,1.0f,1.0f };
-	XMFLOAT3 diffuse = { 1.0f,1.0f,1.0f };
-	vector<Model::Bone> bone;
+	XMFLOAT3 ambient;
+	XMFLOAT3 diffuse;
+	std::vector<Model::Bone> bone;
 
-	vector<FbxTime> startTime;
-	vector<FbxTime> endTime;
+	std::vector<FbxTime> startTime;
+	std::vector<FbxTime> endTime;
+
+	FbxResourceData() :indicisNum(0), ambient({ -1.0f,-1.0f,-1.0f }), diffuse({ -1.0f,-1.0f,-1.0f })
+	{
+	}
 };
 
 class FbxModelResourceMgr:public ISingleton<FbxModelResourceMgr>
@@ -122,18 +126,18 @@ public:
 	FbxModelResourceMgr();
 	~FbxModelResourceMgr();
 
-	short LoadModel(const string &MODEL_NAME);
+	RESOURCE_HANDLE LoadModel(const string &MODEL_NAME);
 
-	const FbxResourceData* GetResourceData(const short &HANDLE);
+	const std::shared_ptr<FbxResourceData> &GetResourceData(RESOURCE_HANDLE HANDLE);
 
 private:
 	FbxManager *fbxManager;
 	FbxImporter *fbxImporter;
 	FbxScene *fbxScene;
 
-	vector<FbxResourceData*>modelResource;
-
-	unique_ptr<HandleMaker> handle;
+	std::vector<std::shared_ptr<FbxResourceData>>modelResource;
+	std::shared_ptr<FbxResourceData> errorResource;
+	std::unique_ptr<HandleMaker> handle;
 
 
 	/// <summary>
@@ -165,8 +169,6 @@ private:
 	XMVECTOR FbxDoubleToXMVECTOR(const FbxDouble3 &DOUBLE_3);
 
 	string ExtractFileName(const string &PATH);
-
-	void ConvertMatrixFromFbx(XMMATRIX *DST, const FbxAMatrix &SRC);
 
 };
 

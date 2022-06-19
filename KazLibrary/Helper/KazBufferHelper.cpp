@@ -26,7 +26,7 @@ KazBufferHelper::BufferResourceData KazBufferHelper::SetShaderResourceBufferData
 	);
 	return data;
 }
-KazBufferHelper::BufferResourceData KazBufferHelper::SetVertexBufferData(const unsigned int &BUFFER_SIZE, const string &BUFFER_NAME)
+KazBufferHelper::BufferResourceData KazBufferHelper::SetVertexBufferData(BUFFER_SIZE BUFFER_SIZE, const string &BUFFER_NAME)
 {
 	BufferResourceData data
 	(
@@ -39,7 +39,7 @@ KazBufferHelper::BufferResourceData KazBufferHelper::SetVertexBufferData(const u
 	);
 	return data;
 }
-KazBufferHelper::BufferResourceData KazBufferHelper::SetIndexBufferData(const unsigned int &BUFFER_SIZE, const string &BUFFER_NAME)
+KazBufferHelper::BufferResourceData KazBufferHelper::SetIndexBufferData(BUFFER_SIZE BUFFER_SIZE, const string &BUFFER_NAME)
 {
 	BufferResourceData data
 	(
@@ -67,7 +67,7 @@ KazBufferHelper::BufferResourceData KazBufferHelper::SetRenderTargetData(const D
 	return data;
 }
 
-KazBufferHelper::BufferResourceData KazBufferHelper::SetStructureBuffer(const unsigned int &BUFFER_SIZE, const string &BUFFER_NAME)
+KazBufferHelper::BufferResourceData KazBufferHelper::SetStructureBuffer(BUFFER_SIZE BUFFER_SIZE, const string &BUFFER_NAME)
 {
 	KazBufferHelper::BufferResourceData data
 	(
@@ -81,7 +81,7 @@ KazBufferHelper::BufferResourceData KazBufferHelper::SetStructureBuffer(const un
 	return data;
 }
 
-KazBufferHelper::BufferResourceData KazBufferHelper::SetRWStructuredBuffer(const unsigned int &BUFFER_SIZE, const string &BUFFER_NAME)
+KazBufferHelper::BufferResourceData KazBufferHelper::SetRWStructuredBuffer(BUFFER_SIZE BUFFER_SIZE, const string &BUFFER_NAME)
 {
 	D3D12_HEAP_PROPERTIES prop{};
 	prop.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
@@ -106,7 +106,7 @@ KazBufferHelper::BufferResourceData KazBufferHelper::SetRWStructuredBuffer(const
 	return data;
 }
 
-D3D12_VERTEX_BUFFER_VIEW KazBufferHelper::SetVertexBufferView(const D3D12_GPU_VIRTUAL_ADDRESS &GPU_ADDRESS, const unsigned int &BUFFER_SIZE, const unsigned int &ONE_VERTICES_SIZE)
+D3D12_VERTEX_BUFFER_VIEW KazBufferHelper::SetVertexBufferView(const D3D12_GPU_VIRTUAL_ADDRESS &GPU_ADDRESS, BUFFER_SIZE BUFFER_SIZE, const unsigned int &ONE_VERTICES_SIZE)
 {
 	D3D12_VERTEX_BUFFER_VIEW view;
 	view.BufferLocation = GPU_ADDRESS;
@@ -115,7 +115,7 @@ D3D12_VERTEX_BUFFER_VIEW KazBufferHelper::SetVertexBufferView(const D3D12_GPU_VI
 	return view;
 }
 
-D3D12_INDEX_BUFFER_VIEW KazBufferHelper::SetIndexBufferView(const D3D12_GPU_VIRTUAL_ADDRESS &GPU_ADDRESS, const unsigned int &BUFFER_SIZE)
+D3D12_INDEX_BUFFER_VIEW KazBufferHelper::SetIndexBufferView(const D3D12_GPU_VIRTUAL_ADDRESS &GPU_ADDRESS, BUFFER_SIZE BUFFER_SIZE)
 {
 	D3D12_INDEX_BUFFER_VIEW view;
 	view.BufferLocation = GPU_ADDRESS;

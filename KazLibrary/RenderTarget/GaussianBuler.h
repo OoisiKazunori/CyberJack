@@ -20,7 +20,7 @@ public:
 	/// </summary>
 	/// <param name="GRAPH_SIZE">生成する画像サイズ</param>
 	/// <param name="COLOR">画像の背景の色</param>
-	GaussianBuler(const KazMath::Vec2<UINT> &GRAPH_SIZE, XMFLOAT3 COLOR);
+	GaussianBuler(const KazMath::Vec2<UINT> &GRAPH_SIZE);
 	~GaussianBuler();
 
 	/// <summary>
@@ -29,7 +29,7 @@ public:
 	/// </summary>
 	/// <param name="RENDERTARGET_HANDLE">ぼかす対象が描画されているレンダーターゲット</param>
 	/// <param name="CURRENT_RENDERTARGET">現在のレンダーターゲット</param>
-	short BlurImage(const short &RENDERTARGET_HANDLE, const short &CURRENT_RENDERTARGET_HANDLE = -1);
+	RESOURCE_HANDLE BlurImage(RESOURCE_HANDLE RENDERTARGET_HANDLE, RESOURCE_HANDLE CURRENT_RENDERTARGET_HANDLE = -1);
 
 private:
 	KazMath::Vec2<UINT> graphSize;
@@ -37,7 +37,7 @@ private:
 	//ガウシアンブラーした結果
 	array<Sprite2DRender, 2> tex;
 	KazRenderHelper::RenderInstancesData renderData;
-	short cbvHandle;
+	RESOURCE_HANDLE cbvHandle;
 
 	CD3DX12_RECT rect;
 	CD3DX12_VIEWPORT viewport;
@@ -47,7 +47,7 @@ private:
 
 
 
-	short renderTargetHandle;
-	short renderTargetHandle2;
+	RESOURCE_HANDLE renderTargetBlurUpHandle;
+	RESOURCE_HANDLE renderTargetBlurSideHandle;
 };
 

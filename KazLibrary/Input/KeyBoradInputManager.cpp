@@ -105,53 +105,6 @@ bool KeyBoradInputManager::InputRelease(int BUTTON)
 	return false;
 }
 
-bool KeyBoradInputManager::NotInput(int MAX_SECOND)
-{
-	bool Flag = false;
-	int count = 0;
-
-	//–³“ü—Í‚©‚Ç‚¤‚©
-	for (int i = 0; i < 256; i++)
-	{
-		if (!key[i] && !oldKey[i])
-		{
-			Flag = true;
-		}
-		else
-		{
-			Flag = false;
-			break;
-		}
-	}
-
-	//60flame=1s
-	if (Flag)
-	{
-		flame++;
-	}
-	else
-	{
-		timer = 0;
-		flame = 0;
-	}
-	
-	if (60 <= flame)
-	{
-		flame = 0;
-		timer++;
-	}
-
-
-	if (MAX_SECOND <= timer)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
 bool KeyBoradInputManager::MouseInputTrigger(MouseInputNumber CLICK)
 {
 	if (!oldMouseState.rgbButtons[CLICK] && mouseState.rgbButtons[CLICK])

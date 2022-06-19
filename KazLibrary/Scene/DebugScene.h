@@ -46,7 +46,7 @@ private:
 	//BackGroundForDebug bg;
 
 	unique_ptr<CreateGpuBuffer>buffer;
-	short inputHandle, outPutHandle, commonHandle;
+	RESOURCE_HANDLE inputHandle, outPutHandle, commonHandle;
 
 	InputData inputData;
 	BufferMemorySize size;

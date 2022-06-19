@@ -50,8 +50,8 @@ private:
 
 	int intervalTimer;
 
-	int damageSoundHandle;
-	int warpSoundHandle;
+	RESOURCE_HANDLE damageSoundHandle;
+	RESOURCE_HANDLE warpSoundHandle;
 	bool initWarpSoundFlag;
 
 };

@@ -34,7 +34,7 @@ void LineLevel1::CalucurateDistance(const KazMath::Vec3<float> &PLAYER_POS, cons
 	}
 }
 
-void LineLevel1::Attack(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::Vec3<float> &ENEMY_POS, const EnemyMoveData &FLAG_DATA)
+void LineLevel1::Attack(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::Vec3<float> &ENEMY_POS)
 {
 	if (!initFlag)
 	{
@@ -139,7 +139,7 @@ void LineLevel1::Attack(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::V
 	}
 }
 
-void LineLevel1::Attack2(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::Vec3<float> &ENEMY_POS, const EnemyMoveData &FLAG_DATA)
+void LineLevel1::Attack2(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::Vec3<float> &ENEMY_POS)
 {
 	if (!initFlag)
 	{
@@ -240,7 +240,7 @@ void LineLevel1::Attack2(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::
 
 
 				//éhÇ∑ñ Ç©ÇÁêLÇŒÇµÇΩï˚å¸ÇãLò^
-				int oldMoveVector;
+				int oldMoveVector = -1;
 				switch (surface)
 				{
 				case SURFACE_NONE:
@@ -277,7 +277,6 @@ void LineLevel1::Attack2(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::
 				{
 					limitCount[i] = 0;
 				}
-				int oldNum = -1;
 
 				//âÒÇËìπê¸ÇÃèàóùäJén
 				while (1)

@@ -18,8 +18,8 @@ Sprite3DRender::Sprite3DRender(const KazMath::Vec2<float> ANCHOR_POINT)
 	flipXDirtyFlag = std::make_unique<DirtyFlag<bool>>(&data.flip.x, false);
 	flipYDirtyFlag = std::make_unique<DirtyFlag<bool>>(&data.flip.y, false);
 
-	textureHandleDirtyFlag = std::make_unique<DirtyFlag<short>>(&data.handle);
-	animationHandleDirtyFlag = std::make_unique<DirtyFlag<short>>(&data.animationHandle);
+	textureHandleDirtyFlag = std::make_unique<DirtyFlag<RESOURCE_HANDLE>>(&data.handle);
+	animationHandleDirtyFlag = std::make_unique<DirtyFlag<RESOURCE_HANDLE>>(&data.animationHandle);
 
 
 	cameraViewDirtyFlag = std::make_unique<DirtySet>(renderData.cameraMgrInstance->view);
@@ -87,25 +87,25 @@ void Sprite3DRender::Draw()
 
 
 	//DirtyFlag検知-----------------------------------------------------------------------------------------------------	
-	bool matFlag = cameraViewDirtyFlag->FloatDirty() || cameraProjectionDirtyFlag->FloatDirty() || cameraBillBoardDirtyFlag->FloatDirty() || motherDirtyFlag->FloatDirty();
-	bool matrixDirtyFlag = positionDirtyFlag->FloatDirty() || scaleDirtyFlag->FloatDirty() || rotationDirtyFlag->FloatDirty();
-	bool scaleDirtyFlag = this->scaleDirtyFlag->FloatDirty();
+	bool lMatFlag = cameraViewDirtyFlag->FloatDirty() || cameraProjectionDirtyFlag->FloatDirty() || cameraBillBoardDirtyFlag->FloatDirty() || motherDirtyFlag->FloatDirty();
+	bool lMatrixDirtyFlag = positionDirtyFlag->FloatDirty() || scaleDirtyFlag->FloatDirty() || rotationDirtyFlag->FloatDirty();
+	bool lScaleDirtyFlag = this->scaleDirtyFlag->FloatDirty();
 
 	bool localsizeDirtyFlag = sizeDirtyFlag->FloatDirty();
 
-	bool flipXDirtyFlag = this->flipXDirtyFlag->Dirty();
-	bool flipYDirtyFlag = this->flipYDirtyFlag->Dirty();
+	bool lFlipXDirtyFlag = this->flipXDirtyFlag->Dirty();
+	bool lFlipYDirtyFlag = this->flipYDirtyFlag->Dirty();
 
-	bool textureHandleDirtyFlag = this->textureHandleDirtyFlag->Dirty();
-	bool animationHandleDirtyFlag = this->animationHandleDirtyFlag->Dirty();
+	bool lTextureHandleDirtyFlag = this->textureHandleDirtyFlag->Dirty();
+	bool lAnimationHandleDirtyFlag = this->animationHandleDirtyFlag->Dirty();
 
-	bool verticesDirtyFlag = flipXDirtyFlag || flipYDirtyFlag || textureHandleDirtyFlag || animationHandleDirtyFlag || scaleDirtyFlag || localsizeDirtyFlag || true;
+	bool verticesDirtyFlag = lFlipXDirtyFlag || lFlipYDirtyFlag || lTextureHandleDirtyFlag || lAnimationHandleDirtyFlag || lScaleDirtyFlag || localsizeDirtyFlag || true;
 	//DirtyFlag検知-----------------------------------------------------------------------------------------------------
 
 
 
 	//行列計算-----------------------------------------------------------------------------------------------------
-	if (matrixDirtyFlag || matFlag || true)
+	if (lMatrixDirtyFlag || lMatFlag || true)
 	{
 		baseMatWorldData.matWorld = XMMatrixIdentity();
 		baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
@@ -135,7 +135,7 @@ void Sprite3DRender::Draw()
 
 	//読み込んだテクスチャのサイズ
 	//読み込んだ画像のサイズを合わせる
-	if (textureHandleDirtyFlag || scaleDirtyFlag || localsizeDirtyFlag)
+	if (lTextureHandleDirtyFlag || lScaleDirtyFlag || localsizeDirtyFlag)
 	{
 		if (DescriptorHeapMgr::Instance()->GetType(data.handle) != DESCRIPTORHEAP_MEMORY_TEXTURE_RENDERTARGET)
 		{
@@ -202,7 +202,7 @@ void Sprite3DRender::Draw()
 	}
 
 	//UV切り取り
-	if (animationHandleDirtyFlag || scaleDirtyFlag)
+	if (lAnimationHandleDirtyFlag || lScaleDirtyFlag)
 	{
 		KazMath::Vec2<int> divSize = renderData.shaderResourceMgrInstance->GetDivData(data.handle).divSize;
 		KazMath::Vec2<float> tmpSize = { data.transform.scale.x, data.transform.scale.y };
@@ -221,12 +221,12 @@ void Sprite3DRender::Draw()
 	}
 
 	//X軸にUVを反転
-	if (flipXDirtyFlag)
+	if (lFlipXDirtyFlag)
 	{
 		KazRenderHelper::FlipXUv(&vertices[0].uv, &vertices[1].uv, &vertices[2].uv, &vertices[3].uv);
 	}
 	//Y軸にUVを反転
-	if (flipYDirtyFlag)
+	if (lFlipYDirtyFlag)
 	{
 		KazRenderHelper::FlipYUv(&vertices[0].uv, &vertices[1].uv, &vertices[2].uv, &vertices[3].uv);
 	}
@@ -243,7 +243,7 @@ void Sprite3DRender::Draw()
 
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 	//行列
-	//if (matrixDirtyFlag || matFlag)
+	//if (lMatrixDirtyFlag || lMatFlag)
 	//{
 	ConstBufferData constMap;
 	constMap.world = baseMatWorldData.matWorld;

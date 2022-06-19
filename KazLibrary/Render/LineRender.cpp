@@ -59,7 +59,7 @@ void LineRender::Draw()
 
 
 	//DirtyFlag検知-----------------------------------------------------------------------------------------------------	
-	bool positionDirtyFlag = this->positionDirtyFlag[0]->FloatDirty() || this->positionDirtyFlag[1]->FloatDirty();
+	bool lPositionDirtyFlag = this->positionDirtyFlag[0]->FloatDirty() || this->positionDirtyFlag[1]->FloatDirty();
 
 	bool cameraMatDirtyFlag = cameraViewDirtyFlag->FloatDirty() || cameraProjectionDirtyFlag->FloatDirty() || cameraBillBoardDirtyFlag->FloatDirty();
 	//DirtyFlag検知-----------------------------------------------------------------------------------------------------
@@ -68,7 +68,7 @@ void LineRender::Draw()
 
 
 
-	if (positionDirtyFlag)
+	if (lPositionDirtyFlag)
 	{
 		vertices[0].pos = data.startPos.ConvertXMFLOAT3();
 		vertices[1].pos = data.endPos.ConvertXMFLOAT3();
@@ -90,7 +90,7 @@ void LineRender::Draw()
 	}
 
 	//頂点データに何か変更があったら転送する
-	if (positionDirtyFlag)
+	if (lPositionDirtyFlag)
 	{
 		gpuBuffer->TransData(vertexBufferHandle, vertices.data(), vertByte);
 	}

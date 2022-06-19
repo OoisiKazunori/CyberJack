@@ -27,9 +27,9 @@ private:
 
 
 	XMMATRIX motherMat;
-	short vertexBufferHandle;
-	short indexBufferHandle;
-	short constBufferHandle;
+	RESOURCE_HANDLE vertexBufferHandle;
+	RESOURCE_HANDLE indexBufferHandle;
+	RESOURCE_HANDLE constBufferHandle;
 
 	UINT VertByte;
 	UINT IndexByte;
@@ -38,8 +38,8 @@ private:
 	unique_ptr<DirtySet> positionDirtyFlag, scaleDirtyFlag, rotationDirtyFlag;
 	unique_ptr<DirtyFlag<bool>> flipXDirtyFlag;
 	unique_ptr<DirtyFlag<bool>> flipYDirtyFlag;
-	unique_ptr<DirtyFlag<short>> textureHandleDirtyFlag;
-	unique_ptr<DirtyFlag<short>> animationHandleDirtyFlag;
+	unique_ptr<DirtyFlag<RESOURCE_HANDLE>> textureHandleDirtyFlag;
+	unique_ptr<DirtyFlag<RESOURCE_HANDLE>> animationHandleDirtyFlag;
 
 	unique_ptr<DirtySet> cameraViewDirtyFlag;
 	unique_ptr<DirtySet> cameraProjectionDirtyFlag;

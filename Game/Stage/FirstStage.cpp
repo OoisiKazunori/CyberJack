@@ -92,7 +92,7 @@ FirstStage::FirstStage()
 		for (int i = 0; i < polygon.size(); ++i)
 		{
 			polygon[i] = std::make_unique<PolygonRender>(vert);
-			int handle = polygon[i]->CreateConstBuffer(sizeof(GradationData), typeid(GradationData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+			RESOURCE_HANDLE handle = polygon[i]->CreateConstBuffer(sizeof(GradationData), typeid(GradationData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
 			polygon[i]->TransData(&gradationData, handle, typeid(gradationData).name());
 			polygon[i]->data.pipelineName = PIPELINE_NAME_SPRITE_GRADATION;
 		}
@@ -118,7 +118,7 @@ FirstStage::FirstStage()
 		vert[3].uv = { 1.0f,1.0f };
 		topPolygon = std::make_unique<PolygonRender>(vert);
 
-		int handle = topPolygon->CreateConstBuffer(sizeof(GradationData), typeid(GradationData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+		RESOURCE_HANDLE handle = topPolygon->CreateConstBuffer(sizeof(GradationData), typeid(GradationData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
 		topPolygon->data.pipelineName = PIPELINE_NAME_SPRITE_GRADATION;
 
 		GradationData gradData;

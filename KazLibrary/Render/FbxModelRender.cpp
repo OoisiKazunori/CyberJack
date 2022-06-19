@@ -11,7 +11,7 @@ FbxModelRender::FbxModelRender()
 	positionDirtyFlag.reset(new DirtySet(data.transform.pos));
 	scaleDirtyFlag.reset(new DirtySet(data.transform.scale));
 	rotationDirtyFlag.reset(new DirtySet(data.transform.rotation));
-	fbxHandleDirtyFlag.reset(new DirtyFlag<short>(&data.handle));
+	fbxHandleDirtyFlag.reset(new DirtyFlag<RESOURCE_HANDLE>(&data.handle));
 	cameraViewDirtyFlag.reset(new DirtySet(renderData.cameraMgrInstance->view));
 	cameraProjectionDirtyFlag.reset(new DirtySet(renderData.cameraMgrInstance->perspectiveMat));
 
@@ -54,15 +54,15 @@ void FbxModelRender::Draw()
 
 
 		//DirtyFlag検知-----------------------------------------------------------------------------------------------------	
-		bool viewMatFlag = cameraViewDirtyFlag->FloatDirty() || cameraProjectionDirtyFlag->FloatDirty();
+		//bool viewMatFlag = cameraViewDirtyFlag->FloatDirty() || cameraProjectionDirtyFlag->FloatDirty();
 
-		bool matrixDirtyFlag = positionDirtyFlag->FloatDirty() || scaleDirtyFlag->FloatDirty() || rotationDirtyFlag->FloatDirty();
-		bool fbxHandleDirtyFlag = this->fbxHandleDirtyFlag->Dirty();
+		//bool lMatrixDirtyFlag = positionDirtyFlag->FloatDirty() || scaleDirtyFlag->FloatDirty() || rotationDirtyFlag->FloatDirty();
+		//bool lFbxHandleDirtyFlag = this->fbxHandleDirtyFlag->Dirty();
 		//DirtyFlag検知-----------------------------------------------------------------------------------------------------
 
 
 		//行列計算-----------------------------------------------------------------------------------------------------
-		//if (matrixDirtyFlag)
+		//if (lMatrixDirtyFlag)
 		{
 			baseMatWorldData.matWorld = XMMatrixIdentity();
 			baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
@@ -84,7 +84,7 @@ void FbxModelRender::Draw()
 
 		//バッファの転送-----------------------------------------------------------------------------------------------------
 		//行列
-		//if (matrixDirtyFlag || viewMatFlag)
+		//if (lMatrixDirtyFlag || viewMatFlag)
 		{
 			ConstBufferData constMap;
 			constMap.world = baseMatWorldData.matWorld;

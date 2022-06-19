@@ -22,13 +22,13 @@ private:
 	KazMath::Vec3<float> eyePos, targetPos;
 	KazMath::Vec2<float> angle;
 
-	int handle;
+	RESOURCE_HANDLE handle;
 	constBufferVhsData data;
 	FbxModelRenderPtr modelRender;
 	Sprite2DRenderPtr gameRenderTarget;
 	Sprite2DRenderPtr mainRenderTarget;
 	BackGroundForDebug bg;
 
-	std::vector<short>multiHandle;
+	std::vector<RESOURCE_HANDLE>multiHandle;
 };
 

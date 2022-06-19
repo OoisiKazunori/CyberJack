@@ -1,8 +1,11 @@
 #pragma once
 #include"../DirectXCommon/Base.h"
+#pragma warning(push)
+#pragma warning(disable:4023)
 #include"imgui.h"
 #include"imgui_impl_win32.h"
 #include"imgui_impl_dx12.h"
+#pragma warning(pop)
 
 /// <summary>
 /// ImGuiの為のデスクリプタヒープの生成とImGUiの初期化を行います

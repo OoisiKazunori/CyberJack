@@ -1,23 +1,23 @@
 #include"../Render/IRender.h"
 
-const short IRender::CreateConstBuffer(const unsigned int &TRANSMISSION_DATA, const string &ID, const GraphicsRangeType &RANGE, const GraphicsRootParamType &ROOTPARAM)
+RESOURCE_HANDLE IRender::CreateConstBuffer(const unsigned int &TRANSMISSION_DATA, const string &ID, const GraphicsRangeType &RANGE, const GraphicsRootParamType &ROOTPARAM)
 {
 	constBufferDataName.push_back(unique_ptr<string>(new string(ID)));
 	constBufferDataSize.push_back(unique_ptr<unsigned int>(new unsigned int(TRANSMISSION_DATA)));
 	constBufferRootParam.push_back(unique_ptr<GraphicsRootParamType>(new GraphicsRootParamType(ROOTPARAM)));
 	constBufferRangeType.push_back(unique_ptr<GraphicsRangeType>(new GraphicsRangeType(RANGE)));
 
-	const short constBufferHandle = gpuBuffer->CreateBuffer
+	RESOURCE_HANDLE lConstBufferHandle = gpuBuffer->CreateBuffer
 	(
 		KazBufferHelper::SetConstBufferData(TRANSMISSION_DATA)
 	);
 
-	constBufferHandles.push_back(unique_ptr<short>(new short(constBufferHandle)));
+	constBufferHandles.push_back(std::make_unique<RESOURCE_HANDLE>(lConstBufferHandle));
 
-	return constBufferHandle;
+	return lConstBufferHandle;
 }
 
-void IRender::TransData(void *DATA, const short &HANDLE, const string &ID)
+void IRender::TransData(void *DATA, RESOURCE_HANDLE HANDLE, const string &ID)
 {
 	bool succeedFlag = false;
 	for (int i = 0; i < constBufferDataName.size(); i++)

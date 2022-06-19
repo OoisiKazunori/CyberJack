@@ -45,7 +45,7 @@ Game::Game()
 	addRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	addRenderTarget.data.pipelineName = PIPELINE_NAME_ADDBLEND;
 
-	buler = std::make_unique<GaussianBuler>(KazMath::Vec2<UINT>(WIN_X, WIN_Y), XMFLOAT3(0.0f, 0.0f, 0.0f));
+	buler = std::make_unique<GaussianBuler>(KazMath::Vec2<UINT>(WIN_X, WIN_Y));
 
 
 	luminaceTex.data.pipelineName = PIPELINE_NAME_SPRITE_LUMI;
@@ -177,7 +177,7 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	}
 	changeLayerLevelMaxTime[0] = 60 * 28;
 	changeLayerLevelMaxTime[1] = 60 * 39;
-	gameStageLevel = 1;
+	gameStageLevel = 0;
 	stageNum = gameStageLevel;
 	//ゲームループの初期化----------------------------------------------------------------
 
@@ -350,11 +350,6 @@ void Game::Input()
 		sceneNum = 0;
 	}
 
-
-	if (!upFlag && !downFlag && !leftFlag && !rightFlag)
-	{
-		bool debug = false;
-	}
 
 	KazMath::Vec2<float> joyStick;
 	joyStick.x = inputController->GetJoyStickLXNum(0) / 32767.0f;
@@ -770,7 +765,7 @@ void Game::Update()
 					{
 						if (!lineEffectArrayData[i].usedFlag)
 						{
-							lineLevel[i].Attack2(lineEffectArrayData[i].startPos, *enemyData->hitBox.center, {});
+							lineLevel[i].Attack2(lineEffectArrayData[i].startPos, *enemyData->hitBox.center);
 							lineEffectArrayData[i].usedFlag = true;
 							lineEffectArrayData[i].lineIndex = i;
 							lineEffectArrayData[i].enemyTypeIndex = enemyType;
@@ -805,7 +800,7 @@ void Game::Update()
 			{
 				if (!lineEffectArrayData[i].usedFlag)
 				{
-					lineLevel[i].Attack2(lineEffectArrayData[i].startPos, *goalBox.hitBox.center, {});
+					lineLevel[i].Attack2(lineEffectArrayData[i].startPos, *goalBox.hitBox.center);
 					lineEffectArrayData[i].usedFlag = true;
 					lineEffectArrayData[i].lineIndex = i;
 					lineEffectArrayData[i].eventType = 0;
@@ -935,7 +930,6 @@ void Game::Update()
 				{
 					//lineEffectArrayData[i].Reset();
 					//lineLevel[lineIndex].lineReachObjFlag = false;
-					bool dbeig = false;
 				}
 				else if (lineLevel[lineIndex].lineReachObjFlag && !enemies[enemyTypeIndex][enemyIndex]->IsAlive())
 				{
@@ -1199,8 +1193,6 @@ void Game::Update()
 
 void Game::Draw()
 {
-	short mainHandle = mainRenderTarget.data.handle;
-
 
 	if (!gameOverFlag)
 	{
@@ -1256,7 +1248,7 @@ void Game::Draw()
 		RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
 		luminaceTex.Draw();
 		RenderTargetStatus::Instance()->PrepareToCloseBarrier(addHandle);
-		RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
+		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 
 		mainRenderTarget.Draw();
 		addRenderTarget.data.handle = buler->BlurImage(addHandle);
@@ -1281,7 +1273,7 @@ void Game::Draw()
 			stages[stageNum + 1]->SetCamera(1);
 			stages[stageNum + 1]->Draw();
 			RenderTargetStatus::Instance()->PrepareToCloseBarrier(potalTexHandle);
-			RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
+			RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 		}
 		subPotalSpritePos.z = goalBox.portalEffect.sprite->data.transform.pos.z;
 	}

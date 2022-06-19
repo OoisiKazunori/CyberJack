@@ -22,13 +22,13 @@ private:
 	short vertexBufferHandle;
 	short indexBufferHandle;
 
-	array<short, 2> constBufferHandle;
-	const FbxResourceData *resourceData;
+	array<RESOURCE_HANDLE, 2> constBufferHandle;
+	std::shared_ptr<FbxResourceData> resourceData;
 
 
 
 	unique_ptr<DirtySet> positionDirtyFlag, scaleDirtyFlag, rotationDirtyFlag;
-	unique_ptr<DirtyFlag<short>> fbxHandleDirtyFlag;
+	unique_ptr<DirtyFlag<RESOURCE_HANDLE>> fbxHandleDirtyFlag;
 
 	unique_ptr<DirtySet> cameraViewDirtyFlag;
 	unique_ptr<DirtySet> cameraProjectionDirtyFlag;

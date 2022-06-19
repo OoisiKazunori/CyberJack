@@ -25,14 +25,15 @@ TextureResourceMgr::~TextureResourceMgr()
 {
 }
 
-void TextureResourceMgr::Release(short HANDLE)
+void TextureResourceMgr::Release(RESOURCE_HANDLE HANDLE)
 {
 	handleName[HANDLE] = "";
 	buffers->ReleaseBuffer(HANDLE);
 	DescriptorHeapMgr::Instance()->Release(HANDLE);
 }
 
-short TextureResourceMgr::LoadGraph(std::string RESOURCE) {
+RESOURCE_HANDLE TextureResourceMgr::LoadGraph(std::string RESOURCE)
+{
 
 	//既に作ってあるバッファと名前が被ったら被ったハンドルを返し、被らなかったら生成
 	for (int i = 0; i < handleName.size(); i++)
@@ -92,7 +93,7 @@ short TextureResourceMgr::LoadGraph(std::string RESOURCE) {
 
 
 
-	short num = buffers->CreateBuffer(KazBufferHelper::SetShaderResourceBufferData(textureDesc));
+	RESOURCE_HANDLE num = buffers->CreateBuffer(KazBufferHelper::SetShaderResourceBufferData(textureDesc));
 
 	DescriptorHeapMgr::Instance()->CreateBufferView(num, srvDesc, buffers->GetBufferData(num).Get());
 
@@ -109,14 +110,14 @@ short TextureResourceMgr::LoadGraph(std::string RESOURCE) {
 	return num;
 }
 
-short TextureResourceMgr::LoadDivGraph(string RESOURCE, unsigned int ALL_NUM, int DIV_WIDTH_NUM, int DIV_HEIGHT_NUM, int TEXSIZE_WIDTH, int TEXSIZE_HEIGHT)
+RESOURCE_HANDLE TextureResourceMgr::LoadDivGraph(string RESOURCE, int DIV_WIDTH_NUM, int DIV_HEIGHT_NUM, int TEXSIZE_WIDTH, int TEXSIZE_HEIGHT)
 {
 	//既に作ってあるバッファと名前が被ったら被ったハンドルを返し、被らなかったら生成
 	for (int i = 0; i < handleName.size(); i++)
 	{
 		if (handleName[i] == RESOURCE)
 		{
-			return i;
+			return static_cast<RESOURCE_HANDLE>(i);
 		}
 	}
 	//テクスチャの名前登録
@@ -164,11 +165,11 @@ short TextureResourceMgr::LoadDivGraph(string RESOURCE, unsigned int ALL_NUM, in
 
 
 
-	short num = buffers->CreateBuffer(KazBufferHelper::SetShaderResourceBufferData(textureDesc));
+	RESOURCE_HANDLE lHandle = buffers->CreateBuffer(KazBufferHelper::SetShaderResourceBufferData(textureDesc));
 
-	DescriptorHeapMgr::Instance()->CreateBufferView(num, srvDesc, buffers->GetBufferData(num).Get());
+	DescriptorHeapMgr::Instance()->CreateBufferView(lHandle, srvDesc, buffers->GetBufferData(lHandle).Get());
 
-	buffers->GetBufferData(num)->WriteToSubresource
+	buffers->GetBufferData(lHandle)->WriteToSubresource
 	(
 		0,
 		nullptr,
@@ -181,7 +182,7 @@ short TextureResourceMgr::LoadDivGraph(string RESOURCE, unsigned int ALL_NUM, in
 	divData.push_back({});
 	int arrayNum = static_cast<int>(divData.size()) - 1;
 	divData[arrayNum].divSize = { TEXSIZE_WIDTH,TEXSIZE_HEIGHT };
-	divData[arrayNum].handle = num;
+	divData[arrayNum].handle = lHandle;
 
 	for (int y = 0; y < DIV_HEIGHT_NUM; y++)
 	{
@@ -192,10 +193,10 @@ short TextureResourceMgr::LoadDivGraph(string RESOURCE, unsigned int ALL_NUM, in
 		}
 	}
 
-	return num;
+	return lHandle;
 }
 
-D3D12_RESOURCE_DESC TextureResourceMgr::GetTextureSize(short HANDLE)
+D3D12_RESOURCE_DESC TextureResourceMgr::GetTextureSize(RESOURCE_HANDLE HANDLE)
 {
 	//ハンドルが-1、もしくはtexBuffがnullptrだった場合、0のWidthとHeightを返す
 	if (HANDLE != -1)
@@ -221,7 +222,7 @@ D3D12_RESOURCE_DESC TextureResourceMgr::GetTextureSize(short HANDLE)
 	}
 }
 
-DivGraphData TextureResourceMgr::GetDivData(short HANDLE)
+DivGraphData TextureResourceMgr::GetDivData(RESOURCE_HANDLE HANDLE)
 {
 	if (HANDLE != -1)
 	{
@@ -241,7 +242,7 @@ DivGraphData TextureResourceMgr::GetDivData(short HANDLE)
 	return no;		
 }
 
-void TextureResourceMgr::SetSRV(short GRAPH_HANDLE, GraphicsRootSignatureParameter PARAM, GraphicsRootParamType TYPE)
+void TextureResourceMgr::SetSRV(RESOURCE_HANDLE GRAPH_HANDLE, GraphicsRootSignatureParameter PARAM, GraphicsRootParamType TYPE)
 {
 	//テクスチャバッファのバッファがない所をコマンドリストに積ませてもエラーは吐かれない。しかし危なそう...
 	if (GRAPH_HANDLE != -1)

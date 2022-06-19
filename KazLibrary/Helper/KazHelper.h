@@ -11,7 +11,7 @@ namespace KazHelper
 	/// <param name="NUM">調べたい数値</param>
 	/// <param name="MAX_SIZE">配列の最大数</param>
 	/// <returns>true...その数値は0~配列の最大数の内に入ります。false...その数値は0~配列の最大数の内に入りません</returns>
-	inline bool IsitInAnArray(short NUM, size_t MAX_SIZE)
+	inline bool IsitInAnArray(int NUM, size_t MAX_SIZE)
 	{
 		if (0 <= NUM && NUM < MAX_SIZE)
 		{

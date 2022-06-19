@@ -87,11 +87,6 @@ bool ControllerInputManager::InputRelease(int BUTTON)
 	}
 }
 
-bool ControllerInputManager::NotInput(int MAX_SECOND)
-{
-	return false;
-}
-
 bool ControllerInputManager::InputStickTrigger(ControllerStickSide STICK_TYPE, ControllerSide SIDE, int DEAD_ZONE)
 {
 	if (STICK_TYPE == LEFT_STICK)

@@ -26,5 +26,7 @@ private:
 	bool _timeFlag;
 	int _timer;
 
+	bool leftFlag, rightFlag, doneFlag;
+
 };
 

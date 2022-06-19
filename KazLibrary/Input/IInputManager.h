@@ -14,6 +14,5 @@ public:
 	virtual bool InputTrigger(int BUTTON) = 0;
 	virtual bool InputState(int BUTTON) = 0;
 	virtual bool InputRelease(int BUTTON) = 0;
-	virtual bool NotInput(int MAX_SECOND) = 0;
 };
 

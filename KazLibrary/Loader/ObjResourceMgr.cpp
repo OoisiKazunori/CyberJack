@@ -11,7 +11,7 @@ ObjResourceMgr::~ObjResourceMgr()
 {
 }
 
-short ObjResourceMgr::LoadModel(string RESOURCE)
+RESOURCE_HANDLE ObjResourceMgr::LoadModel(string RESOURCE)
 {
 
 	//ファイル読み込み
@@ -19,8 +19,8 @@ short ObjResourceMgr::LoadModel(string RESOURCE)
 	file.open(RESOURCE);
 	if (file.fail())
 	{
-		string name = RESOURCE + "の読み込みに失敗しました\n";
-		FailCheck(name);
+		string errorName = RESOURCE + "の読み込みに失敗しました\n";
+		FailCheck(errorName);
 
 		return -1;
 	}
@@ -30,11 +30,11 @@ short ObjResourceMgr::LoadModel(string RESOURCE)
 	{
 		if (RESOURCE == name[i])
 		{
-			return i;
+			return static_cast<RESOURCE_HANDLE>(i);
 		}
 	}
 
-	short setHandle = handle.GetHandle();
+	RESOURCE_HANDLE setHandle = handle.GetHandle();
 
 	//名前の登録
 	name.push_back(RESOURCE);
@@ -64,7 +64,6 @@ short ObjResourceMgr::LoadModel(string RESOURCE)
 
 	//一行ずつ読み込む
 	string line;
-	USHORT num = 0;
 	while (getline(file, line))
 	{
 		//一行分の文字列をストリームに変換して解析しやすくなる
@@ -108,20 +107,19 @@ short ObjResourceMgr::LoadModel(string RESOURCE)
 				vert[vert.size() - 1].uv = texcoords[indexTexcoord - 1];
 				vert[vert.size() - 1].normal = normals[indexNormal - 1];
 
-				//indi.push_back(indexPos);
 
 
 				// インデックスデータの追加
 				if (faceIndexCount >= 3) {
 					// 四角形ポリゴンの4点目なので、
 					// 四角形の0,1,2,3の内 2,3,0で三角形を構築する
-					indi.emplace_back(indexCountNum - 1);
-					indi.emplace_back(indexCountNum);
-					indi.emplace_back(indexCountNum - 3);
+					indi.emplace_back(static_cast<USHORT>(indexCountNum - 1));
+					indi.emplace_back(static_cast<USHORT>(indexCountNum));
+					indi.emplace_back(static_cast<USHORT>(indexCountNum - 3));
 				}
 				else
 				{
-					indi.emplace_back(indexCountNum);
+					indi.emplace_back(static_cast<USHORT>(indexCountNum));
 				}
 
 
@@ -165,8 +163,8 @@ short ObjResourceMgr::LoadModel(string RESOURCE)
 	//テクスチャ読み込み失敗
 	if (resource[setHandle].mtlHanlde == -1)
 	{
-		string name = filename + "の画像読み込みに失敗しました\n";
-		FailCheck(name);
+		string errorName = filename + "の画像読み込みに失敗しました\n";
+		FailCheck(errorName);
 		//handle.DeleteHandle(setHandle);
 		//return -1;
 	}
@@ -194,11 +192,11 @@ short ObjResourceMgr::LoadModel(string RESOURCE)
 	int vertByte = KazBufferHelper::GetBufferSize<int>(vert.size(), sizeof(Vertex));
 	int indexByte = KazBufferHelper::GetBufferSize<int>(indi.size(), sizeof(unsigned short));
 
-	short vertHandle = modelDataBuffers->CreateBuffer
+	RESOURCE_HANDLE vertHandle = modelDataBuffers->CreateBuffer
 	(
 		KazBufferHelper::SetVertexBufferData(vertByte)
 	);
-	short indexHandle = modelDataBuffers->CreateBuffer
+	RESOURCE_HANDLE indexHandle = modelDataBuffers->CreateBuffer
 	(
 		KazBufferHelper::SetIndexBufferData(indexByte)
 	);
@@ -229,7 +227,7 @@ short ObjResourceMgr::LoadModel(string RESOURCE)
 	return setHandle;
 }
 
-void ObjResourceMgr::Release(short HANDLE)
+void ObjResourceMgr::Release(RESOURCE_HANDLE HANDLE)
 {
 	if (KazHelper::IsitInAnArray(HANDLE, resource.size()))
 	{
@@ -242,7 +240,7 @@ void ObjResourceMgr::Release(short HANDLE)
 	}
 }
 
-ObjResourceData ObjResourceMgr::GetResourceData(short HANDLE)
+ObjResourceData ObjResourceMgr::GetResourceData(RESOURCE_HANDLE HANDLE)
 {
 	if (KazHelper::IsitInAnArray(HANDLE, resource.size()))
 	{
@@ -250,15 +248,15 @@ ObjResourceData ObjResourceMgr::GetResourceData(short HANDLE)
 	}
 	else
 	{
-		ObjResourceData resource;
-		resource.mtlHanlde = -1;
+		ObjResourceData errorResource;
+		errorResource.mtlHanlde = -1;
 		//resource.indexNum.resize(0);
 		//resource.vert.resize(0);
-		return resource;
+		return errorResource;
 	}
 }
 
-short ObjResourceMgr::LoadMaterial(const string &filename, ObjResourceData *resource, string MTL_RESOURE)
+RESOURCE_HANDLE ObjResourceMgr::LoadMaterial(const string &FILE_NAME, ObjResourceData *RESOURCE, string MTL_RESOURE)
 {
 
 	ifstream file;
@@ -269,7 +267,7 @@ short ObjResourceMgr::LoadMaterial(const string &filename, ObjResourceData *reso
 	}
 
 
-	short handle = -1;
+	RESOURCE_HANDLE lHandle = -1;
 
 	string line;
 	while (getline(file, line))
@@ -289,34 +287,34 @@ short ObjResourceMgr::LoadMaterial(const string &filename, ObjResourceData *reso
 
 		if (key == "newmtl")
 		{
-			line_stream >> resource->material.name;
+			line_stream >> RESOURCE->material.name;
 		}
 		if (key == "Ka")
 		{
-			line_stream >> resource->material.ambient.x;
-			line_stream >> resource->material.ambient.y;
-			line_stream >> resource->material.ambient.z;
+			line_stream >> RESOURCE->material.ambient.x;
+			line_stream >> RESOURCE->material.ambient.y;
+			line_stream >> RESOURCE->material.ambient.z;
 		}
 		if (key == "Kd")
 		{
-			line_stream >> resource->material.diffuse.x;
-			line_stream >> resource->material.diffuse.y;
-			line_stream >> resource->material.diffuse.z;
+			line_stream >> RESOURCE->material.diffuse.x;
+			line_stream >> RESOURCE->material.diffuse.y;
+			line_stream >> RESOURCE->material.diffuse.z;
 		}
 		if (key == "Ks")
 		{
-			line_stream >> resource->material.specular.x;
-			line_stream >> resource->material.specular.y;
-			line_stream >> resource->material.specular.z;
+			line_stream >> RESOURCE->material.specular.x;
+			line_stream >> RESOURCE->material.specular.y;
+			line_stream >> RESOURCE->material.specular.z;
 		}
 		if (key == "map_Kd")
 		{
-			line_stream >> resource->material.textureFilename;
-			handle = TextureResourceMgr::Instance()->LoadGraph(filename + resource->material.textureFilename);
+			line_stream >> RESOURCE->material.textureFilename;
+			lHandle = TextureResourceMgr::Instance()->LoadGraph(FILE_NAME + RESOURCE->material.textureFilename);
 		}
 	}
 
 	file.close();
 
-	return handle;
+	return lHandle;
 }

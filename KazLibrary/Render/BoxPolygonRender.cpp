@@ -118,8 +118,8 @@ BoxPolygonRender::BoxPolygonRender(bool INSTANCE_FLAG, int INSTANCE_NUM)
 	}
 
 
-	short vertBufferHandle = gpuBuffer->CreateBuffer(KazBufferHelper::SetVertexBufferData(VertByte));
-	short indexBufferHandle = gpuBuffer->CreateBuffer(KazBufferHelper::SetIndexBufferData(IndexByte));
+	RESOURCE_HANDLE lVertBufferHandle = gpuBuffer->CreateBuffer(KazBufferHelper::SetVertexBufferData(VertByte));
+	RESOURCE_HANDLE lIndexBufferHandle = gpuBuffer->CreateBuffer(KazBufferHelper::SetIndexBufferData(IndexByte));
 
 
 	instanceFlag = INSTANCE_FLAG;
@@ -144,11 +144,11 @@ BoxPolygonRender::BoxPolygonRender(bool INSTANCE_FLAG, int INSTANCE_NUM)
 		indiVec[i] = indices[i];
 	}
 
-	gpuBuffer->TransData(vertBufferHandle, vertVec.data(), VertByte);
-	gpuBuffer->TransData(indexBufferHandle, indiVec.data(), IndexByte);
+	gpuBuffer->TransData(lVertBufferHandle, vertVec.data(), VertByte);
+	gpuBuffer->TransData(lIndexBufferHandle, indiVec.data(), IndexByte);
 
-	vertBufferView = KazBufferHelper::SetVertexBufferView(gpuBuffer->GetGpuAddress(vertBufferHandle), VertByte, sizeof(vertices[0]));
-	indexBufferView = KazBufferHelper::SetIndexBufferView(gpuBuffer->GetGpuAddress(indexBufferHandle), IndexByte);
+	vertBufferView = KazBufferHelper::SetVertexBufferView(gpuBuffer->GetGpuAddress(lVertBufferHandle), VertByte, sizeof(vertices[0]));
+	indexBufferView = KazBufferHelper::SetIndexBufferView(gpuBuffer->GetGpuAddress(lIndexBufferHandle), IndexByte);
 
 }
 
@@ -167,8 +167,8 @@ void BoxPolygonRender::Draw()
 
 
 	//DirtyFlag検知-----------------------------------------------------------------------------------------------------	
-	bool matFlag = cameraViewDirtyFlag->FloatDirty() || cameraProjectionDirtyFlag->FloatDirty() || cameraBillBoardDirtyFlag->FloatDirty();
-	bool matrixDirtyFlag = positionDirtyFlag->FloatDirty() || scaleDirtyFlag->FloatDirty() || rotationDirtyFlag->FloatDirty();
+	bool lMatFlag = cameraViewDirtyFlag->FloatDirty() || cameraProjectionDirtyFlag->FloatDirty() || cameraBillBoardDirtyFlag->FloatDirty();
+	bool lMatrixDirtyFlag = positionDirtyFlag->FloatDirty() || scaleDirtyFlag->FloatDirty() || rotationDirtyFlag->FloatDirty();
 	bool colorFlag = colorDirtyFlag->FloatDirty();
 	//DirtyFlag検知-----------------------------------------------------------------------------------------------------
 
@@ -176,7 +176,7 @@ void BoxPolygonRender::Draw()
 	if (!instanceFlag)
 	{
 		//行列計算-----------------------------------------------------------------------------------------------------
-		if (matrixDirtyFlag || matFlag || true)
+		if (lMatrixDirtyFlag || lMatFlag || true)
 		{
 			baseMatWorldData.matWorld = XMMatrixIdentity();
 			baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
@@ -199,7 +199,7 @@ void BoxPolygonRender::Draw()
 
 		//バッファの転送-----------------------------------------------------------------------------------------------------
 		//行列
-		if (matrixDirtyFlag || matFlag || colorFlag | true)
+		if (lMatrixDirtyFlag || lMatFlag || colorFlag | true)
 		{
 			ConstBufferData constMap;
 			constMap.world = baseMatWorldData.matWorld;

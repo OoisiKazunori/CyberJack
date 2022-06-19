@@ -31,7 +31,7 @@ private:
 	std::array<BoxPolygonRender, 30> stageDebugBox;
 	std::array<KazMath::Vec3<float>, 30> stageYPos;
 	std::array<FogD, 30> fogData;
-	std::array<short, 30> constHandle;
+	std::array<RESOURCE_HANDLE, 30> constHandle;
 
 	ParameterMgr stageParamLoader;
 	XMFLOAT3 depthX;

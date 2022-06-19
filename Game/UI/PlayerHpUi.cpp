@@ -5,9 +5,9 @@
 
 PlayerHpUi::PlayerHpUi()
 {
-	int hpHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::HpPath + "Hp.png");
-	int hpFlameHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::HpPath + "HpFlame.png");
-	int redHpHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::HpPath + "RedHp.png");
+	RESOURCE_HANDLE hpHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::HpPath + "Hp.png");
+	RESOURCE_HANDLE hpFlameHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::HpPath + "HpFlame.png");
+	RESOURCE_HANDLE redHpHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::HpPath + "RedHp.png");
 
 	for (int i = 0; i < hpTex.size(); ++i)
 	{

@@ -26,15 +26,15 @@ ClassScene::ClassScene()
 	mainRenderTarget->data.handle =
 		RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, BG_COLOR, DXGI_FORMAT_R8G8B8A8_UNORM);
 
-	std::vector<MultiRenderTargetData>data;
-	data.push_back(MultiRenderTargetData());
-	data.push_back(MultiRenderTargetData());
+	std::vector<MultiRenderTargetData>lMultiRenderTargetData;
+	lMultiRenderTargetData.push_back(MultiRenderTargetData());
+	lMultiRenderTargetData.push_back(MultiRenderTargetData());
 
-	data[0].graphSize = { WIN_X,WIN_Y };
-	data[0].backGroundColor = BG_COLOR;
-	data[1].graphSize = { WIN_X,WIN_Y };
-	data[1].backGroundColor = { 255.0f,0.0f,0.0f };
-	multiHandle = RenderTargetStatus::Instance()->CreateMultiRenderTarget(data, DXGI_FORMAT_R8G8B8A8_UNORM);
+	lMultiRenderTargetData[0].graphSize = { WIN_X,WIN_Y };
+	lMultiRenderTargetData[0].backGroundColor = BG_COLOR;
+	lMultiRenderTargetData[1].graphSize = { WIN_X,WIN_Y };
+	lMultiRenderTargetData[1].backGroundColor = { 255.0f,0.0f,0.0f };
+	multiHandle = RenderTargetStatus::Instance()->CreateMultiRenderTarget(lMultiRenderTargetData, DXGI_FORMAT_R8G8B8A8_UNORM);
 }
 
 ClassScene::~ClassScene()
@@ -126,7 +126,7 @@ void ClassScene::Draw()
 	//RenderTargetStatus::Instance()->ClearRenderTarget(mainRenderTarget->data.handle);
 	//gameRenderTarget->Draw();
 	RenderTargetStatus::Instance()->PrepareToCloseBarrier(multiHandle[0]);
-	RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
+	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 
 	if (KeyBoradInputManager::Instance()->InputState(DIK_O))
 	{

@@ -32,7 +32,7 @@ public:
 	/// </summary>
 	/// <param name="FILE_PASS">ファイルパス</param>
 	/// <returns>ハンドル</returns>
-	short LoadSoundMem(string FILE_PASS, bool BGM_FLAG = true);
+	RESOURCE_HANDLE LoadSoundMem(string FILE_PASS, bool BGM_FLAG = true);
 
 	/// <summary>
 	/// 音を再生します
@@ -40,20 +40,20 @@ public:
 	/// <param name="HANDLE">再生したい音データのハンドル</param>
 	/// <param name="VOLUME">音量</param>
 	/// <param name="LOOP_FLAG">音をループ再生するかしないか</param>
-	void PlaySoundMem(short HANDLE, int VOLUME, bool LOOP_FLAG = false);
+	void PlaySoundMem(RESOURCE_HANDLE HANDLE, int VOLUME, bool LOOP_FLAG = false);
 
-	void ChangeSoundMem(short HANDLE, int VOLUME);
+	void ChangeSoundMem(RESOURCE_HANDLE HANDLE, int VOLUME);
 	/// <summary>
 	/// 音楽を止めます
 	/// </summary>
 	/// <param name="HANDLE">止めたい音楽データのハンドル</param>
-	void StopSoundMem(short HANDLE);
+	void StopSoundMem(RESOURCE_HANDLE HANDLE);
 
 	/// <summary>
 	/// 音データをリリースします
 	/// </summary>
 	/// <param name="HANDLE">リリースしたい音データのハンドル</param>
-	void ReleaseSoundMem(short HANDLE);
+	void ReleaseSoundMem(RESOURCE_HANDLE HANDLE);
 
 
 private:

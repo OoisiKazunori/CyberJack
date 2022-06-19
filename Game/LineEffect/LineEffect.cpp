@@ -3,7 +3,7 @@
 
 LineEffect::LineEffect()
 {
-	line = std::make_unique<LineRender>();//‰¼ˆø”‚Étrue“ü‚ê‚Ä‚¢‚½
+	line = std::make_unique<LineRender>();
 
 	circle = std::make_unique<Sprite3DRender>();
 	releaseCircle = std::make_unique<Sprite3DRender>();
@@ -128,22 +128,22 @@ void LineEffect::Update()
 		line->data.startPos = startPos;
 
 		//Œo‰ßŠÔ‚©‚çü‚ÌL‚Î‚·’l‚ğŒvZ
-		float distance = (lockOnTime / rate) * rate;
+		float distanceRate = (lockOnTime / rate) * rate;
 		if (minusFlag)
 		{
-			distance *= -1;
+			distanceRate *= -1;
 		}
 		line->data.endPos = endPos;
 		switch (axis)
 		{
 		case 0:
-			line->data.endPos.x = startPos.x + distance;
+			line->data.endPos.x = startPos.x + distanceRate;
 			break;
 		case 1:
-			line->data.endPos.y = startPos.y + distance;
+			line->data.endPos.y = startPos.y + distanceRate;
 			break;
 		case 2:
-			line->data.endPos.z = startPos.z + distance;
+			line->data.endPos.z = startPos.z + distanceRate;
 			break;
 		default:
 			break;

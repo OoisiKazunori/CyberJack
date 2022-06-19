@@ -12,20 +12,20 @@ public:
 	~DescriptorHeapMgr();
 
 
-	void CreateBufferView(const short &HANDLE, const D3D12_CONSTANT_BUFFER_VIEW_DESC &BUFFER_VIEW, ID3D12Resource *ADDRESS);
-	void CreateBufferView(const short &HANDLE, const D3D12_SHADER_RESOURCE_VIEW_DESC &BUFFER_VIEW, ID3D12Resource *ADDRESS);
-	void CreateBufferView(const short &HANDLE, const D3D12_RENDER_TARGET_VIEW_DESC &BUFFER_VIEW, ID3D12Resource *ADDRESS);
-	void CreateBufferView(const short &HANDLE, const D3D12_UNORDERED_ACCESS_VIEW_DESC &BUFFER_VIEW, ID3D12Resource *ADDRESS);
-	void Release(const short &HANDLE);
+	void CreateBufferView(RESOURCE_HANDLE HANDLE, const D3D12_CONSTANT_BUFFER_VIEW_DESC &BUFFER_VIEW);
+	void CreateBufferView(RESOURCE_HANDLE HANDLE, const D3D12_SHADER_RESOURCE_VIEW_DESC &BUFFER_VIEW, ID3D12Resource *ADDRESS);
+	void CreateBufferView(RESOURCE_HANDLE HANDLE, const D3D12_RENDER_TARGET_VIEW_DESC &BUFFER_VIEW, ID3D12Resource *ADDRESS);
+	void CreateBufferView(RESOURCE_HANDLE HANDLE, const D3D12_UNORDERED_ACCESS_VIEW_DESC &BUFFER_VIEW, ID3D12Resource *ADDRESS);
+	void Release(RESOURCE_HANDLE HANDLE);
 
 
 	BufferMemorySize GetSize(const BufferMemory &TYPE)const;
-	const D3D12_GPU_DESCRIPTOR_HANDLE GetGpuDescriptorView(const short &HANDLE);
-	const D3D12_CPU_DESCRIPTOR_HANDLE GetCpuDescriptorView(const short &HANDLE);
+	const D3D12_GPU_DESCRIPTOR_HANDLE GetGpuDescriptorView(RESOURCE_HANDLE HANDLE);
+	const D3D12_CPU_DESCRIPTOR_HANDLE GetCpuDescriptorView(RESOURCE_HANDLE HANDLE);
 	void SetDescriptorHeap();
 
 
-	int GetType(const short &HANDLE);
+	int GetType(RESOURCE_HANDLE HANDLE);
 
 private:
 
@@ -37,11 +37,11 @@ private:
 	UINT64 rtvHeapIncreSize;
 	array<bool, DESCRIPTOR_HEAP_SIZE_MAX> usedHandle;
 
-	bool isSafeToReadThisHandle(const short &HANDLE)
+	bool isSafeToReadThisHandle(RESOURCE_HANDLE HANDLE)
 	{
 		return KazHelper::IsitInAnArray(HANDLE, DESCRIPTOR_HEAP_SIZE_MAX) && usedHandle[HANDLE];
 	};
-	bool isSafeToUseThisHandle(const short &HANDLE)
+	bool isSafeToUseThisHandle(RESOURCE_HANDLE HANDLE)
 	{
 		return KazHelper::IsitInAnArray(HANDLE, DESCRIPTOR_HEAP_SIZE_MAX) && !usedHandle[HANDLE];
 	};

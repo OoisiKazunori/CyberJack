@@ -20,7 +20,7 @@ public:
 private:
 	static const int JSON_ARRAY_NUM = 25;
 	std::array<LineRender, 150> line;
-	std::array<FogHandle, 150> handle;
+	std::array<FogHandle, 150> fogHandle;
 	ParameterMgr stageParamLoader;
 
 };

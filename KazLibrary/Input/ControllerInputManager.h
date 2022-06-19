@@ -49,8 +49,6 @@ public:
 	bool InputTrigger(int BUTTON)override;
 	bool InputState(int BUTTON)override;
 	bool InputRelease(int BUTTON)override;
-	//実装すべきか検討中
-	bool NotInput(int MAX_SECOND)override;
 
 
 	//スティック操作

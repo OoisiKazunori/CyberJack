@@ -25,7 +25,7 @@ private:
 	int areaNum;
 	int areaTimer;
 
-	std::array<int, 10> numberHandle;
+	std::array<RESOURCE_HANDLE, 10> numberHandle;
 	Sprite2DRender flameTex;	//ウィンドウの描画
 
 	std::array<Sprite2DRender, 6> areaTex;		//エリア文字の描画

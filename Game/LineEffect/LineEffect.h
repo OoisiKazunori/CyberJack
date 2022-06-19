@@ -34,7 +34,7 @@ private:
 	LineRenderPtr line;
 	Sprite3DRenderPtr circle;
 	Sprite3DRenderPtr releaseCircle;
-	short constBufferHandle;
+	RESOURCE_HANDLE constBufferHandle;
 	ConstLineData lineData;
 
 	bool rockOnFlag;
@@ -48,7 +48,7 @@ private:
 	int axis;
 
 	bool minusFlag;
-	short circleTexHandle;
+	RESOURCE_HANDLE circleTexHandle;
 
 	bool releaseFlag;
 	bool releaseCircleEffectFlag;

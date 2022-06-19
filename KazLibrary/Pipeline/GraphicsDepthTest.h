@@ -8,8 +8,8 @@ public:
 	GraphicsDepthTest();
 	~GraphicsDepthTest();
 
-	UINT CreateBuffer();
-	void Clear(short HANDLE);
+	RESOURCE_HANDLE CreateBuffer();
+	void Clear(RESOURCE_HANDLE HANDLE);
 
 	vector<D3D12_CPU_DESCRIPTOR_HANDLE> dsvH;
 private:

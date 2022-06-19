@@ -17,12 +17,9 @@ using namespace std;
 static const int WIN_X = 1280;
 static const int WIN_Y = 720;
 
-//static const XMFLOAT3 BG_COLOR = { 255.0f,255.0f,255.0f };
 static const XMFLOAT3 BG_COLOR_WHITE = { 255.0f,255.0f,255.0f };
 static const XMFLOAT3 BG_COLOR = { 0.0f,0.0f,0.0f };
 //static const XMFLOAT3 BG_COLOR = { 22,38,37 };
-static const XMFLOAT3 PLAYER_POS = { 0.0f,10.0f,30.0f };
-//static const XMFLOAT3 BG_COLOR = { 255,255,255 };
 
 struct Vertex
 {
@@ -141,3 +138,6 @@ struct constBufferVhsData
 {
 	float time;
 };
+
+typedef int RESOURCE_HANDLE;
+typedef int BUFFER_SIZE;

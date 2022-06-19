@@ -27,13 +27,13 @@ void CreateGpuBuffer::CreateDescriptorHeap(unsigned int DESCRIPTOR_NUM_MAX)
 	DirectX12Device::Instance()->dev->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&heap));
 }
 
-short CreateGpuBuffer::CreateBuffer(D3D12_HEAP_PROPERTIES HEAP_PROPERTIES, D3D12_RESOURCE_DESC RESOURCE, D3D12_RESOURCE_STATES RESOURCE_STATE, D3D12_CLEAR_VALUE *CLEAR_VALUE)
+RESOURCE_HANDLE CreateGpuBuffer::CreateBuffer(D3D12_HEAP_PROPERTIES HEAP_PROPERTIES, D3D12_RESOURCE_DESC RESOURCE, D3D12_RESOURCE_STATES RESOURCE_STATE, D3D12_CLEAR_VALUE *CLEAR_VALUE)
 {
 	HRESULT result;
 
 	//ハンドルの取得
-	short num = handle->GetHandle();
-	short caluHandle = handle->CaluNowHandle(num);
+	RESOURCE_HANDLE lHandle = handle->GetHandle();
+	RESOURCE_HANDLE lCaluHandle = handle->CaluNowHandle(lHandle);
 
 
 	//バッファの生成
@@ -44,27 +44,27 @@ short CreateGpuBuffer::CreateBuffer(D3D12_HEAP_PROPERTIES HEAP_PROPERTIES, D3D12
 		RESOURCE_STATE,
 		CLEAR_VALUE,
 		//無駄なバッファの確保をしないように、現在のハンドル数値 - ハンドルの始めの数値で添え字は0から始めるようにする
-		IID_PPV_ARGS(&buffers[caluHandle])
+		IID_PPV_ARGS(&buffers[lCaluHandle])
 	);
 
 	//失敗したら-1を返す
 	if (result != S_OK)
 	{
-		handle->DeleteHandle(num);
+		handle->DeleteHandle(lHandle);
 		return -1;
 	}
 
-	buffers[caluHandle]->SetName(L"CreateGpuBuffer");
-	return num;
+	buffers[lCaluHandle]->SetName(L"CreateGpuBuffer");
+	return lHandle;
 }
 
-short CreateGpuBuffer::CreateBuffer(const KazBufferHelper::BufferResourceData &BUFFER_OPTION)
+RESOURCE_HANDLE CreateGpuBuffer::CreateBuffer(const KazBufferHelper::BufferResourceData &BUFFER_OPTION)
 {
 	HRESULT result;
 
 	//ハンドルの取得
-	short num = handle->GetHandle();
-	short caluHandle = handle->CaluNowHandle(num);
+	RESOURCE_HANDLE lHandle = handle->GetHandle();
+	RESOURCE_HANDLE lCaluHandle = handle->CaluNowHandle(lHandle);
 
 	//バッファの生成
 	result = DirectX12Device::Instance()->dev->CreateCommittedResource(
@@ -73,36 +73,36 @@ short CreateGpuBuffer::CreateBuffer(const KazBufferHelper::BufferResourceData &B
 		&BUFFER_OPTION.resourceDesc,
 		BUFFER_OPTION.resourceState,
 		BUFFER_OPTION.clearValue,
-		IID_PPV_ARGS(&buffers[caluHandle])
+		IID_PPV_ARGS(&buffers[lCaluHandle])
 	);
 
 	//失敗したら-1を返す
 	if (result != S_OK)
 	{
-		handle->DeleteHandle(num);
+		handle->DeleteHandle(lHandle);
 		return -1;
 	}
 
-	const unsigned int bufferSize = 256;
-	array<wchar_t, bufferSize> string;
-	KazHelper::ConvertStringToWchar_t(BUFFER_OPTION.BufferName, string.data(), bufferSize);
-	buffers[caluHandle]->SetName(string.data());
-	return num;
+	const unsigned int BUFFER_SIZE = 256;
+	array<wchar_t, BUFFER_SIZE> string;
+	KazHelper::ConvertStringToWchar_t(BUFFER_OPTION.BufferName, string.data(), BUFFER_SIZE);
+	buffers[lCaluHandle]->SetName(string.data());
+	return lHandle;
 }
 
-void CreateGpuBuffer::TransData(const short &HANDLE, void *DATA, const unsigned int &DATA_SIZE)
+void CreateGpuBuffer::TransData(RESOURCE_HANDLE HANDLE, void *DATA, const unsigned int &DATA_SIZE)
 {
-	short caluHandle = handle->CaluNowHandle(HANDLE);
+	RESOURCE_HANDLE lCaluHandle = handle->CaluNowHandle(HANDLE);
 	void *dataMap = nullptr;
-	auto result = buffers[caluHandle]->Map(0, nullptr, (void **)&dataMap);
+	auto result = buffers[lCaluHandle]->Map(0, nullptr, (void **)&dataMap);
 	if (SUCCEEDED(result))
 	{
 		memcpy(dataMap, DATA, DATA_SIZE);
-		buffers[caluHandle]->Unmap(0, nullptr);
+		buffers[lCaluHandle]->Unmap(0, nullptr);
 	}
 }
 
-void CreateGpuBuffer::CreateBufferView(short HANDLE, D3D12_CONSTANT_BUFFER_VIEW_DESC VIEW)
+void CreateGpuBuffer::CreateBufferView(RESOURCE_HANDLE HANDLE, D3D12_CONSTANT_BUFFER_VIEW_DESC VIEW)
 {
 	//ビューの作成
 	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = VIEW;
@@ -114,29 +114,29 @@ void CreateGpuBuffer::CreateBufferView(short HANDLE, D3D12_CONSTANT_BUFFER_VIEW_
 	DirectX12Device::Instance()->dev->CreateConstantBufferView(&cbvDesc, heapHandle);
 }
 
-void CreateGpuBuffer::CreateBufferView(short HANDLE, D3D12_SHADER_RESOURCE_VIEW_DESC VIEW)
+void CreateGpuBuffer::CreateBufferView(RESOURCE_HANDLE HANDLE, D3D12_SHADER_RESOURCE_VIEW_DESC VIEW)
 {
-	short caluHandle = handle->CaluNowHandle(HANDLE);
+	RESOURCE_HANDLE lCaluHandle = handle->CaluNowHandle(HANDLE);
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = VIEW;
 	heapHandle = heap->GetCPUDescriptorHandleForHeapStart();
 	for (int i = 0; i < HANDLE; i++)
 	{
 		heapHandle.ptr += increSize;
 	}
-	DirectX12Device::Instance()->dev->CreateShaderResourceView(buffers[caluHandle].Get(), &srvDesc, heapHandle);
+	DirectX12Device::Instance()->dev->CreateShaderResourceView(buffers[lCaluHandle].Get(), &srvDesc, heapHandle);
 }
 
-void CreateGpuBuffer::ReleaseBuffer(short HANDLE)
+void CreateGpuBuffer::ReleaseBuffer(RESOURCE_HANDLE HANDLE)
 {
-	short caluHandle = handle->CaluNowHandle(HANDLE);
-	if (KazHelper::IsitInAnArray(caluHandle, buffers.size()))
+	RESOURCE_HANDLE lCaluHandle = handle->CaluNowHandle(HANDLE);
+	if (KazHelper::IsitInAnArray(lCaluHandle, buffers.size()))
 	{
-		buffers[caluHandle].Reset();
+		buffers[lCaluHandle].Reset();
 		handle->DeleteHandle(HANDLE);
 	}
 }
 
-D3D12_GPU_DESCRIPTOR_HANDLE CreateGpuBuffer::GetViewPointer(short HANDLE)
+D3D12_GPU_DESCRIPTOR_HANDLE CreateGpuBuffer::GetViewPointer(RESOURCE_HANDLE HANDLE)
 {
 	//指定のビューを探す
 	ID3D12DescriptorHeap *ppHeap[] = { heap.Get() };
@@ -149,12 +149,12 @@ D3D12_GPU_DESCRIPTOR_HANDLE CreateGpuBuffer::GetViewPointer(short HANDLE)
 	return gpuDescHandleCBV;
 }
 
-ComPtr<ID3D12Resource> CreateGpuBuffer::GetBufferData(short HANDLE)
+ComPtr<ID3D12Resource> CreateGpuBuffer::GetBufferData(RESOURCE_HANDLE HANDLE)
 {
-	short caluHandle = handle->CaluNowHandle(HANDLE);
-	if (KazHelper::IsitInAnArray(caluHandle, buffers.size()))
+	RESOURCE_HANDLE lCaluHandle = handle->CaluNowHandle(HANDLE);
+	if (KazHelper::IsitInAnArray(lCaluHandle, buffers.size()))
 	{
-		return buffers[caluHandle];
+		return buffers[lCaluHandle];
 	}
 	else
 	{
@@ -162,18 +162,18 @@ ComPtr<ID3D12Resource> CreateGpuBuffer::GetBufferData(short HANDLE)
 	}
 }
 
-D3D12_GPU_VIRTUAL_ADDRESS CreateGpuBuffer::GetGpuAddress(short HANDLE)
+D3D12_GPU_VIRTUAL_ADDRESS CreateGpuBuffer::GetGpuAddress(RESOURCE_HANDLE HANDLE)
 {
-	short caluHandle = handle->CaluNowHandle(HANDLE);
-	if (KazHelper::IsitInAnArray(caluHandle, buffers.size()))
+	RESOURCE_HANDLE lCaluHandle = handle->CaluNowHandle(HANDLE);
+	if (KazHelper::IsitInAnArray(lCaluHandle, buffers.size()))
 	{
-		return buffers[caluHandle]->GetGPUVirtualAddress();
+		return buffers[lCaluHandle]->GetGPUVirtualAddress();
 	}
 
 	return static_cast<UINT64>(-1);
 }
 
-void *CreateGpuBuffer::GetMapAddres(short HANDLE)
+void *CreateGpuBuffer::GetMapAddres(RESOURCE_HANDLE HANDLE)
 {
 	void *dataMap = nullptr;
 	buffers[HANDLE]->Map(0, nullptr, (void **)&dataMap);

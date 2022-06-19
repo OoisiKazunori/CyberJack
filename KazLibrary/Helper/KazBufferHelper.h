@@ -66,23 +66,23 @@ namespace KazBufferHelper
 	KazBufferHelper::BufferResourceData SetShaderResourceBufferData(const D3D12_RESOURCE_DESC &TEXTURE_DATA, const string &BUFFER_NAME = "ShaderResourceBuffer");
 
 
-	KazBufferHelper::BufferResourceData SetVertexBufferData(const unsigned int &BUFFER_SIZE, const string &BUFFER_NAME = "VertexBuffer");
+	KazBufferHelper::BufferResourceData SetVertexBufferData(BUFFER_SIZE BUFFER_SIZE, const string &BUFFER_NAME = "VertexBuffer");
 
 
-	KazBufferHelper::BufferResourceData SetIndexBufferData(const unsigned int &BUFFER_SIZE, const string &BUFFER_NAME = "IndexBuffer");
+	KazBufferHelper::BufferResourceData SetIndexBufferData(BUFFER_SIZE BUFFER_SIZE, const string &BUFFER_NAME = "IndexBuffer");
 
 
 	KazBufferHelper::BufferResourceData SetRenderTargetData(const D3D12_HEAP_PROPERTIES &HEAP_PROPERTIES, const D3D12_RESOURCE_DESC &RESOURCE, D3D12_CLEAR_VALUE *CLEAR_COLOR, const string &BUFFER_NAME = "RenderTarget");
 
-	KazBufferHelper::BufferResourceData SetStructureBuffer(const unsigned int &BUFFER_SIZE, const string &BUFFER_NAME = "StructureBuffer");
+	KazBufferHelper::BufferResourceData SetStructureBuffer(BUFFER_SIZE BUFFER_SIZE, const string &BUFFER_NAME = "StructureBuffer");
 
-	KazBufferHelper::BufferResourceData SetRWStructuredBuffer(const unsigned int &BUFFER_SIZE, const string &BUFFER_NAME = "RWStructureBuffer");
+	KazBufferHelper::BufferResourceData SetRWStructuredBuffer(BUFFER_SIZE BUFFER_SIZE, const string &BUFFER_NAME = "RWStructureBuffer");
 
 
 
-	D3D12_VERTEX_BUFFER_VIEW SetVertexBufferView(const D3D12_GPU_VIRTUAL_ADDRESS &GPU_ADDRESS, const unsigned int &BUFFER_SIZE, const unsigned int &ONE_VERTICES_SIZE);
+	D3D12_VERTEX_BUFFER_VIEW SetVertexBufferView(const D3D12_GPU_VIRTUAL_ADDRESS &GPU_ADDRESS, BUFFER_SIZE BUFFER_SIZE, const unsigned int &ONE_VERTICES_SIZE);
 
-	D3D12_INDEX_BUFFER_VIEW SetIndexBufferView(const D3D12_GPU_VIRTUAL_ADDRESS &GPU_ADDRESS, const unsigned int &BUFFER_SIZE);
+	D3D12_INDEX_BUFFER_VIEW SetIndexBufferView(const D3D12_GPU_VIRTUAL_ADDRESS &GPU_ADDRESS, BUFFER_SIZE BUFFER_SIZE);
 
 
 	template<typename T>

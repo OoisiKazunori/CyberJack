@@ -31,6 +31,9 @@ void StageSelectScene::Draw() const
 
 void StageSelectScene::Input(bool Left, bool Right, bool Done)
 {
+	leftFlag = Left;
+	rightFlag = Right;
+	doneFlag = Done;
 }
 
 int StageSelectScene::StageNumber()

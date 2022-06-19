@@ -8,7 +8,7 @@ HandleMaker::HandleMaker()
 	maxSize = 10000;
 }
 
-short HandleMaker::GetHandle()
+int HandleMaker::GetHandle()
 {
 	//ハンドルの番号決定
 	if (1 <= deleteHandleNumber.size())
@@ -38,7 +38,7 @@ short HandleMaker::GetHandle()
     return handle;
 }
 
-void HandleMaker::DeleteHandle(short HANDLE)
+void HandleMaker::DeleteHandle(RESOURCE_HANDLE HANDLE)
 {
 	//ハンドルが生成された最大値の内&&削除されていない値
 	if (KazHelper::IsitInAnArray(HANDLE, setHandle) && !IsItDeleted(HANDLE))
@@ -51,7 +51,7 @@ void HandleMaker::DeleteHandle(short HANDLE)
 	}
 }
 
-bool HandleMaker::CheckHandleWasDeleteOrNot(const short &HANDLE)
+bool HandleMaker::CheckHandleWasDeleteOrNot(RESOURCE_HANDLE HANDLE)
 {
 	for (int i = 0; i < deleteHandleNumber.size(); i++)
 	{
@@ -63,7 +63,7 @@ bool HandleMaker::CheckHandleWasDeleteOrNot(const short &HANDLE)
 	return false;
 }
 
-bool HandleMaker::CheckHandleWasUsedOrNot(const short &HANDLE)
+bool HandleMaker::CheckHandleWasUsedOrNot(RESOURCE_HANDLE HANDLE)
 {
 	if (HANDLE < handle)
 	{
@@ -83,12 +83,12 @@ void HandleMaker::SetHandleSize(const BufferMemorySize &SIZE)
 	setHandle = minSize;
 }
 
-short HandleMaker::CaluNowHandle(const short &HANDLE)
+RESOURCE_HANDLE HandleMaker::CaluNowHandle(RESOURCE_HANDLE HANDLE)
 {
 	return HANDLE - minSize;
 }
 
-bool HandleMaker::IsItDeleted(short HANDLE)
+bool HandleMaker::IsItDeleted(RESOURCE_HANDLE HANDLE)
 {
 	for (int i = 0; i < deleteHandleNumber.size(); i++)
 	{

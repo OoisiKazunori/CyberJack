@@ -54,7 +54,7 @@ public:
 	/// <param name="XAUDIO2">Audio</param>
 	/// <param name="SOUNDDATA">読み込んだ音データ</param>
 	/// <param name="LOOP">ループさせるかどうか</param>
-	void SoundPlayWave(IXAudio2 *XAUDIO2, const SoundData &SOUNDDATA, int LOOP = 0);
+	void SoundPlayWave(const SoundData &SOUNDDATA, int LOOP = 0);
 
 	ComPtr<IXAudio2> xAudio2;
 	SoundData Shandle[5];

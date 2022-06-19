@@ -12,57 +12,15 @@ GraphicsDepthTest::GraphicsDepthTest()
 
 	DirectX12Device::Instance()->dev->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(&dsvHeap));
 
-	//dsvHeap->SetName(L"GraphicsDepthTest");
-	//depthBuffer->SetName(L"GraphicsDepthTest");
 }
 
 GraphicsDepthTest::~GraphicsDepthTest()
 {
 }
 
-UINT GraphicsDepthTest::CreateBuffer()
+RESOURCE_HANDLE GraphicsDepthTest::CreateBuffer()
 {	
-	UINT handleNum = handle.GetHandle();
-	////深度バッファの設定
-	//D3D12_RESOURCE_DESC depthResDesc{};
-	//depthResDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-	//depthResDesc.Width = WIN_X;//レンダーターゲットに合わせる
-	//depthResDesc.Height = WIN_Y;//レンダーターゲットに合わせる
-	//depthResDesc.DepthOrArraySize = 1;//深度値フォーマット
-	//depthResDesc.Format = DXGI_FORMAT_D32_FLOAT;
-	//depthResDesc.SampleDesc.Count = 1;
-	//depthResDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;//デプスステンシル
-
-	////深度値用ヒーププロパティ
-	//D3D12_HEAP_PROPERTIES depthHeapProp{};
-	//depthHeapProp.Type = D3D12_HEAP_TYPE_DEFAULT;
-
-	////深度クリア設定
-	//D3D12_CLEAR_VALUE depthClearValue{};
-	//depthClearValue.DepthStencil.Depth = 1.0f;		//深度値1.0fでクリア
-	//depthClearValue.Format = DXGI_FORMAT_D32_FLOAT; //深度値フォーマット
-
-	////リソース設定
-	//DirectX12Device::dev->CreateCommittedResource(
-	//	&depthHeapProp,
-	//	D3D12_HEAP_FLAG_NONE,
-	//	&depthResDesc,
-	//	D3D12_RESOURCE_STATE_DEPTH_WRITE,
-	//	&depthClearValue,
-	//	IID_PPV_ARGS(&depthBuffer)
-	//);
-
-	////深度ビュー作成
-	//D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
-	//dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
-	//dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
-	//DirectX12Device::dev->CreateDepthStencilView(
-	//	depthBuffer.Get(),
-	//	&dsvDesc,
-	//	dsvHeap->GetCPUDescriptorHandleForHeapStart()
-	//);
-
-	//dsvH = dsvHeap->GetCPUDescriptorHandleForHeapStart();
+	RESOURCE_HANDLE handleNum = handle.GetHandle();
 
 	depthBuffer.push_back({});
 	dsvH.push_back({});
@@ -107,7 +65,7 @@ UINT GraphicsDepthTest::CreateBuffer()
 	return handleNum;
 }
 
-void GraphicsDepthTest::Clear(short HANDLE)
+void GraphicsDepthTest::Clear(RESOURCE_HANDLE HANDLE)
 {
 	//深度ステンシルビュー用デスクリプタヒープのハンドルを取得
 	DirectX12CmdList::Instance()->cmdList->ClearDepthStencilView(dsvH[HANDLE], D3D12_CLEAR_FLAG_DEPTH, 1.0, 0, 0, nullptr);

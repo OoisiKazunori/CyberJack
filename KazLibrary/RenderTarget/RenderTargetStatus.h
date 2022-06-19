@@ -34,7 +34,7 @@ public:
 	/// ダブルバッファリング用のレンダーターゲットをクリアします
 	/// </summary>
 	/// <param name="COLOR">背景色</param>
-	void SetDoubleBufferFlame(XMFLOAT3 COLOR);
+	void SetDoubleBufferFlame();
 
 
 	void ClearDoubuleBuffer(XMFLOAT3 COLOR);
@@ -50,51 +50,42 @@ public:
 	/// </summary>
 	/// <param name="OPEN_RENDERTARGET">開きたいレンダーターゲットのリソースバリア</param>
 	/// <param name="CLOSE_RENDERTARGET">閉じたいレンダーターゲットのリソースバリア</param>
-	void PrepareToChangeBarrier(const short &OPEN_RENDERTARGET_HANDLE, const short &CLOSE_RENDERTARGET_HANDLE = -1);
+	void PrepareToChangeBarrier(RESOURCE_HANDLE OPEN_RENDERTARGET_HANDLE, RESOURCE_HANDLE CLOSE_RENDERTARGET_HANDLE = -1);
 
 	/// <summary>
 	/// 指定のレンダーターゲットをリソースバリアを閉じます
 	/// </summary>
 	/// <param name="RENDERTARGET">閉じたいレンダーターゲット</param>
-	void PrepareToCloseBarrier(const short &RENDERTARGET_HANDLE);
-
-	/// <summary>
-	/// 未完成
-	/// 描画先を指定のレンダーターゲットに切り替え、深度バッファを切り替えます
-	/// </summary>
-	/// <param name="RENDERTARGET">指定のレンダータゲット</param>
-	/// <param name="DEPHT_HANDLE">指定の深度バッファ</param>
-	void PrepareToChangeBarrier(const short &RENDERTARGET, int DEPHT_HANDLE);
-
+	void PrepareToCloseBarrier(RESOURCE_HANDLE RENDERTARGET_HANDLE);
 
 	/// <summary>
 	/// レンダーターゲットをクリアします
 	/// </summary>
 	/// <param name="RENDERTARGET">クリアするレンダーターゲット</param>
-	void ClearRenderTarget(const short &RENDERTARGET_HANDLE);
+	void ClearRenderTarget(RESOURCE_HANDLE RENDERTARGET_HANDLE);
 
 
-	short CreateRenderTarget(const KazMath::Vec2<UINT> &GRAPH_SIZE, const XMFLOAT3 &CLEAR_COLOR, const DXGI_FORMAT &FORMAT);
-	std::vector<short> CreateMultiRenderTarget(const std::vector<MultiRenderTargetData> &MULTIRENDER_TARGET_DATA, const DXGI_FORMAT &FORMAT);
-	ID3D12Resource *GetBufferData(short HANDLE)const;
-	D3D12_GPU_DESCRIPTOR_HANDLE GetViewData(short HANDLE);
+	RESOURCE_HANDLE CreateRenderTarget(const KazMath::Vec2<UINT> &GRAPH_SIZE, const XMFLOAT3 &CLEAR_COLOR, const DXGI_FORMAT &FORMAT);
+	std::vector<RESOURCE_HANDLE> CreateMultiRenderTarget(const std::vector<MultiRenderTargetData> &MULTIRENDER_TARGET_DATA, const DXGI_FORMAT &FORMAT);
+	ID3D12Resource *GetBufferData(RESOURCE_HANDLE HANDLE)const;
+	D3D12_GPU_DESCRIPTOR_HANDLE GetViewData(RESOURCE_HANDLE HANDLE);
 
 
-	void DeleteRenderTarget(short HANDLE);
-	void DeleteMultiRenderTarget(const std::vector<short> &HANDLE);
+	void DeleteRenderTarget(RESOURCE_HANDLE HANDLE);
+	void DeleteMultiRenderTarget(const std::vector<RESOURCE_HANDLE> &HANDLE);
 
 
 	ComPtr<ID3D12DescriptorHeap> multiPassRTVHeap;
 	ComPtr<ID3D12Resource> copyBuffer;
 
 	GraphicsDepthTest gDepth;
-	short handle, handle2;
+	RESOURCE_HANDLE handle, handle2;
 
 	unique_ptr<CreateGpuBuffer> buffers;
 	int bbIndex;
 
 	//レンダーターゲットのハンドルからパス数を記録した配列
-	std::array<std::vector<short>, 100>renderTargetData;
+	std::array<std::vector<RESOURCE_HANDLE>, 100>renderTargetData;
 private:
 
 	std::vector<ComPtr<ID3D12Resource>> backBuffers;
@@ -114,10 +105,10 @@ private:
 	struct RenderTargetHandle
 	{
 		unsigned int renderTargetNum;
-		std::vector<short> handles;
-		RenderTargetHandle(unsigned int RENDER_TARGET_NUM, std::vector<short> FIRST_HANDLE) :renderTargetNum(RENDER_TARGET_NUM), handles(FIRST_HANDLE)
+		std::vector<RESOURCE_HANDLE> handles;
+		RenderTargetHandle(unsigned int RENDER_TARGET_NUM, std::vector<RESOURCE_HANDLE> FIRST_HANDLE) :renderTargetNum(RENDER_TARGET_NUM), handles(FIRST_HANDLE)
 		{
 		};
 	};
-	std::vector<short> CountPass(short HANDLE);
+	std::vector<RESOURCE_HANDLE> CountPass(RESOURCE_HANDLE HANDLE);
 };

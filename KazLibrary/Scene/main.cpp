@@ -78,7 +78,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	{
 		CheckMessageFlag = msg.CheckMessage();
 		imgui.NewFlame();
-		RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
+		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 		RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
 		KeyBoradInputManager::Instance()->InputLog();
 		ControllerInputManager::Instance()->InputLog();

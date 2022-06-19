@@ -1,9 +1,9 @@
 #include"../RenderTarget/GaussianBuler.h"
 #include"../Math/KazMath.h"
 
-GaussianBuler::GaussianBuler(const KazMath::Vec2<UINT> &GRAPH_SIZE, XMFLOAT3 COLOR)
+GaussianBuler::GaussianBuler(const KazMath::Vec2<UINT> &GRAPH_SIZE)
 {
-	buffers.reset(new CreateGpuBuffer);
+	buffers = std::make_unique<CreateGpuBuffer>();
 
 	//ガウシアンブラーの計算
 	int table = 8;
@@ -12,12 +12,6 @@ GaussianBuler::GaussianBuler(const KazMath::Vec2<UINT> &GRAPH_SIZE, XMFLOAT3 COL
 
 
 	cbvHandle = buffers->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(gaus[0] * gaus.size())));
-
-	//cbvHandle = renderData.constBufferMgrInstacnce->CreateBuffer(KazMath::AligmentedValue(sizeof(gaus[0] * gaus.size()), 256));
-	
-	//float *weight = nullptr;
-	//copy(gaus.begin(), gaus.end(), weight);
-	//buffers->TransData(cbvHandle, &weight, 256);
 
 	{
 		float *mappedWeight = nullptr;
@@ -31,10 +25,10 @@ GaussianBuler::GaussianBuler(const KazMath::Vec2<UINT> &GRAPH_SIZE, XMFLOAT3 COL
 	viewport = CD3DX12_VIEWPORT(0.0f, 0.0f, static_cast<float>(graphSize.x), static_cast<float>(graphSize.y));
 
 
-	renderTargetHandle =
+	renderTargetBlurUpHandle =
 		RenderTargetStatus::Instance()->CreateRenderTarget(graphSize, BG_COLOR, DXGI_FORMAT_R8G8B8A8_UNORM);
 
-	renderTargetHandle2 =
+	renderTargetBlurSideHandle =
 		RenderTargetStatus::Instance()->CreateRenderTarget(graphSize, BG_COLOR, DXGI_FORMAT_R8G8B8A8_UNORM);
 
 
@@ -47,24 +41,24 @@ GaussianBuler::GaussianBuler(const KazMath::Vec2<UINT> &GRAPH_SIZE, XMFLOAT3 COL
 
 GaussianBuler::~GaussianBuler()
 {
-	RenderTargetStatus::Instance()->DeleteRenderTarget(renderTargetHandle);
-	RenderTargetStatus::Instance()->DeleteRenderTarget(renderTargetHandle2);
+	RenderTargetStatus::Instance()->DeleteRenderTarget(renderTargetBlurUpHandle);
+	RenderTargetStatus::Instance()->DeleteRenderTarget(renderTargetBlurSideHandle);
 }
 
-short GaussianBuler::BlurImage(const short& TEXTURE_HANDLE, const short& CURRENT_RENDERTARGET_HANDLE)
+RESOURCE_HANDLE GaussianBuler::BlurImage(RESOURCE_HANDLE TEXTURE_HANDLE, RESOURCE_HANDLE CURRENT_RENDERTARGET_HANDLE)
 {
 	renderData.pipelineMgr->SetPipeLineAndRootSignature(PIPELINE_NAME_GAUSSIAN_UPBLUR);
 	
 	//renderData.constBufferMgrInstacnce->SetCBV(cbvHandle, GraphicsRootSignature::Instance()->GetRootParam(renderData.pipelineMgr->GetRootSignatureName(PIPELINE_NAME_GAUSSIAN_UPBLUR)), GRAPHICS_PRAMTYPE_DATA);
 
-	UINT num = KazRenderHelper::SetBufferOnCmdList(GraphicsRootSignature::Instance()->GetRootParam(renderData.pipelineMgr->GetRootSignatureName(PIPELINE_NAME_GAUSSIAN_UPBLUR)), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
-	renderData.cmdListInstance->cmdList->SetGraphicsRootConstantBufferView(num, buffers->GetBufferData(cbvHandle).Get()->GetGPUVirtualAddress());
+	UINT rootParam = KazRenderHelper::SetBufferOnCmdList(GraphicsRootSignature::Instance()->GetRootParam(renderData.pipelineMgr->GetRootSignatureName(PIPELINE_NAME_GAUSSIAN_UPBLUR)), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+	renderData.cmdListInstance->cmdList->SetGraphicsRootConstantBufferView(rootParam, buffers->GetBufferData(cbvHandle).Get()->GetGPUVirtualAddress());
 
 
 
 	//ガウシアンぼかしの縦ブラー
-	RenderTargetStatus::Instance()->PrepareToChangeBarrier(renderTargetHandle, CURRENT_RENDERTARGET_HANDLE);
-	RenderTargetStatus::Instance()->ClearRenderTarget(renderTargetHandle);
+	RenderTargetStatus::Instance()->PrepareToChangeBarrier(renderTargetBlurUpHandle, CURRENT_RENDERTARGET_HANDLE);
+	RenderTargetStatus::Instance()->ClearRenderTarget(renderTargetBlurUpHandle);
 
 	//描画
 	renderData.cmdListInstance->cmdList->RSSetViewports(1, &viewport);
@@ -73,24 +67,24 @@ short GaussianBuler::BlurImage(const short& TEXTURE_HANDLE, const short& CURRENT
 	tex[0].Draw();
 
 	//ガウシアンぼかしの横ブラー
-	RenderTargetStatus::Instance()->PrepareToChangeBarrier(renderTargetHandle2, renderTargetHandle);
-	RenderTargetStatus::Instance()->ClearRenderTarget(renderTargetHandle2);
+	RenderTargetStatus::Instance()->PrepareToChangeBarrier(renderTargetBlurSideHandle, renderTargetBlurUpHandle);
+	RenderTargetStatus::Instance()->ClearRenderTarget(renderTargetBlurSideHandle);
 
 	//描画
 	renderData.cmdListInstance->cmdList->RSSetViewports(1, &viewport);
 	renderData.cmdListInstance->cmdList->RSSetScissorRects(1, &rect);
-	tex[1].data.handle = renderTargetHandle;
+	tex[1].data.handle = renderTargetBlurUpHandle;
 	tex[1].Draw();
 
 	//true...RenderTarget外での実行、false...RenderTarget内での実行
 	if (CURRENT_RENDERTARGET_HANDLE == -1)
 	{
-		RenderTargetStatus::Instance()->PrepareToCloseBarrier(renderTargetHandle2);
-		RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
+		RenderTargetStatus::Instance()->PrepareToCloseBarrier(renderTargetBlurSideHandle);
+		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 	}
 	else
 	{
-		RenderTargetStatus::Instance()->PrepareToChangeBarrier(CURRENT_RENDERTARGET_HANDLE, renderTargetHandle2);
+		RenderTargetStatus::Instance()->PrepareToChangeBarrier(CURRENT_RENDERTARGET_HANDLE, renderTargetBlurSideHandle);
 		RenderTargetStatus::Instance()->ClearRenderTarget(CURRENT_RENDERTARGET_HANDLE);
 	}
 
@@ -100,5 +94,5 @@ short GaussianBuler::BlurImage(const short& TEXTURE_HANDLE, const short& CURRENT
 	renderData.cmdListInstance->cmdList->RSSetScissorRects(1, &Rect);
 
 
-	return renderTargetHandle2;
+	return renderTargetBlurSideHandle;
 }

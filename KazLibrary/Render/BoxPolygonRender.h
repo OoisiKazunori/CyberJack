@@ -19,11 +19,11 @@ private:
 	D3D12_INDEX_BUFFER_VIEW indexBufferView;
 
 
-	short constBufferHandle;
-	short indicesNum;
+	RESOURCE_HANDLE constBufferHandle;
+	UINT indicesNum;
 
 	bool instanceFlag;
-	short instanceNum;
+	int instanceNum;
 
 	PipeLineNames pipeline;
 

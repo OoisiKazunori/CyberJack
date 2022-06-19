@@ -26,10 +26,10 @@ public:
 	/// <param name="RESOURCE_STATE"></param>
 	/// <param name="CLEAR_VALUE"></param>
 	/// <returns>ハンドル</returns>
-	short CreateBuffer(D3D12_HEAP_PROPERTIES HEAP_PROPERTIES, D3D12_RESOURCE_DESC RESOURCE, D3D12_RESOURCE_STATES RESOURCE_STATE, D3D12_CLEAR_VALUE *CLEAR_VALUE = nullptr);
+	RESOURCE_HANDLE CreateBuffer(D3D12_HEAP_PROPERTIES HEAP_PROPERTIES, D3D12_RESOURCE_DESC RESOURCE, D3D12_RESOURCE_STATES RESOURCE_STATE, D3D12_CLEAR_VALUE *CLEAR_VALUE = nullptr);
 
 
-	short CreateBuffer(const KazBufferHelper::BufferResourceData &BUFFER_OPTION);
+	RESOURCE_HANDLE CreateBuffer(const KazBufferHelper::BufferResourceData &BUFFER_OPTION);
 
 	/// <summary>
 	/// データをバッファに転送します
@@ -37,36 +37,36 @@ public:
 	/// <param name="HANDLE">バッファのハンドル</param>
 	/// <param name="DATA">送りたいデータのアドレス</param>
 	/// <param name="DATA_SIZE">送りたいデータのサイズ</param>
-	void TransData(const short &HANDLE, void *DATA, const unsigned int &DATA_SIZE);
+	void TransData(RESOURCE_HANDLE HANDLE, void *DATA, const unsigned int &DATA_SIZE);
 
 	/// <summary>
 	/// 定数バッファビューを生成します
 	/// </summary>
 	/// <param name="HANDLE">生成したいバッファ</param>
 	/// <param name="VIEW">ビューの設定</param>
-	void CreateBufferView(short HANDLE, D3D12_CONSTANT_BUFFER_VIEW_DESC VIEW);
+	void CreateBufferView(RESOURCE_HANDLE HANDLE, D3D12_CONSTANT_BUFFER_VIEW_DESC VIEW);
 
 	/// <summary>
 	/// シェーダーリソースビューを生成します
 	/// </summary>
 	/// <param name="HANDLE">生成したいバッファ</param>
 	/// <param name="VIEW">ビューの設定</param>
-	void CreateBufferView(short HANDLE, D3D12_SHADER_RESOURCE_VIEW_DESC VIEW);
+	void CreateBufferView(RESOURCE_HANDLE HANDLE, D3D12_SHADER_RESOURCE_VIEW_DESC VIEW);
 
 	/// <summary>
 	/// バッファを開放します
 	/// </summary>
 	/// <param name="HANDLE">開放したいバッファのハンドル</param>
-	void ReleaseBuffer(short HANDLE);
+	void ReleaseBuffer(RESOURCE_HANDLE HANDLE);
 
-	D3D12_GPU_DESCRIPTOR_HANDLE GetViewPointer(short HANDLE);
+	D3D12_GPU_DESCRIPTOR_HANDLE GetViewPointer(RESOURCE_HANDLE HANDLE);
 
 	/// <summary>
 	/// バッファを受け取ります
 	/// </summary>
 	/// <param name="HANDLE">受け取りたいバッファのハンドル</param>
 	/// <returns>生成されたバッファ</returns>
-	ComPtr<ID3D12Resource>GetBufferData(short HANDLE);
+	ComPtr<ID3D12Resource>GetBufferData(RESOURCE_HANDLE HANDLE);
 
 
 	/// <summary>
@@ -74,10 +74,10 @@ public:
 	/// </summary>
 	/// <param name="HANDLE">ハンドル</param>
 	/// <returns>バッファのGPUアドレス</returns>
-	D3D12_GPU_VIRTUAL_ADDRESS GetGpuAddress(short HANDLE);
+	D3D12_GPU_VIRTUAL_ADDRESS GetGpuAddress(RESOURCE_HANDLE HANDLE);
 
 
-	void *GetMapAddres(short HANDLE);
+	void *GetMapAddres(RESOURCE_HANDLE HANDLE);
 
 
 	unique_ptr<HandleMaker> handle;

@@ -84,7 +84,7 @@ void SoundMgr::SoundUnload(SoundData *SOUNDDATA)
 	SOUNDDATA->wfex = {};
 }
 
-void SoundMgr::SoundPlayWave(IXAudio2 *XAUDIO2, const SoundData &SOUNDDATA, int ROOP)
+void SoundMgr::SoundPlayWave(const SoundData &SOUNDDATA, int ROOP)
 {
 	HRESULT result;
 

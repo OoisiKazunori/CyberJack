@@ -220,7 +220,6 @@ KazMath::Vec3<float> KazMath::CaluEyePosForDebug(const Vec3<float> &EYE_POS, con
 	Vec3<float> resultPos = EYE_POS;
 
 	float rad = ANGLE.x * 3.14f / 180.0f;
-	float rad_2 = ANGLE.y * 3.14f / 180.0f;
 
 
 	float speed = 1;

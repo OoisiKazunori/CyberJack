@@ -258,13 +258,11 @@ XMMATRIX *CameraMgr::GetPerspectiveMatProjectionPointer()
 
 XMMATRIX CameraMgr::GetPerspectiveMatProjectionAngle(float angle)
 {
-	XMMATRIX perspectiveMat =
-		XMMatrixPerspectiveFovLH(
+
+	return XMMatrixPerspectiveFovLH(
 			XMConvertToRadians(angle),
-			(float)WIN_X / WIN_Y,
+			static_cast<float>(WIN_X) / static_cast<float>(WIN_Y),
 			0.1f,
 			100000
-		);
-
-	return perspectiveMat;
+	);;
 }

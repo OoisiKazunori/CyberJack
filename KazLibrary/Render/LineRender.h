@@ -23,9 +23,9 @@ private:
 
 	array<unique_ptr<DirtySet>, 2> positionDirtyFlag;
 
-	short vertexBufferHandle;
-	short indexBufferHandle;
-	short constBufferHandle;
+	RESOURCE_HANDLE vertexBufferHandle;
+	RESOURCE_HANDLE indexBufferHandle;
+	RESOURCE_HANDLE constBufferHandle;
 
 
 	unique_ptr<DirtySet> cameraViewDirtyFlag, cameraProjectionDirtyFlag, cameraBillBoardDirtyFlag;

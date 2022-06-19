@@ -33,17 +33,17 @@ void RenderTargetStatus::CreateDoubleBuffer(ComPtr<IDXGISwapChain4> SWAPCHAIN)
 		backBuffer[i]->SetName(L"RenderTarget");
 
 		//ディスクリプタヒープのハンドルを取得
-		D3D12_CPU_DESCRIPTOR_HANDLE handle = rtvHeaps->GetCPUDescriptorHandleForHeapStart();
+		D3D12_CPU_DESCRIPTOR_HANDLE lHandle = rtvHeaps->GetCPUDescriptorHandleForHeapStart();
 		backBuffers.push_back(backBuffer[i]);
 
 		//裏か表かでアドレスがずれる
-		handle.ptr += i * DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(heapDesc.Type);
+		lHandle.ptr += i * DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(heapDesc.Type);
 
 		//レンダーターゲットビューの生成
 		DirectX12Device::Instance()->dev->CreateRenderTargetView(
 			backBuffers[i].Get(),
 			nullptr,
-			handle
+			lHandle
 		);
 	}
 
@@ -65,7 +65,7 @@ void RenderTargetStatus::CreateDoubleBuffer(ComPtr<IDXGISwapChain4> SWAPCHAIN)
 	);
 }
 
-void RenderTargetStatus::SetDoubleBufferFlame(XMFLOAT3 COLOR)
+void RenderTargetStatus::SetDoubleBufferFlame()
 {
 	gDepth.Clear(handle);
 
@@ -101,9 +101,9 @@ void RenderTargetStatus::SwapResourceBarrier()
 	ChangeBarrier(backBuffers[bbIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 }
 
-void RenderTargetStatus::PrepareToChangeBarrier(const short &OPEN_RENDERTARGET_HANDLE, const short &CLOSE_RENDERTARGET_HANDLE)
+void RenderTargetStatus::PrepareToChangeBarrier(RESOURCE_HANDLE OPEN_RENDERTARGET_HANDLE, RESOURCE_HANDLE CLOSE_RENDERTARGET_HANDLE)
 {
-	std::vector<short> openRendertargetPass = CountPass(OPEN_RENDERTARGET_HANDLE);
+	std::vector<RESOURCE_HANDLE> openRendertargetPass = CountPass(OPEN_RENDERTARGET_HANDLE);
 
 
 	if (CLOSE_RENDERTARGET_HANDLE == -1)
@@ -114,7 +114,7 @@ void RenderTargetStatus::PrepareToChangeBarrier(const short &OPEN_RENDERTARGET_H
 	}
 	else
 	{
-		std::vector<short>  closeRendertargetPass = CountPass(CLOSE_RENDERTARGET_HANDLE);
+		std::vector<RESOURCE_HANDLE> closeRendertargetPass = CountPass(CLOSE_RENDERTARGET_HANDLE);
 
 		for (int i = 0; i < closeRendertargetPass.size(); ++i)
 		{
@@ -135,61 +135,38 @@ void RenderTargetStatus::PrepareToChangeBarrier(const short &OPEN_RENDERTARGET_H
 	std::vector<D3D12_CPU_DESCRIPTOR_HANDLE>rtvHs;
 	for (int i = 0; i < openRendertargetPass.size(); ++i)
 	{
-		unsigned int handle = buffers->handle->CaluNowHandle(openRendertargetPass[i]);
+		UINT lHandle = static_cast<UINT>(buffers->handle->CaluNowHandle(openRendertargetPass[i]));
 		D3D12_CPU_DESCRIPTOR_HANDLE rtvH = multiPassRTVHeap->GetCPUDescriptorHandleForHeapStart();
-		rtvH.ptr += DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV) * handle;
+		rtvH.ptr += DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV) * lHandle;
 		rtvHs.push_back(rtvH);
 	}
 
 	DirectX12CmdList::Instance()->cmdList->OMSetRenderTargets(static_cast<UINT>(openRendertargetPass.size()), rtvHs.data(), false, &gDepth.dsvH[handle]);
 }
 
-void RenderTargetStatus::PrepareToCloseBarrier(const short &RENDERTARGET_HANDLE)
+void RenderTargetStatus::PrepareToCloseBarrier(RESOURCE_HANDLE RENDERTARGET_HANDLE)
 {
-	std::vector<short>  closeRendertargetPass = CountPass(RENDERTARGET_HANDLE);
+	std::vector<RESOURCE_HANDLE>  closeRendertargetPass = CountPass(RENDERTARGET_HANDLE);
 	for (int i = 0; i < closeRendertargetPass.size(); ++i)
 	{
 		ChangeBarrier(buffers->GetBufferData(closeRendertargetPass[i]).Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 	}
 }
 
-void RenderTargetStatus::PrepareToChangeBarrier(const short &RENDERTARGET, int DEPHT_HANDLE)
-{
-	//ダブルバッファリング用のバリアを閉じる
-	ChangeBarrier(backBuffers[bbIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
-	gDepth.Clear(DEPHT_HANDLE);
-
-	//指定のレンダータゲットでバリアをあける
-	ChangeBarrier(buffers->GetBufferData(0).Get(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
-
-
-	//レンダータゲットの設定とクリア
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvH;
-	rtvH = multiPassRTVHeap->GetCPUDescriptorHandleForHeapStart();
-	for (int i = 0; i < 0; i++)
-	{
-		rtvH.ptr += DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-	}
-
-	DirectX12CmdList::Instance()->cmdList->OMSetRenderTargets(1, &rtvH, false, &gDepth.dsvH[DEPHT_HANDLE]);
-	float ClearColor[] = { clearColors[0].x,clearColors[0].y ,clearColors[0].z ,clearColors[0].w };
-	DirectX12CmdList::Instance()->cmdList->ClearRenderTargetView(rtvH, ClearColor, 0, nullptr);
-}
-
-void RenderTargetStatus::ClearRenderTarget(const short &RENDERTARGET_HANDLE)
+void RenderTargetStatus::ClearRenderTarget(RESOURCE_HANDLE RENDERTARGET_HANDLE)
 {
 	//レンダータゲットのクリア
 	gDepth.Clear(handle);
 	//レンダータゲットの設定
 
-	std::vector<short>  openHandle = CountPass(RENDERTARGET_HANDLE);
+	std::vector<RESOURCE_HANDLE> openHandle = CountPass(RENDERTARGET_HANDLE);
 	for (int i = 0; i < openHandle.size(); ++i)
 	{
-		unsigned int handle = static_cast<unsigned int>(buffers->handle->CaluNowHandle(openHandle[i]));
+		unsigned int lHandle = static_cast<unsigned int>(buffers->handle->CaluNowHandle(openHandle[i]));
 		D3D12_CPU_DESCRIPTOR_HANDLE rtvH = multiPassRTVHeap->GetCPUDescriptorHandleForHeapStart();
-		rtvH.ptr += DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV) * handle;
+		rtvH.ptr += DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV) * lHandle;
 
-		short clearHandle = buffers->handle->CaluNowHandle(openHandle[i]);
+		RESOURCE_HANDLE clearHandle = buffers->handle->CaluNowHandle(openHandle[i]);
 		float ClearColor[] = { clearColors[clearHandle].x,clearColors[clearHandle].y ,clearColors[clearHandle].z ,clearColors[clearHandle].w };
 		DirectX12CmdList::Instance()->cmdList->ClearRenderTargetView(rtvH, ClearColor, 0, nullptr);
 
@@ -205,7 +182,7 @@ void RenderTargetStatus::ClearRenderTarget(const short &RENDERTARGET_HANDLE)
 	}
 }
 
-short RenderTargetStatus::CreateRenderTarget(const KazMath::Vec2<UINT> &GRAPH_SIZE, const XMFLOAT3 &CLEAR_COLOR, const DXGI_FORMAT &FORMAT)
+RESOURCE_HANDLE RenderTargetStatus::CreateRenderTarget(const KazMath::Vec2<UINT> &GRAPH_SIZE, const XMFLOAT3 &CLEAR_COLOR, const DXGI_FORMAT &FORMAT)
 {
 	//ビューの生成
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
@@ -234,15 +211,15 @@ short RenderTargetStatus::CreateRenderTarget(const KazMath::Vec2<UINT> &GRAPH_SI
 		&clearColor,
 		"ShaderResourceRenderTarget"
 	);
-	short num = buffers->CreateBuffer(data);
+	RESOURCE_HANDLE lHandle = buffers->CreateBuffer(data);
 
 
-	DescriptorHeapMgr::Instance()->CreateBufferView(num, srvDesc, buffers->GetBufferData(num).Get());
-	clearColors[buffers->handle->CaluNowHandle(num)] = { clearValue[0],clearValue[1],clearValue[2],clearValue[3] };
+	DescriptorHeapMgr::Instance()->CreateBufferView(lHandle, srvDesc, buffers->GetBufferData(lHandle).Get());
+	clearColors[buffers->handle->CaluNowHandle(lHandle)] = { clearValue[0],clearValue[1],clearValue[2],clearValue[3] };
 
 
 	multiPassRTVHanlde = multiPassRTVHeap->GetCPUDescriptorHandleForHeapStart();
-	for (int i = 0; i < buffers->handle->CaluNowHandle(num); i++)
+	for (int i = 0; i < buffers->handle->CaluNowHandle(lHandle); i++)
 	{
 		multiPassRTVHanlde.ptr
 			+= DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
@@ -254,18 +231,18 @@ short RenderTargetStatus::CreateRenderTarget(const KazMath::Vec2<UINT> &GRAPH_SI
 	rtvDesc.Format = FORMAT;
 	//SRを使ってRTVの生成
 	DirectX12Device::Instance()->dev->CreateRenderTargetView(
-		buffers->GetBufferData(num).Get(),
+		buffers->GetBufferData(lHandle).Get(),
 		&rtvDesc,
 		multiPassRTVHanlde
 	);
 
-	vector<short> handle;
-	handle.push_back(num);
-	renderTargetData[buffers->handle->CaluNowHandle(num)] = handle;
-	return num;
+	vector<RESOURCE_HANDLE> lHandles;
+	lHandles.push_back(lHandle);
+	renderTargetData[buffers->handle->CaluNowHandle(lHandle)] = lHandles;
+	return lHandle;
 }
 
-std::vector<short> RenderTargetStatus::CreateMultiRenderTarget(const std::vector<MultiRenderTargetData> &MULTIRENDER_TARGET_DATA, const DXGI_FORMAT &FORMAT)
+std::vector<RESOURCE_HANDLE> RenderTargetStatus::CreateMultiRenderTarget(const std::vector<MultiRenderTargetData> &MULTIRENDER_TARGET_DATA, const DXGI_FORMAT &FORMAT)
 {
 	//ビューの生成
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
@@ -275,9 +252,9 @@ std::vector<short> RenderTargetStatus::CreateMultiRenderTarget(const std::vector
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 
 	const int ARRAY_SIZE = static_cast<int>(MULTIRENDER_TARGET_DATA.size());
-	std::vector<short> handles;
+	std::vector<RESOURCE_HANDLE> handles;
 
-	short buffNum = -1;
+	RESOURCE_HANDLE buffNum = -1;
 	for (int i = 0; i < MULTIRENDER_TARGET_DATA.size(); ++i)
 	{
 		D3D12_RESOURCE_DESC resource = RenderTargetStatus::Instance()->copyBuffer->GetDesc();
@@ -332,17 +309,17 @@ std::vector<short> RenderTargetStatus::CreateMultiRenderTarget(const std::vector
 	return handles;
 }
 
-ID3D12Resource *RenderTargetStatus::GetBufferData(short HANDLE)const
+ID3D12Resource *RenderTargetStatus::GetBufferData(RESOURCE_HANDLE HANDLE)const
 {
 	return buffers->GetBufferData(HANDLE).Get();
 }
 
-D3D12_GPU_DESCRIPTOR_HANDLE RenderTargetStatus::GetViewData(short HANDLE)
+D3D12_GPU_DESCRIPTOR_HANDLE RenderTargetStatus::GetViewData(RESOURCE_HANDLE HANDLE)
 {
 	return DescriptorHeapMgr::Instance()->GetGpuDescriptorView(HANDLE);
 }
 
-void RenderTargetStatus::DeleteRenderTarget(short HANDLE)
+void RenderTargetStatus::DeleteRenderTarget(RESOURCE_HANDLE HANDLE)
 {
 	buffers->ReleaseBuffer(HANDLE);
 	DescriptorHeapMgr::Instance()->Release(HANDLE);
@@ -362,7 +339,7 @@ void RenderTargetStatus::DeleteRenderTarget(short HANDLE)
 	
 }
 
-void RenderTargetStatus::DeleteMultiRenderTarget(const std::vector<short> &HANDLE)
+void RenderTargetStatus::DeleteMultiRenderTarget(const std::vector<RESOURCE_HANDLE> &HANDLE)
 {
 	for (int i = 0; i < HANDLE.size(); ++i)
 	{
@@ -396,7 +373,7 @@ void RenderTargetStatus::ChangeBarrier(ID3D12Resource *RESOURCE, const D3D12_RES
 	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(1, &barrier);
 }
 
-std::vector<short> RenderTargetStatus::CountPass(short HANDLE)
+std::vector<RESOURCE_HANDLE> RenderTargetStatus::CountPass(RESOURCE_HANDLE HANDLE)
 {
 	for (int handleNum = 0; handleNum < renderTargetData.size(); ++handleNum)
 	{
@@ -409,5 +386,5 @@ std::vector<short> RenderTargetStatus::CountPass(short HANDLE)
 		}
 	}
 	assert(0);
-	return std::vector<short>();
+	return std::vector<RESOURCE_HANDLE>();
 }

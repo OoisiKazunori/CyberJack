@@ -30,7 +30,7 @@ struct ResponeData
 	{
 	}
 	int layerLevel;		//どのレイヤーレベルで現れるか
-	short flame;		//敵が現れるフレーム数
+	int flame;		//敵が現れるフレーム数
 	KazMath::Vec3<float> initPos;	//初期座標
 	
 };
@@ -160,8 +160,8 @@ private:
 	Sprite2DRender mainRenderTarget;
 	Sprite2DRender addRenderTarget;
 	Sprite2DRender luminaceTex;
-	short addHandle;
-	short potalTexHandle;
+	RESOURCE_HANDLE addHandle;
+	RESOURCE_HANDLE potalTexHandle;
 	std::unique_ptr<GaussianBuler> buler;
 
 	int stageNum;
@@ -169,7 +169,7 @@ private:
 	bool cameraChangeFlag;
 	bool lineDebugFlag;
 
-	std::vector<short> handles;
+	std::vector<RESOURCE_HANDLE> handles;
 
 
 

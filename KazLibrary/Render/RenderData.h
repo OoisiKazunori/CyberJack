@@ -17,7 +17,7 @@ public:
 
 struct AddTextureData
 {
-	array<short, 10> handle;
+	array<RESOURCE_HANDLE, 10> handle;
 	array<GraphicsRootParamType, 10> paramType;
 
 	AddTextureData()
@@ -45,8 +45,8 @@ struct FlipData
 struct Sprite2DData :public IData
 {
 	KazMath::Transform2D transform;
-	short handle;
-	short animationHandle;
+	RESOURCE_HANDLE handle;
+	RESOURCE_HANDLE animationHandle;
 	FlipData flip;
 	int pipelineName;
 
@@ -71,8 +71,8 @@ struct Sprite2DData :public IData
 struct Sprite3DData :public IData
 {
 	KazMath::Transform3D transform;
-	short handle;
-	short animationHandle;
+	RESOURCE_HANDLE handle;
+	RESOURCE_HANDLE animationHandle;
 	FlipData flip;
 	bool billBoardFlag;
 	XMMATRIX motherMat;
@@ -123,7 +123,7 @@ struct Pera3DData :public IData
 struct Obj3DData :public IData
 {
 	KazMath::Transform3D transform;
-	short handle;
+	RESOURCE_HANDLE handle;
 	KazMath::Vec3<float> upVector;
 	KazMath::Vec3<float> frontVector;
 	XMMATRIX motherMat;
@@ -182,7 +182,7 @@ struct PolygonDrawData :public IData
 struct FbxModelData :public IData
 {
 	KazMath::Transform3D transform;
-	short handle;
+	RESOURCE_HANDLE handle;
 	XMMATRIX motherMat;
 	bool isPlay;
 	int animationNumber;

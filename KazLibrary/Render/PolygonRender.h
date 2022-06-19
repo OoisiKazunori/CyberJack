@@ -27,9 +27,9 @@ private:
 
 
 	XMMATRIX motherMat;
-	short vertexBufferHandle;
-	short indexBufferHandle;
-	short constBufferHandle;
+	RESOURCE_HANDLE vertexBufferHandle;
+	RESOURCE_HANDLE indexBufferHandle;
+	RESOURCE_HANDLE constBufferHandle;
 
 	UINT VertByte;
 	UINT IndexByte;

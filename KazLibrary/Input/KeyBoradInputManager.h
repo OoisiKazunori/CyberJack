@@ -39,7 +39,6 @@ public:
 	bool InputTrigger(int BUTTON);
 	bool InputState(int BUTTON);
 	bool InputRelease(int BUTTON);
-	bool NotInput(int MAX_SECOND);
 
 	bool MouseInputTrigger(MouseInputNumber CLICK);
 	bool MouseInputState(MouseInputNumber CLICK);

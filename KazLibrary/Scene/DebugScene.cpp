@@ -58,8 +58,6 @@ DebugScene::DebugScene()
 
 	DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize, inputDesc, buffer->GetBufferData(inputHandle).Get());
 	DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + 1, outPutDesc, buffer->GetBufferData(outPutHandle).Get());
-	//Œã‚Å‘æŽOˆø”‚ðÁ‚»‚¤
-	DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + 2, commonDesc, buffer->GetBufferData(commonHandle).Get());
 
 
 	instanceBox = std::make_unique<BoxPolygonRender>(true, INSTANCE_NUM_MAX);

@@ -558,11 +558,6 @@ KazMath::Vec2<float> Cursor::GetValue()
 	//Š„‡ŒvZ
 	KazMath::Vec2<float> value = cameraMoveValue / rateMaxValue;
 
-	if (1.0f <= value.x)
-	{
-		bool debug = false;
-	}
-
 	//ƒJƒƒ‰‚ÌÀ•W‚É‡‚í‚¹‚éˆ×‚ÉX²‚Ì•„†‚ğ”½“]
 	value.x *= -1.0f;
 	return value;

@@ -13,7 +13,9 @@ FbxModelResourceMgr::FbxModelResourceMgr()
 
 	fbxImporter = FbxImporter::Create(fbxManager, "");
 	fbxScene = FbxScene::Create(fbxManager, "fbxScene");
-	handle.reset(new HandleMaker);
+	handle = std::make_unique<HandleMaker>();
+
+	errorResource = std::make_unique<FbxResourceData>();
 
 }
 
@@ -23,15 +25,11 @@ FbxModelResourceMgr::~FbxModelResourceMgr()
 	fbxScene->Destroy();
 	fbxManager->Destroy();
 
-	for (int i = 0; i < modelResource.size(); i++)
-	{
-		delete modelResource[i];
-	}
 	modelResource.shrink_to_fit();
 	modelResource.clear();
 }
 
-short FbxModelResourceMgr::LoadModel(const string &MODEL_NAME)
+RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const string &MODEL_NAME)
 {
 	fbxImporter->Initialize(MODEL_NAME.c_str());
 	fbxImporter->Import(fbxScene);
@@ -55,31 +53,31 @@ short FbxModelResourceMgr::LoadModel(const string &MODEL_NAME)
 	unsigned short indexByte = KazBufferHelper::GetBufferSize<unsigned short>(model->indices.size(), sizeof(unsigned short));
 
 
-	short num = handle->GetHandle();
+	RESOURCE_HANDLE lHandle = handle->GetHandle();
 
-	modelResource.push_back(new FbxResourceData);
-	modelResource[num]->buffers.reset(new CreateGpuBuffer);
-	short vertBuffetHandle = modelResource[num]->buffers->CreateBuffer(KazBufferHelper::SetVertexBufferData(vertByte));
-	short indexBufferHandle = modelResource[num]->buffers->CreateBuffer(KazBufferHelper::SetIndexBufferData(indexByte));
+	modelResource.push_back(std::make_unique<FbxResourceData>());
+	modelResource[lHandle]->buffers = std::make_unique<CreateGpuBuffer>();
+	RESOURCE_HANDLE vertBuffetHandle = modelResource[lHandle]->buffers->CreateBuffer(KazBufferHelper::SetVertexBufferData(vertByte));
+	RESOURCE_HANDLE indexBufferHandle = modelResource[lHandle]->buffers->CreateBuffer(KazBufferHelper::SetIndexBufferData(indexByte));
 
 	//バッファ転送-----------------------------------------------------------------------------------------------------
-	modelResource[num]->buffers->TransData(vertBuffetHandle, model->vertices.data(), vertByte);
-	modelResource[num]->buffers->TransData(indexBufferHandle, model->indices.data(), indexByte);
+	modelResource[lHandle]->buffers->TransData(vertBuffetHandle, model->vertices.data(), vertByte);
+	modelResource[lHandle]->buffers->TransData(indexBufferHandle, model->indices.data(), indexByte);
 	//バッファ転送-----------------------------------------------------------------------------------------------------
 
 	//バッファビュー設定-----------------------------------------------------------------------------------------------------
-	modelResource[num]->vertexBufferView = KazBufferHelper::SetVertexBufferView(modelResource[num]->buffers->GetGpuAddress(vertBuffetHandle), vertByte, sizeof(model->vertices[0]));
-	modelResource[num]->indexBufferView = KazBufferHelper::SetIndexBufferView(modelResource[num]->buffers->GetGpuAddress(indexBufferHandle), indexByte);
+	modelResource[lHandle]->vertexBufferView = KazBufferHelper::SetVertexBufferView(modelResource[lHandle]->buffers->GetGpuAddress(vertBuffetHandle), vertByte, sizeof(model->vertices[0]));
+	modelResource[lHandle]->indexBufferView = KazBufferHelper::SetIndexBufferView(modelResource[lHandle]->buffers->GetGpuAddress(indexBufferHandle), indexByte);
 	//バッファビュー設定-----------------------------------------------------------------------------------------------------
 
-	modelResource[num]->textureHandle = model->textureHandle;
+	modelResource[lHandle]->textureHandle = model->textureHandle;
 	
-	modelResource[num]->diffuse = model->diffuse;
-	modelResource[num]->ambient = model->ambient;
+	modelResource[lHandle]->diffuse = model->diffuse;
+	modelResource[lHandle]->ambient = model->ambient;
 
-	modelResource[num]->indicisNum = static_cast<UINT>(model->indices.size());
+	modelResource[lHandle]->indicisNum = static_cast<UINT>(model->indices.size());
 
-	modelResource[num]->bone = model->bones;
+	modelResource[lHandle]->bone = model->bones;
 
 
 
@@ -96,16 +94,16 @@ short FbxModelResourceMgr::LoadModel(const string &MODEL_NAME)
 		FbxTakeInfo *takeInfo = fbxScene->GetTakeInfo(animStackName);
 		fbxScene->SetCurrentAnimationStack(animStack);
 
-		modelResource[num]->startTime.push_back(takeInfo->mLocalTimeSpan.GetStart());
-		modelResource[num]->endTime.push_back(takeInfo->mLocalTimeSpan.GetStop());
+		modelResource[lHandle]->startTime.push_back(takeInfo->mLocalTimeSpan.GetStart());
+		modelResource[lHandle]->endTime.push_back(takeInfo->mLocalTimeSpan.GetStop());
 	}
 
 
 	delete model;
-	return num;
+	return lHandle;
 }
 
-const FbxResourceData* FbxModelResourceMgr::GetResourceData(const short &HANDLE)
+const std::shared_ptr<FbxResourceData> &FbxModelResourceMgr::GetResourceData(RESOURCE_HANDLE HANDLE)
 {
 	if (KazHelper::IsitInAnArray(HANDLE, modelResource.size()))
 	{
@@ -113,7 +111,7 @@ const FbxResourceData* FbxModelResourceMgr::GetResourceData(const short &HANDLE)
 	}
 	else
 	{
-		return nullptr;
+		return errorResource;
 	}
 }
 
@@ -242,7 +240,7 @@ void FbxModelResourceMgr::ParseMeshFaces(Model *MODEL, FbxMesh *FBX_MESH)
 		//1頂点ずつ処理
 		for (int j = 0; j < polygonSize; j++)
 		{
-			unsigned short index = FBX_MESH->GetPolygonVertex(i, j);
+			int index = FBX_MESH->GetPolygonVertex(i, j);
 			assert(index >= 0);
 
 			//頂点法線読み込み
@@ -273,16 +271,16 @@ void FbxModelResourceMgr::ParseMeshFaces(Model *MODEL, FbxMesh *FBX_MESH)
 			if (j < 3)
 			{
 				//1点追加し、他の2点と三角形を構築する
-				indices.push_back(index);
+				indices.push_back(static_cast<USHORT>(index));
 			}
 			//4頂点目
 			else
 			{
 				//3点追加し、
 				//四角形の0,1,2,3の内,2,3,0で三角形を構築する
-				int index2 = indices[indices.size() - 1];
-				int index3 = index;
-				int index0 = indices[indices.size() - 3];
+				USHORT index2 = indices[indices.size() - 1];
+				USHORT index3 = static_cast<USHORT>(index);
+				USHORT index0 = indices[indices.size() - 3];
 				indices.push_back(index2);
 				indices.push_back(index3);
 				indices.push_back(index0);
@@ -344,8 +342,8 @@ void FbxModelResourceMgr::ParseMaterial(Model *MODEL, FbxNode *FBX_NODE)
 		//テクスチャが無い場合
 		if (!textureLoaded)
 		{
-			short handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "white1x1.png");
-			MODEL->textureHandle.push_back(handle);
+			RESOURCE_HANDLE lHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "white1x1.png");
+			MODEL->textureHandle.push_back(lHandle);
 		}
 	}
 }
@@ -369,8 +367,8 @@ void FbxModelResourceMgr::LoadTexture(Model *MODEL, const string &FULL_PATH)
 	rename.insert(0, rename2);
 
 	//名前の変更
-	short handle = TextureResourceMgr::Instance()->LoadGraph(rename);
-	MODEL->textureHandle.push_back(handle);
+	RESOURCE_HANDLE lHandle = TextureResourceMgr::Instance()->LoadGraph(rename);
+	MODEL->textureHandle.push_back(lHandle);
 }
 
 XMVECTOR FbxModelResourceMgr::FbxDoubleToXMVECTOR(const FbxDouble3 &DOUBLE_3)
@@ -408,10 +406,6 @@ string FbxModelResourceMgr::ExtractFileName(const string &PATH)
 
 	//パスを含まないファイル名
 	return PATH;
-}
-
-void FbxModelResourceMgr::ConvertMatrixFromFbx(XMMATRIX *DST, const FbxAMatrix &SRC)
-{
 }
 
 void FbxModelResourceMgr::ParseSkin(Model *MODEL, FbxMesh *FBX_MESH)

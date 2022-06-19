@@ -23,6 +23,6 @@ private:
 	bool deadFlag;
 	int timer;
 
-	int hitHandle, selectHandle, noHitHandle;
+	RESOURCE_HANDLE hitHandle, selectHandle, noHitHandle;
 };
 

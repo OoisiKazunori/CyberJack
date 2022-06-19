@@ -38,6 +38,6 @@ private:
 
 		KazMath::Transform2D transform;
 		Sprite2DRender sceneTex;
-		int handle;
+		RESOURCE_HANDLE handle;
 	};
 }

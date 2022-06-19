@@ -21,7 +21,7 @@ public:
 	std::array<Sprite3DRenderPtr, LIGHT_MAX_NUM> lightRender;
 private:
 	XMMATRIX *motherPtr;
-	std::array<short, LIGHT_MAX_NUM> uvHandle;
+	std::array<RESOURCE_HANDLE, LIGHT_MAX_NUM> uvHandle;
 	GoalLightData uvData;
 
 	int drawHandle;

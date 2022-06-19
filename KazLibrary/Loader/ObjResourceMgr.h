@@ -42,7 +42,7 @@ struct ObjResourceData
 	//vector<unsigned short> indexNum;
 
 	materia material;
-	short mtlHanlde;
+	RESOURCE_HANDLE mtlHanlde;
 	
 	vector<unsigned short> posKey;
 
@@ -69,19 +69,19 @@ public:
 	/// <param name="RESOURCE">.objのデータがあるファイルパス</param>
 	/// <param name="TEX_RESOURCE">.mtlの画像データがあるファイルパス</param>
 	/// <returns>ハンドル</returns>
-	short LoadModel(string RESOURCE);
+	RESOURCE_HANDLE LoadModel(string RESOURCE);
 
 	/// <summary>
 	/// 指定のモデルデータを削除します
 	/// </summary>
 	/// <param name="HANDLE">指定のハンドル</param>
-	void Release(short HANDLE);
+	void Release(RESOURCE_HANDLE HANDLE);
 
 	/// <summary>
 	/// 指定のハンドルからリソースを取得します
 	/// </summary>
 	/// <param name="HANDLE">指定のハンドル</param>
-	ObjResourceData GetResourceData(short HANDLE);
+	ObjResourceData GetResourceData(RESOURCE_HANDLE HANDLE);
 
 private:
 	HandleMaker handle;
@@ -91,13 +91,7 @@ private:
 
 	unique_ptr<CreateGpuBuffer> modelDataBuffers;
 
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="filename">画像のファイル名</param>
-	/// <param name="resource"></param>
-	/// <param name="MTL_RESOURCE"></param>
-	/// <returns></returns>
-	short LoadMaterial(const string &filename, ObjResourceData *resource, string MTL_RESOURCE);
+
+	RESOURCE_HANDLE LoadMaterial(const string &filename, ObjResourceData *resource, string MTL_RESOURCE);
 
 };

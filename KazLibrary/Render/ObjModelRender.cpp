@@ -12,7 +12,7 @@ ObjModelRender::ObjModelRender(bool INSTANCE_FLAG, int INSTANCE_NUM, bool MATERI
 
 	upVectorDirtyFlag.reset(new DirtySet(data.upVector));
 
-	objHandleDirtyFlag.reset(new DirtyFlag<short>(&data.handle));
+	objHandleDirtyFlag.reset(new DirtyFlag<RESOURCE_HANDLE>(&data.handle));
 
 
 	cameraViewDirtyFlag.reset(new DirtySet(renderData.cameraMgrInstance->view));
@@ -47,10 +47,10 @@ void ObjModelRender::Draw()
 
 
 	//DirtyFlag検知-----------------------------------------------------------------------------------------------------	
-	bool viewMatFlag = cameraViewDirtyFlag->FloatDirty() || cameraProjectionDirtyFlag->FloatDirty() || upVectorDirtyFlag->FloatDirty();
+	//bool lViewMatFlag = cameraViewDirtyFlag->FloatDirty() || cameraProjectionDirtyFlag->FloatDirty() || upVectorDirtyFlag->FloatDirty();
 
-	bool matrixDirtyFlag = positionDirtyFlag->FloatDirty() || scaleDirtyFlag->FloatDirty() || rotationDirtyFlag->FloatDirty();
-	bool objHandleDirtyFlag = this->objHandleDirtyFlag->Dirty();
+	//bool lMatrixDirtyFlag = positionDirtyFlag->FloatDirty() || scaleDirtyFlag->FloatDirty() || rotationDirtyFlag->FloatDirty();
+	//bool lObjHandleDirtyFlag = this->objHandleDirtyFlag->Dirty();
 	//DirtyFlag検知-----------------------------------------------------------------------------------------------------
 
 
@@ -58,7 +58,7 @@ void ObjModelRender::Draw()
 	//インスタンシング描画を行うならこの処理は転送しない
 	if (!instanceFlag)
 	{
-		//if (matrixDirtyFlag)
+		//if (lMatrixDirtyFlag)
 		{
 			baseMatWorldData.matWorld = XMMatrixIdentity();
 			baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
@@ -91,7 +91,7 @@ void ObjModelRender::Draw()
 
 		//バッファの転送-----------------------------------------------------------------------------------------------------
 		//行列
-		//if (matrixDirtyFlag || viewMatFlag)
+		//if (lMatrixDirtyFlag || viewMatFlag)
 		{
 			ConstBufferData constMap;
 			constMap.world = baseMatWorldData.matWorld;

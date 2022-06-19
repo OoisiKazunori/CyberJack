@@ -222,8 +222,6 @@ bool CollisionManager::CheckSphereAndSphere(const Sphere &SPHERE_1, const Sphere
 bool CollisionManager::CheckSquareAndSquare(const Square &SQUARE_1, const Square &SQUARE_2)
 {
 	std::array<KazMath::Vec3<float>, 2> size = { SQUARE_1.size / 2.0f,SQUARE_2.size / 2.0f };
-	int x = 0, y = 2;
-
 	KazMath::Vec3<float>distance = SQUARE_1.center - SQUARE_2.center;
 	const int square1 = 0;
 	const int square2 = 1;
@@ -373,9 +371,6 @@ bool CollisionManager::CheckThicklineAndSphere(const Sphere &SPHERE, const ModiR
 	// 外積判定をする際にベクトルを保存するための変数
 	KazMath::Vec3<float> vTvVec = {};	// 頂点と頂点のベクトル
 	KazMath::Vec3<float> vTPVec = {};	// 頂点と中心点のベクトル
-
-	// 結果を保存する変数
-	float crossResultBuff = 0;
 
 	// p0->p1での左右判定
 	{

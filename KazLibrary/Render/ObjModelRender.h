@@ -31,14 +31,14 @@ private:
 	short indexBufferHandle;
 
 	ObjResourceData modelData;
-	array<short, 2> constBufferHandle;
+	array<RESOURCE_HANDLE, 2> constBufferHandle;
 
 
 
 
 	unique_ptr<DirtySet> positionDirtyFlag, scaleDirtyFlag, rotationDirtyFlag;
 	unique_ptr<DirtySet> upVectorDirtyFlag;
-	unique_ptr<DirtyFlag<short>> objHandleDirtyFlag;
+	unique_ptr<DirtyFlag<RESOURCE_HANDLE>> objHandleDirtyFlag;
 
 	unique_ptr<DirtySet> cameraViewDirtyFlag;
 	unique_ptr<DirtySet> cameraProjectionDirtyFlag;

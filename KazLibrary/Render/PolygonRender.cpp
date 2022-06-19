@@ -73,17 +73,15 @@ void PolygonRender::Draw()
 
 
 	//DirtyFlag検知-----------------------------------------------------------------------------------------------------	
-	bool matFlag = cameraViewDirtyFlag->FloatDirty() || cameraProjectionDirtyFlag->FloatDirty() || cameraBillBoardDirtyFlag->FloatDirty() || motherDirtyFlag->FloatDirty();
-	bool matrixDirtyFlag = positionDirtyFlag->FloatDirty() || scaleDirtyFlag->FloatDirty() || rotationDirtyFlag->FloatDirty();
-	bool scaleDirtyFlag = this->scaleDirtyFlag->FloatDirty();
-
-	bool localsizeDirtyFlag = sizeDirtyFlag->FloatDirty();
+	bool lMatFlag = cameraViewDirtyFlag->FloatDirty() || cameraProjectionDirtyFlag->FloatDirty() || cameraBillBoardDirtyFlag->FloatDirty() || motherDirtyFlag->FloatDirty();
+	bool lMatrixDirtyFlag = positionDirtyFlag->FloatDirty() || scaleDirtyFlag->FloatDirty() || rotationDirtyFlag->FloatDirty();
+	//bool lScaleDirtyFlag = this->scaleDirtyFlag->FloatDirty();
 	//DirtyFlag検知-----------------------------------------------------------------------------------------------------
 
 
 
 	//行列計算-----------------------------------------------------------------------------------------------------
-	if (matrixDirtyFlag || matFlag)
+	if (lMatrixDirtyFlag || lMatFlag)
 	{
 		baseMatWorldData.matWorld = XMMatrixIdentity();
 		baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
@@ -107,7 +105,7 @@ void PolygonRender::Draw()
 
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 	//行列
-	//if (matrixDirtyFlag || matFlag)
+	//if (lMatrixDirtyFlag || lMatFlag)
 	//{
 	ConstBufferData constMap;
 	constMap.world = baseMatWorldData.matWorld;
