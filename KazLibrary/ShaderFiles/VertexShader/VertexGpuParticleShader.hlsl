@@ -3,6 +3,6 @@
 ColorOutPut VSmain(float4 pos : POSITION)
 {
     ColorOutPut op;
-    op.svpos = mul(pos + offset, projection);
+    op.svpos = mul(mat, pos);
     return op;
 }

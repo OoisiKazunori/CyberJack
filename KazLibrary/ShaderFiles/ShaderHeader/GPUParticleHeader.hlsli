@@ -5,8 +5,6 @@ struct ColorOutPut
 
 cbuffer SceneConstantBuffer : register(b0)
 {
-    float4 velocity;
-    float4 offset;
+    matrix mat;
     float4 color;
-    float4x4 projection;
 }

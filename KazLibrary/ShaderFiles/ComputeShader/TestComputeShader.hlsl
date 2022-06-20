@@ -51,14 +51,12 @@ AppendStructuredBuffer<InputData> updateInputData : register(u1);
 AppendStructuredBuffer<IndirectCommand> outputCommands : register(u2);
 //出力用のバッファ-------------------------
 
-static const int NUM = 128;
+static const int NUM = 1024;
 
 [numthreads(NUM, 1, 1)]
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
 {
     uint index = (groupId.x * NUM) + groupIndex;
-    
-   
     
     //座標計算-------------------------
     float3 outputPos = inputBuffer[index].pos.xyz;
