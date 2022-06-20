@@ -258,10 +258,10 @@ DebugScene::DebugScene()
 			uavDesc.Buffer.StructureByteStride = sizeof(IndirectCommand);
 			uavDesc.Buffer.CounterOffsetInBytes = 0;
 			uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
-
 			DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + uavHandle, uavDesc, buffer->GetBufferData(drawCommandHandle).Get(), buffer->GetBufferData(drawCommandHandle).Get());
+			++uavHandle;
+
 		}
-		++uavHandle;
 		//出力用のバッファの生成---------------------------
 
 		//リセット用のバッファ-------------------------
@@ -358,10 +358,7 @@ void DebugScene::Update()
 	commonData.increSize = DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	commonData.gpuAddress = static_cast<UINT>(buffer->GetGpuAddress(outputMatHandle));
 	buffer->TransData(commonHandle, &commonData, sizeof(CommonData));
-	//DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(cbvSize.startSize + (cbvHandle - 1)));
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(4, buffer->GetGpuAddress(commonHandle));
-
-
 
 	//ディスパッチ
 	DirectX12CmdList::Instance()->cmdList->Dispatch(static_cast<UINT>(ceil(TRIANGLE_ARRAY_NUM / static_cast<float>(ComputeThreadBlockSize))), 1, 1);
@@ -373,6 +370,8 @@ void DebugScene::Update()
 
 void DebugScene::Draw()
 {
+	short commandBuffHandle = commandBufferHandle;
+	//short commandBuffHandle = drawCommandHandle;
 
 	//描画命令発行-------------------------
 	int num = RenderTargetStatus::Instance()->copySwapchain->GetCurrentBackBufferIndex();
@@ -380,7 +379,7 @@ void DebugScene::Draw()
 
 	std::array<D3D12_RESOURCE_BARRIER, 2> barriers = {
 	CD3DX12_RESOURCE_BARRIER::Transition(
-		buffer->GetBufferData(commandBufferHandle).Get(),
+		buffer->GetBufferData(commandBuffHandle).Get(),
 		D3D12_RESOURCE_STATE_COPY_DEST,
 		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT),
 	CD3DX12_RESOURCE_BARRIER::Transition(
@@ -415,7 +414,7 @@ void DebugScene::Draw()
 	(
 		commandSig.Get(),
 		TRIANGLE_ARRAY_NUM,
-		buffer->GetBufferData(commandBufferHandle).Get(),
+		buffer->GetBufferData(commandBuffHandle).Get(),
 		CommandSizePerFrame * num, //リソースバリアの切り替えで値を変える必要があるかも(offsetが入ると定数バッファの値が0になるので無し)
 		nullptr,
 		0
