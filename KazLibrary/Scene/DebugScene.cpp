@@ -65,11 +65,12 @@ DebugScene::DebugScene()
 		srvDesc.Buffer.NumElements = TRIANGLE_ARRAY_NUM;
 		srvDesc.Buffer.StructureByteStride = sizeof(SceneConstantBuffer);
 		srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
-
+		cbvHandle = 0;
 		for (UINT frame = 0; frame < FRAME_COUNT; frame++)
 		{
 			srvDesc.Buffer.FirstElement = frame * TRIANGLE_ARRAY_NUM;
 			DescriptorHeapMgr::Instance()->CreateBufferView(cbvSize.startSize + frame, srvDesc, buffer->GetBufferData(paramCBHandle).Get());
+			++cbvHandle;
 		}
 	}
 	//定数バッファの生成---------------------------
@@ -163,7 +164,7 @@ DebugScene::DebugScene()
 			std::array<InputData, TRIANGLE_ARRAY_NUM> data;
 			for (int i = 0; i < TRIANGLE_ARRAY_NUM; ++i)
 			{
-				data[i].pos = { 1.0f,1.0f,1.0f,0.0f };
+				data[i].pos = { 10.0f,10.0f,10.0f,0.0f };
 				data[i].velocity = { 0.0f,0.0f,0.0f,0.0f };
 				data[i].color = { KazMath::FloatRand(10.0f,0.0f),KazMath::FloatRand(10.0f,0.0f),KazMath::FloatRand(10.0f,0.0f),KazMath::FloatRand(10.0f,0.0f) };
 			}
@@ -267,6 +268,21 @@ DebugScene::DebugScene()
 
 		//リセット用のバッファ-------------------------
 #pragma endregion
+
+
+		commonHandle = buffer->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(CommonData), "CommonData"));
+		{
+			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+			srvDesc.Format = DXGI_FORMAT_UNKNOWN;
+			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+			srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+			srvDesc.Buffer.NumElements = 0;
+			srvDesc.Buffer.StructureByteStride = sizeof(CommonData);
+			srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
+
+			//DescriptorHeapMgr::Instance()->CreateBufferView(cbvSize.startSize + cbvHandle, srvDesc, buffer->GetBufferData(commonHandle).Get());
+			++cbvHandle;
+		}
 	}
 }
 
@@ -334,6 +350,18 @@ void DebugScene::Update()
 	}
 	//ルート定数
 	//DirectX12CmdList::Instance()->cmdList->SetComputeRoot32BitConstants(1, 4, reinterpret_cast<void *>(&rootConst), 0);
+
+	//共通用
+	CommonData commonData;
+	commonData.cameraMat = CameraMgr::Instance()->GetViewMatrix();
+	commonData.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
+	commonData.increSize = DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	commonData.gpuAddress = static_cast<UINT>(buffer->GetGpuAddress(outputMatHandle));
+	buffer->TransData(commonHandle, &commonData, sizeof(CommonData));
+	//DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(cbvSize.startSize + (cbvHandle - 1)));
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(4, buffer->GetGpuAddress(commonHandle));
+
+
 
 	//ディスパッチ
 	DirectX12CmdList::Instance()->cmdList->Dispatch(static_cast<UINT>(ceil(TRIANGLE_ARRAY_NUM / static_cast<float>(ComputeThreadBlockSize))), 1, 1);

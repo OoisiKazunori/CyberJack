@@ -30,13 +30,13 @@ struct OutputData
 };
 
 
-//cbuffer RootConstants : register(b0)
-//{
-//    matrix view;        //ビュー行列
-//    matrix projection;  //プロジェクション行列
-//    float increSize;    //インクリメントのサイズ
-//    float gpuAddress;   //構造体バッファの先頭アドレス
-//};
+cbuffer RootConstants : register(b0)
+{
+    matrix view; //ビュー行列
+    matrix projection; //プロジェクション行列
+    uint increSize; //インクリメントのサイズ
+    uint gpuAddress; //構造体バッファの先頭アドレス
+};
 
 //入力用のバッファ-------------------------
 StructuredBuffer<InputData> inputBuffer : register(t0);
@@ -63,27 +63,28 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     //座標計算-------------------------
     float3 outputPos = inputBuffer[index].pos.xyz;
     
-    //outputPos += float3(1.0f, 0.0f, 0.0f);
+    outputPos += float3(1.0f, 0.0f, 0.0f);
     if (50.0f <= outputPos.x)
     {
         outputPos = 0.0f;
     }
+    matrix pMatTrans = Translate(outputPos);
+    matrix pMatRot = Rotate(0.0f);
+    matrix pMatScale = Scale(float3(1.0f, 1.0f, 1.0f));
     
-    outputPos.x = 0.0f;
-    matrix matTrans = Translate(outputPos);
-    matrix matRot = MatrixIdentity();
-    matRot *= RotateZ(0.0f);
-    matRot *= RotateX(0.0f);
-    matRot *= RotateY(0.0f);
-    matrix matScale = Scale(float3(1.0f, 1.0f, 1.0f));
-    matrix matWorld = matScale * matRot * matTrans;
+    matrix pMatWorld = MatrixIdentity();
+    pMatWorld = mul(pMatTrans, pMatWorld);
+    pMatWorld = mul(pMatRot, pMatWorld);
+    pMatWorld = mul(pMatScale, pMatWorld);
     //座標計算-------------------------
     
     
     //座標出力-------------------------
     OutputData outputMat;
-    outputMat.mat = matWorld;
-    outputMat.color = float4(1.0f,1.0f,1.0f,1.0f);
+    outputMat.mat = pMatWorld;
+    outputMat.mat = mul(view, outputMat.mat);
+    outputMat.mat = mul(projection, outputMat.mat); 
+    outputMat.color = inputBuffer[index].color;
     matrixData.Append(outputMat);
     
     InputData inputData;
@@ -96,7 +97,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     
     //描画コマンド出力-------------------------
     IndirectCommand outputCommand;
-    outputCommand.cbvAddress = 0 + index * 32;
+    outputCommand.cbvAddress = gpuAddress + index * increSize;
     outputCommand.drawArguments = float4(3, 1, 0, 0);
     outputCommands.Append(outputCommand);
     //描画コマンド出力-------------------------

@@ -28,6 +28,9 @@ struct CommonData
 {
 	XMMATRIX cameraMat;
 	XMMATRIX projectionMat;
+	UINT increSize;
+	UINT gpuAddress;
+	XMUINT2 pad;
 };
 
 struct IndirectCommand
@@ -87,6 +90,7 @@ private:
 
 	unique_ptr<CreateGpuBuffer>buffer;
 	short inputHandle, updateInputHandle, outputMatHandle, drawCommandHandle;
+	short commonHandle;
 	void *pointer;
 
 	InputData inputData;
@@ -94,6 +98,7 @@ private:
 	BufferMemorySize cbvSize;
 	int uavHandle;
 	int srvHandle;
+	int cbvHandle;
 
 
 	static const int TRIANGLE_ARRAY_NUM = 1024;

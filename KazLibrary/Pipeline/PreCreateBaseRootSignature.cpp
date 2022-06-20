@@ -374,7 +374,11 @@ PreCreateBaseRootSignature::PreCreateBaseRootSignature()
 		lineData.paramData[3].type = GRAPHICS_PRAMTYPE_DATA4;
 		lineData.range[3] = GRAPHICS_RANGE_TYPE_UAV;
 
-		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_SRV_UAV, lineData, 4);
+		lineData.paramData[4].param = 0;
+		lineData.paramData[4].type = GRAPHICS_PRAMTYPE_DATA5;
+		lineData.range[4] = GRAPHICS_RANGE_TYPE_CBV;
+
+		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_SRV_UAV, lineData, 5);
 	}
 
 	//CBV
