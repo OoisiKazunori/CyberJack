@@ -283,6 +283,21 @@ DebugScene::DebugScene()
 			//DescriptorHeapMgr::Instance()->CreateBufferView(cbvSize.startSize + cbvHandle, srvDesc, buffer->GetBufferData(commonHandle).Get());
 			++cbvHandle;
 		}
+
+
+		{
+			cbvMatHandle = buffer->CreateBuffer(KazBufferHelper::SetConstBufferData(TRIANGLE_RESOURCE_COUNT * sizeof(OutPutData), "CbvMatHandle"));
+
+			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+			srvDesc.Format = DXGI_FORMAT_UNKNOWN;
+			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+			srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+			srvDesc.Buffer.NumElements = TRIANGLE_ARRAY_NUM;
+			srvDesc.Buffer.StructureByteStride = sizeof(OutPutData);
+			srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
+			DescriptorHeapMgr::Instance()->CreateBufferView(cbvSize.startSize + cbvHandle, srvDesc, buffer->GetBufferData(cbvMatHandle).Get());
+			++cbvHandle;
+		}
 	}
 }
 
@@ -322,12 +337,6 @@ void DebugScene::Update()
 	memcpy(destination, constantBufferData.data(), TRIANGLE_ARRAY_NUM * sizeof(SceneConstantBuffer));
 
 
-	rootConst.view = CameraMgr::Instance()->GetViewMatrix();
-	rootConst.projection = CameraMgr::Instance()->GetPerspectiveMatProjection();
-	rootConst.size = DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	rootConst.gpuAddress = buffer->GetGpuAddress(outputMatHandle);
-
-
 	//コンピュートシェーダーの計算-------------------------
 	//コンピュート用のパイプライン設定
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_TEST);
@@ -356,15 +365,26 @@ void DebugScene::Update()
 	commonData.cameraMat = CameraMgr::Instance()->GetViewMatrix();
 	commonData.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
 	commonData.increSize = sizeof(OutPutData);
-	commonData.gpuAddress = static_cast<UINT>(buffer->GetGpuAddress(outputMatHandle));
+	commonData.gpuAddress = static_cast<UINT>(buffer->GetGpuAddress(cbvMatHandle));
 	buffer->TransData(commonHandle, &commonData, sizeof(CommonData));
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(4, buffer->GetGpuAddress(commonHandle));
+
 
 	//ディスパッチ
 	DirectX12CmdList::Instance()->cmdList->Dispatch(static_cast<UINT>(ceil(TRIANGLE_ARRAY_NUM / static_cast<float>(ComputeThreadBlockSize))), 1, 1);
 	//コンピュートシェーダーの計算-------------------------
 
 	//std::array<OutPutData, TRIANGLE_ARRAY_NUM> *result = static_cast<std::array<OutPutData, TRIANGLE_ARRAY_NUM> *>(buffer->GetMapAddres(outputMatHandle));
+
+	{
+		void *dataMap = nullptr;
+		auto result = buffer->GetBufferData(cbvMatHandle)->Map(0, nullptr, (void **)&dataMap);
+		if (SUCCEEDED(result))
+		{
+			memcpy(dataMap, buffer->GetMapAddres(outputMatHandle), TRIANGLE_ARRAY_NUM * sizeof(OutPutData));
+			buffer->GetBufferData(cbvMatHandle)->Unmap(0, nullptr);
+		}
+	}
 
 }
 

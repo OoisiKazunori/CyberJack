@@ -89,6 +89,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     inputData.pos = float4(outputPos.xyz, 0.0f);
     inputData.velocity = inputBuffer[index].velocity;
     inputData.color = inputBuffer[index].color;
+ 
     updateInputData.Append(inputData);
     //ç¿ïWèoóÕ-------------------------
     
