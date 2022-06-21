@@ -2,6 +2,7 @@
 #include"../Game/Game.h"
 #include"../KazLibrary/Scene/SceneBase.h"
 #include"../Game/Event/GoalBoxPortalEffect.h"
+#include"../Game/Event/GoalBoxPortalStringEffect.h"
 
 class PortalScene :public SceneBase
 {
@@ -24,6 +25,9 @@ private:
 
 	KazMath::Vec3<float>initPos;
 	GoalBoxPortalEffect portal;
+	GoalBoxPortalStringEffect stringEffect;
+
+
 	BackGroundForDebug bg;
 
 };

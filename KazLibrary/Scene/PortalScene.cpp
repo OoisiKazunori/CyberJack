@@ -15,6 +15,7 @@ void PortalScene::Init()
 	initPos = { 0.0f,0.0f,30.0f };
 
 	portal.Init(initPos);
+	stringEffect.Init(initPos);
 }
 
 void PortalScene::Finalize()
@@ -66,6 +67,9 @@ void PortalScene::Input()
 	{
 		angle.y += -debugSpeed;
 	}
+#pragma endregion
+
+
 
 	if (input->InputTrigger(DIK_SPACE))
 	{
@@ -76,7 +80,14 @@ void PortalScene::Input()
 		portal.Init(initPos);
 	}
 
-#pragma endregion
+	if (input->InputTrigger(DIK_T))
+	{
+		stringEffect.Init(initPos);
+	}
+	if (input->InputTrigger(DIK_B))
+	{
+		stringEffect.Start();
+	}
 }
 
 void PortalScene::Update()
@@ -90,12 +101,14 @@ void PortalScene::Update()
 
 
 	portal.Update();
+	stringEffect.Update();
 }
 
 void PortalScene::Draw()
 {
 	bg.Draw();
 	portal.Draw();
+	stringEffect.Draw();
 }
 
 int PortalScene::SceneChange()

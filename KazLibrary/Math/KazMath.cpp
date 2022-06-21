@@ -144,12 +144,14 @@ KazMath::Vec3<float> KazMath::ConvertScreenPosToWorldPos(const KazMath::Vec3<flo
 	return KazMath::CastXMVECTOR<float>(result);
 }
 
+//ジンバルロックがかからないようにZYXからXYZに計算順を変更
 XMMATRIX KazMath::CaluRotaMatrix(const Vec3<float> &ROTATION)
 {
 	XMMATRIX matRot = XMMatrixIdentity();
-	matRot *= XMMatrixRotationZ(XMConvertToRadians(ROTATION.z));
 	matRot *= XMMatrixRotationX(XMConvertToRadians(ROTATION.x));
 	matRot *= XMMatrixRotationY(XMConvertToRadians(ROTATION.y));
+	matRot *= XMMatrixRotationZ(XMConvertToRadians(ROTATION.z));
+
 	return matRot;
 }
 

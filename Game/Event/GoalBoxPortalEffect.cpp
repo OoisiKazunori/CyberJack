@@ -9,7 +9,7 @@ GoalBoxPortalEffect::GoalBoxPortalEffect()
 	sprite->data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "Test.png");
 }
 
-void GoalBoxPortalEffect::Init(const  KazMath::Vec3<float> &POS)
+void GoalBoxPortalEffect::Init(const KazMath::Vec3<float> &POS)
 {
 	startFlag = false;
 	goBeforeFlag = false;
