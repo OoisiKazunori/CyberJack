@@ -16,6 +16,7 @@ void DirectX12CmdList::CreateCmdList(ID3D12CommandAllocator *cmdAllocator) {
 		result = S_OK;
 	}
 
+
 	cmdList->SetName(L"DirectX12CmdList");
 
 }

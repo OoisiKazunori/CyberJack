@@ -26,6 +26,7 @@ int main()
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #endif // DEBUG
 {
+
 #ifdef _DEBUG
 	//DebugLayer
 	ComPtr<ID3D12Debug> debugController;
@@ -34,7 +35,28 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		debugController->EnableDebugLayer();
 	}
 	debugController.ReleaseAndGetAddressOf();
+
+
+	//D3D12_DEBUG_DEVICE_GPU_BASED_VALIDATION_SETTINGS set;
+	//set.DefaultShaderPatchMode = D3D12_GPU_BASED_VALIDATION_SHADER_PATCH_MODE_UNGUARDED_VALIDATION;
+	//DirectX12CmdList::Instance()->debugCmdList->SetDebugParameter(D3D12_DEBUG_COMMAND_LIST_PARAMETER_GPU_BASED_VALIDATION_SETTINGS, &set, sizeof(D3D12_DEBUG_DEVICE_GPU_BASED_VALIDATION_SETTINGS));
+	//ComPtr<ID3D12Debug1> gpuBasedValidation;
+	//if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&gpuBasedValidation))))
+	//{
+	//	gpuBasedValidation->EnableDebugLayer();
+	//	gpuBasedValidation->SetEnableGPUBasedValidation(true);
+	//}
+
+
+	CComPtr<ID3D12DeviceRemovedExtendedDataSettings> pDredSettings;
+	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&pDredSettings))))
+	{
+		pDredSettings->SetAutoBreadcrumbsEnablement(D3D12_DRED_ENABLEMENT_FORCED_ON);
+		pDredSettings->SetPageFaultEnablement(D3D12_DRED_ENABLEMENT_FORCED_ON);
+	}
+
 #endif
+
 	//CheckDirectXError
 	int CheckWinError = 0;
 	bool CheckMessageFlag = true;
@@ -55,6 +77,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	{
 		return 0;
 	}
+
 
 	
 

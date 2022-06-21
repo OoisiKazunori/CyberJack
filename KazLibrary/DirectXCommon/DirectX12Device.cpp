@@ -28,6 +28,7 @@ void DirectX12Device::CreateDevice(ComPtr<IDXGIAdapter> adapter) {
 	for (int i = 0; i < _countof(levels); i++) {
 		//採用したアダプターでデバイスを生成
 		result = D3D12CreateDevice(adapter.Get(), levels[i], IID_PPV_ARGS(&dev));
+		result = D3D12CreateDevice(adapter.Get(), levels[i], IID_PPV_ARGS(&debugDev));
 
 		if (result == S_OK) {
 			//デバイスの生成に成功したら抜ける
@@ -36,6 +37,6 @@ void DirectX12Device::CreateDevice(ComPtr<IDXGIAdapter> adapter) {
 		}
 	}
 
-	dev->SetName(L"DDDDDDD");
+	dev->SetName(L"Divece");
 
 }

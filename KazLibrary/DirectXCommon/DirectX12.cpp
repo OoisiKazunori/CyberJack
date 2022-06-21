@@ -106,6 +106,13 @@ void DirectX12::ActCommand()
 	//バッファをフリップ
 	swapchain->Present(1, 0);
 
+	ComPtr<ID3D12DeviceRemovedExtendedData> pDred;
+	SUCCEEDED(DirectX12Device::Instance()->dev->QueryInterface(IID_PPV_ARGS(&pDred)));
+	D3D12_DRED_AUTO_BREADCRUMBS_OUTPUT DredAutoBreadcrumbsOutput;
+	D3D12_DRED_PAGE_FAULT_OUTPUT DredPageFaultOutput;
+	SUCCEEDED(pDred->GetAutoBreadcrumbsOutput(&DredAutoBreadcrumbsOutput));
+	SUCCEEDED(pDred->GetPageFaultAllocationOutput(&DredPageFaultOutput));
+
 	//コマンドリストの実行完了を待つ
 	cmdQueue->Signal(fence.Get(), ++fenceVal);
 	if (fence->GetCompletedValue() != fenceVal)
@@ -158,9 +165,11 @@ HRESULT DirectX12::CreateAdapter() {
 HRESULT DirectX12::CreateCommand()
 {
 	result = DirectX12Device::Instance()->dev->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&cmdAllocator));
-	if (result == S_OK) {
+	if (result == S_OK)
+	{
 		result = DirectX12Device::Instance()->dev->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, cmdAllocator.Get(), nullptr, IID_PPV_ARGS(&DirectX12CmdList::Instance()->cmdList));
-		if (result == S_OK) {
+		if (result == S_OK)
+		{
 			//コマンドキューの生成
 			D3D12_COMMAND_QUEUE_DESC cmdQueueDesc{};
 			result = DirectX12Device::Instance()->dev->CreateCommandQueue(&cmdQueueDesc, IID_PPV_ARGS(&cmdQueue));

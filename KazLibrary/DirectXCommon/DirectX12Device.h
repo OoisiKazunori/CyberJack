@@ -17,6 +17,7 @@ public:
 	/// <param name="adapter">アダプター</param>
 	void CreateDevice(ComPtr<IDXGIAdapter> adapter);
 	ComPtr<ID3D12Device> dev;
+	ComPtr<ID3D12DebugDevice1> debugDev;
 private:
 	HRESULT result;
 	friend ISingleton<DirectX12Device>;

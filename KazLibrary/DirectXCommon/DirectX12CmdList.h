@@ -18,6 +18,7 @@ public:
 	/// <param name="cmdAllocator">コマンドアロケーター</param>
 	void CreateCmdList(ID3D12CommandAllocator *cmdAllocator);
 	ComPtr<ID3D12GraphicsCommandList> cmdList;
+	ComPtr<ID3D12DebugCommandList1> debugCmdList;
 private:
 	HRESULT result;
 
