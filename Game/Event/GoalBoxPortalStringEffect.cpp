@@ -6,7 +6,7 @@ GoalBoxPortalStringEffect::GoalBoxPortalStringEffect() :startFlag(false), basePo
 	for (int i = 0; i < stringRender.size(); ++i)
 	{
 		stringRender[i].data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::GoalPath + "StringEffect.png");
-		stringRender[i].data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
+		stringRender[i].data.pipelineName = PIPELINE_NAME_SPRITE_MULTITEX;
 	}
 }
 
@@ -30,7 +30,7 @@ void GoalBoxPortalStringEffect::Update()
 			float lVel = 1.0f;
 			stringRender[i].data.transform.pos.z -= lVel;
 
-			float resetLine = -100.0f;
+			float resetLine = -80.0f;
 			if (stringRender[i].data.transform.pos.z <= resetLine)
 			{
 				InitStringEffect(i);

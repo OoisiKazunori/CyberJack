@@ -13,7 +13,7 @@ TwoRender PSmain(VSOutput input) : SV_TARGET
     {
         output.target0.a = color.a;
     }
-    output.target1 = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    output.target1 = float4(1.0f, 0.0f, 0.0f, 0.0f);
     
     return output;
 }

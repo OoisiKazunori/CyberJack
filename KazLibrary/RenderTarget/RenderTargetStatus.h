@@ -33,7 +33,6 @@ public:
 	/// <summary>
 	/// ダブルバッファリング用のレンダーターゲットをクリアします
 	/// </summary>
-	/// <param name="COLOR">背景色</param>
 	void SetDoubleBufferFlame();
 
 

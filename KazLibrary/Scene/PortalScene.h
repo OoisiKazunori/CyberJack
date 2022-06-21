@@ -28,7 +28,16 @@ private:
 	GoalBoxPortalStringEffect stringEffect;
 
 
+	Sprite2DRender mainRenderTarget;
+	Sprite2DRender addRenderTarget;
+	Sprite2DRender luminaceTex;
+	
 	BackGroundForDebug bg;
+
+	std::vector<RESOURCE_HANDLE>multipassHandle;
+	RESOURCE_HANDLE addHandle;
+
+	std::unique_ptr<GaussianBuler> buler;
 
 };
 

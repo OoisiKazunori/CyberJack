@@ -4,6 +4,34 @@
 
 PortalScene::PortalScene()
 {
+	std::vector<MultiRenderTargetData> data;
+	data.push_back(MultiRenderTargetData());
+	data.push_back(MultiRenderTargetData());
+	data[0].graphSize = { WIN_X,WIN_Y };
+	data[0].backGroundColor = BG_COLOR;
+	data[1].graphSize = { WIN_X,WIN_Y };
+	data[1].backGroundColor = { 0.0f,0.0f,0.0f };
+
+	multipassHandle =
+		RenderTargetStatus::Instance()->CreateMultiRenderTarget(data, DXGI_FORMAT_R8G8B8A8_UNORM);
+	mainRenderTarget.data.handle = multipassHandle[0];
+	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+	mainRenderTarget.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
+
+
+	addHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, XMFLOAT3(0.0f, 0.0f, 0.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
+	addRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+	addRenderTarget.data.pipelineName = PIPELINE_NAME_ADDBLEND;
+
+
+	luminaceTex.data.pipelineName = PIPELINE_NAME_SPRITE_LUMI;
+	luminaceTex.data.handle = multipassHandle[0];
+	luminaceTex.data.addHandle.handle[0] = multipassHandle[1];
+	luminaceTex.data.addHandle.paramType[0] = GRAPHICS_PRAMTYPE_TEX2;
+	luminaceTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+
+	buler = std::make_unique<GaussianBuler>(KazMath::Vec2<UINT>(WIN_X, WIN_Y));
+
 }
 
 PortalScene::~PortalScene()
@@ -106,9 +134,22 @@ void PortalScene::Update()
 
 void PortalScene::Draw()
 {
+	RenderTargetStatus::Instance()->PrepareToChangeBarrier(multipassHandle[0]);
+	RenderTargetStatus::Instance()->ClearRenderTarget(multipassHandle[0]);
 	bg.Draw();
 	portal.Draw();
 	stringEffect.Draw();
+	RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, multipassHandle[0]);
+	RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
+	luminaceTex.Draw();
+	RenderTargetStatus::Instance()->PrepareToCloseBarrier(addHandle);
+	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
+
+
+	mainRenderTarget.Draw();
+	addRenderTarget.data.handle = buler->BlurImage(addHandle);
+	addRenderTarget.Draw();
+
 }
 
 int PortalScene::SceneChange()
