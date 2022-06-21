@@ -14,7 +14,7 @@ void GoalBoxPortalEffect::Init(const  KazMath::Vec3<float> &POS)
 	startFlag = false;
 	goBeforeFlag = false;
 	sprite->data.transform.pos = POS;
-	sprite->data.transform.scale = { 0.18f,0.18f,0.0f };
+	//sprite->data.transform.scale = { 0.18f,0.18f,0.0f };
 	sprite->data.transform.rotation = { 0.0f,0.0f,0.0f };
 	timer = 0;
 	lerpRota = { 0.0f,0.0f,0.0f };
