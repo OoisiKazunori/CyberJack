@@ -42,7 +42,7 @@ cbuffer RootConstants : register(b0)
 {
     matrix view; //ビュー行列
     matrix projection; //プロジェクション行列
-    uint gpuAddress; //構造体バッファの先頭アドレス
+    uint64_t gpuAddress; //構造体バッファの先頭アドレス
     uint increSize; //インクリメントのサイズ
 };
 

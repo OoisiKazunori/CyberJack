@@ -327,14 +327,14 @@ private:
 	//ìoò^ÉfÅ[É^
 
 	vector<InputLayOutData> InputLayOutRegisterData;
-	vector<ComPtr<ID3DBlob>> VertexShaderRegisterData;
-	vector<ComPtr<ID3DBlob>> PixcelShaderRegisterData;
-	vector<ComPtr<ID3DBlob>> GeometoryShaderRegisterData;
+	vector<ComPtr<IDxcBlob>> VertexShaderRegisterData;
+	vector<ComPtr<IDxcBlob>> PixcelShaderRegisterData;
+	vector<ComPtr<IDxcBlob>> GeometoryShaderRegisterData;
 	vector<RootSignatureMode> RootSignatureName;
 	vector<D3D12_GRAPHICS_PIPELINE_STATE_DESC> PipeLineDataRegisterData;
 	vector<ComPtr<ID3D12PipelineState>> PipeLineRegisterData;
 
-	vector<ComPtr<ID3DBlob>> ComputeShaderRegisterData;
+	vector<ComPtr<IDxcBlob>> ComputeShaderRegisterData;
 	vector<D3D12_COMPUTE_PIPELINE_STATE_DESC> computePipeLineDataRegisterData;
 	vector<ComPtr<ID3D12PipelineState>> ComputePipeLineRegisterData;
 	vector<RootSignatureMode> computeRootSignatureName;

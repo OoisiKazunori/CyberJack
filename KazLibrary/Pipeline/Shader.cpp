@@ -1,139 +1,84 @@
 #include "Shader.h"
 #include"../Helper/KazHelper.h"
+#include"../DirectXCommon/DirectX12Device.h"
 
 Shader::Shader()
 {
-	vsBlob = nullptr;
-	psBlob = nullptr;
-	errorBlob = nullptr;
-
-	pixcelShaderWasCompiledFlag = false;
-	vertexShaderWasCompiledFlag = false;
-
 	shaderBlobs.resize(SHADER_TYPE_MAX);
 }
 
-void Shader::CompileVertexShader(LPCWSTR SHADER_FILE, LPCSTR ENTRY_POINT, LPCSTR SHADER_MODEL) {
-
-	if (!vertexShaderWasCompiledFlag && !pixcelShaderWasCompiledFlag) {
-		OutPutStartDebugString("シェーダーのコンパイル");
-	}
-
-
-	result = D3DCompileFromFile(
-		//LPCWSTR...wchar_t const *
-		SHADER_FILE,
-		nullptr,
-		D3D_COMPILE_STANDARD_FILE_INCLUDE,
-		//LPCSTR...const char*
-		ENTRY_POINT,
-		//LPCSTR...const char*
-		SHADER_MODEL,
-		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
-		0,
-		&vsBlob,
-		&errorBlob
-	);
-
-	if (CheckResult("頂点シェーダーのコンパイル", result) != S_OK) {
-		Error();
-	}
-	else {
-		vertexShaderWasCompiledFlag = true;
-	}
-
-
-	if (vertexShaderWasCompiledFlag && pixcelShaderWasCompiledFlag) {
-		OutPutEndDebugString("シェーダーのコンパイル");
-	}
-
-}
-
-void Shader::CompilePixcelShader(LPCWSTR SHADER_FILE, LPCSTR ENTRY_POINT, LPCSTR SHADER_MODEL) {
-
-	if (!vertexShaderWasCompiledFlag && !pixcelShaderWasCompiledFlag) {
-		OutPutStartDebugString("シェーダーのコンパイル");
-	}
-
-	result = D3DCompileFromFile(
-		SHADER_FILE,
-		nullptr,
-		D3D_COMPILE_STANDARD_FILE_INCLUDE,
-		ENTRY_POINT,
-		SHADER_MODEL,
-		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
-		0,
-		&psBlob,
-		&errorBlob
-	);
-
-	if (CheckResult("ピクセルシェーダーのコンパイル", result) != S_OK) {
-		Error();
-	}
-	else {
-		pixcelShaderWasCompiledFlag = true;
-	}
-
-	if (vertexShaderWasCompiledFlag && pixcelShaderWasCompiledFlag) {
-		OutPutEndDebugString("シェーダーのコンパイル");
-	}
-}
-
-void Shader::CompileGeometoryShader(LPCWSTR SHADER_FILE, LPCSTR ENTRY_POINT, LPCSTR SHADER_MODEL)
+void Shader::CompileShader(std::string SHADER_FILE, std::string ENTRY_POINT, std::string SHADER_MODEL, ShaderType SHADER_TYPE)
 {
+	//コンパイルの準備-------------------------
+	CComPtr<IDxcLibrary> library;
+	HRESULT hr = DxcCreateInstance(CLSID_DxcLibrary, IID_PPV_ARGS(&library));
 
-	if (!vertexShaderWasCompiledFlag && !pixcelShaderWasCompiledFlag) {
-		OutPutStartDebugString("シェーダーのコンパイル");
-	}
+	CComPtr<IDxcCompiler> compiler;
+	hr = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&compiler));
 
-	result = D3DCompileFromFile(
-		SHADER_FILE,
-		nullptr,
-		D3D_COMPILE_STANDARD_FILE_INCLUDE,
-		ENTRY_POINT,
-		SHADER_MODEL,
-		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
-		0,
-		&geoBlob,
-		&errorBlob
-	);
+	wchar_t lShaderFile[128];
+	KazHelper::ConvertStringToWchar_t(SHADER_FILE, lShaderFile, 128);
 
-	if (CheckResult("ピクセルシェーダーのコンパイル", result) != S_OK) {
-		Error();
-	}
-	else {
-		pixcelShaderWasCompiledFlag = true;
-	}
+	uint32_t codePage = CP_UTF8;
+	CComPtr<IDxcBlobEncoding> sourceBlob;
+	hr = library->CreateBlobFromFile(lShaderFile, &codePage, &sourceBlob);
+	//コンパイルの準備-------------------------
 
-	if (vertexShaderWasCompiledFlag && pixcelShaderWasCompiledFlag) {
-		OutPutEndDebugString("シェーダーのコンパイル");
-	}
-}
 
-void Shader::CompileShader(string SHADER_FILE, LPCSTR ENTRY_POINT, LPCSTR SHADER_MODEL, ShaderType SHADER_TYPE)
-{
-	wchar_t shaderFile[128];
-	KazHelper::ConvertStringToWchar_t(SHADER_FILE, shaderFile, 128);
+	//コンパイル-------------------------
+	wchar_t lEntryPoint[128];
+	KazHelper::ConvertStringToWchar_t(ENTRY_POINT, lEntryPoint, 128);
 
-	result = D3DCompileFromFile(
-		shaderFile,
-		nullptr,
-		D3D_COMPILE_STANDARD_FILE_INCLUDE,
-		ENTRY_POINT,
-		SHADER_MODEL,
-		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
-		0,
-		&shaderBlobs[SHADER_TYPE],
-		&errorBlob
-	);
+	wchar_t lShaderModel[128];
+	KazHelper::ConvertStringToWchar_t(SHADER_MODEL, lShaderModel, 128);
 
-	if (CheckResult(SHADER_FILE + "のコンパイル", result) != S_OK)
+
+	CComPtr<IDxcOperationResult> result;
+	hr = compiler->Compile(
+		sourceBlob,		// pSource
+		lShaderFile,		// pSourceName
+		lEntryPoint,		// pEntryPoint
+		lShaderModel,	// pTargetProfile
+		NULL, 0,		// pArguments, argCount
+		NULL, 0,		// pDefines, defineCount
+		NULL,			// pIncludeHandler
+		&result);		// ppResult
+
+	if (SUCCEEDED(hr))
 	{
-		Error();
+		result->GetStatus(&hr);
 	}
+	//コンパイル-------------------------
+
+	//エラー処理-------------------------
+	if (FAILED(hr))
+	{
+		if (result)
+		{
+			CComPtr<IDxcBlobEncoding> errorsBlob;
+			hr = result->GetErrorBuffer(&errorsBlob);
+			if (SUCCEEDED(hr) && errorsBlob)
+			{
+				wprintf(L"Compilation failed with errors:\n%hs\n",
+					(const char *)errorsBlob->GetBufferPointer());
+			}
+		}
+		// Handle compilation error...
+	}
+	//エラー処理-------------------------
+
+	CComPtr<IDxcBlob> code;
+	result->GetResult(&code);
+
+
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = {};
+	psoDesc.PS = CD3DX12_SHADER_BYTECODE(code->GetBufferPointer(), code->GetBufferSize());
+	CComPtr<ID3D12PipelineState> pso;
+	hr = DirectX12Device::Instance()->dev->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&pso));
+
 }
 
-ID3DBlob* Shader::GetShaderData(ShaderType SHADER_TYPE)
+IDxcBlob* Shader::GetShaderData(ShaderType SHADER_TYPE)
 {
 	return shaderBlobs[SHADER_TYPE].Get();
 }
