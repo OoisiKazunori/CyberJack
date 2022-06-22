@@ -223,7 +223,7 @@ DebugScene::DebugScene()
 			uavDesc.Buffer.CounterOffsetInBytes = 0;
 			uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
 
-			DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + uavHandle, uavDesc, buffer->GetBufferData(outputMatHandle).Get(), buffer->GetBufferData(outputMatHandle).Get());
+			DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + uavHandle, uavDesc, buffer->GetBufferData(outputMatHandle).Get(), nullptr);
 		}
 		++uavHandle;
 
@@ -241,7 +241,7 @@ DebugScene::DebugScene()
 			uavDesc.Buffer.CounterOffsetInBytes = 0;
 			uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
 
-			DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + uavHandle, uavDesc, buffer->GetBufferData(updateInputHandle).Get(), buffer->GetBufferData(updateInputHandle).Get());
+			DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + uavHandle, uavDesc, buffer->GetBufferData(updateInputHandle).Get(), nullptr);
 		}
 		++uavHandle;
 
@@ -258,7 +258,7 @@ DebugScene::DebugScene()
 			uavDesc.Buffer.StructureByteStride = sizeof(IndirectCommand);
 			uavDesc.Buffer.CounterOffsetInBytes = 0;
 			uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
-			DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + uavHandle, uavDesc, buffer->GetBufferData(drawCommandHandle).Get(), buffer->GetBufferData(drawCommandHandle).Get());
+			DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + uavHandle, uavDesc, buffer->GetBufferData(drawCommandHandle).Get(), nullptr);
 			++uavHandle;
 
 		}
@@ -365,7 +365,7 @@ void DebugScene::Update()
 	commonData.cameraMat = CameraMgr::Instance()->GetViewMatrix();
 	commonData.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
 	commonData.increSize = sizeof(OutPutData);
-	commonData.gpuAddress = static_cast<UINT>(buffer->GetGpuAddress(cbvMatHandle));
+	commonData.gpuAddress = buffer->GetGpuAddress(cbvMatHandle);
 	buffer->TransData(commonHandle, &commonData, sizeof(CommonData));
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(4, buffer->GetGpuAddress(commonHandle));
 
@@ -430,15 +430,15 @@ void DebugScene::Draw()
 	DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
 
 	//PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Cull invisible triangles");
-	//DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
-	//(
-	//	commandSig.Get(),
-	//	TRIANGLE_ARRAY_NUM,
-	//	buffer->GetBufferData(commandBuffHandle).Get(),
-	//	CommandSizePerFrame * num, //リソースバリアの切り替えで値を変える必要があるかも(offsetが入ると定数バッファの値が0になるので無し)
-	//	nullptr,
-	//	0
-	//);
+	DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
+	(
+		commandSig.Get(),
+		TRIANGLE_ARRAY_NUM,
+		buffer->GetBufferData(commandBuffHandle).Get(),
+		CommandSizePerFrame * num, //リソースバリアの切り替えで値を変える必要があるかも(offsetが入ると定数バッファの値が0になるので無し)
+		nullptr,
+		0
+	);
 	//PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
 	barriers[0].Transition.StateBefore = D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT;

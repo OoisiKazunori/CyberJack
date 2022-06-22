@@ -28,9 +28,9 @@ struct CommonData
 {
 	XMMATRIX cameraMat;
 	XMMATRIX projectionMat;
+	UINT64 gpuAddress;
 	UINT increSize;
-	UINT gpuAddress;
-	XMUINT2 pad;
+	UINT pad;
 };
 
 struct IndirectCommand

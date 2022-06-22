@@ -106,12 +106,12 @@ void DirectX12::ActCommand()
 	//バッファをフリップ
 	swapchain->Present(1, 0);
 
-	ComPtr<ID3D12DeviceRemovedExtendedData> pDred;
-	SUCCEEDED(DirectX12Device::Instance()->dev->QueryInterface(IID_PPV_ARGS(&pDred)));
-	D3D12_DRED_AUTO_BREADCRUMBS_OUTPUT DredAutoBreadcrumbsOutput;
-	D3D12_DRED_PAGE_FAULT_OUTPUT DredPageFaultOutput;
-	SUCCEEDED(pDred->GetAutoBreadcrumbsOutput(&DredAutoBreadcrumbsOutput));
-	SUCCEEDED(pDred->GetPageFaultAllocationOutput(&DredPageFaultOutput));
+	//ComPtr<ID3D12DeviceRemovedExtendedData> pDred;
+	//SUCCEEDED(DirectX12Device::Instance()->dev->QueryInterface(IID_PPV_ARGS(&pDred)));
+	//D3D12_DRED_AUTO_BREADCRUMBS_OUTPUT DredAutoBreadcrumbsOutput;
+	//D3D12_DRED_PAGE_FAULT_OUTPUT DredPageFaultOutput;
+	//SUCCEEDED(pDred->GetAutoBreadcrumbsOutput(&DredAutoBreadcrumbsOutput));
+	//SUCCEEDED(pDred->GetPageFaultAllocationOutput(&DredPageFaultOutput));
 
 	//コマンドリストの実行完了を待つ
 	cmdQueue->Signal(fence.Get(), ++fenceVal);

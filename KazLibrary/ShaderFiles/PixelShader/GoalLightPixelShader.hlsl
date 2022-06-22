@@ -12,7 +12,7 @@ float4 PSmain(VSOutput input) : SV_TARGET
 {
     //ここで定数バッファで値を転送しuvの値をずらしていく
     float2 tmpUv = input.uv;
-    tmpUv.y += uvValue.x;    
+    tmpUv.y += uvValue.x;
     float4 sprite = float4(tex.Sample(smp, tmpUv));
     
     //uv座標のy軸に近づけば近づくほど透明になっていく

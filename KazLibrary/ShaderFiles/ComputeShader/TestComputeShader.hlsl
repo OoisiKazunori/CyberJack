@@ -9,10 +9,18 @@ struct SceneConstantBuffer
     float4 padding[9];
 };
 
+struct D3D12_DRAW_ARGUMENTS
+{
+   uint VertexCountPerInstance;
+   uint InstanceCount;
+   uint StartVertexLocation;
+   uint StartInstanceLocation;
+};
+
 struct IndirectCommand
 {
     uint2 cbvAddress;
-    uint4 drawArguments;
+    D3D12_DRAW_ARGUMENTS drawArguments;
 };
 
 
@@ -34,8 +42,8 @@ cbuffer RootConstants : register(b0)
 {
     matrix view; //ビュー行列
     matrix projection; //プロジェクション行列
-    uint increSize; //インクリメントのサイズ
     uint gpuAddress; //構造体バッファの先頭アドレス
+    uint increSize; //インクリメントのサイズ
 };
 
 //入力用のバッファ-------------------------
@@ -97,7 +105,10 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     //描画コマンド出力-------------------------
     IndirectCommand outputCommand;
     outputCommand.cbvAddress = gpuAddress + index * increSize;
-    outputCommand.drawArguments = float4(3, 1, 0, 0);
+    outputCommand.drawArguments.InstanceCount = 3;
+    outputCommand.drawArguments.StartInstanceLocation = 1;
+    outputCommand.drawArguments.StartVertexLocation = 0;
+    outputCommand.drawArguments.VertexCountPerInstance = 0;
     outputCommands.Append(outputCommand);
     //描画コマンド出力-------------------------
 
