@@ -865,7 +865,7 @@
     <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\GradationPixelShader.hlsl">
       <Filter>ソース ファイル\Game</Filter>
     </FxCompile>
-    <FxCompile Include="KazLibrary\ShaderFiles\VertexShader\VertexGpuParticleShader.hlsl">
+    <FxCompile Include="KazLibrary\ShaderFiles\VertexShader\GpuParticleVertexShader.hlsl">
       <Filter>ソース ファイル</Filter>
     </FxCompile>
     <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\GPUParticlePixelShader.hlsl">
