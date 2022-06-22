@@ -1,0 +1,926 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ソース ファイル\KazLib">
+      <UniqueIdentifier>{628794d3-3fe7-4dff-b851-41b3429c09ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\KazLib\Buffer">
+      <UniqueIdentifier>{daa4a53f-0fd5-43c2-b6ce-8061a124ab13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\KazLib\Camera">
+      <UniqueIdentifier>{f61ad5c3-b26b-4597-b7d6-3e6a6467e1ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\KazLib\Collision">
+      <UniqueIdentifier>{0d6d0e5d-0c9b-4c5a-a6f1-6351a539e7ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\KazLib\DirectXCommon">
+      <UniqueIdentifier>{1097668f-8d78-4953-9d2b-29fe18143343}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\KazLib\Easing">
+      <UniqueIdentifier>{d0a5d8e2-e981-4159-9a80-6f5d6158ba95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\KazLib\Helper">
+      <UniqueIdentifier>{f8929c83-4225-496b-9c93-8131188521b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\KazLib\Imgui">
+      <UniqueIdentifier>{27438c9c-8afd-460f-a3e2-0f1f329ae4d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\KazLib\Input">
+      <UniqueIdentifier>{8e2c1223-caf0-48d3-9e5d-7f14bce83aca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\KazLib\Loader">
+      <UniqueIdentifier>{3b95b608-d06b-456e-bb1e-e18425900829}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\KazLib\Math">
+      <UniqueIdentifier>{7553bd58-3dc8-4961-991d-9cb07f78b553}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\KazLib\WinApi">
+      <UniqueIdentifier>{5e0675df-fbcf-4531-a6a9-42469ccfe8f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\KazLib\WinApi\Fps">
+      <UniqueIdentifier>{d3955b71-743b-45ac-b318-7b2f031aa73f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\KazLib\Sound">
+      <UniqueIdentifier>{527ba6a4-42b8-44cf-92b7-492118afc37f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\KazLib\Scene">
+      <UniqueIdentifier>{a412f90e-53ba-425b-a837-e71643680e53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\KazLib\RenderTarget">
+      <UniqueIdentifier>{087d9756-7198-4907-82cf-3497e169f736}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\KazLib\Render">
+      <UniqueIdentifier>{e69a2497-53df-47b2-905c-517b05eb8774}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\KazLib\Pipeline">
+      <UniqueIdentifier>{d068c78c-62aa-49a5-9551-4ae1efe78051}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game">
+      <UniqueIdentifier>{92c1c66b-7152-4230-aade-dc23f9fd59bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\KazLib\ShaderFile">
+      <UniqueIdentifier>{4ccd50ba-3f52-4cd8-981b-f18506a7b759}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\KazLib\ShaderFile\Vertex">
+      <UniqueIdentifier>{d4b98126-8ed7-48d1-8ae9-f9b4bbf4df6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\KazLib\ShaderFile\Pixel">
+      <UniqueIdentifier>{2c008132-07be-4847-aaeb-579026e4c531}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\KazLib\ShaderFile\Geometry">
+      <UniqueIdentifier>{5503ed7b-ce35-4615-bad7-c081a6b5784f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\KazLib\ShaderFile\Header">
+      <UniqueIdentifier>{6011b5d7-4ebd-41ff-8960-c8a100055137}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="KazLibrary\Buffer\CreateGpuBuffer.cpp">
+      <Filter>ソース ファイル\KazLib\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Buffer\DescriptorHeapMgr.cpp">
+      <Filter>ソース ファイル\KazLib\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Camera\CameraMgr.cpp">
+      <Filter>ソース ファイル\KazLib\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Collision\CollisionManager.cpp">
+      <Filter>ソース ファイル\KazLib\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\DirectXCommon\DirectX12.cpp">
+      <Filter>ソース ファイル\KazLib\DirectXCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\DirectXCommon\DirectX12CmdList.cpp">
+      <Filter>ソース ファイル\KazLib\DirectXCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\DirectXCommon\DirectX12Device.cpp">
+      <Filter>ソース ファイル\KazLib\DirectXCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Easing\easing.cpp">
+      <Filter>ソース ファイル\KazLib\Easing</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Fps\FPSManager.cpp">
+      <Filter>ソース ファイル\KazLib\WinApi\Fps</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Helper\DirtyFlag.cpp">
+      <Filter>ソース ファイル\KazLib\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Helper\HandleMaker.cpp">
+      <Filter>ソース ファイル\KazLib\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Helper\ISinglton.cpp">
+      <Filter>ソース ファイル\KazLib\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Helper\KazBufferHelper.cpp">
+      <Filter>ソース ファイル\KazLib\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Helper\KazHelper.cpp">
+      <Filter>ソース ファイル\KazLib\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Helper\KazRenderHelper.cpp">
+      <Filter>ソース ファイル\KazLib\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Helper\OutPutDebugStringAndCheckResult.cpp">
+      <Filter>ソース ファイル\KazLib\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Helper\RegisterNameWithData.cpp">
+      <Filter>ソース ファイル\KazLib\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Helper\Select.cpp">
+      <Filter>ソース ファイル\KazLib\Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Imgui\imgui.cpp">
+      <Filter>ソース ファイル\KazLib\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Imgui\imgui_demo.cpp">
+      <Filter>ソース ファイル\KazLib\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Imgui\imgui_draw.cpp">
+      <Filter>ソース ファイル\KazLib\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Imgui\imgui_impl_dx12.cpp">
+      <Filter>ソース ファイル\KazLib\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Imgui\imgui_impl_win32.cpp">
+      <Filter>ソース ファイル\KazLib\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Imgui\imgui_tables.cpp">
+      <Filter>ソース ファイル\KazLib\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Imgui\imgui_widgets.cpp">
+      <Filter>ソース ファイル\KazLib\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Imgui\MyImgui.cpp">
+      <Filter>ソース ファイル\KazLib\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Input\ControllerInputManager.cpp">
+      <Filter>ソース ファイル\KazLib\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Input\KeyBoradInputManager.cpp">
+      <Filter>ソース ファイル\KazLib\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Loader\FbxModelResourceMgr.cpp">
+      <Filter>ソース ファイル\KazLib\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Loader\ObjResourceMgr.cpp">
+      <Filter>ソース ファイル\KazLib\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Loader\TextureResourceMgr.cpp">
+      <Filter>ソース ファイル\KazLib\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Math\KazMath.cpp">
+      <Filter>ソース ファイル\KazLib\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Pipeline\GraphicsDepthTest.cpp">
+      <Filter>ソース ファイル\KazLib\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Pipeline\GraphicsPipeLineMgr.cpp">
+      <Filter>ソース ファイル\KazLib\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Pipeline\GraphicsRootSignature.cpp">
+      <Filter>ソース ファイル\KazLib\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Pipeline\PreCreateBasePipeLine.cpp">
+      <Filter>ソース ファイル\KazLib\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Pipeline\PreCreateBaseRootSignature.cpp">
+      <Filter>ソース ファイル\KazLib\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Pipeline\Shader.cpp">
+      <Filter>ソース ファイル\KazLib\Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Render\BackGroundForDebug.cpp">
+      <Filter>ソース ファイル\KazLib\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Render\BezierCurveLineRender.cpp">
+      <Filter>ソース ファイル\KazLib\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Render\BoxPolygonRender.cpp">
+      <Filter>ソース ファイル\KazLib\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Render\FbxModelRender.cpp">
+      <Filter>ソース ファイル\KazLib\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Render\IRender.cpp">
+      <Filter>ソース ファイル\KazLib\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Render\LineRender.cpp">
+      <Filter>ソース ファイル\KazLib\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Render\ObjModelRender.cpp">
+      <Filter>ソース ファイル\KazLib\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Render\Sprite2DRender.cpp">
+      <Filter>ソース ファイル\KazLib\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Render\Sprite3DRender.cpp">
+      <Filter>ソース ファイル\KazLib\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\RenderTarget\GaussianBuler.cpp">
+      <Filter>ソース ファイル\KazLib\RenderTarget</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\RenderTarget\RenderTargetStatus.cpp">
+      <Filter>ソース ファイル\KazLib\RenderTarget</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Scene\GameScene.cpp">
+      <Filter>ソース ファイル\KazLib\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Scene\main.cpp">
+      <Filter>ソース ファイル\KazLib\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Scene\SceneChange.cpp">
+      <Filter>ソース ファイル\KazLib\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Scene\SceneManager.cpp">
+      <Filter>ソース ファイル\KazLib\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Scene\StageSelectScene.cpp">
+      <Filter>ソース ファイル\KazLib\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Scene\TitleScene.cpp">
+      <Filter>ソース ファイル\KazLib\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Sound\IAXAudio2VoiceCallback.cpp">
+      <Filter>ソース ファイル\KazLib\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Sound\SoundManager.cpp">
+      <Filter>ソース ファイル\KazLib\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Sound\SoundMgr.cpp">
+      <Filter>ソース ファイル\KazLib\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\WinApi\Msg.cpp">
+      <Filter>ソース ファイル\KazLib\WinApi</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\WinApi\WinApi.cpp">
+      <Filter>ソース ファイル\KazLib\WinApi</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Interface\IEnemy.cpp">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Interface\IOperationObject.cpp">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Enemy\NormalEnemy.cpp">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Enemy\KidEnemy.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\LineEffect\LineEffect.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\LineEffect\LineLevel1.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Scene\ClassScene.cpp">
+      <Filter>ソース ファイル\KazLib</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Stage\FirstStage.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Stage\StageMgr.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Debug\ParameterMgr.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Event\GoalBox.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Event\GoalBoxEffect.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\Cursor.cpp">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Player.cpp">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Render\PolygonRender.cpp">
+      <Filter>ソース ファイル\KazLib\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Event\GoalBoxPortalEffect.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Interface\IStage.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Stage\SecondStage.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Event\MoiveEffect.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Stage\ThridStage.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Enemy\SplineMisile.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Enemy\NormalMisileEnemy.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\PlayerHpUi.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\AnnounceStageUI.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Event\EventSprite.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Event\WindowFlame.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Event\TutorialWindow.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Game.cpp">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Scene\DebugScene.cpp">
+      <Filter>ソース ファイル\KazLib\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="KazLibrary\Render\Circle2DRender.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Debug\TestEnemy.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="KazLibrary\Buffer\CreateGpuBuffer.h">
+      <Filter>ソース ファイル\KazLib\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Buffer\DescriptorHeapMgr.h">
+      <Filter>ソース ファイル\KazLib\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Camera\CameraMgr.h">
+      <Filter>ソース ファイル\KazLib\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Collision\CollisionManager.h">
+      <Filter>ソース ファイル\KazLib\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\DirectXCommon\Base.h">
+      <Filter>ソース ファイル\KazLib\DirectXCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\DirectXCommon\d3dx12.h">
+      <Filter>ソース ファイル\KazLib\DirectXCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\DirectXCommon\DirectX12.h">
+      <Filter>ソース ファイル\KazLib\DirectXCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\DirectXCommon\DirectX12CmdList.h">
+      <Filter>ソース ファイル\KazLib\DirectXCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\DirectXCommon\DirectX12Device.h">
+      <Filter>ソース ファイル\KazLib\DirectXCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Easing\easing.h">
+      <Filter>ソース ファイル\KazLib\Easing</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Fps\FPSManager.h">
+      <Filter>ソース ファイル\KazLib\WinApi\Fps</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Helper\DebugColor.h">
+      <Filter>ソース ファイル\KazLib\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Helper\DirtyFlag.h">
+      <Filter>ソース ファイル\KazLib\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Helper\HandleMaker.h">
+      <Filter>ソース ファイル\KazLib\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Helper\ISinglton.h">
+      <Filter>ソース ファイル\KazLib\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Helper\KazBufferHelper.h">
+      <Filter>ソース ファイル\KazLib\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Helper\KazHelper.h">
+      <Filter>ソース ファイル\KazLib\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Helper\KazRenderHelper.h">
+      <Filter>ソース ファイル\KazLib\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Helper\OutPutDebugStringAndCheckResult.h">
+      <Filter>ソース ファイル\KazLib\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Helper\RegisterNameWithData.h">
+      <Filter>ソース ファイル\KazLib\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Helper\ResourceFilePass.h">
+      <Filter>ソース ファイル\KazLib\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Helper\Select.h">
+      <Filter>ソース ファイル\KazLib\Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Imgui\imconfig.h">
+      <Filter>ソース ファイル\KazLib\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Imgui\imgui.h">
+      <Filter>ソース ファイル\KazLib\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Imgui\imgui_impl_dx12.h">
+      <Filter>ソース ファイル\KazLib\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Imgui\imgui_impl_win32.h">
+      <Filter>ソース ファイル\KazLib\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Imgui\imgui_internal.h">
+      <Filter>ソース ファイル\KazLib\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Imgui\imstb_rectpack.h">
+      <Filter>ソース ファイル\KazLib\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Imgui\imstb_textedit.h">
+      <Filter>ソース ファイル\KazLib\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Imgui\imstb_truetype.h">
+      <Filter>ソース ファイル\KazLib\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Imgui\MyImgui.h">
+      <Filter>ソース ファイル\KazLib\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Input\ControllerInputManager.h">
+      <Filter>ソース ファイル\KazLib\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Input\IInputManager.h">
+      <Filter>ソース ファイル\KazLib\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Input\KeyBoradInputManager.h">
+      <Filter>ソース ファイル\KazLib\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Loader\FbxModelResourceMgr.h">
+      <Filter>ソース ファイル\KazLib\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Loader\ObjResourceMgr.h">
+      <Filter>ソース ファイル\KazLib\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Loader\TextureResourceMgr.h">
+      <Filter>ソース ファイル\KazLib\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Math\KazMath.h">
+      <Filter>ソース ファイル\KazLib\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Pipeline\GraphicsDepthTest.h">
+      <Filter>ソース ファイル\KazLib\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Pipeline\GraphicsPipeLineMgr.h">
+      <Filter>ソース ファイル\KazLib\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Pipeline\GraphicsRootSignature.h">
+      <Filter>ソース ファイル\KazLib\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Pipeline\PreCreateBasePipeLine.h">
+      <Filter>ソース ファイル\KazLib\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Pipeline\PreCreateBaseRootSignature.h">
+      <Filter>ソース ファイル\KazLib\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Pipeline\Shader.h">
+      <Filter>ソース ファイル\KazLib\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Render\BackGroundForDebug.h">
+      <Filter>ソース ファイル\KazLib\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Render\BezierCurveLineRender.h">
+      <Filter>ソース ファイル\KazLib\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Render\BoxPolygonRender.h">
+      <Filter>ソース ファイル\KazLib\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Render\FbxModelRender.h">
+      <Filter>ソース ファイル\KazLib\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Render\IRender.h">
+      <Filter>ソース ファイル\KazLib\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Render\KazRender.h">
+      <Filter>ソース ファイル\KazLib\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Render\LineRender.h">
+      <Filter>ソース ファイル\KazLib\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Render\ObjModelRender.h">
+      <Filter>ソース ファイル\KazLib\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Render\RenderData.h">
+      <Filter>ソース ファイル\KazLib\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Render\resource.h">
+      <Filter>ソース ファイル\KazLib\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Render\Sprite2DRender.h">
+      <Filter>ソース ファイル\KazLib\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Render\Sprite3DRender.h">
+      <Filter>ソース ファイル\KazLib\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\RenderTarget\GaussianBuler.h">
+      <Filter>ソース ファイル\KazLib\RenderTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\RenderTarget\RenderTargetStatus.h">
+      <Filter>ソース ファイル\KazLib\RenderTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Scene\DebugScene.h">
+      <Filter>ソース ファイル\KazLib\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Scene\GameScene.h">
+      <Filter>ソース ファイル\KazLib\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Scene\SceneBase.h">
+      <Filter>ソース ファイル\KazLib\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Scene\SceneChange.h">
+      <Filter>ソース ファイル\KazLib\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Scene\SceneData.h">
+      <Filter>ソース ファイル\KazLib\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Scene\SceneManager.h">
+      <Filter>ソース ファイル\KazLib\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Scene\StageSelectScene.h">
+      <Filter>ソース ファイル\KazLib\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Scene\TitleScene.h">
+      <Filter>ソース ファイル\KazLib\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Sound\IAXAudio2VoiceCallback.h">
+      <Filter>ソース ファイル\KazLib\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Sound\SoundManager.h">
+      <Filter>ソース ファイル\KazLib\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Sound\SoundMgr.h">
+      <Filter>ソース ファイル\KazLib\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\WinApi\Msg.h">
+      <Filter>ソース ファイル\KazLib\WinApi</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\WinApi\WinApi.h">
+      <Filter>ソース ファイル\KazLib\WinApi</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Interface\IEnemy.h">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Enemy\NormalEnemy.h">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Interface\IOperationObject.h">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Enemy\KidEnemy.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\LineEffect\LineEffect.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\LineEffect\LineLevel1.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Scene\ClassScene.h">
+      <Filter>ソース ファイル\KazLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Stage\FirstStage.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Stage\StageMgr.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Debug\ParameterMgr.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Event\GoalBox.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Event\GoalBoxEffect.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\Cursor.h">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Player.h">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Render\PolygonRender.h">
+      <Filter>ソース ファイル\KazLib\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Event\GoalBoxPortalEffect.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Interface\IStage.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Stage\SecondStage.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Event\MoiveEffect.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Stage\ThridStage.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Enemy\SplineMisile.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Enemy\NormalMisileEnemy.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\PlayerHpUi.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\UI\AnnounceStageUI.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Event\EventSprite.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Event\WindowFlame.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Event\TutorialWindow.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Game.h">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Render\Circle2DRender.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Debug\TestEnemy.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="KazLibrary\ShaderFiles\VertexShader\FbxModelVertexShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\VertexShader\FogVertexShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\VertexShader\InstanceColorGetShadowVertexShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\VertexShader\InstanceObjGetShadowMapVertexShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\VertexShader\InstancePosVertexShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\VertexShader\InstanceVertexShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\VertexShader\LightVertexShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\VertexShader\LineVertexShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\VertexShader\LumiVertexShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\VertexShader\ModelVertexShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\VertexShader\multipassVertexShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\VertexShader\OBJDrawShadowMapVertexShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\VertexShader\OBJGetShadowMapVertexShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\VertexShader\ObjLightVertexShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\VertexShader\ObjVertexExpantionShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\VertexShader\OBJVertexShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\VertexShader\OrthographicVertexShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\VertexShader\peraVertexShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\VertexShader\SpriteVertexShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\VertexShader\TextureVertexShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\BasicPixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\BloomPixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\FbxModelPixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\FogFbxPixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\FogLineForEffectBGPixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\FogLinePixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\FogObjPixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\FogPixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\FogTexturePixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\GaussianPixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\GoalLightPixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\InstanceColorGetShadowPixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\InstanceColorPixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\InstanceObjExpantionPixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\InstanceObjGetShadowPixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\InstancePixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\LightPixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\LineEffectPixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\LinePixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\LineTickFogPixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\LuminancePixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\LumiPixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\ModelPixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\OBJDrawShadowMapPixcelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\OBJGetShadowPixcelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\ObjLightPixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\OBJPixelExpantionShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\OBJPixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\peraPixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\SpritePixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\TexturePixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Pixel</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\GeometyShader\LineGeometryShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Geometry</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\VertexShader\BasicVertexShader.hlsl">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Vertex</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\ComputeShader\TestComputeShader.hlsl">
+      <Filter>ソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\LineUvPixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\FbxTwoRenderPixelShader.hlsl">
+      <Filter>ソース ファイル\KazLib</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\SpriteTwoRenderPixelShader.hlsl">
+      <Filter>ソース ファイル\Game</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\ColorTwoRenderPixelShader.hlsl">
+      <Filter>ソース ファイル\Game</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\ObjTwoRenderPixelShader.hlsl">
+      <Filter>ソース ファイル\Game</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\GoalLightTwoRenderPixelShader.hlsl">
+      <Filter>ソース ファイル\Game</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\FogColorTwoRenderPixelShader.hlsl">
+      <Filter>ソース ファイル\Game</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\MultiPassLuminancePixelShader.hlsl">
+      <Filter>ソース ファイル\Game</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\LineUvMultiTexPixelShader.hlsl">
+      <Filter>ソース ファイル\Game</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\GoalEffectPixelShader.hlsl">
+      <Filter>ソース ファイル\Game</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\VHSPixelShader.hlsl">
+      <Filter>ソース ファイル\Game</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\GradationPixelShader.hlsl">
+      <Filter>ソース ファイル\Game</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\VertexShader\VertexGpuParticleShader.hlsl">
+      <Filter>ソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\GPUParticlePixelShader.hlsl">
+      <Filter>ソース ファイル</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="KazLibrary\ShaderFiles\ShaderHeader\BaseShaderHeader.hlsli">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Header</Filter>
+    </None>
+    <None Include="KazLibrary\ShaderFiles\ShaderHeader\BasicShaderHeader.hlsli">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Header</Filter>
+    </None>
+    <None Include="KazLibrary\ShaderFiles\ShaderHeader\bgHeader.hlsli">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Header</Filter>
+    </None>
+    <None Include="KazLibrary\ShaderFiles\ShaderHeader\ExpantionShaderHeader.hlsli">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Header</Filter>
+    </None>
+    <None Include="KazLibrary\ShaderFiles\ShaderHeader\FbxShaderHeader.hlsli">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Header</Filter>
+    </None>
+    <None Include="KazLibrary\ShaderFiles\ShaderHeader\FogBufferHeader.hlsli">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Header</Filter>
+    </None>
+    <None Include="KazLibrary\ShaderFiles\ShaderHeader\FogShaderHeader.hlsli">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Header</Filter>
+    </None>
+    <None Include="KazLibrary\ShaderFiles\ShaderHeader\InstanceHeader.hlsli">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Header</Filter>
+    </None>
+    <None Include="KazLibrary\ShaderFiles\ShaderHeader\LightHeader.hlsli">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Header</Filter>
+    </None>
+    <None Include="KazLibrary\ShaderFiles\ShaderHeader\OBJDrawShadowMapShaderHeader.hlsli">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Header</Filter>
+    </None>
+    <None Include="KazLibrary\ShaderFiles\ShaderHeader\OBJShaderHeader.hlsli">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Header</Filter>
+    </None>
+    <None Include="KazLibrary\ShaderFiles\ShaderHeader\peraHeader.hlsli">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Header</Filter>
+    </None>
+    <None Include="KazLibrary\ShaderFiles\ShaderHeader\SpriteShaderHeader.hlsli">
+      <Filter>ソース ファイル\KazLib\ShaderFile\Header</Filter>
+    </None>
+    <None Include="KazLibrary\ShaderFiles\ShaderHeader\KazMathHeader.hlsli">
+      <Filter>ソース ファイル</Filter>
+    </None>
+    <None Include="KazLibrary\ShaderFiles\ShaderHeader\MultiPassHeader.hlsli">
+      <Filter>ソース ファイル</Filter>
+    </None>
+    <None Include="packages.config" />
+    <None Include="KazLibrary\ShaderFiles\ShaderHeader\GPUParticleHeader.hlsli">
+      <Filter>ソース ファイル</Filter>
+    </None>
+  </ItemGroup>
+</Project>
