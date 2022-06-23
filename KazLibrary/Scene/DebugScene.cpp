@@ -430,15 +430,15 @@ void DebugScene::Draw()
 	DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
 
 	//PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Cull invisible triangles");
-	DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
-	(
-		commandSig.Get(),
-		TRIANGLE_ARRAY_NUM,
-		buffer->GetBufferData(commandBuffHandle).Get(),
-		CommandSizePerFrame * num, //リソースバリアの切り替えで値を変える必要があるかも(offsetが入ると定数バッファの値が0になるので無し)
-		nullptr,
-		0
-	);
+	//DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
+	//(
+	//	commandSig.Get(),
+	//	TRIANGLE_ARRAY_NUM,
+	//	buffer->GetBufferData(commandBuffHandle).Get(),
+	//	CommandSizePerFrame * num, //リソースバリアの切り替えで値を変える必要があるかも(offsetが入ると定数バッファの値が0になるので無し)
+	//	nullptr,
+	//	0
+	//);
 	//PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
 	barriers[0].Transition.StateBefore = D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT;

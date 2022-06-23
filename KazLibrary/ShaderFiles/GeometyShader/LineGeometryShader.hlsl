@@ -13,10 +13,7 @@ void GSmain(
 	inout TriangleStream<GSOutput> output
 )
 {
-    
     //0始点,1終点
-    
-    
     for (int i = 0; i < 2; i++)
     {
         float offset = input[i].tickness.x / 2.0f;

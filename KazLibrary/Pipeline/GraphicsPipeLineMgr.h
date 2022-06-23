@@ -338,6 +338,10 @@ private:
 	vector<D3D12_COMPUTE_PIPELINE_STATE_DESC> computePipeLineDataRegisterData;
 	vector<ComPtr<ID3D12PipelineState>> ComputePipeLineRegisterData;
 	vector<RootSignatureMode> computeRootSignatureName;
+	vector<std::vector<char>> vshaderBin;
+	vector<std::vector<char>> pshaderBin;
+	vector<std::vector<char>> gshaderBin;
+	vector<std::vector<char>> cshaderBin;
 
 	bool geo;
 	template <typename T>
