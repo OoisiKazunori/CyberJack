@@ -652,38 +652,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\SpriteTwoRenderPixelShader.hlsl">
-      <Filter>ソース ファイル\Game</Filter>
-    </FxCompile>
-    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\ColorTwoRenderPixelShader.hlsl">
-      <Filter>ソース ファイル\Game</Filter>
-    </FxCompile>
-    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\ObjTwoRenderPixelShader.hlsl">
-      <Filter>ソース ファイル\Game</Filter>
-    </FxCompile>
-    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\GoalLightTwoRenderPixelShader.hlsl">
-      <Filter>ソース ファイル\Game</Filter>
-    </FxCompile>
-    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\FogColorTwoRenderPixelShader.hlsl">
-      <Filter>ソース ファイル\Game</Filter>
-    </FxCompile>
-    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\MultiPassLuminancePixelShader.hlsl">
-      <Filter>ソース ファイル\Game</Filter>
-    </FxCompile>
-    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\LineUvMultiTexPixelShader.hlsl">
-      <Filter>ソース ファイル\Game</Filter>
-    </FxCompile>
-    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\GoalEffectPixelShader.hlsl">
-      <Filter>ソース ファイル\Game</Filter>
-    </FxCompile>
-    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\VHSPixelShader.hlsl">
-      <Filter>ソース ファイル\Game</Filter>
-    </FxCompile>
-    <FxCompile Include="KazLibrary\ShaderFiles\PixelShader\GradationPixelShader.hlsl">
-      <Filter>ソース ファイル\Game</Filter>
-    </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
 </Project>
