@@ -70,21 +70,6 @@
     <Filter Include="ソース ファイル\Game">
       <UniqueIdentifier>{92c1c66b-7152-4230-aade-dc23f9fd59bd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\KazLib\ShaderFile">
-      <UniqueIdentifier>{4ccd50ba-3f52-4cd8-981b-f18506a7b759}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\KazLib\ShaderFile\Vertex">
-      <UniqueIdentifier>{d4b98126-8ed7-48d1-8ae9-f9b4bbf4df6e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\KazLib\ShaderFile\Pixel">
-      <UniqueIdentifier>{2c008132-07be-4847-aaeb-579026e4c531}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\KazLib\ShaderFile\Geometry">
-      <UniqueIdentifier>{5503ed7b-ce35-4615-bad7-c081a6b5784f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\KazLib\ShaderFile\Header">
-      <UniqueIdentifier>{6011b5d7-4ebd-41ff-8960-c8a100055137}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KazLibrary\Buffer\CreateGpuBuffer.cpp">
