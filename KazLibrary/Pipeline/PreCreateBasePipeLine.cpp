@@ -350,7 +350,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 
 	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "VertexGPUParticleShader.hlsl", "VSmain", "vs_5_0", SHADER_VERTEX_GPUPARTICLE);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GPUParticlePixelShader.hlsl", "PSmain", "ps_5_0", SHADER_PIXEL_GPUPARTICLE);
+	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GpuParticlePixelShader.hlsl", "PSmain", "ps_5_0", SHADER_PIXEL_GPUPARTICLE);
 
 	OutputDebugStringA("シェーダーのコンパイルを終了します\n");
 #pragma endregion
