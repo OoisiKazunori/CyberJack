@@ -270,13 +270,12 @@ DebugScene::DebugScene()
 #pragma endregion
 
 
-		commonHandle = buffer->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(CommonData), "CommonData"));
-		{
+		commonHandle = buffer->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(CommonData) * TRIANGLE_ARRAY_NUM, "CommonData")); {
 			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 			srvDesc.Format = DXGI_FORMAT_UNKNOWN;
 			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
 			srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-			srvDesc.Buffer.NumElements = 0;
+			srvDesc.Buffer.NumElements = TRIANGLE_ARRAY_NUM;
 			srvDesc.Buffer.StructureByteStride = sizeof(CommonData);
 			srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
 

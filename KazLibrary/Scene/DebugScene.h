@@ -29,7 +29,7 @@ struct CommonData
 	XMMATRIX cameraMat;
 	XMMATRIX projectionMat;
 	UINT increSize;
-	UINT gpuAddress;
+	UINT64 gpuAddress;
 	XMUINT2 pad;
 };
 
