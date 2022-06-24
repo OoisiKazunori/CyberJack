@@ -159,6 +159,7 @@ struct LineDrawData :public IData
 	{
 		address = this;
 		pipelineName = static_cast<int>(PIPELINE_NAME_LINE);
+		color = { 255.0f,255.0f,255.0f,255.0f };
 		motherMat = XMMatrixIdentity();
 	}
 };

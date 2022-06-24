@@ -125,12 +125,12 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)DirectXTex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <TreatWarningAsError>false</TreatWarningAsError>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -175,7 +175,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Debug\ParameterMgr.cpp" />
-    <ClCompile Include="Game\Debug\TestEnemy.cpp" />
     <ClCompile Include="Game\Enemy\KidEnemy.cpp" />
     <ClCompile Include="Game\Enemy\NormalMisileEnemy.cpp" />
     <ClCompile Include="Game\Enemy\SplineMisile.cpp" />
@@ -184,7 +183,10 @@
     <ClCompile Include="Game\Event\GoalBox.cpp" />
     <ClCompile Include="Game\Event\GoalBoxEffect.cpp" />
     <ClCompile Include="Game\Event\GoalBoxPortalEffect.cpp" />
+    <ClCompile Include="Game\Event\GoalBoxPortalStringEffect.cpp" />
+    <ClCompile Include="Game\Event\LineLightEffect.cpp" />
     <ClCompile Include="Game\Event\MoiveEffect.cpp" />
+    <ClCompile Include="Game\Event\PortalFlame.cpp" />
     <ClCompile Include="Game\Event\TutorialWindow.cpp" />
     <ClCompile Include="Game\Event\WindowFlame.cpp" />
     <ClCompile Include="Game\Game.cpp" />
@@ -244,7 +246,6 @@
     <ClCompile Include="KazLibrary\Render\BackGroundForDebug.cpp" />
     <ClCompile Include="KazLibrary\Render\BezierCurveLineRender.cpp" />
     <ClCompile Include="KazLibrary\Render\BoxPolygonRender.cpp" />
-    <ClCompile Include="KazLibrary\Render\Circle2DRender.cpp" />
     <ClCompile Include="KazLibrary\Render\FbxModelRender.cpp" />
     <ClCompile Include="KazLibrary\Render\IRender.cpp" />
     <ClCompile Include="KazLibrary\Render\LineRender.cpp" />
@@ -256,6 +257,7 @@
     <ClCompile Include="KazLibrary\Scene\DebugScene.cpp" />
     <ClCompile Include="KazLibrary\Scene\GameScene.cpp" />
     <ClCompile Include="KazLibrary\Scene\main.cpp" />
+    <ClCompile Include="KazLibrary\Scene\PortalScene.cpp" />
     <ClCompile Include="KazLibrary\Scene\SceneChange.cpp" />
     <ClCompile Include="KazLibrary\Scene\SceneManager.cpp" />
     <ClCompile Include="KazLibrary\Scene\StageSelectScene.cpp" />
@@ -268,7 +270,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
-    <ClInclude Include="Game\Debug\TestEnemy.h" />
     <ClInclude Include="Game\Enemy\KidEnemy.h" />
     <ClInclude Include="Game\Enemy\NormalMisileEnemy.h" />
     <ClInclude Include="Game\Enemy\SplineMisile.h" />
@@ -277,7 +278,10 @@
     <ClInclude Include="Game\Event\GoalBox.h" />
     <ClInclude Include="Game\Event\GoalBoxEffect.h" />
     <ClInclude Include="Game\Event\GoalBoxPortalEffect.h" />
+    <ClInclude Include="Game\Event\GoalBoxPortalStringEffect.h" />
+    <ClInclude Include="Game\Event\LineLightEffect.h" />
     <ClInclude Include="Game\Event\MoiveEffect.h" />
+    <ClInclude Include="Game\Event\PortalFlame.h" />
     <ClInclude Include="Game\Event\TutorialWindow.h" />
     <ClInclude Include="Game\Event\WindowFlame.h" />
     <ClInclude Include="Game\Game.h" />
@@ -343,7 +347,6 @@
     <ClInclude Include="KazLibrary\Render\BackGroundForDebug.h" />
     <ClInclude Include="KazLibrary\Render\BezierCurveLineRender.h" />
     <ClInclude Include="KazLibrary\Render\BoxPolygonRender.h" />
-    <ClInclude Include="KazLibrary\Render\Circle2DRender.h" />
     <ClInclude Include="KazLibrary\Render\FbxModelRender.h" />
     <ClInclude Include="KazLibrary\Render\IRender.h" />
     <ClInclude Include="KazLibrary\Render\KazRender.h" />
@@ -357,6 +360,7 @@
     <ClInclude Include="KazLibrary\Scene\ClassScene.h" />
     <ClInclude Include="KazLibrary\Scene\DebugScene.h" />
     <ClInclude Include="KazLibrary\Scene\GameScene.h" />
+    <ClInclude Include="KazLibrary\Scene\PortalScene.h" />
     <ClInclude Include="KazLibrary\Scene\SceneBase.h" />
     <ClInclude Include="KazLibrary\Scene\SceneChange.h" />
     <ClInclude Include="KazLibrary\Scene\SceneData.h" />

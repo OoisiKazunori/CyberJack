@@ -44,6 +44,8 @@ void PortalScene::Init()
 
 	portal.Init(initPos);
 	stringEffect.Init(initPos);
+
+	portalFlame.Init(initPos, KazMath::Vec2<float>(20.0f, 10.0f));
 }
 
 void PortalScene::Finalize()
@@ -130,6 +132,7 @@ void PortalScene::Update()
 
 	portal.Update();
 	stringEffect.Update();
+	portalFlame.Update();
 }
 
 void PortalScene::Draw()
@@ -139,6 +142,7 @@ void PortalScene::Draw()
 	bg.Draw();
 	portal.Draw();
 	stringEffect.Draw();
+	portalFlame.Draw();
 	RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, multipassHandle[0]);
 	RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
 	luminaceTex.Draw();

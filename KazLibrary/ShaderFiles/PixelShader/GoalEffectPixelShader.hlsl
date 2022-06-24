@@ -5,7 +5,7 @@ SamplerState smp : register(s0);
 
 cbuffer uvBuffer: register(b1)
 {
-    float4 uv; //F
+    float4 uv; //ï¿½F
 }
 
 
@@ -14,11 +14,12 @@ float4 PSmain(VSOutput input) : SV_TARGET
     float2 uvValue = input.uv + uv.xy;
     float4 output = float4(tex.Sample(smp, uvValue));
     
-    //ƒeƒNƒXƒ`ƒƒ‚Ì‰º‚Ì•”•ª‚ğŒ©‚¦‚È‚­‚·‚é
+    //ï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½Ì‰ï¿½ï¿½Ì•ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½
     output.a = input.uv.y;
     if (color.a < output.a)
     {
         output.a = color.a;
     }
+
     return output;
 }

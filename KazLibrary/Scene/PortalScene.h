@@ -3,6 +3,8 @@
 #include"../KazLibrary/Scene/SceneBase.h"
 #include"../Game/Event/GoalBoxPortalEffect.h"
 #include"../Game/Event/GoalBoxPortalStringEffect.h"
+#include"../Game/Event/PortalFlame.h"
+
 
 class PortalScene :public SceneBase
 {
@@ -38,6 +40,9 @@ private:
 	RESOURCE_HANDLE addHandle;
 
 	std::unique_ptr<GaussianBuler> buler;
+
+
+	PortalFlame portalFlame;
 
 };
 

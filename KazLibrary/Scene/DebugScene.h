@@ -45,14 +45,14 @@ private:
 
 	//BackGroundForDebug bg;
 
-	unique_ptr<CreateGpuBuffer>buffer;
+	std::unique_ptr<CreateGpuBuffer>buffer;
 	RESOURCE_HANDLE inputHandle, outPutHandle, commonHandle;
 
 	InputData inputData;
 	BufferMemorySize size;
 
 
-	array<array<XMMATRIX, 800>, 13>matData;
+	std::array<std::array<XMMATRIX, 800>, 13>matData;
 	BoxPolygonRenderPtr instanceBox;
-	array<int, 10000>test;
+	std::array<int, 10000>test;
 };

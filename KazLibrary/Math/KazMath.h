@@ -1,6 +1,6 @@
 #pragma once
 #include"../DirectXCommon/Base.h"
-
+#include<cmath>
 #pragma warning(push)
 #pragma warning(disable:4023)
 #include"fbxsdk.h"
@@ -268,6 +268,10 @@ namespace KazMath
 		Vec3 operator+(const Vec3 &rhs)const
 		{
 			return Vec3(x + rhs.x, y + rhs.y, z + rhs.z);
+		};
+		Vec3 operator+(float rhs)const
+		{
+			return Vec3(x + rhs, y + rhs, z + rhs);
 		};
 		Vec3 operator-(const Vec3 &rhs)const
 		{
@@ -580,6 +584,8 @@ namespace KazMath
 	static const float PI_2F = 3.1415926540f;
 	static const XMMATRIX MAT_IDENTITY = XMMatrixIdentity();
 
+
+	void CheckIsnan(KazMath::Vec3<float> *VEC);
 
 	XMVECTOR LoadFloat3ToVector(XMFLOAT3 NUM_2);
 	XMFLOAT3 LoadVecotrToXMFLOAT3(XMVECTOR NUM_1);

@@ -339,10 +339,16 @@
     <ClCompile Include="KazLibrary\Scene\DebugScene.cpp">
       <Filter>ソース ファイル\KazLib\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="KazLibrary\Render\Circle2DRender.cpp">
+    <ClCompile Include="KazLibrary\Scene\PortalScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Debug\TestEnemy.cpp">
+    <ClCompile Include="Game\Event\GoalBoxPortalStringEffect.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Event\PortalFlame.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Event\LineLightEffect.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -644,10 +650,16 @@
     <ClInclude Include="Game\Game.h">
       <Filter>ソース ファイル\Game</Filter>
     </ClInclude>
-    <ClInclude Include="KazLibrary\Render\Circle2DRender.h">
+    <ClInclude Include="KazLibrary\Scene\PortalScene.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Debug\TestEnemy.h">
+    <ClInclude Include="Game\Event\GoalBoxPortalStringEffect.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Event\PortalFlame.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Event\LineLightEffect.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
   </ItemGroup>

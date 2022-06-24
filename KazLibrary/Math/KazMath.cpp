@@ -1,6 +1,22 @@
 #include "../Math/KazMath.h"
 #include<cmath>//sqrt
 
+void KazMath::CheckIsnan(KazMath::Vec3<float> *VEC)
+{
+	if (std::isnan(VEC->x))
+	{
+		VEC->x = 0.0f;
+	}
+	if (std::isnan(VEC->y))
+	{
+		VEC->y = 0.0f;
+	}
+	if (std::isnan(VEC->z))
+	{
+		VEC->z = 0.0f;
+	}
+}
+
 XMVECTOR KazMath::LoadFloat3ToVector(XMFLOAT3 NUM_2)
 {
 	XMVECTOR num;
