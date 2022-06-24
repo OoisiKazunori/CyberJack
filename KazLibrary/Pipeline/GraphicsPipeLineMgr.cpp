@@ -17,6 +17,10 @@ GraphicsPipeLineMgr::GraphicsPipeLineMgr()
 	ComputeShaderRegisterData.resize(100);
 	computePipeLineDataRegisterData.resize(100);
 	ComputePipeLineRegisterData.resize(100);
+	vshaderBin.resize(100);
+	pshaderBin.resize(100);
+	gshaderBin.resize(100);
+	cshaderBin.resize(100);
 	geo = false;
 }
 
@@ -41,8 +45,9 @@ void GraphicsPipeLineMgr::RegisterVertexShaderWithData(string SHADER_FILE, LPCST
 	if (IsitSafe(NAME, VertexShaderRegisterData.size()))
 	{
 		Shader vsShader;
-		vsShader.CompileShader(SHADER_FILE, ENTRY_POINT, SHADER_MODEL, SHADER_TYPE_VERTEX);
+		vsShader.CompileShader2(SHADER_FILE, ENTRY_POINT, SHADER_MODEL, SHADER_TYPE_VERTEX);
 		VertexShaderRegisterData[NAME] = vsShader.GetShaderData(SHADER_TYPE_VERTEX);
+		vshaderBin[NAME] = vsShader.shaderBin;
 	}
 	else
 	{
@@ -55,8 +60,9 @@ void GraphicsPipeLineMgr::RegisterPixcelShaderWithData(string SHADER_FILE, LPCST
 	if (IsitSafe(NAME, PixcelShaderRegisterData.size()))
 	{
 		Shader psShader;
-		psShader.CompileShader(SHADER_FILE, ENTRY_POINT, SHADER_MODEL, SHADER_TYPE_PIXEL);
+		psShader.CompileShader2(SHADER_FILE, ENTRY_POINT, SHADER_MODEL, SHADER_TYPE_PIXEL);
 		PixcelShaderRegisterData[NAME] = psShader.GetShaderData(SHADER_TYPE_PIXEL);
+		pshaderBin[NAME] = psShader.shaderBin;
 	}
 	else
 	{
@@ -69,8 +75,9 @@ void GraphicsPipeLineMgr::RegisterGeometoryShaderWithData(string SHADER_FILE, LP
 	if (IsitSafe(NAME, GeometoryShaderRegisterData.size()))
 	{
 		Shader gsShader;
-		gsShader.CompileShader(SHADER_FILE, ENTRY_POINT, SHADER_MODEL, SHADER_TYPE_GEOMETORY);
+		gsShader.CompileShader2(SHADER_FILE, ENTRY_POINT, SHADER_MODEL, SHADER_TYPE_GEOMETORY);
 		GeometoryShaderRegisterData[NAME] = gsShader.GetShaderData(SHADER_TYPE_GEOMETORY);
+		gshaderBin[NAME] = gsShader.shaderBin;
 	}
 	else
 	{
@@ -83,8 +90,9 @@ void GraphicsPipeLineMgr::RegisterComputeShaderWithData(string SHADER_FILE, LPCS
 	if (IsitSafe(NAME, ComputeShaderRegisterData.size()))
 	{
 		Shader csShader;
-		csShader.CompileShader(SHADER_FILE, ENTRY_POINT, SHADER_MODEL, SHADER_TYPE_COMPUTE);
+		csShader.CompileShader2(SHADER_FILE, ENTRY_POINT, SHADER_MODEL, SHADER_TYPE_COMPUTE);
 		ComputeShaderRegisterData[NAME] = csShader.GetShaderData(SHADER_TYPE_COMPUTE);
+		cshaderBin[NAME] = csShader.shaderBin;
 	}
 	else
 	{
@@ -127,13 +135,16 @@ void GraphicsPipeLineMgr::CreatePipeLine(InputLayOutNames INPUT_LAYOUT_NAME, Ver
 	grahicsPipeLine.InputLayout.pInputElementDescs = InputLayOutRegisterData[INPUT_LAYOUT_NAME].inputLayOut;
 	grahicsPipeLine.InputLayout.NumElements = InputLayOutRegisterData[INPUT_LAYOUT_NAME].size;
 
-
 	//Shaderの代入
-	grahicsPipeLine.VS = CD3DX12_SHADER_BYTECODE(VertexShaderRegisterData[VERTEX_SHADER_NAME].Get());
-	grahicsPipeLine.PS = CD3DX12_SHADER_BYTECODE(PixcelShaderRegisterData[PIXCEL_SHADER_NAME].Get());
+	grahicsPipeLine.VS = CD3DX12_SHADER_BYTECODE(vshaderBin[VERTEX_SHADER_NAME].data(), vshaderBin[VERTEX_SHADER_NAME].size());
+	grahicsPipeLine.PS = CD3DX12_SHADER_BYTECODE(pshaderBin[PIXCEL_SHADER_NAME].data(), pshaderBin[PIXCEL_SHADER_NAME].size());
+
+
+
+
 	if (GEOMETORY_SHADER_NAME != SHADER_GEOMETORY_NONE)
 	{
-		grahicsPipeLine.GS = CD3DX12_SHADER_BYTECODE(GeometoryShaderRegisterData[GEOMETORY_SHADER_NAME].Get());
+		grahicsPipeLine.GS = CD3DX12_SHADER_BYTECODE(gshaderBin[GEOMETORY_SHADER_NAME].data(), gshaderBin[GEOMETORY_SHADER_NAME].size());
 	}
 
 	//ルートシグネチャの設定
@@ -159,7 +170,7 @@ void GraphicsPipeLineMgr::CreateComputePipeLine(ComputeShaderNames COMPUTE_SHADE
 	grahicsPipeLine = computePipeLineDataRegisterData[PIPELINE_DATA_NAME];
 
 	//Shaderの代入
-	grahicsPipeLine.CS = CD3DX12_SHADER_BYTECODE(ComputeShaderRegisterData[COMPUTE_SHADER_NAME].Get());
+	grahicsPipeLine.CS = CD3DX12_SHADER_BYTECODE(cshaderBin[COMPUTE_SHADER_NAME].data(), cshaderBin[COMPUTE_SHADER_NAME].size());
 
 	//ルートシグネチャの設定
 	computeRootSignatureName[PIPELINE_NAME] = ROOTSIGNATURE;
@@ -214,7 +225,7 @@ RootSignatureMode GraphicsPipeLineMgr::GetRootSignatureName(PipeLineNames PIPELI
 }
 
 template <typename T>
-inline bool GraphicsPipeLineMgr::IsitSafe(T NAME,unsigned short SIZE)
+inline bool GraphicsPipeLineMgr::IsitSafe(T NAME, unsigned short SIZE)
 {
 	if (0 <= NAME && NAME < SIZE)
 	{
