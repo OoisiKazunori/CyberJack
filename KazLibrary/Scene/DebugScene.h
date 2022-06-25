@@ -90,7 +90,7 @@ private:
 
 	unique_ptr<CreateGpuBuffer>buffer;
 	short inputHandle, updateInputHandle, outputMatHandle, drawCommandHandle;
-	short commonHandle;
+	short commonHandle, cbvMatHandle;
 	void *pointer;
 
 	InputData inputData;

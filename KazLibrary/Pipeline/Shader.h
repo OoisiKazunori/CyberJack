@@ -26,8 +26,8 @@ public:
 	Shader();
 
 	//êVëÃêß
+	void Compier(std::string SHADER_FILE, std::string ENTRY_POINT, std::string SHADER_MODEL, ShaderType SHADER_TYPE);
 	void CompileShader(std::string SHADER_FILE, std::string ENTRY_POINT, std::string SHADER_MODEL, ShaderType SHADER_TYPE);
-	void CompileShader2(std::string SHADER_FILE, std::string ENTRY_POINT, std::string SHADER_MODEL, ShaderType SHADER_TYPE);
 
 	IDxcBlob *GetShaderData(ShaderType SHADER_TYPE);
 

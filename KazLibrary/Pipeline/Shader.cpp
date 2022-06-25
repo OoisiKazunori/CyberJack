@@ -13,7 +13,7 @@ Shader::Shader()
 	shaderBlobs.resize(SHADER_TYPE_MAX);
 }
 
-void Shader::CompileShader(std::string SHADER_FILE, std::string ENTRY_POINT, std::string SHADER_MODEL, ShaderType SHADER_TYPE)
+void Shader::Compier(std::string SHADER_FILE, std::string ENTRY_POINT, std::string SHADER_MODEL, ShaderType SHADER_TYPE)
 {
 	//コンパイルの準備-------------------------
 	ComPtr<IDxcLibrary> library;
@@ -91,7 +91,7 @@ void Shader::CompileShader(std::string SHADER_FILE, std::string ENTRY_POINT, std
 
 }
 
-void Shader::CompileShader2(std::string SHADER_FILE, std::string ENTRY_POINT, std::string SHADER_MODEL, ShaderType SHADER_TYPE)
+void Shader::CompileShader(std::string SHADER_FILE, std::string ENTRY_POINT, std::string SHADER_MODEL, ShaderType SHADER_TYPE)
 {
 	HRESULT hr;
 	std::ifstream infile(SHADER_FILE, std::ifstream::binary);
@@ -111,29 +111,39 @@ void Shader::CompileShader2(std::string SHADER_FILE, std::string ENTRY_POINT, st
 	hr = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&compiler));
 	Microsoft::WRL::ComPtr<IDxcBlobEncoding> source;
 
+
 	hr = library->CreateBlobWithEncodingFromPinned(
 		(LPBYTE)shaderCode.c_str(), (UINT32)shaderCode.size(), CP_UTF8, &source);
 	Microsoft::WRL::ComPtr<IDxcIncludeHandler> includeHandler;
-
 	// インクルードを使う場合には適切に設定すること.
 	hr = library->CreateIncludeHandler(&includeHandler);
 	// コンパイルオプションの指定.
 	std::vector<LPCWSTR> arguments;
+	arguments.emplace_back(L"/Od");
+	arguments.emplace_back(L"/Zi");
+
 
 	std::array<wchar_t, 128> lEntryPoint;
 	KazHelper::ConvertStringToWchar_t(ENTRY_POINT, lEntryPoint.data(), lEntryPoint.size());
+
 
 	std::array<wchar_t, 128> lShaderModel;
 	KazHelper::ConvertStringToWchar_t(SHADER_MODEL, lShaderModel.data(), lShaderModel.size());
 
 
-	arguments.emplace_back(L"/Od");
-	const auto target = L"vs_6_4";
-
 	Microsoft::WRL::ComPtr<IDxcOperationResult> dxcResult;
-	hr = compiler->Compile(source.Get(), fileName.c_str(),
-		lEntryPoint.data(), lShaderModel.data(), arguments.data(), UINT(arguments.size()),
-		nullptr, 0, includeHandler.Get(), &dxcResult);
+	hr = compiler->Compile(
+		source.Get(),
+		fileName.c_str(),
+		lEntryPoint.data(),
+		lShaderModel.data(),
+		arguments.data(),
+		static_cast<UINT32>(arguments.size()),
+		nullptr,
+		0,
+		includeHandler.Get(),
+		&dxcResult
+	);
 
 	if (FAILED(hr)) {
 		throw std::runtime_error("failed shader compile.");
@@ -149,17 +159,9 @@ void Shader::CompileShader2(std::string SHADER_FILE, std::string ENTRY_POINT, st
 		// ... errBlob の内容をエラーメッセージとして表示 (省略)
 		throw std::runtime_error("failed shader compile");
 	}
-
 	Microsoft::WRL::ComPtr<IDxcBlob> blob;
 	dxcResult->GetResult(&blob);
-
 	shaderBlobs[SHADER_TYPE] = blob;
-
-	std::vector<char> result;
-	auto size = blob->GetBufferSize();
-	result.resize(size);
-	memcpy(result.data(), blob->GetBufferPointer(), size);
-	shaderBin = result;
 }
 
 IDxcBlob *Shader::GetShaderData(ShaderType SHADER_TYPE)
