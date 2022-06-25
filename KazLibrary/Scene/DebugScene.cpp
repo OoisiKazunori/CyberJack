@@ -355,7 +355,7 @@ void DebugScene::Update()
 	commonData.cameraMat = CameraMgr::Instance()->GetViewMatrix();
 	commonData.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
 	commonData.increSize = sizeof(OutPutData);
-	commonData.gpuAddress = static_cast<UINT>(buffer->GetGpuAddress(outputMatHandle));
+	commonData.gpuAddress = buffer->GetGpuAddress(outputMatHandle);
 	buffer->TransData(commonHandle, &commonData, sizeof(CommonData));
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(4, buffer->GetGpuAddress(commonHandle));
 

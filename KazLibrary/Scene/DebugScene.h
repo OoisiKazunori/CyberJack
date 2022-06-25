@@ -44,7 +44,7 @@ struct CSRootConstants
 	XMMATRIX view;
 	XMMATRIX projection;
 	float size;
-	float gpuAddress;
+	UINT64 gpuAddress;
 	XMFLOAT2 pad;
 };
 

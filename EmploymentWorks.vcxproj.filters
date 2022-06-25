@@ -654,4 +654,9 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="KazLibrary\ShaderFiles\ComputeShader\TestComputeShader.hlsl">
+      <Filter>ソース ファイル\KazLib</Filter>
+    </FxCompile>
+  </ItemGroup>
 </Project>
