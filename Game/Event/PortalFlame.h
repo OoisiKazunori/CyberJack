@@ -18,6 +18,7 @@ private:
 
 	std::array<LineRender, 4>flame;
 	std::array<KazMath::Vec3<float>, 4>flamePos;
+	std::array<KazMath::Vec3<float>, 4>initFlamePos;
 	int flameIndex;
 	int flameTimer;
 	int maxTimer;
