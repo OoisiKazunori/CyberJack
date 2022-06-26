@@ -378,6 +378,12 @@ void DebugScene::Update()
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(2, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(s.startSize + 2));
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(3, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(s.startSize + 3));
 	}
+
+	//値確認
+	{
+		//DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(4, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(cbvSize.startSize + cbvHandle - 1));
+	}
+
 	//ルート定数
 	//DirectX12CmdList::Instance()->cmdList->SetComputeRoot32BitConstants(1, 4, reinterpret_cast<void *>(&rootConst), 0);
 
@@ -455,7 +461,7 @@ void DebugScene::Draw()
 		DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
 		(
 			commandSig.Get(),
-			1,
+			2,
 			buffer->GetBufferData(commandBuffHandle).Get(),
 			0, //リソースバリアの切り替えで値を変える必要があるかも(offsetが入ると定数バッファの値が0になるので無し)
 			nullptr,

@@ -61,24 +61,29 @@ AppendStructuredBuffer<InputData> updateInputData : register(u1);
 AppendStructuredBuffer<IndirectCommand> outputCommands : register(u2);
 //出力用のバッファ-------------------------
 
-static const int NUM = 1024;
+static const int NUM = 2;
 
 [numthreads(NUM, 1, 1)]
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
 {
-    //uint index = (groupId.x * NUM) + groupIndex;
-    uint index = 0;
+    uint index = (groupId.x * NUM) + groupIndex;
+    //uint index = 1;
+    if(1 <= index)
+    {
+        index = 1;
+    }
+
 
     //座標計算-------------------------
     float3 outputPos = inputBuffer[index].pos.xyz;
     
-    outputPos += float3(1.0f, 0.0f, 0.0f);
-    if (50.0f <= outputPos.x)
-    {
-        outputPos = 0.0f;
-    }
+    //outputPos += float3(1.0f, 0.0f, 0.0f);
+    //if (50.0f <= outputPos.x)
+    //{
+    //    outputPos = 0.0f;
+    //}
 
-    outputPos = float3(0.0f,0.0f,20.0f);
+    outputPos = float3(0.0f + index * 10.0f,0.0f,20.0f);
     matrix pMatTrans = Translate(outputPos);
     matrix pMatRot = Rotate(float3(0.0f,0.0f,0.0f));
     matrix pMatScale = Scale(float3(15.0f, 15.0f, 15.0f));
@@ -87,11 +92,6 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     pMatWorld = mul(pMatScale, pMatWorld);
     pMatWorld = mul(pMatRot, pMatWorld);
     pMatWorld = mul(pMatTrans, pMatWorld);
-
-    //pMatWorld[0] = float4(15.0f, 0.0f, 0.0f, 11.0f);
-    //pMatWorld[1] = float4(0.0f, 15.0f, 0.0f, 10.0f);
-    //pMatWorld[2] = float4(0.0f, 0.0f, 15.0f, 10.0f);
-    //pMatWorld[3] = float4(0.0f, 0.0f, 0.0f, 1.0f);
     //座標計算-------------------------
     
     
@@ -104,11 +104,6 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     outputMat.mat = mul(pMatWorld,outputMat.mat);
     outputMat.mat = mul(lView,    outputMat.mat);
     outputMat.mat = mul(lproj,    outputMat.mat);
-  
-    //outputMat.mat[0] = float4(4.8f, 0.0f, 0.0f, 0.0f);
-    //outputMat.mat[1] = float4(0.0f, 8.6f, 0.0f, 0.0f);
-    //outputMat.mat[2] = float4(0.0f, 0.0f, 5.0f, 5.0f);
-    //outputMat.mat[3] = float4(10.7f, 17.3f, 14.9f, 15.0f);
 
     outputMat.color = inputBuffer[index].color;
     matrixData.Append(outputMat);

@@ -123,6 +123,7 @@ void GraphicsRootSignature::CreateRootSignature(RootSignatureMode ROOTSIGNATURE,
 		computeRootParameters[2].InitAsDescriptorTable(1, &ranges[2]);
 		computeRootParameters[3].InitAsDescriptorTable(1, &ranges[3]);
 		computeRootParameters[4].InitAsConstantBufferView(0, 0);
+		//computeRootParameters[5].InitAsDescriptorTable(1, &ranges[4]);
 		CreateMyRootSignature(ROOTSIGNATURE_DATA.sample, computeRootParameters.data(), computeRootParameters.size(), ROOTSIGNATURE);
 	}
 	else
