@@ -14,6 +14,8 @@ using namespace std;
 #include<array>
 #include<memory>
 
+#include"pix3.h"
+
 static const int WIN_X = 1280;
 static const int WIN_Y = 720;
 

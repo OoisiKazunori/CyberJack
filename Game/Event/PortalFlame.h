@@ -19,6 +19,8 @@ private:
 
 	//ƒtƒŒ[ƒ€-------------------------
 	std::array<LineRender, 4>flame;
+	std::array<RESOURCE_HANDLE, 4>flameCbHandle;
+	std::array<XMFLOAT4, 4>lineEffectData;
 	std::array<KazMath::Vec3<float>, 4>initFlamePos;
 	int flameIndex;
 	int flameTimer;

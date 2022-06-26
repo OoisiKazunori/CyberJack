@@ -83,6 +83,12 @@ void PortalFlame::Init(const KazMath::Vec3<float> &POS, const KazMath::Vec2<floa
 		}
 	}
 
+	for (int i = 0; i < flame.size(); ++i)
+	{
+		flame[i].data.pipelineName = PIPELINE_NAME_LINE_FLASHEFFECT;
+		flameCbHandle[i] = flame[i].CreateConstBuffer(sizeof(XMFLOAT4), typeid(XMFLOAT4).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+	}
+
 
 	flameIndex = 0;
 	maxTimer = 60;
@@ -118,6 +124,17 @@ void PortalFlame::Update()
 		++flameTimer;
 	}
 
+	//フラッシュ用のデータ
+	for (int i = 0; i < flame.size(); ++i)
+	{
+		lineEffectData[i].x = 1.0f;
+		lineEffectData[i].y = 0.0f;
+		lineEffectData[i].z = 0.0f;
+		lineEffectData[i].w = static_cast<float>(20) / static_cast<float>(60);
+		flame[i].TransData(&lineEffectData[i], flameCbHandle[i], typeid(XMFLOAT4).name());
+	}
+
+
 	//timerから線をどれくらい伸ばすか決める
 	KazMath::Vec3<float> distance = tmpVecPos[flameIndex][END] - tmpVecPos[flameIndex][START];
 	flame[flameIndex].data.startPos = tmpVecPos[flameIndex][START];
@@ -141,6 +158,7 @@ void PortalFlame::Update()
 
 void PortalFlame::Draw()
 {
+	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Draw PortalLine");
 	for (int i = 0; i < flame.size(); ++i)
 	{
 		flame[i].Draw();
@@ -153,5 +171,5 @@ void PortalFlame::Draw()
 			memoryLine[i][edge].Draw();
 		}
 	}
-
+	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 }

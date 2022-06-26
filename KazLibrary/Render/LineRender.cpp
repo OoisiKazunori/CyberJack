@@ -19,10 +19,10 @@ LineRender::LineRender()
 	vertices[1].pos.y = 0;
 	vertices[1].pos.z = 0;
 
-	vertices[0].tickness.x = 0.5;
-	vertices[0].tickness.y = 0.5;
-	vertices[1].tickness.x = 0.5;
-	vertices[1].tickness.y = 0.5;
+	vertices[0].tickness.x = 0.0f;
+	vertices[0].tickness.y = 0.0f;
+	vertices[1].tickness.x = 1.0f;
+	vertices[1].tickness.y = 1.0f;
 
 	
 	vertByte = KazBufferHelper::GetBufferSize<UINT>(vertices.size(), sizeof(LineVertex));

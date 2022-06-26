@@ -55,6 +55,7 @@ void PortalScene::Finalize()
 void PortalScene::Input()
 {
 	KeyBoradInputManager *input = KeyBoradInputManager::Instance();
+
 #pragma region カメラ操作
 	debugCameraMove = { 0.0f,0.0f,0.0f };
 	float debugSpeed = 1.0f;
@@ -98,7 +99,6 @@ void PortalScene::Input()
 		angle.y += -debugSpeed;
 	}
 #pragma endregion
-
 
 
 	if (input->InputTrigger(DIK_SPACE))
