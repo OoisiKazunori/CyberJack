@@ -199,7 +199,7 @@ void BoxPolygonRender::Draw()
 
 		//バッファの転送-----------------------------------------------------------------------------------------------------
 		//行列
-		if (matrixDirtyFlag || matFlag || colorFlag | true)
+		if (matrixDirtyFlag || matFlag || colorFlag || true)
 		{
 			ConstBufferData constMap;
 			constMap.world = baseMatWorldData.matWorld;

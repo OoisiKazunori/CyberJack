@@ -117,6 +117,8 @@ private:
 
 	short paramCBHandle;
 
+	BackGroundForDebug bg;
+
 
 
 	XMMATRIX Translate(XMFLOAT3 VECTOR)

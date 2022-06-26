@@ -67,7 +67,7 @@ void RenderTargetStatus::CreateDoubleBuffer(ComPtr<IDXGISwapChain4> SWAPCHAIN)
 
 void RenderTargetStatus::SetDoubleBufferFlame(XMFLOAT3 COLOR)
 {
-	gDepth.Clear(handle);
+	//gDepth.Clear(handle);
 
 	bbIndex = copySwapchain->GetCurrentBackBufferIndex();
 	//ƒoƒŠƒAØ‚è‘Ö‚¦

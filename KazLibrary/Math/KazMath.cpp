@@ -412,7 +412,7 @@ XMFLOAT3 KazMath::CaluEyePosForDebug(XMFLOAT3 EYE_POS, XMFLOAT3 MOVE, XMFLOAT2 A
 	float rad_2 = ANGLE.y * 3.14 / 180.0f;
 
 
-	float speed = 1;
+	float speed = 1.0f;
 	//ç∂
 	if (MOVE.x < 0)
 	{

@@ -77,22 +77,39 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     {
         outputPos = 0.0f;
     }
+
+    outputPos = float3(0.0f,0.0f,20.0f);
     matrix pMatTrans = Translate(outputPos);
-    matrix pMatRot = Rotate(0.0f);
-    matrix pMatScale = Scale(float3(1.0f, 1.0f, 1.0f));
+    matrix pMatRot = Rotate(float3(0.0f,0.0f,0.0f));
+    matrix pMatScale = Scale(float3(15.0f, 15.0f, 15.0f));
     
     matrix pMatWorld = MatrixIdentity();
-    pMatWorld = mul(pMatTrans, pMatWorld);
-    pMatWorld = mul(pMatRot, pMatWorld);
     pMatWorld = mul(pMatScale, pMatWorld);
+    pMatWorld = mul(pMatRot, pMatWorld);
+    pMatWorld = mul(pMatTrans, pMatWorld);
+
+    //pMatWorld[0] = float4(15.0f, 0.0f, 0.0f, 11.0f);
+    //pMatWorld[1] = float4(0.0f, 15.0f, 0.0f, 10.0f);
+    //pMatWorld[2] = float4(0.0f, 0.0f, 15.0f, 10.0f);
+    //pMatWorld[3] = float4(0.0f, 0.0f, 0.0f, 1.0f);
     //座標計算-------------------------
     
     
     //座標出力-------------------------
     OutputData outputMat;
-    outputMat.mat = pMatWorld;
-    outputMat.mat = mul(view, outputMat.mat);
-    outputMat.mat = mul(projection, outputMat.mat); 
+    matrix lView = view;
+    matrix lproj = projection;
+
+    outputMat.mat = MatrixIdentity();
+    outputMat.mat = mul(pMatWorld,outputMat.mat);
+    outputMat.mat = mul(lView,    outputMat.mat);
+    outputMat.mat = mul(lproj,    outputMat.mat);
+  
+    //outputMat.mat[0] = float4(4.8f, 0.0f, 0.0f, 0.0f);
+    //outputMat.mat[1] = float4(0.0f, 8.6f, 0.0f, 0.0f);
+    //outputMat.mat[2] = float4(0.0f, 0.0f, 5.0f, 5.0f);
+    //outputMat.mat[3] = float4(10.7f, 17.3f, 14.9f, 15.0f);
+
     outputMat.color = inputBuffer[index].color;
     matrixData.Append(outputMat);
     

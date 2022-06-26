@@ -79,7 +79,7 @@ DebugScene::DebugScene()
 	//頂点バッファ関連-------------------------
 	{
 		const float TriangleHalfWidth = 0.08f;
-		const float TriangleDepth = 1.0f;
+		const float TriangleDepth = 0.0f;
 		const float CullingCutoff = 0.5f;
 		struct Vert
 		{
@@ -164,12 +164,12 @@ DebugScene::DebugScene()
 			std::array<InputData, TRIANGLE_ARRAY_NUM> data;
 			for (int i = 0; i < TRIANGLE_ARRAY_NUM; ++i)
 			{
-				data[i].pos = { 10.0f,10.0f,10.0f,0.0f };
+				data[i].pos = { 11.0f,10.0f,10.0f,0.0f };
 				data[i].velocity = { 0.0f,0.0f,0.0f,0.0f };
 				data[i].color = { KazMath::FloatRand(10.0f,0.0f),KazMath::FloatRand(10.0f,0.0f),KazMath::FloatRand(10.0f,0.0f),1.0f };
 			}
 			XMVECTOR pos = { data[0].pos.x,data[0].pos.y,data[0].pos.z,0.0f };
-			XMVECTOR scale = { 1.0f,1.0f,1.0f,0.0f };
+			XMVECTOR scale = { 15.0f,15.0f,15.0f,0.0f };
 			XMVECTOR rota = { 0.0f,0.0f,0.0f,0.0f };
 			XMMATRIX matWorld = {};
 			XMMATRIX matWorld2 = {};
@@ -184,6 +184,8 @@ DebugScene::DebugScene()
 				XMMATRIX rotaM2 = Rotate(KazMath::LoadVecotrToXMFLOAT3(rota));
 				matWorld = scaleM * rotaM * trans;
 				matWorld2 = scaleM2 * rotaM2 * trans2;
+
+				bool dbeug = false;
 			}
 
 			//シェーダー側で計算しようとしている行列計算
@@ -317,6 +319,25 @@ void DebugScene::Update()
 {
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
 
+	{
+		XMVECTOR pos = { 11.0f,10.0f,10.0f,0.0f };
+		XMVECTOR scale = { 15.0f,15.0f,15.0f,0.0f };
+		XMVECTOR rota = { 0.0f,0.0f,0.0f,0.0f };
+
+		XMMATRIX matWorld;
+		XMMATRIX trans = Translate(KazMath::LoadVecotrToXMFLOAT3(pos));
+		XMMATRIX scaleM = Scale(KazMath::LoadVecotrToXMFLOAT3(scale));
+		XMMATRIX rotaM = Rotate(KazMath::LoadVecotrToXMFLOAT3(rota));
+		matWorld = scaleM * rotaM * trans;
+
+		XMMATRIX v = CameraMgr::Instance()->GetViewMatrix();
+		XMMATRIX p = CameraMgr::Instance()->GetPerspectiveMatProjection();
+		XMMATRIX mat = matWorld * v;
+		mat = mat * p;
+
+		bool debug = false;
+	}
+
 
 	for (UINT n = 0; n < TRIANGLE_ARRAY_NUM; n++)
 	{
@@ -390,63 +411,72 @@ void DebugScene::Update()
 
 void DebugScene::Draw()
 {
-	//short commandBuffHandle = commandBufferHandle;
-	short commandBuffHandle = drawCommandHandle;
+	{
+		//short commandBuffHandle = commandBufferHandle;
+		short commandBuffHandle = drawCommandHandle;
 
-	//描画命令発行-------------------------
-	int num = RenderTargetStatus::Instance()->copySwapchain->GetCurrentBackBufferIndex();
-	RenderTargetStatus::Instance()->bbIndex = num;
+		//描画命令発行-------------------------
+		int num = RenderTargetStatus::Instance()->copySwapchain->GetCurrentBackBufferIndex();
+		RenderTargetStatus::Instance()->bbIndex = num;
 
-	std::array<D3D12_RESOURCE_BARRIER, 2> barriers = {
-	CD3DX12_RESOURCE_BARRIER::Transition(
-		buffer->GetBufferData(commandBuffHandle).Get(),
-		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT),
-	CD3DX12_RESOURCE_BARRIER::Transition(
-		RenderTargetStatus::Instance()->backBuffers[num].Get(),
-		D3D12_RESOURCE_STATE_PRESENT,
-		D3D12_RESOURCE_STATE_RENDER_TARGET)
-	};
-	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(static_cast<unsigned int>(barriers.size()), barriers.data());
-
-
-
-	//セット-------------------------
-	//レンダータゲットの設定
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvH;
-	rtvH = RenderTargetStatus::Instance()->rtvHeaps->GetCPUDescriptorHandleForHeapStart();
-	rtvH.ptr += num * DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(RenderTargetStatus::Instance()->heapDesc.Type);
-	DirectX12CmdList::Instance()->cmdList->OMSetRenderTargets(1, &rtvH, false, &RenderTargetStatus::Instance()->gDepth.dsvH[RenderTargetStatus::Instance()->handle]);
+		std::array<D3D12_RESOURCE_BARRIER, 2> barriers = {
+		CD3DX12_RESOURCE_BARRIER::Transition(
+			buffer->GetBufferData(commandBuffHandle).Get(),
+			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+			D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT),
+		CD3DX12_RESOURCE_BARRIER::Transition(
+			RenderTargetStatus::Instance()->backBuffers[num].Get(),
+			D3D12_RESOURCE_STATE_PRESENT,
+			D3D12_RESOURCE_STATE_RENDER_TARGET)
+		};
+		DirectX12CmdList::Instance()->cmdList->ResourceBarrier(static_cast<unsigned int>(barriers.size()), barriers.data());
 
 
-	RenderTargetStatus::Instance()->gDepth.Clear(RenderTargetStatus::Instance()->handle);
-	RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
-	//セット-------------------------
+
+		//セット-------------------------
+		//レンダータゲットの設定
+		D3D12_CPU_DESCRIPTOR_HANDLE rtvH;
+		rtvH = RenderTargetStatus::Instance()->rtvHeaps->GetCPUDescriptorHandleForHeapStart();
+		rtvH.ptr += num * DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(RenderTargetStatus::Instance()->heapDesc.Type);
+		DirectX12CmdList::Instance()->cmdList->OMSetRenderTargets(1, &rtvH, false, &RenderTargetStatus::Instance()->gDepth.dsvH[RenderTargetStatus::Instance()->handle]);
 
 
-	GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE);
+		RenderTargetStatus::Instance()->gDepth.Clear(RenderTargetStatus::Instance()->handle);
+		RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
+		//セット-------------------------
 
-	DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
 
-	//PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Cull invisible triangles");
-	DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
-	(
-		commandSig.Get(),
-		1,
-		buffer->GetBufferData(commandBuffHandle).Get(),
-		0, //リソースバリアの切り替えで値を変える必要があるかも(offsetが入ると定数バッファの値が0になるので無し)
-		nullptr,
-		0
-	);
-	//PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
+		GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE);
 
-	barriers[0].Transition.StateBefore = D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT;
-	barriers[0].Transition.StateAfter = D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
-	barriers[1].Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	barriers[1].Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(static_cast<unsigned int>(barriers.size()), barriers.data());
-	//描画命令発行-------------------------
+		DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
+
+		//PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Cull invisible triangles");
+		DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
+		(
+			commandSig.Get(),
+			1,
+			buffer->GetBufferData(commandBuffHandle).Get(),
+			0, //リソースバリアの切り替えで値を変える必要があるかも(offsetが入ると定数バッファの値が0になるので無し)
+			nullptr,
+			0
+		);
+		//PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
+
+		barriers[0].Transition.StateBefore = D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT;
+		barriers[0].Transition.StateAfter = D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
+		barriers[1].Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+		barriers[1].Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+		DirectX12CmdList::Instance()->cmdList->ResourceBarrier(static_cast<unsigned int>(barriers.size()), barriers.data());
+		//描画命令発行-------------------------
+	}
+
+	{
+		RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
+		bg.Draw();
+		RenderTargetStatus::Instance()->SwapResourceBarrier();
+	}
+
 }
 
 void DebugScene::Input()
@@ -455,7 +485,7 @@ void DebugScene::Input()
 
 #pragma region カメラ操作
 	debugCameraMove = { 0,0,0 };
-	float debugSpeed = 1;
+	float debugSpeed = 1.0f;
 	//�J�����ړ�
 	if (input->InputState(DIK_D))
 	{
@@ -496,7 +526,7 @@ void DebugScene::Input()
 	}
 	eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
 	targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
-
+	//eyePos.z = -5.0f;
 #pragma endregion
 
 }
