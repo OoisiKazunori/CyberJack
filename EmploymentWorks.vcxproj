@@ -184,6 +184,7 @@
     <ClCompile Include="Game\Event\GoalBoxEffect.cpp" />
     <ClCompile Include="Game\Event\GoalBoxPortalEffect.cpp" />
     <ClCompile Include="Game\Event\GoalBoxPortalStringEffect.cpp" />
+    <ClCompile Include="Game\Event\LineCpuEffect.cpp" />
     <ClCompile Include="Game\Event\LineLightEffect.cpp" />
     <ClCompile Include="Game\Event\MoiveEffect.cpp" />
     <ClCompile Include="Game\Event\PortalFlame.cpp" />
@@ -279,6 +280,7 @@
     <ClInclude Include="Game\Event\GoalBoxEffect.h" />
     <ClInclude Include="Game\Event\GoalBoxPortalEffect.h" />
     <ClInclude Include="Game\Event\GoalBoxPortalStringEffect.h" />
+    <ClInclude Include="Game\Event\LineCpuEffect.h" />
     <ClInclude Include="Game\Event\LineLightEffect.h" />
     <ClInclude Include="Game\Event\MoiveEffect.h" />
     <ClInclude Include="Game\Event\PortalFlame.h" />

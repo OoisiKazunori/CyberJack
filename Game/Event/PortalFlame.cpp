@@ -9,41 +9,39 @@ void PortalFlame::Init(const KazMath::Vec3<float> &POS, const KazMath::Vec2<floa
 	initFlamePos[LEFT_UP] =
 	{
 		POS.x - SIZE.x / 2.0f,
-		POS.y - SIZE.y / 2.0f,
+		POS.y + SIZE.y / 2.0f,
 		POS.z
 	};
 	initFlamePos[LEFT_DOWN] =
 	{
 		POS.x - SIZE.x / 2.0f,
-		POS.y + SIZE.y / 2.0f,
+		POS.y - SIZE.y / 2.0f,
 		POS.z
 	};
 	initFlamePos[RIGHT_UP] =
 	{
 		POS.x + SIZE.x / 2.0f,
-		POS.y - SIZE.y / 2.0f,
+		POS.y + SIZE.y / 2.0f,
 		POS.z
 	};
 	initFlamePos[RIGHT_DOWN] =
 	{
 		POS.x + SIZE.x / 2.0f,
-		POS.y + SIZE.y / 2.0f,
+		POS.y - SIZE.y / 2.0f,
 		POS.z
 	};
 
-	for (int i = 0; i < initFlamePos.size(); ++i)
+	float distance = (initFlamePos[RIGHT_UP].x - initFlamePos[LEFT_UP].x) / static_cast<float>(memoryLine.size());
+	std::array<KazMath::Vec3<float>, 4> div;
+	for (int i = 0; i < memoryLine.size(); ++i)
 	{
-		flamePos[i] = initFlamePos[i];
+		div[i] = initFlamePos[LEFT_UP];
+		div[i].x += distance * static_cast<float>(i + 1);
+		div[i].x += -7.0f;
+		memoryLine[i].Init(LINE_UPVEC, div[i]);
 	}
 
-	/*flame[0].data.startPos = flamePos[RIGHT_UP];
-	flame[0].data.endPos = flamePos[LEFT_UP];
-	flame[1].data.startPos = flamePos[LEFT_UP];
-	flame[1].data.endPos = flamePos[LEFT_DOWN];
-	flame[2].data.startPos = flamePos[LEFT_DOWN];
-	flame[2].data.endPos = flamePos[RIGHT_DOWN];
-	flame[3].data.startPos = flamePos[RIGHT_DOWN];
-	flame[3].data.endPos = flamePos[RIGHT_UP];*/
+
 
 	flameIndex = 0;
 	maxTimer = 60;
@@ -51,6 +49,7 @@ void PortalFlame::Init(const KazMath::Vec3<float> &POS, const KazMath::Vec2<floa
 
 void PortalFlame::Update()
 {
+	//É|Å[É^ÉãògÇÃê∂ê¨ÇÃâﬂíˆÇï`âÊÇ∑ÇÈ-------------------------
 	std::array<std::array<KazMath::Vec3<float>, 2>, 4>tmpVecPos;
 	const int START = 0;
 	const int END = 1;
@@ -62,7 +61,6 @@ void PortalFlame::Update()
 	tmpVecPos[2][END] = initFlamePos[RIGHT_DOWN];
 	tmpVecPos[3][START] = initFlamePos[RIGHT_DOWN];
 	tmpVecPos[3][END] = initFlamePos[RIGHT_UP];
-
 
 	if (maxTimer <= flameTimer)
 	{
@@ -78,14 +76,23 @@ void PortalFlame::Update()
 	{
 		++flameTimer;
 	}
+
+	//timerÇ©ÇÁê¸ÇÇ«ÇÍÇ≠ÇÁÇ¢êLÇŒÇ∑Ç©åàÇﬂÇÈ
 	KazMath::Vec3<float> distance = tmpVecPos[flameIndex][END] - tmpVecPos[flameIndex][START];
 	flame[flameIndex].data.startPos = tmpVecPos[flameIndex][START];
 	flame[flameIndex].data.endPos = tmpVecPos[flameIndex][START];
-
 	KazMath::Vec3<float> addVel = (distance * (static_cast<float>(flameTimer) / static_cast<float>(60)));
-
 	flame[flameIndex].data.endPos = tmpVecPos[flameIndex][START] + addVel;
 	KazMath::CheckIsnan(&flame[flameIndex].data.endPos);
+	//É|Å[É^ÉãògÇÃê∂ê¨ÇÃâﬂíˆÇï`âÊÇ∑ÇÈ-------------------------
+
+
+	//ÉÅÉÇÉäê¸
+	for (int i = 0; i < memoryLine.size(); ++i)
+	{
+		memoryLine[i].Update();
+	}
+
 }
 
 void PortalFlame::Draw()
@@ -94,4 +101,10 @@ void PortalFlame::Draw()
 	{
 		flame[i].Draw();
 	}
+
+	for (int i = 0; i < memoryLine.size(); ++i)
+	{
+		memoryLine[i].Draw();
+	}
+
 }

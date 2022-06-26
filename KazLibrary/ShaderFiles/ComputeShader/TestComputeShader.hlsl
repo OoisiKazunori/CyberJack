@@ -21,9 +21,9 @@ struct OutPutData
     OutPutElement test[INSTANCE_FIRST_LEVEL];
 };
 
-// ï¿½ï¿½ï¿½Íƒfï¿½[ï¿½^ï¿½ÉƒAï¿½Nï¿½Zï¿½Xï¿½ï¿½ï¿½é‚½ï¿½ß‚Ì•Ïï¿½
+// ?¿½?¿½?¿½Íƒf?¿½[?¿½^?¿½ÉƒA?¿½N?¿½Z?¿½X?¿½?¿½?¿½é‚½?¿½ß‚Ì•Ïï¿½
 StructuredBuffer<InputData> inputData : register(t0);
-// ï¿½oï¿½Íï¿½ÉƒAï¿½Nï¿½Zï¿½Xï¿½ï¿½ï¿½é‚½ï¿½ß‚Ì•Ïï¿½
+// ?¿½o?¿½Íï¿½ÉƒA?¿½N?¿½Z?¿½X?¿½?¿½?¿½é‚½?¿½ß‚Ì•Ïï¿½
 RWStructuredBuffer<OutPutData> outputData : register(u1);
 
 cbuffer commonBuffer : register(b2)

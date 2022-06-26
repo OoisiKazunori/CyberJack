@@ -2,6 +2,7 @@
 #include"../KazLibrary/DirectXCommon/Base.h"
 #include"../KazLibrary/Math/KazMath.h"
 #include"../KazLibrary/Render/KazRender.h"
+#include"LineCpuEffect.h"
 #include<array>
 
 class PortalFlame
@@ -16,8 +17,8 @@ public:
 private:
 	KazMath::Vec3<float>basePos;
 
+	//フレーム-------------------------
 	std::array<LineRender, 4>flame;
-	std::array<KazMath::Vec3<float>, 4>flamePos;
 	std::array<KazMath::Vec3<float>, 4>initFlamePos;
 	int flameIndex;
 	int flameTimer;
@@ -29,5 +30,10 @@ private:
 		RIGHT_UP,
 		RIGHT_DOWN,
 	};
+	//フレーム-------------------------
+
+
+	//メモリ線-------------------------
+	std::array<LineCpuEffect, 4>memoryLine;
 };
 
