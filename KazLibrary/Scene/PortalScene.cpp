@@ -149,7 +149,6 @@ void PortalScene::Draw()
 	RenderTargetStatus::Instance()->PrepareToCloseBarrier(addHandle);
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 
-
 	mainRenderTarget.Draw();
 	addRenderTarget.data.handle = buler->BlurImage(addHandle);
 	addRenderTarget.Draw();

@@ -90,6 +90,11 @@ void PortalFlame::Init(const KazMath::Vec3<float> &POS, const KazMath::Vec2<floa
 	}
 
 
+	for (int i = 0; i < flameFlashTimer.size(); ++i)
+	{
+		flameFlashTimer[i] = 120;
+	}
+	flameFlashTimer[0] = 0;
 	flameIndex = 0;
 	maxTimer = 60;
 }
@@ -124,13 +129,34 @@ void PortalFlame::Update()
 		++flameTimer;
 	}
 
+
+	if (maxTimer <= flameFlashTimer[flameFlashIndex])
+	{
+		flameFlashTimer[flameFlashIndex] = 120;
+		++flameFlashIndex;
+		if (flameFlashIndex < flameFlashTimer.size())
+		{
+			flameFlashTimer[flameFlashIndex] = 0;
+		}
+	}
+	if (flameFlashTimer.size() <= flameFlashIndex)
+	{
+		flameFlashIndex = 0;
+		flameFlashTimer[flameFlashIndex] = 0;
+	}
+	else
+	{
+		++flameFlashTimer[flameFlashIndex];
+	}
+
+
 	//フラッシュ用のデータ
 	for (int i = 0; i < flame.size(); ++i)
 	{
 		lineEffectData[i].x = 1.0f;
 		lineEffectData[i].y = 0.0f;
 		lineEffectData[i].z = 0.0f;
-		lineEffectData[i].w = static_cast<float>(20) / static_cast<float>(60);
+		lineEffectData[i].w = static_cast<float>(flameFlashTimer[i]) / static_cast<float>(maxTimer);
 		flame[i].TransData(&lineEffectData[i], flameCbHandle[i], typeid(XMFLOAT4).name());
 	}
 

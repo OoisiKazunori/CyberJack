@@ -13,8 +13,8 @@ TwoRender PSmain(VSOutput input) : SV_TARGET
     TwoRender output;
     float4 outputColor = float4(0.0f,0.0f,0.0f,1.0f);
 
-    float upLimitRedLine = effectData.w + 0.1f;
-    float downLimitRedLine = effectData.w - 0.1f;
+    float upLimitRedLine = effectData.w + 0.01f;
+    float downLimitRedLine = effectData.w - 0.01f;
 
     bool fillColorFlag = upLimitRedLine >= input.uv.y  && input.uv.y >= downLimitRedLine;
     if(fillColorFlag)
@@ -27,7 +27,7 @@ TwoRender PSmain(VSOutput input) : SV_TARGET
         outputColor.xyz =  float3(1.0f,1.0f,1.0f);
         output.target1 = float4(0.0f, 0.0f, 0.0f, 1.0f);
     }
-   
+    
     output.target0 = outputColor;
     return output;
 }
