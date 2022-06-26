@@ -31,16 +31,57 @@ void PortalFlame::Init(const KazMath::Vec3<float> &POS, const KazMath::Vec2<floa
 		POS.z
 	};
 
-	float distance = (initFlamePos[RIGHT_UP].x - initFlamePos[LEFT_UP].x) / static_cast<float>(memoryLine.size());
-	std::array<KazMath::Vec3<float>, 5> div;
-	for (int i = 0; i < memoryLine.size(); ++i)
+	//è„ï”
 	{
-		div[i] = initFlamePos[LEFT_UP];
-		div[i].x += distance / 2.0f;
-		div[i].x += distance * static_cast<float>(i);
-		memoryLine[i].Init(LINE_UPVEC, div[i]);
+		float distance = (initFlamePos[RIGHT_UP].x - initFlamePos[LEFT_UP].x) / static_cast<float>(memoryLine.size());
+		std::array<KazMath::Vec3<float>, 5> div;
+		for (int i = 0; i < memoryLine.size(); ++i)
+		{
+			div[i] = initFlamePos[LEFT_UP];
+			div[i].x += distance / 2.0f;
+			div[i].x += distance * static_cast<float>(i);
+			memoryLine[i][LINE_UPVEC].Init(LINE_UPVEC, div[i]);
+		}
 	}
 
+	//â∫ï”
+	{
+		float distance = (initFlamePos[RIGHT_DOWN].x - initFlamePos[LEFT_DOWN].x) / static_cast<float>(memoryLine.size());
+		std::array<KazMath::Vec3<float>, 5> div;
+		for (int i = 0; i < memoryLine.size(); ++i)
+		{
+			div[i] = initFlamePos[LEFT_DOWN];
+			div[i].x += distance / 2.0f;
+			div[i].x += distance * static_cast<float>(i);
+			memoryLine[i][LINE_DOWNVEC].Init(LINE_DOWNVEC, div[i]);
+		}
+	}
+
+	//ç∂ï”
+	{
+		float distance = (initFlamePos[LEFT_UP].y - initFlamePos[LEFT_DOWN].y) / static_cast<float>(memoryLine.size());
+		std::array<KazMath::Vec3<float>, 5> div;
+		for (int i = 0; i < memoryLine.size(); ++i)
+		{
+			div[i] = initFlamePos[LEFT_DOWN];
+			div[i].y += distance / 2.0f;
+			div[i].y += distance * static_cast<float>(i);
+			memoryLine[i][LINE_LEFTVEC].Init(LINE_LEFTVEC, div[i]);
+		}
+	}
+
+	//âEï”
+	{
+		float distance = (initFlamePos[RIGHT_UP].y - initFlamePos[RIGHT_DOWN].y) / static_cast<float>(memoryLine.size());
+		std::array<KazMath::Vec3<float>, 5> div;
+		for (int i = 0; i < memoryLine.size(); ++i)
+		{
+			div[i] = initFlamePos[RIGHT_DOWN];
+			div[i].y += distance / 2.0f;
+			div[i].y += distance * static_cast<float>(i);
+			memoryLine[i][LINE_RIGHTVEC].Init(LINE_RIGHTVEC, div[i]);
+		}
+	}
 
 
 	flameIndex = 0;
@@ -90,7 +131,10 @@ void PortalFlame::Update()
 	//ÉÅÉÇÉäê¸
 	for (int i = 0; i < memoryLine.size(); ++i)
 	{
-		memoryLine[i].Update();
+		for (int edge = 0; edge < memoryLine[i].size(); ++edge)
+		{
+			memoryLine[i][edge].Update();
+		}
 	}
 
 }
@@ -104,7 +148,10 @@ void PortalFlame::Draw()
 
 	for (int i = 0; i < memoryLine.size(); ++i)
 	{
-		memoryLine[i].Draw();
+		for (int edge = 0; edge < memoryLine[i].size(); ++edge)
+		{
+			memoryLine[i][edge].Draw();
+		}
 	}
 
 }
