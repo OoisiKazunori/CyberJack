@@ -30,6 +30,7 @@ BackGroundForDebug::BackGroundForDebug()
 void BackGroundForDebug::Draw()
 {
 	PipeLineNames pipeline = PIPELINE_NAME_LINE;
+	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Draw BackGround");
 #pragma region Šî€ü
 	for (int yoko = 0; yoko < 100; yoko++)
 	{
@@ -51,7 +52,7 @@ void BackGroundForDebug::Draw()
 		verticalLine[tate].Draw();
 	}
 #pragma endregion
-
+	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 	xLine.data.startPos = { 0,0,0 };
 	xLine.data.endPos = { 30,0,0 };
 	xLine.data.color = { 255,0,0,255.0f };

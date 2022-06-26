@@ -139,20 +139,25 @@ void PortalScene::Draw()
 {
 	RenderTargetStatus::Instance()->PrepareToChangeBarrier(multipassHandle[0]);
 	RenderTargetStatus::Instance()->ClearRenderTarget(multipassHandle[0]);
-	bg.Draw();
+	//bg.Draw();
 	portal.Draw();
 	stringEffect.Draw();
 	portalFlame.Draw();
+
+	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Draw Luminance");
 	RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, multipassHandle[0]);
 	RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
 	luminaceTex.Draw();
+	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
+
+
+	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Draw Main RenderTarget");
 	RenderTargetStatus::Instance()->PrepareToCloseBarrier(addHandle);
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
-
 	mainRenderTarget.Draw();
 	addRenderTarget.data.handle = buler->BlurImage(addHandle);
 	addRenderTarget.Draw();
-
+	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 }
 
 int PortalScene::SceneChange()

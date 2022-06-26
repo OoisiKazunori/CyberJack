@@ -17,12 +17,13 @@ public:
 private:
 	KazMath::Vec3<float>basePos;
 
+	static const int FLAME_MAX_NUM = 4;
 	//ƒtƒŒ[ƒ€-------------------------
-	std::array<LineRender, 4>flame;
-	std::array<RESOURCE_HANDLE, 4>flameCbHandle;
-	std::array<XMFLOAT4, 4>lineEffectData;
+	std::array<LineRender, FLAME_MAX_NUM>flame;
+	std::array<RESOURCE_HANDLE, FLAME_MAX_NUM>constBufferHandle;
+	std::array<XMFLOAT4, FLAME_MAX_NUM>lineEffectData;
 	int flameFlashIndex;
-	std::array<int, 4>flameFlashTimer;
+	std::array<int, FLAME_MAX_NUM>flashTimer;
 	std::array<KazMath::Vec3<float>, 4>initFlamePos;
 	int flameIndex;
 	int flameTimer;
@@ -38,6 +39,6 @@ private:
 
 
 	//ƒƒ‚ƒŠü-------------------------
-	std::array<std::array<LineCpuEffect, 5>, 4>memoryLine;
+	std::array<std::array<LineCpuEffect, 4>, FLAME_MAX_NUM>memoryLine;
 };
 
