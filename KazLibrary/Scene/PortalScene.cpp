@@ -45,7 +45,7 @@ void PortalScene::Init()
 	portal.Init(initPos);
 	stringEffect.Init(initPos);
 
-	portalFlame.Init(initPos, KazMath::Vec2<float>(50.0f, 30.0f));
+	portalFlame.Init(initPos, KazMath::Vec2<float>(30.0f, 30.0f));
 }
 
 void PortalScene::Finalize()

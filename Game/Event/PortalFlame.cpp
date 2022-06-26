@@ -32,12 +32,12 @@ void PortalFlame::Init(const KazMath::Vec3<float> &POS, const KazMath::Vec2<floa
 	};
 
 	float distance = (initFlamePos[RIGHT_UP].x - initFlamePos[LEFT_UP].x) / static_cast<float>(memoryLine.size());
-	std::array<KazMath::Vec3<float>, 4> div;
+	std::array<KazMath::Vec3<float>, 5> div;
 	for (int i = 0; i < memoryLine.size(); ++i)
 	{
 		div[i] = initFlamePos[LEFT_UP];
-		div[i].x += distance * static_cast<float>(i + 1);
-		div[i].x += -7.0f;
+		div[i].x += distance / 2.0f;
+		div[i].x += distance * static_cast<float>(i);
 		memoryLine[i].Init(LINE_UPVEC, div[i]);
 	}
 

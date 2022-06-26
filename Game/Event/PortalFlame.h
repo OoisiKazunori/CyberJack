@@ -34,6 +34,6 @@ private:
 
 
 	//ƒƒ‚ƒŠü-------------------------
-	std::array<LineCpuEffect, 4>memoryLine;
+	std::array<LineCpuEffect, 5>memoryLine;
 };
 
