@@ -247,6 +247,7 @@
     <ClCompile Include="KazLibrary\Render\BackGroundForDebug.cpp" />
     <ClCompile Include="KazLibrary\Render\BezierCurveLineRender.cpp" />
     <ClCompile Include="KazLibrary\Render\BoxPolygonRender.cpp" />
+    <ClCompile Include="KazLibrary\Render\Circle2DRender.cpp" />
     <ClCompile Include="KazLibrary\Render\FbxModelRender.cpp" />
     <ClCompile Include="KazLibrary\Render\IRender.cpp" />
     <ClCompile Include="KazLibrary\Render\LineRender.cpp" />
@@ -349,6 +350,7 @@
     <ClInclude Include="KazLibrary\Render\BackGroundForDebug.h" />
     <ClInclude Include="KazLibrary\Render\BezierCurveLineRender.h" />
     <ClInclude Include="KazLibrary\Render\BoxPolygonRender.h" />
+    <ClInclude Include="KazLibrary\Render\Circle2DRender.h" />
     <ClInclude Include="KazLibrary\Render\FbxModelRender.h" />
     <ClInclude Include="KazLibrary\Render\IRender.h" />
     <ClInclude Include="KazLibrary\Render\KazRender.h" />

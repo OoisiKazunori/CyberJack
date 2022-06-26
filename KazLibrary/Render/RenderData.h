@@ -199,3 +199,19 @@ struct FbxModelData :public IData
 		motherMat = XMMatrixIdentity();
 	}
 };
+
+struct Circle2DDrawData :public IData
+{
+	KazMath::Transform3D transform;
+	XMFLOAT4 color;
+	float radius;
+	int pipelineName;
+
+	Circle2DDrawData()
+	{
+		address = this;
+		color = { 255.0f,255.0f,255.0f,255.0f };
+		radius = 10.0f;
+		pipelineName = static_cast<int>(PIPELINE_NAME_COLOR);
+	}
+};

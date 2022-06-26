@@ -354,6 +354,9 @@
     <ClCompile Include="Game\Event\LineCpuEffect.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="KazLibrary\Render\Circle2DRender.cpp">
+      <Filter>ソース ファイル\KazLib\Render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KazLibrary\Buffer\CreateGpuBuffer.h">
@@ -667,6 +670,9 @@
     </ClInclude>
     <ClInclude Include="Game\Event\LineCpuEffect.h">
       <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="KazLibrary\Render\Circle2DRender.h">
+      <Filter>ソース ファイル\KazLib\Render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

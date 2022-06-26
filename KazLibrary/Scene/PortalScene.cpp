@@ -40,12 +40,12 @@ PortalScene::~PortalScene()
 
 void PortalScene::Init()
 {
-	initPos = { 0.0f,0.0f,30.0f };
+	initPos = { 0.0f,10.0f,30.0f };
 
 	portal.Init(initPos);
 	stringEffect.Init(initPos);
 
-	portalFlame.Init(initPos, KazMath::Vec2<float>(30.0f, 30.0f));
+	portalFlame.Init(initPos, KazMath::Vec2<float>(60.0f, 30.0f));
 }
 
 void PortalScene::Finalize()
