@@ -21,7 +21,7 @@ struct D3D12_DRAW_ARGUMENTS
 
 struct IndirectCommand
 {
-    uint64_t cbvAddress;
+    uint64_t cbvAddress;    
     D3D12_DRAW_ARGUMENTS drawArguments;
 };
 
@@ -123,6 +123,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     outputCommand.drawArguments.InstanceCount = 1;
     outputCommand.drawArguments.StartVertexLocation = 0;
     outputCommand.drawArguments.StartInstanceLocation = 0;
+
     outputCommands.Append(outputCommand);
     //描画コマンド出力-------------------------
 

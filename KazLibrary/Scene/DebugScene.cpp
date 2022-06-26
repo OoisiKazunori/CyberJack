@@ -288,7 +288,7 @@ DebugScene::DebugScene()
 
 
 		{
-			cbvMatHandle = buffer->CreateBuffer(KazBufferHelper::SetConstBufferData(TRIANGLE_RESOURCE_COUNT * sizeof(OutPutData), "CbvMatHandle"));
+			cbvMatHandle = buffer->CreateBuffer(KazBufferHelper::SetConstBufferData(TRIANGLE_ARRAY_NUM * sizeof(OutPutData), "CbvMatHandle"));
 
 			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 			srvDesc.Format = DXGI_FORMAT_UNKNOWN;
@@ -461,7 +461,7 @@ void DebugScene::Draw()
 		DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
 		(
 			commandSig.Get(),
-			2,
+			TRIANGLE_ARRAY_NUM,
 			buffer->GetBufferData(commandBuffHandle).Get(),
 			0, //リソースバリアの切り替えで値を変える必要があるかも(offsetが入ると定数バッファの値が0になるので無し)
 			nullptr,
