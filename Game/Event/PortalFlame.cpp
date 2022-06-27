@@ -33,65 +33,65 @@ void PortalFlame::Init(const KazMath::Vec3<float> &POS, const KazMath::Vec2<floa
 
 	//上辺
 	{
-		float maxDistance = initFlamePos[RIGHT_UP].Distance(initFlamePos[LEFT_UP]);
-		float distance = maxDistance / static_cast<float>(memoryLine.size());
-		std::array<KazMath::Vec3<float>, 5> div;
-		for (int i = 0; i < memoryLine.size(); ++i)
+		float lMaxDistance = initFlamePos[RIGHT_UP].Distance(initFlamePos[LEFT_UP]);
+		float lDistance = lMaxDistance / static_cast<float>(LINE_CPU_NUM);
+		std::array<KazMath::Vec3<float>, LINE_CPU_NUM> lDiv;
+		for (int i = 0; i < LINE_CPU_NUM; ++i)
 		{
-			div[i] = initFlamePos[LEFT_UP];
-			div[i].x += distance / 2.0f;
-			div[i].x += distance * static_cast<float>(i);
-			memoryLine[LINE_UPVEC][i].Init(LINE_UPVEC, div[i]);
+			lDiv[i] = initFlamePos[LEFT_UP];
+			lDiv[i].x += lDistance / 2.0f;
+			lDiv[i].x += lDistance * static_cast<float>(i);
+			memoryLine[LINE_UPVEC][i].Init(LINE_UPVEC, lDiv[i]);
 
-			memoryLine[LINE_UPVEC][i].rate = initFlamePos[LEFT_UP].Distance(div[i]) / maxDistance;
+			memoryLine[LINE_UPVEC][i].rate = (lDiv[i].x - initFlamePos[LEFT_UP].x) / lMaxDistance;
 		}
 	}
 
 	//下辺
 	{
-		float maxDistance = initFlamePos[RIGHT_DOWN].Distance(initFlamePos[LEFT_DOWN]);
-		float distance = maxDistance / static_cast<float>(memoryLine.size());
-		std::array<KazMath::Vec3<float>, 5> div;
-		for (int i = 0; i < memoryLine.size(); ++i)
+		float lMaxDistance = initFlamePos[RIGHT_DOWN].Distance(initFlamePos[LEFT_DOWN]);
+		float lDistance = lMaxDistance / static_cast<float>(LINE_CPU_NUM);
+		std::array<KazMath::Vec3<float>, LINE_CPU_NUM> lDiv;
+		for (int i = 0; i < LINE_CPU_NUM; ++i)
 		{
-			div[i] = initFlamePos[LEFT_DOWN];
-			div[i].x += distance / 2.0f;
-			div[i].x += distance * static_cast<float>(i);
-			memoryLine[LINE_DOWNVEC][i].Init(LINE_DOWNVEC, div[i]);
+			lDiv[i] = initFlamePos[LEFT_DOWN];
+			lDiv[i].x += lDistance / 2.0f;
+			lDiv[i].x += lDistance * static_cast<float>(i);
+			memoryLine[LINE_DOWNVEC][i].Init(LINE_DOWNVEC, lDiv[i]);
 
-			memoryLine[LINE_DOWNVEC][i].rate = initFlamePos[LEFT_DOWN].Distance(div[i]) / maxDistance;
+			memoryLine[LINE_DOWNVEC][i].rate = initFlamePos[LEFT_DOWN].Distance(lDiv[i]) / lMaxDistance;
 		}
 	}
 
 	//左辺
 	{
-		float maxDistance = initFlamePos[LEFT_UP].Distance(initFlamePos[LEFT_DOWN]);
-		float distance = maxDistance / static_cast<float>(memoryLine.size());
-		std::array<KazMath::Vec3<float>, 5> div;
-		for (int i = 0; i < memoryLine.size(); ++i)
+		float lMaxDistance = initFlamePos[LEFT_UP].Distance(initFlamePos[LEFT_DOWN]);
+		float lDistance = lMaxDistance / static_cast<float>(LINE_CPU_NUM);
+		std::array<KazMath::Vec3<float>, LINE_CPU_NUM> lDiv;
+		for (int i = 0; i < LINE_CPU_NUM; ++i)
 		{
-			div[i] = initFlamePos[LEFT_DOWN];
-			div[i].y += distance / 2.0f;
-			div[i].y += distance * static_cast<float>(i);
-			memoryLine[LINE_LEFTVEC][i].Init(LINE_LEFTVEC, div[i]);
+			lDiv[i] = initFlamePos[LEFT_DOWN];
+			lDiv[i].y += lDistance / 2.0f;
+			lDiv[i].y += lDistance * static_cast<float>(i);
+			memoryLine[LINE_LEFTVEC][i].Init(LINE_LEFTVEC, lDiv[i]);
 
-			memoryLine[LINE_LEFTVEC][i].rate = initFlamePos[LEFT_DOWN].Distance(div[i]) / maxDistance;
+			memoryLine[LINE_LEFTVEC][i].rate = initFlamePos[LEFT_DOWN].Distance(lDiv[i]) / lMaxDistance;
 		}
 	}
 
 	//右辺
 	{
-		float maxDistance = initFlamePos[RIGHT_UP].Distance(initFlamePos[RIGHT_DOWN]);
-		float distance = maxDistance / static_cast<float>(memoryLine.size());
-		std::array<KazMath::Vec3<float>, 5> div;
-		for (int i = 0; i < memoryLine.size(); ++i)
+		float lMaxDistance = initFlamePos[RIGHT_UP].Distance(initFlamePos[RIGHT_DOWN]);
+		float lDistance = lMaxDistance / static_cast<float>(LINE_CPU_NUM);
+		std::array<KazMath::Vec3<float>, LINE_CPU_NUM> lDiv;
+		for (int i = 0; i < LINE_CPU_NUM; ++i)
 		{
-			div[i] = initFlamePos[RIGHT_DOWN];
-			div[i].y += distance / 2.0f;
-			div[i].y += distance * static_cast<float>(i);
-			memoryLine[LINE_RIGHTVEC][i].Init(LINE_RIGHTVEC, div[i]);
+			lDiv[i] = initFlamePos[RIGHT_DOWN];
+			lDiv[i].y += lDistance / 2.0f;
+			lDiv[i].y += lDistance * static_cast<float>(i);
+			memoryLine[LINE_RIGHTVEC][i].Init(LINE_RIGHTVEC, lDiv[i]);
 
-			memoryLine[LINE_RIGHTVEC][i].rate = initFlamePos[RIGHT_DOWN].Distance(div[i]) / maxDistance;
+			memoryLine[LINE_RIGHTVEC][i].rate = initFlamePos[RIGHT_DOWN].Distance(lDiv[i]) / lMaxDistance;
 		}
 	}
 
@@ -102,11 +102,11 @@ void PortalFlame::Init(const KazMath::Vec3<float> &POS, const KazMath::Vec2<floa
 	}
 
 
-	for (int edge = 0; edge < memoryLine.size(); ++edge)
+	for (int edge = 0; edge < LINE_CPU_NUM; ++edge)
 	{
 		memoryLine[LINE_UPVEC][edge].rate = 1.0f - memoryLine[LINE_UPVEC][edge].rate;
 	}
-	for (int edge = 0; edge < memoryLine.size(); ++edge)
+	for (int edge = 0; edge < LINE_CPU_NUM; ++edge)
 	{
 		memoryLine[LINE_LEFTVEC][edge].rate = 1.0f - memoryLine[LINE_LEFTVEC][edge].rate;
 	}
@@ -119,7 +119,8 @@ void PortalFlame::Init(const KazMath::Vec3<float> &POS, const KazMath::Vec2<floa
 	}
 	flashTimer[0] = 0;
 	flameIndex = 0;
-	maxTimer = 60;
+	flashMaxTimer = 60;
+	makeFlameMaxTimer = 10;
 }
 
 void PortalFlame::Update()
@@ -137,7 +138,7 @@ void PortalFlame::Update()
 	lTmpVecPos[3][START] = initFlamePos[RIGHT_DOWN];
 	lTmpVecPos[3][END] = initFlamePos[RIGHT_UP];
 
-	if (maxTimer <= flameTimer)
+	if (makeFlameMaxTimer <= flameTimer)
 	{
 		++flameIndex;
 		flameTimer = 0;
@@ -145,7 +146,7 @@ void PortalFlame::Update()
 	if (flame.size() <= flameIndex)
 	{
 		flameIndex = 3;
-		flameTimer = 60;
+		flameTimer = makeFlameMaxTimer;
 	}
 	else
 	{
@@ -153,9 +154,9 @@ void PortalFlame::Update()
 	}
 
 
-	if (3 <= flameIndex && 60 <= flameTimer)
+	if (3 <= flameIndex && makeFlameMaxTimer <= flameTimer)
 	{
-		if (maxTimer <= flashTimer[flameFlashIndex])
+		if (flashMaxTimer <= flashTimer[flameFlashIndex])
 		{
 			flashTimer[flameFlashIndex] = 120;
 			++flameFlashIndex;
@@ -181,7 +182,7 @@ void PortalFlame::Update()
 		lineEffectData[i].x = 1.0f;
 		lineEffectData[i].y = 0.0f;
 		lineEffectData[i].z = 0.0f;
-		lineEffectData[i].w = static_cast<float>(flashTimer[i]) / static_cast<float>(maxTimer);
+		lineEffectData[i].w = static_cast<float>(flashTimer[i]) / static_cast<float>(flashMaxTimer);
 		flame[i].TransData(&lineEffectData[i], constBufferHandle[i], typeid(XMFLOAT4).name());
 	}
 
@@ -191,7 +192,7 @@ void PortalFlame::Update()
 		KazMath::Vec3<float> lDistance = lTmpVecPos[flameIndex][END] - lTmpVecPos[flameIndex][START];
 		flame[flameIndex].data.startPos = lTmpVecPos[flameIndex][START];
 		flame[flameIndex].data.endPos = lTmpVecPos[flameIndex][START];
-		KazMath::Vec3<float> lAddVel = (lDistance * (static_cast<float>(flameTimer) / static_cast<float>(60)));
+		KazMath::Vec3<float> lAddVel = (lDistance * (static_cast<float>(flameTimer) / static_cast<float>(makeFlameMaxTimer)));
 		flame[flameIndex].data.endPos = lTmpVecPos[flameIndex][START] + lAddVel;
 		KazMath::CheckIsnan(&flame[flameIndex].data.endPos);
 	}
@@ -201,7 +202,7 @@ void PortalFlame::Update()
 		KazMath::Vec3<float>lCaluMaxRate;
 		float lFlashDisntace = lTmpVecPos[flameFlashIndex][END].Distance(lTmpVecPos[flameFlashIndex][START]);
 		float lMaxRate = lCaluMaxRate.Distance(lTmpVecPos[flameFlashIndex][END] - lTmpVecPos[flameFlashIndex][START]);
-		float lFlashAddVel = (lFlashDisntace * (static_cast<float>(flashTimer[flameFlashIndex]) / static_cast<float>(60)));
+		float lFlashAddVel = (lFlashDisntace * (static_cast<float>(flashTimer[flameFlashIndex]) / static_cast<float>(flashMaxTimer)));
 		float lCaliNowRate = lMaxRate - lFlashDisntace + lFlashAddVel;
 		float lRate = lCaliNowRate / lMaxRate;
 
@@ -242,34 +243,38 @@ void PortalFlame::Update()
 		for (int edge = 0; edge < memoryLine[i].size(); ++edge)
 		{
 			memoryLine[i][edge].Update();
-
-			LineEffectVec vec = LINE_UPVEC;
-			switch (flameFlashIndex)
-			{
-			case 0:
-				vec = LINE_UPVEC;
-				break;
-			case 1:
-				vec = LINE_LEFTVEC;
-				break;
-			case 2:
-				vec = LINE_DOWNVEC;
-				break;
-			case 3:
-				vec = LINE_RIGHTVEC;
-				break;
-			default:
-				break;
-			}
-
-			//現在のフレームの光の位置の割合が0.0f以下なら初期化する
-			if (lNowRate <= 1.0f && i == vec)
-			{
-				memoryLine[vec][edge].InitFlash();
-			}
 		}
 	}
 
+
+	if (flameFlashIndex != prevFlameFlashIndex)
+	{
+		LineEffectVec vec = LINE_UPVEC;
+		switch (flameFlashIndex)
+		{
+		case 0:
+			vec = LINE_UPVEC;
+			break;
+		case 1:
+			vec = LINE_LEFTVEC;
+			break;
+		case 2:
+			vec = LINE_DOWNVEC;
+			break;
+		case 3:
+			vec = LINE_RIGHTVEC;
+			break;
+		default:
+			break;
+		}
+
+		//現在のフレームの光の位置の割合が0.0f以下なら初期化する
+		for (int edge = 0; edge < memoryLine[vec].size(); ++edge)
+		{
+			memoryLine[vec][edge].InitFlash();
+		}
+	}
+	prevFlameFlashIndex = flameFlashIndex;
 }
 
 void PortalFlame::Draw()

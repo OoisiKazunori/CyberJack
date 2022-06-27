@@ -23,11 +23,13 @@ private:
 	std::array<RESOURCE_HANDLE, FLAME_MAX_NUM>constBufferHandle;
 	std::array<XMFLOAT4, FLAME_MAX_NUM>lineEffectData;
 	int flameFlashIndex;
+	int prevFlameFlashIndex;
 	std::array<int, FLAME_MAX_NUM>flashTimer;
 	std::array<KazMath::Vec3<float>, 4>initFlamePos;
 	int flameIndex;
 	int flameTimer;
-	int maxTimer;
+	int makeFlameMaxTimer;
+	int flashMaxTimer;
 	enum
 	{
 		LEFT_UP,
@@ -39,6 +41,7 @@ private:
 
 
 	//ƒƒ‚ƒŠü-------------------------
-	std::array<std::array<LineCpuEffect, 4>, FLAME_MAX_NUM>memoryLine;
+	static const int LINE_CPU_NUM = 4;
+	std::array<std::array<LineCpuEffect, LINE_CPU_NUM>, FLAME_MAX_NUM>memoryLine;
 };
 
