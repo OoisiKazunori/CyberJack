@@ -83,7 +83,7 @@ KazBufferHelper::BufferResourceData KazBufferHelper::SetStructureBuffer(const un
 
 KazBufferHelper::BufferResourceData KazBufferHelper::SetRWStructuredBuffer(const unsigned int &BUFFER_SIZE, const string &BUFFER_NAME)
 {
-	D3D12_HEAP_PROPERTIES prop{};
+	D3D12_HEAP_PROPERTIES prop = {};
 	prop.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
 	prop.CreationNodeMask = 1;
 	prop.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;

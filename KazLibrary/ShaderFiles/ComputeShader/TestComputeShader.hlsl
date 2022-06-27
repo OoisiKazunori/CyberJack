@@ -106,7 +106,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     outputMat.mat = mul(lproj,    outputMat.mat);
 
     outputMat.color = inputBuffer[index].color;
-    matrixData.Append(outputMat);
+    //matrixData.Append(outputMat);
     
     InputData inputData;
     inputData.pos = float4(outputPos.xyz, 0.0f);
@@ -124,7 +124,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     outputCommand.drawArguments.StartVertexLocation = 0;
     outputCommand.drawArguments.StartInstanceLocation = 0;
 
-    outputCommands.Append(outputCommand);
+    //outputCommands.Append(outputCommand);    
     //描画コマンド出力-------------------------
 
 }

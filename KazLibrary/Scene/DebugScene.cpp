@@ -46,7 +46,7 @@ DebugScene::DebugScene()
 		{
 			constantBufferData[n].velocity = XMFLOAT4(KazMath::FloatRand(0.01f, 0.02f), 0.0f, 0.0f, 0.0f);
 			constantBufferData[n].offset = XMFLOAT4(KazMath::FloatRand(-5.0f, -1.5f), KazMath::FloatRand(-1.0f, 1.0f), KazMath::FloatRand(0.0f, 2.0f), 0.0f);
-			constantBufferData[n].color = XMFLOAT4(KazMath::FloatRand(0.5f, 1.0f), KazMath::FloatRand(0.5f, 1.0f), KazMath::FloatRand(0.5f, 1.0f), 1.0f);
+			constantBufferData[n].color = XMFLOAT4(KazMath::FloatRand(1.0f, 0.0f), KazMath::FloatRand(0.0f, 1.0f), KazMath::FloatRand(0.0f, 1.0f), 1.0f);
 
 			float m_aspectRatio = static_cast<float>(WIN_X) / static_cast<float>(WIN_Y);
 			XMStoreFloat4x4(&constantBufferData[n].projection, XMMatrixTranspose(XMMatrixPerspectiveFovLH(XM_PIDIV4, m_aspectRatio, 0.01f, 20.0f)));
@@ -166,7 +166,7 @@ DebugScene::DebugScene()
 			{
 				data[i].pos = { 11.0f,10.0f,10.0f,0.0f };
 				data[i].velocity = { 0.0f,0.0f,0.0f,0.0f };
-				data[i].color = { KazMath::FloatRand(10.0f,0.0f),KazMath::FloatRand(10.0f,0.0f),KazMath::FloatRand(10.0f,0.0f),1.0f };
+				data[i].color = { KazMath::FloatRand(1.0f,0.0f),KazMath::FloatRand(1.0f,0.0f),KazMath::FloatRand(1.0f,0.0f),1.0f };
 			}
 			XMVECTOR pos = { data[0].pos.x,data[0].pos.y,data[0].pos.z,0.0f };
 			XMVECTOR scale = { 15.0f,15.0f,15.0f,0.0f };
@@ -216,6 +216,8 @@ DebugScene::DebugScene()
 		{
 			outputMatHandle = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(TRIANGLE_ARRAY_NUM * sizeof(OutPutData)));
 
+
+
 			D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
 			uavDesc.Format = DXGI_FORMAT_UNKNOWN;
 			uavDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
@@ -247,31 +249,6 @@ DebugScene::DebugScene()
 		}
 		++uavHandle;
 
-
-		//DrawIndirect
-		{
-			drawCommandHandle = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(TRIANGLE_ARRAY_NUM * sizeof(IndirectCommand)));
-
-			D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
-			uavDesc.Format = DXGI_FORMAT_UNKNOWN;
-			uavDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
-			uavDesc.Buffer.FirstElement = 0;
-			uavDesc.Buffer.NumElements = TRIANGLE_ARRAY_NUM;
-			uavDesc.Buffer.StructureByteStride = sizeof(IndirectCommand);
-			uavDesc.Buffer.CounterOffsetInBytes = 0;
-			uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
-			DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + uavHandle, uavDesc, buffer->GetBufferData(drawCommandHandle).Get(), nullptr);
-			++uavHandle;
-
-		}
-		//出力用のバッファの生成---------------------------
-
-		//リセット用のバッファ-------------------------
-
-		//リセット用のバッファ-------------------------
-#pragma endregion
-
-
 		commonHandle = buffer->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(CommonData) * TRIANGLE_ARRAY_NUM, "CommonData"));
 		{
 			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
@@ -300,6 +277,45 @@ DebugScene::DebugScene()
 			DescriptorHeapMgr::Instance()->CreateBufferView(cbvSize.startSize + cbvHandle, srvDesc, buffer->GetBufferData(cbvMatHandle).Get());
 			++cbvHandle;
 		}
+
+		//DrawIndirect
+		{
+			drawCommandHandle = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(TRIANGLE_ARRAY_NUM * sizeof(IndirectCommand)));
+
+			std::array<IndirectCommand, TRIANGLE_ARRAY_NUM> lCommands;
+			D3D12_GPU_VIRTUAL_ADDRESS cbGpuAddress = buffer->GetGpuAddress(cbvMatHandle);//定数バッファの生成がいる
+			for (int i = 0; i < lCommands.size(); ++i)
+			{
+				lCommands[i].cbv = cbGpuAddress + i * sizeof(IndirectCommand);
+				lCommands[i].drawArguments.VertexCountPerInstance = 3;
+				lCommands[i].drawArguments.InstanceCount = 1;
+				lCommands[i].drawArguments.StartVertexLocation = 0;
+				lCommands[i].drawArguments.StartInstanceLocation = 0;
+			}
+			buffer->TransData(drawCommandHandle, &lCommands, TRIANGLE_ARRAY_NUM * sizeof(IndirectCommand));
+
+
+			D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
+			uavDesc.Format = DXGI_FORMAT_UNKNOWN;
+			uavDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
+			uavDesc.Buffer.FirstElement = 0;
+			uavDesc.Buffer.NumElements = TRIANGLE_ARRAY_NUM;
+			uavDesc.Buffer.StructureByteStride = sizeof(IndirectCommand);
+			uavDesc.Buffer.CounterOffsetInBytes = 0;
+			uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
+			DescriptorHeapMgr::Instance()->CreateBufferView(size.startSize + uavHandle, uavDesc, buffer->GetBufferData(drawCommandHandle).Get(), nullptr);
+			++uavHandle;
+
+		}
+		//出力用のバッファの生成---------------------------
+
+		//リセット用のバッファ-------------------------
+
+		//リセット用のバッファ-------------------------
+#pragma endregion
+
+
+
 	}
 }
 
@@ -398,20 +414,39 @@ void DebugScene::Update()
 
 
 	//ディスパッチ
-	DirectX12CmdList::Instance()->cmdList->Dispatch(static_cast<UINT>(ceil(TRIANGLE_ARRAY_NUM / static_cast<float>(ComputeThreadBlockSize))), 1, 1);
+	DirectX12CmdList::Instance()->cmdList->Dispatch(1, 1, 1);
 	//コンピュートシェーダーの計算-------------------------
 
 	//std::array<OutPutData, TRIANGLE_ARRAY_NUM> *result = static_cast<std::array<OutPutData, TRIANGLE_ARRAY_NUM> *>(buffer->GetMapAddres(outputMatHandle));
 
 	{
-		void *dataMap = nullptr;
-		auto result = buffer->GetBufferData(cbvMatHandle)->Map(0, nullptr, (void **)&dataMap);
-		if (SUCCEEDED(result))
-		{
-			memcpy(dataMap, buffer->GetMapAddres(outputMatHandle), TRIANGLE_ARRAY_NUM * sizeof(OutPutData));
-			buffer->GetBufferData(cbvMatHandle)->Unmap(0, nullptr);
-		}
+//		void *dataMap = nullptr;
+//		auto result = buffer->GetBufferData(cbvMatHandle)->Map(0, nullptr, (void **)&dataMap);
+	//	if (SUCCEEDED(result))
+//		{
+			//memcpy(dataMap, buffer->GetMapAddres(outputMatHandle), TRIANGLE_ARRAY_NUM * sizeof(OutPutData));
+			//buffer->GetBufferData(cbvMatHandle)->Unmap(0, nullptr);
+	//	}
 	}
+
+	std::array<OutPutData, TRIANGLE_ARRAY_NUM> data;
+	for (int i = 0; i < data.size(); ++i)
+	{
+		XMFLOAT3 pos = { 0.0f + i * 10.0f,10.0f,10.0f };
+		XMFLOAT3 scale = { 15.0f,15.0f,15.0f };
+		XMFLOAT3 rota = { 0.0f,0.0f,0.0f };
+
+		XMMATRIX trans = KazMath::CaluTransMatrix(pos);
+		XMMATRIX scaleM = KazMath::CaluScaleMatrix(scale);
+		XMMATRIX rotaM = KazMath::CaluRotaMatrix(rota);
+
+		XMMATRIX v = CameraMgr::Instance()->GetViewMatrix();
+		XMMATRIX p = CameraMgr::Instance()->GetPerspectiveMatProjection();
+		data[i].mat = (scaleM * rotaM * trans) * v * p;
+		data[i].color = { 0.0f,0.0f,0.0f,1.0f };
+	}
+
+	buffer->TransData(cbvMatHandle, &data, TRIANGLE_ARRAY_NUM * sizeof(OutPutData));
 
 }
 
