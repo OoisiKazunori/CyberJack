@@ -43,7 +43,18 @@ private:
 
 
 	PortalFlame portalFlame;
+	bool gameModeFlag;
 
+	Cursor cursor;
+	BoxPolygonRender besidePoly, verticlaPoly, cameraPoly;
+	KazMath::Vec3<float> nowTargerPos, trackingTargetPos;	//本来ポズ、現在ポズ
+	KazMath::Vec2<float> leftRightAngleVel;					//左右視点座標の向く角度
+	KazMath::Vec2<float> upDownAngleVel;					//上下視点座標の向く角度
+	KazMath::Vec2<float> trackLeftRightAngleVel;
+	KazMath::Vec2<float> trackUpDownAngleVel;
+	KazMath::Vec2<float> forceCameraDirVel;					//カメラの前後左右の向きを強制的に指定する
+	KazMath::Vec2<float> mulValue;							//カメラの上下左右の掛ける割合
+	KazMath::Vec2<float> mulValue2;							//カメラの上下左右の掛ける割合
 };
 
 

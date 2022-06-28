@@ -1,7 +1,7 @@
 #include "LineCpuEffect.h"
 #include"../KazLibrary/Imgui/MyImgui.h"
 
-int LineCpuEffect::ID = 0;
+int LineCpuEffect::LINE_ID = 0;
 
 LineCpuEffect::LineCpuEffect()
 {
@@ -18,9 +18,9 @@ LineCpuEffect::LineCpuEffect()
 	maxTimer = 60;
 
 
-	name = "Line" + std::to_string(ID);
-	id = ID;
-	++ID;
+	name = "Line" + std::to_string(LINE_ID);
+	id = LINE_ID;
+	++LINE_ID;
 }
 
 void LineCpuEffect::Init(LineEffectVec VEC, KazMath::Vec3<float> &POS)
