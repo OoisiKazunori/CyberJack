@@ -128,8 +128,6 @@ void PortalScene::Update()
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 0);
 
 
-
-
 	portal.Update();
 	stringEffect.Update();
 	portalFlame.Update();

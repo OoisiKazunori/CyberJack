@@ -53,6 +53,10 @@ void LineCpuEffect::Update()
 			++flashTimer[i];
 		}
 	}
+
+	circleRender.data.transform.pos = { 0.0f,0.0f,0.0f };
+	circleRender.data.radius = 10.0f;
+	circleRender.data.change3DFlag = true;
 }
 
 void LineCpuEffect::Draw()
@@ -61,6 +65,7 @@ void LineCpuEffect::Draw()
 	{
 		lineRender[i].Draw();
 	}
+	circleRender.Draw();
 }
 
 void LineCpuEffect::FlashLight()

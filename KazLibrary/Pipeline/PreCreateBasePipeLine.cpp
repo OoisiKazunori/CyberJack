@@ -552,8 +552,9 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		//ラスタライザ
 		//背面カリング、塗りつぶし、深度クリッピング有効
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
+		rasterrize.CullMode = D3D12_CULL_MODE_NONE;
 		gPipeline.RasterizerState = rasterrize;
-		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+
 
 		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
 		gPipeline.BlendState.AlphaToCoverageEnable = false;
@@ -590,8 +591,8 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		//ラスタライザ
 		//背面カリング、塗りつぶし、深度クリッピング有効
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
+		rasterrize.CullMode = D3D12_CULL_MODE_NONE;
 		gPipeline.RasterizerState = rasterrize;
-		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
 		//ブレンドモード
 		blendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
@@ -1062,6 +1063,15 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_DATA_BACKCARING_ALPHABLEND,
 		ROOTSIGNATURE_DATA_DRAW,
 		PIPELINE_NAME_COLOR
+	);
+
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS,
+		SHADER_VERTEX_COLOR,
+		SHADER_PIXCEL_COLOR,
+		PIPELINE_DATA_NOCARING_BLENDALPHA,
+		ROOTSIGNATURE_DATA_DRAW,
+		PIPELINE_NAME_COLOR_NOCARING
 	);
 
 	//インスタンシング描画色パイプラインにシャドウを入れる

@@ -27,10 +27,13 @@ public:
 private:
 	static const int LINE_MAX_NUM = 1;
 	std::array<LineRender, LINE_MAX_NUM>lineRender;
+	
 	std::array<RESOURCE_HANDLE, LINE_MAX_NUM>constBufferHandle;
 	std::array<XMFLOAT4, LINE_MAX_NUM>lineEffectData;
 	std::array<int, LINE_MAX_NUM>flashTimer;
 	int maxTimer;
 	bool flashFlag;
+
+	CircleRender circleRender;
 };
 

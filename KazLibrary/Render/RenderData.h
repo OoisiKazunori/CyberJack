@@ -200,18 +200,20 @@ struct FbxModelData :public IData
 	}
 };
 
-struct Circle2DDrawData :public IData
+struct CircleDrawData :public IData
 {
 	KazMath::Transform3D transform;
 	XMFLOAT4 color;
 	float radius;
 	int pipelineName;
+	bool change3DFlag;
 
-	Circle2DDrawData()
+	CircleDrawData()
 	{
 		address = this;
 		color = { 255.0f,255.0f,255.0f,255.0f };
 		radius = 10.0f;
-		pipelineName = static_cast<int>(PIPELINE_NAME_COLOR);
+		pipelineName = static_cast<int>(PIPELINE_NAME_COLOR_NOCARING);
+		change3DFlag = false;
 	}
 };

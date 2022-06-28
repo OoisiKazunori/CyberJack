@@ -1,6 +1,7 @@
 #pragma once
 #include"Sprite2DRender.h"
 #include"Sprite3DRender.h"
+#include"CircleRender.h"
 #include"ObjModelRender.h"
 #include"PolygonRender.h"
 #include"FbxModelRender.h"
@@ -8,7 +9,6 @@
 #include"BoxPolygonRender.h"
 #include"../Loader/FbxModelResourceMgr.h"
 #include"../Loader/ObjResourceMgr.h"
-
 #include"../Render/RenderData.h"
 
 typedef unique_ptr<Sprite2DRender> Sprite2DRenderPtr;
