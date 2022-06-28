@@ -357,6 +357,9 @@
     <ClCompile Include="KazLibrary\Render\CircleRender.cpp">
       <Filter>ソース ファイル\KazLib\Render</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Debug\WirteCpuLineData.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="KazLibrary\Buffer\CreateGpuBuffer.h">
@@ -673,6 +676,9 @@
     </ClInclude>
     <ClInclude Include="KazLibrary\Render\CircleRender.h">
       <Filter>ソース ファイル\KazLib\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Debug\WirteCpuLineData.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

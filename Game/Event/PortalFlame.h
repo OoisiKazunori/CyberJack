@@ -41,7 +41,7 @@ private:
 
 
 	//ƒƒ‚ƒŠü-------------------------
-	static const int LINE_CPU_NUM = 4;
+	static const int LINE_CPU_NUM = 6;
 	std::array<std::array<LineCpuEffect, LINE_CPU_NUM>, FLAME_MAX_NUM>memoryLine;
 };
 

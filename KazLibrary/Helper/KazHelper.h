@@ -58,6 +58,9 @@ namespace KazHelper
 
 	std::vector<int> CountNumber(int TIME, int ZERO = -1);
 
+
+	std::vector<char>CovertStringToChar(std::string STRING);
+
 }
 
 

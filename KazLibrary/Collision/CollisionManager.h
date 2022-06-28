@@ -160,6 +160,7 @@ public:
 	/// <returns></returns>
 	bool CheckThicklineAndSphere(const Sphere& SPHERE, const ModiRectangle& RECTANGLE);
 
+
 	friend ISingleton<CollisionManager>;
 private:
 

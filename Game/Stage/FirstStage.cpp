@@ -1,6 +1,7 @@
 #include "FirstStage.h"
 #include"../KazLibrary/Imgui/MyImgui.h"
 #include"../KazLibrary/Easing/easing.h"
+#include"../KazLibrary//Helper/KazHelper.h"
 
 FirstStage::FirstStage()
 {
@@ -13,23 +14,10 @@ FirstStage::FirstStage()
 	stageParamLoader.LoadFile(KazFilePathName::StageParamPath + "StageParamData.json");
 	if (false)
 	{
-		std::array <std::array<char, 6>, 30>data;
+		std::array<std::vector<char>, 30> data;
 		for (int i = 0; i < stageDebugBox.size(); ++i)
 		{
-			data[i][0] = 'B';
-			data[i][1] = 'o';
-			data[i][2] = 'x';
-			if (i < 10)
-			{
-				data[i][3] = std::to_string(i)[0];
-				data[i][4] = '\0';
-			}
-			else
-			{
-				data[i][3] = std::to_string(i)[0];
-				data[i][4] = std::to_string(i)[1];
-				data[i][5] = '\0';
-			}
+			data[i] = KazHelper::CovertStringToChar("Box" + std::to_string(i));
 		}
 
 		if (false)

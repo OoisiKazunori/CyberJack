@@ -3,6 +3,7 @@
 #include"../KazLibrary/Math/KazMath.h"
 #include"../KazLibrary/Render/KazRender.h"
 #include<array>
+#include"../Game/Debug/WirteCpuLineData.h"
 
 enum LineEffectVec
 {
@@ -25,7 +26,9 @@ public:
 	void FlashLight();
 	void InitFlash();
 private:
-	static const int LINE_MAX_NUM = 1;
+	static int LINE_ID;
+	int id;
+	static const int LINE_MAX_NUM = 4;
 	std::array<LineRender, LINE_MAX_NUM>lineRender;
 	
 	std::array<RESOURCE_HANDLE, LINE_MAX_NUM>constBufferHandle;
@@ -35,5 +38,7 @@ private:
 	bool flashFlag;
 
 	CircleRender circleRender;
+
+	std::string name;
 };
 

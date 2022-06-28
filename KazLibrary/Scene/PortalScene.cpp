@@ -1,6 +1,7 @@
 ﻿#include "PortalScene.h"
 #include"../KazLibrary/Input/KeyBoradInputManager.h"
 #include"../KazLibrary/Input/ControllerInputManager.h"
+#include"../Imgui/MyImgui.h"
 
 PortalScene::PortalScene()
 {
@@ -127,10 +128,24 @@ void PortalScene::Update()
 	targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 0);
 
+	WirteCpuLineData::Instance()->importFlag;
+
+
+	ImGui::Begin("LineEffect");
+	if (ImGui::Button("Import"))
+	{
+		WirteCpuLineData::Instance()->Load();
+	}
+	if (ImGui::Button("Export"))
+	{
+		WirteCpuLineData::Instance()->Write();
+	}
+	ImGui::End();
 
 	portal.Update();
 	stringEffect.Update();
 	portalFlame.Update();
+	WirteCpuLineData::Instance()->importFlag = false;
 }
 
 void PortalScene::Draw()

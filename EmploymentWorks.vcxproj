@@ -175,6 +175,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Debug\ParameterMgr.cpp" />
+    <ClCompile Include="Game\Debug\WirteCpuLineData.cpp" />
     <ClCompile Include="Game\Enemy\KidEnemy.cpp" />
     <ClCompile Include="Game\Enemy\NormalMisileEnemy.cpp" />
     <ClCompile Include="Game\Enemy\SplineMisile.cpp" />
@@ -272,6 +273,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
+    <ClInclude Include="Game\Debug\WirteCpuLineData.h" />
     <ClInclude Include="Game\Enemy\KidEnemy.h" />
     <ClInclude Include="Game\Enemy\NormalMisileEnemy.h" />
     <ClInclude Include="Game\Enemy\SplineMisile.h" />

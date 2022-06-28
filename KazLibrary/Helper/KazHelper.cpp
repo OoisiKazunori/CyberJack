@@ -130,6 +130,19 @@ std::vector<int> KazHelper::CountNumber(int TIME, int ZERO)
 	return Number;
 }
 
+std::vector<char> KazHelper::CovertStringToChar(std::string STRING)
+{
+	std::vector<char>result;
+	for (int i = 0; i < STRING.size(); ++i)
+	{
+		result.push_back(STRING[i]);
+	}
+	result.push_back('\0');
+
+
+	return result;
+}
+
 
 void KazHelper::ConvertStringToWchar_t(string STRING, wchar_t *WCHAR_STRING, int ARRAY_SIZE)
 {

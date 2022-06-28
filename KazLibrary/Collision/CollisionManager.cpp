@@ -442,6 +442,7 @@ bool CollisionManager::CheckThicklineAndSphere(const Sphere &SPHERE, const ModiR
 
 	return isHitResult;
 }
+
 void CollisionManager::ClosestPtPoint2Triangle(const KazMath::Vec3<float> &point, const Triangle &triangle, KazMath::Vec3<float> *closest)
 {
 	// pointがp0の外側の頂点領域の中にあるかどうかチェック
