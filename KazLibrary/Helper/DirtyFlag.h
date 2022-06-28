@@ -1,6 +1,5 @@
 #pragma once
 #include"../DirectXCommon/Base.h"
-#include"../Render/RenderData.h"
 
 template<class T>
 class DirtyFlag
@@ -41,77 +40,11 @@ public:
 	{
 	}
 
-	DirtySet(KazMath::Vec3<float> &DATA)
-	{
-		shared_ptr<DirtyFlag<float>> tmp;
-		shared_ptr<DirtyFlag<float>> tmp1;
-		shared_ptr<DirtyFlag<float>> tmp2;
-		tmp.reset(new DirtyFlag<float>(&DATA.x));
-		tmp1.reset(new DirtyFlag<float>(&DATA.y));
-		tmp2.reset(new DirtyFlag<float>(&DATA.z));
-		floatDirtyFlag.push_back(tmp);
-		floatDirtyFlag.push_back(tmp1);
-		floatDirtyFlag.push_back(tmp2);
-	};
-	DirtySet(KazMath::Vec2<float> &DATA)
-	{
-		shared_ptr<DirtyFlag<float>> tmp;
-		shared_ptr<DirtyFlag<float>> tmp1;
-		tmp.reset(new DirtyFlag<float>(&DATA.x));
-		tmp1.reset(new DirtyFlag<float>(&DATA.y));
-		floatDirtyFlag.push_back(tmp);
-		floatDirtyFlag.push_back(tmp1);
-	};
-	DirtySet(XMFLOAT4 &DATA)
-	{
-		shared_ptr<DirtyFlag<float>> tmp;
-		shared_ptr<DirtyFlag<float>> tmp1;
-		shared_ptr<DirtyFlag<float>> tmp2;
-		shared_ptr<DirtyFlag<float>> tmp3;
-		tmp.reset(new DirtyFlag<float>(&DATA.x));
-		tmp1.reset(new DirtyFlag<float>(&DATA.y));
-		tmp2.reset(new DirtyFlag<float>(&DATA.z));
-		tmp3.reset(new DirtyFlag<float>(&DATA.w));
-		floatDirtyFlag.push_back(tmp);
-		floatDirtyFlag.push_back(tmp1);
-		floatDirtyFlag.push_back(tmp2);
-		floatDirtyFlag.push_back(tmp3);
-	};
-	DirtySet(XMFLOAT3 &DATA)
-	{
-		shared_ptr<DirtyFlag<float>> tmp;
-		shared_ptr<DirtyFlag<float>> tmp1;
-		shared_ptr<DirtyFlag<float>> tmp2;
-		tmp.reset(new DirtyFlag<float>(&DATA.x));
-		tmp1.reset(new DirtyFlag<float>(&DATA.y));
-		tmp2.reset(new DirtyFlag<float>(&DATA.z));
-		floatDirtyFlag.push_back(tmp);
-		floatDirtyFlag.push_back(tmp1);
-		floatDirtyFlag.push_back(tmp2);
-	};
-	DirtySet(XMFLOAT2 &DATA)
-	{
-		shared_ptr<DirtyFlag<float>> tmp;
-		shared_ptr<DirtyFlag<float>> tmp1;
-		tmp.reset(new DirtyFlag<float>(&DATA.x));
-		tmp1.reset(new DirtyFlag<float>(&DATA.y));
-		floatDirtyFlag.push_back(tmp);
-		floatDirtyFlag.push_back(tmp1);
-	};
 	DirtySet(float &DATA)
 	{
 		shared_ptr<DirtyFlag<float>> tmp;
 		tmp.reset(new DirtyFlag<float>(&DATA));
 		floatDirtyFlag.push_back(tmp);
-	};
-	DirtySet(FlipData &DATA)
-	{
-		shared_ptr<DirtyFlag<bool>> tmp;
-		shared_ptr<DirtyFlag<bool>> tmp1;
-		tmp.reset(new DirtyFlag<bool>(&DATA.x));
-		tmp1.reset(new DirtyFlag<bool>(&DATA.y));
-		boolDirtyFlag.push_back(tmp);
-		boolDirtyFlag.push_back(tmp1);
 	};
 	DirtySet(XMMATRIX &DATA)
 	{
@@ -143,19 +76,6 @@ public:
 		}
 		return isValueDiffrendFlag;
 	};
-	bool BoolDirty()
-	{
-		//Ç«ÇÃílÇ™è≠ÇµÇ≈Ç‡1FlameëOÇÃílÇ∆î‰Ç◊ÇƒïœÇÌÇ¡ÇƒÇ¢ÇΩÇÁtrue
-		bool isValueDiffrendFlag = false;
-		for (int i = 0; i < boolDirtyFlag.size(); i++)
-		{
-			if (boolDirtyFlag[i]->Dirty())
-			{
-				isValueDiffrendFlag = true;
-			}
-		}
-		return isValueDiffrendFlag;
-	};
 
 
 	void Record()
@@ -164,14 +84,9 @@ public:
 		{
 			floatDirtyFlag[i]->Record();
 		}
-		for (int i = 0; i < boolDirtyFlag.size(); i++)
-		{
-			boolDirtyFlag[i]->Record();
-		}
 	}
 
 
 private:
-	vector<shared_ptr<DirtyFlag<float>>>floatDirtyFlag;
-	vector<shared_ptr<DirtyFlag<bool>>>boolDirtyFlag;
+	std::vector<std::shared_ptr<DirtyFlag<float>>>floatDirtyFlag;
 };

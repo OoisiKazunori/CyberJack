@@ -22,6 +22,7 @@ private:
 
 protected:
 	void SetConstBufferOnCmdList(PipeLineNames pipeline, bool REMOVE_DATA_FLAG = false);
+
 	KazMath::BaseMatWorldData baseMatWorldData;
 	KazRenderHelper::RenderInstancesData renderData;
 	unique_ptr<CreateGpuBuffer> gpuBuffer;

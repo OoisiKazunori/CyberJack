@@ -5,6 +5,7 @@
 #pragma warning(disable:4023)
 #include"fbxsdk.h"
 #pragma warning(pop)
+#include"../Helper/DirtyFlag.h"
 
 namespace KazMath
 {
@@ -544,12 +545,30 @@ namespace KazMath
 		Vec3<float> scale;
 		Vec3<float> rotation;
 
-		Transform3D()
+		Transform3D():
+			positionDirtyFlag(std::make_unique<DirtyFlag<Vec3<float>>>(&pos)),
+			scaleDirtyFlag(std::make_unique<DirtyFlag<Vec3<float>>>(&scale)),
+			rotationDirtyFlag(std::make_unique<DirtyFlag<Vec3<float>>>(&rotation)),
+			pos(Vec3<float>(0.0f, 0.0f, 0.0f)),
+			scale(Vec3<float>(1.0f, 1.0f, 1.0f)),
+			rotation(Vec3<float>(0.0f, 0.0f, 0.0f))
 		{
-			pos = Vec3<float>(0.0f, 0.0f, 0.0f);
-			scale = Vec3<float>(1.0f, 1.0f, 1.0f);
-			rotation = Vec3<float>(0.0f, 0.0f, 0.0f);
 		};
+
+		bool Dirty()
+		{
+			return positionDirtyFlag->Dirty() || scaleDirtyFlag->Dirty() || rotationDirtyFlag->Dirty();
+		};
+		void Record()
+		{
+			positionDirtyFlag->Record();
+			scaleDirtyFlag->Record();
+			rotationDirtyFlag->Record();
+		};
+		private:
+		std::unique_ptr<DirtyFlag<Vec3<float>>>positionDirtyFlag;
+		std::unique_ptr<DirtyFlag<Vec3<float>>>scaleDirtyFlag;
+		std::unique_ptr<DirtyFlag<Vec3<float>>>rotationDirtyFlag;
 	};
 
 	/// <summary>

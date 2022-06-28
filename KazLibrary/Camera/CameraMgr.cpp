@@ -25,7 +25,9 @@ CameraMgr::CameraMgr()
 	for (int i = 0; i < CAMERA_ARRAY_NUM; ++i)
 	{
 		viewArray[i] = XMMatrixIdentity();
+		viewDirtyFlagArray[i] = std::make_unique<DirtySet>(&viewArray[i]);
 		billBoardArray[i] = XMMatrixIdentity();
+		billBoardDirtyFlagArray[i] = std::make_unique<DirtySet>(&billBoardArray[i]);
 	}
 }
 
@@ -226,7 +228,7 @@ XMMATRIX CameraMgr::CreateCamera(const KazMath::Vec3<float> &EYE_POS, const KazM
 	return matView;
 }
 
-const XMMATRIX &CameraMgr::GetViewMatrix(int CAMERA_INDEX)
+XMMATRIX CameraMgr::GetViewMatrix(int CAMERA_INDEX)
 {
 	return viewArray[CAMERA_INDEX];
 }
@@ -236,7 +238,7 @@ XMMATRIX *CameraMgr::GetViewMatrixPointer(int CAMERA_INDEX)
 	return &viewArray[CAMERA_INDEX];
 }
 
-const XMMATRIX &CameraMgr::GetMatBillBoard(int CAMERA_INDEX)
+XMMATRIX CameraMgr::GetMatBillBoard(int CAMERA_INDEX)
 {
 	return billBoardArray[CAMERA_INDEX];
 }
@@ -246,7 +248,7 @@ XMMATRIX *CameraMgr::GetMatBillBoardPointer(int CAMERA_INDEX)
 	return &billBoardArray[CAMERA_INDEX];
 }
 
-const XMMATRIX &CameraMgr::GetPerspectiveMatProjection()
+XMMATRIX CameraMgr::GetPerspectiveMatProjection()
 {
 	return perspectiveMat;
 }
@@ -265,4 +267,18 @@ XMMATRIX CameraMgr::GetPerspectiveMatProjectionAngle(float angle)
 			0.1f,
 			100000
 	);;
+}
+
+bool CameraMgr::Dirty(int CAMERA_INDEX)
+{
+	return viewDirtyFlagArray[CAMERA_INDEX]->FloatDirty();
+}
+
+void CameraMgr::Record()
+{
+	for (int i = 0; i < CAMERA_ARRAY_NUM; ++i)
+	{
+		viewDirtyFlagArray[i]->Record();
+		billBoardDirtyFlagArray[i]->Record();
+	}
 }

@@ -178,6 +178,9 @@ struct PolygonDrawData :public IData
 		pipelineName = static_cast<int>(PIPELINE_NAME_COLOR);
 		motherMat = XMMatrixIdentity();
 	}
+
+	void Record();
+
 };
 
 struct FbxModelData :public IData

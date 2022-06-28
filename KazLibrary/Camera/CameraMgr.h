@@ -2,6 +2,7 @@
 #include"../DirectXCommon/Base.h"
 #include"../Helper/ISinglton.h"
 #include"../KazLibrary/Math/KazMath.h"
+#include"../KazLibrary/Helper/DirtyFlag.h"
 
 enum CameraType
 {
@@ -55,7 +56,7 @@ public:
 	/// ビュー行列を渡します
 	/// </summary>
 	/// <returns>ビュー行列</returns>
-	const XMMATRIX &GetViewMatrix(int CAMERA_INDEX = 0);
+	XMMATRIX GetViewMatrix(int CAMERA_INDEX = 0);
 
 	XMMATRIX *GetViewMatrixPointer(int CAMERA_INDEX = 0);
 
@@ -63,7 +64,7 @@ public:
 	/// ビルボード行列を渡します
 	/// </summary>
 	/// <returns>ビルボード行列</returns>
-	const XMMATRIX &GetMatBillBoard(int CAMERA_INDEX = 0);
+	XMMATRIX GetMatBillBoard(int CAMERA_INDEX = 0);
 
 	XMMATRIX *GetMatBillBoardPointer(int CAMERA_INDEX = 0);
 
@@ -72,25 +73,27 @@ public:
 	/// 透視投影変換行列を受け取ります
 	/// </summary>
 	/// <returns>透視投影変換行列</returns>
-	const XMMATRIX &GetPerspectiveMatProjection();
-
+	XMMATRIX GetPerspectiveMatProjection();
 	XMMATRIX *GetPerspectiveMatProjectionPointer();
-
 
 	// 透視投影変換行列を視野角を指定して取得する。
 	XMMATRIX GetPerspectiveMatProjectionAngle(float angle);
 
 
+	bool Dirty(int CAMERA_INDEX = 0);
+	void Record();
 
 	XMMATRIX view;
 	XMMATRIX billBoard;
-
 	XMMATRIX perspectiveMat;
 	XMMATRIX orthographicMatProjection;
 private:
 	static const int CAMERA_ARRAY_NUM = 2;
 	std::array<XMMATRIX, CAMERA_ARRAY_NUM> viewArray;
 	std::array<XMMATRIX, CAMERA_ARRAY_NUM> billBoardArray;
+
+	std::array<std::unique_ptr<DirtySet>, CAMERA_ARRAY_NUM> viewDirtyFlagArray;
+	std::array<std::unique_ptr<DirtySet>, CAMERA_ARRAY_NUM> billBoardDirtyFlagArray;
 };
 
 // ライトカメラ定数を送る用の構造体
