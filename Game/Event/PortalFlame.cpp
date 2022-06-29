@@ -2,6 +2,13 @@
 
 PortalFlame::PortalFlame()
 {
+	for (int i = 0; i < flame.size(); ++i)
+	{
+		lineEffectData[i].x = 1.0f;
+		lineEffectData[i].y = 0.0f;
+		lineEffectData[i].z = 0.0f;
+		lineEffectData[i].w = 0.0f;
+	}
 }
 
 void PortalFlame::Init(const KazMath::Vec3<float> &POS, const KazMath::Vec2<float> &SIZE)
@@ -111,15 +118,22 @@ void PortalFlame::Init(const KazMath::Vec3<float> &POS, const KazMath::Vec2<floa
 		sideMemoryine[LINE_LEFTVEC - 2][edge].rate = 1.0f - sideMemoryine[LINE_LEFTVEC - 2][edge].rate;
 	}
 
+	for (int i = 0; i < flame.size(); ++i)
+	{
+		flame[i].data.startPos = { 0.0f,0.0f,0.0f };
+		flame[i].data.endPos = { 0.0f,0.0f,0.0f };
+	}
 
 
 	for (int i = 0; i < flashTimer.size(); ++i)
 	{
-		flashTimer[i] = 120;
+		flashTimer[i] = -1;
 	}
-	flashTimer[0] = 0;
-	flameIndex = 0;
+	flameFlashIndex = 0;
 	flashMaxTimer = 60;
+
+	flameTimer = 0;
+	flameIndex = 0;
 	makeFlameMaxTimer = 10;
 	readyToFlashFlag = false;
 }
@@ -160,17 +174,18 @@ void PortalFlame::Update()
 	{
 		if (flashMaxTimer <= flashTimer[flameFlashIndex])
 		{
-			flashTimer[flameFlashIndex] = 120;
+			flashTimer[flameFlashIndex] = -1;
 			++flameFlashIndex;
 			if (flameFlashIndex < flashTimer.size())
 			{
 				flashTimer[flameFlashIndex] = 0;
 			}
 		}
+
 		if (flashTimer.size() <= flameFlashIndex)
 		{
 			flameFlashIndex = 0;
-			flashTimer[flameFlashIndex] = 0;
+			flashTimer[flameFlashIndex] = -1;
 		}
 		else
 		{
@@ -184,7 +199,14 @@ void PortalFlame::Update()
 		lineEffectData[i].x = 1.0f;
 		lineEffectData[i].y = 0.0f;
 		lineEffectData[i].z = 0.0f;
-		lineEffectData[i].w = static_cast<float>(flashTimer[i]) / static_cast<float>(flashMaxTimer);
+		if (flashTimer[i] == -1.0f)
+		{
+			lineEffectData[i].w = -1.0f;
+		}
+		else
+		{
+			lineEffectData[i].w = KazMath::ConvertTimerToRate(flashTimer[i], flashMaxTimer);
+		}
 		flame[i].TransData(&lineEffectData[i], constBufferHandle[i], typeid(XMFLOAT4).name());
 	}
 

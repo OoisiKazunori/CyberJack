@@ -202,6 +202,7 @@ void PortalScene::Input()
 
 	if (input->InputTrigger(DIK_SPACE))
 	{
+		portalFlame.Init(initPos, KazMath::Vec2<float>(41.5f, 23.5f));
 		portal.Start();
 	}
 	if (input->InputTrigger(DIK_T))
@@ -275,7 +276,7 @@ void PortalScene::Update()
 	stringEffect.Update();
 	portalFlame.Update();
 	cursor.Update();
-	WirteCpuLineData::Instance()->importFlag = false;
+	//WirteCpuLineData::Instance()->importFlag = false;
 }
 
 void PortalScene::Draw()

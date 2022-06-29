@@ -51,9 +51,15 @@ void LineCpuEffect::Init(LineEffectVec VEC, KazMath::Vec3<float> &POS)
 	flashFlag = false;
 
 
+	for (int i = 0; i < flashTimer.size(); ++i)
+	{
+		flashTimer[i] = 0;
+	}
+
 	for (int i = 0; i < lineRender.size(); ++i)
 	{
-		//WirteCpuLineData::Instance()->UpdataData(id, i, &lineRender[i].data.startPos, &lineRender[i].data.endPos);
+		lineEffectData[i].w = static_cast<float>(flashTimer[i]) / static_cast<float>(maxTimer);
+		lineRender[i].TransData(&lineEffectData[i], constBufferHandle[i], typeid(XMFLOAT4).name());
 	}
 
 	circleRender.data.transform.pos = endPos;
@@ -74,9 +80,17 @@ void LineCpuEffect::Update()
 		//フラッシュ用のデータ
 		for (int i = 0; i < lineRender.size(); ++i)
 		{
-			lineEffectData[i].w = static_cast<float>(flashTimer[i]) / static_cast<float>(maxTimer);
+			lineEffectData[i].w = KazMath::ConvertTimerToRate(flashTimer[i], maxTimer);
 			lineRender[i].TransData(&lineEffectData[i], constBufferHandle[i], typeid(XMFLOAT4).name());
 			++flashTimer[i];
+		}
+	}
+	else
+	{
+		for (int i = 0; i < lineRender.size(); ++i)
+		{
+			lineEffectData[i].w = -1.0f;
+			lineRender[i].TransData(&lineEffectData[i], constBufferHandle[i], typeid(XMFLOAT4).name());
 		}
 	}
 
