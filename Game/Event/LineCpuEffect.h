@@ -28,7 +28,7 @@ public:
 private:
 	static int LINE_ID;
 	int id;
-	static const int LINE_MAX_NUM = 4;
+	static const int LINE_MAX_NUM = 3;
 	std::array<LineRender, LINE_MAX_NUM>lineRender;
 	
 	std::array<RESOURCE_HANDLE, LINE_MAX_NUM>constBufferHandle;

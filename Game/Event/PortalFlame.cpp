@@ -34,32 +34,32 @@ void PortalFlame::Init(const KazMath::Vec3<float> &POS, const KazMath::Vec2<floa
 	//上辺
 	{
 		float lMaxDistance = initFlamePos[RIGHT_UP].Distance(initFlamePos[LEFT_UP]);
-		float lDistance = lMaxDistance / static_cast<float>(LINE_CPU_NUM);
-		std::array<KazMath::Vec3<float>, LINE_CPU_NUM> lDiv;
-		for (int i = 0; i < LINE_CPU_NUM; ++i)
+		float lDistance = lMaxDistance / static_cast<float>(LINE_CPU_UPDOWN_NUM);
+		std::array<KazMath::Vec3<float>, LINE_CPU_UPDOWN_NUM> lDiv;
+		for (int i = 0; i < LINE_CPU_UPDOWN_NUM; ++i)
 		{
 			lDiv[i] = initFlamePos[LEFT_UP];
 			lDiv[i].x += lDistance / 2.0f;
 			lDiv[i].x += lDistance * static_cast<float>(i);
-			memoryLine[LINE_UPVEC][i].Init(LINE_UPVEC, lDiv[i]);
+			upDownMemoryine[LINE_UPVEC][i].Init(LINE_UPVEC, lDiv[i]);
 
-			memoryLine[LINE_UPVEC][i].rate = (lDiv[i].x - initFlamePos[LEFT_UP].x) / lMaxDistance;
+			upDownMemoryine[LINE_UPVEC][i].rate = (lDiv[i].x - initFlamePos[LEFT_UP].x) / lMaxDistance;
 		}
 	}
 
 	//下辺
 	{
 		float lMaxDistance = initFlamePos[RIGHT_DOWN].Distance(initFlamePos[LEFT_DOWN]);
-		float lDistance = lMaxDistance / static_cast<float>(LINE_CPU_NUM);
-		std::array<KazMath::Vec3<float>, LINE_CPU_NUM> lDiv;
-		for (int i = 0; i < LINE_CPU_NUM; ++i)
+		float lDistance = lMaxDistance / static_cast<float>(LINE_CPU_UPDOWN_NUM);
+		std::array<KazMath::Vec3<float>, LINE_CPU_UPDOWN_NUM> lDiv;
+		for (int i = 0; i < LINE_CPU_UPDOWN_NUM; ++i)
 		{
 			lDiv[i] = initFlamePos[LEFT_DOWN];
 			lDiv[i].x += lDistance / 2.0f;
 			lDiv[i].x += lDistance * static_cast<float>(i);
-			memoryLine[LINE_DOWNVEC][i].Init(LINE_DOWNVEC, lDiv[i]);
+			upDownMemoryine[LINE_DOWNVEC][i].Init(LINE_DOWNVEC, lDiv[i]);
 
-			memoryLine[LINE_DOWNVEC][i].rate = initFlamePos[LEFT_DOWN].Distance(lDiv[i]) / lMaxDistance;
+			upDownMemoryine[LINE_DOWNVEC][i].rate = initFlamePos[LEFT_DOWN].Distance(lDiv[i]) / lMaxDistance;
 		}
 	}
 
@@ -73,9 +73,9 @@ void PortalFlame::Init(const KazMath::Vec3<float> &POS, const KazMath::Vec2<floa
 			lDiv[i] = initFlamePos[LEFT_DOWN];
 			lDiv[i].y += lDistance / 2.0f;
 			lDiv[i].y += lDistance * static_cast<float>(i);
-			memoryLine[LINE_LEFTVEC][i].Init(LINE_LEFTVEC, lDiv[i]);
+			sideMemoryine[LINE_LEFTVEC - 2][i].Init(LINE_LEFTVEC, lDiv[i]);
 
-			memoryLine[LINE_LEFTVEC][i].rate = initFlamePos[LEFT_DOWN].Distance(lDiv[i]) / lMaxDistance;
+			sideMemoryine[LINE_LEFTVEC - 2][i].rate = initFlamePos[LEFT_DOWN].Distance(lDiv[i]) / lMaxDistance;
 		}
 	}
 
@@ -89,9 +89,9 @@ void PortalFlame::Init(const KazMath::Vec3<float> &POS, const KazMath::Vec2<floa
 			lDiv[i] = initFlamePos[RIGHT_DOWN];
 			lDiv[i].y += lDistance / 2.0f;
 			lDiv[i].y += lDistance * static_cast<float>(i);
-			memoryLine[LINE_RIGHTVEC][i].Init(LINE_RIGHTVEC, lDiv[i]);
+			sideMemoryine[LINE_RIGHTVEC - 2][i].Init(LINE_RIGHTVEC, lDiv[i]);
 
-			memoryLine[LINE_RIGHTVEC][i].rate = initFlamePos[RIGHT_DOWN].Distance(lDiv[i]) / lMaxDistance;
+			sideMemoryine[LINE_RIGHTVEC - 2][i].rate = initFlamePos[RIGHT_DOWN].Distance(lDiv[i]) / lMaxDistance;
 		}
 	}
 
@@ -102,13 +102,13 @@ void PortalFlame::Init(const KazMath::Vec3<float> &POS, const KazMath::Vec2<floa
 	}
 
 
-	for (int edge = 0; edge < LINE_CPU_NUM; ++edge)
+	for (int edge = 0; edge < LINE_CPU_UPDOWN_NUM; ++edge)
 	{
-		memoryLine[LINE_UPVEC][edge].rate = 1.0f - memoryLine[LINE_UPVEC][edge].rate;
+		upDownMemoryine[LINE_UPVEC][edge].rate = 1.0f - upDownMemoryine[LINE_UPVEC][edge].rate;
 	}
 	for (int edge = 0; edge < LINE_CPU_NUM; ++edge)
 	{
-		memoryLine[LINE_LEFTVEC][edge].rate = 1.0f - memoryLine[LINE_LEFTVEC][edge].rate;
+		sideMemoryine[LINE_LEFTVEC - 2][edge].rate = 1.0f - sideMemoryine[LINE_LEFTVEC - 2][edge].rate;
 	}
 
 
@@ -225,11 +225,26 @@ void PortalFlame::Update()
 			break;
 		}
 
-		for (int edge = 0; edge < memoryLine[vec].size(); ++edge)
+		//左右の線の数
+		if (vec == LINE_LEFTVEC || vec == LINE_RIGHTVEC)
 		{
-			if (memoryLine[vec][edge].rate <= lRate)
+			for (int edge = 0; edge < sideMemoryine[vec - 2].size(); ++edge)
 			{
-				memoryLine[vec][edge].FlashLight();
+				if (sideMemoryine[vec - 2][edge].rate <= lRate)
+				{
+					sideMemoryine[vec - 2][edge].FlashLight();
+				}
+			}
+		}
+		//上下の線の数
+		else
+		{
+			for (int edge = 0; edge < upDownMemoryine[vec].size(); ++edge)
+			{
+				if (upDownMemoryine[vec][edge].rate <= lRate)
+				{
+					upDownMemoryine[vec][edge].FlashLight();
+				}
 			}
 		}
 		lNowRate = lCaliNowRate;
@@ -238,14 +253,20 @@ void PortalFlame::Update()
 
 
 	//メモリ線
-	for (int i = 0; i < memoryLine.size(); ++i)
+	for (int i = 0; i < sideMemoryine.size(); ++i)
 	{
-		for (int edge = 0; edge < memoryLine[i].size(); ++edge)
+		for (int edge = 0; edge < sideMemoryine[i].size(); ++edge)
 		{
-			memoryLine[i][edge].Update();
+			sideMemoryine[i][edge].Update();
 		}
 	}
-
+	for (int i = 0; i < upDownMemoryine.size(); ++i)
+	{
+		for (int edge = 0; edge < upDownMemoryine[i].size(); ++edge)
+		{
+			upDownMemoryine[i][edge].Update();
+		}
+	}
 
 	if (flameFlashIndex != prevFlameFlashIndex)
 	{
@@ -268,10 +289,23 @@ void PortalFlame::Update()
 			break;
 		}
 
-		//現在のフレームの光の位置の割合が0.0f以下なら初期化する
-		for (int edge = 0; edge < memoryLine[vec].size(); ++edge)
+
+		//左右の線の数
+		if (vec == LINE_LEFTVEC || vec == LINE_RIGHTVEC)
 		{
-			memoryLine[vec][edge].InitFlash();
+			//現在のフレームの光の位置の割合が0.0f以下なら初期化する
+			for (int edge = 0; edge < sideMemoryine[vec - 2].size(); ++edge)
+			{
+				sideMemoryine[vec - 2][edge].InitFlash();
+			}
+		}
+		else
+		{
+			//現在のフレームの光の位置の割合が0.0f以下なら初期化する
+			for (int edge = 0; edge < upDownMemoryine[vec].size(); ++edge)
+			{
+				upDownMemoryine[vec][edge].InitFlash();
+			}
 		}
 	}
 	prevFlameFlashIndex = flameFlashIndex;
@@ -285,11 +319,19 @@ void PortalFlame::Draw()
 		flame[i].Draw();
 	}
 
-	for (int i = 0; i < memoryLine.size(); ++i)
+	for (int i = 0; i < sideMemoryine.size(); ++i)
 	{
-		for (int edge = 0; edge < memoryLine[i].size(); ++edge)
+		for (int edge = 0; edge < sideMemoryine[i].size(); ++edge)
 		{
-			memoryLine[i][edge].Draw();
+			sideMemoryine[i][edge].Draw();
+		}
+	}
+
+	for (int i = 0; i < upDownMemoryine.size(); ++i)
+	{
+		for (int edge = 0; edge < upDownMemoryine[i].size(); ++edge)
+		{
+			upDownMemoryine[i][edge].Draw();
 		}
 	}
 	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());

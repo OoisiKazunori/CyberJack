@@ -23,7 +23,11 @@ public:
 	bool importFlag;
 private:
 	ParameterMgr stageParamLoader;
-	static const int DATA_MAX = 4 * 6;
+
+	static const int LINE_MAX_NUM = 3;
+
+	static const int line = 7;
+	static const int DATA_MAX = (line * 2) * 2 + line * 2;
 	std::array<WriteData, DATA_MAX>data;
 };
 

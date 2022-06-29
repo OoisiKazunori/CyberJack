@@ -21,7 +21,7 @@ WirteCpuLineData::WirteCpuLineData()
 			std::vector<rapidjson::Value> startPosArray;
 			std::vector<rapidjson::Value> endPosArray;
 
-			for (int member = 0; member < 4; ++member)
+			for (int member = 0; member < LINE_MAX_NUM; ++member)
 			{
 				startPosArray.push_back(rapidjson::Value(rapidjson::kArrayType));
 				endPosArray.push_back(rapidjson::Value(rapidjson::kArrayType));
@@ -39,8 +39,6 @@ WirteCpuLineData::WirteCpuLineData()
 			object.AddMember("EndPos2", endPosArray[1], stageParamLoader.doc.GetAllocator());
 			object.AddMember("StartPos3", startPosArray[2], stageParamLoader.doc.GetAllocator());
 			object.AddMember("EndPos3", endPosArray[2], stageParamLoader.doc.GetAllocator());
-			object.AddMember("StartPos4", startPosArray[3], stageParamLoader.doc.GetAllocator());
-			object.AddMember("EndPos4", endPosArray[3], stageParamLoader.doc.GetAllocator());
 
 			stageParamLoader.doc.AddMember(rapidjson::GenericStringRef<char>(lObjName[i].data()), object, stageParamLoader.doc.GetAllocator());
 		}
@@ -55,7 +53,7 @@ void WirteCpuLineData::Write()
 	for (int dataIndex = 0; dataIndex < DATA_MAX; ++dataIndex)
 	{
 		const std::string name = "Line" + std::to_string(dataIndex);
-		for (int i = 0; i < 4; ++i)
+		for (int i = 0; i < LINE_MAX_NUM; ++i)
 		{
 			const std::string startPosString = "StartPos" + std::to_string(i + 1);
 			const std::string endPosString = "EndPos" + std::to_string(i + 1);
@@ -90,7 +88,7 @@ void WirteCpuLineData::Load()
 	{
 		std::string name = "Line" + std::to_string(dataIndex);
 
-		for (int lineNum = 0; lineNum < 4; ++lineNum)
+		for (int lineNum = 0; lineNum < LINE_MAX_NUM; ++lineNum)
 		{
 			std::string startPosString = "StartPos" + std::to_string(lineNum + 1);
 			std::string endPosString = "EndPos" + std::to_string(lineNum + 1);

@@ -45,7 +45,7 @@ void PortalScene::Init()
 	portal.Init(initPos);
 	stringEffect.Init(initPos);
 
-	portalFlame.Init(initPos, KazMath::Vec2<float>(60.0f, 30.0f));
+	portalFlame.Init(initPos, KazMath::Vec2<float>(41.5f, 23.5f));
 
 	mulValue = { 10.0f,30.0f };
 	mulValue2 = { 60.0f,60.0f };
@@ -203,6 +203,10 @@ void PortalScene::Input()
 	if (input->InputTrigger(DIK_SPACE))
 	{
 		portal.Start();
+	}
+	if (input->InputTrigger(DIK_T))
+	{
+		portal.Init(initPos);
 	}
 	if (input->InputTrigger(DIK_R))
 	{
