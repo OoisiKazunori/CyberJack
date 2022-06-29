@@ -29,6 +29,8 @@ private:
 	int flameIndex;
 	int flameTimer;
 	int makeFlameMaxTimer;
+
+	bool readyToFlashFlag;
 	int flashMaxTimer;
 	enum
 	{

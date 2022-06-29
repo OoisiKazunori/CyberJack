@@ -121,6 +121,7 @@ void PortalFlame::Init(const KazMath::Vec3<float> &POS, const KazMath::Vec2<floa
 	flameIndex = 0;
 	flashMaxTimer = 60;
 	makeFlameMaxTimer = 10;
+	readyToFlashFlag = false;
 }
 
 void PortalFlame::Update()
@@ -147,6 +148,7 @@ void PortalFlame::Update()
 	{
 		flameIndex = 3;
 		flameTimer = makeFlameMaxTimer;
+		readyToFlashFlag = true;
 	}
 	else
 	{
@@ -154,7 +156,7 @@ void PortalFlame::Update()
 	}
 
 
-	if (3 <= flameIndex && makeFlameMaxTimer <= flameTimer)
+	if (readyToFlashFlag)
 	{
 		if (flashMaxTimer <= flashTimer[flameFlashIndex])
 		{
@@ -186,23 +188,70 @@ void PortalFlame::Update()
 		flame[i].TransData(&lineEffectData[i], constBufferHandle[i], typeid(XMFLOAT4).name());
 	}
 
-
 	//timerÇ©ÇÁê¸ÇÇ«ÇÍÇ≠ÇÁÇ¢êLÇŒÇ∑Ç©åàÇﬂÇÈ
 	{
 		KazMath::Vec3<float> lDistance = lTmpVecPos[flameIndex][END] - lTmpVecPos[flameIndex][START];
 		flame[flameIndex].data.startPos = lTmpVecPos[flameIndex][START];
 		flame[flameIndex].data.endPos = lTmpVecPos[flameIndex][START];
-		KazMath::Vec3<float> lAddVel = (lDistance * (static_cast<float>(flameTimer) / static_cast<float>(makeFlameMaxTimer)));
+		KazMath::Vec3<float> lAddVel = lDistance * KazMath::ConvertTimerToRate(flameTimer, makeFlameMaxTimer);
 		flame[flameIndex].data.endPos = lTmpVecPos[flameIndex][START] + lAddVel;
 		KazMath::CheckIsnan(&flame[flameIndex].data.endPos);
+		float lMaxRate = lTmpVecPos[flameIndex][END].Distance(lTmpVecPos[flameIndex][START]);
+		float lNowRate = flame[flameIndex].data.endPos.Distance(flame[flameIndex].data.startPos);
+		float lRate = lNowRate / lMaxRate;
+
+		LineEffectVec vec = LINE_UPVEC;
+		switch (flameIndex)
+		{
+		case 0:
+			vec = LINE_UPVEC;
+			break;
+		case 1:
+			vec = LINE_LEFTVEC;
+			break;
+		case 2:
+			vec = LINE_DOWNVEC;
+			break;
+		case 3:
+			vec = LINE_RIGHTVEC;
+			break;
+		default:
+			break;
+		}
+
+		//ç∂âEÇÃê¸ÇÃêî
+		if (vec == LINE_LEFTVEC || vec == LINE_RIGHTVEC)
+		{
+			for (int edge = 0; edge < sideMemoryine[vec - 2].size(); ++edge)
+			{
+				const bool flameLineCameFlag = sideMemoryine[vec - 2][edge].rate <= lRate;
+				if (flameLineCameFlag)
+				{
+					sideMemoryine[vec - 2][edge].Appear();
+				}
+			}
+		}
+		//è„â∫ÇÃê¸ÇÃêî
+		else
+		{
+			for (int edge = 0; edge < upDownMemoryine[vec].size(); ++edge)
+			{
+				const bool flameLineCameFlag = upDownMemoryine[vec][edge].rate <= lRate;
+				if (flameLineCameFlag)
+				{
+					upDownMemoryine[vec][edge].Appear();
+				}
+			}
+		}
 	}
+
 	//É|Å[É^ÉãògÇÃê∂ê¨ÇÃâﬂíˆÇï`âÊÇ∑ÇÈ-------------------------
 	float lNowRate = 0.0f;
 	{
 		KazMath::Vec3<float>lCaluMaxRate;
 		float lFlashDisntace = lTmpVecPos[flameFlashIndex][END].Distance(lTmpVecPos[flameFlashIndex][START]);
 		float lMaxRate = lCaluMaxRate.Distance(lTmpVecPos[flameFlashIndex][END] - lTmpVecPos[flameFlashIndex][START]);
-		float lFlashAddVel = (lFlashDisntace * (static_cast<float>(flashTimer[flameFlashIndex]) / static_cast<float>(flashMaxTimer)));
+		float lFlashAddVel = lFlashDisntace * KazMath::ConvertTimerToRate(flashTimer[flameFlashIndex], flashMaxTimer);
 		float lCaliNowRate = lMaxRate - lFlashDisntace + lFlashAddVel;
 		float lRate = lCaliNowRate / lMaxRate;
 
@@ -230,7 +279,8 @@ void PortalFlame::Update()
 		{
 			for (int edge = 0; edge < sideMemoryine[vec - 2].size(); ++edge)
 			{
-				if (sideMemoryine[vec - 2][edge].rate <= lRate)
+				const bool flameFlashCameFlag = sideMemoryine[vec - 2][edge].rate <= lRate;
+				if (flameFlashCameFlag)
 				{
 					sideMemoryine[vec - 2][edge].FlashLight();
 				}
@@ -241,7 +291,8 @@ void PortalFlame::Update()
 		{
 			for (int edge = 0; edge < upDownMemoryine[vec].size(); ++edge)
 			{
-				if (upDownMemoryine[vec][edge].rate <= lRate)
+				const bool flameFlashCameFlag = upDownMemoryine[vec][edge].rate <= lRate;
+				if (flameFlashCameFlag)
 				{
 					upDownMemoryine[vec][edge].FlashLight();
 				}

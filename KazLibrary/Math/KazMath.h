@@ -778,5 +778,17 @@ namespace KazMath
 	/// <returns>スクリーン座標</returns>
 	Vec3<float> ConvertWorldPosToScreenPos(const Vec3<float> &WORLD_POS, XMMATRIX VIEW_MAT, XMMATRIX PROJECTION_MAT);
 
+
+	/// <summary>
+	/// 時間を0.0f~1.0fに変換します
+	/// </summary>
+	/// <param name="TIMER">現在の時間</param>
+	/// <param name="MAX_TIMER">最大時間</param>
+	/// <returns></returns>
+	inline float ConvertTimerToRate(int TIMER, int MAX_TIMER)
+	{
+		return static_cast<float>(TIMER) / static_cast<float>(MAX_TIMER);
+	}
+
 }
 

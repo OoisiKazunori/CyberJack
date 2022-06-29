@@ -13,6 +13,7 @@ LineCpuEffect::LineCpuEffect()
 		lineEffectData[i].x = 1.0f;
 		lineEffectData[i].y = 0.0f;
 		lineEffectData[i].z = 0.0f;
+		lineEffectData[i].w = 120.0f;
 		flashTimer[i] = 0;
 	}
 	maxTimer = 60;
@@ -26,33 +27,43 @@ LineCpuEffect::LineCpuEffect()
 void LineCpuEffect::Init(LineEffectVec VEC, KazMath::Vec3<float> &POS)
 {
 	lineRender[0].data.startPos = POS;
-	KazMath::Vec3<float>endPos = POS;
+	lineRender[0].data.endPos = POS;
+	KazMath::Vec3<float>lEndPos = POS;
 
 	switch (VEC)
 	{
 	case LINE_UPVEC:
-		endPos += KazMath::Vec3<float>(0.0f, KazMath::Rand<float>(10.0f, 0.0f), 0.0f);
+		lEndPos += KazMath::Vec3<float>(0.0f, KazMath::Rand<float>(10.0f, 0.0f), 0.0f);
 		break;
 	case LINE_DOWNVEC:
-		endPos += KazMath::Vec3<float>(0.0f, -KazMath::Rand<float>(10.0f, 0.0f), 0.0f);
+		lEndPos += KazMath::Vec3<float>(0.0f, -KazMath::Rand<float>(10.0f, 0.0f), 0.0f);
 		break;
 	case LINE_LEFTVEC:
-		endPos += KazMath::Vec3<float>(-KazMath::Rand<float>(10.0f, 0.0f), 0.0f, 0.0f);
+		lEndPos += KazMath::Vec3<float>(-KazMath::Rand<float>(10.0f, 0.0f), 0.0f, 0.0f);
 		break;
 	case LINE_RIGHTVEC:
-		endPos += KazMath::Vec3<float>(KazMath::Rand<float>(10.0f, 0.0f), 0.0f, 0.0f);
+		lEndPos += KazMath::Vec3<float>(KazMath::Rand<float>(10.0f, 0.0f), 0.0f, 0.0f);
 		break;
 	default:
 		break;
 	}
-	lineRender[0].data.endPos = endPos;
+	endPos = lEndPos;
 	flashFlag = false;
 
 
 	for (int i = 0; i < lineRender.size(); ++i)
 	{
-		WirteCpuLineData::Instance()->UpdataData(id, i, &lineRender[i].data.startPos, &lineRender[i].data.endPos);
+		//WirteCpuLineData::Instance()->UpdataData(id, i, &lineRender[i].data.startPos, &lineRender[i].data.endPos);
 	}
+
+	circleRender.data.transform.pos = endPos;
+	circleRender.data.transform.pos.z -= 0.1f;
+	circleRender.data.radius = 0.5f;
+	circleRender.data.change3DFlag = true;
+	circleRender.data.color.w = 0.0f;
+
+	appearTimer = 0;
+	startToAppearFlag = false;
 }
 
 void LineCpuEffect::Update()
@@ -68,16 +79,33 @@ void LineCpuEffect::Update()
 		}
 	}
 
-	circleRender.data.transform.pos = lineRender[lineRender.size() - 1].data.endPos;
-	circleRender.data.transform.pos.z -= 0.1f;
-	circleRender.data.radius = 0.5f;
-	circleRender.data.change3DFlag = true;
+	//ìoèÍââèo-------------------------
+	if (startToAppearFlag)
+	{
+		if (maxAppearTimer <= appearTimer)
+		{
+			appearTimer = maxAppearTimer;
+			if (circleRender.data.color.w < 255)
+			{
+				++circleRender.data.color.w;
+			}
+		}
+		else
+		{
+			++appearTimer;
+		}
+	}
+
+	KazMath::Vec3<float> lDistance = endPos - lineRender[0].data.startPos;
+	lineRender[0].data.endPos = lineRender[0].data.startPos + lDistance * KazMath::ConvertTimerToRate(appearTimer, maxAppearTimer);
+	//ìoèÍââèo-------------------------
+
 }
 
 void LineCpuEffect::Draw()
 {
 
-	ImGui::Begin(name.c_str());
+	/*ImGui::Begin(name.c_str());
 	for (int i = 0; i < lineRender.size(); ++i)
 	{
 		if (ImGui::TreeNode(std::to_string(i).c_str()))
@@ -91,7 +119,7 @@ void LineCpuEffect::Draw()
 			ImGui::TreePop();
 		}
 	}
-	ImGui::End();
+	ImGui::End();*/
 
 
 
@@ -114,4 +142,9 @@ void LineCpuEffect::InitFlash()
 	{
 		flashTimer[i] = 0;
 	}
+}
+
+void LineCpuEffect::Appear()
+{
+	startToAppearFlag = true;
 }

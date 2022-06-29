@@ -260,7 +260,7 @@ void PortalScene::Update()
 	WirteCpuLineData::Instance()->importFlag;
 
 
-	ImGui::Begin("LineEffect");
+	/*ImGui::Begin("LineEffect");
 	if (ImGui::Button("Import"))
 	{
 		WirteCpuLineData::Instance()->Load();
@@ -269,7 +269,7 @@ void PortalScene::Update()
 	{
 		WirteCpuLineData::Instance()->Write();
 	}
-	ImGui::End();
+	ImGui::End();*/
 
 	portal.Update();
 	stringEffect.Update();

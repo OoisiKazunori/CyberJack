@@ -25,10 +25,12 @@ public:
 	float rate;
 	void FlashLight();
 	void InitFlash();
+
+	void Appear();
 private:
 	static int LINE_ID;
 	int id;
-	static const int LINE_MAX_NUM = 3;
+	static const int LINE_MAX_NUM = 1;
 	std::array<LineRender, LINE_MAX_NUM>lineRender;
 	
 	std::array<RESOURCE_HANDLE, LINE_MAX_NUM>constBufferHandle;
@@ -38,7 +40,12 @@ private:
 	bool flashFlag;
 
 	CircleRender circleRender;
-
 	std::string name;
-};
 
+	KazMath::Vec3<float>endPos;
+
+	//ìoèÍââèo
+	int appearTimer;
+	int maxAppearTimer;
+	bool startToAppearFlag;
+};
