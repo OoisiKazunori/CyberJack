@@ -33,16 +33,16 @@ void LineCpuEffect::Init(LineEffectVec VEC, KazMath::Vec3<float> &POS)
 	switch (VEC)
 	{
 	case LINE_UPVEC:
-		lEndPos += KazMath::Vec3<float>(0.0f, KazMath::Rand<float>(10.0f, 0.0f), 0.0f);
+		lEndPos += KazMath::Vec3<float>(0.0f, KazMath::Rand<float>(10.0f, 3.0f), 0.0f);
 		break;
 	case LINE_DOWNVEC:
-		lEndPos += KazMath::Vec3<float>(0.0f, -KazMath::Rand<float>(10.0f, 0.0f), 0.0f);
+		lEndPos += KazMath::Vec3<float>(0.0f, -KazMath::Rand<float>(10.0f, 3.0f), 0.0f);
 		break;
 	case LINE_LEFTVEC:
-		lEndPos += KazMath::Vec3<float>(-KazMath::Rand<float>(10.0f, 0.0f), 0.0f, 0.0f);
+		lEndPos += KazMath::Vec3<float>(-KazMath::Rand<float>(10.0f, 3.0f), 0.0f, 0.0f);
 		break;
 	case LINE_RIGHTVEC:
-		lEndPos += KazMath::Vec3<float>(KazMath::Rand<float>(10.0f, 0.0f), 0.0f, 0.0f);
+		lEndPos += KazMath::Vec3<float>(KazMath::Rand<float>(10.0f, 3.0f), 0.0f, 0.0f);
 		break;
 	default:
 		break;
@@ -63,6 +63,7 @@ void LineCpuEffect::Init(LineEffectVec VEC, KazMath::Vec3<float> &POS)
 	circleRender.data.color.w = 0.0f;
 
 	appearTimer = 0;
+	maxAppearTimer = 30;
 	startToAppearFlag = false;
 }
 
@@ -87,7 +88,11 @@ void LineCpuEffect::Update()
 			appearTimer = maxAppearTimer;
 			if (circleRender.data.color.w < 255)
 			{
-				++circleRender.data.color.w;
+				circleRender.data.color.w += 5.0f;
+			}
+			else
+			{
+				circleRender.data.color.w = 255.0f;
 			}
 		}
 		else
