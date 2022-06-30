@@ -1,5 +1,6 @@
 #include "LineCpuEffect.h"
 #include"../KazLibrary/Imgui/MyImgui.h"
+#include"../KazLibrary/Easing/easing.h"
 
 int LineCpuEffect::LINE_ID = 0;
 
@@ -71,6 +72,9 @@ void LineCpuEffect::Init(LineEffectVec VEC, KazMath::Vec3<float> &POS)
 	appearTimer = 0;
 	maxAppearTimer = 30;
 	startToAppearFlag = false;
+
+	circleMaxAppearTimer = 60;
+	circleAppearTimer = 0;
 }
 
 void LineCpuEffect::Update()
@@ -100,14 +104,15 @@ void LineCpuEffect::Update()
 		if (maxAppearTimer <= appearTimer)
 		{
 			appearTimer = maxAppearTimer;
-			if (circleRender.data.color.w < 255)
+			if (circleMaxAppearTimer <= circleAppearTimer)
 			{
-				circleRender.data.color.w += 15.0f;
+				circleAppearTimer = circleMaxAppearTimer;
 			}
 			else
 			{
-				circleRender.data.color.w = 255.0f;
+				++circleAppearTimer;
 			}
+			circleRender.data.color.w = EasingMaker(Out, Cubic, KazMath::ConvertTimerToRate(circleAppearTimer, circleMaxAppearTimer)) * 255.0f;
 		}
 		else
 		{
@@ -120,7 +125,7 @@ void LineCpuEffect::Update()
 	circleRender.data.transform.pos.z = basePos.z;
 
 	KazMath::Vec3<float> lDistance = endPos - lineRender[0].data.startPos;
-	lineRender[0].data.endPos = lineRender[0].data.startPos + lDistance * KazMath::ConvertTimerToRate(appearTimer, maxAppearTimer);
+	lineRender[0].data.endPos = lineRender[0].data.startPos + lDistance * EasingMaker(Out, Cubic, KazMath::ConvertTimerToRate(appearTimer, maxAppearTimer));
 	//ìoèÍââèo-------------------------
 
 }

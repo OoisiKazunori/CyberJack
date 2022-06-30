@@ -50,4 +50,7 @@ private:
 	int appearTimer;
 	int maxAppearTimer;
 	bool startToAppearFlag;
+
+	int circleAppearTimer;
+	int circleMaxAppearTimer;
 };
