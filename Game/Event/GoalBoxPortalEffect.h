@@ -18,5 +18,7 @@ public:
 private:
 	bool startFlag;
 
+	bool appearNextStageFlag;
+	RESOURCE_HANDLE constBuffHandle;
 	KazMath::Vec3<float> lerpScale;
 };

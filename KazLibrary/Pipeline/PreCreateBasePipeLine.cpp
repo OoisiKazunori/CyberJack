@@ -351,6 +351,9 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GradationPixelShader.hlsl", "PSmain", "ps_5_0", SHADER_PIXCEL_SPRITE_GRADATION);
 
+
+	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "NoiseSignalPixelShader.hlsl", "PSmain", "ps_5_0", SHADER_PIXCEL_SPRITE_NOISE);
+
 	OutputDebugStringA("シェーダーのコンパイルを終了します\n");
 #pragma endregion
 
@@ -1127,6 +1130,18 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		ROOTSIGNATURE_DATA_DRAW_TEX,
 		PIPELINE_NAME_SPRITE
 	);
+
+
+	//スプライト+砂嵐パイプライン
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS_TEX,
+		SHADER_VERTEX_SPRITE,
+		SHADER_PIXCEL_SPRITE_NOISE,
+		PIPELINE_DATA_NOCARING_BLENDALPHA,
+		ROOTSIGNATURE_DATA_DRAW_TEX_DATA1,
+		PIPELINE_NAME_SPRITE_NOISE
+	);
+
 
 	//スプライトパイプライン
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(

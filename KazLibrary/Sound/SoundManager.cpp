@@ -131,7 +131,7 @@ RESOURCE_HANDLE SoundManager::LoadSoundMem(string FILE_PASS, bool BGM_FLAG)
 
 void SoundManager::PlaySoundMem(RESOURCE_HANDLE HANDLE, int VOLUME, bool LOOP_FLAG)
 {
-	if (KazHelper::IsitInAnArray(HANDLE, masterSoundData.size()))
+	if (KazHelper::IsitInAnArray(HANDLE, masterSoundData.size()) && false)
 	{
 		if (masterSoundData[HANDLE].soundData == nullptr)
 		{

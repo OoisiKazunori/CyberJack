@@ -122,7 +122,7 @@ void LineCpuEffect::Update()
 
 	endPos.z = basePos.z;
 	lineRender[0].data.startPos.z = basePos.z;
-	circleRender.data.transform.pos.z = basePos.z;
+	circleRender.data.transform.pos.z = basePos.z - 0.1f;
 
 	KazMath::Vec3<float> lDistance = endPos - lineRender[0].data.startPos;
 	lineRender[0].data.endPos = lineRender[0].data.startPos + lDistance * EasingMaker(Out, Quint, KazMath::ConvertTimerToRate(appearTimer, maxAppearTimer));
