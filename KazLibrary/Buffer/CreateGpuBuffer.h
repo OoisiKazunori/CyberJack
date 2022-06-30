@@ -82,7 +82,7 @@ public:
 
 	unique_ptr<HandleMaker> handle;
 private:	
-	vector<ComPtr<ID3D12Resource>> buffers;
+	std::array<ComPtr<ID3D12Resource>, 100> buffers;
 	ComPtr<ID3D12DescriptorHeap> heap;
 
 	D3D12_CPU_DESCRIPTOR_HANDLE heapHandle;

@@ -6,14 +6,11 @@
 CreateGpuBuffer::CreateGpuBuffer()
 {
 	increSize = DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	buffers.resize(1000);
-	handle.reset(new HandleMaker);
+	handle = std::make_unique<HandleMaker>();
 }
 
 CreateGpuBuffer::~CreateGpuBuffer()
 {
-	bool a = false;
-	a;
 }
 
 void CreateGpuBuffer::CreateDescriptorHeap(unsigned int DESCRIPTOR_NUM_MAX)

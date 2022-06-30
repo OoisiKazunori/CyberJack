@@ -112,7 +112,7 @@ void LineCpuEffect::Update()
 			{
 				++circleAppearTimer;
 			}
-			circleRender.data.color.w = EasingMaker(Out, Cubic, KazMath::ConvertTimerToRate(circleAppearTimer, circleMaxAppearTimer)) * 255.0f;
+			circleRender.data.color.w = EasingMaker(Out, Quint, KazMath::ConvertTimerToRate(circleAppearTimer, circleMaxAppearTimer)) * 255.0f;
 		}
 		else
 		{
@@ -125,7 +125,7 @@ void LineCpuEffect::Update()
 	circleRender.data.transform.pos.z = basePos.z;
 
 	KazMath::Vec3<float> lDistance = endPos - lineRender[0].data.startPos;
-	lineRender[0].data.endPos = lineRender[0].data.startPos + lDistance * EasingMaker(Out, Cubic, KazMath::ConvertTimerToRate(appearTimer, maxAppearTimer));
+	lineRender[0].data.endPos = lineRender[0].data.startPos + lDistance * EasingMaker(Out, Quint, KazMath::ConvertTimerToRate(appearTimer, maxAppearTimer));
 	//ìoèÍââèo-------------------------
 
 }

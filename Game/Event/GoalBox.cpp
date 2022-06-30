@@ -177,7 +177,7 @@ void GoalBox::Update()
 		KazMath::Vec3<float> distance = lerpScale - model->data.transform.scale;
 		model->data.transform.scale += distance * 0.1f;
 	}
-	portalEffect.sprite->data.transform.pos.z = portalFlame.basePos.z + 1.0f;
+	portalEffect.sprite->data.transform.pos.z = portalFlame.basePos.z + 0.01f;
 
 	lightEffect.Update();
 	portalEffect.Update();

@@ -27,14 +27,14 @@ void GoalBoxPortalEffect::Update()
 		{
 			sprite->data.transform.pos.z = 12.2f;
 		}
-
+		
 
 		lerpScale.x = 0.18f;
 		{
 			KazMath::Vec3<float> distance = lerpScale - sprite->data.transform.scale;
 			sprite->data.transform.scale += distance * 0.1f;
 		}
-		if (lerpScale.x - 0.1f <= sprite->data.transform.scale.x)
+		if (lerpScale.x <= sprite->data.transform.scale.x)
 		{
 			sprite->data.transform.scale.x = lerpScale.x;
 		}

@@ -131,8 +131,8 @@ BoxPolygonRender::BoxPolygonRender(bool INSTANCE_FLAG, int INSTANCE_NUM)
 	instanceNum = INSTANCE_NUM;
 
 
-	array<Vertex, 24> vertVec;
-	array<unsigned short, 36> indiVec;
+	std::array<Vertex, 24> vertVec;
+	std::array<unsigned short, 36> indiVec;
 	for (int i = 0; i < 24; i++)
 	{
 		vertVec[i].pos = vertices[i].pos;
