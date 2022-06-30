@@ -215,7 +215,6 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	appearGoalBoxPos = { -10.0f,5.0f,40.0f };
 	responeGoalBoxPos = { -10.0f,-100.0f,40.0f };
 	goalBox.Init(responeGoalBoxPos);
-
 	initAppearFlag = false;
 
 	movieEffect.Init();
@@ -618,8 +617,8 @@ void Game::Update()
 
 
 	//敵が一通り生成終わった際に登場させる----------------------------------------------------------------
-	if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame && !initAppearFlag)
-		//if (100 <= gameFlame && !initAppearFlag)
+	//if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame && !initAppearFlag)
+		if (100 <= gameFlame && !initAppearFlag)
 	{
 		goalBox.Appear(appearGoalBoxPos);
 		initAppearFlag = true;
@@ -1199,10 +1198,6 @@ void Game::Draw()
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(handles[0]);
 		RenderTargetStatus::Instance()->ClearRenderTarget(handles[0]);
 
-		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
-		{
-			goalBox.Draw();
-		}
 		goalBox.portalEffect.Draw();
 
 		if (lineDebugFlag)
@@ -1212,6 +1207,11 @@ void Game::Draw()
 		player.Draw();
 		stages[stageNum]->SetCamera(0);
 		stages[stageNum]->Draw();
+
+		//if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
+		{
+			goalBox.Draw();
+		}
 
 		//敵の描画処理----------------------------------------------------------------
 		for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
@@ -1232,7 +1232,7 @@ void Game::Draw()
 			lineLevel[i].Draw();
 		}
 
-		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
+		//if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
 		{
 			goalBox.lightEffect.Draw();
 		}

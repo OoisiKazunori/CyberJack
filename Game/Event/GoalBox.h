@@ -5,6 +5,7 @@
 #include"../Game/Event/GoalBoxEffect.h"
 #include"../Game/Event/GoalBoxPortalEffect.h"
 #include"../KazLibrary/Sound/SoundManager.h"
+#include"../Game/Event/PortalFlame.h"
 #include<array>
 
 class GoalBox :public IOperationObject
@@ -21,6 +22,7 @@ public:
 	//ゴールエフェクト
 	GoalBoxEffect lightEffect;
 	GoalBoxPortalEffect portalEffect;
+	PortalFlame portalFlame;
 	Sphere hitBox;
 	bool releaseFlag;
 	bool startPortalEffectFlag;

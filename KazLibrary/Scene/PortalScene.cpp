@@ -203,11 +203,16 @@ void PortalScene::Input()
 	if (input->InputTrigger(DIK_SPACE))
 	{
 		portalFlame.Init(initPos, KazMath::Vec2<float>(41.5f, 23.5f));
+		portal.Init(initPos);
+	}
+	if(portalFlame.Flame())
+	{
 		portal.Start();
 	}
+
 	if (input->InputTrigger(DIK_T))
 	{
-		portal.Init(initPos);
+		
 	}
 	if (input->InputTrigger(DIK_R))
 	{
@@ -283,7 +288,7 @@ void PortalScene::Draw()
 {
 	RenderTargetStatus::Instance()->PrepareToChangeBarrier(multipassHandle[0]);
 	RenderTargetStatus::Instance()->ClearRenderTarget(multipassHandle[0]);
-	//bg.Draw();
+	bg.Draw();
 	portal.Draw();
 	stringEffect.Draw();
 	portalFlame.Draw();

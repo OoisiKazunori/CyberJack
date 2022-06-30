@@ -10,8 +10,8 @@ LineCpuEffect::LineCpuEffect()
 		lineRender[i].data.pipelineName = PIPELINE_NAME_LINE_FLASHEFFECT;
 		constBufferHandle[i] = lineRender[i].CreateConstBuffer(sizeof(XMFLOAT4), typeid(XMFLOAT4).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
 
-		lineEffectData[i].x = 1.0f;
-		lineEffectData[i].y = 0.0f;
+		lineEffectData[i].x = 0.0f;
+		lineEffectData[i].y = 1.0f;
 		lineEffectData[i].z = 0.0f;
 		lineEffectData[i].w = 120.0f;
 		flashTimer[i] = 0;
@@ -102,7 +102,7 @@ void LineCpuEffect::Update()
 			appearTimer = maxAppearTimer;
 			if (circleRender.data.color.w < 255)
 			{
-				circleRender.data.color.w += 5.0f;
+				circleRender.data.color.w += 15.0f;
 			}
 			else
 			{
@@ -114,6 +114,10 @@ void LineCpuEffect::Update()
 			++appearTimer;
 		}
 	}
+
+	endPos.z = basePos.z;
+	lineRender[0].data.startPos.z = basePos.z;
+	circleRender.data.transform.pos.z = basePos.z;
 
 	KazMath::Vec3<float> lDistance = endPos - lineRender[0].data.startPos;
 	lineRender[0].data.endPos = lineRender[0].data.startPos + lDistance * KazMath::ConvertTimerToRate(appearTimer, maxAppearTimer);

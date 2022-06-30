@@ -14,8 +14,14 @@ public:
 	void Update();
 	void Draw();
 
+	void Start();
+	bool Flame();
+
+	void SetZ(float Z);
 private:
 	KazMath::Vec3<float>basePos;
+
+	bool startFlag;
 
 	static const int FLAME_MAX_NUM = 4;
 	//ƒtƒŒ[ƒ€-------------------------

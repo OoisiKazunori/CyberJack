@@ -16,8 +16,7 @@ public:
 	Sprite3DRenderPtr sprite;
 	int timer;
 private:
-	bool goBeforeFlag;
 	bool startFlag;
 
-	KazMath::Vec3<float> lerpRota;
+	KazMath::Vec3<float> lerpScale;
 };

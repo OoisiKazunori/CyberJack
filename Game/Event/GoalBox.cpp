@@ -49,8 +49,9 @@ void GoalBox::Init(const KazMath::Vec3<float> &POS)
 	model->data.transform.rotation = lerpRota;
 
 	lightEffect.Init(&model->data.motherMat);
-	KazMath::Vec3<float> adj = { 0.0f,0.0f,-5.0f };
+	KazMath::Vec3<float> adj = { 0.0f,0.0f,50.0f };
 	portalEffect.Init(goCenterPos + adj);
+	portalFlame.Init(goCenterPos + adj, KazMath::Vec2<float>(41.5f, 23.5f));
 	addRota = 0;
 
 	startPortalEffectFlag = false;
@@ -142,10 +143,17 @@ void GoalBox::Update()
 		}
 		if (60.0f * 10.0f <= addRota)
 		{
-			portalEffect.Start();
+			KazMath::Vec3<float> adj = { 0.0f,0.0f,-15.0f };
+			portalFlame.Start();
 			startPortalEffectFlag = true;
 		}
 	}
+
+	if (portalFlame.Flame())
+	{
+		portalEffect.Start();
+	}
+
 
 	if (20 < portalEffect.timer && !initWarpSoundFlag)
 	{
@@ -170,24 +178,17 @@ void GoalBox::Update()
 		model->data.transform.scale += distance * 0.1f;
 	}
 
+	portalFlame.SetZ(portalEffect.sprite->data.transform.pos.z);
 
 	lightEffect.Update();
 	portalEffect.Update();
-
-
-	/*ImGui::Begin("Goal");
-	ImGui::InputFloat("RotaX", &moveRotaVel.x);
-	ImGui::InputFloat("RotaY", &moveRotaVel.y);
-	ImGui::InputFloat("RotaZ", &moveRotaVel.z);
-	ImGui::InputFloat("Z", &moveVel.z);
-	ImGui::InputFloat("MoveLerp", &lerpMoveVel);
-	ImGui::InputFloat("MoveRotaLerp", &lerpMoveRotaVel);
-	ImGui::End();*/
+	portalFlame.Update();
 }
 
 void GoalBox::Draw()
 {
 	model->Draw();
+	portalFlame.Draw();
 	LockOnWindow(model->data.transform.pos);
 }
 

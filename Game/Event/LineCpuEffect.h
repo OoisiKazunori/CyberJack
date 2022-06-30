@@ -27,6 +27,8 @@ public:
 	void InitFlash();
 
 	void Appear();
+
+	KazMath::Vec3<float>basePos;
 private:
 	static int LINE_ID;
 	int id;
