@@ -29,6 +29,7 @@ public:
 	void Appear();
 
 	KazMath::Vec3<float>basePos;
+
 private:
 	static int LINE_ID;
 	int id;
@@ -46,8 +47,12 @@ private:
 
 	KazMath::Vec3<float>endPos;
 
+	int circleAppearTimer;
+	int circleMaxAppearTimer;
+
 	//“oê‰‰o
 	int appearTimer;
 	int maxAppearTimer;
 	bool startToAppearFlag;
+
 };
