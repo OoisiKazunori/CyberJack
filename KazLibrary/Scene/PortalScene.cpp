@@ -1,6 +1,8 @@
 ﻿#include "PortalScene.h"
 #include"../KazLibrary/Input/KeyBoradInputManager.h"
 #include"../KazLibrary/Input/ControllerInputManager.h"
+#include"../KazLibrary/Imgui/MyImgui.h"
+#include"../KazLibrary/Helper/KazImGuiHelper.h"
 
 PortalScene::PortalScene()
 {
@@ -128,6 +130,11 @@ void PortalScene::Update()
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 0);
 
 
+	ImGui::Begin("Box");
+	KazImGuiHelper::InputTransform(&box.data.transform);
+	ImGui::End();
+
+
 	portal.Update();
 	stringEffect.Update();
 	portalFlame.Update();
@@ -138,9 +145,11 @@ void PortalScene::Draw()
 	RenderTargetStatus::Instance()->PrepareToChangeBarrier(multipassHandle[0]);
 	RenderTargetStatus::Instance()->ClearRenderTarget(multipassHandle[0]);
 	//bg.Draw();
-	portal.Draw();
-	stringEffect.Draw();
-	portalFlame.Draw();
+	//portal.Draw();
+	//stringEffect.Draw();
+	//portalFlame.Draw();
+
+	box.Draw();
 
 	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Draw Luminance");
 	RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, multipassHandle[0]);

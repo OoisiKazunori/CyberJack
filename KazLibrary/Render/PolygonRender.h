@@ -33,13 +33,4 @@ private:
 
 	UINT VertByte;
 	UINT IndexByte;
-
-
-	unique_ptr<DirtySet> positionDirtyFlag, scaleDirtyFlag, rotationDirtyFlag;
-
-	unique_ptr<DirtySet> cameraViewDirtyFlag;
-	unique_ptr<DirtySet> cameraProjectionDirtyFlag;
-	unique_ptr<DirtySet> cameraBillBoardDirtyFlag;
-	unique_ptr<DirtySet> sizeDirtyFlag;
-	unique_ptr<DirtySet> motherDirtyFlag;
 };

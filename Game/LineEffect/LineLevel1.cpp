@@ -135,7 +135,7 @@ void LineLevel1::Attack(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::V
 	for (int i = 0; i < limitPolygon.size(); i++)
 	{
 		limitPolygon[i]->data.transform.pos = KazMath::Vec3<float>(limitPos[i].m128_f32[0],limitPos[i].m128_f32[1],limitPos[i].m128_f32[2]);
-		limitPolygon[i]->data.color = { 255.0f,255.0f,255.0f,255.0f };
+		limitPolygon[i]->data.color = { 255,255,255,255 };
 	}
 }
 
@@ -553,7 +553,7 @@ void LineLevel1::Attack2(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::
 		{
 			limitPolygon[i]->data.transform.pos = KazMath::Vec3<float>(limitPos[i].m128_f32[0], limitPos[i].m128_f32[1], limitPos[i].m128_f32[2]);
 			limitPolygon[i]->data.transform.scale = KazMath::Vec3<float>(0.5f, 2.0f, 0.5f);
-			limitPolygon[i]->data.color = { 255.0f,0.0f,0.0f,255.0f };
+			limitPolygon[i]->data.color = { 255,0,0,255 };
 		}
 
 		int count = static_cast<int>(endLimitPos.size());
@@ -564,7 +564,7 @@ void LineLevel1::Attack2(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::
 				break;
 			}
 			limitPolygon[i]->data.transform.scale = KazMath::Vec3<float>(2.0f, 0.5f, 0.5f);
-			limitPolygon[i]->data.color = { 0.0f,255.0f,0.0f,255.0f };
+			limitPolygon[i]->data.color = { 0,255,0,255 };
 			--count;
 		}
 

@@ -198,9 +198,9 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	centralPos2 = centralPos;
 
 
-	besidePoly->data.color = { 255.0f,255.0f,255.0f,255.0f };
-	verticlaPoly->data.color = { 255.0f,255.0f,0.0f,255.0f };
-	cameraPoly->data.color = { 255.0f,0.0f,0.0f,255.0f };
+	besidePoly->data.color = { 255,255,255,255 };
+	verticlaPoly->data.color = { 255,255,0,255 };
+	cameraPoly->data.color = { 255,0,0,255 };
 	r = 8.0f;
 	r2 = 8.0f;
 
@@ -502,7 +502,7 @@ void Game::Update()
 		//ImGui::InputFloat(name.c_str(), &lineStartPoly[i].data.transform.pos.z);
 
 		lineStartPoly[i].data.transform.scale = { 0.1f,0.1f,0.1f };
-		lineStartPoly[i].data.color = { 255.0f,0.0f,0.0f,255.0f };
+		lineStartPoly[i].data.color = { 255,0,0,255 };
 		lineEffectArrayData[i].startPos = lineStartPoly[i].data.transform.pos + player.pos;
 	}
 	//ImGui::End();

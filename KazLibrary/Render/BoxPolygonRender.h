@@ -20,18 +20,6 @@ private:
 
 
 	RESOURCE_HANDLE constBufferHandle;
-	UINT indicesNum;
-
 	bool instanceFlag;
-	int instanceNum;
-
-	PipeLineNames pipeline;
-
-	unique_ptr<DirtySet> positionDirtyFlag, scaleDirtyFlag, rotationDirtyFlag;
-
-	unique_ptr<DirtySet> cameraViewDirtyFlag;
-	unique_ptr<DirtySet> cameraProjectionDirtyFlag;
-	unique_ptr<DirtySet> cameraBillBoardDirtyFlag;
-	unique_ptr<DirtySet> colorDirtyFlag;
 };
 

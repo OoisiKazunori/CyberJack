@@ -8,7 +8,7 @@ FirstStage::FirstStage()
 	{
 		stageDebugBox[i].data.pipelineName = PIPELINE_NAME_FOG_COLOR_MULTITEX;
 		constHandle[i] = stageDebugBox[i].CreateConstBuffer(sizeof(FogD), typeid(FogD).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
-		stageDebugBox[i].data.color = { 48.0f,20.0f,57.0f,255.0f };
+		stageDebugBox[i].data.color = { 48,20,57,255 };
 	}
 	stageParamLoader.LoadFile(KazFilePathName::StageParamPath + "StageParamData.json");
 	if (false)

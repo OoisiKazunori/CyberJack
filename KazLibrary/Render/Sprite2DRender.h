@@ -32,20 +32,5 @@ private:
 
 	UINT VertByte;
 	UINT IndexByte;
-
-
-	unique_ptr<DirtySet> positionDirtyFlag, scaleDirtyFlag, rotationDirtyFlag;
-	unique_ptr<DirtyFlag<bool>> flipXDirtyFlag;
-	unique_ptr<DirtyFlag<bool>> flipYDirtyFlag;
-	unique_ptr<DirtyFlag<RESOURCE_HANDLE>> textureHandleDirtyFlag;
-	unique_ptr<DirtyFlag<RESOURCE_HANDLE>> animationHandleDirtyFlag;
-	unique_ptr<DirtyFlag<float>> alphaDrtyFlag;
-
-	unique_ptr<DirtySet> cameraViewDirtyFlag;
-	unique_ptr<DirtySet> cameraProjectionDirtyFlag;
-	unique_ptr<DirtySet> cameraBillBoardDirtyFlag;
-
-	unique_ptr<DirtySet> sizeDirtyFlag;
-
 };
 

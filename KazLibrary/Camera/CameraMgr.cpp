@@ -25,9 +25,9 @@ CameraMgr::CameraMgr()
 	for (int i = 0; i < CAMERA_ARRAY_NUM; ++i)
 	{
 		viewArray[i] = XMMatrixIdentity();
-		viewDirtyFlagArray[i] = std::make_unique<DirtySet>(&viewArray[i]);
+		viewDirtyFlagArray[i] = std::make_unique<DirtySet>(viewArray[i]);
 		billBoardArray[i] = XMMatrixIdentity();
-		billBoardDirtyFlagArray[i] = std::make_unique<DirtySet>(&billBoardArray[i]);
+		billBoardDirtyFlagArray[i] = std::make_unique<DirtySet>(billBoardArray[i]);
 	}
 }
 
@@ -271,7 +271,7 @@ XMMATRIX CameraMgr::GetPerspectiveMatProjectionAngle(float angle)
 
 bool CameraMgr::Dirty(int CAMERA_INDEX)
 {
-	return viewDirtyFlagArray[CAMERA_INDEX]->FloatDirty();
+	return viewDirtyFlagArray[CAMERA_INDEX]->Dirty();
 }
 
 void CameraMgr::Record()

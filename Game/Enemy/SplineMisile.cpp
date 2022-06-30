@@ -5,7 +5,7 @@
 SplineMisile::SplineMisile()
 {
 	maxTime = 60 * 5;
-	splineBox.data.color = { 255.0f,0.0f,0.0f,255.0f };
+	splineBox.data.color = { 255,0,0,255 };
 
 	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "misile.obj");
 }

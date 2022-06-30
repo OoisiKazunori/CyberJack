@@ -1,26 +1,41 @@
-#include "PolygonRender.h"
-#include"../KazLibrary/Helper/KazHelper.h"
+#include "CircleRender.h"
 
-PolygonRender::PolygonRender(const array<SpriteVertex, 4> &DATA)
+CircleRender::CircleRender()
 {
-	anchorPoint = { 0.5f,0.5f };
+	const USHORT VERT_NUMBER = 300;
+	const float RADIUS = 10;
+
+
+	std::vector<Vertex> vert(VERT_NUMBER);
+	std::vector<USHORT> indi(VERT_NUMBER * 3);
+
+	indicesNum = static_cast<UINT>(indi.size());
+	float PI_F2 = XM_2PI;
+
+
+	//頂点データ
+	for (int i = 0; i < vert.size(); i++) {
+		vert[i].pos.x = (RADIUS * sin((PI_F2 / VERT_NUMBER) * i));
+		vert[i].pos.y = -(RADIUS * cos((PI_F2 / VERT_NUMBER) * i));
+		vert[i].pos.z = 0.0f;
+
+		vert[i].uv.x = 1;
+		vert[i].uv.y = 1;
+	}
+
+	//インデックスデータ
+	for (int i = 0; i < VERT_NUMBER; i++) {
+		indi[i * 3] = VERT_NUMBER;	//中心
+		indi[i * 3 + 1] = static_cast<USHORT>(i);			//再利用
+		indi[i * 3 + 2] = static_cast<USHORT>(i + 1);		//新しい頂点
+	}
+	indi[indi.size() - 1] = 0;
+
+	BUFFER_SIZE VertByte = KazBufferHelper::GetBufferSize<BUFFER_SIZE>(vert.size(), sizeof(Vertex));
+	BUFFER_SIZE IndexByte = KazBufferHelper::GetBufferSize<BUFFER_SIZE>(indi.size(), sizeof(USHORT));
+
 
 	gpuBuffer = std::make_unique<CreateGpuBuffer>();
-
-	//データの定義-----------------------------------------------------------------------------------------------------
-	//頂点データ
-	//KazRenderHelper::InitVerticesPos(&vertices[0].pos, &vertices[1].pos, &vertices[2].pos, &vertices[3].pos, anchorPoint);
-	KazRenderHelper::InitUvPos(&vertices[0].uv, &vertices[1].uv, &vertices[2].uv, &vertices[3].uv);
-	//インデックスデータ
-	indices = KazRenderHelper::InitIndciesForPlanePolygon();
-	//データの定義-----------------------------------------------------------------------------------------------------
-
-	vertices = DATA;
-
-	
-	VertByte = KazBufferHelper::GetBufferSize<UINT>(vertices.size(), sizeof(SpriteVertex));
-	IndexByte = KazBufferHelper::GetBufferSize<UINT>(indices.size(), sizeof(unsigned short));
-
 
 	//バッファ生成-----------------------------------------------------------------------------------------------------
 	//頂点バッファ
@@ -39,67 +54,96 @@ PolygonRender::PolygonRender(const array<SpriteVertex, 4> &DATA)
 
 
 	//バッファ転送-----------------------------------------------------------------------------------------------------
-	gpuBuffer->TransData(vertexBufferHandle, vertices.data(), VertByte);
-	gpuBuffer->TransData(indexBufferHandle, indices.data(), IndexByte);
+	gpuBuffer->TransData(vertexBufferHandle, vert.data(), VertByte);
+	gpuBuffer->TransData(indexBufferHandle, indi.data(), IndexByte);
 	//バッファ転送-----------------------------------------------------------------------------------------------------
 
 
 	//ビューの設定-----------------------------------------------------------------------------------------------------
-	vertexBufferView = KazBufferHelper::SetVertexBufferView(gpuBuffer->GetGpuAddress(vertexBufferHandle), VertByte, sizeof(vertices[0]));
+	vertexBufferView = KazBufferHelper::SetVertexBufferView(gpuBuffer->GetGpuAddress(vertexBufferHandle), VertByte, sizeof(vert[0]));
 	indexBufferView = KazBufferHelper::SetIndexBufferView(gpuBuffer->GetGpuAddress(indexBufferHandle), IndexByte);
 	//ビューの設定-----------------------------------------------------------------------------------------------------
+
 }
 
-void PolygonRender::Draw()
+void CircleRender::Draw()
 {
-
 	//パイプライン設定-----------------------------------------------------------------------------------------------------
 	pipeline = static_cast<PipeLineNames>(data.pipelineName);
 	renderData.pipelineMgr->SetPipeLineAndRootSignature(pipeline);
 	//パイプライン設定-----------------------------------------------------------------------------------------------------
 
-
-	//DirtyFlag検知-----------------------------------------------------------------------------------------------------	
-	//DirtyFlag検知-----------------------------------------------------------------------------------------------------
-
-
-
 	//行列計算-----------------------------------------------------------------------------------------------------
+	if (data.change3DFlag)
 	{
 		baseMatWorldData.matWorld = XMMatrixIdentity();
 		baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
 		baseMatWorldData.matTrans = KazMath::CaluTransMatrix(data.transform.pos);
 		baseMatWorldData.matRota = KazMath::CaluRotaMatrix(data.transform.rotation);
-		//ビルボード行列を掛ける
-		if (data.billBoardFlag)
-		{
-			baseMatWorldData.matWorld *= renderData.cameraMgrInstance->GetMatBillBoard(data.cameraIndex);
-		}
+
+		//ワールド行列の計算
+		baseMatWorldData.matWorld = XMMatrixIdentity();
 		baseMatWorldData.matWorld *= baseMatWorldData.matScale;
 		baseMatWorldData.matWorld *= baseMatWorldData.matRota;
 		baseMatWorldData.matWorld *= baseMatWorldData.matTrans;
-		baseMatWorldData.matWorld *= data.motherMat;
+	}
+	else
+	{
+		baseMatWorldData.matWorld = XMMatrixIdentity();
+		baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
+		baseMatWorldData.matTrans = KazMath::CaluTransMatrix(data.transform.pos);
 
-		//親行列を掛ける
-		motherMat = baseMatWorldData.matWorld;
+		//ワールド行列の計算
+		baseMatWorldData.matWorld = XMMatrixIdentity();
+		baseMatWorldData.matWorld *= baseMatWorldData.matScale;
+		baseMatWorldData.matWorld *= baseMatWorldData.matTrans;
 	}
 	//行列計算-----------------------------------------------------------------------------------------------------
 
 
-	//バッファの転送-----------------------------------------------------------------------------------------------------
-	//行列
-	//if (lMatrixDirtyFlag || lMatFlag)
-	//{
-	ConstBufferData constMap;
-	constMap.world = baseMatWorldData.matWorld;
-	constMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex);
-	constMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
-	constMap.color = { 0.0f,0.0f,0.0f,data.alpha / 255.0f };
-	constMap.mat = constMap.world * constMap.view * constMap.viewproj;
+	const int VERT_NUMBER = 300;
+	const float RADIUS = data.radius;
 
-	//gpuBuffer->TransData();
+	std::vector<Vertex> vert(VERT_NUMBER);
+
+	float PI_F2 = XM_2PI;
+	//頂点データ
+	for (int i = 0; i < vert.size(); i++) {
+		vert[i].pos.x = (RADIUS * sin((PI_F2 / VERT_NUMBER) * i));
+		vert[i].pos.y = -(RADIUS * cos((PI_F2 / VERT_NUMBER) * i));
+		vert[i].pos.z = 0.0f;
+
+		vert[i].uv.x = 1.0f;
+		vert[i].uv.y = 1.0f;
+	}
+	BUFFER_SIZE VertByte = KazBufferHelper::GetBufferSize<BUFFER_SIZE>(vert.size(), sizeof(Vertex));
+	gpuBuffer->TransData(vertexBufferHandle, vert.data(), VertByte);
+
+
+
+
+
+	//バッファの転送-----------------------------------------------------------------------------------------------------
+	
+	ConstBufferData constMap;
+	//行列
+	if (data.change3DFlag)
+	{
+		constMap.world = baseMatWorldData.matWorld;
+		constMap.view = renderData.cameraMgrInstance->GetViewMatrix();
+		constMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
+		constMap.color = KazRenderHelper::SendColorDataToGPU(data.color);
+		constMap.mat = constMap.world * constMap.view * constMap.viewproj;
+	}
+	else
+	{
+		constMap.world = baseMatWorldData.matWorld;
+		constMap.view = XMMatrixIdentity();
+		constMap.viewproj = renderData.cameraMgrInstance->orthographicMatProjection;
+		constMap.color = KazRenderHelper::SendColorDataToGPU(data.color);
+		constMap.mat = constMap.world * constMap.viewproj;
+	}
 	TransData(&constMap, constBufferHandle, typeid(ConstBufferData).name());
-	//}
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 
 
@@ -111,11 +155,7 @@ void PolygonRender::Draw()
 	renderData.cmdListInstance->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	renderData.cmdListInstance->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
 	renderData.cmdListInstance->cmdList->IASetIndexBuffer(&indexBufferView);
-	renderData.cmdListInstance->cmdList->DrawIndexedInstanced(static_cast<UINT>(indices.size()), 1, 0, 0, 0);
+	renderData.cmdListInstance->cmdList->DrawIndexedInstanced(indicesNum, 1, 0, 0, 0);
 	//描画命令-----------------------------------------------------------------------------------------------------
 
-
-
-	//DirtyFlagの更新-----------------------------------------------------------------------------------------------------
-	//DirtyFlagの更新-----------------------------------------------------------------------------------------------------
 }

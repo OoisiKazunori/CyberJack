@@ -520,19 +520,53 @@ namespace KazMath
 
 	struct Color
 	{
-		Vec4<int> intColor;
-		Vec4<float> floatColor;
+		Vec4<int> color;
 
-		Color(int R, int G, int B, int A) :intColor({ R,G,B,A }), floatColor({ static_cast<float>(R) / 255.0f,static_cast<float>(G) / 255.0f ,static_cast<float>(B) / 255.0f ,static_cast<float>(A) / 255.0f })
+		Color(int R, int G, int B, int A) :color({ R,G,B,A }), dirtyFlag(&color)
 		{};
-		Color(float R, float G, float B, float A) :intColor({ static_cast<int>(R * 255.0f),static_cast<int>(G * 255.0f),static_cast<int>(B * 255.0f),static_cast<int>(A * 255.0f) }), floatColor({ R,G,B,A })
-		{};
+
+		XMFLOAT4 ConvertColorRateToXMFLOAT4()
+		{
+			KazMath::Vec4<float> result = GetColorRate();
+			return XMFLOAT4(result.x, result.y, result.z, result.a);
+		};
+		Vec4<float> GetColorRate()
+		{
+			KazMath::Vec4<float> result = CovertToFloat();
+			return KazMath::Vec4<float>(
+				static_cast<float>(color.x) / 255.0f,
+				static_cast<float>(color.y) / 255.0f,
+				static_cast<float>(color.z) / 255.0f,
+				static_cast<float>(color.a) / 255.0f
+			);
+		};
+
+
+		bool Dirty()
+		{
+			return dirtyFlag.Dirty();
+		};
+		void Record()
+		{
+			dirtyFlag.Record();
+		};
 
 		void operator=(const Color &rhs)
 		{
-			intColor = rhs.intColor;
-			floatColor = rhs.floatColor;
+			color = rhs.color;
 		}
+
+	private:
+		KazMath::Vec4<float> CovertToFloat()
+		{
+			return KazMath::Vec4<float>(
+				static_cast<float>(color.x),
+				static_cast<float>(color.y),
+				static_cast<float>(color.z),
+				static_cast<float>(color.a)
+			);
+		};
+		DirtyFlag<KazMath::Vec4<int>> dirtyFlag;
 	};
 
 
@@ -565,6 +599,14 @@ namespace KazMath
 			scaleDirtyFlag->Record();
 			rotationDirtyFlag->Record();
 		};
+
+
+		void operator=(const KazMath::Transform3D &OBJ)
+		{
+			pos = OBJ.pos;
+			scale = OBJ.scale;
+			rotation = OBJ.rotation;
+		}
 		private:
 		std::unique_ptr<DirtyFlag<Vec3<float>>>positionDirtyFlag;
 		std::unique_ptr<DirtyFlag<Vec3<float>>>scaleDirtyFlag;

@@ -4,7 +4,7 @@
 #include"../Game/Event/GoalBoxPortalEffect.h"
 #include"../Game/Event/GoalBoxPortalStringEffect.h"
 #include"../Game/Event/PortalFlame.h"
-
+#include"../KazLibrary/Render/KazRender.h"
 
 class PortalScene :public SceneBase
 {
@@ -44,6 +44,8 @@ private:
 
 	PortalFlame portalFlame;
 
+
+	BoxPolygonRender box;
 };
 
 

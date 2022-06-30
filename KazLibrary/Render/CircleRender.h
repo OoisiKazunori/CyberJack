@@ -5,24 +5,26 @@
 #include"../Helper/DirtyFlag.h"
 #include"../Render/RenderData.h"
 
-class LineRender :public IRender
+class CircleRender: public IRender
 {
 public:
-	LineRender();
-	~LineRender();
-
+	CircleRender();
 	void Draw();
 
-	LineDrawData data;
+	CircleDrawData data;
 private:
 	PipeLineNames pipeline;
-	array<LineVertex, 2>vertices;
-	UINT vertByte;
-
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
+	D3D12_INDEX_BUFFER_VIEW indexBufferView;
 
+
+	XMMATRIX motherMat;
 	RESOURCE_HANDLE vertexBufferHandle;
 	RESOURCE_HANDLE indexBufferHandle;
 	RESOURCE_HANDLE constBufferHandle;
+
+
+	UINT indicesNum;
+private:
 };
 

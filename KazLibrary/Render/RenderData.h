@@ -167,19 +167,20 @@ struct LineDrawData :public IData
 struct PolygonDrawData :public IData
 {
 	KazMath::Transform3D transform;
-	XMFLOAT4 color;
+	KazMath::Color color;
 	XMMATRIX motherMat;
-	int pipelineName;
+	PipeLineNames pipelineName;
 
-	PolygonDrawData()
+	PolygonDrawData():color(255, 255, 255, 255), pipelineName(PIPELINE_NAME_COLOR), motherMat(XMMatrixIdentity())
 	{
 		address = this;
-		color = { 255.0f,255.0f,255.0f,255.0f };
-		pipelineName = static_cast<int>(PIPELINE_NAME_COLOR);
-		motherMat = XMMatrixIdentity();
 	}
 
-	void Record();
+	void Record()
+	{
+		transform.Record();
+		color.Record();
+	};
 
 };
 

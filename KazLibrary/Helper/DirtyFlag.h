@@ -40,36 +40,25 @@ public:
 	{
 	}
 
-	DirtySet(float &DATA)
-	{
-		shared_ptr<DirtyFlag<float>> tmp;
-		tmp.reset(new DirtyFlag<float>(&DATA));
-		floatDirtyFlag.push_back(tmp);
-	};
 	DirtySet(XMMATRIX &DATA)
 	{
-		floatDirtyFlag.reserve(16);
-		floatDirtyFlag.resize(16);
-
-		int i = 0;
 		for (int y = 0; y < 4; y++)
 		{
 			for (int x = 0; x < 4; x++)
 			{
-				floatDirtyFlag[i].reset(new DirtyFlag<float>(&DATA.r[y].m128_f32[x]));
-				i++;
+				dirtyFlag.push_back(&DATA.r[y].m128_f32[x]);
 			}
 		}
 	};
 
 
-	bool FloatDirty()
+	bool Dirty()
 	{
 		//‚Ç‚Ì’l‚ª­‚µ‚Å‚à1Flame‘O‚Ì’l‚Æ”ä‚×‚Ä•Ï‚í‚Á‚Ä‚¢‚½‚çtrue
 		bool isValueDiffrendFlag = false;
-		for (int i = 0; i < floatDirtyFlag.size(); i++)
+		for (int i = 0; i < dirtyFlag.size(); i++)
 		{
-			if (floatDirtyFlag[i]->Dirty())
+			if (dirtyFlag[i].Dirty())
 			{
 				isValueDiffrendFlag = true;
 			}
@@ -80,13 +69,13 @@ public:
 
 	void Record()
 	{
-		for (int i = 0; i < floatDirtyFlag.size(); i++)
+		for (int i = 0; i < dirtyFlag.size(); i++)
 		{
-			floatDirtyFlag[i]->Record();
+			dirtyFlag[i].Record();
 		}
 	}
 
 
 private:
-	std::vector<std::shared_ptr<DirtyFlag<float>>>floatDirtyFlag;
+	std::vector<DirtyFlag<float>>dirtyFlag;
 };

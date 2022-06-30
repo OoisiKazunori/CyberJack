@@ -318,6 +318,7 @@
     <ClInclude Include="KazLibrary\Helper\ISinglton.h" />
     <ClInclude Include="KazLibrary\Helper\KazBufferHelper.h" />
     <ClInclude Include="KazLibrary\Helper\KazHelper.h" />
+    <ClInclude Include="KazLibrary\Helper\KazImGuiHelper.h" />
     <ClInclude Include="KazLibrary\Helper\KazRenderHelper.h" />
     <ClInclude Include="KazLibrary\Helper\OutPutDebugStringAndCheckResult.h" />
     <ClInclude Include="KazLibrary\Helper\RegisterNameWithData.h" />

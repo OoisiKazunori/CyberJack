@@ -25,15 +25,6 @@ private:
 	array<RESOURCE_HANDLE, 2> constBufferHandle;
 	std::shared_ptr<FbxResourceData> resourceData;
 
-
-
-	unique_ptr<DirtySet> positionDirtyFlag, scaleDirtyFlag, rotationDirtyFlag;
-	unique_ptr<DirtyFlag<RESOURCE_HANDLE>> fbxHandleDirtyFlag;
-
-	unique_ptr<DirtySet> cameraViewDirtyFlag;
-	unique_ptr<DirtySet> cameraProjectionDirtyFlag;
-
-
 	FbxTime frameTime;
 	FbxTime startTime;
 	FbxTime endTime;

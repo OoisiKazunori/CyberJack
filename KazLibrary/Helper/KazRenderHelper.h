@@ -10,6 +10,47 @@
 
 namespace KazRenderHelper
 {
+	struct DrawIndexedInstancedData
+	{
+		UINT indexCountPerInstance;
+		UINT instanceCount;
+		UINT startIndexLocation;
+		UINT baseVertexLocation;
+		UINT startInstanceLocation;
+	};
+
+	struct IASetVertexBuffersData
+	{
+		UINT slot;
+		UINT numViews;
+		D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
+	};
+
+	struct DrawInstanceCommandData
+	{
+		D3D_PRIMITIVE_TOPOLOGY topology;
+		KazRenderHelper::IASetVertexBuffersData vertexBufferDrawData;
+		D3D12_INDEX_BUFFER_VIEW indexBufferView;
+		KazRenderHelper::DrawIndexedInstancedData drawIndexInstancedData;
+	};
+
+	KazRenderHelper::DrawInstanceCommandData SetDrawCommandData(const D3D_PRIMITIVE_TOPOLOGY &TOPOLOGY, const D3D12_VERTEX_BUFFER_VIEW &VERTEX_VIEW, const D3D12_INDEX_BUFFER_VIEW &INDEX_VIEW, UINT INDECIES_NUM, UINT INSTANCE_NUM)
+	{
+		DrawInstanceCommandData result;
+		result.topology = TOPOLOGY;
+		result.vertexBufferDrawData.vertexBufferView = VERTEX_VIEW;
+		result.vertexBufferDrawData.numViews = INSTANCE_NUM;
+		result.vertexBufferDrawData.slot = 0;
+		result.indexBufferView = INDEX_VIEW;
+		result.drawIndexInstancedData.indexCountPerInstance = INDECIES_NUM;
+		result.drawIndexInstancedData.instanceCount = 1;
+		result.drawIndexInstancedData.baseVertexLocation = 0;
+		result.drawIndexInstancedData.startIndexLocation = 0;
+		result.drawIndexInstancedData.startInstanceLocation = 0;
+		return result;
+	};
+
+
 	/// <summary>
 	/// 描画に必要なクラスのポインタ
 	/// </summary>

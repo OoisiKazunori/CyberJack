@@ -674,6 +674,9 @@
     <ClInclude Include="KazLibrary\Render\CircleRender.h">
       <Filter>ソース ファイル\KazLib\Render</Filter>
     </ClInclude>
+    <ClInclude Include="KazLibrary\Helper\KazImGuiHelper.h">
+      <Filter>ソース ファイル\KazLib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

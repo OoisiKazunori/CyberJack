@@ -11,24 +11,6 @@ Sprite3DRender::Sprite3DRender(const KazMath::Vec2<float> ANCHOR_POINT)
 
 	gpuBuffer = std::make_unique<CreateGpuBuffer>();
 
-	positionDirtyFlag = std::make_unique<DirtySet>(data.transform.pos);
-	scaleDirtyFlag = std::make_unique<DirtySet>(data.transform.scale);
-	rotationDirtyFlag = std::make_unique<DirtySet>(data.transform.rotation);
-
-	flipXDirtyFlag = std::make_unique<DirtyFlag<bool>>(&data.flip.x, false);
-	flipYDirtyFlag = std::make_unique<DirtyFlag<bool>>(&data.flip.y, false);
-
-	textureHandleDirtyFlag = std::make_unique<DirtyFlag<RESOURCE_HANDLE>>(&data.handle);
-	animationHandleDirtyFlag = std::make_unique<DirtyFlag<RESOURCE_HANDLE>>(&data.animationHandle);
-
-
-	cameraViewDirtyFlag = std::make_unique<DirtySet>(renderData.cameraMgrInstance->view);
-	cameraProjectionDirtyFlag = std::make_unique<DirtySet>(renderData.cameraMgrInstance->perspectiveMat);
-	cameraBillBoardDirtyFlag = std::make_unique<DirtySet>(renderData.cameraMgrInstance->billBoard);
-
-	sizeDirtyFlag = std::make_unique<DirtySet>(data.size);
-
-	motherDirtyFlag = std::make_unique<DirtySet>(data.motherMat);
 
 
 	//データの定義-----------------------------------------------------------------------------------------------------
@@ -87,25 +69,11 @@ void Sprite3DRender::Draw()
 
 
 	//DirtyFlag検知-----------------------------------------------------------------------------------------------------	
-	bool lMatFlag = cameraViewDirtyFlag->FloatDirty() || cameraProjectionDirtyFlag->FloatDirty() || cameraBillBoardDirtyFlag->FloatDirty() || motherDirtyFlag->FloatDirty();
-	bool lMatrixDirtyFlag = positionDirtyFlag->FloatDirty() || scaleDirtyFlag->FloatDirty() || rotationDirtyFlag->FloatDirty();
-	bool lScaleDirtyFlag = this->scaleDirtyFlag->FloatDirty();
-
-	bool localsizeDirtyFlag = sizeDirtyFlag->FloatDirty();
-
-	bool lFlipXDirtyFlag = this->flipXDirtyFlag->Dirty();
-	bool lFlipYDirtyFlag = this->flipYDirtyFlag->Dirty();
-
-	bool lTextureHandleDirtyFlag = this->textureHandleDirtyFlag->Dirty();
-	bool lAnimationHandleDirtyFlag = this->animationHandleDirtyFlag->Dirty();
-
-	bool verticesDirtyFlag = lFlipXDirtyFlag || lFlipYDirtyFlag || lTextureHandleDirtyFlag || lAnimationHandleDirtyFlag || lScaleDirtyFlag || localsizeDirtyFlag || true;
 	//DirtyFlag検知-----------------------------------------------------------------------------------------------------
 
 
 
 	//行列計算-----------------------------------------------------------------------------------------------------
-	if (lMatrixDirtyFlag || lMatFlag || true)
 	{
 		baseMatWorldData.matWorld = XMMatrixIdentity();
 		baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
@@ -135,7 +103,6 @@ void Sprite3DRender::Draw()
 
 	//読み込んだテクスチャのサイズ
 	//読み込んだ画像のサイズを合わせる
-	if (lTextureHandleDirtyFlag || lScaleDirtyFlag || localsizeDirtyFlag)
 	{
 		if (DescriptorHeapMgr::Instance()->GetType(data.handle) != DESCRIPTORHEAP_MEMORY_TEXTURE_RENDERTARGET)
 		{
@@ -202,7 +169,6 @@ void Sprite3DRender::Draw()
 	}
 
 	//UV切り取り
-	if (lAnimationHandleDirtyFlag || lScaleDirtyFlag)
 	{
 		KazMath::Vec2<int> divSize = renderData.shaderResourceMgrInstance->GetDivData(data.handle).divSize;
 		KazMath::Vec2<float> tmpSize = { data.transform.scale.x, data.transform.scale.y };
@@ -221,12 +187,10 @@ void Sprite3DRender::Draw()
 	}
 
 	//X軸にUVを反転
-	if (lFlipXDirtyFlag)
 	{
 		KazRenderHelper::FlipXUv(&vertices[0].uv, &vertices[1].uv, &vertices[2].uv, &vertices[3].uv);
 	}
 	//Y軸にUVを反転
-	if (lFlipYDirtyFlag)
 	{
 		KazRenderHelper::FlipYUv(&vertices[0].uv, &vertices[1].uv, &vertices[2].uv, &vertices[3].uv);
 	}
@@ -234,7 +198,6 @@ void Sprite3DRender::Draw()
 
 
 	//頂点データに何か変更があったら転送する
-	if (verticesDirtyFlag)
 	{
 		gpuBuffer->TransData(vertexBufferHandle, vertices.data(), VertByte);
 	}
@@ -273,20 +236,6 @@ void Sprite3DRender::Draw()
 
 
 	//DirtyFlagの更新-----------------------------------------------------------------------------------------------------
-	positionDirtyFlag->Record();
-	this->scaleDirtyFlag->Record();
-	rotationDirtyFlag->Record();
-	this->flipXDirtyFlag->Record();
-	this->flipYDirtyFlag->Record();
-	this->textureHandleDirtyFlag->Record();
-	this->animationHandleDirtyFlag->Record();
-
-	sizeDirtyFlag->Record();
-
-	cameraBillBoardDirtyFlag->Record();
-	cameraProjectionDirtyFlag->Record();
-	cameraViewDirtyFlag->Record();
-	motherDirtyFlag->Record();
 	//DirtyFlagの更新-----------------------------------------------------------------------------------------------------
 }
 

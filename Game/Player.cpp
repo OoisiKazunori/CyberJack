@@ -76,11 +76,11 @@ void Player::Update()
 
 	if (redFlag)
 	{
-		render->data.color = { 255.0f,0.0f,0.0f,255.0f };
+		render->data.color = { 255,0,0,255 };
 	}
 	else
 	{
-		render->data.color = { 255.0f,255.0f,255.0f,255.0f };
+		render->data.color = { 255,255,255,255 };
 	}
 	//----------HP‚ªŒ¸‚Á‚½‚çƒvƒŒƒCƒ„[‚ğÔ‚­‚·‚é----------
 

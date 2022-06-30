@@ -4,18 +4,6 @@
 
 FbxModelRender::FbxModelRender()
 {
-	//modelData = ObjResourceMgr::Instance()->GetResourceData(HANDLE);
-	//VertByte = modelData.vert.size() * sizeof(Vertex);
-	//IndexByte = modelData.indexNum.size() * sizeof(unsigned short);
-
-	positionDirtyFlag.reset(new DirtySet(data.transform.pos));
-	scaleDirtyFlag.reset(new DirtySet(data.transform.scale));
-	rotationDirtyFlag.reset(new DirtySet(data.transform.rotation));
-	fbxHandleDirtyFlag.reset(new DirtyFlag<RESOURCE_HANDLE>(&data.handle));
-	cameraViewDirtyFlag.reset(new DirtySet(renderData.cameraMgrInstance->view));
-	cameraProjectionDirtyFlag.reset(new DirtySet(renderData.cameraMgrInstance->perspectiveMat));
-
-
 	gpuBuffer = std::make_unique<CreateGpuBuffer>();
 	constBufferHandle[0] = CreateConstBuffer(sizeof(ConstBufferData), typeid(ConstBufferData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DRAW);
 	constBufferHandle[1] = CreateConstBuffer(sizeof(ConstBufferDataSkin), typeid(ConstBufferDataSkin).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_SKINING);
@@ -138,18 +126,6 @@ void FbxModelRender::Draw()
 		renderData.cmdListInstance->cmdList->IASetVertexBuffers(0, 1, &resourceData->vertexBufferView);
 		renderData.cmdListInstance->cmdList->IASetIndexBuffer(&resourceData->indexBufferView);
 		renderData.cmdListInstance->cmdList->DrawIndexedInstanced(resourceData->indicisNum, 1, 0, 0, 0);
-
-
-		//DirtyFlagの更新-----------------------------------------------------------------------------------------------------
-		positionDirtyFlag->Record();
-		scaleDirtyFlag->Record();
-		rotationDirtyFlag->Record();
-
-		this->fbxHandleDirtyFlag->Record();
-
-		cameraProjectionDirtyFlag->Record();
-		cameraViewDirtyFlag->Record();
-		//DirtyFlagの更新-----------------------------------------------------------------------------------------------------
 	}
 	else
 	{

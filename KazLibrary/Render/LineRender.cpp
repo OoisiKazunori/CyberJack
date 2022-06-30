@@ -4,14 +4,6 @@ LineRender::LineRender()
 {
 	gpuBuffer = std::make_unique<CreateGpuBuffer>();
 
-	positionDirtyFlag[0].reset(new DirtySet(data.startPos));
-	positionDirtyFlag[1].reset(new DirtySet(data.endPos));
-
-	cameraViewDirtyFlag.reset(new DirtySet(renderData.cameraMgrInstance->view));
-	cameraProjectionDirtyFlag.reset(new DirtySet(renderData.cameraMgrInstance->perspectiveMat));
-	cameraBillBoardDirtyFlag.reset(new DirtySet(renderData.cameraMgrInstance->billBoard));
-
-
 	vertices[0].pos.x = 0;
 	vertices[0].pos.y = 0;
 	vertices[0].pos.z = 0;
@@ -58,17 +50,6 @@ void LineRender::Draw()
 
 
 
-	//DirtyFlag検知-----------------------------------------------------------------------------------------------------	
-	bool lPositionDirtyFlag = this->positionDirtyFlag[0]->FloatDirty() || this->positionDirtyFlag[1]->FloatDirty();
-
-	bool cameraMatDirtyFlag = cameraViewDirtyFlag->FloatDirty() || cameraProjectionDirtyFlag->FloatDirty() || cameraBillBoardDirtyFlag->FloatDirty();
-	//DirtyFlag検知-----------------------------------------------------------------------------------------------------
-
-
-
-
-
-	if (lPositionDirtyFlag)
 	{
 		vertices[0].pos = data.startPos.ConvertXMFLOAT3();
 		vertices[1].pos = data.endPos.ConvertXMFLOAT3();
@@ -78,7 +59,6 @@ void LineRender::Draw()
 
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 	//行列
-	if (cameraMatDirtyFlag || true)
 	{
 		ConstBufferData constMap;
 		constMap.world = baseMatWorldData.matWorld;
@@ -90,7 +70,6 @@ void LineRender::Draw()
 	}
 
 	//頂点データに何か変更があったら転送する
-	if (lPositionDirtyFlag)
 	{
 		gpuBuffer->TransData(vertexBufferHandle, vertices.data(), vertByte);
 	}
@@ -110,11 +89,5 @@ void LineRender::Draw()
 
 
 	//DirtyFlagの更新-----------------------------------------------------------------------------------------------------
-	this->positionDirtyFlag[0]->Record();
-	this->positionDirtyFlag[1]->Record();
-
-	cameraBillBoardDirtyFlag->Record();
-	cameraProjectionDirtyFlag->Record();
-	cameraViewDirtyFlag->Record();
 	//DirtyFlagの更新-----------------------------------------------------------------------------------------------------
 }

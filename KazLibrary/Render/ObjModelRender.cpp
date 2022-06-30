@@ -6,19 +6,6 @@ ObjModelRender::ObjModelRender(bool INSTANCE_FLAG, int INSTANCE_NUM, bool MATERI
 	instanceFlag = INSTANCE_FLAG;
 	instanceNum = INSTANCE_NUM;
 
-	positionDirtyFlag.reset(new DirtySet(data.transform.pos));
-	scaleDirtyFlag.reset(new DirtySet(data.transform.scale));
-	rotationDirtyFlag.reset(new DirtySet(data.transform.rotation));
-
-	upVectorDirtyFlag.reset(new DirtySet(data.upVector));
-
-	objHandleDirtyFlag.reset(new DirtyFlag<RESOURCE_HANDLE>(&data.handle));
-
-
-	cameraViewDirtyFlag.reset(new DirtySet(renderData.cameraMgrInstance->view));
-	cameraProjectionDirtyFlag.reset(new DirtySet(renderData.cameraMgrInstance->perspectiveMat));
-
-
 	gpuBuffer = std::make_unique<CreateGpuBuffer>();
 
 	if (!instanceFlag)
@@ -147,14 +134,5 @@ void ObjModelRender::Draw()
 
 
 	//DirtyFlagの更新-----------------------------------------------------------------------------------------------------
-	positionDirtyFlag->Record();
-	scaleDirtyFlag->Record();
-	rotationDirtyFlag->Record();
-	upVectorDirtyFlag->Record();
-
-	this->objHandleDirtyFlag->Record();
-
-	cameraProjectionDirtyFlag->Record();
-	cameraViewDirtyFlag->Record();
 	//DirtyFlagの更新-----------------------------------------------------------------------------------------------------
 }
