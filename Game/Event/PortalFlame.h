@@ -16,10 +16,8 @@ public:
 
 	void Start();
 	bool Flame();
-
-	void SetZ(float Z);
-private:
 	KazMath::Vec3<float>basePos;
+private:
 
 	bool startFlag;
 

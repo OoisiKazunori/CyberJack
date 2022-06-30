@@ -136,12 +136,17 @@ void PortalFlame::Init(const KazMath::Vec3<float> &POS, const KazMath::Vec2<floa
 	flameIndex = 0;
 	makeFlameMaxTimer = 10;
 	readyToFlashFlag = false;
+	basePos = POS;
 }
 
 void PortalFlame::Update()
 {
 	if (startFlag)
 	{
+		const float lSpeed = 0.4f;
+		basePos.z -= lSpeed;
+
+
 		//ƒ|[ƒ^ƒ‹˜g‚Ì¶¬‚Ì‰ß’ö‚ð•`‰æ‚·‚é-------------------------
 		std::array<std::array<KazMath::Vec3<float>, 2>, 4>lTmpVecPos;
 		const int START = 0;
@@ -443,9 +448,4 @@ void PortalFlame::Start()
 bool PortalFlame::Flame()
 {
 	return readyToFlashFlag;
-}
-
-void PortalFlame::SetZ(float Z)
-{
-	basePos.z = Z - 1.0f;
 }

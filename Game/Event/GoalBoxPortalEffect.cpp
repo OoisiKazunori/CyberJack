@@ -23,7 +23,6 @@ void GoalBoxPortalEffect::Update()
 {
 	if (startFlag)
 	{
-		sprite->data.transform.pos.z -= 0.5f;
 		if (sprite->data.transform.pos.z <= 12.2f)
 		{
 			sprite->data.transform.pos.z = 12.2f;
@@ -35,16 +34,12 @@ void GoalBoxPortalEffect::Update()
 			KazMath::Vec3<float> distance = lerpScale - sprite->data.transform.scale;
 			sprite->data.transform.scale += distance * 0.1f;
 		}
+		if (lerpScale.x - 0.1f <= sprite->data.transform.scale.x)
+		{
+			sprite->data.transform.scale.x = lerpScale.x;
+		}
 		++timer;
 	}
-
-	//‘JˆÚ’²®—p
-	//ImGui::Begin("Sprite");
-	//ImGui::InputFloat("PosZ", &sprite->data.transform.pos.z);
-	//ImGui::InputFloat("ScaleX", &sprite->data.transform.scale.x);
-	//ImGui::InputFloat("ScaleY", &sprite->data.transform.scale.y);
-	//ImGui::End();
-
 }
 
 void GoalBoxPortalEffect::Draw()
