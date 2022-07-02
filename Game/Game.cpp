@@ -23,7 +23,7 @@ Game::Game()
 	model->data.transform.pos = { 0.0f,0.0f,20.0f };
 	model->data.transform.scale = { 5.0f,5.0f,5.0f };
 	model->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "hamster.obj");
-	model->data.color = { 255.0f,0.0f,0.0f,255.0f };
+	model->data.color = { 255,0,0,255 };
 
 	//mainRenderTarget.data.handle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, BG_COLOR, DXGI_FORMAT_R8G8B8A8_UNORM);
 	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };

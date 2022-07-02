@@ -30,18 +30,18 @@ void IEnemy::Dead()
 	iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag = false;
 }
 
-void IEnemy::DeadEffect(KazMath::Vec3<float> *POS, KazMath::Vec3<float> *ROTATION, float *ALPHA)
+void IEnemy::DeadEffect(KazMath::Vec3<float> *POS, KazMath::Vec3<float> *ROTATION, int *ALPHA)
 {
 	if (*ALPHA <= 0)
 	{
-		*ALPHA = 0.0f;
+		*ALPHA = 0;
 	}
 	else
 	{
 		KazMath::Vec3<float> rota{ 5.0f,5.0f,5.0f };
 		*ROTATION += rota;
 		POS->y -= 0.5f;
-		*ALPHA -= 5.0f;
+		*ALPHA -= 5;
 	}
 }
 

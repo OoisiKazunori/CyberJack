@@ -16,9 +16,9 @@ void SplineMisile::Init(const KazMath::Vec3<float> &POS)
 	iEnemy_ModelRender->data.transform.scale = { 1.3f,1.3f,1.3f };
 	iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX;
 	iEnemy_ModelRender->data.removeMaterialFlag = false;
-	iEnemy_ModelRender->data.color.x = 255.0f;
-	iEnemy_ModelRender->data.color.y = 255.0f;
-	iEnemy_ModelRender->data.color.z = 255.0f;
+	iEnemy_ModelRender->data.color.color.x = 255;
+	iEnemy_ModelRender->data.color.color.y = 255;
+	iEnemy_ModelRender->data.color.color.z = 255;
 
 	iEnemy_EnemyStatusData->timer = maxTime;
 	iEnemy_EnemyStatusData->hitBox.radius = 5.0f;
@@ -81,10 +81,10 @@ void SplineMisile::Update()
 	{
 		iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME_MULTITEX;
 		iEnemy_ModelRender->data.removeMaterialFlag = true;
-		iEnemy_ModelRender->data.color.x = 255.0f;
-		iEnemy_ModelRender->data.color.y = 255.0f;
-		iEnemy_ModelRender->data.color.z = 255.0f;
-		DeadEffect(&iEnemy_ModelRender->data.transform.pos, &iEnemy_ModelRender->data.transform.rotation, &iEnemy_ModelRender->data.color.w);
+		iEnemy_ModelRender->data.color.color.x = 255;
+		iEnemy_ModelRender->data.color.color.y = 255;
+		iEnemy_ModelRender->data.color.color.z = 255;
+		DeadEffect(&iEnemy_ModelRender->data.transform.pos, &iEnemy_ModelRender->data.transform.rotation, &iEnemy_ModelRender->data.color.color.a);
 
 		if (!initDeadSoundFlag)
 		{
@@ -142,7 +142,7 @@ void SplineMisile::Update()
 	}
 
 	//Ž€–Sˆ—
-	if (iEnemy_ModelRender->data.color.w <= 0.0f)
+	if (iEnemy_ModelRender->data.color.color.a <= 0.0f)
 	{
 		iOperationData.initFlag = false;
 	}
