@@ -6,11 +6,11 @@
 
 AnnounceStageUI::AnnounceStageUI()
 {
-	flameTex.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "Flame.png");
-	areaTex[0].data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "A.png");
-	areaTex[1].data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "R.png");
-	areaTex[2].data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "E.png");
-	areaTex[3].data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "A.png");
+	flameTex.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "Flame.png");
+	areaTex[0].data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "A.png");
+	areaTex[1].data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "R.png");
+	areaTex[2].data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "E.png");
+	areaTex[3].data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "A.png");
 
 
 	numberHandle[0] = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "CursorNum0.png");
@@ -152,8 +152,8 @@ void AnnounceStageUI::AnnounceStage(int STAGE_NUM)
 	std::vector<int>num = KazHelper::CountNumber(stageNum, 2);
 
 	float scale = 1.45f;
-	areaTex[4].data.handle = numberHandle[num[0]];
+	areaTex[4].data.handleData = numberHandle[num[0]];
 	areaTex[4].data.transform.scale = { scale,scale };
-	areaTex[5].data.handle = numberHandle[num[1]];
+	areaTex[5].data.handleData = numberHandle[num[1]];
 	areaTex[5].data.transform.scale = { scale,scale };
 }

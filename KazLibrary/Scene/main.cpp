@@ -89,6 +89,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		sm.Update();
 		sm.Draw();
 	
+		CameraMgr::Instance()->Record();
 		imgui.Set();
 		RenderTargetStatus::Instance()->SwapResourceBarrier();
 

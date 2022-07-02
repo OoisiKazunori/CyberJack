@@ -33,7 +33,8 @@ private:
 	Sprite2DRender mainRenderTarget;
 	Sprite2DRender addRenderTarget;
 	Sprite2DRender luminaceTex;
-	
+	bool changeFlag;
+	bool animFlag;
 	BackGroundForDebug bg;
 
 	std::vector<RESOURCE_HANDLE>multipassHandle;

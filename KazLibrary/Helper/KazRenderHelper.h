@@ -34,22 +34,7 @@ namespace KazRenderHelper
 		KazRenderHelper::DrawIndexedInstancedData drawIndexInstancedData;
 	};
 
-	KazRenderHelper::DrawInstanceCommandData SetDrawCommandData(const D3D_PRIMITIVE_TOPOLOGY &TOPOLOGY, const D3D12_VERTEX_BUFFER_VIEW &VERTEX_VIEW, const D3D12_INDEX_BUFFER_VIEW &INDEX_VIEW, UINT INDECIES_NUM, UINT INSTANCE_NUM)
-	{
-		DrawInstanceCommandData result;
-		result.topology = TOPOLOGY;
-		result.vertexBufferDrawData.vertexBufferView = VERTEX_VIEW;
-		result.vertexBufferDrawData.numViews = INSTANCE_NUM;
-		result.vertexBufferDrawData.slot = 0;
-		result.indexBufferView = INDEX_VIEW;
-		result.drawIndexInstancedData.indexCountPerInstance = INDECIES_NUM;
-		result.drawIndexInstancedData.instanceCount = 1;
-		result.drawIndexInstancedData.baseVertexLocation = 0;
-		result.drawIndexInstancedData.startIndexLocation = 0;
-		result.drawIndexInstancedData.startInstanceLocation = 0;
-		return result;
-	};
-
+	DrawInstanceCommandData SetDrawCommandData(const D3D_PRIMITIVE_TOPOLOGY &TOPOLOGY, const D3D12_VERTEX_BUFFER_VIEW &VERTEX_VIEW, const D3D12_INDEX_BUFFER_VIEW &INDEX_VIEW, UINT INDECIES_NUM, UINT INSTANCE_NUM);
 
 	/// <summary>
 	/// 描画に必要なクラスのポインタ

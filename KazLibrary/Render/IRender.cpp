@@ -45,3 +45,19 @@ void IRender::SetConstBufferOnCmdList(PipeLineNames pipeline, bool REMOVE_DATA_F
 		}
 	}
 }
+
+void IRender::DrawCommand(const KazRenderHelper::DrawInstanceCommandData &DATA)
+{
+	//•`‰æ–½—ß-----------------------------------------------------------------------------------------------------
+	renderData.cmdListInstance->cmdList->IASetPrimitiveTopology(DATA.topology);
+	renderData.cmdListInstance->cmdList->IASetVertexBuffers(DATA.vertexBufferDrawData.slot, DATA.vertexBufferDrawData.numViews, &DATA.vertexBufferDrawData.vertexBufferView);
+	renderData.cmdListInstance->cmdList->IASetIndexBuffer(&DATA.indexBufferView);
+	renderData.cmdListInstance->cmdList->DrawIndexedInstanced(
+		DATA.drawIndexInstancedData.indexCountPerInstance,
+		DATA.drawIndexInstancedData.instanceCount,
+		DATA.drawIndexInstancedData.startIndexLocation,
+		DATA.drawIndexInstancedData.baseVertexLocation,
+		DATA.drawIndexInstancedData.startInstanceLocation
+	);
+	//•`‰æ–½—ß-----------------------------------------------------------------------------------------------------
+}

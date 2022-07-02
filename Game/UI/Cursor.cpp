@@ -17,7 +17,7 @@ Cursor::Cursor()
 
 	baseSpeed = 10.0f;
 	flameHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::CursorPath + "CursorBase.png");
-	cursorFlameTex->data.handle = flameHandle;
+	cursorFlameTex->data.handleData = flameHandle;
 	cursorFlameTex->data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
 	//cursorFlameTex->data.pipelineName = PIPELINE_NAME_SPRITE_MULTITEX;
 
@@ -49,7 +49,7 @@ Cursor::Cursor()
 
 	for (int i = 0; i < cursorEffectTex.size(); ++i)
 	{
-		cursorEffectTex[i].cursorEffectTex->data.handle = flameHandle;
+		cursorEffectTex[i].cursorEffectTex->data.handleData = flameHandle;
 		cursorEffectTex[i].cursorEffectTex->data.pipelineName = PIPELINE_NAME_SPRITE_MULTITEX;
 	}
 
@@ -133,7 +133,7 @@ void Cursor::Update()
 			notEnableLockOnFlag = false;
 		}
 	}
-	numberTex->data.handle = numberHandle[lockOnNum];
+	numberTex->data.handleData = numberHandle[lockOnNum];
 
 
 	//何もロックオンしていない時は中心の十字を回す

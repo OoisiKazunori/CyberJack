@@ -39,7 +39,7 @@ Game::Game()
 
 	handles =
 		RenderTargetStatus::Instance()->CreateMultiRenderTarget(data, DXGI_FORMAT_R8G8B8A8_UNORM);
-	mainRenderTarget.data.handle = handles[0];
+	mainRenderTarget.data.handleData = handles[0];
 
 	addHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, XMFLOAT3(0.0f, 0.0f, 0.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
 	addRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
@@ -49,7 +49,7 @@ Game::Game()
 
 
 	luminaceTex.data.pipelineName = PIPELINE_NAME_SPRITE_LUMI;
-	luminaceTex.data.handle = handles[0];
+	luminaceTex.data.handleData = handles[0];
 	luminaceTex.data.addHandle.handle[0] = handles[1];
 	luminaceTex.data.addHandle.paramType[0] = GRAPHICS_PRAMTYPE_TEX2;
 	luminaceTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
@@ -71,18 +71,18 @@ Game::Game()
 	stages[2] = std::make_unique<ThridStage>();
 
 
-	blackTex.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "Black.png");
+	blackTex.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "Black.png");
 	blackTex.data.pipelineName = PIPELINE_NAME_SPRITE_Z_ALWAYS;
 	blackTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	blackTex.data.transform.scale = { 2000.0f,2000.0f };
 	blackTex.data.alpha = { 0.0f };
 
 
-	pressAButtonTex.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "PressAButton.png");
+	pressAButtonTex.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "PressAButton.png");
 	pressAButtonTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f + 100.0f };
 	pressAButtonTex.data.transform.scale = { 0.4f,0.4f };
 
-	gameOverTex.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::GameOverPath + "GameOver.png");
+	gameOverTex.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::GameOverPath + "GameOver.png");
 	gameOverTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	gameOverTex.data.transform.scale = { 1.2f,1.2f };
 
@@ -1251,7 +1251,7 @@ void Game::Draw()
 		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 
 		mainRenderTarget.Draw();
-		addRenderTarget.data.handle = buler->BlurImage(addHandle);
+		addRenderTarget.data.handleData = buler->BlurImage(addHandle);
 		addRenderTarget.Draw();
 
 		movieEffect.Draw();

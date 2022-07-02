@@ -20,10 +20,10 @@ ClassScene::ClassScene()
 	handle = mainRenderTarget->CreateConstBuffer(sizeof(constBufferVhsData), typeid(constBufferVhsData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
 
 
-	gameRenderTarget->data.handle =
+	gameRenderTarget->data.handleData =
 		RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, BG_COLOR, DXGI_FORMAT_R8G8B8A8_UNORM);
 
-	mainRenderTarget->data.handle =
+	mainRenderTarget->data.handleData =
 		RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, BG_COLOR, DXGI_FORMAT_R8G8B8A8_UNORM);
 
 	std::vector<MultiRenderTargetData>lMultiRenderTargetData;
@@ -130,11 +130,11 @@ void ClassScene::Draw()
 
 	if (KeyBoradInputManager::Instance()->InputState(DIK_O))
 	{
-		mainRenderTarget->data.handle = multiHandle[1];
+		mainRenderTarget->data.handleData = multiHandle[1];
 	}
 	else
 	{
-		mainRenderTarget->data.handle = multiHandle[0];
+		mainRenderTarget->data.handleData = multiHandle[0];
 	}
 	mainRenderTarget->Draw();
 }

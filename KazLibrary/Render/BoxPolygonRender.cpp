@@ -4,6 +4,8 @@ BoxPolygonRender::BoxPolygonRender(bool INSTANCE_FLAG, int INSTANCE_NUM)
 {
 	gpuBuffer = std::make_unique<CreateGpuBuffer>();
 
+	int a = INSTANCE_NUM;
+	a = 0;
 	const float lSize = 1.0f;
 
 	Vertex lVertices[] =
@@ -176,7 +178,7 @@ void BoxPolygonRender::Draw()
 
 		//バッファの転送-----------------------------------------------------------------------------------------------------
 		//行列
-		if (renderData.cameraMgrInstance->Dirty() || data.color.Dirty())
+		if (data.transform.Dirty() || renderData.cameraMgrInstance->Dirty() || data.color.Dirty())
 		{
 			ConstBufferData constMap;
 			constMap.world = baseMatWorldData.matWorld;

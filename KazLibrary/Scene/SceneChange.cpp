@@ -9,7 +9,7 @@ using namespace ChangeScene;
 
 SceneChange::SceneChange()
 {
-	sceneTex.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::SceneChangePath + "SceneChange.png");
+	sceneTex.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::SceneChangePath + "SceneChange.png");
 	sceneTex.data.pipelineName = PIPELINE_NAME_SPRITE_Z_ALWAYS;
 	transform.pos.y = WIN_Y / 2.0f;
 }

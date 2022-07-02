@@ -12,7 +12,6 @@ public:
 	~Sprite2DRender();
 	void Draw();
 
-	XMMATRIX GetMotherMatrix();
 	Sprite2DData data;
 private:
 	array<SpriteVertex, 4> vertices;
@@ -20,17 +19,15 @@ private:
 	KazMath::Vec2<float> anchorPoint;
 	KazMath::Vec2<int> texSize;
 
-	PipeLineNames pipeline;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 	D3D12_INDEX_BUFFER_VIEW indexBufferView;
 
 
-	XMMATRIX motherMat;
 	RESOURCE_HANDLE vertexBufferHandle;
 	RESOURCE_HANDLE indexBufferHandle;
 	RESOURCE_HANDLE constBufferHandle;
 
-	UINT VertByte;
+	UINT vertByte;
 	UINT IndexByte;
 };
 

@@ -35,36 +35,67 @@ struct FlipData
 	bool x;
 	bool y;
 
-	FlipData()
+	FlipData() :x(false), y(false), xDirtyFlag(&x, false), yDirtyFlag(&y, false)
 	{
-		x = false;
-		y = false;
+	}
+
+	void Record()
+	{
+		xDirtyFlag.Record();
+		yDirtyFlag.Record();
+	}
+
+	DirtyFlag<bool>xDirtyFlag;
+	DirtyFlag<bool>yDirtyFlag;
+};
+
+struct ResourceHandle
+{
+	RESOURCE_HANDLE handle;
+	DirtyFlag<RESOURCE_HANDLE>flag;
+
+	ResourceHandle() :handle(-1), flag(&handle)
+	{}
+
+	void operator=(RESOURCE_HANDLE HANDLE)
+	{
+		handle = HANDLE;
+	}
+	bool operator==(RESOURCE_HANDLE HANDLE)
+	{
+		return handle == HANDLE;
 	}
 };
+
 
 struct Sprite2DData :public IData
 {
 	KazMath::Transform2D transform;
-	RESOURCE_HANDLE handle;
-	RESOURCE_HANDLE animationHandle;
+	ResourceHandle handleData;
+	ResourceHandle animationHandle;
 	FlipData flip;
-	int pipelineName;
+	PipeLineNames pipelineName;
 
 	bool changeSizeTypeFlag;
 	XMFLOAT4 size;
 	float alpha;
-
 	AddTextureData addHandle;
 
 	Sprite2DData()
 	{
 		address = this;
-		animationHandle = -1;
-		handle = -1;
 		changeSizeTypeFlag = false;
 		alpha = 255.0f;
-		pipelineName = static_cast<int>(PIPELINE_NAME_SPRITE);
+		pipelineName = PIPELINE_NAME_SPRITE;
 	}
+
+	void Record()
+	{
+		transform.Record();
+		handleData.flag.Record();
+		animationHandle.flag.Record();
+		flip.Record();
+	};
 };
 
 

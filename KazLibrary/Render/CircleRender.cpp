@@ -10,7 +10,7 @@ CircleRender::CircleRender()
 	std::vector<USHORT> indi(VERT_NUMBER * 3);
 
 	indicesNum = static_cast<UINT>(indi.size());
-	float PI_F2 = XM_2PI;
+	const float PI_F2 = XM_2PI;
 
 
 	//頂点データ
@@ -64,6 +64,7 @@ CircleRender::CircleRender()
 	indexBufferView = KazBufferHelper::SetIndexBufferView(gpuBuffer->GetGpuAddress(indexBufferHandle), IndexByte);
 	//ビューの設定-----------------------------------------------------------------------------------------------------
 
+	drawCommandData = KazRenderHelper::SetDrawCommandData(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, vertexBufferView, indexBufferView, indicesNum, 1);
 }
 
 void CircleRender::Draw()

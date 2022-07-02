@@ -580,9 +580,9 @@ namespace KazMath
 		Vec3<float> rotation;
 
 		Transform3D():
-			positionDirtyFlag(std::make_unique<DirtyFlag<Vec3<float>>>(&pos)),
-			scaleDirtyFlag(std::make_unique<DirtyFlag<Vec3<float>>>(&scale)),
-			rotationDirtyFlag(std::make_unique<DirtyFlag<Vec3<float>>>(&rotation)),
+			positionDirtyFlag(DirtyFlag<Vec3<float>>(&pos)),
+			scaleDirtyFlag(DirtyFlag<Vec3<float>>(&scale)),
+			rotationDirtyFlag(DirtyFlag<Vec3<float>>(&rotation)),
 			pos(Vec3<float>(0.0f, 0.0f, 0.0f)),
 			scale(Vec3<float>(1.0f, 1.0f, 1.0f)),
 			rotation(Vec3<float>(0.0f, 0.0f, 0.0f))
@@ -591,13 +591,13 @@ namespace KazMath
 
 		bool Dirty()
 		{
-			return positionDirtyFlag->Dirty() || scaleDirtyFlag->Dirty() || rotationDirtyFlag->Dirty();
+			return positionDirtyFlag.Dirty() || scaleDirtyFlag.Dirty() || rotationDirtyFlag.Dirty();
 		};
 		void Record()
 		{
-			positionDirtyFlag->Record();
-			scaleDirtyFlag->Record();
-			rotationDirtyFlag->Record();
+			positionDirtyFlag.Record();
+			scaleDirtyFlag.Record();
+			rotationDirtyFlag.Record();
 		};
 
 
@@ -608,9 +608,9 @@ namespace KazMath
 			rotation = OBJ.rotation;
 		}
 		private:
-		std::unique_ptr<DirtyFlag<Vec3<float>>>positionDirtyFlag;
-		std::unique_ptr<DirtyFlag<Vec3<float>>>scaleDirtyFlag;
-		std::unique_ptr<DirtyFlag<Vec3<float>>>rotationDirtyFlag;
+		DirtyFlag<Vec3<float>>positionDirtyFlag;
+		DirtyFlag<Vec3<float>>scaleDirtyFlag;
+		DirtyFlag<Vec3<float>>rotationDirtyFlag;
 	};
 
 	/// <summary>
@@ -621,12 +621,39 @@ namespace KazMath
 		Vec2<float> pos;
 		Vec2<float> scale;
 		float rotation;
-		Transform2D()
+
+		DirtyFlag<Vec2<float>>positionDirtyFlag;
+		DirtyFlag<Vec2<float>>scaleDirtyFlag;
+		DirtyFlag<float>rotationDirtyFlag;
+
+
+		Transform2D():
+			positionDirtyFlag(&pos),
+			scaleDirtyFlag(&scale),
+			rotationDirtyFlag(&rotation),
+			pos(Vec2<float>(0.0f, 0.0f)),
+			scale(Vec2<float>(1.0f, 1.0f)),
+			rotation(0.0f)
 		{
-			pos = { 0.0f,0.0f };
-			scale = { 1.0f,1.0f };
-			rotation = 0.0f;
 		};
+
+		bool Dirty()
+		{
+			return positionDirtyFlag.Dirty() || scaleDirtyFlag.Dirty() || rotationDirtyFlag.Dirty();
+		};
+		void Record()
+		{
+			positionDirtyFlag.Record();
+			scaleDirtyFlag.Record();
+			rotationDirtyFlag.Record();
+		};
+
+		void operator=(const KazMath::Transform2D &OBJ)
+		{
+			pos = OBJ.pos;
+			scale = OBJ.scale;
+			rotation = OBJ.rotation;
+		}
 	};
 
 	struct BaseMatWorldData

@@ -16,7 +16,7 @@ PortalScene::PortalScene()
 
 	multipassHandle =
 		RenderTargetStatus::Instance()->CreateMultiRenderTarget(data, DXGI_FORMAT_R8G8B8A8_UNORM);
-	mainRenderTarget.data.handle = multipassHandle[0];
+	mainRenderTarget.data.handleData = multipassHandle[0];
 	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	mainRenderTarget.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
 
@@ -27,13 +27,17 @@ PortalScene::PortalScene()
 
 
 	luminaceTex.data.pipelineName = PIPELINE_NAME_SPRITE_LUMI;
-	luminaceTex.data.handle = multipassHandle[0];
+	luminaceTex.data.handleData = multipassHandle[0];
 	luminaceTex.data.addHandle.handle[0] = multipassHandle[1];
 	luminaceTex.data.addHandle.paramType[0] = GRAPHICS_PRAMTYPE_TEX2;
 	luminaceTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 
 	buler = std::make_unique<GaussianBuler>(KazMath::Vec2<UINT>(WIN_X, WIN_Y));
 
+	//mainRenderTarget.data.handleData = TextureResourceMgr::Instance()->LoadDivGraph(KazFilePathName::TestPath + "AnimationTest.png", 2, 1, 32, 32);
+
+	changeFlag = true;
+	animFlag = false;
 }
 
 PortalScene::~PortalScene()
@@ -105,11 +109,31 @@ void PortalScene::Input()
 
 	if (input->InputTrigger(DIK_SPACE))
 	{
-		portal.Start();
+		changeFlag = !changeFlag;
 	}
-	if (input->InputTrigger(DIK_R))
+	
+	if (changeFlag)
 	{
-		portal.Init(initPos);
+		mainRenderTarget.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "tex.png");
+	}
+	else
+	{
+		mainRenderTarget.data.handleData = TextureResourceMgr::Instance()->LoadDivGraph(KazFilePathName::TestPath + "AnimationTest.png", 2, 1, 32, 32);
+	}
+
+
+	if (input->InputTrigger(DIK_R) )
+	{
+		animFlag = !animFlag;
+	}
+
+	if (animFlag)
+	{
+		mainRenderTarget.data.animationHandle.handle = 0;
+	}
+	else
+	{
+		mainRenderTarget.data.animationHandle.handle = 1;
 	}
 
 	if (input->InputTrigger(DIK_T))
@@ -130,8 +154,8 @@ void PortalScene::Update()
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 0);
 
 
-	ImGui::Begin("Box");
-	KazImGuiHelper::InputTransform(&box.data.transform);
+	ImGui::Begin("CheckDirtyFlag");
+	KazImGuiHelper::InputTransform2D(&mainRenderTarget.data.transform);
 	ImGui::End();
 
 
@@ -149,6 +173,7 @@ void PortalScene::Draw()
 	//stringEffect.Draw();
 	//portalFlame.Draw();
 
+
 	box.Draw();
 
 	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Draw Luminance");
@@ -162,8 +187,10 @@ void PortalScene::Draw()
 	RenderTargetStatus::Instance()->PrepareToCloseBarrier(addHandle);
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 	mainRenderTarget.Draw();
-	addRenderTarget.data.handle = buler->BlurImage(addHandle);
-	addRenderTarget.Draw();
+	//addRenderTarget.data.handleData = buler->BlurImage(addHandle);
+	//addRenderTarget.Draw();
+
+
 	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 }
 

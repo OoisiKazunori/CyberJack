@@ -1,5 +1,22 @@
 #include "KazRenderHelper.h"
 
+KazRenderHelper::DrawInstanceCommandData KazRenderHelper::SetDrawCommandData(const D3D_PRIMITIVE_TOPOLOGY &TOPOLOGY, const D3D12_VERTEX_BUFFER_VIEW &VERTEX_VIEW, const D3D12_INDEX_BUFFER_VIEW &INDEX_VIEW, UINT INDECIES_NUM, UINT INSTANCE_NUM)
+{
+	KazRenderHelper::DrawInstanceCommandData result;
+	result.topology = TOPOLOGY;
+	result.vertexBufferDrawData.vertexBufferView = VERTEX_VIEW;
+	result.vertexBufferDrawData.numViews = INSTANCE_NUM;
+	result.vertexBufferDrawData.slot = 0;
+	result.indexBufferView = INDEX_VIEW;
+	result.drawIndexInstancedData.indexCountPerInstance = INDECIES_NUM;
+	result.drawIndexInstancedData.instanceCount = 1;
+	result.drawIndexInstancedData.baseVertexLocation = 0;
+	result.drawIndexInstancedData.startIndexLocation = 0;
+	result.drawIndexInstancedData.startInstanceLocation = 0;
+	return result;
+};
+
+
 array<KazMath::Vec2<float>, 4> KazRenderHelper::ChangePlaneScale(const KazMath::Vec2<float> &LEFTUP_POS, const KazMath::Vec2<float> &RIGHTDOWN_POS, const KazMath::Vec2<float> &SCALE, const KazMath::Vec2<float> &ANCHOR_POINT, const KazMath::Vec2<int> &TEX_SIZE)
 {
 	//ì«Ç›çûÇ›
@@ -98,10 +115,10 @@ void KazRenderHelper::UVCut(const KazMath::Vec2<int> &UV_DIV_LEFTUP_POS, const K
 	int texHeight = DIV_SIZE.y;
 	int texWidth = DIV_SIZE.x;
 
-	float tex_left =		static_cast<float>(texX / TEX_SIZE.x);
-	float tex_right =		static_cast<float>((texX + texWidth) / TEX_SIZE.x);
-	float tex_top =		static_cast<float>(texY / TEX_SIZE.y);
-	float tex_bottom =	static_cast<float>((texY + texHeight) / TEX_SIZE.y);
+	float tex_left = static_cast<float>(texX) / static_cast<float>(TEX_SIZE.x);
+	float tex_right =		static_cast<float>(texX + texWidth) / static_cast<float>(TEX_SIZE.x);
+	float tex_top =		static_cast<float>(texY) / static_cast<float>(TEX_SIZE.y);
+	float tex_bottom = static_cast<float>(texY + texHeight) / static_cast<float>(TEX_SIZE.y);
 
 	*LEFTUP_POS = { tex_right,tex_top };
 	*LEFTDOWN_POS = { tex_right,tex_bottom };
