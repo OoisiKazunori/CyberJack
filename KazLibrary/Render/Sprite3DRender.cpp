@@ -47,7 +47,7 @@ Sprite3DRender::Sprite3DRender(const KazMath::Vec2<float> ANCHOR_POINT)
 	//バッファ転送-----------------------------------------------------------------------------------------------------
 
 
-	drawCommandData = KazRenderHelper::SetDrawCommandData(
+	drawIndexInstanceCommandData = KazRenderHelper::SetDrawIndexInstanceCommandData(
 		D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
 		KazBufferHelper::SetVertexBufferView(gpuBuffer->GetGpuAddress(vertexBufferHandle), vertByte, sizeof(vertices[0])),
 		KazBufferHelper::SetIndexBufferView(gpuBuffer->GetGpuAddress(indexBufferHandle), indexByte), static_cast<UINT>(indices.size()),
@@ -115,13 +115,13 @@ void Sprite3DRender::Draw()
 			lLeftUp = { 0.0f,0.0f };
 			lRightDown = { 1.0f,1.0f };
 
-			array<KazMath::Vec2<float>, 4>Vert;
+			array<KazMath::Vec2<float>, 4>lVert;
 			//サイズ変更
-			Vert = KazRenderHelper::ChangePlaneScale(lLeftUp, lRightDown, lTmpSize, anchorPoint, texSize);
+			lVert = KazRenderHelper::ChangePlaneScale(lLeftUp, lRightDown, lTmpSize, anchorPoint, texSize);
 
-			for (int i = 0; i < Vert.size(); i++)
+			for (int i = 0; i < lVert.size(); i++)
 			{
-				vertices[i].pos = { Vert[i].x,Vert[i].y,0.0f };
+				vertices[i].pos = { lVert[i].x,lVert[i].y,0.0f };
 			}
 			KazRenderHelper::InitUvPos(&vertices[0].uv, &vertices[1].uv, &vertices[2].uv, &vertices[3].uv);
 		}
@@ -209,7 +209,7 @@ void Sprite3DRender::Draw()
 	//バッファをコマンドリストに積む-----------------------------------------------------------------------------------------------------
 
 	//描画命令-----------------------------------------------------------------------------------------------------
-	DrawCommand(drawCommandData);
+	DrawIndexInstanceCommand(drawIndexInstanceCommandData);
 	//描画命令-----------------------------------------------------------------------------------------------------
 
 

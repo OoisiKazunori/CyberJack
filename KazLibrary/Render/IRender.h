@@ -26,9 +26,12 @@ protected:
 	KazMath::BaseMatWorldData baseMatWorldData;
 	KazRenderHelper::RenderInstancesData renderData;
 	unique_ptr<CreateGpuBuffer> gpuBuffer;
-	KazRenderHelper::DrawInstanceCommandData drawCommandData;
+	KazRenderHelper::DrawIndexInstanceCommandData drawIndexInstanceCommandData;
+	KazRenderHelper::DrawInstanceCommandData drawInstanceCommandData;
 
 
 
-	void DrawCommand(const KazRenderHelper::DrawInstanceCommandData &DATA);
+	void DrawIndexInstanceCommand(const KazRenderHelper::DrawIndexInstanceCommandData &DATA);
+
+	void DrawInstanceCommand(const KazRenderHelper::DrawInstanceCommandData &DATA);
 };

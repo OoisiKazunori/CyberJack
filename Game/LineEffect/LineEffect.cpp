@@ -48,8 +48,8 @@ void LineEffect::RockOn(const KazMath::Vec3<float> &START_POS, const KazMath::Ve
 		endPlayerDistance = END_PLAYER_DISTANCE;
 
 
-		float color = 255.0f;
-		line->data.color = { color,color,color ,255.0f };
+		int color = 255;
+		line->data.color = { color,color,color ,255 };
 		//234.0f,69.0f,50.0f
 
 		line->data.startPos = startPos;

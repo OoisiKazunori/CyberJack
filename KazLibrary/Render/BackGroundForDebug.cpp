@@ -1,6 +1,6 @@
 #include"../Render/BackGroundForDebug.h"
 
-BackGroundForDebug::BackGroundForDebug()
+BackGroundForDebug::BackGroundForDebug():color(41,163,231,255)
 {
 	for (int i = 0; i < 100; i++)
 	{
@@ -23,8 +23,6 @@ BackGroundForDebug::BackGroundForDebug()
 	}
 
 	//235,5,111
-
-	color = { 41,163,231,255.0f };
 }
 
 void BackGroundForDebug::Draw()
@@ -55,19 +53,19 @@ void BackGroundForDebug::Draw()
 	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 	xLine.data.startPos = { 0,0,0 };
 	xLine.data.endPos = { 30,0,0 };
-	xLine.data.color = { 255,0,0,255.0f };
+	xLine.data.color = { 255,0,0,255 };
 	xLine.data.pipelineName = pipeline;
 	//xLine.Draw();
 
 	yLine.data.startPos = { 0,0,0 };
 	yLine.data.endPos = { 0,30,0 };
-	yLine.data.color = { 0,255,0,255.0f };
+	yLine.data.color = { 0,255,0,255 };
 	yLine.data.pipelineName = pipeline;
 	//yLine.Draw();
 
 	zLine.data.startPos = { 0,0,0 };
 	zLine.data.endPos = { 0,0,30 };
-	zLine.data.color = { 0,0,255,255.0f };
+	zLine.data.color = { 0,0,255,255 };
 	zLine.data.pipelineName = pipeline;
 	//zLine.Draw();
 }

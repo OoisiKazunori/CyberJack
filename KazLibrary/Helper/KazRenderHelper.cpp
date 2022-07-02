@@ -1,8 +1,8 @@
 #include "KazRenderHelper.h"
 
-KazRenderHelper::DrawInstanceCommandData KazRenderHelper::SetDrawCommandData(const D3D_PRIMITIVE_TOPOLOGY &TOPOLOGY, const D3D12_VERTEX_BUFFER_VIEW &VERTEX_VIEW, const D3D12_INDEX_BUFFER_VIEW &INDEX_VIEW, UINT INDECIES_NUM, UINT INSTANCE_NUM)
+KazRenderHelper::DrawIndexInstanceCommandData KazRenderHelper::SetDrawIndexInstanceCommandData(const D3D_PRIMITIVE_TOPOLOGY &TOPOLOGY, const D3D12_VERTEX_BUFFER_VIEW &VERTEX_VIEW, const D3D12_INDEX_BUFFER_VIEW &INDEX_VIEW, UINT INDECIES_NUM, UINT INSTANCE_NUM)
 {
-	KazRenderHelper::DrawInstanceCommandData result;
+	KazRenderHelper::DrawIndexInstanceCommandData result;
 	result.topology = TOPOLOGY;
 	result.vertexBufferDrawData.vertexBufferView = VERTEX_VIEW;
 	result.vertexBufferDrawData.numViews = INSTANCE_NUM;
@@ -14,8 +14,21 @@ KazRenderHelper::DrawInstanceCommandData KazRenderHelper::SetDrawCommandData(con
 	result.drawIndexInstancedData.startIndexLocation = 0;
 	result.drawIndexInstancedData.startInstanceLocation = 0;
 	return result;
-};
+}
 
+KazRenderHelper::DrawInstanceCommandData KazRenderHelper::SetDrawInstanceCommandData(const D3D_PRIMITIVE_TOPOLOGY &TOPOLOGY, const D3D12_VERTEX_BUFFER_VIEW &VERTEX_VIEW, UINT VERTEX_NUM, UINT INSTANCE_NUM)
+{
+	KazRenderHelper::DrawInstanceCommandData result;
+	result.topology = TOPOLOGY;
+	result.vertexBufferDrawData.vertexBufferView = VERTEX_VIEW;
+	result.vertexBufferDrawData.numViews = INSTANCE_NUM;
+	result.vertexBufferDrawData.slot = 0;
+	result.drawInstanceData.vertexCountPerInstance = VERTEX_NUM;
+	result.drawInstanceData.instanceCount = 1;
+	result.drawInstanceData.startVertexLocation = 0;
+	result.drawInstanceData.startInstanceLocation = 0;
+	return result;
+}
 
 array<KazMath::Vec2<float>, 4> KazRenderHelper::ChangePlaneScale(const KazMath::Vec2<float> &LEFTUP_POS, const KazMath::Vec2<float> &RIGHTDOWN_POS, const KazMath::Vec2<float> &SCALE, const KazMath::Vec2<float> &ANCHOR_POINT, const KazMath::Vec2<int> &TEX_SIZE)
 {

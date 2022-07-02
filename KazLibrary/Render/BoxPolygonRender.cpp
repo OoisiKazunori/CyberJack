@@ -136,7 +136,7 @@ BoxPolygonRender::BoxPolygonRender(bool INSTANCE_FLAG, int INSTANCE_NUM)
 	gpuBuffer->TransData(lIndexBufferHandle, indiVec.data(), lIndexByte);
 
 
-	drawCommandData = KazRenderHelper::SetDrawCommandData(
+	drawIndexInstanceCommandData = KazRenderHelper::SetDrawIndexInstanceCommandData(
 		D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
 		KazBufferHelper::SetVertexBufferView(gpuBuffer->GetGpuAddress(lVertBufferHandle), lVertByte, sizeof(lVertices[0])),
 		KazBufferHelper::SetIndexBufferView(gpuBuffer->GetGpuAddress(lIndexBufferHandle), lIndexByte),
@@ -199,7 +199,7 @@ void BoxPolygonRender::Draw()
 	//バッファをコマンドリストに積む-----------------------------------------------------------------------------------------------------
 
 	//描画命令-------------------------
-	DrawCommand(drawCommandData);
+	DrawIndexInstanceCommand(drawIndexInstanceCommandData);
 	//描画命令-------------------------
 
 	data.Record();

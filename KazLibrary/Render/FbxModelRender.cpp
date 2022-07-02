@@ -16,7 +16,7 @@ void FbxModelRender::Draw()
 	if (data.handle.flag.Dirty())
 	{
 		resourceData = FbxModelResourceMgr::Instance()->GetResourceData(data.handle.handle);
-		drawCommandData = KazRenderHelper::SetDrawCommandData(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, resourceData->vertexBufferView, resourceData->indexBufferView, resourceData->indicisNum, 1);
+		drawIndexInstanceCommandData = KazRenderHelper::SetDrawIndexInstanceCommandData(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, resourceData->vertexBufferView, resourceData->indexBufferView, resourceData->indicisNum, 1);
 	}
 
 
@@ -112,7 +112,7 @@ void FbxModelRender::Draw()
 		SetConstBufferOnCmdList(data.pipelineName);
 
 
-		DrawCommand(drawCommandData);
+		DrawIndexInstanceCommand(drawIndexInstanceCommandData);
 
 	}
 	else

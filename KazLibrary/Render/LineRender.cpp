@@ -30,9 +30,12 @@ LineRender::LineRender()
 	//バッファ生成-----------------------------------------------------------------------------------------------------
 
 
-	//ビューの設定-----------------------------------------------------------------------------------------------------
-	vertexBufferView = KazBufferHelper::SetVertexBufferView(gpuBuffer->GetGpuAddress(vertexBufferHandle), vertByte, sizeof(vertices[0]));
-	//ビューの設定-----------------------------------------------------------------------------------------------------
+	drawInstanceCommandData = KazRenderHelper::SetDrawInstanceCommandData(
+		D3D_PRIMITIVE_TOPOLOGY_LINELIST,
+		KazBufferHelper::SetVertexBufferView(gpuBuffer->GetGpuAddress(vertexBufferHandle), vertByte, sizeof(vertices[0])),
+		static_cast<UINT>(vertices.size()),
+		1
+		);
 
 	baseMatWorldData.matWorld = XMMatrixIdentity();
 }
@@ -44,12 +47,11 @@ LineRender::~LineRender()
 void LineRender::Draw()
 {
 	//パイプライン設定-----------------------------------------------------------------------------------------------------
-	pipeline = static_cast<PipeLineNames>(data.pipelineName);
-	renderData.pipelineMgr->SetPipeLineAndRootSignature(pipeline);
+	renderData.pipelineMgr->SetPipeLineAndRootSignature(data.pipelineName);
 	//パイプライン設定-----------------------------------------------------------------------------------------------------
 
 
-
+	if (data.startPosDirtyFlag.Dirty() || data.endPosDirtyFlag.Dirty())
 	{
 		vertices[0].pos = data.startPos.ConvertXMFLOAT3();
 		vertices[1].pos = data.endPos.ConvertXMFLOAT3();
@@ -59,17 +61,19 @@ void LineRender::Draw()
 
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 	//行列
+	if (renderData.cameraMgrInstance->ViewDirty() || data.color.Dirty())
 	{
 		ConstBufferData constMap;
 		constMap.world = baseMatWorldData.matWorld;
 		constMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex);
 		constMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
-		constMap.color = KazRenderHelper::SendColorDataToGPU(data.color);
+		constMap.color = data.color.ConvertColorRateToXMFLOAT4();
 		constMap.mat = constMap.world * constMap.view * constMap.viewproj;
 		TransData(&constMap, constBufferHandle, typeid(constMap).name());
 	}
 
 	//頂点データに何か変更があったら転送する
+	if (data.startPosDirtyFlag.Dirty() || data.endPosDirtyFlag.Dirty())
 	{
 		gpuBuffer->TransData(vertexBufferHandle, vertices.data(), vertByte);
 	}
@@ -77,17 +81,13 @@ void LineRender::Draw()
 
 
 	//バッファをコマンドリストに積む-----------------------------------------------------------------------------------------------------
-	SetConstBufferOnCmdList(pipeline);
+	SetConstBufferOnCmdList(data.pipelineName);
 	//バッファをコマンドリストに積む-----------------------------------------------------------------------------------------------------
 
 
 	//描画命令-----------------------------------------------------------------------------------------------------
-	renderData.cmdListInstance->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
-	renderData.cmdListInstance->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
-	renderData.cmdListInstance->cmdList->DrawInstanced(static_cast<UINT>(vertices.size()), 1, 0, 0);
+	DrawInstanceCommand(drawInstanceCommandData);
 	//描画命令-----------------------------------------------------------------------------------------------------
 
-
-	//DirtyFlagの更新-----------------------------------------------------------------------------------------------------
-	//DirtyFlagの更新-----------------------------------------------------------------------------------------------------
+	data.Record();
 }

@@ -17,21 +17,21 @@ PolygonRender::PolygonRender(const array<SpriteVertex, 4> &DATA)
 
 	vertices = DATA;
 
-	
-	VertByte = KazBufferHelper::GetBufferSize<UINT>(vertices.size(), sizeof(SpriteVertex));
-	IndexByte = KazBufferHelper::GetBufferSize<UINT>(indices.size(), sizeof(unsigned short));
+
+	vertByte = KazBufferHelper::GetBufferSize<UINT>(vertices.size(), sizeof(SpriteVertex));
+	indexByte = KazBufferHelper::GetBufferSize<UINT>(indices.size(), sizeof(unsigned short));
 
 
 	//バッファ生成-----------------------------------------------------------------------------------------------------
 	//頂点バッファ
 	vertexBufferHandle = gpuBuffer->CreateBuffer
 	(
-		KazBufferHelper::SetVertexBufferData(VertByte)
+		KazBufferHelper::SetVertexBufferData(vertByte)
 	);
 	//インデックスバッファ
 	indexBufferHandle = gpuBuffer->CreateBuffer
 	(
-		KazBufferHelper::SetIndexBufferData(IndexByte)
+		KazBufferHelper::SetIndexBufferData(indexByte)
 	);
 	//定数バッファ
 	constBufferHandle = CreateConstBuffer(sizeof(ConstBufferData), typeid(ConstBufferData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DRAW);
@@ -39,32 +39,30 @@ PolygonRender::PolygonRender(const array<SpriteVertex, 4> &DATA)
 
 
 	//バッファ転送-----------------------------------------------------------------------------------------------------
-	gpuBuffer->TransData(vertexBufferHandle, vertices.data(), VertByte);
-	gpuBuffer->TransData(indexBufferHandle, indices.data(), IndexByte);
+	gpuBuffer->TransData(vertexBufferHandle, vertices.data(), vertByte);
+	gpuBuffer->TransData(indexBufferHandle, indices.data(), indexByte);
 	//バッファ転送-----------------------------------------------------------------------------------------------------
 
 
-	//ビューの設定-----------------------------------------------------------------------------------------------------
-	vertexBufferView = KazBufferHelper::SetVertexBufferView(gpuBuffer->GetGpuAddress(vertexBufferHandle), VertByte, sizeof(vertices[0]));
-	indexBufferView = KazBufferHelper::SetIndexBufferView(gpuBuffer->GetGpuAddress(indexBufferHandle), IndexByte);
-	//ビューの設定-----------------------------------------------------------------------------------------------------
+	drawIndexInstanceCommandData = KazRenderHelper::SetDrawIndexInstanceCommandData(
+		D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
+		KazBufferHelper::SetVertexBufferView(gpuBuffer->GetGpuAddress(vertexBufferHandle), vertByte, sizeof(vertices[0])),
+		KazBufferHelper::SetIndexBufferView(gpuBuffer->GetGpuAddress(indexBufferHandle), indexByte),
+		static_cast<UINT>(indices.size()),
+		1
+	);
 }
 
 void PolygonRender::Draw()
 {
 
 	//パイプライン設定-----------------------------------------------------------------------------------------------------
-	pipeline = static_cast<PipeLineNames>(data.pipelineName);
-	renderData.pipelineMgr->SetPipeLineAndRootSignature(pipeline);
+	renderData.pipelineMgr->SetPipeLineAndRootSignature(data.pipelineName);
 	//パイプライン設定-----------------------------------------------------------------------------------------------------
 
 
-	//DirtyFlag検知-----------------------------------------------------------------------------------------------------	
-	//DirtyFlag検知-----------------------------------------------------------------------------------------------------
-
-
-
 	//行列計算-----------------------------------------------------------------------------------------------------
+	if (data.transform.Dirty() || data.billBoardDirtyFlag.Dirty() || renderData.cameraMgrInstance->BillboardDirty())
 	{
 		baseMatWorldData.matWorld = XMMatrixIdentity();
 		baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
@@ -88,34 +86,26 @@ void PolygonRender::Draw()
 
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 	//行列
-	//if (lMatrixDirtyFlag || lMatFlag)
-	//{
-	ConstBufferData constMap;
-	constMap.world = baseMatWorldData.matWorld;
-	constMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex);
-	constMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
-	constMap.color = { 0.0f,0.0f,0.0f,data.alpha / 255.0f };
-	constMap.mat = constMap.world * constMap.view * constMap.viewproj;
-
-	//gpuBuffer->TransData();
-	TransData(&constMap, constBufferHandle, typeid(ConstBufferData).name());
-	//}
+	if (data.transform.Dirty() || renderData.cameraMgrInstance->ViewDirty() || renderData.cameraMgrInstance->BillboardDirty())
+	{
+		ConstBufferData constMap;
+		constMap.world = baseMatWorldData.matWorld;
+		constMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex);
+		constMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
+		constMap.color = data.color.ConvertColorRateToXMFLOAT4();
+		constMap.mat = constMap.world * constMap.view * constMap.viewproj;
+		TransData(&constMap, constBufferHandle, typeid(ConstBufferData).name());
+	}
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 
 
 	//バッファをコマンドリストに積む-----------------------------------------------------------------------------------------------------
-	SetConstBufferOnCmdList(pipeline);
+	SetConstBufferOnCmdList(data.pipelineName);
 	//バッファをコマンドリストに積む-----------------------------------------------------------------------------------------------------
 
 	//描画命令-----------------------------------------------------------------------------------------------------
-	renderData.cmdListInstance->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	renderData.cmdListInstance->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
-	renderData.cmdListInstance->cmdList->IASetIndexBuffer(&indexBufferView);
-	renderData.cmdListInstance->cmdList->DrawIndexedInstanced(static_cast<UINT>(indices.size()), 1, 0, 0, 0);
+	DrawIndexInstanceCommand(drawIndexInstanceCommandData);
 	//描画命令-----------------------------------------------------------------------------------------------------
 
-
-
-	//DirtyFlagの更新-----------------------------------------------------------------------------------------------------
-	//DirtyFlagの更新-----------------------------------------------------------------------------------------------------
+	data.Record();
 }

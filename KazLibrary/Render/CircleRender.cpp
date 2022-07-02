@@ -60,7 +60,7 @@ CircleRender::CircleRender()
 	gpuBuffer->TransData(indexBufferHandle, lIndi.data(), IndexByte);
 	//バッファ転送-----------------------------------------------------------------------------------------------------
 
-	drawCommandData = KazRenderHelper::SetDrawCommandData(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, 
+	drawIndexInstanceCommandData = KazRenderHelper::SetDrawIndexInstanceCommandData(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, 
 		KazBufferHelper::SetVertexBufferView(gpuBuffer->GetGpuAddress(vertexBufferHandle), VertByte, sizeof(lVert[0])),
 		KazBufferHelper::SetIndexBufferView(gpuBuffer->GetGpuAddress(indexBufferHandle), IndexByte),
 		indicesNum,
@@ -160,7 +160,7 @@ void CircleRender::Draw()
 	//バッファをコマンドリストに積む-----------------------------------------------------------------------------------------------------
 
 	//描画命令-----------------------------------------------------------------------------------------------------
-	DrawCommand(drawCommandData);
+	DrawIndexInstanceCommand(drawIndexInstanceCommandData);
 	//描画命令-----------------------------------------------------------------------------------------------------
 
 	data.Record();

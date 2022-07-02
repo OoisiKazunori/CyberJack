@@ -76,17 +76,12 @@ struct Sprite2DData :public IData
 	FlipData flip;
 	PipeLineNames pipelineName;
 
-	bool changeSizeTypeFlag;
-	XMFLOAT4 size;
-	float alpha;
+	KazMath::Color color;
 	AddTextureData addHandle;
 
-	Sprite2DData()
+	Sprite2DData() :color(0, 0, 0, 255), pipelineName(PIPELINE_NAME_SPRITE)
 	{
 		address = this;
-		changeSizeTypeFlag = false;
-		alpha = 255.0f;
-		pipelineName = PIPELINE_NAME_SPRITE;
 	}
 
 	void Record()
@@ -95,6 +90,7 @@ struct Sprite2DData :public IData
 		handleData.flag.Record();
 		animationHandle.flag.Record();
 		flip.Record();
+		color.Record();
 	};
 };
 
@@ -135,21 +131,20 @@ struct Pera3DData :public IData
 	KazMath::Transform3D transform;
 	bool billBoardFlag;
 	XMMATRIX motherMat;
-	int pipelineName;
+	PipeLineNames pipelineName;
+	KazMath::Color color;
 
-	bool changeSizeTypeFlag;
-	XMFLOAT4 size;
-	float alpha;
-
-	Pera3DData()
+	DirtyFlag<bool>billBoardDirtyFlag;
+	Pera3DData() :pipelineName(PIPELINE_NAME_SPRITE), color(0, 0, 0, 255), billBoardDirtyFlag(&billBoardFlag)
 	{
 		address = this;
-		pipelineName = static_cast<int>(PIPELINE_NAME_SPRITE);
-
-		alpha = 255.0f;
-		changeSizeTypeFlag = false;
-		size = { 1.0f,1.0f,1.0f,1.0 };
 		motherMat = XMMatrixIdentity();
+	}
+	void Record()
+	{
+		transform.Record();
+		color.Record();
+		billBoardDirtyFlag.Record();
 	}
 };
 
@@ -191,17 +186,23 @@ struct LineDrawData :public IData
 {
 	KazMath::Vec3<float> startPos;
 	KazMath::Vec3<float> endPos;
-	XMFLOAT4 color;
+	KazMath::Color color;
 	XMMATRIX motherMat;
-	int pipelineName;
+	PipeLineNames pipelineName;
 
+	DirtyFlag<KazMath::Vec3<float>> startPosDirtyFlag;
+	DirtyFlag<KazMath::Vec3<float>> endPosDirtyFlag;
 
-	LineDrawData()
+	LineDrawData() :pipelineName(PIPELINE_NAME_LINE), color(255, 255, 255, 255), startPosDirtyFlag(&startPos), endPosDirtyFlag(&endPos)
 	{
 		address = this;
-		pipelineName = static_cast<int>(PIPELINE_NAME_LINE);
-		color = { 255.0f,255.0f,255.0f,255.0f };
 		motherMat = XMMatrixIdentity();
+	}
+	void Record()
+	{
+		startPosDirtyFlag.Record();
+		endPosDirtyFlag.Record();
+		color.Record();
 	}
 };
 

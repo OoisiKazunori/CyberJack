@@ -43,7 +43,7 @@ void AnnounceStageUI::Init()
 		areaTex[i].data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
 		areaTex[i].data.transform.scale = { 2.0f,2.0f };
 		areaTex[i].data.transform.pos = { 590.0f - sub - 75.0f + i * (size + sub),153.0f };
-		areaTex[i].data.alpha = 255.0f;
+		areaTex[i].data.color.color.a = 255;
 	}
 }
 
@@ -88,11 +88,11 @@ void AnnounceStageUI::Update()
 	}
 
 	//ƒGƒŠƒA•¶š‚ğƒ¿‚ÅÁ‚·
-	if (110 <= timer && 1.0f <= areaTex[0].data.alpha)
+	if (110 <= timer && 1 <= areaTex[0].data.color.color.a)
 	{
 		for (int i = 0; i < areaTex.size(); ++i)
 		{
-			areaTex[i].data.alpha = 255.0f / 30.0f;
+			areaTex[i].data.color.color.a = static_cast<int>(255.0f / 30.0f);
 		}
 	}
 

@@ -75,7 +75,7 @@ Game::Game()
 	blackTex.data.pipelineName = PIPELINE_NAME_SPRITE_Z_ALWAYS;
 	blackTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	blackTex.data.transform.scale = { 2000.0f,2000.0f };
-	blackTex.data.alpha = { 0.0f };
+	blackTex.data.color.color.a = 0;
 
 
 	pressAButtonTex.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "PressAButton.png");
@@ -1002,12 +1002,12 @@ void Game::Update()
 	if (readyToBlackOutFlag || readyToBlackOutToGoTitleFlag)
 	{
 		//暗転
-		if (blackTex.data.alpha <= 255.0f)
+		if (blackTex.data.color.color.a <= 255.0f)
 		{
-			blackTex.data.alpha += 5.0f;
+			blackTex.data.color.color.a += 5;
 		}
 		//タイトル画面に戻る
-		else if (readyToBlackOutToGoTitleFlag && 255.0f <= blackTex.data.alpha)
+		else if (readyToBlackOutToGoTitleFlag && 255 <= blackTex.data.color.color.a)
 		{
 			sceneNum = 0;
 		}
@@ -1021,9 +1021,9 @@ void Game::Update()
 	else
 	{
 		//明転
-		if (0 <= blackTex.data.alpha)
+		if (0 <= blackTex.data.color.color.a)
 		{
-			blackTex.data.alpha -= 5.0f;
+			blackTex.data.color.color.a -= 5;
 		}
 	}
 	if (gameOverFlag)
@@ -1243,6 +1243,7 @@ void Game::Draw()
 
 		tutorialWindow.Draw();
 
+
 		//輝度抽出
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, handles[0]);
 		RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
@@ -1256,7 +1257,7 @@ void Game::Draw()
 
 		movieEffect.Draw();
 		cursor.Draw();
-
+	
 
 		if (goalBox.startPortalEffectFlag)
 		{

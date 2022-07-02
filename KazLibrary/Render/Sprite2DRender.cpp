@@ -44,7 +44,7 @@ Sprite2DRender::Sprite2DRender()
 	gpuBuffer->TransData(indexBufferHandle, indices.data(), indexByte);
 	//バッファ転送-----------------------------------------------------------------------------------------------------
 
-	drawCommandData = KazRenderHelper::SetDrawCommandData(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
+	drawIndexInstanceCommandData = KazRenderHelper::SetDrawIndexInstanceCommandData(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
 		KazBufferHelper::SetVertexBufferView(gpuBuffer->GetGpuAddress(vertexBufferHandle), vertByte, sizeof(vertices[0])),
 		KazBufferHelper::SetIndexBufferView(gpuBuffer->GetGpuAddress(indexBufferHandle), indexByte),
 		static_cast<UINT>(indices.size()),
@@ -176,13 +176,13 @@ void Sprite2DRender::Draw()
 
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 	//行列
-	if (data.transform.Dirty() || renderData.cameraMgrInstance->ViewDirty())
+	if (data.transform.Dirty() || renderData.cameraMgrInstance->ViewDirty()||data.color.Dirty())
 	{
 		ConstBufferData lConstMap;
 		lConstMap.world = baseMatWorldData.matWorld;
 		lConstMap.view = XMMatrixIdentity();
 		lConstMap.viewproj = renderData.cameraMgrInstance->orthographicMatProjection;
-		lConstMap.color = { 0.0f,0.0f,0.0f,data.alpha / 255.0f };
+		lConstMap.color = data.color.ConvertColorRateToXMFLOAT4();
 		lConstMap.mat = lConstMap.world * lConstMap.viewproj;
 		TransData(&lConstMap, constBufferHandle, typeid(lConstMap).name());
 	}
@@ -210,7 +210,7 @@ void Sprite2DRender::Draw()
 
 
 	//描画命令-----------------------------------------------------------------------------------------------------
-	DrawCommand(drawCommandData);
+	DrawIndexInstanceCommand(drawIndexInstanceCommandData);
 	//描画命令-----------------------------------------------------------------------------------------------------
 
 

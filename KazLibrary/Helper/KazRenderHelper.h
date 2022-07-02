@@ -19,6 +19,14 @@ namespace KazRenderHelper
 		UINT startInstanceLocation;
 	};
 
+	struct DrawInstancedData
+	{
+		UINT vertexCountPerInstance;
+		UINT instanceCount;
+		UINT startVertexLocation;
+		UINT startInstanceLocation;
+	};
+
 	struct IASetVertexBuffersData
 	{
 		UINT slot;
@@ -26,7 +34,7 @@ namespace KazRenderHelper
 		D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 	};
 
-	struct DrawInstanceCommandData
+	struct DrawIndexInstanceCommandData
 	{
 		D3D_PRIMITIVE_TOPOLOGY topology;
 		KazRenderHelper::IASetVertexBuffersData vertexBufferDrawData;
@@ -34,7 +42,16 @@ namespace KazRenderHelper
 		KazRenderHelper::DrawIndexedInstancedData drawIndexInstancedData;
 	};
 
-	DrawInstanceCommandData SetDrawCommandData(const D3D_PRIMITIVE_TOPOLOGY &TOPOLOGY, const D3D12_VERTEX_BUFFER_VIEW &VERTEX_VIEW, const D3D12_INDEX_BUFFER_VIEW &INDEX_VIEW, UINT INDECIES_NUM, UINT INSTANCE_NUM);
+	struct DrawInstanceCommandData
+	{
+		D3D_PRIMITIVE_TOPOLOGY topology;
+		KazRenderHelper::IASetVertexBuffersData vertexBufferDrawData;
+		KazRenderHelper::DrawInstancedData drawInstanceData;
+	};
+
+
+	DrawIndexInstanceCommandData SetDrawIndexInstanceCommandData(const D3D_PRIMITIVE_TOPOLOGY &TOPOLOGY, const D3D12_VERTEX_BUFFER_VIEW &VERTEX_VIEW, const D3D12_INDEX_BUFFER_VIEW &INDEX_VIEW, UINT INDECIES_NUM, UINT INSTANCE_NUM);
+	DrawInstanceCommandData SetDrawInstanceCommandData(const D3D_PRIMITIVE_TOPOLOGY &TOPOLOGY, const D3D12_VERTEX_BUFFER_VIEW &VERTEX_VIEW, UINT VERTEX_NUM, UINT INSTANCE_NUM);
 
 	/// <summary>
 	/// 描画に必要なクラスのポインタ

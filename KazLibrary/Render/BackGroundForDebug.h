@@ -28,6 +28,6 @@ private:
 	array<LineRender,100> verticalLine, horizontalLine;
 	LineRender xLine, yLine, zLine, rayDir;
 
-	XMFLOAT4 color;
+	KazMath::Color color;
 };
 

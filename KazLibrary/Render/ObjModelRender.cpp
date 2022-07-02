@@ -28,7 +28,7 @@ void ObjModelRender::Draw()
 	if (data.handle.flag.Dirty())
 	{
 		modelData = ObjResourceMgr::Instance()->GetResourceData(data.handle.handle);
-		drawCommandData = KazRenderHelper::SetDrawCommandData(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, modelData.vertexBufferView, modelData.indexBufferView, modelData.indexNum, instanceNum);
+		drawIndexInstanceCommandData = KazRenderHelper::SetDrawIndexInstanceCommandData(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, modelData.vertexBufferView, modelData.indexBufferView, modelData.indexNum, instanceNum);
 	}
 
 	//パイプライン設定-----------------------------------------------------------------------------------------------------
@@ -117,7 +117,7 @@ void ObjModelRender::Draw()
 
 
 	//描画命令-----------------------------------------------------------------------------------------------------
-	DrawCommand(drawCommandData);
+	DrawIndexInstanceCommand(drawIndexInstanceCommandData);
 	//描画命令-----------------------------------------------------------------------------------------------------
 
 
