@@ -4,9 +4,9 @@
 
 TutorialWindow::TutorialWindow()
 {
-	lStickUi.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TutorialPath + "LStick.png");
-	abuttonUi.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TutorialPath + "Abutton.png");
-	attackUi.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TutorialPath + "Attack.png");
+	lStickUi.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TutorialPath + "LStick.png");
+	abuttonUi.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TutorialPath + "Abutton.png");
+	attackUi.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TutorialPath + "Attack.png");
 
 	lStickUi.data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
 	abuttonUi.data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;

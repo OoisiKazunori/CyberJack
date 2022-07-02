@@ -248,7 +248,6 @@
     <ClCompile Include="KazLibrary\RenderTarget\GaussianBuler.cpp" />
     <ClCompile Include="KazLibrary\RenderTarget\RenderTargetStatus.cpp" />
     <ClCompile Include="KazLibrary\Render\BackGroundForDebug.cpp" />
-    <ClCompile Include="KazLibrary\Render\BezierCurveLineRender.cpp" />
     <ClCompile Include="KazLibrary\Render\BoxPolygonRender.cpp" />
     <ClCompile Include="KazLibrary\Render\CircleRender.cpp" />
     <ClCompile Include="KazLibrary\Render\FbxModelRender.cpp" />
@@ -352,7 +351,6 @@
     <ClInclude Include="KazLibrary\RenderTarget\GaussianBuler.h" />
     <ClInclude Include="KazLibrary\RenderTarget\RenderTargetStatus.h" />
     <ClInclude Include="KazLibrary\Render\BackGroundForDebug.h" />
-    <ClInclude Include="KazLibrary\Render\BezierCurveLineRender.h" />
     <ClInclude Include="KazLibrary\Render\BoxPolygonRender.h" />
     <ClInclude Include="KazLibrary\Render\CircleRender.h" />
     <ClInclude Include="KazLibrary\Render\FbxModelRender.h" />

@@ -269,9 +269,14 @@ XMMATRIX CameraMgr::GetPerspectiveMatProjectionAngle(float angle)
 	);;
 }
 
-bool CameraMgr::Dirty(int CAMERA_INDEX)
+bool CameraMgr::ViewDirty(int CAMERA_INDEX)
 {
 	return viewDirtyFlagArray[CAMERA_INDEX]->Dirty();
+}
+
+bool CameraMgr::BillboardDirty(int CAMERA_INDEX)
+{
+	return billBoardDirtyFlagArray[CAMERA_INDEX]->Dirty();
 }
 
 void CameraMgr::Record()

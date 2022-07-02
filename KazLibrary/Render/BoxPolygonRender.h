@@ -15,9 +15,6 @@ public:
 	PolygonDrawData data;
 private:
 	XMMATRIX motherMatrix;
-	D3D12_VERTEX_BUFFER_VIEW vertBufferView;
-	D3D12_INDEX_BUFFER_VIEW indexBufferView;
-
 
 	RESOURCE_HANDLE constBufferHandle;
 	bool instanceFlag;

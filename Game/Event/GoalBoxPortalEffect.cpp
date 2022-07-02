@@ -6,7 +6,7 @@
 GoalBoxPortalEffect::GoalBoxPortalEffect()
 {
 	sprite = std::make_unique<Sprite3DRender>();
-	sprite->data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "Test.png");
+	sprite->data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "Test.png");
 }
 
 void GoalBoxPortalEffect::Init(const KazMath::Vec3<float> &POS)

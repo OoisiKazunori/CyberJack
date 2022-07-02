@@ -231,9 +231,9 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	layerLevelTargetPos = { -4.15f,3.0f,45.0f };
 
 
-	titleLogoTex.data.alpha = 255.0f;
+	titleLogoTex.data.color.color.a = 255;
 	titleLogoTex.data.transform.pos = { 0.0f,50.0f,500.0f };
-	titleLogoTex.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TitlePath + "TitleName.png");
+	titleLogoTex.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TitlePath + "TitleName.png");
 	doneSprite.Init({ 0.0f,0.0f,500.0f }, TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TitlePath + "Start.png"));
 
 
@@ -1047,7 +1047,7 @@ void Game::Update()
 	//更新処理----------------------------------------------------------------
 	player.Update();
 	cursor.Update();
-	goalBox.portalEffect.sprite->data.handle = potalTexHandle;
+	goalBox.portalEffect.sprite->data.handleData = potalTexHandle;
 	goalBox.Update();
 	movieEffect.Update();
 	stageUI.Update();
@@ -1162,8 +1162,8 @@ void Game::Update()
 
 
 	//ゲームループの経過時間----------------------------------------------------------------
-	titleLogoTex.data.alpha = doneSprite.spriteRender.data.alpha;
-	if (titleLogoTex.data.alpha <= 0.0f && !stages[0]->startFlag)
+	titleLogoTex.data.color = doneSprite.spriteRender.data.color;
+	if (titleLogoTex.data.color.color.a <= 0 && !stages[0]->startFlag)
 	{
 		//ゲーム開始
 		gameStartFlag = true;

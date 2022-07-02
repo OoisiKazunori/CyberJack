@@ -60,13 +60,12 @@ CircleRender::CircleRender()
 	gpuBuffer->TransData(indexBufferHandle, lIndi.data(), IndexByte);
 	//バッファ転送-----------------------------------------------------------------------------------------------------
 
-
-	//ビューの設定-----------------------------------------------------------------------------------------------------
-	vertexBufferView = KazBufferHelper::SetVertexBufferView(gpuBuffer->GetGpuAddress(vertexBufferHandle), VertByte, sizeof(lVert[0]));
-	indexBufferView = KazBufferHelper::SetIndexBufferView(gpuBuffer->GetGpuAddress(indexBufferHandle), IndexByte);
-	//ビューの設定-----------------------------------------------------------------------------------------------------
-
-	drawCommandData = KazRenderHelper::SetDrawCommandData(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, vertexBufferView, indexBufferView, indicesNum, 1);
+	drawCommandData = KazRenderHelper::SetDrawCommandData(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, 
+		KazBufferHelper::SetVertexBufferView(gpuBuffer->GetGpuAddress(vertexBufferHandle), VertByte, sizeof(lVert[0])),
+		KazBufferHelper::SetIndexBufferView(gpuBuffer->GetGpuAddress(indexBufferHandle), IndexByte),
+		indicesNum,
+		1
+	);
 }
 
 void CircleRender::Draw()
@@ -132,7 +131,7 @@ void CircleRender::Draw()
 
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 	
-	if (data.color.Dirty() || data.transform.Dirty() || data.change3DDirtyFlag.Dirty() || (renderData.cameraMgrInstance->Dirty() && data.change3DFlag))
+	if (data.color.Dirty() || data.transform.Dirty() || data.change3DDirtyFlag.Dirty() || (renderData.cameraMgrInstance->ViewDirty() && data.change3DFlag))
 	{
 		//行列
 		if (data.change3DFlag)

@@ -19,15 +19,11 @@ private:
 	KazMath::Vec2<float> anchorPoint;
 	KazMath::Vec2<int> texSize;
 
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
-	D3D12_INDEX_BUFFER_VIEW indexBufferView;
-
-
 	RESOURCE_HANDLE vertexBufferHandle;
 	RESOURCE_HANDLE indexBufferHandle;
 	RESOURCE_HANDLE constBufferHandle;
 
 	UINT vertByte;
-	UINT IndexByte;
+	UINT indexByte;
 };
 

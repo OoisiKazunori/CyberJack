@@ -80,7 +80,8 @@ public:
 	XMMATRIX GetPerspectiveMatProjectionAngle(float angle);
 
 
-	bool Dirty(int CAMERA_INDEX = 0);
+	bool ViewDirty(int CAMERA_INDEX = 0);
+	bool BillboardDirty(int CAMERA_INDEX = 0);
 	void Record();
 
 	XMMATRIX view;

@@ -71,7 +71,7 @@ void ObjModelRender::Draw()
 
 		//バッファの転送-----------------------------------------------------------------------------------------------------
 		//行列
-		if (renderData.cameraMgrInstance->Dirty() || data.transform.Dirty() || data.color.Dirty())
+		if (renderData.cameraMgrInstance->ViewDirty() || data.transform.Dirty() || data.color.Dirty())
 		{
 			ConstBufferData constMap;
 			constMap.world = baseMatWorldData.matWorld;

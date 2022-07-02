@@ -609,7 +609,6 @@ namespace KazMath
 			scale = OBJ.scale;
 			rotation = OBJ.rotation;
 		}
-		private:
 		DirtyFlag<Vec3<float>>positionDirtyFlag;
 		DirtyFlag<Vec3<float>>scaleDirtyFlag;
 		DirtyFlag<Vec3<float>>rotationDirtyFlag;

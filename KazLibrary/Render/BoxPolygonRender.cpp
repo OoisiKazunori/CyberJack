@@ -135,11 +135,14 @@ BoxPolygonRender::BoxPolygonRender(bool INSTANCE_FLAG, int INSTANCE_NUM)
 	gpuBuffer->TransData(lVertBufferHandle, vertVec.data(), lVertByte);
 	gpuBuffer->TransData(lIndexBufferHandle, indiVec.data(), lIndexByte);
 
-	vertBufferView = KazBufferHelper::SetVertexBufferView(gpuBuffer->GetGpuAddress(lVertBufferHandle), lVertByte, sizeof(lVertices[0]));
-	indexBufferView = KazBufferHelper::SetIndexBufferView(gpuBuffer->GetGpuAddress(lIndexBufferHandle), lIndexByte);
 
-
-	drawCommandData = KazRenderHelper::SetDrawCommandData(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, vertBufferView, indexBufferView, lIndexLEN, INSTANCE_NUM);
+	drawCommandData = KazRenderHelper::SetDrawCommandData(
+		D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
+		KazBufferHelper::SetVertexBufferView(gpuBuffer->GetGpuAddress(lVertBufferHandle), lVertByte, sizeof(lVertices[0])),
+		KazBufferHelper::SetIndexBufferView(gpuBuffer->GetGpuAddress(lIndexBufferHandle), lIndexByte),
+		lIndexLEN,
+		INSTANCE_NUM
+	);
 }
 
 BoxPolygonRender::~BoxPolygonRender()
@@ -178,7 +181,7 @@ void BoxPolygonRender::Draw()
 
 		//バッファの転送-----------------------------------------------------------------------------------------------------
 		//行列
-		if (data.transform.Dirty() || renderData.cameraMgrInstance->Dirty() || data.color.Dirty())
+		if (data.transform.Dirty() || renderData.cameraMgrInstance->ViewDirty() || data.color.Dirty())
 		{
 			ConstBufferData constMap;
 			constMap.world = baseMatWorldData.matWorld;

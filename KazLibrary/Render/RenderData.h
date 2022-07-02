@@ -102,30 +102,32 @@ struct Sprite2DData :public IData
 struct Sprite3DData :public IData
 {
 	KazMath::Transform3D transform;
-	RESOURCE_HANDLE handle;
-	RESOURCE_HANDLE animationHandle;
+	ResourceHandle handleData;
+	ResourceHandle animationHandle;
 	FlipData flip;
 	bool billBoardFlag;
 	XMMATRIX motherMat;
-	int pipelineName;
-
-	bool changeSizeTypeFlag;
-	XMFLOAT4 size;
-	float alpha;
+	PipeLineNames pipelineName;
+	KazMath::Color color;
 
 
-	Sprite3DData()
+	Sprite3DData() :pipelineName(PIPELINE_NAME_SPRITE), billBoardDirtyFlag(&billBoardFlag), color(0, 0, 0, 255)
 	{
 		address = this;
-		animationHandle = -1;
-		handle = -1;
-		pipelineName = static_cast<int>(PIPELINE_NAME_SPRITE);
-
-		alpha = 255.0f;
-		changeSizeTypeFlag = false;
-		size = { 1.0f,1.0f,1.0f,1.0 };
 		motherMat = XMMatrixIdentity();
 	}
+
+	void Record()
+	{
+		transform.Record();
+		handleData.flag.Record();
+		animationHandle.flag.Record();
+		billBoardDirtyFlag.Record();
+		color.Record();
+		flip.Record();
+	};
+
+	DirtyFlag<bool>billBoardDirtyFlag;
 };
 
 struct Pera3DData :public IData

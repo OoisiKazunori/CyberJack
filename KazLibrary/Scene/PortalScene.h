@@ -46,7 +46,7 @@ private:
 	PortalFlame portalFlame;
 
 
-	ObjModelRender box;
+	Sprite3DRender box;
 };
 
 

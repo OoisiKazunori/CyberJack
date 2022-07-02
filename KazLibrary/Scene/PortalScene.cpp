@@ -111,20 +111,14 @@ void PortalScene::Input()
 	{
 		changeFlag = !changeFlag;
 	}
-	
 
-	if (input->InputTrigger(DIK_R) )
+	if (changeFlag)
 	{
-		animFlag = !animFlag;
-	}
-
-	if (animFlag)
-	{
-		box.data.handle.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "hamster.obj");
+		box.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "tex.png");
 	}
 	else
 	{
-		box.data.handle.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "ground.obj");
+		box.data.handleData = TextureResourceMgr::Instance()->LoadDivGraph(KazFilePathName::TestPath + "AnimationTest.png", 2, 1, 32, 32);
 	}
 
 
@@ -149,8 +143,10 @@ void PortalScene::Update()
 	ImGui::Begin("CheckDirtyFlag");
 	KazImGuiHelper::InputTransform3D(&box.data.transform);
 	KazImGuiHelper::InputVec4(&box.data.color.color, "Color");
-	KazImGuiHelper::InputVec3(&box.data.frontVector, "FrontVec");
-	KazImGuiHelper::InputVec3(&box.data.upVector, "UpVec");
+	ImGui::Checkbox("BillBoardFlag", &box.data.billBoardFlag);
+	ImGui::Checkbox("FlipX", &box.data.flip.x);
+	ImGui::Checkbox("FlipY", &box.data.flip.y);
+	ImGui::InputInt("Animation", &box.data.animationHandle.handle);
 	ImGui::End();
 
 
@@ -166,8 +162,9 @@ void PortalScene::Draw()
 	//portal.Draw();
 	//stringEffect.Draw();
 	//portalFlame.Draw();
+	bg.Draw();
 
-
+	box.Draw();
 	
 	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Draw Luminance");
 	RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, multipassHandle[0]);
@@ -179,11 +176,9 @@ void PortalScene::Draw()
 	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Draw Main RenderTarget");
 	RenderTargetStatus::Instance()->PrepareToCloseBarrier(addHandle);
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
-	//mainRenderTarget.Draw();
+	mainRenderTarget.Draw();
 	//addRenderTarget.data.handleData = buler->BlurImage(addHandle);
 	//addRenderTarget.Draw();
-	bg.Draw();
-	box.Draw();
 
 
 	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());

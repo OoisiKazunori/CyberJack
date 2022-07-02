@@ -20,7 +20,7 @@ Sprite2DRender::Sprite2DRender()
 
 
 	vertByte = KazBufferHelper::GetBufferSize<UINT>(vertices.size(), sizeof(SpriteVertex));
-	IndexByte = KazBufferHelper::GetBufferSize<UINT>(indices.size(), sizeof(sizeof(unsigned short)));
+	indexByte = KazBufferHelper::GetBufferSize<UINT>(indices.size(), sizeof(sizeof(unsigned short)));
 
 
 	//バッファ生成-----------------------------------------------------------------------------------------------------
@@ -32,7 +32,7 @@ Sprite2DRender::Sprite2DRender()
 	//インデックスバッファ
 	indexBufferHandle = gpuBuffer->CreateBuffer
 	(
-		KazBufferHelper::SetIndexBufferData(IndexByte)
+		KazBufferHelper::SetIndexBufferData(indexByte)
 	);
 	//定数バッファ
 	constBufferHandle = CreateConstBuffer(sizeof(ConstBufferData), typeid(ConstBufferData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DRAW);
@@ -41,17 +41,14 @@ Sprite2DRender::Sprite2DRender()
 
 	//バッファ転送-----------------------------------------------------------------------------------------------------
 	gpuBuffer->TransData(vertexBufferHandle, vertices.data(), vertByte);
-	gpuBuffer->TransData(indexBufferHandle, indices.data(), IndexByte);
+	gpuBuffer->TransData(indexBufferHandle, indices.data(), indexByte);
 	//バッファ転送-----------------------------------------------------------------------------------------------------
 
-
-	//ビューの設定-----------------------------------------------------------------------------------------------------
-	vertexBufferView = KazBufferHelper::SetVertexBufferView(gpuBuffer->GetGpuAddress(vertexBufferHandle), vertByte, sizeof(vertices[0]));
-	indexBufferView = KazBufferHelper::SetIndexBufferView(gpuBuffer->GetGpuAddress(indexBufferHandle), IndexByte);
-	//ビューの設定-----------------------------------------------------------------------------------------------------
-
-
-	drawCommandData = KazRenderHelper::SetDrawCommandData(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, vertexBufferView, indexBufferView, static_cast<UINT>(indices.size()), 1);
+	drawCommandData = KazRenderHelper::SetDrawCommandData(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
+		KazBufferHelper::SetVertexBufferView(gpuBuffer->GetGpuAddress(vertexBufferHandle), vertByte, sizeof(vertices[0])),
+		KazBufferHelper::SetIndexBufferView(gpuBuffer->GetGpuAddress(indexBufferHandle), indexByte),
+		static_cast<UINT>(indices.size()),
+		1);
 
 }
 
@@ -68,7 +65,7 @@ void Sprite2DRender::Draw()
 
 
 	//行列計算-----------------------------------------------------------------------------------------------------
-	if(data.transform.Dirty())
+	if (data.transform.Dirty())
 	{
 		baseMatWorldData.matWorld = XMMatrixIdentity();
 		baseMatWorldData.matWorld *= XMMatrixRotationZ(XMConvertToRadians(data.transform.rotation));
@@ -88,39 +85,24 @@ void Sprite2DRender::Draw()
 		if (DescriptorHeapMgr::Instance()->GetType(data.handleData.handle) != DESCRIPTORHEAP_MEMORY_TEXTURE_RENDERTARGET)
 		{
 			//サイズをXMFLOAT3からXMFLOAT2に直す
-			KazMath::Vec2<float> tmpSize = {};
-			XMFLOAT4 tmpModiSize = {};
-			//サイズをXMFLOAT3からXMFLOAT2に直す
-			if (!data.changeSizeTypeFlag)
-			{
-				tmpSize =  data.transform.scale;
-			}
-			else
-			{
-				tmpModiSize = data.size;
-			}
+			KazMath::Vec2<float> lTmpSize = {};
+			lTmpSize = data.transform.scale;
+
 			texSize.x = static_cast<int>(renderData.shaderResourceMgrInstance->GetTextureSize(data.handleData.handle).Width);
 			texSize.y = static_cast<int>(renderData.shaderResourceMgrInstance->GetTextureSize(data.handleData.handle).Height);
 
 
-			KazMath::Vec2<float> leftUp, rightDown;
-			leftUp = { 0.0f,0.0f };
-			rightDown = { 1.0f,1.0f };
+			KazMath::Vec2<float> lLeftUp, lRightDown;
+			lLeftUp = { 0.0f,0.0f };
+			lRightDown = { 1.0f,1.0f };
 
 			//サイズ変更
-			array<KazMath::Vec2<float>, 4>tmp;
-			if (!data.changeSizeTypeFlag)
+			array<KazMath::Vec2<float>, 4>lVert;
+			lVert = KazRenderHelper::ChangePlaneScale(lLeftUp, lRightDown, lTmpSize, anchorPoint, texSize);
+
+			for (int i = 0; i < lVert.size(); i++)
 			{
-				tmp = KazRenderHelper::ChangePlaneScale(leftUp, rightDown, tmpSize, anchorPoint, texSize);
-			}
-			else
-			{
-				tmp = KazRenderHelper::ChangeModiPlaneScale(leftUp, rightDown, tmpModiSize, anchorPoint.ConvertXMFLOAT2(), texSize.ConvertXMFLOAT2());
-			}
-			
-			for (int i = 0; i < tmp.size(); i++)
-			{
-				vertices[i].pos = { tmp[i].x,-tmp[i].y,0.0f };
+				vertices[i].pos = { lVert[i].x,-lVert[i].y,0.0f };
 			}
 
 			KazRenderHelper::InitUvPos(&vertices[0].uv, &vertices[1].uv, &vertices[2].uv, &vertices[3].uv);
@@ -128,18 +110,17 @@ void Sprite2DRender::Draw()
 		//レンダーターゲットのテクスチャサイズ
 		else
 		{
-			//サイズをXMFLOAT3からXMFLOAT2に直す
-			KazMath::Vec2<float> tmpSize = data.transform.scale;
+			KazMath::Vec2<float> lTmpSize = data.transform.scale;
 
 			texSize.x = static_cast<int>(RenderTargetStatus::Instance()->GetBufferData(data.handleData.handle)->GetDesc().Width);
 			texSize.y = static_cast<int>(RenderTargetStatus::Instance()->GetBufferData(data.handleData.handle)->GetDesc().Height);
 
-			KazMath::Vec2<float> leftUp, rightDown;
-			leftUp = { 0.0f,0.0f };
-			rightDown = { 1.0f,1.0f };
+			KazMath::Vec2<float> lLeftUp, lRightDown;
+			lLeftUp = { 0.0f,0.0f };
+			lRightDown = { 1.0f,1.0f };
 
 			//サイズ変更
-			array<KazMath::Vec2<float>, 4>tmp = KazRenderHelper::ChangePlaneScale(leftUp, rightDown, tmpSize, anchorPoint, texSize);
+			array<KazMath::Vec2<float>, 4>tmp = KazRenderHelper::ChangePlaneScale(lLeftUp, lRightDown, lTmpSize, anchorPoint, texSize);
 			for (int i = 0; i < tmp.size(); i++)
 			{
 				vertices[i].pos = { tmp[i].x,-tmp[i].y,0.0f };
@@ -148,28 +129,22 @@ void Sprite2DRender::Draw()
 	}
 
 
-	if (data.handleData.flag.Dirty())
-	{
-
-	}
-
-
 	//UV切り取り
 	if (data.handleData.flag.Dirty() || data.animationHandle.flag.Dirty())
 	{
-		KazMath::Vec2<int> divSize = renderData.shaderResourceMgrInstance->GetDivData(data.handleData.handle).divSize;
-		KazMath::Vec2<float> tmpSize = { data.transform.scale.x, data.transform.scale.y };
+		KazMath::Vec2<int> lDivSize = renderData.shaderResourceMgrInstance->GetDivData(data.handleData.handle).divSize;
+		KazMath::Vec2<float> lTmpSize = { data.transform.scale.x, data.transform.scale.y };
 
 
-		bool isItSafeToUseAnimationHandleFlag = KazHelper::IsitInAnArray(data.animationHandle.handle, renderData.shaderResourceMgrInstance->GetDivData(data.handleData.handle).divLeftUp.size());
-		bool isItSafeToUseDivDataFlag = (divSize.x != -1 && divSize.y != -1);
+		const bool lIsItSafeToUseAnimationHandleFlag = KazHelper::IsitInAnArray(data.animationHandle.handle, renderData.shaderResourceMgrInstance->GetDivData(data.handleData.handle).divLeftUp.size());
+		const bool lIsItSafeToUseDivDataFlag = (lDivSize.x != -1 && lDivSize.y != -1);
 
 
-		if (isItSafeToUseDivDataFlag && isItSafeToUseAnimationHandleFlag)
+		if (lIsItSafeToUseDivDataFlag && lIsItSafeToUseAnimationHandleFlag)
 		{
-			KazMath::Vec2<int> divLeftUpPos = renderData.shaderResourceMgrInstance->GetDivData(data.handleData.handle).divLeftUp[data.animationHandle.handle];
-			KazRenderHelper::VerticesCut(divSize, divLeftUpPos, &vertices[0].pos, &vertices[1].pos, &vertices[2].pos, &vertices[3].pos, tmpSize, anchorPoint);
-			KazRenderHelper::UVCut(divLeftUpPos, divSize, texSize, &vertices[0].uv, &vertices[1].uv, &vertices[2].uv, &vertices[3].uv);
+			KazMath::Vec2<int> lDivLeftUpPos = renderData.shaderResourceMgrInstance->GetDivData(data.handleData.handle).divLeftUp[data.animationHandle.handle];
+			KazRenderHelper::VerticesCut(lDivSize, lDivLeftUpPos, &vertices[0].pos, &vertices[1].pos, &vertices[2].pos, &vertices[3].pos, lTmpSize, anchorPoint);
+			KazRenderHelper::UVCut(lDivLeftUpPos, lDivSize, texSize, &vertices[0].uv, &vertices[1].uv, &vertices[2].uv, &vertices[3].uv);
 
 			for (int i = 0; i < vertices.size(); i++)
 			{
@@ -178,9 +153,8 @@ void Sprite2DRender::Draw()
 		}
 	}
 
-
 	//X軸にUVを反転
-	if(data.flip.xDirtyFlag.Dirty())
+	if (data.flip.xDirtyFlag.Dirty())
 	{
 		KazRenderHelper::FlipXUv(&vertices[0].uv, &vertices[1].uv, &vertices[2].uv, &vertices[3].uv);
 	}
@@ -191,9 +165,9 @@ void Sprite2DRender::Draw()
 	}
 
 
-
+	bool lFlipDirtyFlag = data.flip.xDirtyFlag.Dirty() || data.flip.yDirtyFlag.Dirty();
 	//頂点データに何か変更があったら転送する
-	if (data.handleData.flag.Dirty() || data.transform.scaleDirtyFlag.Dirty() || data.animationHandle.flag.Dirty())
+	if (data.handleData.flag.Dirty() || data.transform.scaleDirtyFlag.Dirty() || data.animationHandle.flag.Dirty() || lFlipDirtyFlag)
 	{
 		gpuBuffer->TransData(vertexBufferHandle, vertices.data(), vertByte);
 	}
@@ -202,15 +176,15 @@ void Sprite2DRender::Draw()
 
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 	//行列
-	if (data.transform.Dirty() || renderData.cameraMgrInstance->Dirty())
+	if (data.transform.Dirty() || renderData.cameraMgrInstance->ViewDirty())
 	{
-		ConstBufferData constMap;
-		constMap.world = baseMatWorldData.matWorld;
-		constMap.view = XMMatrixIdentity();
-		constMap.viewproj = renderData.cameraMgrInstance->orthographicMatProjection;
-		constMap.color = { 0.0f,0.0f,0.0f,data.alpha / 255.0f };
-		constMap.mat = constMap.world * constMap.viewproj;
-		TransData(&constMap, constBufferHandle, typeid(ConstBufferData).name());
+		ConstBufferData lConstMap;
+		lConstMap.world = baseMatWorldData.matWorld;
+		lConstMap.view = XMMatrixIdentity();
+		lConstMap.viewproj = renderData.cameraMgrInstance->orthographicMatProjection;
+		lConstMap.color = { 0.0f,0.0f,0.0f,data.alpha / 255.0f };
+		lConstMap.mat = lConstMap.world * lConstMap.viewproj;
+		TransData(&lConstMap, constBufferHandle, typeid(lConstMap).name());
 	}
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 

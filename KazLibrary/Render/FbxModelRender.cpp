@@ -64,7 +64,7 @@ void FbxModelRender::Draw()
 
 		//バッファの転送-----------------------------------------------------------------------------------------------------
 		//行列
-		if (renderData.cameraMgrInstance->Dirty() || data.transform.Dirty())
+		if (renderData.cameraMgrInstance->ViewDirty() || data.transform.Dirty())
 		{
 			ConstBufferData constMap;
 			constMap.world = baseMatWorldData.matWorld;

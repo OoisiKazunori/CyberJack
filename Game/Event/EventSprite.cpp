@@ -14,7 +14,7 @@ EventSprite::EventSprite()
 void EventSprite::Init(const KazMath::Vec3<float> &POS, int HANDLE)
 {
 	noHitHandle = HANDLE;
-	spriteRender.data.handle = noHitHandle;
+	spriteRender.data.handleData = noHitHandle;
 	spriteRender.data.transform.pos = POS;
 	hitFlag = false;
 	deadFlag = false;
@@ -24,23 +24,23 @@ void EventSprite::Init(const KazMath::Vec3<float> &POS, int HANDLE)
 	selectingFlag = false;
 
 	spriteRender.data.transform.scale = { 0.5f,0.5f,1.0f };
-	spriteRender.data.alpha = 255.0f;
+	spriteRender.data.color.color.a = 255;
 }
 
 void EventSprite::Update()
 {
 	if (selectingFlag)
 	{
-		spriteRender.data.handle = selectHandle;
+		spriteRender.data.handleData = selectHandle;
 	}
 	else
 	{
-		spriteRender.data.handle = noHitHandle;
+		spriteRender.data.handleData = noHitHandle;
 	}
 	if (!IsAlive())
 	{
 		hitFlag = true;
-		spriteRender.data.handle = hitHandle;
+		spriteRender.data.handleData = hitHandle;
 	}
 	if (hitFlag)
 	{
@@ -48,10 +48,10 @@ void EventSprite::Update()
 	}
 	if (60 <= timer)
 	{
-		spriteRender.data.alpha -= 5.0f;
+		spriteRender.data.color.color.a -= 5;
 	}
 
-	if (spriteRender.data.alpha <= 0.0f)
+	if (spriteRender.data.color.color.a <= 0)
 	{
 		deadFlag = true;
 	}
