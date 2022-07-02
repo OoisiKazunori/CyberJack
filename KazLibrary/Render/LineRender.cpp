@@ -37,7 +37,7 @@ LineRender::LineRender()
 		1
 		);
 
-	baseMatWorldData.matWorld = XMMatrixIdentity();
+	baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 }
 
 LineRender::~LineRender()

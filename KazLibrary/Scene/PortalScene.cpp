@@ -21,7 +21,7 @@ PortalScene::PortalScene()
 	mainRenderTarget.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
 
 
-	addHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, XMFLOAT3(0.0f, 0.0f, 0.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
+	addHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
 	addRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	addRenderTarget.data.pipelineName = PIPELINE_NAME_ADDBLEND;
 

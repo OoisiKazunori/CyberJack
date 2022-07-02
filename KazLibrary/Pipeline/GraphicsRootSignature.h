@@ -181,7 +181,7 @@ public:
 	/// </summary>
 	/// <param name="ROOT_SIGNATURE">指定のルートシグネチャー</param>
 	/// <returns>生成されたルートシグネチャー</returns>
-	const ComPtr<ID3D12RootSignature> GetRootSignature(RootSignatureMode ROOT_SIGNATURE);
+	const Microsoft::WRL::ComPtr<ID3D12RootSignature> GetRootSignature(RootSignatureMode ROOT_SIGNATURE);
 
 	/// <summary>
 	/// 指定のルートシグネチャー毎に設定されたルートパラメーターを渡します
@@ -206,7 +206,7 @@ private:
 	GraphicsRootSignatureParameter LightParam;
 	GraphicsRootSignatureParameter colorParam;*/
 
-	vector<ComPtr<ID3D12RootSignature>> rootSignature;
+	vector<Microsoft::WRL::ComPtr<ID3D12RootSignature>> rootSignature;
 	vector<GraphicsRootSignatureParameter> paramD;
 	friend ISingleton<GraphicsRootSignature>;
 

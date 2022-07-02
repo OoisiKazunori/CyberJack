@@ -75,18 +75,18 @@ namespace KazRenderHelper
 	};
 
 	array<KazMath::Vec2<float>, 4> ChangePlaneScale(const KazMath::Vec2<float> &LEFTUP_POS, const KazMath::Vec2<float> &RIGHTDOWN_POS, const KazMath::Vec2<float> &SCALE, const KazMath::Vec2<float> &ANCHOR_POINT, const KazMath::Vec2<int> &TEX_SIZE);
-	array<KazMath::Vec2<float>, 4> ChangeModiPlaneScale(const KazMath::Vec2<float> &LEFTUP_POS, const KazMath::Vec2<float> &RIGHTDOWN_POS, const XMFLOAT4 &SCALE, const XMFLOAT2 &ANCHOR_POINT, const XMFLOAT2 &TEX_SIZE);
+	array<KazMath::Vec2<float>, 4> ChangeModiPlaneScale(const KazMath::Vec2<float> &LEFTUP_POS, const KazMath::Vec2<float> &RIGHTDOWN_POS, const DirectX::XMFLOAT4 &SCALE, const DirectX::XMFLOAT2 &ANCHOR_POINT, const DirectX::XMFLOAT2 &TEX_SIZE);
 
-	void FlipXUv(XMFLOAT2 *UV_LEFTUP_POS, XMFLOAT2 *UV_LEFTDOWN_POS, XMFLOAT2 *UV_RIGHTUP_POS, XMFLOAT2 *UV_RIGHTDOWN_POS);
-	void FlipYUv(XMFLOAT2 *UV_LEFTUP_POS, XMFLOAT2 *UV_LEFTDOWN_POS, XMFLOAT2 *UV_RIGHTUP_POS, XMFLOAT2 *UV_RIGHTDOWN_POS);
-
-
-	void VerticesCut(const KazMath::Vec2<int> &DIV_SIZE, const KazMath::Vec2<int> &DIV_LEFTUP_POS, XMFLOAT3 *LEFTUP_POS, XMFLOAT3 *LEFTDOWN_POS, XMFLOAT3 *RIGHTUP_POS, XMFLOAT3 *RIGHTDOWN_POS, const KazMath::Vec2<float> &SCALE, const KazMath::Vec2<float> &ANCHOR_POINT);
-	void UVCut(const KazMath::Vec2<int> &UV_DIV_LEFTUP_POS, const KazMath::Vec2<int> &DIV_SIZE, const KazMath::Vec2<int> &TEX_SIZE, XMFLOAT2 *LEFTUP_POS, XMFLOAT2 *LEFTDOWN_POS, XMFLOAT2 *RIGHTUP_POS, XMFLOAT2 *RIGHTDOWN_POS);
+	void FlipXUv(DirectX::XMFLOAT2 *UV_LEFTUP_POS, DirectX::XMFLOAT2 *UV_LEFTDOWN_POS, DirectX::XMFLOAT2 *UV_RIGHTUP_POS, DirectX::XMFLOAT2 *UV_RIGHTDOWN_POS);
+	void FlipYUv(DirectX::XMFLOAT2 *UV_LEFTUP_POS, DirectX::XMFLOAT2 *UV_LEFTDOWN_POS, DirectX::XMFLOAT2 *UV_RIGHTUP_POS, DirectX::XMFLOAT2 *UV_RIGHTDOWN_POS);
 
 
-	void InitUvPos(XMFLOAT2 *UV_LEFTUP_POS, XMFLOAT2 *UV_LEFTDOWN_POS, XMFLOAT2 *UV_RIGHTUP_POS, XMFLOAT2 *UV_RIGHTDOWN_POS);
-	void InitVerticesPos(XMFLOAT3 *LEFTUP_POS, XMFLOAT3 *LEFTDOWN_POS, XMFLOAT3 *RIGHTUP_POS, XMFLOAT3 *RIGHTDOWN_POS, const XMFLOAT2 &ANCHOR_POINT);
+	void VerticesCut(const KazMath::Vec2<int> &DIV_SIZE, const KazMath::Vec2<int> &DIV_LEFTUP_POS, DirectX::XMFLOAT3 *LEFTUP_POS, DirectX::XMFLOAT3 *LEFTDOWN_POS, DirectX::XMFLOAT3 *RIGHTUP_POS, DirectX::XMFLOAT3 *RIGHTDOWN_POS, const KazMath::Vec2<float> &SCALE, const KazMath::Vec2<float> &ANCHOR_POINT);
+	void UVCut(const KazMath::Vec2<int> &UV_DIV_LEFTUP_POS, const KazMath::Vec2<int> &DIV_SIZE, const KazMath::Vec2<int> &TEX_SIZE, DirectX::XMFLOAT2 *LEFTUP_POS, DirectX::XMFLOAT2 *LEFTDOWN_POS, DirectX::XMFLOAT2 *RIGHTUP_POS, DirectX::XMFLOAT2 *RIGHTDOWN_POS);
+
+
+	void InitUvPos(DirectX::XMFLOAT2 *UV_LEFTUP_POS, DirectX::XMFLOAT2 *UV_LEFTDOWN_POS, DirectX::XMFLOAT2 *UV_RIGHTUP_POS, DirectX::XMFLOAT2 *UV_RIGHTDOWN_POS);
+	void InitVerticesPos(DirectX::XMFLOAT3 *LEFTUP_POS, DirectX::XMFLOAT3 *LEFTDOWN_POS, DirectX::XMFLOAT3 *RIGHTUP_POS, DirectX::XMFLOAT3 *RIGHTDOWN_POS, const DirectX::XMFLOAT2 &ANCHOR_POINT);
 
 	array<unsigned short, 6> InitIndciesForPlanePolygon();
 
@@ -94,6 +94,6 @@ namespace KazRenderHelper
 	int SetBufferOnCmdList(const GraphicsRootSignatureParameter &PARAM, const GraphicsRangeType &RANGE, const GraphicsRootParamType &TYPE);
 
 
-	XMFLOAT4 SendColorDataToGPU(XMFLOAT4 COLOR_DATA);
+	DirectX::XMFLOAT4 SendColorDataToGPU(DirectX::XMFLOAT4 COLOR_DATA);
 
 };

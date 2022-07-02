@@ -43,11 +43,11 @@ namespace KazMath
 			x /= len;
 			y /= len;
 		};
-		XMFLOAT2 ConvertXMFLOAT2()
+		DirectX::XMFLOAT2 ConvertXMFLOAT2()
 		{
 			return DirectX::XMFLOAT2(static_cast<float>(x), static_cast<float>(y));
 		};
-		XMVECTOR ConvertXMVECTOR()
+		DirectX::XMVECTOR ConvertXMVECTOR()
 		{
 			DirectX::XMVECTOR result = { static_cast<float>(x), static_cast<float>(y), 0.0f, 0.0f };
 			return result;
@@ -221,13 +221,13 @@ namespace KazMath
 			y /= len;
 			z /= len;
 		};
-		XMFLOAT3 ConvertXMFLOAT3()const
+		DirectX::XMFLOAT3 ConvertXMFLOAT3()const
 		{
 			return DirectX::XMFLOAT3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
 		};
-		XMVECTOR ConvertXMVECTOR()const
+		DirectX::XMVECTOR ConvertXMVECTOR()const
 		{
-			XMVECTOR result = { static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), 0.0f };
+			DirectX::XMVECTOR result = { static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), 0.0f };
 			return result;
 		};
 
@@ -386,13 +386,13 @@ namespace KazMath
 		};
 		Vec4(T X, T Y, T Z, T A) :x(X), y(Y), z(Z), a(A) {};
 
-		XMFLOAT3 ConvertXMFLOAT3()
+		DirectX::XMFLOAT3 ConvertXMFLOAT3()
 		{
-			return DirectX::XMFLOAT3(x, y, z);
+			return DirectX::DirectX::XMFLOAT3(x, y, z);
 		};
-		XMVECTOR ConvertXMVECTOR()
+		DirectX::XMVECTOR ConvertXMVECTOR()
 		{
-			XMVECTOR result = { static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), static_cast<float>(a) };
+			DirectX::XMVECTOR result = { static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), static_cast<float>(a) };
 			return result;
 		};
 
@@ -527,10 +527,10 @@ namespace KazMath
 		Color(int R, int G, int B, int A) :color({ R,G,B,A }), dirtyFlag(&color)
 		{};
 
-		XMFLOAT4 ConvertColorRateToXMFLOAT4()
+		DirectX::XMFLOAT4 ConvertColorRateToXMFLOAT4()
 		{
 			KazMath::Vec4<float> result = GetColorRate();
-			return XMFLOAT4(result.x, result.y, result.z, result.a);
+			return DirectX::XMFLOAT4(result.x, result.y, result.z, result.a);
 		};
 		Vec4<float> GetColorRate()
 		{
@@ -659,10 +659,10 @@ namespace KazMath
 
 	struct BaseMatWorldData
 	{
-		XMMATRIX matWorld;
-		XMMATRIX matScale;
-		XMMATRIX matRota;
-		XMMATRIX matTrans;
+		DirectX::XMMATRIX matWorld;
+		DirectX::XMMATRIX matScale;
+		DirectX::XMMATRIX matRota;
+		DirectX::XMMATRIX matTrans;
 	};
 
 
@@ -671,16 +671,16 @@ namespace KazMath
 
 
 	static const float PI_2F = 3.1415926540f;
-	static const XMMATRIX MAT_IDENTITY = XMMatrixIdentity();
+	static const DirectX::XMMATRIX MAT_IDENTITY = DirectX::XMMatrixIdentity();
 
 
 	void CheckIsnan(KazMath::Vec3<float> *VEC);
 
-	XMVECTOR LoadFloat3ToVector(XMFLOAT3 NUM_2);
-	XMFLOAT3 LoadVecotrToXMFLOAT3(XMVECTOR NUM_1);
+	DirectX::XMVECTOR LoadFloat3ToVector(DirectX::XMFLOAT3 NUM_2);
+	DirectX::XMFLOAT3 LoadVecotrToXMFLOAT3(DirectX::XMVECTOR NUM_1);
 
 
-	XMVECTOR CalculateScreenToWorld(XMVECTOR pout, XMMATRIX View, XMMATRIX Prj);
+	DirectX::XMVECTOR CalculateScreenToWorld(DirectX::XMVECTOR pout, DirectX::XMMATRIX View, DirectX::XMMATRIX Prj);
 
 	template<typename T>
 	Vec2<T> CaluAngle(const Vec2<T> &POS, float Angle, const Vec2<T> &CPos);
@@ -693,7 +693,7 @@ namespace KazMath
 		return (MAX_NUM - MIN_NUM) * rand() / RAND_MAX + MIN_NUM;
 	}
 
-	void ConvertMatrixFromFbx(XMMATRIX *DST, const FbxAMatrix &SRC);
+	void ConvertMatrixFromFbx(DirectX::XMMATRIX *DST, const FbxAMatrix &SRC);
 
 	/// <summary>
 	/// 秒数をフレームに直します
@@ -720,7 +720,7 @@ namespace KazMath
 	/// <param name="VIEW_MAT">ビュー行列</param>
 	/// <param name="PROJECTION_MAT">プロジェクション行列</param>
 	/// <returns>ワールド座標</returns>
-	Vec3<float> ConvertScreenPosToWorldPos(const Vec3<float> &SCREEN_POS, XMMATRIX VIEW_MAT, XMMATRIX PROJECTION_MAT);
+	Vec3<float> ConvertScreenPosToWorldPos(const Vec3<float> &SCREEN_POS, DirectX::XMMATRIX VIEW_MAT, DirectX::XMMATRIX PROJECTION_MAT);
 
 
 
@@ -729,42 +729,42 @@ namespace KazMath
 	/// </summary>
 	/// <param name="ROTATION">角度</param>
 	/// <returns>回転行列</returns>
-	XMMATRIX CaluRotaMatrix(const Vec3<float> &ROTATION);
+	DirectX::XMMATRIX CaluRotaMatrix(const Vec3<float> &ROTATION);
 
 	/// <summary>
 	/// スケーリング行列を計算します
 	/// </summary>
 	/// <param name="SCALE">大きさ</param>
 	/// <returns>スケーリング行列</returns>
-	XMMATRIX CaluScaleMatrix(const Vec3<float> &SCALE);
+	DirectX::XMMATRIX CaluScaleMatrix(const Vec3<float> &SCALE);
 
 	/// <summary>
 	/// 平行移動行列を計算します
 	/// </summary>
 	/// <param name="POS">座標</param>
 	/// <returns>平行移動行列</returns>
-	XMMATRIX CaluTransMatrix(const Vec3<float> &POS);
+	DirectX::XMMATRIX CaluTransMatrix(const Vec3<float> &POS);
 
 	/// <summary>
 	/// 回転行列を計算します
 	/// </summary>
 	/// <param name="ROTATION">角度</param>
 	/// <returns>回転行列</returns>
-	XMMATRIX CaluRotaMatrix(const Vec3<float> &ROTATION);
+	DirectX::XMMATRIX CaluRotaMatrix(const Vec3<float> &ROTATION);
 
 	/// <summary>
 	/// スケーリング行列を計算します
 	/// </summary>
 	/// <param name="SCALE">大きさ</param>
 	/// <returns>スケーリング行列</returns>
-	XMMATRIX CaluScaleMatrix(const Vec3<float> &SCALE);
+	DirectX::XMMATRIX CaluScaleMatrix(const Vec3<float> &SCALE);
 
 	/// <summary>
 	/// 平行移動行列を計算します
 	/// </summary>
 	/// <param name="POS">座標</param>
 	/// <returns>平行移動行列</returns>
-	XMMATRIX CaluTransMatrix(const Vec3<float> &POS);
+	DirectX::XMMATRIX CaluTransMatrix(const Vec3<float> &POS);
 
 
 	/// <summary>
@@ -810,20 +810,20 @@ namespace KazMath
 	Vec3<float> CaluTargetPosForDebug(const Vec3<float> &EYE_POS, float ANGLE);
 
 
-	bool MatrixEqualOrNot(const XMMATRIX &MAT_1, const XMMATRIX &MAT_2);
+	bool MatrixEqualOrNot(const DirectX::XMMATRIX &MAT_1, const DirectX::XMMATRIX &MAT_2);
 
-	XMMATRIX CaluSlopeMatrix(const Vec3<float> &Y, const Vec3<float> &Z);
+	DirectX::XMMATRIX CaluSlopeMatrix(const Vec3<float> &Y, const Vec3<float> &Z);
 
-	XMMATRIX CaluFrontMatrix(const Vec3<float> &Y, const Vec3<float> &Z);
+	DirectX::XMMATRIX CaluFrontMatrix(const Vec3<float> &Y, const Vec3<float> &Z);
 
 	int RadianToAngle(float RADIAN);
 	float AngleToRadian(int ANGLE);
 	float AngleToRadian(float ANGLE);
 
 	template<typename T>
-	XMMATRIX CaluMat(const KazMath::Transform3D &TRANSFORM, const Vec3<T> &Y_VEC, const Vec3<T> &Z_VEC, const XMMATRIX &VIEW_MAT, const XMMATRIX &PROJECT_MAT);
+	DirectX::XMMATRIX CaluMat(const KazMath::Transform3D &TRANSFORM, const Vec3<T> &Y_VEC, const Vec3<T> &Z_VEC, const DirectX::XMMATRIX &VIEW_MAT, const DirectX::XMMATRIX &PROJECT_MAT);
 	template<typename T>
-	XMMATRIX CaluWorld(const KazMath::Transform3D &TRANSFORM, const Vec3<T> &Y_VEC, const Vec3<T> &Z_VEC);
+	DirectX::XMMATRIX CaluWorld(const KazMath::Transform3D &TRANSFORM, const Vec3<T> &Y_VEC, const Vec3<T> &Z_VEC);
 
 
 	void Larp(float BASE_TRANSFORM, float *TRANSFORM, float MUL);
@@ -841,7 +841,7 @@ namespace KazMath
 	};
 
 	template<typename T>
-	Vec3<T>CastXMVECTOR(const XMVECTOR &VALUE)
+	Vec3<T>CastXMVECTOR(const DirectX::XMVECTOR &VALUE)
 	{
 		Vec3<T> result(static_cast<T>(VALUE.m128_f32[0]), static_cast<T>(VALUE.m128_f32[1]), static_cast<T>(VALUE.m128_f32[2]));
 		return result;
@@ -865,7 +865,7 @@ namespace KazMath
 	/// <param name="VIEW_MAT">ビュー行列</param>
 	/// <param name="PROJECTION_MAT">プロジェクション行列</param>
 	/// <returns>スクリーン座標</returns>
-	Vec3<float> ConvertWorldPosToScreenPos(const Vec3<float> &WORLD_POS, XMMATRIX VIEW_MAT, XMMATRIX PROJECTION_MAT);
+	Vec3<float> ConvertWorldPosToScreenPos(const Vec3<float> &WORLD_POS, DirectX::XMMATRIX VIEW_MAT, DirectX::XMMATRIX PROJECTION_MAT);
 
 }
 

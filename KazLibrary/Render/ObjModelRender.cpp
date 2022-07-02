@@ -42,12 +42,12 @@ void ObjModelRender::Draw()
 	{
 		if (data.transform.Dirty() || data.frontVecDirtyFlag.Dirty() || data.upVecDirtyFlag.Dirty())
 		{
-			baseMatWorldData.matWorld = XMMatrixIdentity();
+			baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 			baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
 			baseMatWorldData.matTrans = KazMath::CaluTransMatrix(data.transform.pos);
 			baseMatWorldData.matRota = KazMath::CaluRotaMatrix(data.transform.rotation);
 			//ワールド行列の計算
-			baseMatWorldData.matWorld = XMMatrixIdentity();
+			baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 			baseMatWorldData.matWorld *= baseMatWorldData.matScale;
 			baseMatWorldData.matWorld *= baseMatWorldData.matRota;
 			if (data.upVector.x != 0.0f ||

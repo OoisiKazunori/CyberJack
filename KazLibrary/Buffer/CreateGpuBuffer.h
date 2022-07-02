@@ -66,7 +66,7 @@ public:
 	/// </summary>
 	/// <param name="HANDLE">受け取りたいバッファのハンドル</param>
 	/// <returns>生成されたバッファ</returns>
-	ComPtr<ID3D12Resource>GetBufferData(RESOURCE_HANDLE HANDLE);
+	Microsoft::WRL::ComPtr<ID3D12Resource>GetBufferData(RESOURCE_HANDLE HANDLE);
 
 
 	/// <summary>
@@ -81,9 +81,9 @@ public:
 
 
 	unique_ptr<HandleMaker> handle;
-private:	
-	vector<ComPtr<ID3D12Resource>> buffers;
-	ComPtr<ID3D12DescriptorHeap> heap;
+private:
+	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> buffers;
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> heap;
 
 	D3D12_CPU_DESCRIPTOR_HANDLE heapHandle;
 	

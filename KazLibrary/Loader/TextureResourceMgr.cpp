@@ -56,7 +56,7 @@ RESOURCE_HANDLE TextureResourceMgr::LoadGraph(std::string RESOURCE)
 	HRESULT re;
 	re = LoadFromWICFile(
 		wfilepat,
-		WIC_FLAGS_NONE,
+		DirectX::WIC_FLAGS_NONE,
 		&metadata,
 		scratchImg
 	);
@@ -132,7 +132,7 @@ RESOURCE_HANDLE TextureResourceMgr::LoadDivGraph(string RESOURCE, int DIV_WIDTH_
 	HRESULT re;
 	re = LoadFromWICFile(
 		wfilepat,
-		WIC_FLAGS_NONE,
+		DirectX::WIC_FLAGS_NONE,
 		&metadata,
 		scratchImg
 	);

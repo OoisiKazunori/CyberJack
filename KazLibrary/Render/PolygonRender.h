@@ -18,10 +18,10 @@ public:
 private:
 	array<SpriteVertex, 4> vertices;
 	array<USHORT, 6> indices;
-	XMFLOAT2 anchorPoint;
-	XMFLOAT2 texSize;
+	DirectX::XMFLOAT2 anchorPoint;
+	DirectX::XMFLOAT2 texSize;
 
-	XMMATRIX motherMat;
+	DirectX::XMMATRIX motherMat;
 	RESOURCE_HANDLE vertexBufferHandle;
 	RESOURCE_HANDLE indexBufferHandle;
 	RESOURCE_HANDLE constBufferHandle;

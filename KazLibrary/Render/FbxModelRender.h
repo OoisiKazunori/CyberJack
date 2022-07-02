@@ -17,7 +17,7 @@ private:
 	UINT vertByte;
 	UINT indexByte;
 
-	XMMATRIX motherMat;
+	DirectX::XMMATRIX motherMat;
 	short vertexBufferHandle;
 	short indexBufferHandle;
 

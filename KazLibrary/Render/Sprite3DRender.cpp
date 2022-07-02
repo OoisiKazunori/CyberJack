@@ -70,7 +70,7 @@ void Sprite3DRender::Draw()
 	//行列計算-----------------------------------------------------------------------------------------------------
 	if (data.transform.Dirty() || data.billBoardDirtyFlag.Dirty() || (renderData.cameraMgrInstance->BillboardDirty() && data.billBoardFlag))
 	{
-		baseMatWorldData.matWorld = XMMatrixIdentity();
+		baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 		baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
 		baseMatWorldData.matTrans = KazMath::CaluTransMatrix(data.transform.pos);
 		baseMatWorldData.matRota = KazMath::CaluRotaMatrix(data.transform.rotation);
@@ -128,7 +128,7 @@ void Sprite3DRender::Draw()
 		//レンダーターゲットのテクスチャサイズ
 		else
 		{
-			//サイズをXMFLOAT3からXMFLOAT2に直す
+			//サイズをDirectX::XMFLOAT3からDirectX::XMFLOAT2に直す
 			KazMath::Vec2<float> lTmpSize = { data.transform.scale.x, data.transform.scale.y };
 
 			texSize.x = static_cast<int>(RenderTargetStatus::Instance()->GetBufferData(data.handleData.handle)->GetDesc().Width);
@@ -219,7 +219,7 @@ void Sprite3DRender::Draw()
 	//DirtyFlagの更新-----------------------------------------------------------------------------------------------------
 }
 
-XMMATRIX Sprite3DRender::GetMotherMatrix()
+DirectX::XMMATRIX Sprite3DRender::GetMotherMatrix()
 {
 	return motherMat;
 }

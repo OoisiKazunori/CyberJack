@@ -13,7 +13,7 @@ public:
 	~Sprite3DRender();
 	void Draw();
 
-	XMMATRIX GetMotherMatrix();
+	DirectX::XMMATRIX GetMotherMatrix();
 	Sprite3DData data;
 private:
 	array<SpriteVertex, 4> vertices;
@@ -22,7 +22,7 @@ private:
 	KazMath::Vec2<int> texSize;
 
 
-	XMMATRIX motherMat;
+	DirectX::XMMATRIX motherMat;
 	RESOURCE_HANDLE vertexBufferHandle;
 	RESOURCE_HANDLE indexBufferHandle;
 	RESOURCE_HANDLE constBufferHandle;

@@ -15,8 +15,8 @@ public:
 	/// デバイスの生成
 	/// </summary>
 	/// <param name="adapter">アダプター</param>
-	void CreateDevice(ComPtr<IDXGIAdapter> adapter);
-	ComPtr<ID3D12Device> dev;
+	void CreateDevice(Microsoft::WRL::ComPtr<IDXGIAdapter> adapter);
+	Microsoft::WRL::ComPtr<ID3D12Device> dev;
 private:
 	HRESULT result;
 	friend ISingleton<DirectX12Device>;

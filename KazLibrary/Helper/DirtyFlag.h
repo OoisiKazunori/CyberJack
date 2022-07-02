@@ -40,7 +40,7 @@ public:
 	{
 	}
 
-	DirtySet(XMMATRIX &DATA)
+	DirtySet(DirectX::XMMATRIX &DATA)
 	{
 		for (int y = 0; y < 4; y++)
 		{

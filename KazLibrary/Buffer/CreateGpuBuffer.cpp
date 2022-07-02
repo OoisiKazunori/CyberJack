@@ -149,7 +149,7 @@ D3D12_GPU_DESCRIPTOR_HANDLE CreateGpuBuffer::GetViewPointer(RESOURCE_HANDLE HAND
 	return gpuDescHandleCBV;
 }
 
-ComPtr<ID3D12Resource> CreateGpuBuffer::GetBufferData(RESOURCE_HANDLE HANDLE)
+Microsoft::WRL::ComPtr<ID3D12Resource> CreateGpuBuffer::GetBufferData(RESOURCE_HANDLE HANDLE)
 {
 	RESOURCE_HANDLE lCaluHandle = handle->CaluNowHandle(HANDLE);
 	if (KazHelper::IsitInAnArray(lCaluHandle, buffers.size()))

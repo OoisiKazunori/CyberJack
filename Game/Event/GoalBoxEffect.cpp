@@ -38,7 +38,7 @@ GoalBoxEffect::GoalBoxEffect()
 	drawHandle = 0;
 }
 
-void GoalBoxEffect::Init(XMMATRIX *ADRESS)
+void GoalBoxEffect::Init(DirectX::XMMATRIX *ADRESS)
 {
 	motherPtr = ADRESS;
 	uvData.light = { 0.0f,0.0f,0.0f,0.0f };

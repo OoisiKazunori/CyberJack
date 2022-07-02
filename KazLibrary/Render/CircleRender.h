@@ -18,7 +18,7 @@ private:
 	D3D12_INDEX_BUFFER_VIEW indexBufferView;
 
 	ConstBufferData constMap;
-	XMMATRIX motherMat;
+	DirectX::XMMATRIX motherMat;
 	RESOURCE_HANDLE vertexBufferHandle;
 	RESOURCE_HANDLE indexBufferHandle;
 	RESOURCE_HANDLE constBufferHandle;

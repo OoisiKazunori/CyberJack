@@ -15,7 +15,7 @@ RenderTargetStatus::~RenderTargetStatus()
 {
 }
 
-void RenderTargetStatus::CreateDoubleBuffer(ComPtr<IDXGISwapChain4> SWAPCHAIN)
+void RenderTargetStatus::CreateDoubleBuffer(Microsoft::WRL::ComPtr<IDXGISwapChain4> SWAPCHAIN)
 {
 	//ダブルバッファリング用
 	HRESULT result;
@@ -25,7 +25,7 @@ void RenderTargetStatus::CreateDoubleBuffer(ComPtr<IDXGISwapChain4> SWAPCHAIN)
 
 
 	//裏表の二つ分
-	std::vector<ComPtr<ID3D12Resource>> backBuffer(2);
+	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> backBuffer(2);
 	for (int i = 0; i < 2; i++)
 	{
 		//スワップチェーンからバッファを取得
@@ -81,7 +81,7 @@ void RenderTargetStatus::SetDoubleBufferFlame()
 
 }
 
-void RenderTargetStatus::ClearDoubuleBuffer(XMFLOAT3 COLOR)
+void RenderTargetStatus::ClearDoubuleBuffer(DirectX::XMFLOAT3 COLOR)
 {
 	//レンダータゲットのクリア
 	float ClearColor[] = { COLOR.x / 255.0f,COLOR.y / 255.0f,COLOR.z / 255.0f, 1.0f };
@@ -170,7 +170,7 @@ void RenderTargetStatus::ClearRenderTarget(RESOURCE_HANDLE RENDERTARGET_HANDLE)
 		float ClearColor[] = { clearColors[clearHandle].x,clearColors[clearHandle].y ,clearColors[clearHandle].z ,clearColors[clearHandle].w };
 		DirectX12CmdList::Instance()->cmdList->ClearRenderTargetView(rtvH, ClearColor, 0, nullptr);
 
-		XMUINT2 graphSize =
+		DirectX::XMUINT2 graphSize =
 		{
 			static_cast<uint32_t>(buffers->GetBufferData(openHandle[i])->GetDesc().Width),
 			static_cast<uint32_t>(buffers->GetBufferData(openHandle[i])->GetDesc().Height)
@@ -182,7 +182,7 @@ void RenderTargetStatus::ClearRenderTarget(RESOURCE_HANDLE RENDERTARGET_HANDLE)
 	}
 }
 
-RESOURCE_HANDLE RenderTargetStatus::CreateRenderTarget(const KazMath::Vec2<UINT> &GRAPH_SIZE, const XMFLOAT3 &CLEAR_COLOR, const DXGI_FORMAT &FORMAT)
+RESOURCE_HANDLE RenderTargetStatus::CreateRenderTarget(const KazMath::Vec2<UINT> &GRAPH_SIZE, const DirectX::XMFLOAT3 &CLEAR_COLOR, const DXGI_FORMAT &FORMAT)
 {
 	//ビューの生成
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};

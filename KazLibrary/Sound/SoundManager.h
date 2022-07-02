@@ -60,7 +60,7 @@ private:
 	HandleMaker handle;
 	array<Sound, 30> masterSoundData;
 
-	ComPtr<IXAudio2> xAudio2;
+	Microsoft::WRL::ComPtr<IXAudio2> xAudio2;
 	IXAudio2MasteringVoice *masterVoice;
 };
 

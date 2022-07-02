@@ -10,7 +10,7 @@ CircleRender::CircleRender()
 	std::vector<USHORT> lIndi(VERT_NUMBER * 3);
 
 	indicesNum = static_cast<UINT>(lIndi.size());
-	const float PI_F2 = XM_2PI;
+	const float PI_F2 = DirectX::XM_2PI;
 
 
 	//頂点データ
@@ -79,25 +79,25 @@ void CircleRender::Draw()
 	{
 		if (data.change3DFlag)
 		{
-			baseMatWorldData.matWorld = XMMatrixIdentity();
+			baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 			baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
 			baseMatWorldData.matTrans = KazMath::CaluTransMatrix(data.transform.pos);
 			baseMatWorldData.matRota = KazMath::CaluRotaMatrix(data.transform.rotation);
 
 			//ワールド行列の計算
-			baseMatWorldData.matWorld = XMMatrixIdentity();
+			baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 			baseMatWorldData.matWorld *= baseMatWorldData.matScale;
 			baseMatWorldData.matWorld *= baseMatWorldData.matRota;
 			baseMatWorldData.matWorld *= baseMatWorldData.matTrans;
 		}
 		else
 		{
-			baseMatWorldData.matWorld = XMMatrixIdentity();
+			baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 			baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
 			baseMatWorldData.matTrans = KazMath::CaluTransMatrix(data.transform.pos);
 
 			//ワールド行列の計算
-			baseMatWorldData.matWorld = XMMatrixIdentity();
+			baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 			baseMatWorldData.matWorld *= baseMatWorldData.matScale;
 			baseMatWorldData.matWorld *= baseMatWorldData.matTrans;
 		}
@@ -112,7 +112,7 @@ void CircleRender::Draw()
 
 		std::vector<Vertex> lVert(VERT_NUMBER);
 
-		float PI_F2 = XM_2PI;
+		float PI_F2 = DirectX::XM_2PI;
 		//頂点データ
 		for (int i = 0; i < lVert.size(); i++) {
 			lVert[i].pos.x = (RADIUS * sin((PI_F2 / VERT_NUMBER) * i));
@@ -145,7 +145,7 @@ void CircleRender::Draw()
 		else
 		{
 			constMap.world = baseMatWorldData.matWorld;
-			constMap.view = XMMatrixIdentity();
+			constMap.view = DirectX::XMMatrixIdentity();
 			constMap.viewproj = renderData.cameraMgrInstance->orthographicMatProjection;
 			constMap.color = data.color.ConvertColorRateToXMFLOAT4();
 			constMap.mat = constMap.world * constMap.viewproj;

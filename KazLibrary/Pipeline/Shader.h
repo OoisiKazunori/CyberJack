@@ -49,18 +49,18 @@ public:
 
 
 	//頂点シェーダー
-	ComPtr<ID3DBlob> vsBlob;
+	Microsoft::WRL::ComPtr<ID3DBlob> vsBlob;
 	//ピクセルシェーダー
-	ComPtr<ID3DBlob> psBlob;
+	Microsoft::WRL::ComPtr<ID3DBlob> psBlob;
 	//ジオメトリーシェーダー
-	ComPtr<ID3DBlob> geoBlob;
+	Microsoft::WRL::ComPtr<ID3DBlob> geoBlob;
 	
 	//新体制
 	void CompileShader(string SHADER_FILE, LPCSTR ENTRY_POINT, LPCSTR SHADER_MODEL, ShaderType SHADER_TYPE);
 	ID3DBlob* GetShaderData(ShaderType SHADER_TYPE);
 
 	//エラー
-	ComPtr<ID3DBlob> errorBlob;
+	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob;
 private:
 	HRESULT result;
 	void Error();
@@ -68,7 +68,7 @@ private:
 	bool vertexShaderWasCompiledFlag;
 	bool pixcelShaderWasCompiledFlag;
 
-	vector< ComPtr<ID3DBlob>> shaderBlobs;
+	vector< Microsoft::WRL::ComPtr<ID3DBlob>> shaderBlobs;
 
 	
 };

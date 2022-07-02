@@ -17,33 +17,33 @@ void KazMath::CheckIsnan(KazMath::Vec3<float> *VEC)
 	}
 }
 
-XMVECTOR KazMath::LoadFloat3ToVector(XMFLOAT3 NUM_2)
+DirectX::XMVECTOR KazMath::LoadFloat3ToVector(DirectX::XMFLOAT3 NUM_2)
 {
-	XMVECTOR num;
+	DirectX::XMVECTOR num;
 	num.m128_f32[0] = NUM_2.x;
 	num.m128_f32[1] = NUM_2.y;
 	num.m128_f32[2] = NUM_2.z;
 	return num;
 }
 
-XMFLOAT3 KazMath::LoadVecotrToXMFLOAT3(XMVECTOR NUM_1)
+DirectX::XMFLOAT3 KazMath::LoadVecotrToXMFLOAT3(DirectX::XMVECTOR NUM_1)
 {
-	XMFLOAT3 num;
+	DirectX::XMFLOAT3 num;
 	num.x = NUM_1.m128_f32[0];
 	num.y = NUM_1.m128_f32[1];
 	num.z = NUM_1.m128_f32[2];
 	return num;
 }
 
-XMVECTOR KazMath::CalculateScreenToWorld(XMVECTOR pout, XMMATRIX View, XMMATRIX Prj)
+DirectX::XMVECTOR KazMath::CalculateScreenToWorld(DirectX::XMVECTOR pout, DirectX::XMMATRIX View, DirectX::XMMATRIX Prj)
 {
 	//各行列の逆行列を算出
-	XMMATRIX InvView, InvPrj, InvViewport;
+	DirectX::XMMATRIX InvView, InvPrj, InvViewport;
 	InvView = XMMatrixInverse(nullptr, View);
 	InvPrj = XMMatrixInverse(nullptr, Prj);
 
-	XMMATRIX VP;
-	VP = XMMatrixIdentity();
+	DirectX::XMMATRIX VP;
+	VP = DirectX::XMMatrixIdentity();
 	VP.r[0].m128_f32[0] = WIN_X / 2.0f;
 	VP.r[1].m128_f32[1] = -WIN_Y / 2.0f;
 	VP.r[2].m128_f32[2] = WIN_X / 2.0f;
@@ -52,7 +52,7 @@ XMVECTOR KazMath::CalculateScreenToWorld(XMVECTOR pout, XMMATRIX View, XMMATRIX 
 
 
 	//逆変換
-	XMMATRIX tmp = InvViewport * InvPrj * InvView;
+	DirectX::XMMATRIX tmp = InvViewport * InvPrj * InvView;
 
 	pout = XMVector3TransformCoord(pout, InvViewport);
 	pout = XMVector3TransformCoord(pout, InvPrj);
@@ -112,7 +112,7 @@ inline KazMath::Vec3<T> CaluAngle3D(const KazMath::Vec3<T> &POS, float ANGLE, co
 	return result;
 }
 
-void KazMath::ConvertMatrixFromFbx(XMMATRIX *DST, const FbxAMatrix &SRC)
+void KazMath::ConvertMatrixFromFbx(DirectX::XMMATRIX *DST, const FbxAMatrix &SRC)
 {
 	for (int i = 0; i < 4; i++)
 	{
@@ -136,15 +136,15 @@ inline KazMath::Vec3<T> KazMath::CaluAPointToBPointVel(const KazMath::Vec3<T> &A
 	return distance * mul;
 }
 
-KazMath::Vec3<float> KazMath::ConvertScreenPosToWorldPos(const KazMath::Vec3<float> &SCREEN_POS, XMMATRIX VIEW_MAT, XMMATRIX PROJECTION_MAT)
+KazMath::Vec3<float> KazMath::ConvertScreenPosToWorldPos(const KazMath::Vec3<float> &SCREEN_POS, DirectX::XMMATRIX VIEW_MAT, DirectX::XMMATRIX PROJECTION_MAT)
 {
 	//各行列の逆行列を算出
-	XMMATRIX InvView, InvPrj, InvViewport;
+	DirectX::XMMATRIX InvView, InvPrj, InvViewport;
 	InvView = XMMatrixInverse(nullptr, VIEW_MAT);
 	InvPrj = XMMatrixInverse(nullptr, PROJECTION_MAT);
 
-	XMMATRIX VP;
-	VP = XMMatrixIdentity();
+	DirectX::XMMATRIX VP;
+	VP = DirectX::XMMatrixIdentity();
 	VP.r[0].m128_f32[0] = WIN_X / 2.0f;
 	VP.r[1].m128_f32[1] = -WIN_Y / 2.0f;
 	VP.r[3].m128_f32[0] = WIN_X / 2.0f;
@@ -152,7 +152,7 @@ KazMath::Vec3<float> KazMath::ConvertScreenPosToWorldPos(const KazMath::Vec3<flo
 	InvViewport = XMMatrixInverse(nullptr, VP);
 
 	//逆変換
-	XMVECTOR result = { SCREEN_POS.x,SCREEN_POS.y,SCREEN_POS.z };
+	DirectX::XMVECTOR result = { SCREEN_POS.x,SCREEN_POS.y,SCREEN_POS.z };
 	result = XMVector3TransformCoord(result, InvViewport);
 	result = XMVector3TransformCoord(result, InvPrj);
 	result = XMVector3TransformCoord(result, InvView);
@@ -161,27 +161,27 @@ KazMath::Vec3<float> KazMath::ConvertScreenPosToWorldPos(const KazMath::Vec3<flo
 }
 
 //ジンバルロックがかからないようにZYXからXYZに計算順を変更
-XMMATRIX KazMath::CaluRotaMatrix(const Vec3<float> &ROTATION)
+DirectX::XMMATRIX KazMath::CaluRotaMatrix(const Vec3<float> &ROTATION)
 {
-	XMMATRIX matRot = XMMatrixIdentity();
-	matRot *= XMMatrixRotationX(XMConvertToRadians(ROTATION.x));
-	matRot *= XMMatrixRotationY(XMConvertToRadians(ROTATION.y));
-	matRot *= XMMatrixRotationZ(XMConvertToRadians(ROTATION.z));
+	DirectX::XMMATRIX matRot = DirectX::XMMatrixIdentity();
+	matRot *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(ROTATION.x));
+	matRot *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(ROTATION.y));
+	matRot *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(ROTATION.z));
 
 	return matRot;
 }
 
-XMMATRIX KazMath::CaluScaleMatrix(const Vec3<float> &SCALE)
+DirectX::XMMATRIX KazMath::CaluScaleMatrix(const Vec3<float> &SCALE)
 {
-	XMMATRIX matScale = XMMatrixIdentity();
-	matScale = XMMatrixScaling(SCALE.x, SCALE.y, SCALE.z);
+	DirectX::XMMATRIX matScale = DirectX::XMMatrixIdentity();
+	matScale = DirectX::XMMatrixScaling(SCALE.x, SCALE.y, SCALE.z);
 	return matScale;
 }
 
-XMMATRIX KazMath::CaluTransMatrix(const Vec3<float> &POS)
+DirectX::XMMATRIX KazMath::CaluTransMatrix(const Vec3<float> &POS)
 {
-	XMMATRIX matTrans;
-	matTrans = XMMatrixTranslation(POS.x, POS.y, POS.z);
+	DirectX::XMMATRIX matTrans;
+	matTrans = DirectX::XMMatrixTranslation(POS.x, POS.y, POS.z);
 
 	return matTrans;
 }
@@ -283,7 +283,7 @@ KazMath::Vec3<float> KazMath::CaluTargetPosForDebug(const Vec3<float> &EYE_POS, 
 	return target;
 }
 
-bool KazMath::MatrixEqualOrNot(const XMMATRIX &MAT_1, const XMMATRIX &MAT_2)
+bool KazMath::MatrixEqualOrNot(const DirectX::XMMATRIX &MAT_1, const DirectX::XMMATRIX &MAT_2)
 {
 	bool tupleDirtyFlag = false;
 
@@ -301,9 +301,9 @@ bool KazMath::MatrixEqualOrNot(const XMMATRIX &MAT_1, const XMMATRIX &MAT_2)
 	return tupleDirtyFlag;
 }
 
-XMMATRIX KazMath::CaluSlopeMatrix(const Vec3<float> &Y, const Vec3<float> &Z)
+DirectX::XMMATRIX KazMath::CaluSlopeMatrix(const Vec3<float> &Y, const Vec3<float> &Z)
 {
-	XMMATRIX matSlope;
+	DirectX::XMMATRIX matSlope;
 	/*
 		axisX...外積で求まる
 		axisY...上ベクトル.....Distanceとかを代入するよ
@@ -314,10 +314,10 @@ XMMATRIX KazMath::CaluSlopeMatrix(const Vec3<float> &Y, const Vec3<float> &Z)
 		↓
 		matSlopeに組み込む
 	*/
-	XMVECTOR resultX;
-	XMVECTOR resultY;
-	XMVECTOR resultZ;
-	XMVECTOR axisY, axisZ;
+	DirectX::XMVECTOR resultX;
+	DirectX::XMVECTOR resultY;
+	DirectX::XMVECTOR resultZ;
+	DirectX::XMVECTOR axisY, axisZ;
 
 	axisZ = Z.ConvertXMVECTOR();
 	axisY = Y.ConvertXMVECTOR();
@@ -333,19 +333,19 @@ XMMATRIX KazMath::CaluSlopeMatrix(const Vec3<float> &Y, const Vec3<float> &Z)
 
 	//一回目の外積.......Xを求める
 	{
-		XMVECTOR y, z;
+		DirectX::XMVECTOR y, z;
 		y = axisY;
 		z = axisZ;
-		resultX = XMVector3Cross(y, z);
+		resultX = DirectX::XMVector3Cross(y, z);
 	}
-	resultX = XMVector3Normalize(resultX);
+	resultX = DirectX::XMVector3Normalize(resultX);
 
 	//二回目の外積........Zを求める(上ベクトル基準)
 	{
-		XMVECTOR x, y;
+		DirectX::XMVECTOR x, y;
 		x = resultX;
 		y = axisY;
-		resultZ = XMVector3Cross(x, y);
+		resultZ = DirectX::XMVector3Cross(x, y);
 	}
 	resultY = axisY;
 
@@ -353,14 +353,14 @@ XMMATRIX KazMath::CaluSlopeMatrix(const Vec3<float> &Y, const Vec3<float> &Z)
 	matSlope.r[0] = resultX;
 	matSlope.r[1] = resultY;
 	matSlope.r[2] = resultZ;
-	matSlope.r[3] = XMVectorSet(0, 0, 0, 1);
+	matSlope.r[3] = DirectX::XMVectorSet(0, 0, 0, 1);
 
 	return matSlope;
 }
 
-XMMATRIX KazMath::CaluFrontMatrix(const Vec3<float> &Y, const Vec3<float> &Z)
+DirectX::XMMATRIX KazMath::CaluFrontMatrix(const Vec3<float> &Y, const Vec3<float> &Z)
 {
-	XMMATRIX matSlope;
+	DirectX::XMMATRIX matSlope;
 	/*
 		axisX...外積で求まる
 		axisY...上ベクトル.....Distanceとかを代入するよ
@@ -371,10 +371,10 @@ XMMATRIX KazMath::CaluFrontMatrix(const Vec3<float> &Y, const Vec3<float> &Z)
 		↓
 		matSlopeに組み込む
 	*/
-	XMVECTOR resultX;
-	XMVECTOR resultY;
-	XMVECTOR resultZ;
-	XMVECTOR axisY, axisZ;
+	DirectX::XMVECTOR resultX;
+	DirectX::XMVECTOR resultY;
+	DirectX::XMVECTOR resultZ;
+	DirectX::XMVECTOR axisY, axisZ;
 
 	axisZ = Z.ConvertXMVECTOR();
 	axisY = Y.ConvertXMVECTOR();
@@ -391,19 +391,19 @@ XMMATRIX KazMath::CaluFrontMatrix(const Vec3<float> &Y, const Vec3<float> &Z)
 
 	//一回目の外積.......Xを求める
 	{
-		XMVECTOR z, y;
+		DirectX::XMVECTOR z, y;
 		y = axisY;
 		z = axisZ;
-		resultX = XMVector3Cross(y, z);
+		resultX = DirectX::XMVector3Cross(y, z);
 	}
-	resultX = XMVector3Normalize(resultX);
+	resultX = DirectX::XMVector3Normalize(resultX);
 
 	//二回目の外積........Yを求める(上ベクトル基準)
 	{
-		XMVECTOR z, x;
+		DirectX::XMVECTOR z, x;
 		x = resultX;
 		z = axisZ;
-		resultY = XMVector3Cross(z, x);
+		resultY = DirectX::XMVector3Cross(z, x);
 	}
 	resultZ = axisZ;
 
@@ -411,7 +411,7 @@ XMMATRIX KazMath::CaluFrontMatrix(const Vec3<float> &Y, const Vec3<float> &Z)
 	matSlope.r[0] = resultX;
 	matSlope.r[1] = resultY;
 	matSlope.r[2] = resultZ;
-	matSlope.r[3] = XMVectorSet(0, 0, 0, 1);
+	matSlope.r[3] = DirectX::XMVectorSet(0, 0, 0, 1);
 
 	return matSlope;
 }
@@ -436,15 +436,15 @@ float KazMath::AngleToRadian(float ANGLE)
 }
 
 template <typename T>
-inline XMMATRIX KazMath::CaluMat(const KazMath::Transform3D &TRANSFORM, const Vec3<T> &Y_VEC, const Vec3<T> &Z_VEC, const XMMATRIX &VIEW_MAT, const XMMATRIX &PROJECT_MAT)
+inline DirectX::XMMATRIX KazMath::CaluMat(const KazMath::Transform3D &TRANSFORM, const Vec3<T> &Y_VEC, const Vec3<T> &Z_VEC, const DirectX::XMMATRIX &VIEW_MAT, const DirectX::XMMATRIX &PROJECT_MAT)
 {
 	BaseMatWorldData baseMatWorldData;
-	baseMatWorldData.matWorld = XMMatrixIdentity();
+	baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 	baseMatWorldData.matScale = KazMath::CaluScaleMatrix(TRANSFORM.scale);
 	baseMatWorldData.matTrans = KazMath::CaluTransMatrix(TRANSFORM.pos);
 	baseMatWorldData.matRota = KazMath::CaluRotaMatrix(TRANSFORM.rotation);
 	//ワールド行列の計算
-	baseMatWorldData.matWorld = XMMatrixIdentity();
+	baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 	baseMatWorldData.matWorld *= baseMatWorldData.matScale;
 	baseMatWorldData.matWorld *= baseMatWorldData.matRota;
 	if (Y_VEC.x != 0.0f ||
@@ -465,15 +465,15 @@ inline XMMATRIX KazMath::CaluMat(const KazMath::Transform3D &TRANSFORM, const Ve
 }
 
 template<typename T>
-inline XMMATRIX KazMath::CaluWorld(const KazMath::Transform3D &TRANSFORM, const Vec3<T> &Y_VEC, const Vec3<T> &Z_VEC)
+inline DirectX::XMMATRIX KazMath::CaluWorld(const KazMath::Transform3D &TRANSFORM, const Vec3<T> &Y_VEC, const Vec3<T> &Z_VEC)
 {
 	BaseMatWorldData baseMatWorldData;
-	baseMatWorldData.matWorld = XMMatrixIdentity();
+	baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 	baseMatWorldData.matScale = KazMath::CaluScaleMatrix(TRANSFORM.scale);
 	baseMatWorldData.matTrans = KazMath::CaluTransMatrix(TRANSFORM.pos);
 	baseMatWorldData.matRota = KazMath::CaluRotaMatrix(TRANSFORM.rotation);
 	//ワールド行列の計算
-	baseMatWorldData.matWorld = XMMatrixIdentity();
+	baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 	baseMatWorldData.matWorld *= baseMatWorldData.matScale;
 	baseMatWorldData.matWorld *= baseMatWorldData.matRota;
 	if (Y_VEC.x != 0.0f ||
@@ -504,10 +504,10 @@ KazMath::Vec3<float> KazMath::SplinePosition(const std::vector<Vec3<float>> &poi
 	{
 		return points[1];
 	}
-	XMVECTOR p0 = points[startIndex - 1].ConvertXMVECTOR();
-	XMVECTOR p1 = points[startIndex].ConvertXMVECTOR();
-	XMVECTOR p2;
-	XMVECTOR p3;
+	DirectX::XMVECTOR p0 = points[startIndex - 1].ConvertXMVECTOR();
+	DirectX::XMVECTOR p1 = points[startIndex].ConvertXMVECTOR();
+	DirectX::XMVECTOR p2;
+	DirectX::XMVECTOR p3;
 
 	size_t subIndex = 3;
 	if (Loop == true)
@@ -530,35 +530,38 @@ KazMath::Vec3<float> KazMath::SplinePosition(const std::vector<Vec3<float>> &poi
 		p2 = points[startIndex + 1].ConvertXMVECTOR();
 		p3 = points[startIndex + 2].ConvertXMVECTOR();
 	}
-	XMVECTOR anser2 = 0.5 * ((2 * p1 + (-p0 + p2) * t) +
-		(2 * p0 - 5 * p1 + 4 * p2 - p3) * (t * t) +
-		(-p0 + 3 * p1 - 3 * p2 + p3) * (t * t * t)
-		);
+	//DirectX::XMVECTOR anser2 = 0.5 * ((2 * p1 + (-p0 + p2) * t) +
+	//	(2 * p0 - 5 * p1 + 4 * p2 - p3) * (t * t) +
+	//	(-p0 + 3 * p1 - 3 * p2 + p3) * (t * t * t)
+	//	);
 
-	Vec3<float>result = { anser2.m128_f32[0],anser2.m128_f32[1],anser2.m128_f32[2] };
+	Vec3<float>result = {};
+	float tk = t;
+	++tk;
+	//{ anser2.m128_f32[0],anser2.m128_f32[1],anser2.m128_f32[2] };
 	return result;
 };
 
-KazMath::Vec3<float> KazMath::ConvertWorldPosToScreenPos(const KazMath::Vec3<float> &WORLD_POS, XMMATRIX VIEW_MAT, XMMATRIX PROJECTION_MAT)
+KazMath::Vec3<float> KazMath::ConvertWorldPosToScreenPos(const KazMath::Vec3<float> &WORLD_POS, DirectX::XMMATRIX VIEW_MAT, DirectX::XMMATRIX PROJECTION_MAT)
 {
-	XMMATRIX View = VIEW_MAT, Prj = PROJECTION_MAT, InvViewport, matWorld;
+	DirectX::XMMATRIX View = VIEW_MAT, Prj = PROJECTION_MAT, InvViewport, matWorld;
 
-	XMMATRIX VP;
-	VP = XMMatrixIdentity();
+	DirectX::XMMATRIX VP;
+	VP = DirectX::XMMatrixIdentity();
 	VP.r[0].m128_f32[0] = static_cast<float>(WIN_X) / 2.0f;
 	VP.r[1].m128_f32[1] = -static_cast<float>(WIN_Y) / 2.0f;
 	VP.r[3].m128_f32[0] = static_cast<float>(WIN_X) / 2.0f;
 	VP.r[3].m128_f32[1] = static_cast<float>(WIN_Y) / 2.0f;
 	InvViewport = VP;
 
-	XMMATRIX mat;
-	XMVECTOR result = { -1.0f,-1.0f,-1.0f,-1.0f };
+	DirectX::XMMATRIX mat;
+	DirectX::XMVECTOR result = { -1.0f,-1.0f,-1.0f,-1.0f };
 
-	XMMATRIX matRot = KazMath::CaluRotaMatrix(KazMath::Vec3<float>(0.0f, 0.0f, 0.0f));
-	XMMATRIX matTrans = KazMath::CaluTransMatrix(WORLD_POS);
-	XMMATRIX matScale = KazMath::CaluScaleMatrix(KazMath::Vec3<float>(1.0f, 1.0f, 1.0f));
+	DirectX::XMMATRIX matRot = KazMath::CaluRotaMatrix(KazMath::Vec3<float>(0.0f, 0.0f, 0.0f));
+	DirectX::XMMATRIX matTrans = KazMath::CaluTransMatrix(WORLD_POS);
+	DirectX::XMMATRIX matScale = KazMath::CaluScaleMatrix(KazMath::Vec3<float>(1.0f, 1.0f, 1.0f));
 
-	matWorld = XMMatrixIdentity();
+	matWorld = DirectX::XMMatrixIdentity();
 	matWorld *= matScale;
 	matWorld *= matRot;
 	matWorld *= matTrans;

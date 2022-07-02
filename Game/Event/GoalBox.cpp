@@ -29,7 +29,7 @@ GoalBox::GoalBox()
 
 	hitBox.center = &model->data.transform.pos;
 	hitBox.radius = 10.0f;
-	//std::shared_ptr<XMMATRIX>data = std::make_shared<XMMATRIX>(model->data.motherMat);
+	//std::shared_ptr<DirectX::XMMATRIX>data = std::make_shared<DirectX::XMMATRIX>(model->data.motherMat);
 
 	damageSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "EenemyDamage.wav", false);
 	warpSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "warp.wav", false);

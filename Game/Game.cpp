@@ -41,7 +41,7 @@ Game::Game()
 		RenderTargetStatus::Instance()->CreateMultiRenderTarget(data, DXGI_FORMAT_R8G8B8A8_UNORM);
 	mainRenderTarget.data.handleData = handles[0];
 
-	addHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, XMFLOAT3(0.0f, 0.0f, 0.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
+	addHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
 	addRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	addRenderTarget.data.pipelineName = PIPELINE_NAME_ADDBLEND;
 
@@ -87,7 +87,7 @@ Game::Game()
 	gameOverTex.data.transform.scale = { 1.2f,1.2f };
 
 
-	potalTexHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, XMFLOAT3(0.0f, 0.0f, 0.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
+	potalTexHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
 
 
 	bgmSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Bgm.wav");
@@ -577,7 +577,7 @@ void Game::Update()
 		}
 
 		//ポータル演出開始したらプレイヤーの動きを固定する
-		XMFLOAT3 rate = { cursor.GetValue().x ,cursor.GetValue().y,0.0f };
+		DirectX::XMFLOAT3 rate = { cursor.GetValue().x ,cursor.GetValue().y,0.0f };
 		honraiPlayerCameraPos.x = 0.0f + (2.0f * -rate.x);
 		honraiPlayerCameraPos.z = 0.0f + (limitValue * rate.y) * mul;
 

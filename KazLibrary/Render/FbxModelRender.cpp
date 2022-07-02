@@ -44,13 +44,13 @@ void FbxModelRender::Draw()
 		//行列計算-----------------------------------------------------------------------------------------------------
 		if (data.transform.Dirty())
 		{
-			baseMatWorldData.matWorld = XMMatrixIdentity();
+			baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 			baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
 			baseMatWorldData.matTrans = KazMath::CaluTransMatrix(data.transform.pos);
 			baseMatWorldData.matRota = KazMath::CaluRotaMatrix(data.transform.rotation);
 
 			//ワールド行列の計算
-			baseMatWorldData.matWorld = XMMatrixIdentity();
+			baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 			baseMatWorldData.matWorld *= baseMatWorldData.matScale;
 			baseMatWorldData.matWorld *= baseMatWorldData.matRota;
 			baseMatWorldData.matWorld *= baseMatWorldData.matTrans;
@@ -81,14 +81,14 @@ void FbxModelRender::Draw()
 			gpuBuffer->GetBufferData(constBufferHandle[1])->Map(0, nullptr, (void **)&constMap);
 			for (int i = 0; i < resourceData->bone.size(); i++)
 			{
-				XMMATRIX matCurrentPose;
+				DirectX::XMMATRIX matCurrentPose;
 				FbxAMatrix fbxCurrentPose = resourceData->bone[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime);
 				KazMath::ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
 
 
 				if (resourceData->startTime.size() == 0)
 				{
-					constMap->bones[i] = XMMatrixIdentity();
+					constMap->bones[i] = DirectX::XMMatrixIdentity();
 				}
 				else
 				{

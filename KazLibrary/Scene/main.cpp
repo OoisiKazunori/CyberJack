@@ -28,7 +28,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
 #ifdef _DEBUG
 	//DebugLayer
-	ComPtr<ID3D12Debug> debugController;
+	Microsoft::WRL::ComPtr<ID3D12Debug> debugController;
 	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
 	{
 		debugController->EnableDebugLayer();

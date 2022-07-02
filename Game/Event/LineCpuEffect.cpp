@@ -5,7 +5,7 @@ LineCpuEffect::LineCpuEffect()
 	for (int i = 0; i < lineRender.size(); ++i)
 	{
 		lineRender[i].data.pipelineName = PIPELINE_NAME_LINE_FLASHEFFECT;
-		constBufferHandle[i] = lineRender[i].CreateConstBuffer(sizeof(XMFLOAT4), typeid(XMFLOAT4).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+		constBufferHandle[i] = lineRender[i].CreateConstBuffer(sizeof(DirectX::XMFLOAT4), typeid(DirectX::XMFLOAT4).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
 
 		lineEffectData[i].x = 1.0f;
 		lineEffectData[i].y = 0.0f;
@@ -49,7 +49,7 @@ void LineCpuEffect::Update()
 		for (int i = 0; i < lineRender.size(); ++i)
 		{
 			lineEffectData[i].w = static_cast<float>(flashTimer[i]) / static_cast<float>(maxTimer);
-			lineRender[i].TransData(&lineEffectData[i], constBufferHandle[i], typeid(XMFLOAT4).name());
+			lineRender[i].TransData(&lineEffectData[i], constBufferHandle[i], typeid(DirectX::XMFLOAT4).name());
 			++flashTimer[i];
 		}
 	}

@@ -7,19 +7,19 @@
 
 struct InputData
 {
-	XMFLOAT3 pos;
+	DirectX::XMFLOAT3 pos;
 	float pad;
 };
 
 struct OutPutData
 {
-	XMMATRIX mat;
+	DirectX::XMMATRIX mat;
 };
 
 struct CommonData
 {
-	XMMATRIX cameraMat;
-	XMMATRIX projectionMat;
+	DirectX::XMMATRIX cameraMat;
+	DirectX::XMMATRIX projectionMat;
 };
 
 static const int INSTANCE_NUM_MAX = 800;
@@ -52,7 +52,7 @@ private:
 	BufferMemorySize size;
 
 
-	std::array<std::array<XMMATRIX, 800>, 13>matData;
+	std::array<std::array<DirectX::XMMATRIX, 800>, 13>matData;
 	BoxPolygonRenderPtr instanceBox;
 	std::array<int, 10000>test;
 };

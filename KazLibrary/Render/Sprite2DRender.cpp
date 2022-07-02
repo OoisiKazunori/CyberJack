@@ -67,9 +67,9 @@ void Sprite2DRender::Draw()
 	//行列計算-----------------------------------------------------------------------------------------------------
 	if (data.transform.Dirty())
 	{
-		baseMatWorldData.matWorld = XMMatrixIdentity();
-		baseMatWorldData.matWorld *= XMMatrixRotationZ(XMConvertToRadians(data.transform.rotation));
-		baseMatWorldData.matWorld *= XMMatrixTranslationFromVector(data.transform.pos.ConvertXMVECTOR());
+		baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
+		baseMatWorldData.matWorld *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(data.transform.rotation));
+		baseMatWorldData.matWorld *= DirectX::XMMatrixTranslationFromVector(data.transform.pos.ConvertXMVECTOR());
 	}
 	//行列計算-----------------------------------------------------------------------------------------------------
 
@@ -84,7 +84,7 @@ void Sprite2DRender::Draw()
 		//外部リソースのテクスチャサイズ
 		if (DescriptorHeapMgr::Instance()->GetType(data.handleData.handle) != DESCRIPTORHEAP_MEMORY_TEXTURE_RENDERTARGET)
 		{
-			//サイズをXMFLOAT3からXMFLOAT2に直す
+			//サイズをDirectX::XMFLOAT3からDirectX::XMFLOAT2に直す
 			KazMath::Vec2<float> lTmpSize = {};
 			lTmpSize = data.transform.scale;
 
@@ -180,7 +180,7 @@ void Sprite2DRender::Draw()
 	{
 		ConstBufferData lConstMap;
 		lConstMap.world = baseMatWorldData.matWorld;
-		lConstMap.view = XMMatrixIdentity();
+		lConstMap.view = DirectX::XMMatrixIdentity();
 		lConstMap.viewproj = renderData.cameraMgrInstance->orthographicMatProjection;
 		lConstMap.color = data.color.ConvertColorRateToXMFLOAT4();
 		lConstMap.mat = lConstMap.world * lConstMap.viewproj;

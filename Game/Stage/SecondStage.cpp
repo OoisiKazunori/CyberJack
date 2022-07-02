@@ -41,8 +41,8 @@ SecondStage::SecondStage()
 
 		for (int i = 0; i < line.size(); ++i)
 		{
-			XMVECTOR startPos = line[i].data.startPos.ConvertXMVECTOR();
-			XMVECTOR endPos = line[i].data.endPos.ConvertXMVECTOR();
+			DirectX::XMVECTOR startPos = line[i].data.startPos.ConvertXMVECTOR();
+			DirectX::XMVECTOR endPos = line[i].data.endPos.ConvertXMVECTOR();
 
 			//Line–ˆ‚Ìƒƒ“ƒo•Ï”‚ð’Ç‰Á
 			rapidjson::Value startPosArray(rapidjson::kArrayType);

@@ -64,7 +64,7 @@ void PolygonRender::Draw()
 	//s—ñŒvŽZ-----------------------------------------------------------------------------------------------------
 	if (data.transform.Dirty() || data.billBoardDirtyFlag.Dirty() || renderData.cameraMgrInstance->BillboardDirty())
 	{
-		baseMatWorldData.matWorld = XMMatrixIdentity();
+		baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 		baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
 		baseMatWorldData.matTrans = KazMath::CaluTransMatrix(data.transform.pos);
 		baseMatWorldData.matRota = KazMath::CaluRotaMatrix(data.transform.rotation);

@@ -7,7 +7,7 @@
 
 struct MultiRenderTargetData
 {
-	XMFLOAT3 backGroundColor;
+	DirectX::XMFLOAT3 backGroundColor;
 	KazMath::Vec2<UINT> graphSize;
 	MultiRenderTargetData()
 	{};
@@ -28,7 +28,7 @@ public:
 	/// ダブルバッファリング用のバッファ作成
 	/// </summary>
 	/// <param name="SWAPCHAIN">スワップチェーン</param>
-	void CreateDoubleBuffer(ComPtr<IDXGISwapChain4> SWAPCHAIN);
+	void CreateDoubleBuffer(Microsoft::WRL::ComPtr<IDXGISwapChain4> SWAPCHAIN);
 
 	/// <summary>
 	/// ダブルバッファリング用のレンダーターゲットをクリアします
@@ -36,7 +36,7 @@ public:
 	void SetDoubleBufferFlame();
 
 
-	void ClearDoubuleBuffer(XMFLOAT3 COLOR);
+	void ClearDoubuleBuffer(DirectX::XMFLOAT3 COLOR);
 
 	/// <summary>
 	/// ダブルバッファリング用のバリア切り替え
@@ -64,7 +64,7 @@ public:
 	void ClearRenderTarget(RESOURCE_HANDLE RENDERTARGET_HANDLE);
 
 
-	RESOURCE_HANDLE CreateRenderTarget(const KazMath::Vec2<UINT> &GRAPH_SIZE, const XMFLOAT3 &CLEAR_COLOR, const DXGI_FORMAT &FORMAT);
+	RESOURCE_HANDLE CreateRenderTarget(const KazMath::Vec2<UINT> &GRAPH_SIZE, const DirectX::XMFLOAT3 &CLEAR_COLOR, const DXGI_FORMAT &FORMAT);
 	std::vector<RESOURCE_HANDLE> CreateMultiRenderTarget(const std::vector<MultiRenderTargetData> &MULTIRENDER_TARGET_DATA, const DXGI_FORMAT &FORMAT);
 	ID3D12Resource *GetBufferData(RESOURCE_HANDLE HANDLE)const;
 	D3D12_GPU_DESCRIPTOR_HANDLE GetViewData(RESOURCE_HANDLE HANDLE);
@@ -74,8 +74,8 @@ public:
 	void DeleteMultiRenderTarget(const std::vector<RESOURCE_HANDLE> &HANDLE);
 
 
-	ComPtr<ID3D12DescriptorHeap> multiPassRTVHeap;
-	ComPtr<ID3D12Resource> copyBuffer;
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> multiPassRTVHeap;
+	Microsoft::WRL::ComPtr<ID3D12Resource> copyBuffer;
 
 	GraphicsDepthTest gDepth;
 	RESOURCE_HANDLE handle, handle2;
@@ -87,13 +87,13 @@ public:
 	std::array<std::vector<RESOURCE_HANDLE>, 100>renderTargetData;
 private:
 
-	std::vector<ComPtr<ID3D12Resource>> backBuffers;
+	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> backBuffers;
 
-	array<XMFLOAT4, 100> clearColors;
+	array<DirectX::XMFLOAT4, 100> clearColors;
 
 
-	ComPtr<IDXGISwapChain4> copySwapchain;
-	ComPtr<ID3D12DescriptorHeap> rtvHeaps;
+	Microsoft::WRL::ComPtr<IDXGISwapChain4> copySwapchain;
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtvHeaps;
 	D3D12_CPU_DESCRIPTOR_HANDLE multiPassRTVHanlde;
 
 

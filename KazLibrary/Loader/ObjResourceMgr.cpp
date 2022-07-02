@@ -42,9 +42,9 @@ RESOURCE_HANDLE ObjResourceMgr::LoadModel(string RESOURCE)
 
 	vector<Vertex> vert;
 	vector<USHORT> indi;
-	vector<XMFLOAT3>positions;
-	vector<XMFLOAT3>normals;
-	vector<XMFLOAT2>texcoords;
+	vector<DirectX::XMFLOAT3>positions;
+	vector<DirectX::XMFLOAT3>normals;
+	vector<DirectX::XMFLOAT2>texcoords;
 
 	unsigned int indexCountNum = 0;
 
@@ -75,7 +75,7 @@ RESOURCE_HANDLE ObjResourceMgr::LoadModel(string RESOURCE)
 
 		if (key == "v") {
 			//XYZ“Ç‚Ýž‚Ý
-			XMFLOAT3 position{};
+			DirectX::XMFLOAT3 position{};
 			line_stream >> position.x;
 			line_stream >> position.y;
 			line_stream >> position.z;
@@ -129,7 +129,7 @@ RESOURCE_HANDLE ObjResourceMgr::LoadModel(string RESOURCE)
 		}
 
 		if (key == "vt") {
-			XMFLOAT2 texcoord{};
+			DirectX::XMFLOAT2 texcoord{};
 			line_stream >> texcoord.x;
 			line_stream >> texcoord.y;
 
@@ -143,7 +143,7 @@ RESOURCE_HANDLE ObjResourceMgr::LoadModel(string RESOURCE)
 		}
 
 		if (key == "vn") {
-			XMFLOAT3 normal{};
+			DirectX::XMFLOAT3 normal{};
 			line_stream >> normal.x;
 			line_stream >> normal.y;
 			line_stream >> normal.z;

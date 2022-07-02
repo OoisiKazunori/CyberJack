@@ -86,19 +86,19 @@ BoxPolygonRender::BoxPolygonRender(bool INSTANCE_FLAG, int INSTANCE_NUM)
 		index[2] = lIndices[i * 3 + 2];
 
 		//三角形を構築する頂点座標をベクトルに代入
-		XMVECTOR p0 = XMLoadFloat3(&lVertices[index[0]].pos);
-		XMVECTOR p1 = XMLoadFloat3(&lVertices[index[1]].pos);
-		XMVECTOR p2 = XMLoadFloat3(&lVertices[index[2]].pos);
+		DirectX::XMVECTOR p0 = XMLoadFloat3(&lVertices[index[0]].pos);
+		DirectX::XMVECTOR p1 = XMLoadFloat3(&lVertices[index[1]].pos);
+		DirectX::XMVECTOR p2 = XMLoadFloat3(&lVertices[index[2]].pos);
 
 		//p0-p1,p0-p2ベクトルを計算(ベクトルの減算)
-		XMVECTOR v1 = XMVectorSubtract(p1, p0);
-		XMVECTOR v2 = XMVectorSubtract(p2, p0);
+		DirectX::XMVECTOR v1 = DirectX::XMVectorSubtract(p1, p0);
+		DirectX::XMVECTOR v2 = DirectX::XMVectorSubtract(p2, p0);
 
 		//外積は両方から垂直なベクトル
-		XMVECTOR normal = XMVector3Cross(v1, v2);
+		DirectX::XMVECTOR normal = DirectX::XMVector3Cross(v1, v2);
 
 		//正規化(長さを1にする)
-		normal = XMVector3Normalize(normal);
+		normal = DirectX::XMVector3Normalize(normal);
 
 		//求めた法線を頂点データを代入
 		XMStoreFloat3(&lVertices[index[0]].normal, normal);
@@ -161,13 +161,13 @@ void BoxPolygonRender::Draw()
 		//行列計算-----------------------------------------------------------------------------------------------------
 		if (data.transform.Dirty())
 		{
-			baseMatWorldData.matWorld = XMMatrixIdentity();
+			baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 			baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
 			baseMatWorldData.matTrans = KazMath::CaluTransMatrix(data.transform.pos);
 			baseMatWorldData.matRota = KazMath::CaluRotaMatrix(data.transform.rotation);
 
 			//ワールド行列の計算
-			baseMatWorldData.matWorld = XMMatrixIdentity();
+			baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 			baseMatWorldData.matWorld *= baseMatWorldData.matScale;
 			baseMatWorldData.matWorld *= baseMatWorldData.matRota;
 			baseMatWorldData.matWorld *= baseMatWorldData.matTrans;
@@ -205,7 +205,7 @@ void BoxPolygonRender::Draw()
 	data.Record();
 }
 
-XMMATRIX BoxPolygonRender::GetMotherMatrix()
+DirectX::XMMATRIX BoxPolygonRender::GetMotherMatrix()
 {
 	return motherMatrix;
 }

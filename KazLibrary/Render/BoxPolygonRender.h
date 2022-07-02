@@ -11,10 +11,10 @@ public:
 	~BoxPolygonRender();
 	void Draw();
 
-	XMMATRIX GetMotherMatrix();
+	DirectX::XMMATRIX GetMotherMatrix();
 	PolygonDrawData data;
 private:
-	XMMATRIX motherMatrix;
+	DirectX::XMMATRIX motherMatrix;
 
 	RESOURCE_HANDLE constBufferHandle;
 	bool instanceFlag;

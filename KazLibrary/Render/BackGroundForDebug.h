@@ -20,9 +20,9 @@ public:
 
 private:
 	//LineRender verticalLine[100], horizontalLine[100], rayDir;
-	XMFLOAT3 verticalLinePos[2][100], horizontalLinePos[2][100];
+	DirectX::XMFLOAT3 verticalLinePos[2][100], horizontalLinePos[2][100];
 
-	XMFLOAT3 xLinePos, yLinePos, zLinePos;
+	DirectX::XMFLOAT3 xLinePos, yLinePos, zLinePos;
 	//LineRender xLine, yLine, zLine;
 
 	array<LineRender,100> verticalLine, horizontalLine;

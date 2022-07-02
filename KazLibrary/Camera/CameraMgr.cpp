@@ -4,8 +4,8 @@
 CameraMgr::CameraMgr()
 {
 	perspectiveMat =
-		XMMatrixPerspectiveFovLH(
-			XMConvertToRadians(60.0f),
+		DirectX::XMMatrixPerspectiveFovLH(
+			DirectX::XMConvertToRadians(60.0f),
 			(float)WIN_X / WIN_Y,
 			0.1f,
 			700.0f
@@ -13,7 +13,7 @@ CameraMgr::CameraMgr()
 
 
 	//2D座標変換
-	orthographicMatProjection = XMMatrixOrthographicOffCenterLH(
+	orthographicMatProjection = DirectX::XMMatrixOrthographicOffCenterLH(
 		0.0f,
 		(float)WIN_X,
 		(float)WIN_Y,
@@ -24,9 +24,9 @@ CameraMgr::CameraMgr()
 
 	for (int i = 0; i < CAMERA_ARRAY_NUM; ++i)
 	{
-		viewArray[i] = XMMatrixIdentity();
+		viewArray[i] = DirectX::XMMatrixIdentity();
 		viewDirtyFlagArray[i] = std::make_unique<DirtySet>(viewArray[i]);
-		billBoardArray[i] = XMMatrixIdentity();
+		billBoardArray[i] = DirectX::XMMatrixIdentity();
 		billBoardDirtyFlagArray[i] = std::make_unique<DirtySet>(billBoardArray[i]);
 	}
 }
@@ -34,8 +34,8 @@ CameraMgr::CameraMgr()
 void CameraMgr::CameraSetting(float VIEWING_ANGLE, float FAR_SIDE)
 {
 	perspectiveMat =
-		XMMatrixPerspectiveFovLH(
-			XMConvertToRadians(VIEWING_ANGLE),
+		DirectX::XMMatrixPerspectiveFovLH(
+			DirectX::XMConvertToRadians(VIEWING_ANGLE),
 			(float)WIN_X / WIN_Y,
 			0.1f,
 			FAR_SIDE
@@ -44,9 +44,9 @@ void CameraMgr::CameraSetting(float VIEWING_ANGLE, float FAR_SIDE)
 
 void CameraMgr::Camera(const KazMath::Vec3<float> &EYE_POS, const KazMath::Vec3<float> &TARGET_POS, const KazMath::Vec3<float> &UP, int CAMERA_INDEX)
 {
-	XMFLOAT3 eye = { EYE_POS.x,EYE_POS.y,EYE_POS.z };
-	XMFLOAT3 target = { TARGET_POS.x,TARGET_POS.y ,TARGET_POS.z };
-	XMFLOAT3 up = { UP.x,UP.y,UP.z };
+	DirectX::XMFLOAT3 eye = { EYE_POS.x,EYE_POS.y,EYE_POS.z };
+	DirectX::XMFLOAT3 target = { TARGET_POS.x,TARGET_POS.y ,TARGET_POS.z };
+	DirectX::XMFLOAT3 up = { UP.x,UP.y,UP.z };
 	CameraAxis cameraAxis;
 
 
@@ -60,87 +60,87 @@ void CameraMgr::Camera(const KazMath::Vec3<float> &EYE_POS, const KazMath::Vec3<
 	}
 
 #pragma region ビュー行列
-	XMMATRIX matView;
+	DirectX::XMMATRIX matView;
 	// 視点座標
-	XMVECTOR eyePosition = XMLoadFloat3(&eye);
+	DirectX::XMVECTOR eyePosition = XMLoadFloat3(&eye);
 	// 注視点座標
-	XMVECTOR targetPosition = XMLoadFloat3(&target);
+	DirectX::XMVECTOR targetPosition = XMLoadFloat3(&target);
 	// （仮の）上方向
-	XMVECTOR upVector = XMLoadFloat3(&up);
+	DirectX::XMVECTOR upVector = XMLoadFloat3(&up);
 
 	// カメラZ軸（視線方向）
-	cameraAxis.z = XMVectorSubtract(targetPosition, eyePosition);
+	cameraAxis.z = DirectX::XMVectorSubtract(targetPosition, eyePosition);
 	// 0ベクトルだと向きが定まらないので除外
-	assert(!XMVector3Equal(cameraAxis.z, XMVectorZero()));
-	assert(!XMVector3IsInfinite(cameraAxis.z));
-	assert(!XMVector3Equal(upVector, XMVectorZero()));
-	assert(!XMVector3IsInfinite(upVector));
+	assert(!DirectX::XMVector3Equal(cameraAxis.z, DirectX::XMVectorZero()));
+	assert(!DirectX::XMVector3IsInfinite(cameraAxis.z));
+	assert(!DirectX::XMVector3Equal(upVector, DirectX::XMVectorZero()));
+	assert(!DirectX::XMVector3IsInfinite(upVector));
 	// ベクトルを正規化
-	cameraAxis.z = XMVector3Normalize(cameraAxis.z);
+	cameraAxis.z = DirectX::XMVector3Normalize(cameraAxis.z);
 
 	// カメラのX軸（右方向）
 	// X軸は上方向→Z軸の外積で求まる
-	cameraAxis.x = XMVector3Cross(upVector, cameraAxis.z);
+	cameraAxis.x = DirectX::XMVector3Cross(upVector, cameraAxis.z);
 	// ベクトルを正規化
-	cameraAxis.x = XMVector3Normalize(cameraAxis.x);
+	cameraAxis.x = DirectX::XMVector3Normalize(cameraAxis.x);
 
 	// カメラのY軸（上方向）
 	// Y軸はZ軸→X軸の外積で求まる
-	cameraAxis.y = XMVector3Cross(cameraAxis.z, cameraAxis.x);
+	cameraAxis.y = DirectX::XMVector3Cross(cameraAxis.z, cameraAxis.x);
 
 	cameraAxis.upVec = upVector;
 
 
 	// カメラ回転行列
-	XMMATRIX matCameraRot;
+	DirectX::XMMATRIX matCameraRot;
 	// カメラ座標系→ワールド座標系の変換行列
 	matCameraRot.r[0] = cameraAxis.x;
 	matCameraRot.r[1] = cameraAxis.y;
 	matCameraRot.r[2] = cameraAxis.z;
-	matCameraRot.r[3] = XMVectorSet(0, 0, 0, 1);
+	matCameraRot.r[3] = DirectX::XMVectorSet(0, 0, 0, 1);
 
 
 	// 転置により逆行列（逆回転）を計算
 	matView = XMMatrixTranspose(matCameraRot);
 
 	// 視点座標に-1を掛けた座標
-	XMVECTOR reverseEyePosition = XMVectorNegate(eyePosition);
+	DirectX::XMVECTOR reverseEyePosition = DirectX::XMVectorNegate(eyePosition);
 	// カメラの位置からワールド原点へのベクトル（カメラ座標系）
-	XMVECTOR tX = XMVector3Dot(cameraAxis.x, reverseEyePosition);	// X成分
-	XMVECTOR tY = XMVector3Dot(cameraAxis.y, reverseEyePosition);	// Y成分
-	XMVECTOR tZ = XMVector3Dot(cameraAxis.z, reverseEyePosition);	// Z成分
+	DirectX::XMVECTOR tX = DirectX::XMVector3Dot(cameraAxis.x, reverseEyePosition);	// X成分
+	DirectX::XMVECTOR tY = DirectX::XMVector3Dot(cameraAxis.y, reverseEyePosition);	// Y成分
+	DirectX::XMVECTOR tZ = DirectX::XMVector3Dot(cameraAxis.z, reverseEyePosition);	// Z成分
 	const int x = 0;
 	const int y = 1;
 	const int z = 2;
 	// 一つのベクトルにまとめる
-	XMVECTOR translation = { tX.m128_f32[x], tY.m128_f32[y], tZ.m128_f32[z],1.0f };
+	DirectX::XMVECTOR translation = { tX.m128_f32[x], tY.m128_f32[y], tZ.m128_f32[z],1.0f };
 	// ビュー行列に平行移動成分を設定
 	matView.r[3] = translation;
 #pragma endregion
 
 	//全方位ビルボード
-	XMMATRIX matBillboard;
+	DirectX::XMMATRIX matBillboard;
 	matBillboard.r[0] = cameraAxis.x;
 	matBillboard.r[1] = cameraAxis.y;
 	matBillboard.r[2] = cameraAxis.z;
-	matBillboard.r[3] = XMVectorSet(0, 0, 0, 1);
+	matBillboard.r[3] = DirectX::XMVectorSet(0, 0, 0, 1);
 
 #pragma region Y軸ビルボード行列
 	// カメラX軸、Y軸、Z軸
-	XMVECTOR billCameraAxisX, billCameraAxisY, billCameraAxisZ;
+	DirectX::XMVECTOR billCameraAxisX, billCameraAxisY, billCameraAxisZ;
 
 	// X軸は共通
 	billCameraAxisX = cameraAxis.x;
 	// Y軸はワールド座標系のY軸
-	billCameraAxisY = XMVector3Normalize(cameraAxis.upVec);
+	billCameraAxisY = DirectX::XMVector3Normalize(cameraAxis.upVec);
 	// Z軸はX軸→Y軸の外積で求まる
-	billCameraAxisZ = XMVector3Cross(billCameraAxisX, billCameraAxisY);
+	billCameraAxisZ = DirectX::XMVector3Cross(billCameraAxisX, billCameraAxisY);
 
 	// Y軸回りビルボード行列
 	//matBillboard.r[0] = billCameraAxisX;
 	//matBillboard.r[1] = billCameraAxisY;
 	//matBillboard.r[2] = billCameraAxisZ;
-	//matBillboard.r[3] = XMVectorSet(0, 0, 0, 1);
+	//matBillboard.r[3] = DirectX::XMVectorSet(0, 0, 0, 1);
 #pragma endregion
 
 	viewArray[CAMERA_INDEX] = matView;
@@ -149,11 +149,11 @@ void CameraMgr::Camera(const KazMath::Vec3<float> &EYE_POS, const KazMath::Vec3<
 	//billBoard = matBillboard;
 }
 
-XMMATRIX CameraMgr::CreateCamera(const KazMath::Vec3<float> &EYE_POS, const KazMath::Vec3<float> &TARGET_POS, const KazMath::Vec3<float> &UP)
+DirectX::XMMATRIX CameraMgr::CreateCamera(const KazMath::Vec3<float> &EYE_POS, const KazMath::Vec3<float> &TARGET_POS, const KazMath::Vec3<float> &UP)
 {
-	XMFLOAT3 eye = { EYE_POS.x,EYE_POS.y,EYE_POS.z };
-	XMFLOAT3 target = { TARGET_POS.x, TARGET_POS.y, TARGET_POS.z };
-	XMFLOAT3 up = { UP.x,UP.y,UP.z };
+	DirectX::XMFLOAT3 eye = { EYE_POS.x,EYE_POS.y,EYE_POS.z };
+	DirectX::XMFLOAT3 target = { TARGET_POS.x, TARGET_POS.y, TARGET_POS.z };
+	DirectX::XMFLOAT3 up = { UP.x,UP.y,UP.z };
 	CameraAxis cameraAxis;
 
 
@@ -163,64 +163,64 @@ XMMATRIX CameraMgr::CreateCamera(const KazMath::Vec3<float> &EYE_POS, const KazM
 
 	if (eyeAll0 || eyeEqualTarget)
 	{
-		return XMMATRIX();
+		return DirectX::XMMATRIX();
 	}
 
 #pragma region ビュー行列
-	XMMATRIX matView;
+	DirectX::XMMATRIX matView;
 	// 視点座標
-	XMVECTOR eyePosition = XMLoadFloat3(&eye);
+	DirectX::XMVECTOR eyePosition = XMLoadFloat3(&eye);
 	// 注視点座標
-	XMVECTOR targetPosition = XMLoadFloat3(&target);
+	DirectX::XMVECTOR targetPosition = XMLoadFloat3(&target);
 	// （仮の）上方向
-	XMVECTOR upVector = XMLoadFloat3(&up);
+	DirectX::XMVECTOR upVector = XMLoadFloat3(&up);
 
 	// カメラZ軸（視線方向）
-	cameraAxis.z = XMVectorSubtract(targetPosition, eyePosition);
+	cameraAxis.z = DirectX::XMVectorSubtract(targetPosition, eyePosition);
 	// 0ベクトルだと向きが定まらないので除外
-	assert(!XMVector3Equal(cameraAxis.z, XMVectorZero()));
-	assert(!XMVector3IsInfinite(cameraAxis.z));
-	assert(!XMVector3Equal(upVector, XMVectorZero()));
-	assert(!XMVector3IsInfinite(upVector));
+	assert(!DirectX::XMVector3Equal(cameraAxis.z, DirectX::XMVectorZero()));
+	assert(!DirectX::XMVector3IsInfinite(cameraAxis.z));
+	assert(!DirectX::XMVector3Equal(upVector, DirectX::XMVectorZero()));
+	assert(!DirectX::XMVector3IsInfinite(upVector));
 	// ベクトルを正規化
-	cameraAxis.z = XMVector3Normalize(cameraAxis.z);
+	cameraAxis.z = DirectX::XMVector3Normalize(cameraAxis.z);
 
 	// カメラのX軸（右方向）
 	// X軸は上方向→Z軸の外積で求まる
-	cameraAxis.x = XMVector3Cross(upVector, cameraAxis.z);
+	cameraAxis.x = DirectX::XMVector3Cross(upVector, cameraAxis.z);
 	// ベクトルを正規化
-	cameraAxis.x = XMVector3Normalize(cameraAxis.x);
+	cameraAxis.x = DirectX::XMVector3Normalize(cameraAxis.x);
 
 	// カメラのY軸（上方向）
 	// Y軸はZ軸→X軸の外積で求まる
-	cameraAxis.y = XMVector3Cross(cameraAxis.z, cameraAxis.x);
+	cameraAxis.y = DirectX::XMVector3Cross(cameraAxis.z, cameraAxis.x);
 
 	cameraAxis.upVec = upVector;
 
 
 	// カメラ回転行列
-	XMMATRIX matCameraRot;
+	DirectX::XMMATRIX matCameraRot;
 	// カメラ座標系→ワールド座標系の変換行列
 	matCameraRot.r[0] = cameraAxis.x;
 	matCameraRot.r[1] = cameraAxis.y;
 	matCameraRot.r[2] = cameraAxis.z;
-	matCameraRot.r[3] = XMVectorSet(0, 0, 0, 1);
+	matCameraRot.r[3] = DirectX::XMVectorSet(0, 0, 0, 1);
 
 
 	// 転置により逆行列（逆回転）を計算
 	matView = XMMatrixTranspose(matCameraRot);
 
 	// 視点座標に-1を掛けた座標
-	XMVECTOR reverseEyePosition = XMVectorNegate(eyePosition);
+	DirectX::XMVECTOR reverseEyePosition = DirectX::XMVectorNegate(eyePosition);
 	// カメラの位置からワールド原点へのベクトル（カメラ座標系）
-	XMVECTOR tX = XMVector3Dot(cameraAxis.x, reverseEyePosition);	// X成分
-	XMVECTOR tY = XMVector3Dot(cameraAxis.y, reverseEyePosition);	// Y成分
-	XMVECTOR tZ = XMVector3Dot(cameraAxis.z, reverseEyePosition);	// Z成分
+	DirectX::XMVECTOR tX = DirectX::XMVector3Dot(cameraAxis.x, reverseEyePosition);	// X成分
+	DirectX::XMVECTOR tY = DirectX::XMVector3Dot(cameraAxis.y, reverseEyePosition);	// Y成分
+	DirectX::XMVECTOR tZ = DirectX::XMVector3Dot(cameraAxis.z, reverseEyePosition);	// Z成分
 	const int x = 0;
 	const int y = 1;
 	const int z = 2;
 	// 一つのベクトルにまとめる
-	XMVECTOR translation = XMVectorSet(tX.m128_f32[x], tY.m128_f32[y], tZ.m128_f32[z], 1.0f);
+	DirectX::XMVECTOR translation = DirectX::XMVectorSet(tX.m128_f32[x], tY.m128_f32[y], tZ.m128_f32[z], 1.0f);
 	// ビュー行列に平行移動成分を設定
 	matView.r[3] = translation;
 #pragma endregion
@@ -228,41 +228,40 @@ XMMATRIX CameraMgr::CreateCamera(const KazMath::Vec3<float> &EYE_POS, const KazM
 	return matView;
 }
 
-XMMATRIX CameraMgr::GetViewMatrix(int CAMERA_INDEX)
+DirectX::XMMATRIX CameraMgr::GetViewMatrix(int CAMERA_INDEX)
 {
 	return viewArray[CAMERA_INDEX];
 }
 
-XMMATRIX *CameraMgr::GetViewMatrixPointer(int CAMERA_INDEX)
+DirectX::XMMATRIX *CameraMgr::GetViewMatrixPointer(int CAMERA_INDEX)
 {
 	return &viewArray[CAMERA_INDEX];
 }
 
-XMMATRIX CameraMgr::GetMatBillBoard(int CAMERA_INDEX)
+DirectX::XMMATRIX CameraMgr::GetMatBillBoard(int CAMERA_INDEX)
 {
 	return billBoardArray[CAMERA_INDEX];
 }
 
-XMMATRIX *CameraMgr::GetMatBillBoardPointer(int CAMERA_INDEX)
+DirectX::XMMATRIX *CameraMgr::GetMatBillBoardPointer(int CAMERA_INDEX)
 {
 	return &billBoardArray[CAMERA_INDEX];
 }
 
-XMMATRIX CameraMgr::GetPerspectiveMatProjection()
+DirectX::XMMATRIX CameraMgr::GetPerspectiveMatProjection()
 {
 	return perspectiveMat;
 }
 
-XMMATRIX *CameraMgr::GetPerspectiveMatProjectionPointer()
+DirectX::XMMATRIX *CameraMgr::GetPerspectiveMatProjectionPointer()
 {
 	return &perspectiveMat;
 }
 
-XMMATRIX CameraMgr::GetPerspectiveMatProjectionAngle(float angle)
+DirectX::XMMATRIX CameraMgr::GetPerspectiveMatProjectionAngle(float angle)
 {
-
-	return XMMatrixPerspectiveFovLH(
-			XMConvertToRadians(angle),
+	return DirectX::XMMatrixPerspectiveFovLH(
+			DirectX::XMConvertToRadians(angle),
 			static_cast<float>(WIN_X) / static_cast<float>(WIN_Y),
 			0.1f,
 			100000

@@ -51,7 +51,7 @@ array<KazMath::Vec2<float>, 4> KazRenderHelper::ChangePlaneScale(const KazMath::
 	return pos;
 }
 
-array<KazMath::Vec2<float>, 4> KazRenderHelper::ChangeModiPlaneScale(const KazMath::Vec2<float> &LEFTUP_POS, const KazMath::Vec2<float> &RIGHTDOWN_POS, const XMFLOAT4 &SCALE, const XMFLOAT2 &ANCHOR_POINT, const XMFLOAT2 &TEX_SIZE)
+array<KazMath::Vec2<float>, 4> KazRenderHelper::ChangeModiPlaneScale(const KazMath::Vec2<float> &LEFTUP_POS, const KazMath::Vec2<float> &RIGHTDOWN_POS, const DirectX::XMFLOAT4 &SCALE, const DirectX::XMFLOAT2 &ANCHOR_POINT, const DirectX::XMFLOAT2 &TEX_SIZE)
 {
 	//ì«Ç›çûÇ›
 	float width = TEX_SIZE.x;
@@ -72,12 +72,12 @@ array<KazMath::Vec2<float>, 4> KazRenderHelper::ChangeModiPlaneScale(const KazMa
 	return pos;
 }
 
-void KazRenderHelper::FlipXUv(XMFLOAT2 *UV_LEFTUP_POS, XMFLOAT2 *UV_LEFTDOWN_POS, XMFLOAT2 *UV_RIGHTUP_POS, XMFLOAT2 *UV_RIGHTDOWN_POS)
+void KazRenderHelper::FlipXUv(DirectX::XMFLOAT2 *UV_LEFTUP_POS, DirectX::XMFLOAT2 *UV_LEFTDOWN_POS, DirectX::XMFLOAT2 *UV_RIGHTUP_POS, DirectX::XMFLOAT2 *UV_RIGHTDOWN_POS)
 {
-	XMFLOAT2 leftUp = *UV_LEFTUP_POS;
-	XMFLOAT2 rightUp = *UV_RIGHTUP_POS;
-	XMFLOAT2 leftDown = *UV_LEFTDOWN_POS;
-	XMFLOAT2 rightDown = *UV_RIGHTDOWN_POS;
+	DirectX::XMFLOAT2 leftUp = *UV_LEFTUP_POS;
+	DirectX::XMFLOAT2 rightUp = *UV_RIGHTUP_POS;
+	DirectX::XMFLOAT2 leftDown = *UV_LEFTDOWN_POS;
+	DirectX::XMFLOAT2 rightDown = *UV_RIGHTDOWN_POS;
 
 	UV_LEFTUP_POS->x = rightUp.x;
 	UV_RIGHTUP_POS->x = leftUp.x;
@@ -86,12 +86,12 @@ void KazRenderHelper::FlipXUv(XMFLOAT2 *UV_LEFTUP_POS, XMFLOAT2 *UV_LEFTDOWN_POS
 
 }
 
-void KazRenderHelper::FlipYUv(XMFLOAT2 *UV_LEFTUP_POS, XMFLOAT2 *UV_LEFTDOWN_POS, XMFLOAT2 *UV_RIGHTUP_POS, XMFLOAT2 *UV_RIGHTDOWN_POS)
+void KazRenderHelper::FlipYUv(DirectX::XMFLOAT2 *UV_LEFTUP_POS, DirectX::XMFLOAT2 *UV_LEFTDOWN_POS, DirectX::XMFLOAT2 *UV_RIGHTUP_POS, DirectX::XMFLOAT2 *UV_RIGHTDOWN_POS)
 {
-	XMFLOAT2 leftUp = *UV_LEFTUP_POS;
-	XMFLOAT2 rightUp = *UV_RIGHTUP_POS;
-	XMFLOAT2 leftDown = *UV_LEFTDOWN_POS;
-	XMFLOAT2 rightDown = *UV_RIGHTDOWN_POS;
+	DirectX::XMFLOAT2 leftUp = *UV_LEFTUP_POS;
+	DirectX::XMFLOAT2 rightUp = *UV_RIGHTUP_POS;
+	DirectX::XMFLOAT2 leftDown = *UV_LEFTDOWN_POS;
+	DirectX::XMFLOAT2 rightDown = *UV_RIGHTDOWN_POS;
 
 	UV_LEFTUP_POS->y = leftDown.y;
 	UV_RIGHTUP_POS->y = rightDown.y;
@@ -99,7 +99,7 @@ void KazRenderHelper::FlipYUv(XMFLOAT2 *UV_LEFTUP_POS, XMFLOAT2 *UV_LEFTDOWN_POS
 	UV_RIGHTDOWN_POS->y = rightUp.y;
 }
 
-void KazRenderHelper::VerticesCut(const KazMath::Vec2<int> &DIV_SIZE, const KazMath::Vec2<int> &DIV_LEFTUP_POS, XMFLOAT3 *LEFTUP_POS, XMFLOAT3 *LEFTDOWN_POS, XMFLOAT3 *RIGHTUP_POS, XMFLOAT3 *RIGHTDOWN_POS, const KazMath::Vec2<float> &SCALE, const KazMath::Vec2<float> &ANCHOR_POINT)
+void KazRenderHelper::VerticesCut(const KazMath::Vec2<int> &DIV_SIZE, const KazMath::Vec2<int> &DIV_LEFTUP_POS, DirectX::XMFLOAT3 *LEFTUP_POS, DirectX::XMFLOAT3 *LEFTDOWN_POS, DirectX::XMFLOAT3 *RIGHTUP_POS, DirectX::XMFLOAT3 *RIGHTDOWN_POS, const KazMath::Vec2<float> &SCALE, const KazMath::Vec2<float> &ANCHOR_POINT)
 {
 	KazMath::Vec2<int> texSize = DIV_SIZE;
 	KazMath::Vec2<int> divGraphPos = DIV_LEFTUP_POS;
@@ -121,7 +121,7 @@ void KazRenderHelper::VerticesCut(const KazMath::Vec2<int> &DIV_SIZE, const KazM
 	*RIGHTDOWN_POS = { tmp[1].x,tmp[1].y,0.0f };
 }
 
-void KazRenderHelper::UVCut(const KazMath::Vec2<int> &UV_DIV_LEFTUP_POS, const KazMath::Vec2<int> &DIV_SIZE, const KazMath::Vec2<int> &TEX_SIZE, XMFLOAT2 *LEFTUP_POS, XMFLOAT2 *LEFTDOWN_POS, XMFLOAT2 *RIGHTUP_POS, XMFLOAT2 *RIGHTDOWN_POS)
+void KazRenderHelper::UVCut(const KazMath::Vec2<int> &UV_DIV_LEFTUP_POS, const KazMath::Vec2<int> &DIV_SIZE, const KazMath::Vec2<int> &TEX_SIZE, DirectX::XMFLOAT2 *LEFTUP_POS, DirectX::XMFLOAT2 *LEFTDOWN_POS, DirectX::XMFLOAT2 *RIGHTUP_POS, DirectX::XMFLOAT2 *RIGHTDOWN_POS)
 {
 	int texX = UV_DIV_LEFTUP_POS.x;
 	int texY = UV_DIV_LEFTUP_POS.y;
@@ -139,7 +139,7 @@ void KazRenderHelper::UVCut(const KazMath::Vec2<int> &UV_DIV_LEFTUP_POS, const K
 	*RIGHTDOWN_POS = { tex_left,tex_bottom };
 }
 
-void KazRenderHelper::InitUvPos(XMFLOAT2 *UV_LEFTUP_POS, XMFLOAT2 *UV_LEFTDOWN_POS, XMFLOAT2 *UV_RIGHTUP_POS, XMFLOAT2 *UV_RIGHTDOWN_POS)
+void KazRenderHelper::InitUvPos(DirectX::XMFLOAT2 *UV_LEFTUP_POS, DirectX::XMFLOAT2 *UV_LEFTDOWN_POS, DirectX::XMFLOAT2 *UV_RIGHTUP_POS, DirectX::XMFLOAT2 *UV_RIGHTDOWN_POS)
 {
 	*UV_LEFTUP_POS = { 0.0f,0.0f };
 	*UV_LEFTDOWN_POS = { 0.0f,1.0f };
@@ -147,7 +147,7 @@ void KazRenderHelper::InitUvPos(XMFLOAT2 *UV_LEFTUP_POS, XMFLOAT2 *UV_LEFTDOWN_P
 	*UV_RIGHTDOWN_POS = { 1.0f,1.0f };
 }
 
-void KazRenderHelper::InitVerticesPos(XMFLOAT3 *LEFTUP_POS, XMFLOAT3 *LEFTDOWN_POS, XMFLOAT3 *RIGHTUP_POS, XMFLOAT3 *RIGHTDOWN_POS, const XMFLOAT2 &ANCHOR_POINT)
+void KazRenderHelper::InitVerticesPos(DirectX::XMFLOAT3 *LEFTUP_POS, DirectX::XMFLOAT3 *LEFTDOWN_POS, DirectX::XMFLOAT3 *RIGHTUP_POS, DirectX::XMFLOAT3 *RIGHTDOWN_POS, const DirectX::XMFLOAT2 &ANCHOR_POINT)
 {
 	*LEFTUP_POS = { (0.0f - ANCHOR_POINT.x), (0.0f - ANCHOR_POINT.y),0.0f };
 	*LEFTDOWN_POS = { (0.0f - ANCHOR_POINT.x), (1.0f - ANCHOR_POINT.y),0.0f };
@@ -184,7 +184,7 @@ int KazRenderHelper::SetBufferOnCmdList(const GraphicsRootSignatureParameter &PA
 	return keepParam;
 }
 
-XMFLOAT4 KazRenderHelper::SendColorDataToGPU(XMFLOAT4 COLOR_DATA)
+DirectX::XMFLOAT4 KazRenderHelper::SendColorDataToGPU(DirectX::XMFLOAT4 COLOR_DATA)
 {
-	return XMFLOAT4(COLOR_DATA.x / 255.0f, COLOR_DATA.y / 255.0f, COLOR_DATA.z / 255.0f, COLOR_DATA.w / 255.0f);
+	return DirectX::XMFLOAT4(COLOR_DATA.x / 255.0f, COLOR_DATA.y / 255.0f, COLOR_DATA.z / 255.0f, COLOR_DATA.w / 255.0f);
 }

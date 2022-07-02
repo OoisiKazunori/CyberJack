@@ -68,9 +68,9 @@ void MyImgui::Set()
 	DirectX12CmdList::Instance()->cmdList.Get());
 }
 
-ComPtr<ID3D12DescriptorHeap> MyImgui::CreateDescriptorHeapForImgui() 
+Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> MyImgui::CreateDescriptorHeapForImgui() 
 {
-	ComPtr<ID3D12DescriptorHeap> ret;
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> ret;
 
 	D3D12_DESCRIPTOR_HEAP_DESC desc = {};
 	desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;

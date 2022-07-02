@@ -21,7 +21,7 @@ private:
 	//ƒtƒŒ[ƒ€-------------------------
 	std::array<LineRender, FLAME_MAX_NUM>flame;
 	std::array<RESOURCE_HANDLE, FLAME_MAX_NUM>constBufferHandle;
-	std::array<XMFLOAT4, FLAME_MAX_NUM>lineEffectData;
+	std::array<DirectX::XMFLOAT4, FLAME_MAX_NUM>lineEffectData;
 	int flameFlashIndex;
 	int prevFlameFlashIndex;
 	std::array<int, FLAME_MAX_NUM>flashTimer;

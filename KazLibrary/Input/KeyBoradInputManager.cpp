@@ -145,7 +145,7 @@ bool KeyBoradInputManager::MouseInputRelease(MouseInputNumber CLICK)
 	return false;
 }
 
-XMFLOAT2 KeyBoradInputManager::GetMousePoint()
+DirectX::XMFLOAT2 KeyBoradInputManager::GetMousePoint()
 {
 	//WinAPIÇ≈ä»íPÇæÇ™ÅAíxÇ¢
 	POINT WinAPIMousePos;
@@ -153,7 +153,7 @@ XMFLOAT2 KeyBoradInputManager::GetMousePoint()
 	ScreenToClient(*hwnd, &WinAPIMousePos);
 
 
-	XMFLOAT2 mousePos;
+	DirectX::XMFLOAT2 mousePos;
 	mousePos.x = static_cast<float>(WinAPIMousePos.x);
 	mousePos.y = static_cast<float>(WinAPIMousePos.y);
 	return mousePos;

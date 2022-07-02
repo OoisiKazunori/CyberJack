@@ -72,14 +72,14 @@ HRESULT DirectX12::Create(int WINDOW_SIZE_X, int WINDOW_SIZE_Y, HWND hwnd)
 	//Direct2DとDirectWriteの初期化
 
 	//D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, __uuidof(ID2D1Factory3), &factoryOptions, &factory);
-	//ComPtr<IDXGIDevice> dxgiDevice;
+	//Microsoft::WRL::ComPtr<IDXGIDevice> dxgiDevice;
 	//m_d3d11Device->QueryInterface(IID_PPV_ARGS(&dxgiDevice));
 	//factory.As(&m_d2dFactory);
 
 	//m_d2dFactory->CreateDevice(dxgiDevice.Get(), &m_d2dDevice);
 	//m_d2dDevice->CreateDeviceContext(D2D1_DEVICE_CONTEXT_OPTIONS_NONE, &m_d2dDeviceContext);
 
-	//ComPtr<ID3D11Texture2D> backBuffer;
+	//Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
 	//m_swapChain->GetBuffer(0, IID_PPV_ARGS(&backBuffer));
 	//backBuffer.As(&m_dxgiSurface);
 
@@ -128,7 +128,7 @@ HRESULT DirectX12::CreateAdapter() {
 	result = CreateDXGIFactory(IID_PPV_ARGS(&dxgiFactory));
 
 	//アダプターの列挙用
-	std::vector<ComPtr<IDXGIAdapter>> adapters;
+	std::vector<Microsoft::WRL::ComPtr<IDXGIAdapter>> adapters;
 
 	//特定の名前を持つアダプターオブジェクトが入る
 	for (int i = 0; dxgiFactory->EnumAdapters(i, &tmpAdapter) != DXGI_ERROR_NOT_FOUND; i++) {
@@ -183,7 +183,7 @@ HRESULT DirectX12::CreateSwapChain(int WINDOW_SIZE_X, int WINDOW_SIZE_Y, HWND hw
 	swapchainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	swapchainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
-	ComPtr<IDXGISwapChain1> swapchain1;
+	Microsoft::WRL::ComPtr<IDXGISwapChain1> swapchain1;
 
 	result = dxgiFactory->CreateSwapChainForHwnd(
 		cmdQueue.Get(),
@@ -209,7 +209,7 @@ HRESULT DirectX12::CreateRenderTarget()
 	DirectX12Device::Instance()->dev->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&rtvHeaps));
 
 	//裏表の二つ分
-	std::vector<ComPtr<ID3D12Resource>> backBuffer(2);
+	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> backBuffer(2);
 
 	for (int i = 0; i < 2; i++) {
 

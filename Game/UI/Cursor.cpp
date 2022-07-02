@@ -3,8 +3,8 @@
 #include"../KazLibrary/Imgui/MyImgui.h"
 #include"../KazLibrary/Sound/SoundManager.h"
 
-XMFLOAT2 Cursor::KOCKBACK_MAX_VALUE = { 200.0f,200.0f };
-XMFLOAT2 Cursor::KOCKBACK_VELOCITY = { 5.0f,5.0f };
+DirectX::XMFLOAT2 Cursor::KOCKBACK_MAX_VALUE = { 200.0f,200.0f };
+DirectX::XMFLOAT2 Cursor::KOCKBACK_VELOCITY = { 5.0f,5.0f };
 KazMath::Vec2<float> Cursor::NO_MOVE_DISTANCE = { 150.0f,50.0f };
 
 Cursor::Cursor()

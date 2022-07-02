@@ -31,7 +31,7 @@ private:
 
 	//デスクリプタヒープの処理-----------------------------------------------------------------------------
 	static const short DESCRIPTOR_HEAP_SIZE_MAX = 4096;
-	ComPtr<ID3D12DescriptorHeap> heaps;
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> heaps;
 	array<BufferMemorySize, DESCRIPTORHEAP_MEMORY_MAX> heapMaxSizes;
 	UINT64 shaderResourceHeapIncreSize;
 	UINT64 rtvHeapIncreSize;

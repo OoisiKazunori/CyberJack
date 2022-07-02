@@ -43,7 +43,7 @@ public:
 	bool MouseInputTrigger(MouseInputNumber CLICK);
 	bool MouseInputState(MouseInputNumber CLICK);
 	bool MouseInputRelease(MouseInputNumber CLICK);
-	XMFLOAT2 GetMousePoint();
+	DirectX::XMFLOAT2 GetMousePoint();
 	
 private:
 	HRESULT result;
