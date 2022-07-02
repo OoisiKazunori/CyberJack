@@ -13,10 +13,14 @@ FbxModelRender::FbxModelRender()
 
 void FbxModelRender::Draw()
 {
-	resourceData = FbxModelResourceMgr::Instance()->GetResourceData(data.handle);
+	if (data.handle.flag.Dirty())
+	{
+		resourceData = FbxModelResourceMgr::Instance()->GetResourceData(data.handle.handle);
+		drawCommandData = KazRenderHelper::SetDrawCommandData(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, resourceData->vertexBufferView, resourceData->indexBufferView, resourceData->indicisNum, 1);
+	}
 
 
-	if (data.handle != -1)
+	if (data.handle.handle != -1)
 	{
 		if (data.isPlay)
 		{
@@ -32,25 +36,13 @@ void FbxModelRender::Draw()
 		}
 
 
-
-
-
 		//パイプライン設定-----------------------------------------------------------------------------------------------------
-		pipeline = static_cast<PipeLineNames>(data.pipelineName);
-		renderData.pipelineMgr->SetPipeLineAndRootSignature(pipeline);
+		renderData.pipelineMgr->SetPipeLineAndRootSignature(data.pipelineName);
 		//パイプライン設定-----------------------------------------------------------------------------------------------------
-
-
-		//DirtyFlag検知-----------------------------------------------------------------------------------------------------	
-		//bool viewMatFlag = cameraViewDirtyFlag->FloatDirty() || cameraProjectionDirtyFlag->FloatDirty();
-
-		//bool lMatrixDirtyFlag = positionDirtyFlag->FloatDirty() || scaleDirtyFlag->FloatDirty() || rotationDirtyFlag->FloatDirty();
-		//bool lFbxHandleDirtyFlag = this->fbxHandleDirtyFlag->Dirty();
-		//DirtyFlag検知-----------------------------------------------------------------------------------------------------
 
 
 		//行列計算-----------------------------------------------------------------------------------------------------
-		//if (lMatrixDirtyFlag)
+		if (data.transform.Dirty())
 		{
 			baseMatWorldData.matWorld = XMMatrixIdentity();
 			baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
@@ -72,7 +64,7 @@ void FbxModelRender::Draw()
 
 		//バッファの転送-----------------------------------------------------------------------------------------------------
 		//行列
-		//if (lMatrixDirtyFlag || viewMatFlag)
+		if (renderData.cameraMgrInstance->Dirty() || data.transform.Dirty())
 		{
 			ConstBufferData constMap;
 			constMap.world = baseMatWorldData.matWorld;
@@ -80,8 +72,6 @@ void FbxModelRender::Draw()
 			constMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
 			constMap.color = { 0.0f,0.0f,0.0f,0.0f };
 			constMap.mat = constMap.world * constMap.view * constMap.viewproj;
-
-			//gpuBuffer->TransData();
 			TransData(&constMap, constBufferHandle[0], typeid(constMap).name());
 		}
 
@@ -119,16 +109,16 @@ void FbxModelRender::Draw()
 				renderData.cmdListInstance->cmdList->SetGraphicsRootDescriptorTable(param, gpuDescHandleSRV);
 			}
 		}
-		SetConstBufferOnCmdList(pipeline);
+		SetConstBufferOnCmdList(data.pipelineName);
 
 
-		renderData.cmdListInstance->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		renderData.cmdListInstance->cmdList->IASetVertexBuffers(0, 1, &resourceData->vertexBufferView);
-		renderData.cmdListInstance->cmdList->IASetIndexBuffer(&resourceData->indexBufferView);
-		renderData.cmdListInstance->cmdList->DrawIndexedInstanced(resourceData->indicisNum, 1, 0, 0, 0);
+		DrawCommand(drawCommandData);
+
 	}
 	else
 	{
 
 	}
+
+	data.Record();
 }

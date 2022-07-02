@@ -19,12 +19,11 @@ public:
 	Obj3DData data;
 private:
 
-	PipeLineNames pipeline;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 	D3D12_INDEX_BUFFER_VIEW indexBufferView;
 
-	UINT VertByte;
-	UINT IndexByte;
+	UINT vertByte;
+	UINT indexByte;
 
 
 	short vertexBufferHandle;

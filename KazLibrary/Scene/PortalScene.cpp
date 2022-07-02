@@ -120,12 +120,13 @@ void PortalScene::Input()
 
 	if (animFlag)
 	{
-		mainRenderTarget.data.animationHandle.handle = 0;
+		box.data.handle.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "hamster.obj");
 	}
 	else
 	{
-		mainRenderTarget.data.animationHandle.handle = 1;
+		box.data.handle.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "ground.obj");
 	}
+
 
 	if (input->InputTrigger(DIK_T))
 	{
@@ -147,9 +148,9 @@ void PortalScene::Update()
 
 	ImGui::Begin("CheckDirtyFlag");
 	KazImGuiHelper::InputTransform3D(&box.data.transform);
-	KazImGuiHelper::InputVec4<int>(&box.data.color.color, "Color");
-	ImGui::InputFloat("R", &box.data.radius);
-	ImGui::Checkbox("3D", &box.data.change3DFlag);
+	KazImGuiHelper::InputVec4(&box.data.color.color, "Color");
+	KazImGuiHelper::InputVec3(&box.data.frontVector, "FrontVec");
+	KazImGuiHelper::InputVec3(&box.data.upVector, "UpVec");
 	ImGui::End();
 
 
@@ -162,14 +163,12 @@ void PortalScene::Draw()
 {
 	RenderTargetStatus::Instance()->PrepareToChangeBarrier(multipassHandle[0]);
 	RenderTargetStatus::Instance()->ClearRenderTarget(multipassHandle[0]);
-	//bg.Draw();
 	//portal.Draw();
 	//stringEffect.Draw();
 	//portalFlame.Draw();
 
 
-	box.Draw();
-
+	
 	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Draw Luminance");
 	RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, multipassHandle[0]);
 	RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
@@ -180,9 +179,11 @@ void PortalScene::Draw()
 	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Draw Main RenderTarget");
 	RenderTargetStatus::Instance()->PrepareToCloseBarrier(addHandle);
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
-	mainRenderTarget.Draw();
+	//mainRenderTarget.Draw();
 	//addRenderTarget.data.handleData = buler->BlurImage(addHandle);
 	//addRenderTarget.Draw();
+	bg.Draw();
+	box.Draw();
 
 
 	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());

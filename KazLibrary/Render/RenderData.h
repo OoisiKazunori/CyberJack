@@ -154,26 +154,34 @@ struct Pera3DData :public IData
 struct Obj3DData :public IData
 {
 	KazMath::Transform3D transform;
-	RESOURCE_HANDLE handle;
+	ResourceHandle handle;
 	KazMath::Vec3<float> upVector;
 	KazMath::Vec3<float> frontVector;
 	XMMATRIX motherMat;
-	int pipelineName;
-	XMFLOAT4 color;
+	PipeLineNames pipelineName;
+	KazMath::Color color;
 	bool removeMaterialFlag;
-
 	AddTextureData addHandle;
 
-	Obj3DData()
+	DirtyFlag<KazMath::Vec3<float>>upVecDirtyFlag;
+	DirtyFlag<KazMath::Vec3<float>>frontVecDirtyFlag;
+
+
+	Obj3DData() :pipelineName(PIPELINE_NAME_OBJ), color(0, 0, 0, 255), motherMat(XMMatrixIdentity()), upVecDirtyFlag(&upVector), frontVecDirtyFlag(&frontVector)
 	{
 		address = this;
-		handle = -1;
 		upVector = { 0,1,0 };
 		frontVector = { 0,0,1 };
-		pipelineName = static_cast<int>(PIPELINE_NAME_OBJ);
-		color = { 0.0f,0.0f,0.0f,255.0f };
 		removeMaterialFlag = false;
-		motherMat = XMMatrixIdentity();
+	}
+
+	void Record()
+	{
+		transform.Record();
+		handle.flag.Record();
+		color.Record();
+		upVecDirtyFlag.Record();
+		frontVecDirtyFlag.Record();
 	}
 };
 
@@ -218,20 +226,25 @@ struct PolygonDrawData :public IData
 struct FbxModelData :public IData
 {
 	KazMath::Transform3D transform;
-	RESOURCE_HANDLE handle;
+	ResourceHandle handle;
 	XMMATRIX motherMat;
 	bool isPlay;
 	int animationNumber;
-	int pipelineName;
+	PipeLineNames pipelineName;
 
 
 	FbxModelData()
 	{
 		address = this;
-		handle = -1;
-		pipelineName = static_cast<int>(PIPELINE_NAME_FBX);
+		pipelineName = PIPELINE_NAME_FBX;
 		animationNumber = 0;
 		motherMat = XMMatrixIdentity();
+	}
+
+	void Record()
+	{
+		transform.Record();
+		handle.flag.Record();
 	}
 };
 

@@ -13,10 +13,9 @@ public:
 
 	FbxModelData data;
 private:
-	PipeLineNames pipeline;
 
-	UINT VertByte;
-	UINT IndexByte;
+	UINT vertByte;
+	UINT indexByte;
 
 	XMMATRIX motherMat;
 	short vertexBufferHandle;

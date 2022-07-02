@@ -398,11 +398,11 @@ namespace KazMath
 
 		Vec4<int>Int()const
 		{
-			return Vec4<int>(x, y, z);
+			return Vec4<int>(x, y, z, a);
 		}
 		Vec4<float>Float()const
 		{
-			return Vec4<float>((float)x, (float)y, (float)z);
+			return Vec4<float>(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), static_cast<float>(a));
 		}
 
 		void Abs()
@@ -410,6 +410,7 @@ namespace KazMath
 			x = fabs(x);
 			y = fabs(y);
 			z = fabs(z);
+			a = fabs(a);
 		}
 
 #pragma region オペレーター演算子
@@ -439,7 +440,7 @@ namespace KazMath
 		};
 		Vec4 operator/(const float &rhs)const
 		{
-			return Vec4(x / rhs, y / rhs, z / rhs);
+			return Vec4(x / rhs, y / rhs, z / rhs, a / rhs);
 		};
 		Vec4 operator%(const Vec4 &rhs)const
 		{
