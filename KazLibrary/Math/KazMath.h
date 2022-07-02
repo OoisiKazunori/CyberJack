@@ -450,14 +450,15 @@ namespace KazMath
 			x = rhs.x;
 			y = rhs.y;
 			z = rhs.z;
+			a = rhs.a;
 		};
 		bool operator==(const Vec4 &rhs)const
 		{
-			return (x == rhs.x && y == rhs.y && z == rhs.z);
+			return (x == rhs.x && y == rhs.y && z == rhs.z && a == rhs.a);
 		};
 		bool operator!=(const Vec4 &rhs)const
 		{
-			return !(*this == rhs);
+			return !(x == rhs.x && y == rhs.y && z == rhs.z && a == rhs.a);
 		};
 		void operator+=(const Vec4 &rhs)
 		{

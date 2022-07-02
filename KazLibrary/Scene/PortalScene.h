@@ -46,7 +46,7 @@ private:
 	PortalFlame portalFlame;
 
 
-	BoxPolygonRender box;
+	CircleRender box;
 };
 
 

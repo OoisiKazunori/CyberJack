@@ -112,15 +112,6 @@ void PortalScene::Input()
 		changeFlag = !changeFlag;
 	}
 	
-	if (changeFlag)
-	{
-		mainRenderTarget.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "tex.png");
-	}
-	else
-	{
-		mainRenderTarget.data.handleData = TextureResourceMgr::Instance()->LoadDivGraph(KazFilePathName::TestPath + "AnimationTest.png", 2, 1, 32, 32);
-	}
-
 
 	if (input->InputTrigger(DIK_R) )
 	{
@@ -155,7 +146,10 @@ void PortalScene::Update()
 
 
 	ImGui::Begin("CheckDirtyFlag");
-	KazImGuiHelper::InputTransform2D(&mainRenderTarget.data.transform);
+	KazImGuiHelper::InputTransform3D(&box.data.transform);
+	KazImGuiHelper::InputVec4<int>(&box.data.color.color, "Color");
+	ImGui::InputFloat("R", &box.data.radius);
+	ImGui::Checkbox("3D", &box.data.change3DFlag);
 	ImGui::End();
 
 
