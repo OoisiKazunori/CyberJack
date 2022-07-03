@@ -9,7 +9,7 @@ GoalBoxEffect::GoalBoxEffect()
 	for (int i = 0; i < lightRender.size(); ++i)
 	{
 		lightRender[i] = std::make_unique<Sprite3DRender>(KazMath::Vec2<float>(0.0f, 0.0f));
-		lightRender[i]->data.handle = handle;
+		lightRender[i]->data.handleData = handle;
 		lightRender[i]->data.pipelineName = PIPELINE_NAME_SPRITE_GOAL_EFFECT_MULTITEX;
 		uvHandle[i] = lightRender[i]->CreateConstBuffer(sizeof(GoalLightData), typeid(GoalLightData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
 	}
@@ -38,7 +38,7 @@ GoalBoxEffect::GoalBoxEffect()
 	drawHandle = 0;
 }
 
-void GoalBoxEffect::Init(XMMATRIX *ADRESS)
+void GoalBoxEffect::Init(DirectX::XMMATRIX *ADRESS)
 {
 	motherPtr = ADRESS;
 	uvData.light = { 0.0f,0.0f,0.0f,0.0f };
@@ -46,7 +46,7 @@ void GoalBoxEffect::Init(XMMATRIX *ADRESS)
 
 	for (int i = 0; i < lightRender.size(); ++i)
 	{
-		lightRender[i]->data.alpha = 0.0f;
+		lightRender[i]->data.color.color.a = 0;
 	}
 	disappearFlag = false;
 }
@@ -72,13 +72,13 @@ void GoalBoxEffect::Update()
 	{
 		for (int i = 0; i < drawHandle; ++i)
 		{
-			if (lightRender[i]->data.alpha < 255.0f)
+			if (lightRender[i]->data.color.color.a < 255)
 			{
-				lightRender[i]->data.alpha += 5.0f;
+				lightRender[i]->data.color.color.a += 5;
 			}
-			if (255.0f <= lightRender[i]->data.alpha)
+			if (255 <= lightRender[i]->data.color.color.a)
 			{
-				lightRender[i]->data.alpha = 255.0f;
+				lightRender[i]->data.color.color.a = 255;
 			}
 		}
 	}
@@ -87,13 +87,13 @@ void GoalBoxEffect::Update()
 	{
 		for (int i = 0; i < drawHandle; ++i)
 		{
-			if (0.0f <= lightRender[i]->data.alpha)
+			if (0 <= lightRender[i]->data.color.color.a)
 			{
-				lightRender[i]->data.alpha -= 5.0f;
+				lightRender[i]->data.color.color.a -= 5;
 			}
-			if (lightRender[i]->data.alpha <= 0.0f)
+			if (lightRender[i]->data.color.color.a <= 0)
 			{
-				lightRender[i]->data.alpha = 0.0f;
+				lightRender[i]->data.color.color.a = 0;
 			}
 		}
 	}

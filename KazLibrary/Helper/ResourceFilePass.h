@@ -11,7 +11,7 @@ namespace KazFilePathName
 
 	//シェーダーパス-----------------------
 
-	static string RelativeShaderPath = "KazLibrary/ShaderFiles/";
+	static string RelativeShaderPath = RelativeResourcePath + "ShaderFiles/";
 	static string VertexShaderPath = RelativeShaderPath + "VertexShader/";
 	static string PixelShaderPath = RelativeShaderPath + "PixelShader/";
 	static string GeometryShaderPath = RelativeShaderPath + "GeometryShader/";

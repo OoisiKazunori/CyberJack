@@ -4,8 +4,8 @@
 
 MoiveEffect::MoiveEffect() :startFlag(false), lerpTopPos({ 0.0f,0.0f }), lerpButtomPos({ 0.0f,WIN_Y })
 {
-	topTex.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "Black.png");
-	buttomTex.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "Black.png");
+	topTex.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "Black.png");
+	buttomTex.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "Black.png");
 
 	topTex.data.transform.scale = { 1280.0f,2.0f };
 	buttomTex.data.transform.scale = { 1280.0f,2.0f };

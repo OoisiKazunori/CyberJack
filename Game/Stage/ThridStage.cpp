@@ -4,10 +4,10 @@
 
 ThridStage::ThridStage()
 {
-	infomationTex.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "Devoloping.png");
+	infomationTex.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "Devoloping.png");
 	infomationTex.data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA_MULTITEX;
 
-	pressAButtonTex.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "PressAButton.png");
+	pressAButtonTex.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "PressAButton.png");
 	pressAButtonTex.data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA_MULTITEX;
 }
 

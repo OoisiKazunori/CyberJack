@@ -35,114 +35,188 @@ struct FlipData
 	bool x;
 	bool y;
 
-	FlipData()
+	FlipData() :x(false), y(false), xDirtyFlag(&x, false), yDirtyFlag(&y, false)
 	{
-		x = false;
-		y = false;
+	}
+
+	void Record()
+	{
+		xDirtyFlag.Record();
+		yDirtyFlag.Record();
+	}
+
+	DirtyFlag<bool>xDirtyFlag;
+	DirtyFlag<bool>yDirtyFlag;
+};
+
+struct ResourceHandle
+{
+	RESOURCE_HANDLE handle;
+	DirtyFlag<RESOURCE_HANDLE>flag;
+
+	ResourceHandle() :handle(-1), flag(&handle)
+	{}
+
+	void operator=(RESOURCE_HANDLE HANDLE)
+	{
+		handle = HANDLE;
+	}
+	bool operator==(RESOURCE_HANDLE HANDLE)
+	{
+		return handle == HANDLE;
 	}
 };
+
+struct MatMotherData
+{
+	DirectX::XMMATRIX mat;
+	DirtySet dirty;
+
+	MatMotherData() :mat(DirectX::XMMatrixIdentity()), dirty(mat)
+	{
+	}
+
+	void operator=(const DirectX::XMMATRIX &MATRIX)
+	{
+		mat = MATRIX;
+	}
+	void operator=(DirectX::XMMATRIX *MATRIX)
+	{
+		mat = *MATRIX;
+	}
+};
+
+struct CameraIndexData
+{
+	int id;
+	DirtyFlag<int> dirty;
+
+	CameraIndexData() :id(0), dirty(&id)
+	{
+	}
+	void operator=(int HANDLE)
+	{
+		id = HANDLE;
+	}
+};
+
 
 struct Sprite2DData :public IData
 {
 	KazMath::Transform2D transform;
-	RESOURCE_HANDLE handle;
-	RESOURCE_HANDLE animationHandle;
+	ResourceHandle handleData;
+	ResourceHandle animationHandle;
 	FlipData flip;
-	int pipelineName;
+	PipeLineNames pipelineName;
 
-	bool changeSizeTypeFlag;
-	XMFLOAT4 size;
-	float alpha;
-
+	KazMath::Color color;
 	AddTextureData addHandle;
 
-	Sprite2DData()
+	Sprite2DData() :color(0, 0, 0, 255), pipelineName(PIPELINE_NAME_SPRITE)
 	{
 		address = this;
-		animationHandle = -1;
-		handle = -1;
-		changeSizeTypeFlag = false;
-		alpha = 255.0f;
-		pipelineName = static_cast<int>(PIPELINE_NAME_SPRITE);
 	}
+
+	void Record()
+	{
+		transform.Record();
+		handleData.flag.Record();
+		animationHandle.flag.Record();
+		flip.Record();
+		color.Record();
+	};
 };
 
 
 struct Sprite3DData :public IData
 {
 	KazMath::Transform3D transform;
-	RESOURCE_HANDLE handle;
-	RESOURCE_HANDLE animationHandle;
+	ResourceHandle handleData;
+	ResourceHandle animationHandle;
 	FlipData flip;
 	bool billBoardFlag;
-	XMMATRIX motherMat;
-	int pipelineName;
+	MatMotherData motherMat;
+	PipeLineNames pipelineName;
+	KazMath::Color color;
+	CameraIndexData cameraIndex;
 
-	bool changeSizeTypeFlag;
-	XMFLOAT4 size;
-	float alpha;
-
-
-	Sprite3DData()
+	Sprite3DData() :pipelineName(PIPELINE_NAME_SPRITE), billBoardDirtyFlag(&billBoardFlag), color(0, 0, 0, 255)
 	{
 		address = this;
-		animationHandle = -1;
-		handle = -1;
-		pipelineName = static_cast<int>(PIPELINE_NAME_SPRITE);
-
-		alpha = 255.0f;
-		changeSizeTypeFlag = false;
-		size = { 1.0f,1.0f,1.0f,1.0 };
-		motherMat = XMMatrixIdentity();
 	}
+
+	void Record()
+	{
+		transform.Record();
+		handleData.flag.Record();
+		animationHandle.flag.Record();
+		billBoardDirtyFlag.Record();
+		color.Record();
+		flip.Record();
+		motherMat.dirty.Record();
+		cameraIndex.dirty.Record();
+	};
+
+	DirtyFlag<bool>billBoardDirtyFlag;
 };
 
 struct Pera3DData :public IData
 {
 	KazMath::Transform3D transform;
 	bool billBoardFlag;
-	XMMATRIX motherMat;
-	int pipelineName;
+	MatMotherData motherMat;
+	PipeLineNames pipelineName;
+	KazMath::Color color;
+	CameraIndexData cameraIndex;
+	DirtyFlag<bool>billBoardDirtyFlag;
 
-	bool changeSizeTypeFlag;
-	XMFLOAT4 size;
-	float alpha;
-
-	Pera3DData()
+	Pera3DData() :pipelineName(PIPELINE_NAME_SPRITE), color(0, 0, 0, 255), billBoardDirtyFlag(&billBoardFlag)
 	{
 		address = this;
-		pipelineName = static_cast<int>(PIPELINE_NAME_SPRITE);
-
-		alpha = 255.0f;
-		changeSizeTypeFlag = false;
-		size = { 1.0f,1.0f,1.0f,1.0 };
-		motherMat = XMMatrixIdentity();
+	}
+	void Record()
+	{
+		transform.Record();
+		color.Record();
+		billBoardDirtyFlag.Record();
+		motherMat.dirty.Record();
+		cameraIndex.dirty.Record();
 	}
 };
 
 struct Obj3DData :public IData
 {
 	KazMath::Transform3D transform;
-	RESOURCE_HANDLE handle;
+	ResourceHandle handle;
 	KazMath::Vec3<float> upVector;
 	KazMath::Vec3<float> frontVector;
-	XMMATRIX motherMat;
-	int pipelineName;
-	XMFLOAT4 color;
+	MatMotherData motherMat;
+	PipeLineNames pipelineName;
+	KazMath::Color color;
 	bool removeMaterialFlag;
-
 	AddTextureData addHandle;
 
-	Obj3DData()
+	DirtyFlag<KazMath::Vec3<float>>upVecDirtyFlag;
+	DirtyFlag<KazMath::Vec3<float>>frontVecDirtyFlag;
+	CameraIndexData cameraIndex;
+
+	Obj3DData() :pipelineName(PIPELINE_NAME_OBJ), color(0, 0, 0, 255), upVecDirtyFlag(&upVector), frontVecDirtyFlag(&frontVector)
 	{
 		address = this;
-		handle = -1;
 		upVector = { 0,1,0 };
 		frontVector = { 0,0,1 };
-		pipelineName = static_cast<int>(PIPELINE_NAME_OBJ);
-		color = { 0.0f,0.0f,0.0f,255.0f };
 		removeMaterialFlag = false;
-		motherMat = XMMatrixIdentity();
+	}
+
+	void Record()
+	{
+		transform.Record();
+		handle.flag.Record();
+		color.Record();
+		upVecDirtyFlag.Record();
+		frontVecDirtyFlag.Record();
+		motherMat.dirty.Record();
+		cameraIndex.dirty.Record();
 	}
 };
 
@@ -150,70 +224,99 @@ struct LineDrawData :public IData
 {
 	KazMath::Vec3<float> startPos;
 	KazMath::Vec3<float> endPos;
-	XMFLOAT4 color;
-	XMMATRIX motherMat;
-	int pipelineName;
+	KazMath::Color color;
+	MatMotherData motherMat;
+	PipeLineNames pipelineName;
+	CameraIndexData cameraIndex;
 
+	DirtyFlag<KazMath::Vec3<float>> startPosDirtyFlag;
+	DirtyFlag<KazMath::Vec3<float>> endPosDirtyFlag;
 
-	LineDrawData()
+	LineDrawData() :pipelineName(PIPELINE_NAME_LINE), color(255, 255, 255, 255), startPosDirtyFlag(&startPos), endPosDirtyFlag(&endPos)
 	{
 		address = this;
-		pipelineName = static_cast<int>(PIPELINE_NAME_LINE);
-		color = { 255.0f,255.0f,255.0f,255.0f };
-		motherMat = XMMatrixIdentity();
+	}
+	void Record()
+	{
+		startPosDirtyFlag.Record();
+		endPosDirtyFlag.Record();
+		color.Record();
+		motherMat.dirty.Record();
+		cameraIndex.dirty.Record();
 	}
 };
 
 struct PolygonDrawData :public IData
 {
 	KazMath::Transform3D transform;
-	XMFLOAT4 color;
-	XMMATRIX motherMat;
-	int pipelineName;
+	KazMath::Color color;
+	MatMotherData motherMat;
+	PipeLineNames pipelineName;
+	CameraIndexData cameraIndex;
 
-	PolygonDrawData()
+	PolygonDrawData():color(255, 255, 255, 255), pipelineName(PIPELINE_NAME_COLOR)
 	{
 		address = this;
-		color = { 255.0f,255.0f,255.0f,255.0f };
-		pipelineName = static_cast<int>(PIPELINE_NAME_COLOR);
-		motherMat = XMMatrixIdentity();
 	}
+
+	void Record()
+	{
+		transform.Record();
+		color.Record();
+		motherMat.dirty.Record();
+		cameraIndex.dirty.Record();
+	};
+
 };
 
 struct FbxModelData :public IData
 {
 	KazMath::Transform3D transform;
-	RESOURCE_HANDLE handle;
-	XMMATRIX motherMat;
+	ResourceHandle handle;
+	MatMotherData motherMat;
 	bool isPlay;
 	int animationNumber;
-	int pipelineName;
-
+	PipeLineNames pipelineName;
+	CameraIndexData cameraIndex;
 
 	FbxModelData()
 	{
 		address = this;
-		handle = -1;
-		pipelineName = static_cast<int>(PIPELINE_NAME_FBX);
+		pipelineName = PIPELINE_NAME_FBX;
 		animationNumber = 0;
-		motherMat = XMMatrixIdentity();
+	}
+
+	void Record()
+	{
+		transform.Record();
+		handle.flag.Record();
+		motherMat.dirty.Record();
+		cameraIndex.dirty.Record();
 	}
 };
 
 struct CircleDrawData :public IData
 {
 	KazMath::Transform3D transform;
-	XMFLOAT4 color;
+	KazMath::Color color;
 	float radius;
-	int pipelineName;
+	PipeLineNames pipelineName;
 	bool change3DFlag;
+	CameraIndexData cameraIndex;
 
-	CircleDrawData()
+	CircleDrawData() :color(255, 255, 255, 255), radius(0.0f), pipelineName(PIPELINE_NAME_COLOR_NOCARING), change3DFlag(false), change3DDirtyFlag(&change3DFlag), radiusDirtyFlag(&radius)
 	{
 		address = this;
-		color = { 255.0f,255.0f,255.0f,255.0f };
-		radius = 10.0f;
-		pipelineName = static_cast<int>(PIPELINE_NAME_COLOR_NOCARING);
-		change3DFlag = false;
 	}
+
+	void Record()
+	{
+		transform.Record();
+		color.Record();
+		radiusDirtyFlag.Record();
+		change3DDirtyFlag.Record();
+		cameraIndex.dirty.Record();
+	};
+	DirtyFlag<float> radiusDirtyFlag;
+	DirtyFlag<bool> change3DDirtyFlag;
 };

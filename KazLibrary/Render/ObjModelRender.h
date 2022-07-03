@@ -13,18 +13,15 @@ public:
 	ObjModelRender(bool INSTANCE_FLAG = false, int INSTANCE_NUM = 1, bool MATERIAL_NONE_FALG = false);
 	~ObjModelRender();
 
+	DirectX::XMMATRIX* GetMotherMatrixPtr();
 	void Draw();
 
 
 	Obj3DData data;
 private:
 
-	PipeLineNames pipeline;
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
-	D3D12_INDEX_BUFFER_VIEW indexBufferView;
-
-	UINT VertByte;
-	UINT IndexByte;
+	UINT vertByte;
+	UINT indexByte;
 
 
 	short vertexBufferHandle;
@@ -33,16 +30,7 @@ private:
 	ObjResourceData modelData;
 	array<RESOURCE_HANDLE, 2> constBufferHandle;
 
-
-
-
-	unique_ptr<DirtySet> positionDirtyFlag, scaleDirtyFlag, rotationDirtyFlag;
-	unique_ptr<DirtySet> upVectorDirtyFlag;
-	unique_ptr<DirtyFlag<RESOURCE_HANDLE>> objHandleDirtyFlag;
-
-	unique_ptr<DirtySet> cameraViewDirtyFlag;
-	unique_ptr<DirtySet> cameraProjectionDirtyFlag;
-
+	DirectX::XMMATRIX motherMat;
 	bool instanceFlag;
 	int instanceNum;
 

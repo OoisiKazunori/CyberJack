@@ -1067,12 +1067,12 @@ static void ShowDemoWindowWidgets()
         // - The imgui_impl_opengl3.cpp renderer expect a GLuint OpenGL texture identifier, etc.
         // More:
         // - If you decided that ImTextureID = MyEngineTexture*, then you can pass your MyEngineTexture* pointers
-        //   to ImGui::Image(), and gather width/height through your own functions, etc.
+        //   to ImGui::DirectX::Image(), and gather width/height through your own functions, etc.
         // - You can use ShowMetricsWindow() to inspect the draw data that are being passed to your renderer,
         //   it will help you debug issues if you are confused about it.
         // - Consider using the lower-level ImDrawList::AddImage() API, via ImGui::GetWindowDrawList()->AddImage().
         // - Read https://github.com/ocornut/imgui/blob/master/docs/FAQ.md
-        // - Read https://github.com/ocornut/imgui/wiki/Image-Loading-and-Displaying-Examples
+        // - Read https://github.com/ocornut/imgui/wiki/DirectX::Image-Loading-and-Displaying-Examples
         ImTextureID my_tex_id = io.Fonts->TexID;
         float my_tex_w = (float)io.Fonts->TexWidth;
         float my_tex_h = (float)io.Fonts->TexHeight;
@@ -4865,9 +4865,9 @@ static void ShowDemoWindowTables()
                 { "desktop.ini",                  "System file",  1024,    -1,-1    }, // 3
                 { "File1_a.wav",                  "Audio file",   123000,  -1,-1    }, // 4
                 { "File1_b.wav",                  "Audio file",   456000,  -1,-1    }, // 5
-                { "Image001.png",                 "Image file",   203128,  -1,-1    }, // 6
-                { "Copy of Image001.png",         "Image file",   203256,  -1,-1    }, // 7
-                { "Copy of Image001 (Final2).png","Image file",   203512,  -1,-1    }, // 8
+                { "Image001.png",                 "DirectX::Image file",   203128,  -1,-1    }, // 6
+                { "Copy of Image001.png",         "DirectX::Image file",   203256,  -1,-1    }, // 7
+                { "Copy of Image001 (Final2).png","DirectX::Image file",   203512,  -1,-1    }, // 8
             };
 
             MyTreeNode::DisplayNode(&nodes[0], nodes);

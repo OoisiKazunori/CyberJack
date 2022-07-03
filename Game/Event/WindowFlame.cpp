@@ -6,7 +6,7 @@
 
 WindowFlame::WindowFlame()
 {
-	flameTex.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "Flame.png");
+	flameTex.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "Flame.png");
 	flameTex.data.transform.scale = { 0.0f,0.0f,0.0f };
 }
 

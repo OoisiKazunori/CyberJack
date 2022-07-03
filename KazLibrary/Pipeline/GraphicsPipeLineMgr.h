@@ -329,16 +329,16 @@ private:
 	//ìoò^ÉfÅ[É^
 
 	vector<InputLayOutData> InputLayOutRegisterData;
-	vector<ComPtr<ID3DBlob>> VertexShaderRegisterData;
-	vector<ComPtr<ID3DBlob>> PixcelShaderRegisterData;
-	vector<ComPtr<ID3DBlob>> GeometoryShaderRegisterData;
+	vector<Microsoft::WRL::ComPtr<ID3DBlob>> VertexShaderRegisterData;
+	vector<Microsoft::WRL::ComPtr<ID3DBlob>> PixcelShaderRegisterData;
+	vector<Microsoft::WRL::ComPtr<ID3DBlob>> GeometoryShaderRegisterData;
 	vector<RootSignatureMode> RootSignatureName;
 	vector<D3D12_GRAPHICS_PIPELINE_STATE_DESC> PipeLineDataRegisterData;
-	vector<ComPtr<ID3D12PipelineState>> PipeLineRegisterData;
+	vector<Microsoft::WRL::ComPtr<ID3D12PipelineState>> PipeLineRegisterData;
 
-	vector<ComPtr<ID3DBlob>> ComputeShaderRegisterData;
+	vector<Microsoft::WRL::ComPtr<ID3DBlob>> ComputeShaderRegisterData;
 	vector<D3D12_COMPUTE_PIPELINE_STATE_DESC> computePipeLineDataRegisterData;
-	vector<ComPtr<ID3D12PipelineState>> ComputePipeLineRegisterData;
+	vector<Microsoft::WRL::ComPtr<ID3D12PipelineState>> ComputePipeLineRegisterData;
 	vector<RootSignatureMode> computeRootSignatureName;
 
 	bool geo;

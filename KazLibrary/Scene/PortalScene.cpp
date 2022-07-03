@@ -1,7 +1,8 @@
 ﻿#include "PortalScene.h"
 #include"../KazLibrary/Input/KeyBoradInputManager.h"
 #include"../KazLibrary/Input/ControllerInputManager.h"
-#include"../Imgui/MyImgui.h"
+#include"../KazLibrary/Imgui/MyImgui.h"
+#include"../KazLibrary/Helper/KazImGuiHelper.h"
 
 PortalScene::PortalScene()
 {
@@ -15,23 +16,28 @@ PortalScene::PortalScene()
 
 	multipassHandle =
 		RenderTargetStatus::Instance()->CreateMultiRenderTarget(data, DXGI_FORMAT_R8G8B8A8_UNORM);
-	mainRenderTarget.data.handle = multipassHandle[0];
+	mainRenderTarget.data.handleData = multipassHandle[0];
 	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	mainRenderTarget.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
 
 
-	addHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, XMFLOAT3(0.0f, 0.0f, 0.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
+	addHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
 	addRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	addRenderTarget.data.pipelineName = PIPELINE_NAME_ADDBLEND;
 
 
 	luminaceTex.data.pipelineName = PIPELINE_NAME_SPRITE_LUMI;
-	luminaceTex.data.handle = multipassHandle[0];
+	luminaceTex.data.handleData = multipassHandle[0];
 	luminaceTex.data.addHandle.handle[0] = multipassHandle[1];
 	luminaceTex.data.addHandle.paramType[0] = GRAPHICS_PRAMTYPE_TEX2;
 	luminaceTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 
 	buler = std::make_unique<GaussianBuler>(KazMath::Vec2<UINT>(WIN_X, WIN_Y));
+
+	//mainRenderTarget.data.handleData = TextureResourceMgr::Instance()->LoadDivGraph(KazFilePathName::TestPath + "AnimationTest.png", 2, 1, 32, 32);
+
+	changeFlag = true;
+	animFlag = false;
 	gameModeFlag = false;
 }
 
@@ -202,13 +208,18 @@ void PortalScene::Input()
 
 	if (input->InputTrigger(DIK_SPACE))
 	{
-		portalFlame.Init(initPos, KazMath::Vec2<float>(41.5f, 23.5f));
-		portal.Init(initPos);
+		changeFlag = !changeFlag;
 	}
-	if(portalFlame.Flame())
+
+	if (changeFlag)
 	{
-		portal.Start();
+		box.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "tex.png");
 	}
+	else
+	{
+		box.data.handleData = TextureResourceMgr::Instance()->LoadDivGraph(KazFilePathName::TestPath + "AnimationTest.png", 2, 1, 32, 32);
+	}
+
 
 	if (input->InputTrigger(DIK_T))
 	{
@@ -263,19 +274,16 @@ void PortalScene::Update()
 	}
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 0);
 
-	WirteCpuLineData::Instance()->importFlag;
 
+	ImGui::Begin("CheckDirtyFlag");
+	KazImGuiHelper::InputTransform3D(&box.data.transform);
+	KazImGuiHelper::InputVec4(&box.data.color.color, "Color");
+	ImGui::Checkbox("BillBoardFlag", &box.data.billBoardFlag);
+	ImGui::Checkbox("FlipX", &box.data.flip.x);
+	ImGui::Checkbox("FlipY", &box.data.flip.y);
+	ImGui::InputInt("Animation", &box.data.animationHandle.handle);
+	ImGui::End();
 
-	/*ImGui::Begin("LineEffect");
-	if (ImGui::Button("Import"))
-	{
-		WirteCpuLineData::Instance()->Load();
-	}
-	if (ImGui::Button("Export"))
-	{
-		WirteCpuLineData::Instance()->Write();
-	}
-	ImGui::End();*/
 
 	portal.Update();
 	stringEffect.Update();
@@ -288,11 +296,13 @@ void PortalScene::Draw()
 {
 	RenderTargetStatus::Instance()->PrepareToChangeBarrier(multipassHandle[0]);
 	RenderTargetStatus::Instance()->ClearRenderTarget(multipassHandle[0]);
+	//portal.Draw();
+	//stringEffect.Draw();
+	//portalFlame.Draw();
 	bg.Draw();
-	portal.Draw();
-	stringEffect.Draw();
-	portalFlame.Draw();
 
+	box.Draw();
+	
 	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Draw Luminance");
 	RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, multipassHandle[0]);
 	RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
@@ -304,8 +314,10 @@ void PortalScene::Draw()
 	RenderTargetStatus::Instance()->PrepareToCloseBarrier(addHandle);
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 	mainRenderTarget.Draw();
-	addRenderTarget.data.handle = buler->BlurImage(addHandle);
-	addRenderTarget.Draw();
+	//addRenderTarget.data.handleData = buler->BlurImage(addHandle);
+	//addRenderTarget.Draw();
+
+
 	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
 	cursor.Draw();

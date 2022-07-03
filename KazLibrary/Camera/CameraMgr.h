@@ -2,6 +2,7 @@
 #include"../DirectXCommon/Base.h"
 #include"../Helper/ISinglton.h"
 #include"../KazLibrary/Math/KazMath.h"
+#include"../KazLibrary/Helper/DirtyFlag.h"
 
 enum CameraType
 {
@@ -12,17 +13,17 @@ enum CameraType
 
 struct CameraAxis
 {
-	XMVECTOR x;
-	XMVECTOR y;
-	XMVECTOR z;
-	XMVECTOR upVec;
+	DirectX::XMVECTOR x;
+	DirectX::XMVECTOR y;
+	DirectX::XMVECTOR z;
+	DirectX::XMVECTOR upVec;
 };
 
 struct CameraData
 {
-	XMMATRIX view;
-	XMMATRIX Perspectiveprojection;
-	XMMATRIX orthographicMatProjection;
+	DirectX::XMMATRIX view;
+	DirectX::XMMATRIX Perspectiveprojection;
+	DirectX::XMMATRIX orthographicMatProjection;
 };
 
 
@@ -49,52 +50,65 @@ public:
 	/// <param name="UP">上ベクトル</param>
 	void Camera(const KazMath::Vec3<float> &EYE_POS, const KazMath::Vec3<float> &TARGET_POS, const KazMath::Vec3<float> &UP, int CAMERA_INDEX = 0);
 
-	XMMATRIX CreateCamera(const KazMath::Vec3<float> &EYE_POS,const KazMath::Vec3<float> &TARGET_POS,const KazMath::Vec3<float> &UP);
+	DirectX::XMMATRIX CreateCamera(const KazMath::Vec3<float> &EYE_POS,const KazMath::Vec3<float> &TARGET_POS,const KazMath::Vec3<float> &UP);
 
 	/// <summary>
 	/// ビュー行列を渡します
 	/// </summary>
 	/// <returns>ビュー行列</returns>
-	const XMMATRIX &GetViewMatrix(int CAMERA_INDEX = 0);
+	DirectX::XMMATRIX GetViewMatrix(int CAMERA_INDEX = 0);
 
-	XMMATRIX *GetViewMatrixPointer(int CAMERA_INDEX = 0);
+	DirectX::XMMATRIX *GetViewMatrixPointer(int CAMERA_INDEX = 0);
 
 	/// <summary>
 	/// ビルボード行列を渡します
 	/// </summary>
 	/// <returns>ビルボード行列</returns>
-	const XMMATRIX &GetMatBillBoard(int CAMERA_INDEX = 0);
+	DirectX::XMMATRIX GetMatBillBoard(int CAMERA_INDEX = 0);
 
-	XMMATRIX *GetMatBillBoardPointer(int CAMERA_INDEX = 0);
+	DirectX::XMMATRIX *GetMatBillBoardPointer(int CAMERA_INDEX = 0);
 
 
 	/// <summary>
 	/// 透視投影変換行列を受け取ります
 	/// </summary>
 	/// <returns>透視投影変換行列</returns>
-	const XMMATRIX &GetPerspectiveMatProjection();
+	DirectX::XMMATRIX GetPerspectiveMatProjection();
+	DirectX::XMMATRIX *GetPerspectiveMatProjectionPointer();
 
-	XMMATRIX *GetPerspectiveMatProjectionPointer();
+	DirectX::XMMATRIX GetOrthographicMatProjection();
 
 
 	// 透視投影変換行列を視野角を指定して取得する。
-	XMMATRIX GetPerspectiveMatProjectionAngle(float angle);
+	DirectX::XMMATRIX GetPerspectiveMatProjectionAngle(float angle);
 
 
+	bool ViewAndProjDirty(int CAMERA_INDEX = 0);
+	bool BillboardDirty(int CAMERA_INDEX = 0);
+	void Record();
 
-	XMMATRIX view;
-	XMMATRIX billBoard;
 
-	XMMATRIX perspectiveMat;
-	XMMATRIX orthographicMatProjection;
 private:
+
+	DirectX::XMMATRIX view;
+	DirectX::XMMATRIX billBoard;
+	DirectX::XMMATRIX perspectiveMat;
+	DirectX::XMMATRIX orthographicMatProjection;
+
+
 	static const int CAMERA_ARRAY_NUM = 2;
-	std::array<XMMATRIX, CAMERA_ARRAY_NUM> viewArray;
-	std::array<XMMATRIX, CAMERA_ARRAY_NUM> billBoardArray;
+	std::array<DirectX::XMMATRIX, CAMERA_ARRAY_NUM> viewArray;
+	std::array<DirectX::XMMATRIX, CAMERA_ARRAY_NUM> billBoardArray;
+
+	std::array<std::unique_ptr<DirtySet>, CAMERA_ARRAY_NUM> viewDirtyFlagArray;
+	std::array<std::unique_ptr<DirtySet>, CAMERA_ARRAY_NUM> billBoardDirtyFlagArray;
+
+	DirtySet perspectiveProjDirtyFlag;
+	DirtySet orthographicMatProjectionDirtyFlag;
 };
 
 // ライトカメラ定数を送る用の構造体
 struct LightCamera {
-	XMMATRIX viewProj;
+	DirectX::XMMATRIX viewProj;
 };
 

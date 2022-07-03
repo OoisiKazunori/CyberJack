@@ -10,13 +10,13 @@
 struct FogD
 {
 	//フォグカラー
-	XMFLOAT3 endColor;
+	DirectX::XMFLOAT3 endColor;
 	float pad;
-	XMFLOAT3 subValue;
+	DirectX::XMFLOAT3 subValue;
 	float pad2;
 	//x...RataMin,y...RateMax,z...StartFogDepth,w...EndFogDepth
-	XMFLOAT4 rateAndFogLine;
-	XMFLOAT3 depthX;
+	DirectX::XMFLOAT4 rateAndFogLine;
+	DirectX::XMFLOAT3 depthX;
 	float pad3;
 };
 
@@ -34,7 +34,7 @@ private:
 	std::array<RESOURCE_HANDLE, 30> constHandle;
 
 	ParameterMgr stageParamLoader;
-	XMFLOAT3 depthX;
+	DirectX::XMFLOAT3 depthX;
 
 	std::array<std::unique_ptr<PolygonRender>, 4>polygon;
 	std::unique_ptr<PolygonRender> topPolygon;

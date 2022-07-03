@@ -5,7 +5,7 @@ GoalBoxPortalStringEffect::GoalBoxPortalStringEffect() :startFlag(false), basePo
 {
 	for (int i = 0; i < stringRender.size(); ++i)
 	{
-		stringRender[i].data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::GoalPath + "StringEffect.png");
+		stringRender[i].data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::GoalPath + "StringEffect.png");
 		stringRender[i].data.pipelineName = PIPELINE_NAME_SPRITE_MULTITEX;
 	}
 }

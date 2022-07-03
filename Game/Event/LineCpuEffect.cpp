@@ -9,7 +9,7 @@ LineCpuEffect::LineCpuEffect()
 	for (int i = 0; i < lineRender.size(); ++i)
 	{
 		lineRender[i].data.pipelineName = PIPELINE_NAME_LINE_FLASHEFFECT;
-		constBufferHandle[i] = lineRender[i].CreateConstBuffer(sizeof(XMFLOAT4), typeid(XMFLOAT4).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+		constBufferHandle[i] = lineRender[i].CreateConstBuffer(sizeof(DirectX::XMFLOAT4), typeid(DirectX::XMFLOAT4).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
 
 		lineEffectData[i].x = 0.0f;
 		lineEffectData[i].y = 1.0f;
@@ -60,14 +60,14 @@ void LineCpuEffect::Init(LineEffectVec VEC, KazMath::Vec3<float> &POS)
 	for (int i = 0; i < lineRender.size(); ++i)
 	{
 		lineEffectData[i].w = static_cast<float>(flashTimer[i]) / static_cast<float>(maxTimer);
-		lineRender[i].TransData(&lineEffectData[i], constBufferHandle[i], typeid(XMFLOAT4).name());
+		lineRender[i].TransData(&lineEffectData[i], constBufferHandle[i], typeid(DirectX::XMFLOAT4).name());
 	}
 
 	circleRender.data.transform.pos = endPos;
 	circleRender.data.transform.pos.z -= 0.1f;
 	circleRender.data.radius = 0.5f;
 	circleRender.data.change3DFlag = true;
-	circleRender.data.color.w = 0.0f;
+	circleRender.data.color.color.a = 0;
 
 	appearTimer = 0;
 	maxAppearTimer = 30;
@@ -85,7 +85,7 @@ void LineCpuEffect::Update()
 		for (int i = 0; i < lineRender.size(); ++i)
 		{
 			lineEffectData[i].w = KazMath::ConvertTimerToRate(flashTimer[i], maxTimer);
-			lineRender[i].TransData(&lineEffectData[i], constBufferHandle[i], typeid(XMFLOAT4).name());
+			lineRender[i].TransData(&lineEffectData[i], constBufferHandle[i], typeid(DirectX::XMFLOAT4).name());
 			++flashTimer[i];
 		}
 	}
@@ -94,7 +94,7 @@ void LineCpuEffect::Update()
 		for (int i = 0; i < lineRender.size(); ++i)
 		{
 			lineEffectData[i].w = -1.0f;
-			lineRender[i].TransData(&lineEffectData[i], constBufferHandle[i], typeid(XMFLOAT4).name());
+			lineRender[i].TransData(&lineEffectData[i], constBufferHandle[i], typeid(DirectX::XMFLOAT4).name());
 		}
 	}
 
@@ -112,7 +112,7 @@ void LineCpuEffect::Update()
 			{
 				++circleAppearTimer;
 			}
-			circleRender.data.color.w = EasingMaker(Out, Quint, KazMath::ConvertTimerToRate(circleAppearTimer, circleMaxAppearTimer)) * 255.0f;
+			circleRender.data.color.color.a = static_cast<int>(EasingMaker(Out, Quint, KazMath::ConvertTimerToRate(circleAppearTimer, circleMaxAppearTimer)) * 255.0f);
 		}
 		else
 		{

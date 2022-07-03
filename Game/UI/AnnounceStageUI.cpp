@@ -6,11 +6,11 @@
 
 AnnounceStageUI::AnnounceStageUI()
 {
-	flameTex.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "Flame.png");
-	areaTex[0].data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "A.png");
-	areaTex[1].data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "R.png");
-	areaTex[2].data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "E.png");
-	areaTex[3].data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "A.png");
+	flameTex.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "Flame.png");
+	areaTex[0].data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "A.png");
+	areaTex[1].data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "R.png");
+	areaTex[2].data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "E.png");
+	areaTex[3].data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "A.png");
 
 
 	numberHandle[0] = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "CursorNum0.png");
@@ -43,7 +43,7 @@ void AnnounceStageUI::Init()
 		areaTex[i].data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
 		areaTex[i].data.transform.scale = { 2.0f,2.0f };
 		areaTex[i].data.transform.pos = { 590.0f - sub - 75.0f + i * (size + sub),153.0f };
-		areaTex[i].data.alpha = 255.0f;
+		areaTex[i].data.color.color.a = 255;
 	}
 }
 
@@ -88,11 +88,11 @@ void AnnounceStageUI::Update()
 	}
 
 	//ÉGÉäÉAï∂éöÇÉøÇ≈è¡Ç∑
-	if (110 <= timer && 1.0f <= areaTex[0].data.alpha)
+	if (110 <= timer && 1 <= areaTex[0].data.color.color.a)
 	{
 		for (int i = 0; i < areaTex.size(); ++i)
 		{
-			areaTex[i].data.alpha = 255.0f / 30.0f;
+			areaTex[i].data.color.color.a = static_cast<int>(255.0f / 30.0f);
 		}
 	}
 
@@ -152,8 +152,8 @@ void AnnounceStageUI::AnnounceStage(int STAGE_NUM)
 	std::vector<int>num = KazHelper::CountNumber(stageNum, 2);
 
 	float scale = 1.45f;
-	areaTex[4].data.handle = numberHandle[num[0]];
+	areaTex[4].data.handleData = numberHandle[num[0]];
 	areaTex[4].data.transform.scale = { scale,scale };
-	areaTex[5].data.handle = numberHandle[num[1]];
+	areaTex[5].data.handleData = numberHandle[num[1]];
 	areaTex[5].data.transform.scale = { scale,scale };
 }

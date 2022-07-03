@@ -10,7 +10,7 @@ class GoalBoxEffect
 public:
 	GoalBoxEffect();
 
-	void Init(XMMATRIX *ADRESS);
+	void Init(DirectX::XMMATRIX *ADRESS);
 	void Update();
 	void Draw();
 
@@ -20,7 +20,7 @@ public:
 	static const int LIGHT_MAX_NUM = 8;
 	std::array<Sprite3DRenderPtr, LIGHT_MAX_NUM> lightRender;
 private:
-	XMMATRIX *motherPtr;
+	DirectX::XMMATRIX *motherPtr;
 	std::array<RESOURCE_HANDLE, LIGHT_MAX_NUM> uvHandle;
 	GoalLightData uvData;
 

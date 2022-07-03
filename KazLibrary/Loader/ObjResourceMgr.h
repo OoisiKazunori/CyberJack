@@ -9,9 +9,9 @@
 struct materia
 {
 	string name;//マテリアル名
-	XMFLOAT3 ambient;//アンビエント影響度
-	XMFLOAT3 diffuse;//ディフューズ影響度
-	XMFLOAT3 specular;//スペキュラー影響度
+	DirectX::XMFLOAT3 ambient;//アンビエント影響度
+	DirectX::XMFLOAT3 diffuse;//ディフューズ影響度
+	DirectX::XMFLOAT3 specular;//スペキュラー影響度
 	float alpha;//α
 	string textureFilename;//テクスチャファイル名
 

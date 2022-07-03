@@ -5,10 +5,7 @@
 #pragma comment(lib,"dxgi.lib")
 
 #include<DirectXMath.h>
-using namespace DirectX;
-
 #include<wrl.h>
-using namespace Microsoft::WRL;
 #include"d3dx12.h"
 using namespace std;
 #include<array>
@@ -19,49 +16,49 @@ using namespace std;
 static const int WIN_X = 1280;
 static const int WIN_Y = 720;
 
-static const XMFLOAT3 BG_COLOR_WHITE = { 255.0f,255.0f,255.0f };
-static const XMFLOAT3 BG_COLOR = { 0.0f,0.0f,0.0f };
-//static const XMFLOAT3 BG_COLOR = { 22,38,37 };
+static const DirectX::XMFLOAT3 BG_COLOR_WHITE = { 255.0f,255.0f,255.0f };
+static const DirectX::XMFLOAT3 BG_COLOR = { 0.0f,0.0f,0.0f };
+//static const DirectX::XMFLOAT3 BG_COLOR = { 22,38,37 };
 
 struct Vertex
 {
-	XMFLOAT3 pos;
-	XMFLOAT3 normal;
-	XMFLOAT2 uv;
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT3 normal;
+	DirectX::XMFLOAT2 uv;
 };
 
 struct SpriteVertex
 {
-	XMFLOAT3 pos;
-	XMFLOAT2 uv;
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT2 uv;
 };
 
 struct ConstBufferData
 {
-	XMFLOAT4 color;
-	XMMATRIX mat;
-	XMMATRIX viewproj;
-	XMMATRIX world;
-	XMMATRIX view;
+	DirectX::XMFLOAT4 color;
+	DirectX::XMMATRIX mat;
+	DirectX::XMMATRIX viewproj;
+	DirectX::XMMATRIX world;
+	DirectX::XMMATRIX view;
 };
 
 struct LineVertex
 {
-	XMFLOAT3 pos;
-	XMFLOAT2 tickness;
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT2 tickness;
 };
 
 
 struct posData
 {
-	XMFLOAT3 endLinepos;
+	DirectX::XMFLOAT3 endLinepos;
 	bool checkFlag;
 };
 
 static const int MAX_BONES = 32;
 struct ConstBufferDataSkin
 {
-	XMMATRIX bones[MAX_BONES];
+	DirectX::XMMATRIX bones[MAX_BONES];
 };
 
 /// <summary>
@@ -71,7 +68,7 @@ struct ConstBufferDataSkin
 /// </summary>
 struct FogData
 {
-	XMFLOAT4 fogdata;
+	DirectX::XMFLOAT4 fogdata;
 };
 
 static int TEST_COUNT;
@@ -80,7 +77,7 @@ static int TEST_COUNT;
 
 struct RockOnPosData
 {
-	XMFLOAT3 pos;
+	DirectX::XMFLOAT3 pos;
 	bool useFlag;
 };
 
@@ -91,21 +88,21 @@ struct LineData
 
 struct GoalLightData
 {
-	XMFLOAT4 light;
+	DirectX::XMFLOAT4 light;
 };
 
 struct GradationData
 {
-	XMFLOAT4 firstColor;
-	XMFLOAT4 endColor;
+	DirectX::XMFLOAT4 firstColor;
+	DirectX::XMFLOAT4 endColor;
 };
 
 struct Material
 {
 	string name;//マテリアル名
-	XMFLOAT3 ambient;//アンビエント影響度
-	XMFLOAT3 diffuse;//ディフューズ影響度
-	XMFLOAT3 specular;//スペキュラー影響度
+	DirectX::XMFLOAT3 ambient;//アンビエント影響度
+	DirectX::XMFLOAT3 diffuse;//ディフューズ影響度
+	DirectX::XMFLOAT3 specular;//スペキュラー影響度
 	float alpha;//α
 	string textureFilename;//テクスチャファイル名
 
@@ -120,20 +117,20 @@ struct Material
 
 struct ConstBufferDataB1
 {
-	XMFLOAT3 ambient;	//アンビエント係数
+	DirectX::XMFLOAT3 ambient;	//アンビエント係数
 	float pad1;			//バディング
-	XMFLOAT3 diffuse;	//ディフューズ係数
+	DirectX::XMFLOAT3 diffuse;	//ディフューズ係数
 	float pad2;			//パディング
-	XMFLOAT3 specular;	//スペキュラー係数
+	DirectX::XMFLOAT3 specular;	//スペキュラー係数
 	float alpha;		//アルファ
 };
 
 struct ScreenPosData
 {
-	XMVECTOR LeftUpPos;
-	XMVECTOR LeftDownPos;
-	XMVECTOR RightUpPos;
-	XMVECTOR RightDownPos;
+	DirectX::XMVECTOR LeftUpPos;
+	DirectX::XMVECTOR LeftDownPos;
+	DirectX::XMVECTOR RightUpPos;
+	DirectX::XMVECTOR RightDownPos;
 };
 
 struct constBufferVhsData

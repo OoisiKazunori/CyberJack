@@ -168,7 +168,7 @@ private:
 	void ClosestPtPoint2Triangle(const KazMath::Vec3<float> &point, const Triangle &triangle, KazMath::Vec3<float> *closest);
 
 
-	float CaluCross(XMFLOAT2 a, XMFLOAT2 b, XMFLOAT2 c)
+	float CaluCross(DirectX::XMFLOAT2 a, DirectX::XMFLOAT2 b, DirectX::XMFLOAT2 c)
 	{
 		return (b.x - a.x) * ((c.y * -1) - (a.y * -1)) - (c.x - a.x) * ((b.y * -1) - (a.y * -1));
 	}

@@ -9,7 +9,7 @@ FirstStage::FirstStage()
 	{
 		stageDebugBox[i].data.pipelineName = PIPELINE_NAME_FOG_COLOR_MULTITEX;
 		constHandle[i] = stageDebugBox[i].CreateConstBuffer(sizeof(FogD), typeid(FogD).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
-		stageDebugBox[i].data.color = { 48.0f,20.0f,57.0f,255.0f };
+		stageDebugBox[i].data.color = { 48,20,57,255 };
 	}
 	stageParamLoader.LoadFile(KazFilePathName::StageParamPath + "StageParamData.json");
 	if (false)
@@ -24,9 +24,9 @@ FirstStage::FirstStage()
 		{
 			for (int i = 0; i < stageDebugBox.size(); ++i)
 			{
-				XMVECTOR pos = stageDebugBox[i].data.transform.pos.ConvertXMVECTOR();
-				XMVECTOR scale = stageDebugBox[i].data.transform.scale.ConvertXMVECTOR();
-				XMVECTOR rota = stageDebugBox[i].data.transform.rotation.ConvertXMVECTOR();
+				DirectX::XMVECTOR pos = stageDebugBox[i].data.transform.pos.ConvertXMVECTOR();
+				DirectX::XMVECTOR scale = stageDebugBox[i].data.transform.scale.ConvertXMVECTOR();
+				DirectX::XMVECTOR rota = stageDebugBox[i].data.transform.rotation.ConvertXMVECTOR();
 
 				//Box–ˆ‚Ìƒƒ“ƒo•Ï”‚ð’Ç‰Á
 				rapidjson::Value posArray(rapidjson::kArrayType);
@@ -64,7 +64,7 @@ FirstStage::FirstStage()
 
 	{
 		std::array<SpriteVertex, 4>vert;
-		XMVECTOR adjPos = { 50.0f,0.0f,0.0f };
+		DirectX::XMVECTOR adjPos = { 50.0f,0.0f,0.0f };
 		vert[0].pos = { -768.0f,407.0f,0.0f };
 		vert[0].uv = { 0.0f,0.0f };
 		vert[1].pos = { 768.0f,407.0f,0.0f };
@@ -75,8 +75,8 @@ FirstStage::FirstStage()
 		vert[3].uv = { 1.0f,1.0f };
 
 		GradationData gradationData;
-		gradationData.firstColor = XMFLOAT4(0.93f, 0.65f, 0.53f, 1.0f);
-		gradationData.endColor = XMFLOAT4(0.24f, 0.09f, 0.62f, 1.0f);
+		gradationData.firstColor = DirectX::XMFLOAT4(0.93f, 0.65f, 0.53f, 1.0f);
+		gradationData.endColor = DirectX::XMFLOAT4(0.24f, 0.09f, 0.62f, 1.0f);
 		for (int i = 0; i < polygon.size(); ++i)
 		{
 			polygon[i] = std::make_unique<PolygonRender>(vert);
@@ -95,14 +95,14 @@ FirstStage::FirstStage()
 
 	{
 		std::array<SpriteVertex, 4>vert;
-		XMVECTOR adjPos = { 50.0f,0.0f,0.0f };
-		vert[0].pos = XMFLOAT3(-800.0f, 0.0f, 700.0f);
+		DirectX::XMVECTOR adjPos = { 50.0f,0.0f,0.0f };
+		vert[0].pos = DirectX::XMFLOAT3(-800.0f, 0.0f, 700.0f);
 		vert[0].uv = { 0.0f,0.0f };
-		vert[1].pos = XMFLOAT3(800.0f, 0.0f, 700.0f);
+		vert[1].pos = DirectX::XMFLOAT3(800.0f, 0.0f, 700.0f);
 		vert[1].uv = { 1.0f,0.0f };
-		vert[2].pos = XMFLOAT3(-800.0f, 0.0f, -700.0f);
+		vert[2].pos = DirectX::XMFLOAT3(-800.0f, 0.0f, -700.0f);
 		vert[2].uv = { 0.0f,1.0f };
-		vert[3].pos = XMFLOAT3(800.0f, 0.0f, -700.0f);
+		vert[3].pos = DirectX::XMFLOAT3(800.0f, 0.0f, -700.0f);
 		vert[3].uv = { 1.0f,1.0f };
 		topPolygon = std::make_unique<PolygonRender>(vert);
 
@@ -110,8 +110,8 @@ FirstStage::FirstStage()
 		topPolygon->data.pipelineName = PIPELINE_NAME_SPRITE_GRADATION;
 
 		GradationData gradData;
-		gradData.endColor = XMFLOAT4(0.24f, 0.09f, 0.62f, 1.0f);
-		gradData.firstColor = XMFLOAT4(0.24f, 0.09f, 0.62f, 1.0f);
+		gradData.endColor = DirectX::XMFLOAT4(0.24f, 0.09f, 0.62f, 1.0f);
+		gradData.firstColor = DirectX::XMFLOAT4(0.24f, 0.09f, 0.62f, 1.0f);
 		topPolygon->TransData(&gradData, handle, typeid(gradData).name());
 
 		topPolygon->data.transform.pos.y = 400.0f;
@@ -349,9 +349,9 @@ void FirstStage::Update()
 
 
 
-		XMFLOAT3 first(0.93f, 0.65f, 0.53f);
-		XMFLOAT3 end(0.24f, 0.09f, 0.62f);
-		XMFLOAT3 result;
+		DirectX::XMFLOAT3 first(0.93f, 0.65f, 0.53f);
+		DirectX::XMFLOAT3 end(0.24f, 0.09f, 0.62f);
+		DirectX::XMFLOAT3 result;
 		result.x = first.x - end.x;
 		result.y = first.y - end.y;
 		result.z = first.z - end.z;

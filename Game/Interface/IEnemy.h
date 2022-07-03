@@ -103,7 +103,7 @@ public:
 	/// <summary>
 	/// €–S‰‰o
 	/// </summary>
-	void DeadEffect(KazMath::Vec3<float> *POS, KazMath::Vec3<float> *ROTATION, float *ALPHA);
+	void DeadEffect(KazMath::Vec3<float> *POS, KazMath::Vec3<float> *ROTATION, int *ALPHA);
 
 	
 	/// <returns>“G‚Ìî•ñ</returns>

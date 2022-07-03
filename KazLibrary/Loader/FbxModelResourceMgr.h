@@ -27,17 +27,17 @@ struct Node
 	/// </summary>
 	string name;
 
-	XMFLOAT2 pad;
+	DirectX::XMFLOAT2 pad;
 	//ローカルスケール
-	XMVECTOR scaling = { 1.0f,1.0f,1.0f,0.0f };
+	DirectX::XMVECTOR scaling = { 1.0f,1.0f,1.0f,0.0f };
 	//ローカル回転角
-	XMVECTOR rotation = { 0.0f,0.0f,0.0f,0.0f };
+	DirectX::XMVECTOR rotation = { 0.0f,0.0f,0.0f,0.0f };
 	//ローカル移動
-	XMVECTOR translation = { 0.0f,0.0f,0.0f,1.0f };
+	DirectX::XMVECTOR translation = { 0.0f,0.0f,0.0f,1.0f };
 	//ローカル変形行列
-	XMMATRIX transform;
+	DirectX::XMMATRIX transform;
 	//グローバル変形行列
-	XMMATRIX globalTransform;
+	DirectX::XMMATRIX globalTransform;
 	//親ノード
 	Node *parent = nullptr;
 };
@@ -58,7 +58,7 @@ public:
 		//名前
 		string name;
 		//初期姿勢の逆行列
-		XMMATRIX invInitialPose;
+		DirectX::XMMATRIX invInitialPose;
 		//クラスター(FBXのボーン情報)
 		FbxCluster *fbxCluster;
 
@@ -70,9 +70,9 @@ public:
 private:
 	struct VertexPosNormalUvSkin
 	{
-		XMFLOAT3 pos;
-		XMFLOAT3 normal;
-		XMFLOAT3 uv;
+		DirectX::XMFLOAT3 pos;
+		DirectX::XMFLOAT3 normal;
+		DirectX::XMFLOAT3 uv;
 		UINT boneIndex[MAX_BONE_INDICES];
 		float boneWeight[MAX_BONE_INDICES];
 	};	
@@ -87,8 +87,8 @@ private:
 	vector<unsigned short>indices;
 
 
-	XMFLOAT3 ambient = { 1.0f,1.0f,1.0f };
-	XMFLOAT3 diffuse = { 1.0f,1.0f,1.0f };
+	DirectX::XMFLOAT3 ambient = { 1.0f,1.0f,1.0f };
+	DirectX::XMFLOAT3 diffuse = { 1.0f,1.0f,1.0f };
 	vector<RESOURCE_HANDLE> textureHandle;
 public:
 	friend class FbxModelResourceMgr;
@@ -108,8 +108,8 @@ public:
 	D3D12_INDEX_BUFFER_VIEW indexBufferView;
 	std::vector<RESOURCE_HANDLE> textureHandle;
 	UINT indicisNum;
-	XMFLOAT3 ambient;
-	XMFLOAT3 diffuse;
+	DirectX::XMFLOAT3 ambient;
+	DirectX::XMFLOAT3 diffuse;
 	std::vector<Model::Bone> bone;
 
 	std::vector<FbxTime> startTime;
@@ -166,7 +166,7 @@ private:
 	void ParseSkin(Model *MODEL, FbxMesh *FBX_MESH);
 
 
-	XMVECTOR FbxDoubleToXMVECTOR(const FbxDouble3 &DOUBLE_3);
+	DirectX::XMVECTOR FbxDoubleToXMVECTOR(const FbxDouble3 &DOUBLE_3);
 
 	string ExtractFileName(const string &PATH);
 

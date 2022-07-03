@@ -1,7 +1,7 @@
 #include "DirectX12Device.h"
 
 //HRESULT DirectX12Device::result = S_FALSE;
-//ComPtr<ID3D12Device> DirectX12Device::dev;
+//Microsoft::WRL::ComPtr<ID3D12Device> DirectX12Device::dev;
 
 DirectX12Device::DirectX12Device()
 {
@@ -13,7 +13,7 @@ DirectX12Device::~DirectX12Device()
 	dev.ReleaseAndGetAddressOf();
 }
 
-void DirectX12Device::CreateDevice(ComPtr<IDXGIAdapter> adapter) {
+void DirectX12Device::CreateDevice(Microsoft::WRL::ComPtr<IDXGIAdapter> adapter) {
 
 	//‘Î‰žƒŒƒxƒ‹‚Ì”z—ñ
 	D3D_FEATURE_LEVEL levels[] = {

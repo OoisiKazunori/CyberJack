@@ -63,7 +63,7 @@ RESOURCE_HANDLE GaussianBuler::BlurImage(RESOURCE_HANDLE TEXTURE_HANDLE, RESOURC
 	//描画
 	renderData.cmdListInstance->cmdList->RSSetViewports(1, &viewport);
 	renderData.cmdListInstance->cmdList->RSSetScissorRects(1, &rect);
-	tex[0].data.handle = TEXTURE_HANDLE;
+	tex[0].data.handleData = TEXTURE_HANDLE;
 	tex[0].Draw();
 
 	//ガウシアンぼかしの横ブラー
@@ -73,7 +73,7 @@ RESOURCE_HANDLE GaussianBuler::BlurImage(RESOURCE_HANDLE TEXTURE_HANDLE, RESOURC
 	//描画
 	renderData.cmdListInstance->cmdList->RSSetViewports(1, &viewport);
 	renderData.cmdListInstance->cmdList->RSSetScissorRects(1, &rect);
-	tex[1].data.handle = renderTargetBlurUpHandle;
+	tex[1].data.handleData = renderTargetBlurUpHandle;
 	tex[1].Draw();
 
 	//true...RenderTarget外での実行、false...RenderTarget内での実行

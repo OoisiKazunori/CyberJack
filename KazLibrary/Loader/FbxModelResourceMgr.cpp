@@ -134,13 +134,13 @@ void FbxModelResourceMgr::ParseNodeRecursive(Model *MODEL, FbxNode *FBX_NODE, No
 	node.translation = FbxDoubleToXMVECTOR(translation);
 
 	//スケール、回転、平行移動の計算
-	XMMATRIX matScaling, matRotatin, matTranslation;
-	matScaling = XMMatrixScalingFromVector(node.scaling);
-	matRotatin = XMMatrixRotationRollPitchYawFromVector(node.rotation);
-	matTranslation = XMMatrixTranslationFromVector(node.translation);
+	DirectX::XMMATRIX matScaling, matRotatin, matTranslation;
+	matScaling = DirectX::XMMatrixScalingFromVector(node.scaling);
+	matRotatin = DirectX::XMMatrixRotationRollPitchYawFromVector(node.rotation);
+	matTranslation = DirectX::XMMatrixTranslationFromVector(node.translation);
 
 	//ローカル変換行列の計算
-	node.transform = XMMatrixIdentity();
+	node.transform = DirectX::XMMatrixIdentity();
 	node.transform *= matScaling;
 	node.transform *= matRotatin;
 	node.transform *= matTranslation;
@@ -371,9 +371,9 @@ void FbxModelResourceMgr::LoadTexture(Model *MODEL, const string &FULL_PATH)
 	MODEL->textureHandle.push_back(lHandle);
 }
 
-XMVECTOR FbxModelResourceMgr::FbxDoubleToXMVECTOR(const FbxDouble3 &DOUBLE_3)
+DirectX::XMVECTOR FbxModelResourceMgr::FbxDoubleToXMVECTOR(const FbxDouble3 &DOUBLE_3)
 {
-	XMVECTOR result;
+	DirectX::XMVECTOR result;
 	result =
 	{
 		static_cast<float>(DOUBLE_3[0]),
@@ -451,8 +451,8 @@ void FbxModelResourceMgr::ParseSkin(Model *MODEL, FbxMesh *FBX_MESH)
 		FbxAMatrix fbxMat;
 		fbxCluster->GetTransformLinkMatrix(fbxMat);
 
-		//XMMATRIX型に変換
-		XMMATRIX initialPose;
+		//DirectX::XMMATRIX型に変換
+		DirectX::XMMATRIX initialPose;
 		KazMath::ConvertMatrixFromFbx(&initialPose, fbxMat);
 
 		//初期姿勢行列の逆行列を得る

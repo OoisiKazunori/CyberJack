@@ -40,7 +40,7 @@ public:
 	KazMath::Vec2<float> prevCursorPos;
 	KazMath::Vec2<float> vel;
 	Ray hitBox;
-	XMINT2 stopFlag;
+	DirectX::XMINT2 stopFlag;
 	bool releaseFlag;
 
 
@@ -65,7 +65,7 @@ private:
 	KazMath::Vec2<float> stickAngle;
 	float deadLine;
 	float baseSpeed;
-	XMFLOAT2 speed;
+	DirectX::XMFLOAT2 speed;
 
 	//入力演出-----------------------
 
@@ -101,10 +101,10 @@ private:
 
 	//ノックバック挙動-----------------------
 	KazMath::Vec2<float> knockBackVal;	//反転移動用の移動量
-	static XMFLOAT2 KOCKBACK_MAX_VALUE;		//ノックバックの最大量(値が決まったらconstにする)
-	static XMFLOAT2 KOCKBACK_VELOCITY;		//ノックバックの加算量(値が決まったらconstにする)
-	XMINT2 noTochFlag;
-	XMINT2 noTockTimer;
+	static DirectX::XMFLOAT2 KOCKBACK_MAX_VALUE;		//ノックバックの最大量(値が決まったらconstにする)
+	static DirectX::XMFLOAT2 KOCKBACK_VELOCITY;		//ノックバックの加算量(値が決まったらconstにする)
+	DirectX::XMINT2 noTochFlag;
+	DirectX::XMINT2 noTockTimer;
 	//ノックバック挙動-----------------------
 
 	int clickSoundHandle;

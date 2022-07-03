@@ -17,10 +17,10 @@ void NormalEnemy::Init(const KazMath::Vec3<float> &POS)
 
 	iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX;
 	iEnemy_ModelRender->data.removeMaterialFlag = false;
-	iEnemy_ModelRender->data.color.x = 255.0f;
-	iEnemy_ModelRender->data.color.y = 255.0f;
-	iEnemy_ModelRender->data.color.z = 255.0f;
-	iEnemy_ModelRender->data.color.w = 0.0f;
+	iEnemy_ModelRender->data.color.color.x = 255;
+	iEnemy_ModelRender->data.color.color.y = 255;
+	iEnemy_ModelRender->data.color.color.z = 255;
+	iEnemy_ModelRender->data.color.color.a = 0;
 	iEnemy_ModelRender->data.transform.rotation.x = 0.0f;
 	iEnemy_ModelRender->data.transform.rotation.y = 90.0f;
 	iEnemy_ModelRender->data.transform.rotation.z = 0.0f;
@@ -44,10 +44,10 @@ void NormalEnemy::Update()
 	{
 		iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME_MULTITEX;
 		iEnemy_ModelRender->data.removeMaterialFlag = true;
-		iEnemy_ModelRender->data.color.x = 255.0f;
-		iEnemy_ModelRender->data.color.y = 255.0f;
-		iEnemy_ModelRender->data.color.z = 255.0f;
-		DeadEffect(&iEnemy_ModelRender->data.transform.pos, &iEnemy_ModelRender->data.transform.rotation, &iEnemy_ModelRender->data.color.w);
+		iEnemy_ModelRender->data.color.color.x = 255;
+		iEnemy_ModelRender->data.color.color.y = 255;
+		iEnemy_ModelRender->data.color.color.z = 255;
+		DeadEffect(&iEnemy_ModelRender->data.transform.pos, &iEnemy_ModelRender->data.transform.rotation, &iEnemy_ModelRender->data.color.color.a);
 
 		if (!initDeadSoundFlag)
 		{
@@ -59,13 +59,13 @@ void NormalEnemy::Update()
 	else
 	{
 		//“oêˆ—
-		if (iEnemy_ModelRender->data.color.w < 255.0f)
+		if (iEnemy_ModelRender->data.color.color.a < 255)
 		{
-			iEnemy_ModelRender->data.color.w += 5.0f;
+			iEnemy_ModelRender->data.color.color.a += 5;
 		}
 		else
 		{
-			iEnemy_ModelRender->data.color.w = 255.0f;
+			iEnemy_ModelRender->data.color.color.a = 255;
 		}
 	}
 
@@ -79,7 +79,7 @@ void NormalEnemy::Update()
 
 void NormalEnemy::Draw()
 {
-	if (1.0f <= iEnemy_ModelRender->data.color.w)
+	if (1.0f <= iEnemy_ModelRender->data.color.color.a)
 	{
 		iEnemy_ModelRender->Draw();
 		LockOnWindow(iEnemy_ModelRender->data.transform.pos);

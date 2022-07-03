@@ -37,8 +37,8 @@ namespace KazHelper
 	/// <param name="VALUE">åªç›ÇÃíl</param>
 	/// <param name="OLD_VALUE">1FlameëOÇÃíl</param>
 	/// <returns>true...ïœâªÇ™Ç†Ç¡ÇΩ,false...ïœâªÇ™Ç»Ç©Ç¡ÇΩ</returns>
-	bool DirtyFlag(XMFLOAT3 VALUE, XMFLOAT3 OLD_VALUE);
-	bool DirtyFlag(XMFLOAT2 VALUE, XMFLOAT2 OLD_VALUE);
+	bool DirtyFlag(DirectX::XMFLOAT3 VALUE, DirectX::XMFLOAT3 OLD_VALUE);
+	bool DirtyFlag(DirectX::XMFLOAT2 VALUE, DirectX::XMFLOAT2 OLD_VALUE);
 	bool DirtyFlag(float VALUE, float OLD_VALUE);
 
 

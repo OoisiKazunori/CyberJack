@@ -13,7 +13,7 @@ public:
 	~Sprite3DRender();
 	void Draw();
 
-	XMMATRIX GetMotherMatrix();
+	DirectX::XMMATRIX GetMotherMatrix();
 	Sprite3DData data;
 private:
 	array<SpriteVertex, 4> vertices;
@@ -21,30 +21,13 @@ private:
 	KazMath::Vec2<float> anchorPoint;
 	KazMath::Vec2<int> texSize;
 
-	PipeLineNames pipeline;
-	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
-	D3D12_INDEX_BUFFER_VIEW indexBufferView;
 
-
-	XMMATRIX motherMat;
+	DirectX::XMMATRIX motherMat;
 	RESOURCE_HANDLE vertexBufferHandle;
 	RESOURCE_HANDLE indexBufferHandle;
 	RESOURCE_HANDLE constBufferHandle;
 
-	UINT VertByte;
-	UINT IndexByte;
-
-
-	unique_ptr<DirtySet> positionDirtyFlag, scaleDirtyFlag, rotationDirtyFlag;
-	unique_ptr<DirtyFlag<bool>> flipXDirtyFlag;
-	unique_ptr<DirtyFlag<bool>> flipYDirtyFlag;
-	unique_ptr<DirtyFlag<RESOURCE_HANDLE>> textureHandleDirtyFlag;
-	unique_ptr<DirtyFlag<RESOURCE_HANDLE>> animationHandleDirtyFlag;
-
-	unique_ptr<DirtySet> cameraViewDirtyFlag;
-	unique_ptr<DirtySet> cameraProjectionDirtyFlag;
-	unique_ptr<DirtySet> cameraBillBoardDirtyFlag;
-	unique_ptr<DirtySet> sizeDirtyFlag;
-	unique_ptr<DirtySet> motherDirtyFlag;
+	UINT vertByte;
+	UINT indexByte;
 
 };

@@ -7,7 +7,7 @@ Index of this file:
 
 // [SECTION] Forward Declarations
 // [SECTION] Widgets: Text, etc.
-// [SECTION] Widgets: Main (Button, Image, Checkbox, RadioButton, ProgressBar, Bullet, etc.)
+// [SECTION] Widgets: Main (Button, DirectX::Image, Checkbox, RadioButton, ProgressBar, Bullet, etc.)
 // [SECTION] Widgets: Low-level Layout helpers (Spacing, Dummy, NewLine, Separator, etc.)
 // [SECTION] Widgets: ComboBox
 // [SECTION] Data Type and Data Formatting Helpers
@@ -426,7 +426,7 @@ void ImGui::BulletTextV(const char* fmt, va_list args)
 // - GetWindowScrollbarRect() [Internal]
 // - Scrollbar() [Internal]
 // - ScrollbarEx() [Internal]
-// - Image()
+// - DirectX::Image()
 // - ImageButton()
 // - Checkbox()
 // - CheckboxFlagsT() [Internal]

@@ -84,7 +84,7 @@ public:
 
 private:
 	unique_ptr<CreateGpuBuffer> buffers;
-	const Image *img;
+	const DirectX::Image *img;
 
 	D3D12_STATIC_SAMPLER_DESC samplerDesc;
 
@@ -92,11 +92,11 @@ private:
 	static const int texDataCount = texWidth * texWidth;
 	const int DescriptorMaxNum = 5000;
 
-	ScratchImage scratchImg;
+	DirectX::ScratchImage scratchImg;
 	UINT handle;
 	UINT setHandle;
 	UINT IncreSize;
-	TexMetadata metadata;
+	DirectX::TexMetadata metadata;
 
 	HRESULT result;
 

@@ -8,8 +8,8 @@ GoalBoxPortalEffect::GoalBoxPortalEffect()
 	sprite = std::make_unique<Sprite3DRender>();
 	constBuffHandle = sprite->CreateConstBuffer(sizeof(float), typeid(float).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
 
-	sprite->data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "Test.png");
 	sprite->data.pipelineName = PIPELINE_NAME_SPRITE_NOISE;
+	sprite->data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "Test.png");
 }
 
 void GoalBoxPortalEffect::Init(const KazMath::Vec3<float> &POS)

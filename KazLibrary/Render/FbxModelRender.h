@@ -13,26 +13,16 @@ public:
 
 	FbxModelData data;
 private:
-	PipeLineNames pipeline;
 
-	UINT VertByte;
-	UINT IndexByte;
+	UINT vertByte;
+	UINT indexByte;
 
-	XMMATRIX motherMat;
+	DirectX::XMMATRIX motherMat;
 	short vertexBufferHandle;
 	short indexBufferHandle;
 
 	array<RESOURCE_HANDLE, 2> constBufferHandle;
 	std::shared_ptr<FbxResourceData> resourceData;
-
-
-
-	unique_ptr<DirtySet> positionDirtyFlag, scaleDirtyFlag, rotationDirtyFlag;
-	unique_ptr<DirtyFlag<RESOURCE_HANDLE>> fbxHandleDirtyFlag;
-
-	unique_ptr<DirtySet> cameraViewDirtyFlag;
-	unique_ptr<DirtySet> cameraProjectionDirtyFlag;
-
 
 	FbxTime frameTime;
 	FbxTime startTime;

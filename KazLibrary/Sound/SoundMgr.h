@@ -56,7 +56,7 @@ public:
 	/// <param name="LOOP">ÉãÅ[ÉvÇ≥ÇπÇÈÇ©Ç«Ç§Ç©</param>
 	void SoundPlayWave(const SoundData &SOUNDDATA, int LOOP = 0);
 
-	ComPtr<IXAudio2> xAudio2;
+	Microsoft::WRL::ComPtr<IXAudio2> xAudio2;
 	SoundData Shandle[5];
 private:
 

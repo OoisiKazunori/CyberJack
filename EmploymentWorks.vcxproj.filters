@@ -189,9 +189,6 @@
     <ClCompile Include="KazLibrary\Render\BackGroundForDebug.cpp">
       <Filter>ソース ファイル\KazLib\Render</Filter>
     </ClCompile>
-    <ClCompile Include="KazLibrary\Render\BezierCurveLineRender.cpp">
-      <Filter>ソース ファイル\KazLib\Render</Filter>
-    </ClCompile>
     <ClCompile Include="KazLibrary\Render\BoxPolygonRender.cpp">
       <Filter>ソース ファイル\KazLib\Render</Filter>
     </ClCompile>
@@ -497,9 +494,6 @@
     <ClInclude Include="KazLibrary\Render\BackGroundForDebug.h">
       <Filter>ソース ファイル\KazLib\Render</Filter>
     </ClInclude>
-    <ClInclude Include="KazLibrary\Render\BezierCurveLineRender.h">
-      <Filter>ソース ファイル\KazLib\Render</Filter>
-    </ClInclude>
     <ClInclude Include="KazLibrary\Render\BoxPolygonRender.h">
       <Filter>ソース ファイル\KazLib\Render</Filter>
     </ClInclude>
@@ -679,6 +673,8 @@
     </ClInclude>
     <ClInclude Include="Game\Debug\WirteCpuLineData.h">
       <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="KazLibrary\Helper\KazImGuiHelper.h">
+      <Filter>ソース ファイル\KazLib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

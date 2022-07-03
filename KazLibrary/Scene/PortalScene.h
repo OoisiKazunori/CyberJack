@@ -4,7 +4,7 @@
 #include"../Game/Event/GoalBoxPortalEffect.h"
 #include"../Game/Event/GoalBoxPortalStringEffect.h"
 #include"../Game/Event/PortalFlame.h"
-
+#include"../KazLibrary/Render/KazRender.h"
 
 class PortalScene :public SceneBase
 {
@@ -33,7 +33,8 @@ private:
 	Sprite2DRender mainRenderTarget;
 	Sprite2DRender addRenderTarget;
 	Sprite2DRender luminaceTex;
-	
+	bool changeFlag;
+	bool animFlag;
 	BackGroundForDebug bg;
 
 	std::vector<RESOURCE_HANDLE>multipassHandle;
@@ -55,6 +56,8 @@ private:
 	KazMath::Vec2<float> forceCameraDirVel;					//カメラの前後左右の向きを強制的に指定する
 	KazMath::Vec2<float> mulValue;							//カメラの上下左右の掛ける割合
 	KazMath::Vec2<float> mulValue2;							//カメラの上下左右の掛ける割合
+
+	Sprite3DRender box;
 };
 
 

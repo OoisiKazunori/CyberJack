@@ -11,12 +11,12 @@ PlayerHpUi::PlayerHpUi()
 
 	for (int i = 0; i < hpTex.size(); ++i)
 	{
-		hpTex[i].data.handle = hpHandle;
-		hpFlame[i].data.handle = hpFlameHandle;
-		redHpTex[i].data.handle = redHpHandle;
+		hpTex[i].data.handleData = hpHandle;
+		hpFlame[i].data.handleData = hpFlameHandle;
+		redHpTex[i].data.handleData = redHpHandle;
 	}
 
-	hpBackGround.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::HpPath + "HpBackGround.png");
+	hpBackGround.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::HpPath + "HpBackGround.png");
 	hpBackGround.data.transform.pos = { 200.0f,650.0f };
 
 }

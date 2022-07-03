@@ -3,8 +3,8 @@
 #include"../KazLibrary/Imgui/MyImgui.h"
 #include"../KazLibrary/Sound/SoundManager.h"
 
-XMFLOAT2 Cursor::KOCKBACK_MAX_VALUE = { 200.0f,200.0f };
-XMFLOAT2 Cursor::KOCKBACK_VELOCITY = { 5.0f,5.0f };
+DirectX::XMFLOAT2 Cursor::KOCKBACK_MAX_VALUE = { 200.0f,200.0f };
+DirectX::XMFLOAT2 Cursor::KOCKBACK_VELOCITY = { 5.0f,5.0f };
 KazMath::Vec2<float> Cursor::NO_MOVE_DISTANCE = { 150.0f,50.0f };
 
 Cursor::Cursor()
@@ -17,7 +17,7 @@ Cursor::Cursor()
 
 	baseSpeed = 10.0f;
 	flameHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::CursorPath + "CursorBase.png");
-	cursorFlameTex->data.handle = flameHandle;
+	cursorFlameTex->data.handleData = flameHandle;
 	cursorFlameTex->data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
 	//cursorFlameTex->data.pipelineName = PIPELINE_NAME_SPRITE_MULTITEX;
 
@@ -49,7 +49,7 @@ Cursor::Cursor()
 
 	for (int i = 0; i < cursorEffectTex.size(); ++i)
 	{
-		cursorEffectTex[i].cursorEffectTex->data.handle = flameHandle;
+		cursorEffectTex[i].cursorEffectTex->data.handleData = flameHandle;
 		cursorEffectTex[i].cursorEffectTex->data.pipelineName = PIPELINE_NAME_SPRITE_MULTITEX;
 	}
 
@@ -133,7 +133,7 @@ void Cursor::Update()
 			notEnableLockOnFlag = false;
 		}
 	}
-	numberTex->data.handle = numberHandle[lockOnNum];
+	numberTex->data.handleData = numberHandle[lockOnNum];
 
 
 	//何もロックオンしていない時は中心の十字を回す
@@ -421,8 +421,8 @@ void Cursor::Update()
 		cursorFlameTex->data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
 	}
 
-	numberTex->data.alpha = static_cast<float>(cursorAlpha);
-	cursorFlameTex->data.alpha = static_cast<float>(cursorAlpha);
+	numberTex->data.color.color.a = cursorAlpha;
+	cursorFlameTex->data.color.color.a = cursorAlpha;
 	//カーソルを消す----------------------------------------------
 
 
@@ -459,7 +459,7 @@ void Cursor::Update()
 		if (releaseFlag && !cursorEffectTex[i].initFlag && !disappearFlag)
 		{
 			cursorEffectTex[i].cursorEffectTex->data.transform.pos = cursorPos;
-			cursorEffectTex[i].cursorEffectTex->data.alpha = 255.0f;
+			cursorEffectTex[i].cursorEffectTex->data.color.color.a = 255;
 			cursorEffectTex[i].cursorEffectTex->data.transform.scale = baseScale;
 			cursorEffectTex[i].initFlag = true;
 			break;
@@ -470,11 +470,11 @@ void Cursor::Update()
 	{
 		if (cursorEffectTex[i].initFlag)
 		{
-			cursorEffectTex[i].cursorEffectTex->data.alpha -= 255.0f / 10.0f;
+			cursorEffectTex[i].cursorEffectTex->data.color.color.a -= 255 / 10;
 			KazMath::Vec2<float> addSize = { 0.1f,0.1f };
 			cursorEffectTex[i].cursorEffectTex->data.transform.scale += addSize;
 		}
-		if (cursorEffectTex[i].cursorEffectTex->data.alpha <= 0.0f)
+		if (cursorEffectTex[i].cursorEffectTex->data.color.color.a <= 0)
 		{
 			cursorEffectTex[i].initFlag = false;
 		}

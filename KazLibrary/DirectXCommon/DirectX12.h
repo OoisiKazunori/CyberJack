@@ -27,9 +27,9 @@ public:
 	void ActCommand();
 
 
-	ComPtr<ID3D12CommandAllocator> cmdAllocator;
-	ComPtr<ID3D12CommandQueue> cmdQueue;
-	ComPtr<IDXGISwapChain4> swapchain;
+	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> cmdAllocator;
+	Microsoft::WRL::ComPtr<ID3D12CommandQueue> cmdQueue;
+	Microsoft::WRL::ComPtr<IDXGISwapChain4> swapchain;
 
 private:
 
@@ -39,19 +39,19 @@ private:
 
 	HRESULT result;
 
-	ComPtr<IDXGIFactory6> dxgiFactory;
+	Microsoft::WRL::ComPtr<IDXGIFactory6> dxgiFactory;
 	
-	ComPtr<ID3D12DescriptorHeap> rtvHeaps;
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtvHeaps;
 
 
-	ComPtr<IDXGIAdapter> tmpAdapter;
+	Microsoft::WRL::ComPtr<IDXGIAdapter> tmpAdapter;
 	D3D12_DESCRIPTOR_HEAP_DESC heapDesc{};
-	std::vector<ComPtr<ID3D12Resource>> backBuffers;
+	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> backBuffers;
 	UINT bbIndex;
 
 	D3D12_RESOURCE_BARRIER barrierDesc{};
 
-	ComPtr<ID3D12Fence> fence;
+	Microsoft::WRL::ComPtr<ID3D12Fence> fence;
 	UINT64 fenceVal;
 
 

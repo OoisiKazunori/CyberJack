@@ -62,7 +62,7 @@ DebugScene::DebugScene()
 
 	instanceBox = std::make_unique<BoxPolygonRender>(true, INSTANCE_NUM_MAX);
 	instanceBox->data.pipelineName = PIPELINE_NAME_INSTANCE_COLOR;
-	instanceBox->CreateConstBuffer(KazBufferHelper::GetBufferSize<UINT>(matData.size(), sizeof(XMMATRIX)), typeid(XMMATRIX).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+	instanceBox->CreateConstBuffer(KazBufferHelper::GetBufferSize<UINT>(matData.size(), sizeof(DirectX::XMMATRIX)), typeid(DirectX::XMMATRIX).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
 
 }
 

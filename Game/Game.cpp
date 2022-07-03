@@ -23,7 +23,7 @@ Game::Game()
 	model->data.transform.pos = { 0.0f,0.0f,20.0f };
 	model->data.transform.scale = { 5.0f,5.0f,5.0f };
 	model->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "hamster.obj");
-	model->data.color = { 255.0f,0.0f,0.0f,255.0f };
+	model->data.color = { 255,0,0,255 };
 
 	//mainRenderTarget.data.handle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, BG_COLOR, DXGI_FORMAT_R8G8B8A8_UNORM);
 	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
@@ -39,9 +39,9 @@ Game::Game()
 
 	handles =
 		RenderTargetStatus::Instance()->CreateMultiRenderTarget(data, DXGI_FORMAT_R8G8B8A8_UNORM);
-	mainRenderTarget.data.handle = handles[0];
+	mainRenderTarget.data.handleData = handles[0];
 
-	addHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, XMFLOAT3(0.0f, 0.0f, 0.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
+	addHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
 	addRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	addRenderTarget.data.pipelineName = PIPELINE_NAME_ADDBLEND;
 
@@ -49,7 +49,7 @@ Game::Game()
 
 
 	luminaceTex.data.pipelineName = PIPELINE_NAME_SPRITE_LUMI;
-	luminaceTex.data.handle = handles[0];
+	luminaceTex.data.handleData = handles[0];
 	luminaceTex.data.addHandle.handle[0] = handles[1];
 	luminaceTex.data.addHandle.paramType[0] = GRAPHICS_PRAMTYPE_TEX2;
 	luminaceTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
@@ -71,23 +71,23 @@ Game::Game()
 	stages[2] = std::make_unique<ThridStage>();
 
 
-	blackTex.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "Black.png");
+	blackTex.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "Black.png");
 	blackTex.data.pipelineName = PIPELINE_NAME_SPRITE_Z_ALWAYS;
 	blackTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	blackTex.data.transform.scale = { 2000.0f,2000.0f };
-	blackTex.data.alpha = { 0.0f };
+	blackTex.data.color.color.a = 0;
 
 
-	pressAButtonTex.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "PressAButton.png");
+	pressAButtonTex.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "PressAButton.png");
 	pressAButtonTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f + 100.0f };
 	pressAButtonTex.data.transform.scale = { 0.4f,0.4f };
 
-	gameOverTex.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::GameOverPath + "GameOver.png");
+	gameOverTex.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::GameOverPath + "GameOver.png");
 	gameOverTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	gameOverTex.data.transform.scale = { 1.2f,1.2f };
 
 
-	potalTexHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, XMFLOAT3(0.0f, 0.0f, 0.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
+	potalTexHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
 
 
 	bgmSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Bgm.wav");
@@ -198,9 +198,9 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	centralPos2 = centralPos;
 
 
-	besidePoly->data.color = { 255.0f,255.0f,255.0f,255.0f };
-	verticlaPoly->data.color = { 255.0f,255.0f,0.0f,255.0f };
-	cameraPoly->data.color = { 255.0f,0.0f,0.0f,255.0f };
+	besidePoly->data.color = { 255,255,255,255 };
+	verticlaPoly->data.color = { 255,255,0,255 };
+	cameraPoly->data.color = { 255,0,0,255 };
 	r = 8.0f;
 	r2 = 8.0f;
 
@@ -230,9 +230,9 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	layerLevelTargetPos = { -4.15f,3.0f,45.0f };
 
 
-	titleLogoTex.data.alpha = 255.0f;
+	titleLogoTex.data.color.color.a = 255;
 	titleLogoTex.data.transform.pos = { 0.0f,50.0f,500.0f };
-	titleLogoTex.data.handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TitlePath + "TitleName.png");
+	titleLogoTex.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TitlePath + "TitleName.png");
 	doneSprite.Init({ 0.0f,0.0f,500.0f }, TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TitlePath + "Start.png"));
 
 
@@ -501,7 +501,7 @@ void Game::Update()
 		//ImGui::InputFloat(name.c_str(), &lineStartPoly[i].data.transform.pos.z);
 
 		lineStartPoly[i].data.transform.scale = { 0.1f,0.1f,0.1f };
-		lineStartPoly[i].data.color = { 255.0f,0.0f,0.0f,255.0f };
+		lineStartPoly[i].data.color = { 255,0,0,255 };
 		lineEffectArrayData[i].startPos = lineStartPoly[i].data.transform.pos + player.pos;
 	}
 	//ImGui::End();
@@ -576,7 +576,7 @@ void Game::Update()
 		}
 
 		//ポータル演出開始したらプレイヤーの動きを固定する
-		XMFLOAT3 rate = { cursor.GetValue().x ,cursor.GetValue().y,0.0f };
+		DirectX::XMFLOAT3 rate = { cursor.GetValue().x ,cursor.GetValue().y,0.0f };
 		honraiPlayerCameraPos.x = 0.0f + (2.0f * -rate.x);
 		honraiPlayerCameraPos.z = 0.0f + (limitValue * rate.y) * mul;
 
@@ -1001,12 +1001,12 @@ void Game::Update()
 	if (readyToBlackOutFlag || readyToBlackOutToGoTitleFlag)
 	{
 		//暗転
-		if (blackTex.data.alpha <= 255.0f)
+		if (blackTex.data.color.color.a <= 255.0f)
 		{
-			blackTex.data.alpha += 5.0f;
+			blackTex.data.color.color.a += 5;
 		}
 		//タイトル画面に戻る
-		else if (readyToBlackOutToGoTitleFlag && 255.0f <= blackTex.data.alpha)
+		else if (readyToBlackOutToGoTitleFlag && 255 <= blackTex.data.color.color.a)
 		{
 			sceneNum = 0;
 		}
@@ -1020,9 +1020,9 @@ void Game::Update()
 	else
 	{
 		//明転
-		if (0 <= blackTex.data.alpha)
+		if (0 <= blackTex.data.color.color.a)
 		{
-			blackTex.data.alpha -= 5.0f;
+			blackTex.data.color.color.a -= 5;
 		}
 	}
 	if (gameOverFlag)
@@ -1046,7 +1046,7 @@ void Game::Update()
 	//更新処理----------------------------------------------------------------
 	player.Update();
 	cursor.Update();
-	goalBox.portalEffect.sprite->data.handle = potalTexHandle;
+	goalBox.portalEffect.sprite->data.handleData = potalTexHandle;
 	goalBox.Update();
 	movieEffect.Update();
 	stageUI.Update();
@@ -1161,8 +1161,8 @@ void Game::Update()
 
 
 	//ゲームループの経過時間----------------------------------------------------------------
-	titleLogoTex.data.alpha = doneSprite.spriteRender.data.alpha;
-	if (titleLogoTex.data.alpha <= 0.0f && !stages[0]->startFlag)
+	titleLogoTex.data.color = doneSprite.spriteRender.data.color;
+	if (titleLogoTex.data.color.color.a <= 0 && !stages[0]->startFlag)
 	{
 		//ゲーム開始
 		gameStartFlag = true;
@@ -1243,6 +1243,7 @@ void Game::Draw()
 
 		tutorialWindow.Draw();
 
+
 		//輝度抽出
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, handles[0]);
 		RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
@@ -1251,12 +1252,12 @@ void Game::Draw()
 		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 
 		mainRenderTarget.Draw();
-		addRenderTarget.data.handle = buler->BlurImage(addHandle);
+		addRenderTarget.data.handleData = buler->BlurImage(addHandle);
 		addRenderTarget.Draw();
 
 		movieEffect.Draw();
 		cursor.Draw();
-
+	
 
 		if (goalBox.startPortalEffectFlag)
 		{

@@ -4,8 +4,8 @@
 
 struct ConstLineData
 {
-	XMFLOAT4 distance;
-	XMFLOAT4 color;
+	DirectX::XMFLOAT4 distance;
+	DirectX::XMFLOAT4 color;
 };
 
 class LineEffect

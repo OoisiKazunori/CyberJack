@@ -11,7 +11,7 @@ LineEffect::LineEffect()
 
 	circleTexHandle = TextureResourceMgr::Instance()->LoadGraph("Resource/Line/circle_fire.png");
 	circle->data.billBoardFlag = true;
-	circle->data.handle = circleTexHandle;
+	circle->data.handleData = circleTexHandle;
 	circle->data.transform.scale = { 0.2f,0.2f,0.2f };
 
 	releaseCircle->data = circle->data;
@@ -48,8 +48,8 @@ void LineEffect::RockOn(const KazMath::Vec3<float> &START_POS, const KazMath::Ve
 		endPlayerDistance = END_PLAYER_DISTANCE;
 
 
-		float color = 255.0f;
-		line->data.color = { color,color,color ,255.0f };
+		int color = 255;
+		line->data.color = { color,color,color ,255 };
 		//234.0f,69.0f,50.0f
 
 		line->data.startPos = startPos;
@@ -60,8 +60,8 @@ void LineEffect::RockOn(const KazMath::Vec3<float> &START_POS, const KazMath::Ve
 		releaseTime = 0.0f;
 
 
-		releaseCircle->data.alpha = 255.0f;
-		circle->data.alpha = 255.0f;
+		releaseCircle->data.color.color.a = 255;
+		circle->data.color.color.a = 255;
 
 
 		lineData.distance.x = -1.0f;
@@ -196,9 +196,9 @@ void LineEffect::Update()
 		float subSpeed = 10.0f;
 		float sub = (subSpeed / 255.0f);
 
-		bool lineDataColorFlag = 0.0f < lineData.color.w;
-		bool releaseCircleColorFlag = 0.0f < releaseCircle->data.alpha;
-		bool circleColorFlag = 0.0f < circle->data.alpha;
+		bool lineDataColorFlag = 0 < lineData.color.w;
+		bool releaseCircleColorFlag = 0 < releaseCircle->data.color.color.a;
+		bool circleColorFlag = 0 < circle->data.color.color.a;
 
 		//完全に透明になったら全部終了する
 		if (lineDataColorFlag)
@@ -213,21 +213,21 @@ void LineEffect::Update()
 		//完全に透明になったら全部終了する
 		if (releaseCircleColorFlag)
 		{
-			releaseCircle->data.alpha -= subSpeed;
+			releaseCircle->data.color.color.a -= static_cast<int>(subSpeed);
 		}
 		else
 		{
-			releaseCircle->data.alpha = 0.0f;
+			releaseCircle->data.color.color.a = 0;
 		}
 
 		//完全に透明になったら全部終了する
 		if (circleColorFlag)
 		{
-			circle->data.alpha -= subSpeed;
+			circle->data.color.color.a -= static_cast<int>(subSpeed);
 		}
 		else
 		{
-			circle->data.alpha = 0.0f;
+			circle->data.color.color.a = 0;
 		}
 
 

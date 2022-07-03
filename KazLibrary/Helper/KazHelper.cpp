@@ -1,7 +1,7 @@
 #include "KazHelper.h"
 #include"../Camera/CameraMgr.h"
 
-bool KazHelper::DirtyFlag(XMFLOAT3 VALUE, XMFLOAT3 OLD_VALUE)
+bool KazHelper::DirtyFlag(DirectX::XMFLOAT3 VALUE, DirectX::XMFLOAT3 OLD_VALUE)
 {
 	if (VALUE.x != OLD_VALUE.x ||
 		VALUE.y != OLD_VALUE.y ||
@@ -15,7 +15,7 @@ bool KazHelper::DirtyFlag(XMFLOAT3 VALUE, XMFLOAT3 OLD_VALUE)
 	}
 }
 
-bool KazHelper::DirtyFlag(XMFLOAT2 VALUE, XMFLOAT2 OLD_VALUE)
+bool KazHelper::DirtyFlag(DirectX::XMFLOAT2 VALUE, DirectX::XMFLOAT2 OLD_VALUE)
 {
 	if (VALUE.x != OLD_VALUE.x ||
 		VALUE.y != OLD_VALUE.y)
