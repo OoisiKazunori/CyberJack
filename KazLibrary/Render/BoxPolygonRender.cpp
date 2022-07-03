@@ -159,7 +159,7 @@ void BoxPolygonRender::Draw()
 	if (!instanceFlag)
 	{
 		//行列計算-----------------------------------------------------------------------------------------------------
-		if (data.transform.Dirty())
+		if (data.transform.Dirty() || data.motherMat.dirty.Dirty())
 		{
 			baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 			baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
@@ -171,7 +171,7 @@ void BoxPolygonRender::Draw()
 			baseMatWorldData.matWorld *= baseMatWorldData.matScale;
 			baseMatWorldData.matWorld *= baseMatWorldData.matRota;
 			baseMatWorldData.matWorld *= baseMatWorldData.matTrans;
-			baseMatWorldData.matWorld *= data.motherMat;
+			baseMatWorldData.matWorld *= data.motherMat.mat;
 			//親行列を掛ける
 			motherMatrix = baseMatWorldData.matWorld;
 		}
@@ -181,11 +181,11 @@ void BoxPolygonRender::Draw()
 
 		//バッファの転送-----------------------------------------------------------------------------------------------------
 		//行列
-		if (data.transform.Dirty() || renderData.cameraMgrInstance->ViewDirty() || data.color.Dirty())
+		if (data.transform.Dirty() || renderData.cameraMgrInstance->ViewAndProjDirty() || data.color.Dirty() || data.motherMat.dirty.Dirty() || data.cameraIndex.dirty.Dirty())
 		{
 			ConstBufferData constMap;
 			constMap.world = baseMatWorldData.matWorld;
-			constMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex);
+			constMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex.id);
 			constMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
 			constMap.color = data.color.ConvertColorRateToXMFLOAT4();
 			constMap.mat = constMap.world * constMap.view * constMap.viewproj;

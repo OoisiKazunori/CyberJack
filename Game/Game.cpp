@@ -618,8 +618,8 @@ void Game::Update()
 
 
 	//敵が一通り生成終わった際に登場させる----------------------------------------------------------------
-	if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame && !initAppearFlag)
-		//if (100 <= gameFlame && !initAppearFlag)
+	//if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame && !initAppearFlag)
+		if (100 <= gameFlame && !initAppearFlag)
 	{
 		goalBox.Appear(appearGoalBoxPos);
 		initAppearFlag = true;
@@ -1199,7 +1199,7 @@ void Game::Draw()
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(handles[0]);
 		RenderTargetStatus::Instance()->ClearRenderTarget(handles[0]);
 
-		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
+		//if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
 		{
 			goalBox.Draw();
 		}
@@ -1232,7 +1232,7 @@ void Game::Draw()
 			lineLevel[i].Draw();
 		}
 
-		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
+		//if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
 		{
 			goalBox.lightEffect.Draw();
 		}

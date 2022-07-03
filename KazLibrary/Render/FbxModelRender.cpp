@@ -42,7 +42,7 @@ void FbxModelRender::Draw()
 
 
 		//行列計算-----------------------------------------------------------------------------------------------------
-		if (data.transform.Dirty())
+		if (data.transform.Dirty() || data.motherMat.dirty.Dirty())
 		{
 			baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 			baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
@@ -54,7 +54,7 @@ void FbxModelRender::Draw()
 			baseMatWorldData.matWorld *= baseMatWorldData.matScale;
 			baseMatWorldData.matWorld *= baseMatWorldData.matRota;
 			baseMatWorldData.matWorld *= baseMatWorldData.matTrans;
-			baseMatWorldData.matWorld *= data.motherMat;
+			baseMatWorldData.matWorld *= data.motherMat.mat;
 
 			//親行列を掛ける
 			motherMat = baseMatWorldData.matWorld;
@@ -64,11 +64,11 @@ void FbxModelRender::Draw()
 
 		//バッファの転送-----------------------------------------------------------------------------------------------------
 		//行列
-		if (renderData.cameraMgrInstance->ViewDirty() || data.transform.Dirty())
+		if (renderData.cameraMgrInstance->ViewAndProjDirty() || data.transform.Dirty() || data.motherMat.dirty.Dirty() || data.cameraIndex.dirty.Dirty())
 		{
 			ConstBufferData constMap;
 			constMap.world = baseMatWorldData.matWorld;
-			constMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex);
+			constMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex.id);
 			constMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
 			constMap.color = { 0.0f,0.0f,0.0f,0.0f };
 			constMap.mat = constMap.world * constMap.view * constMap.viewproj;

@@ -68,7 +68,7 @@ void Sprite3DRender::Draw()
 
 
 	//行列計算-----------------------------------------------------------------------------------------------------
-	if (data.transform.Dirty() || data.billBoardDirtyFlag.Dirty() || (renderData.cameraMgrInstance->BillboardDirty() && data.billBoardFlag))
+	if (data.transform.Dirty() || data.billBoardDirtyFlag.Dirty() || renderData.cameraMgrInstance->BillboardDirty() || (data.billBoardFlag && renderData.cameraMgrInstance->BillboardDirty()) || data.motherMat.dirty.Dirty())
 	{
 		baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 		baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
@@ -81,17 +81,14 @@ void Sprite3DRender::Draw()
 		//ビルボード行列を掛ける
 		if (data.billBoardFlag)
 		{
-			baseMatWorldData.matWorld *= renderData.cameraMgrInstance->GetMatBillBoard(data.cameraIndex);
+			baseMatWorldData.matWorld *= renderData.cameraMgrInstance->GetMatBillBoard(data.cameraIndex.id);
 		}
 		baseMatWorldData.matWorld *= baseMatWorldData.matTrans;
-		baseMatWorldData.matWorld *= data.motherMat;
+		baseMatWorldData.matWorld *= data.motherMat.mat;
 
-
-		//親行列を掛ける
-		motherMat = baseMatWorldData.matWorld;
 	}
 	//行列計算-----------------------------------------------------------------------------------------------------
-
+	motherMat = baseMatWorldData.matWorld;
 
 
 	//頂点データの書き換えとUVの書き換え-----------------------------------------------------------------------------------------------------
@@ -189,11 +186,11 @@ void Sprite3DRender::Draw()
 
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 	//行列
-	if (data.transform.Dirty() || renderData.cameraMgrInstance->ViewDirty() || renderData.cameraMgrInstance->BillboardDirty() || data.color.Dirty())
+	if (data.transform.Dirty() || renderData.cameraMgrInstance->ViewAndProjDirty() || renderData.cameraMgrInstance->BillboardDirty() || data.color.Dirty() || data.cameraIndex.dirty.Dirty() || data.motherMat.dirty.Dirty())
 	{
 		ConstBufferData lConstMap;
 		lConstMap.world = baseMatWorldData.matWorld;
-		lConstMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex);
+		lConstMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex.id);
 		lConstMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
 		lConstMap.color = data.color.ConvertColorRateToXMFLOAT4();
 		lConstMap.mat = lConstMap.world * lConstMap.view * lConstMap.viewproj;

@@ -75,7 +75,7 @@ void CircleRender::Draw()
 	//パイプライン設定-----------------------------------------------------------------------------------------------------
 
 	//行列計算-----------------------------------------------------------------------------------------------------
-	if (data.transform.Dirty()||data.change3DDirtyFlag.Dirty())
+	if (data.transform.Dirty() || data.change3DDirtyFlag.Dirty())
 	{
 		if (data.change3DFlag)
 		{
@@ -131,13 +131,13 @@ void CircleRender::Draw()
 
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 	
-	if (data.color.Dirty() || data.transform.Dirty() || data.change3DDirtyFlag.Dirty() || (renderData.cameraMgrInstance->ViewDirty() && data.change3DFlag))
+	if (data.color.Dirty() || data.transform.Dirty() || data.change3DDirtyFlag.Dirty() || (renderData.cameraMgrInstance->ViewAndProjDirty() && data.change3DFlag) || data.cameraIndex.dirty.Dirty())
 	{
 		//行列
 		if (data.change3DFlag)
 		{
 			constMap.world = baseMatWorldData.matWorld;
-			constMap.view = renderData.cameraMgrInstance->GetViewMatrix();
+			constMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex.id);
 			constMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
 			constMap.color = data.color.ConvertColorRateToXMFLOAT4();
 			constMap.mat = constMap.world * constMap.view * constMap.viewproj;
@@ -146,7 +146,7 @@ void CircleRender::Draw()
 		{
 			constMap.world = baseMatWorldData.matWorld;
 			constMap.view = DirectX::XMMatrixIdentity();
-			constMap.viewproj = renderData.cameraMgrInstance->orthographicMatProjection;
+			constMap.viewproj = renderData.cameraMgrInstance->GetOrthographicMatProjection();
 			constMap.color = data.color.ConvertColorRateToXMFLOAT4();
 			constMap.mat = constMap.world * constMap.viewproj;
 		}

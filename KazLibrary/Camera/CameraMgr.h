@@ -76,25 +76,35 @@ public:
 	DirectX::XMMATRIX GetPerspectiveMatProjection();
 	DirectX::XMMATRIX *GetPerspectiveMatProjectionPointer();
 
+	DirectX::XMMATRIX GetOrthographicMatProjection();
+
+
 	// 透視投影変換行列を視野角を指定して取得する。
 	DirectX::XMMATRIX GetPerspectiveMatProjectionAngle(float angle);
 
 
-	bool ViewDirty(int CAMERA_INDEX = 0);
+	bool ViewAndProjDirty(int CAMERA_INDEX = 0);
 	bool BillboardDirty(int CAMERA_INDEX = 0);
 	void Record();
+
+
+private:
 
 	DirectX::XMMATRIX view;
 	DirectX::XMMATRIX billBoard;
 	DirectX::XMMATRIX perspectiveMat;
 	DirectX::XMMATRIX orthographicMatProjection;
-private:
+
+
 	static const int CAMERA_ARRAY_NUM = 2;
 	std::array<DirectX::XMMATRIX, CAMERA_ARRAY_NUM> viewArray;
 	std::array<DirectX::XMMATRIX, CAMERA_ARRAY_NUM> billBoardArray;
 
 	std::array<std::unique_ptr<DirtySet>, CAMERA_ARRAY_NUM> viewDirtyFlagArray;
 	std::array<std::unique_ptr<DirtySet>, CAMERA_ARRAY_NUM> billBoardDirtyFlagArray;
+
+	DirtySet perspectiveProjDirtyFlag;
+	DirtySet orthographicMatProjectionDirtyFlag;
 };
 
 // ライトカメラ定数を送る用の構造体

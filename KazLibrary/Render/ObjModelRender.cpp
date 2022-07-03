@@ -23,6 +23,11 @@ ObjModelRender::~ObjModelRender()
 {
 }
 
+DirectX::XMMATRIX* ObjModelRender::GetMotherMatrixPtr()
+{
+	return &motherMat;
+}
+
 void ObjModelRender::Draw()
 {
 	if (data.handle.flag.Dirty())
@@ -40,7 +45,7 @@ void ObjModelRender::Draw()
 	//インスタンシング描画を行うならこの処理は転送しない
 	if (!instanceFlag)
 	{
-		if (data.transform.Dirty() || data.frontVecDirtyFlag.Dirty() || data.upVecDirtyFlag.Dirty())
+		if (data.transform.Dirty() || data.frontVecDirtyFlag.Dirty() || data.upVecDirtyFlag.Dirty() || data.motherMat.dirty.Dirty())
 		{
 			baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 			baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
@@ -63,19 +68,20 @@ void ObjModelRender::Draw()
 				baseMatWorldData.matWorld *= KazMath::CaluFrontMatrix(KazMath::Vec3<float>(0.0f,1.0f,0.0f), data.frontVector);
 			}
 			baseMatWorldData.matWorld *= baseMatWorldData.matTrans;
-
 			//親行列を掛ける
-			data.motherMat = baseMatWorldData.matWorld;
+			baseMatWorldData.matWorld *= data.motherMat.mat;
 		}
 		//行列計算-----------------------------------------------------------------------------------------------------
+		motherMat = baseMatWorldData.matWorld;
+		
 
 		//バッファの転送-----------------------------------------------------------------------------------------------------
 		//行列
-		if (renderData.cameraMgrInstance->ViewDirty() || data.transform.Dirty() || data.color.Dirty())
+		if (renderData.cameraMgrInstance->ViewAndProjDirty() || data.transform.Dirty() || data.color.Dirty() || data.motherMat.dirty.Dirty() || data.cameraIndex.dirty.Dirty())
 		{
 			ConstBufferData constMap;
 			constMap.world = baseMatWorldData.matWorld;
-			constMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex);
+			constMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex.id);
 			constMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
 			constMap.color = data.color.ConvertColorRateToXMFLOAT4();
 			constMap.mat = constMap.world * constMap.view * constMap.viewproj;

@@ -36,8 +36,6 @@ LineRender::LineRender()
 		static_cast<UINT>(vertices.size()),
 		1
 		);
-
-	baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 }
 
 LineRender::~LineRender()
@@ -56,16 +54,20 @@ void LineRender::Draw()
 		vertices[0].pos = data.startPos.ConvertXMFLOAT3();
 		vertices[1].pos = data.endPos.ConvertXMFLOAT3();
 	}
-	baseMatWorldData.matWorld *= data.motherMat;
+	if (data.motherMat.dirty.Dirty())
+	{
+		baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
+		baseMatWorldData.matWorld *= data.motherMat.mat;
+	}
 
 
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 	//行列
-	if (renderData.cameraMgrInstance->ViewDirty() || data.color.Dirty())
+	if (renderData.cameraMgrInstance->ViewAndProjDirty() || data.color.Dirty() || data.motherMat.dirty.Dirty() || data.cameraIndex.dirty.Dirty())
 	{
 		ConstBufferData constMap;
 		constMap.world = baseMatWorldData.matWorld;
-		constMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex);
+		constMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex.id);
 		constMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
 		constMap.color = data.color.ConvertColorRateToXMFLOAT4();
 		constMap.mat = constMap.world * constMap.view * constMap.viewproj;

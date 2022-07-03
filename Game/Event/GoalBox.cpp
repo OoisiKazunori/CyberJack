@@ -25,7 +25,7 @@ GoalBox::GoalBox()
 	moveVel = { 0.0f,0.0f,15.0f };
 
 	goCenterPos = { 0.0f, 3.0f, 50.0f };
-	lightEffect.Init(&model->data.motherMat);
+	lightEffect.Init(&model->data.motherMat.mat);
 
 	hitBox.center = &model->data.transform.pos;
 	hitBox.radius = 10.0f;
@@ -48,7 +48,7 @@ void GoalBox::Init(const KazMath::Vec3<float> &POS)
 	model->data.transform.pos = lerpPos;
 	model->data.transform.rotation = lerpRota;
 
-	lightEffect.Init(&model->data.motherMat);
+	lightEffect.Init(model->GetMotherMatrixPtr());
 	KazMath::Vec3<float> adj = { 0.0f,0.0f,-5.0f };
 	portalEffect.Init(goCenterPos + adj);
 	addRota = 0;

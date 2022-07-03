@@ -13,6 +13,7 @@ public:
 	ObjModelRender(bool INSTANCE_FLAG = false, int INSTANCE_NUM = 1, bool MATERIAL_NONE_FALG = false);
 	~ObjModelRender();
 
+	DirectX::XMMATRIX* GetMotherMatrixPtr();
 	void Draw();
 
 
@@ -29,7 +30,7 @@ private:
 	ObjResourceData modelData;
 	array<RESOURCE_HANDLE, 2> constBufferHandle;
 
-
+	DirectX::XMMATRIX motherMat;
 	bool instanceFlag;
 	int instanceNum;
 

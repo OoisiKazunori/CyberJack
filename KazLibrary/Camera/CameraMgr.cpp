@@ -1,7 +1,7 @@
 #include "CameraMgr.h"
 #include"../Math/KazMath.h"
 
-CameraMgr::CameraMgr()
+CameraMgr::CameraMgr() :perspectiveProjDirtyFlag(perspectiveMat), orthographicMatProjectionDirtyFlag(orthographicMatProjection)
 {
 	perspectiveMat =
 		DirectX::XMMatrixPerspectiveFovLH(
@@ -258,6 +258,11 @@ DirectX::XMMATRIX *CameraMgr::GetPerspectiveMatProjectionPointer()
 	return &perspectiveMat;
 }
 
+DirectX::XMMATRIX CameraMgr::GetOrthographicMatProjection()
+{
+	return orthographicMatProjection;
+}
+
 DirectX::XMMATRIX CameraMgr::GetPerspectiveMatProjectionAngle(float angle)
 {
 	return DirectX::XMMatrixPerspectiveFovLH(
@@ -268,9 +273,9 @@ DirectX::XMMATRIX CameraMgr::GetPerspectiveMatProjectionAngle(float angle)
 	);;
 }
 
-bool CameraMgr::ViewDirty(int CAMERA_INDEX)
+bool CameraMgr::ViewAndProjDirty(int CAMERA_INDEX)
 {
-	return viewDirtyFlagArray[CAMERA_INDEX]->Dirty();
+	return viewDirtyFlagArray[CAMERA_INDEX]->Dirty() || perspectiveProjDirtyFlag.Dirty();
 }
 
 bool CameraMgr::BillboardDirty(int CAMERA_INDEX)
@@ -285,4 +290,5 @@ void CameraMgr::Record()
 		viewDirtyFlagArray[i]->Record();
 		billBoardDirtyFlagArray[i]->Record();
 	}
+	perspectiveProjDirtyFlag.Record();
 }

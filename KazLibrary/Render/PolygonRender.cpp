@@ -62,7 +62,7 @@ void PolygonRender::Draw()
 
 
 	//行列計算-----------------------------------------------------------------------------------------------------
-	if (data.transform.Dirty() || data.billBoardDirtyFlag.Dirty() || renderData.cameraMgrInstance->BillboardDirty())
+	if (data.transform.Dirty() || data.billBoardDirtyFlag.Dirty() || renderData.cameraMgrInstance->BillboardDirty() || data.motherMat.dirty.Dirty())
 	{
 		baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 		baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
@@ -71,12 +71,12 @@ void PolygonRender::Draw()
 		//ビルボード行列を掛ける
 		if (data.billBoardFlag)
 		{
-			baseMatWorldData.matWorld *= renderData.cameraMgrInstance->GetMatBillBoard(data.cameraIndex);
+			baseMatWorldData.matWorld *= renderData.cameraMgrInstance->GetMatBillBoard(data.cameraIndex.dirty.Dirty());
 		}
 		baseMatWorldData.matWorld *= baseMatWorldData.matScale;
 		baseMatWorldData.matWorld *= baseMatWorldData.matRota;
 		baseMatWorldData.matWorld *= baseMatWorldData.matTrans;
-		baseMatWorldData.matWorld *= data.motherMat;
+		baseMatWorldData.matWorld *= data.motherMat.mat;
 
 		//親行列を掛ける
 		motherMat = baseMatWorldData.matWorld;
@@ -86,11 +86,11 @@ void PolygonRender::Draw()
 
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 	//行列
-	if (data.transform.Dirty() || renderData.cameraMgrInstance->ViewDirty() || renderData.cameraMgrInstance->BillboardDirty())
+	if (data.transform.Dirty() || renderData.cameraMgrInstance->ViewAndProjDirty() || renderData.cameraMgrInstance->BillboardDirty() || data.motherMat.dirty.Dirty() || data.cameraIndex.dirty.Dirty())
 	{
 		ConstBufferData constMap;
 		constMap.world = baseMatWorldData.matWorld;
-		constMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex);
+		constMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex.id);
 		constMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
 		constMap.color = data.color.ConvertColorRateToXMFLOAT4();
 		constMap.mat = constMap.world * constMap.view * constMap.viewproj;

@@ -67,6 +67,39 @@ struct ResourceHandle
 	}
 };
 
+struct MatMotherData
+{
+	DirectX::XMMATRIX mat;
+	DirtySet dirty;
+
+	MatMotherData() :mat(DirectX::XMMatrixIdentity()), dirty(mat)
+	{
+	}
+
+	void operator=(const DirectX::XMMATRIX &MATRIX)
+	{
+		mat = MATRIX;
+	}
+	void operator=(DirectX::XMMATRIX *MATRIX)
+	{
+		mat = *MATRIX;
+	}
+};
+
+struct CameraIndexData
+{
+	int id;
+	DirtyFlag<int> dirty;
+
+	CameraIndexData() :id(0), dirty(&id)
+	{
+	}
+	void operator=(int HANDLE)
+	{
+		id = HANDLE;
+	}
+};
+
 
 struct Sprite2DData :public IData
 {
@@ -102,15 +135,14 @@ struct Sprite3DData :public IData
 	ResourceHandle animationHandle;
 	FlipData flip;
 	bool billBoardFlag;
-	DirectX::XMMATRIX motherMat;
+	MatMotherData motherMat;
 	PipeLineNames pipelineName;
 	KazMath::Color color;
-
+	CameraIndexData cameraIndex;
 
 	Sprite3DData() :pipelineName(PIPELINE_NAME_SPRITE), billBoardDirtyFlag(&billBoardFlag), color(0, 0, 0, 255)
 	{
 		address = this;
-		motherMat = DirectX::XMMatrixIdentity();
 	}
 
 	void Record()
@@ -121,6 +153,8 @@ struct Sprite3DData :public IData
 		billBoardDirtyFlag.Record();
 		color.Record();
 		flip.Record();
+		motherMat.dirty.Record();
+		cameraIndex.dirty.Record();
 	};
 
 	DirtyFlag<bool>billBoardDirtyFlag;
@@ -130,21 +164,23 @@ struct Pera3DData :public IData
 {
 	KazMath::Transform3D transform;
 	bool billBoardFlag;
-	DirectX::XMMATRIX motherMat;
+	MatMotherData motherMat;
 	PipeLineNames pipelineName;
 	KazMath::Color color;
-
+	CameraIndexData cameraIndex;
 	DirtyFlag<bool>billBoardDirtyFlag;
+
 	Pera3DData() :pipelineName(PIPELINE_NAME_SPRITE), color(0, 0, 0, 255), billBoardDirtyFlag(&billBoardFlag)
 	{
 		address = this;
-		motherMat = DirectX::XMMatrixIdentity();
 	}
 	void Record()
 	{
 		transform.Record();
 		color.Record();
 		billBoardDirtyFlag.Record();
+		motherMat.dirty.Record();
+		cameraIndex.dirty.Record();
 	}
 };
 
@@ -154,7 +190,7 @@ struct Obj3DData :public IData
 	ResourceHandle handle;
 	KazMath::Vec3<float> upVector;
 	KazMath::Vec3<float> frontVector;
-	DirectX::XMMATRIX motherMat;
+	MatMotherData motherMat;
 	PipeLineNames pipelineName;
 	KazMath::Color color;
 	bool removeMaterialFlag;
@@ -162,9 +198,9 @@ struct Obj3DData :public IData
 
 	DirtyFlag<KazMath::Vec3<float>>upVecDirtyFlag;
 	DirtyFlag<KazMath::Vec3<float>>frontVecDirtyFlag;
+	CameraIndexData cameraIndex;
 
-
-	Obj3DData() :pipelineName(PIPELINE_NAME_OBJ), color(0, 0, 0, 255), motherMat(DirectX::XMMatrixIdentity()), upVecDirtyFlag(&upVector), frontVecDirtyFlag(&frontVector)
+	Obj3DData() :pipelineName(PIPELINE_NAME_OBJ), color(0, 0, 0, 255), upVecDirtyFlag(&upVector), frontVecDirtyFlag(&frontVector)
 	{
 		address = this;
 		upVector = { 0,1,0 };
@@ -179,6 +215,8 @@ struct Obj3DData :public IData
 		color.Record();
 		upVecDirtyFlag.Record();
 		frontVecDirtyFlag.Record();
+		motherMat.dirty.Record();
+		cameraIndex.dirty.Record();
 	}
 };
 
@@ -187,8 +225,9 @@ struct LineDrawData :public IData
 	KazMath::Vec3<float> startPos;
 	KazMath::Vec3<float> endPos;
 	KazMath::Color color;
-	DirectX::XMMATRIX motherMat;
+	MatMotherData motherMat;
 	PipeLineNames pipelineName;
+	CameraIndexData cameraIndex;
 
 	DirtyFlag<KazMath::Vec3<float>> startPosDirtyFlag;
 	DirtyFlag<KazMath::Vec3<float>> endPosDirtyFlag;
@@ -196,13 +235,14 @@ struct LineDrawData :public IData
 	LineDrawData() :pipelineName(PIPELINE_NAME_LINE), color(255, 255, 255, 255), startPosDirtyFlag(&startPos), endPosDirtyFlag(&endPos)
 	{
 		address = this;
-		motherMat = DirectX::XMMatrixIdentity();
 	}
 	void Record()
 	{
 		startPosDirtyFlag.Record();
 		endPosDirtyFlag.Record();
 		color.Record();
+		motherMat.dirty.Record();
+		cameraIndex.dirty.Record();
 	}
 };
 
@@ -210,10 +250,11 @@ struct PolygonDrawData :public IData
 {
 	KazMath::Transform3D transform;
 	KazMath::Color color;
-	DirectX::XMMATRIX motherMat;
+	MatMotherData motherMat;
 	PipeLineNames pipelineName;
+	CameraIndexData cameraIndex;
 
-	PolygonDrawData():color(255, 255, 255, 255), pipelineName(PIPELINE_NAME_COLOR), motherMat(DirectX::XMMatrixIdentity())
+	PolygonDrawData():color(255, 255, 255, 255), pipelineName(PIPELINE_NAME_COLOR)
 	{
 		address = this;
 	}
@@ -222,6 +263,8 @@ struct PolygonDrawData :public IData
 	{
 		transform.Record();
 		color.Record();
+		motherMat.dirty.Record();
+		cameraIndex.dirty.Record();
 	};
 
 };
@@ -230,24 +273,25 @@ struct FbxModelData :public IData
 {
 	KazMath::Transform3D transform;
 	ResourceHandle handle;
-	DirectX::XMMATRIX motherMat;
+	MatMotherData motherMat;
 	bool isPlay;
 	int animationNumber;
 	PipeLineNames pipelineName;
-
+	CameraIndexData cameraIndex;
 
 	FbxModelData()
 	{
 		address = this;
 		pipelineName = PIPELINE_NAME_FBX;
 		animationNumber = 0;
-		motherMat = DirectX::XMMatrixIdentity();
 	}
 
 	void Record()
 	{
 		transform.Record();
 		handle.flag.Record();
+		motherMat.dirty.Record();
+		cameraIndex.dirty.Record();
 	}
 };
 
@@ -258,6 +302,7 @@ struct CircleDrawData :public IData
 	float radius;
 	PipeLineNames pipelineName;
 	bool change3DFlag;
+	CameraIndexData cameraIndex;
 
 	CircleDrawData() :color(255, 255, 255, 255), radius(0.0f), pipelineName(PIPELINE_NAME_COLOR_NOCARING), change3DFlag(false), change3DDirtyFlag(&change3DFlag), radiusDirtyFlag(&radius)
 	{
@@ -270,6 +315,7 @@ struct CircleDrawData :public IData
 		color.Record();
 		radiusDirtyFlag.Record();
 		change3DDirtyFlag.Record();
+		cameraIndex.dirty.Record();
 	};
 	DirtyFlag<float> radiusDirtyFlag;
 	DirtyFlag<bool> change3DDirtyFlag;
