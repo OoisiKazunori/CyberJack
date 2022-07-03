@@ -879,8 +879,5 @@ namespace KazMath
 		return static_cast<float>(TIMER) / static_cast<float>(MAX_TIMER);
 	}
 
-
-	bool CheckRayAndCircle(const XMVECTOR &RAY_START_POS, const XMVECTOR &RAY_END_POS, const XMVECTOR &CIRCLE_CENTRAL_POS, float RADIUS);
-
 }
 

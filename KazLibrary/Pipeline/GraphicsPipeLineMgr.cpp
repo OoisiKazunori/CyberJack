@@ -127,16 +127,13 @@ void GraphicsPipeLineMgr::CreatePipeLine(InputLayOutNames INPUT_LAYOUT_NAME, Ver
 	grahicsPipeLine.InputLayout.pInputElementDescs = InputLayOutRegisterData[INPUT_LAYOUT_NAME].inputLayOut;
 	grahicsPipeLine.InputLayout.NumElements = InputLayOutRegisterData[INPUT_LAYOUT_NAME].size;
 
+
 	//Shaderの代入
-	grahicsPipeLine.VS = CD3DX12_SHADER_BYTECODE(VertexShaderRegisterData[VERTEX_SHADER_NAME]->GetBufferPointer(), VertexShaderRegisterData[VERTEX_SHADER_NAME]->GetBufferSize());
-	grahicsPipeLine.PS = CD3DX12_SHADER_BYTECODE(PixcelShaderRegisterData[PIXCEL_SHADER_NAME]->GetBufferPointer(), PixcelShaderRegisterData[PIXCEL_SHADER_NAME]->GetBufferSize());
-
-
-
-
+	grahicsPipeLine.VS = CD3DX12_SHADER_BYTECODE(VertexShaderRegisterData[VERTEX_SHADER_NAME].Get());
+	grahicsPipeLine.PS = CD3DX12_SHADER_BYTECODE(PixcelShaderRegisterData[PIXCEL_SHADER_NAME].Get());
 	if (GEOMETORY_SHADER_NAME != SHADER_GEOMETORY_NONE)
 	{
-		grahicsPipeLine.GS = CD3DX12_SHADER_BYTECODE(GeometoryShaderRegisterData[GEOMETORY_SHADER_NAME]->GetBufferPointer(), GeometoryShaderRegisterData[GEOMETORY_SHADER_NAME]->GetBufferSize());
+		grahicsPipeLine.GS = CD3DX12_SHADER_BYTECODE(GeometoryShaderRegisterData[GEOMETORY_SHADER_NAME].Get());
 	}
 
 	//ルートシグネチャの設定
@@ -162,7 +159,7 @@ void GraphicsPipeLineMgr::CreateComputePipeLine(ComputeShaderNames COMPUTE_SHADE
 	grahicsPipeLine = computePipeLineDataRegisterData[PIPELINE_DATA_NAME];
 
 	//Shaderの代入
-	grahicsPipeLine.CS = CD3DX12_SHADER_BYTECODE(ComputeShaderRegisterData[COMPUTE_SHADER_NAME]->GetBufferPointer(), ComputeShaderRegisterData[COMPUTE_SHADER_NAME]->GetBufferSize());
+	grahicsPipeLine.CS = CD3DX12_SHADER_BYTECODE(ComputeShaderRegisterData[COMPUTE_SHADER_NAME].Get());
 
 	//ルートシグネチャの設定
 	computeRootSignatureName[PIPELINE_NAME] = ROOTSIGNATURE;

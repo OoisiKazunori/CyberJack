@@ -6,7 +6,6 @@
 #include"FbxModelRender.h"
 #include"CircleRender.h"
 #include"LineRender.h"
-#include"Circle2DRender.h"
 #include"BoxPolygonRender.h"
 #include"../Loader/FbxModelResourceMgr.h"
 #include"../Loader/ObjResourceMgr.h"

@@ -1,130 +1,47 @@
-#include"../ShaderHeader/KazMathHeader.hlsli"
+#define INSTANCE_FIRST_LEVEL 6
+#define INSTANCE_SECOND_LEVEL 1
 
-struct SceneConstantBuffer
+struct InputElement
 {
-    float4 velocity;
-    float4 offset;
-    float4 color;
-    float4x4 projection;
-    float4 padding[9];
+    float3 pos[INSTANCE_SECOND_LEVEL];
 };
 
-//https://docs.microsoft.com/en-us/windows/win32/api/d3d12/ns-d3d12-d3d12_draw_arguments
-struct D3D12_DRAW_ARGUMENTS
+struct OutPutElement
 {
-    uint VertexCountPerInstance;
-    uint InstanceCount;
-    uint StartVertexLocation;
-    uint StartInstanceLocation;
+    matrix mat[INSTANCE_SECOND_LEVEL];
 };
-
-
-struct IndirectCommand
-{
-    uint64_t cbvAddress;    
-    D3D12_DRAW_ARGUMENTS drawArguments;
-};
-
 
 struct InputData
 {
-    float4 pos;
-    float4 velocity;
-    float4 color;
+    InputElement data[INSTANCE_FIRST_LEVEL];
 };
 
-struct OutputData
+struct OutPutData
 {
-    matrix mat;
-    float4 color;
+    OutPutElement test[INSTANCE_FIRST_LEVEL];
 };
 
+// ?ｿｽ?ｿｽ?ｿｽﾍデ?ｿｽ[?ｿｽ^?ｿｽﾉア?ｿｽN?ｿｽZ?ｿｽX?ｿｽ?ｿｽ?ｿｽ驍ｽ?ｿｽﾟの変撰ｿｽ
+StructuredBuffer<InputData> inputData : register(t0);
+// ?ｿｽo?ｿｽﾍ撰ｿｽﾉア?ｿｽN?ｿｽZ?ｿｽX?ｿｽ?ｿｽ?ｿｽ驍ｽ?ｿｽﾟの変撰ｿｽ
+RWStructuredBuffer<OutPutData> outputData : register(u1);
 
-cbuffer RootConstants : register(b0)
+cbuffer commonBuffer : register(b2)
 {
-    matrix view; //ビュー行列
-    matrix projection; //プロジェクション行列
-    uint increSize; //インクリメントのサイズ
-    uint64_t gpuAddress; //構造体バッファの先頭アドレス
+    matrix cameraMat;
+    matrix projectionMat;
 };
 
-//入力用のバッファ-------------------------
-StructuredBuffer<InputData> inputBuffer : register(t0);
-//入力用のバッファ-------------------------
-
-//出力用のバッファ-------------------------
-//行列計算
-AppendStructuredBuffer<OutputData> matrixData : register(u0);
-//入力更新
-AppendStructuredBuffer<InputData> updateInputData : register(u1);
-//インダイレクトコマンド
-AppendStructuredBuffer<IndirectCommand> outputCommands : register(u2);
-//出力用のバッファ-------------------------
-
-static const int NUM = 2;
-
-[numthreads(NUM, 1, 1)]
-void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
+[numthreads(1, 1, 1)]
+void CSmain(uint3 DTid : SV_DispatchThreadID)
 {
-    uint index = (groupId.x * NUM) + groupIndex;
-    //uint index = 1;
-    if(1 <= index)
-    {
-        index = 1;
-    }
-
-
-    //座標計算-------------------------
-    float3 outputPos = inputBuffer[index].pos.xyz;
-    
-    //outputPos += float3(1.0f, 0.0f, 0.0f);
-    //if (50.0f <= outputPos.x)
-    //{
-    //    outputPos = 0.0f;
-    //}
-
-    outputPos = float3(0.0f + index * 10.0f,0.0f,20.0f);
-    matrix pMatTrans = Translate(outputPos);
-    matrix pMatRot = Rotate(float3(0.0f,0.0f,0.0f));
-    matrix pMatScale = Scale(float3(15.0f, 15.0f, 15.0f));
-    
-    matrix pMatWorld = MatrixIdentity();
-    pMatWorld = mul(pMatScale, pMatWorld);
-    pMatWorld = mul(pMatRot, pMatWorld);
-    pMatWorld = mul(pMatTrans, pMatWorld);
-    //座標計算-------------------------
+    //float tmpInputData = inputData[0].data + 5.0f;
+    //outputData[0].data2 = tmpInputData;
+    uint firstLevel = DTid.r;
+    uint secondLevel = DTid.g;
     
     
-    //座標出力-------------------------
-    OutputData outputMat;
-    matrix lView = view;
-    matrix lproj = projection;
-
-    outputMat.mat = MatrixIdentity();
-    outputMat.mat = mul(pMatWorld,outputMat.mat);
-    outputMat.mat = mul(lView,    outputMat.mat);
-    outputMat.mat = mul(lproj,    outputMat.mat);
-
-    outputMat.color = inputBuffer[index].color;
-    //matrixData.Append(outputMat);
-    
-    InputData inputData;
-    inputData.pos = float4(outputPos.xyz, 0.0f);
-    inputData.velocity = inputBuffer[index].velocity;
-    inputData.color = inputBuffer[index].color;
-    updateInputData.Append(inputData);
-    //座標出力-------------------------
-    
-    
-    //描画コマンド出力-------------------------
-    IndirectCommand outputCommand;
-    outputCommand.cbvAddress = gpuAddress + index * increSize;
-    outputCommand.drawArguments.VertexCountPerInstance = 3;
-    outputCommand.drawArguments.InstanceCount = 1;
-    outputCommand.drawArguments.StartVertexLocation = 0;
-    outputCommand.drawArguments.StartInstanceLocation = 0;
-
-    //outputCommands.Append(outputCommand);    
-    //描画コマンド出力-------------------------
-
+    matrix da = cameraMat;
+    inputData[0].data[firstLevel].pos[secondLevel];
+    outputData[0].test[firstLevel].mat[secondLevel] = da;
 }
