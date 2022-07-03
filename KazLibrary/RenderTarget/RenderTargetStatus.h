@@ -84,22 +84,26 @@ public:
 	int bbIndex;
 
 	//レンダーターゲットのハンドルからパス数を記録した配列
-	std::array<std::vector<RESOURCE_HANDLE>, 100>renderTargetData;
+	std::array<std::vector<short>, 100>renderTargetData;
+
+	void ChangeBarrier(ID3D12Resource *RESOURCE, const D3D12_RESOURCE_STATES &BEFORE_STATE, const D3D12_RESOURCE_STATES &AFTER_STATE);
+
+	std::vector<ComPtr<ID3D12Resource>> backBuffers;
+	ComPtr<ID3D12DescriptorHeap> rtvHeaps;
+	D3D12_DESCRIPTOR_HEAP_DESC heapDesc{};
+	ComPtr<IDXGISwapChain4> copySwapchain;
 private:
 
-	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> backBuffers;
 
 	array<DirectX::XMFLOAT4, 100> clearColors;
 
 
-	Microsoft::WRL::ComPtr<IDXGISwapChain4> copySwapchain;
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtvHeaps;
+
+	
 	D3D12_CPU_DESCRIPTOR_HANDLE multiPassRTVHanlde;
 
 
-	D3D12_DESCRIPTOR_HEAP_DESC heapDesc{};
 
-	void ChangeBarrier(ID3D12Resource *RESOURCE, const D3D12_RESOURCE_STATES &BEFORE_STATE, const D3D12_RESOURCE_STATES &AFTER_STATE);
 
 	struct RenderTargetHandle
 	{

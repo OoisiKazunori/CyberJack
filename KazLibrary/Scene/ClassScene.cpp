@@ -4,6 +4,7 @@
 #include"../Loader/FbxModelResourceMgr.h"
 #include"../Helper/ResourceFilePass.h"
 #include"../RenderTarget/RenderTargetStatus.h"
+#include"../KazLibrary/Imgui/MyImgui.h"
 
 ClassScene::ClassScene()
 {
@@ -114,7 +115,6 @@ void ClassScene::Update()
 	mainRenderTarget->TransData(&data, handle, typeid(data).name());
 
 	modelRender->data.isPlay = true;
-}
 
 void ClassScene::Draw()
 {
@@ -128,7 +128,17 @@ void ClassScene::Draw()
 	RenderTargetStatus::Instance()->PrepareToCloseBarrier(multiHandle[0]);
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 
-	if (KeyBoradInputManager::Instance()->InputState(DIK_O))
+	hitFlag = KazMath::CheckRayAndCircle(rayStartPos, rayEndPos, circleCentralPos, radius);
+
+	ImGui::Begin("HitBox");
+	ImGui::SliderFloat("rayStartPosX", &rayStartPos.m128_f32[0], 0.0f, WIN_X);
+	ImGui::SliderFloat("rayStartPosY", &rayStartPos.m128_f32[1], 0.0f, WIN_Y);
+	ImGui::SliderFloat("rayEndPosX", &rayEndPos.m128_f32[0], 0.0f, WIN_X);
+	ImGui::SliderFloat("rayEndPosY", &rayEndPos.m128_f32[1], 0.0f, WIN_Y);
+	ImGui::SliderFloat("circleCentralPosX", &circleCentralPos.m128_f32[0], 0.0f, WIN_X);
+	ImGui::SliderFloat("circleCentralPosY", &circleCentralPos.m128_f32[1], 0.0f, WIN_Y);
+	ImGui::InputFloat("radius", &radius);
+	if (hitFlag)
 	{
 		mainRenderTarget->data.handleData = multiHandle[1];
 	}

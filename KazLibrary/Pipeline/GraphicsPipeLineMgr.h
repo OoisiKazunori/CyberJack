@@ -81,6 +81,7 @@ enum VertexShaderNames
 	SHADER_VERTEX_INSTANCE_COLOR,
 	SHADER_VERTEX_INSTANCE_GET_SHADOWMAP,
 	SHADER_VERTEX_INSTANCE_COLOR_GET_SHADOWMAP,
+	SHADER_VERTEX_GPUPARTICLE,
 	SHADER_VERTEX_MAX
 };
 
@@ -129,6 +130,7 @@ enum PixcelShaderNames
 	SHADER_PIXCEL_WIHITENOISE,
 	SHADER_PIXCEL_FBX_RENDER_TWO,
 	SHADER_PIXCEL_SPRITE_NOISE,
+	SHADER_PIXEL_GPUPARTICLE,
 	SHADER_PIXCEL_MAX
 };
 
@@ -214,6 +216,7 @@ enum PipeLineNames
 	PIPELINE_NAME_LINE_UV,
 	PIPELINE_NAME_LINE_FLASHEFFECT,
 	PIPELINE_NAME_LINE_UV_MULTITEX,
+	PIPELINE_NAME_GPUPARTICLE,
 	PIPELINE_MAX
 };
 
@@ -329,14 +332,14 @@ private:
 	//ìoò^ÉfÅ[É^
 
 	vector<InputLayOutData> InputLayOutRegisterData;
-	vector<Microsoft::WRL::ComPtr<ID3DBlob>> VertexShaderRegisterData;
-	vector<Microsoft::WRL::ComPtr<ID3DBlob>> PixcelShaderRegisterData;
-	vector<Microsoft::WRL::ComPtr<ID3DBlob>> GeometoryShaderRegisterData;
+	vector<Microsoft::WRL::ComPtr<IDxcBlob>> VertexShaderRegisterData;
+	vector<Microsoft::WRL::ComPtr<IDxcBlob>> PixcelShaderRegisterData;
+	vector<Microsoft::WRL::ComPtr<IDxcBlob>> GeometoryShaderRegisterData;
 	vector<RootSignatureMode> RootSignatureName;
 	vector<D3D12_GRAPHICS_PIPELINE_STATE_DESC> PipeLineDataRegisterData;
 	vector<Microsoft::WRL::ComPtr<ID3D12PipelineState>> PipeLineRegisterData;
 
-	vector<Microsoft::WRL::ComPtr<ID3DBlob>> ComputeShaderRegisterData;
+	vector<Microsoft::WRL::ComPtr<IDxcBlob>> ComputeShaderRegisterData;
 	vector<D3D12_COMPUTE_PIPELINE_STATE_DESC> computePipeLineDataRegisterData;
 	vector<Microsoft::WRL::ComPtr<ID3D12PipelineState>> ComputePipeLineRegisterData;
 	vector<RootSignatureMode> computeRootSignatureName;

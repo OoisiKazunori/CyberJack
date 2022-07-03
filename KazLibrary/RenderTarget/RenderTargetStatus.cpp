@@ -67,7 +67,7 @@ void RenderTargetStatus::CreateDoubleBuffer(Microsoft::WRL::ComPtr<IDXGISwapChai
 
 void RenderTargetStatus::SetDoubleBufferFlame()
 {
-	gDepth.Clear(handle);
+	//gDepth.Clear(handle);
 
 	bbIndex = copySwapchain->GetCurrentBackBufferIndex();
 	//ƒoƒŠƒAØ‚è‘Ö‚¦

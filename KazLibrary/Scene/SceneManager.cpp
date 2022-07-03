@@ -90,5 +90,5 @@ void SceneManager::Draw() {
 	if (itisInArrayFlag) {
 		scene[nowScene]->Draw();
 	}
-	change.Draw();
+	//change.Draw();
 }

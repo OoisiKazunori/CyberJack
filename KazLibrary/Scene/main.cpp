@@ -28,10 +28,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
 #ifdef _DEBUG
 	//DebugLayer
-	Microsoft::WRL::ComPtr<ID3D12Debug> debugController;
+	ComPtr<ID3D12Debug1> debugController;
 	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
 	{
 		debugController->EnableDebugLayer();
+		//debugController->SetEnableGPUBasedValidation(TRUE);
 	}
 	debugController.ReleaseAndGetAddressOf();
 #endif
@@ -78,8 +79,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	{
 		CheckMessageFlag = msg.CheckMessage();
 		imgui.NewFlame();
-		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
-		RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
+		//RenderTargetStatus::Instance()->SetDoubleBufferFlame(BG_COLOR);
+		//RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
 		KeyBoradInputManager::Instance()->InputLog();
 		ControllerInputManager::Instance()->InputLog();
 #ifdef _DEBUG
@@ -91,7 +92,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	
 		CameraMgr::Instance()->Record();
 		imgui.Set();
-		RenderTargetStatus::Instance()->SwapResourceBarrier();
+		//RenderTargetStatus::Instance()->SwapResourceBarrier();
 
 		directX.ActCommand();
 	}
