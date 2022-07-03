@@ -430,9 +430,13 @@ void GameScene::Draw()
 
 int GameScene::SceneChange()
 {
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_K) || game->SceneChange() == 0)
+	if (ControllerInputManager::Instance()->InputTrigger(XINPUT_GAMEPAD_START) || game->SceneChange() == 0)
 	{
 		return -2;
+	}
+	else if(ControllerInputManager::Instance()->InputTrigger(XINPUT_GAMEPAD_BACK))
+	{
+		return 0;
 	}
 	else
 	{

@@ -67,18 +67,16 @@ void RenderTargetStatus::CreateDoubleBuffer(Microsoft::WRL::ComPtr<IDXGISwapChai
 
 void RenderTargetStatus::SetDoubleBufferFlame()
 {
-	gDepth.Clear(handle);
-
 	bbIndex = copySwapchain->GetCurrentBackBufferIndex();
 	//バリア切り替え
 	ChangeBarrier(backBuffers[bbIndex].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
+	gDepth.Clear(handle);
 	//レンダータゲットの設定
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvH;
 	rtvH = rtvHeaps->GetCPUDescriptorHandleForHeapStart();
 	rtvH.ptr += bbIndex * DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(heapDesc.Type);
 	DirectX12CmdList::Instance()->cmdList->OMSetRenderTargets(1, &rtvH, false, &gDepth.dsvH[handle]);
-
 }
 
 void RenderTargetStatus::ClearDoubuleBuffer(DirectX::XMFLOAT3 COLOR)

@@ -26,7 +26,6 @@ void WindowFlame::Init(const KazMath::Transform3D &POS, const  KazMath::Vec2<flo
 	{
 		flameTex.data.transform.scale = { SCALE.x,SCALE.y,1.0f };
 	}
-
 	larpScale = { 0.0f,0.1f,1.0f };
 	startFlag = false;
 	endFlag = false;

@@ -12,9 +12,9 @@
 SceneManager::SceneManager()
 {
 	scene.emplace_back(std::make_unique<GameScene>());
-	scene.emplace_back(std::make_unique<PortalScene>());
-	scene.emplace_back(std::make_unique<TitleScene>());
 	scene.emplace_back(std::make_unique<DebugScene>());
+	//scene.emplace_back(std::make_unique<PortalScene>());
+	//scene.emplace_back(std::make_unique<TitleScene>());
 
 	nowScene = 0;
 	nextScene = 0;
@@ -68,7 +68,7 @@ void SceneManager::Update()
 
 	if (itisInArrayFlag)
 	{
-	
+
 		scene[nowScene]->Input();
 		scene[nowScene]->Update();
 
@@ -87,8 +87,11 @@ void SceneManager::Update()
 
 void SceneManager::Draw() {
 
-	if (itisInArrayFlag) {
+	if (itisInArrayFlag)
+	{
 		scene[nowScene]->Draw();
 	}
+
 	change.Draw();
+	RenderTargetStatus::Instance()->SwapResourceBarrier();
 }

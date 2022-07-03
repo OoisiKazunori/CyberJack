@@ -18,7 +18,9 @@ enum BufferMemory
 	DESCRIPTORHEAP_MEMORY_TEXTURE_FBX,
 	DESCRIPTORHEAP_MEMORY_TEXTURE_RENDERTARGET,
 	DESCRIPTORHEAP_MEMORY_TEXTURE_COMPUTEBUFFER,
-	DESCRIPTORHEAP_MEMORY_MAX = 5
+	DESCRIPTORHEAP_MEMORY_CBV,
+	DESCRIPTORHEAP_MEMORY_SRV,
+	DESCRIPTORHEAP_MEMORY_MAX
 };
 
 namespace KazBufferHelper
@@ -79,6 +81,7 @@ namespace KazBufferHelper
 	KazBufferHelper::BufferResourceData SetRWStructuredBuffer(BUFFER_SIZE BUFFER_SIZE, const string &BUFFER_NAME = "RWStructureBuffer");
 
 
+	KazBufferHelper::BufferResourceData SetCommandBufferData(const unsigned int &BUFFER_SIZE, const string &BUFFER_NAME = "CommandBuffer");
 
 	D3D12_VERTEX_BUFFER_VIEW SetVertexBufferView(const D3D12_GPU_VIRTUAL_ADDRESS &GPU_ADDRESS, BUFFER_SIZE BUFFER_SIZE, const unsigned int &ONE_VERTICES_SIZE);
 

@@ -10,6 +10,7 @@
 using namespace std;
 #include<array>
 #include<memory>
+#include"pix3.h"
 
 #include"pix3.h"
 

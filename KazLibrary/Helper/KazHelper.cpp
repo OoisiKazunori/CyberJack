@@ -144,7 +144,7 @@ std::vector<char> KazHelper::CovertStringToChar(std::string STRING)
 }
 
 
-void KazHelper::ConvertStringToWchar_t(string STRING, wchar_t *WCHAR_STRING, int ARRAY_SIZE)
+void KazHelper::ConvertStringToWchar_t(string STRING, wchar_t *WCHAR_STRING, size_t ARRAY_SIZE)
 {
-	MultiByteToWideChar(CP_ACP, 0, STRING.c_str(), -1, WCHAR_STRING, ARRAY_SIZE);
+	MultiByteToWideChar(CP_ACP, 0, STRING.c_str(), -1, WCHAR_STRING, static_cast<INT>(ARRAY_SIZE));
 }

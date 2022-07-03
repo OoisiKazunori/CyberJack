@@ -5,10 +5,10 @@ VSOutput VSmain(float4 pos : POSITION, float2 uv : TEXCOORD)
 {
 	VSOutput output;
 
-	output.svpos = mul(world, pos);   // モデルの頂点をワールド座標系に変換
-	output.svpos = mul(view, output.svpos);    // ワールド座標系からカメラ座標系に変換
-	output.svpos = mul(viewproj, output.svpos);    // カメラ座標系からスクリーン座標系に変換
-
+	output.svpos = mul(world, pos);   // ?ｿｽ?ｿｽ?ｿｽf?ｿｽ?ｿｽ?ｿｽﾌ抵ｿｽ?ｿｽ_?ｿｽ?ｿｽ?ｿｽ?ｿｽ?ｿｽ[?ｿｽ?ｿｽ?ｿｽh?ｿｽ?ｿｽ?ｿｽW?ｿｽn?ｿｽﾉ変奇ｿｽ
+	output.svpos = mul(view, output.svpos);    // ?ｿｽ?ｿｽ?ｿｽ[?ｿｽ?ｿｽ?ｿｽh?ｿｽ?ｿｽ?ｿｽW?ｿｽn?ｿｽ?ｿｽ?ｿｽ?ｿｽJ?ｿｽ?ｿｽ?ｿｽ?ｿｽ?ｿｽ?ｿｽ?ｿｽW?ｿｽn?ｿｽﾉ変奇ｿｽ
+	output.svpos = mul(viewproj, output.svpos);    // ?ｿｽJ?ｿｽ?ｿｽ?ｿｽ?ｿｽ?ｿｽ?ｿｽ?ｿｽW?ｿｽn?ｿｽ?ｿｽ?ｿｽ?ｿｽX?ｿｽN?ｿｽ?ｿｽ?ｿｽ[?ｿｽ?ｿｽ?ｿｽ?ｿｽ?ｿｽW?ｿｽn?ｿｽﾉ変奇ｿｽ
+	output.normal = 0.0f;
 	output.uv = uv;
 
 	return output;

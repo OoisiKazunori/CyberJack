@@ -103,6 +103,7 @@ Game::~Game()
 	RenderTargetStatus::Instance()->DeleteRenderTarget(addHandle);
 	RenderTargetStatus::Instance()->DeleteMultiRenderTarget(handles);
 	RenderTargetStatus::Instance()->DeleteRenderTarget(potalTexHandle);
+	SoundManager::Instance()->StopSoundMem(bgmSoundHandle);
 }
 
 void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> &RESPONE_DATA)
@@ -185,7 +186,7 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	eyePos = { 0.0f,5.0f,-10.0f };
 	trackingTargetPos = { 0.0f,0.0f,0.0f };
 	nowTargerPos = { 0.0f,0.0f,0.0f };
-	leftRightAngleVel = { -91.0f,-91.0f };
+	leftRightAngleVel = { -90.0f,-90.0f };
 	upDownAngleVel = { 0.0f,0.0f };
 
 	trackLeftRightAngleVel = leftRightAngleVel;
@@ -426,85 +427,30 @@ void Game::Input()
 		forceCameraDirVel.x + mulValue2.y * -cursorValue.x
 	};
 
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_R))
-	{
-		gameFlame = 0;
-		for (int i = 0; i < addEnemiesHandle.size(); ++i)
-		{
-			addEnemiesHandle[i] = 0;;
-		}
-	}
+	//if (KeyBoradInputManager::Instance()->InputTrigger(DIK_R))
+	//{
+	//	gameFlame = 0;
+	//	for (int i = 0; i < addEnemiesHandle.size(); ++i)
+	//	{
+	//		addEnemiesHandle[i] = 0;;
+	//	}
+	//}
 
 
 }
 
 void Game::Update()
 {
-	/*ImGui::Begin("Camera");
-	ImGui::Text("Target");
-	ImGui::InputFloat("TargetX", &baseTargetPos.x);
-	ImGui::InputFloat("TargetY", &baseTargetPos.y);
-	ImGui::InputFloat("TargetZ", &baseTargetPos.z);
-	ImGui::Text("Central_Side");
-	ImGui::InputFloat("CentralX", &centralPos.x);
-	ImGui::InputFloat("CentralY", &centralPos.y);
-	ImGui::InputFloat("CentralZ", &centralPos.z);
-	ImGui::Text("Central_UpDown");
-	ImGui::InputFloat("Central2X", &centralPos2.x);
-	ImGui::InputFloat("Central2Y", &centralPos2.y);
-	ImGui::InputFloat("Central2Z", &centralPos2.z);
-	ImGui::Text("Force");
-	ImGui::InputFloat("forceCameraDirVel0", &forceCameraDirVel.x);
-	ImGui::InputFloat("forceCameraDirVel1", &forceCameraDirVel.y);
-	ImGui::Text("Circle");
-	ImGui::InputFloat("R", &r);
-	ImGui::InputFloat("R2", &r2);
-	ImGui::Text("MulValue");
-	ImGui::InputFloat("mulValueX", &mulValue.x);
-	ImGui::InputFloat("mulValueY", &mulValue.y);
-	ImGui::InputFloat("mulValue2X", &mulValue2.x);
-	ImGui::InputFloat("mulValue2Y", &mulValue2.y);
-	ImGui::Text("leftRightAngleVel:X%f,Y:%f", leftRightAngleVel.x, leftRightAngleVel.y);
-	ImGui::Text("upDownAngleVel:X%f,Y:%f", upDownAngleVel.x, upDownAngleVel.y);
-	ImGui::Text("trackUpDownAngleVel:X%f,Y:%f", trackUpDownAngleVel.x, trackUpDownAngleVel.y);
-	ImGui::Text("trackLeftRightAngleVel:X%f,Y:%f", trackLeftRightAngleVel.x, trackLeftRightAngleVel.y);
-	ImGui::End();*/
 
 
-	//操作感に関わる設定
-	/*ImGui::Begin("Move");
-	ImGui::Text("dontMoveCameraStartPos:X%f,Y:%f", cursor.dontMoveCameraStartPos.x, cursor.dontMoveCameraStartPos.y);
-	ImGui::Text("dontMoveCameraEndPos:X%f,Y:%f", cursor.dontMoveCameraEndPos.x, cursor.dontMoveCameraEndPos.y);
-	ImGui::Text("CursorPos:X%f,Y:%f", cursor.cursorPos.x, cursor.cursorPos.y);
-	ImGui::Text("CameraMoveValue:X%f,Y:%f", cursor.cameraMoveValue.x, cursor.cameraMoveValue.y);
-	ImGui::InputFloat("limitValue:X", &cursor.limitValue.x);
-	ImGui::InputFloat("limitValue:Y", &cursor.limitValue.y);
-	ImGui::InputFloat("NO_MOVE_DISTANCE:X", &cursor.NO_MOVE_DISTANCE.x);
-	ImGui::InputFloat("NO_MOVE_DISTANCE:Y", &cursor.NO_MOVE_DISTANCE.y);
-	ImGui::End();*/
 
-	//ImGui::Begin("Debug");
-	//ImGui::Checkbox("DebugCamera", &cameraChangeFlag);
-	//ImGui::Checkbox("DebugLine", &lineDebugFlag);
-	//ImGui::End();
-
-
-	//ImGui::Begin("StartLine");
 	for (int i = 0; i < lineStartPoly.size(); ++i)
 	{
 		lineStartPoly[i].data.pipelineName = PIPELINE_NAME_COLOR_MULTITEX;
-		std::string name = "Start" + std::to_string(i) + "X";
-		//ImGui::InputFloat(name.c_str(), &lineStartPoly[i].data.transform.pos.x);
-		name = "Start" + std::to_string(i) + "Y";
-		//ImGui::InputFloat(name.c_str(), &lineStartPoly[i].data.transform.pos.y);
-		name = "Start" + std::to_string(i) + "Z";
-		//ImGui::InputFloat(name.c_str(), &lineStartPoly[i].data.transform.pos.z);
-
 		lineStartPoly[i].data.transform.scale = { 0.1f,0.1f,0.1f };
 		lineStartPoly[i].data.color = { 255,0,0,255 };
 		lineEffectArrayData[i].startPos = lineStartPoly[i].data.transform.pos + player.pos;
 	}
-	//ImGui::End();
 	{
 		int lineArrayNum = static_cast<int>(lineStartPoly.size());
 		for (int i = lineArrayNum; i < lineArrayNum * 2; ++i)
@@ -616,9 +562,9 @@ void Game::Update()
 #pragma endregion
 
 
+
 	//敵が一通り生成終わった際に登場させる----------------------------------------------------------------
-	//if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame && !initAppearFlag)
-		if (100 <= gameFlame && !initAppearFlag)
+	if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame && !initAppearFlag)
 	{
 		goalBox.Appear(appearGoalBoxPos);
 		initAppearFlag = true;
@@ -1038,99 +984,98 @@ void Game::Update()
 	//ゲームオーバー----------------------------------------------
 
 
+	if (!gameOverFlag)
+	{
 #pragma region 更新処理
 
-	goalBox.releaseFlag = cursor.releaseFlag;
+		goalBox.releaseFlag = cursor.releaseFlag;
 
 
-	//更新処理----------------------------------------------------------------
-	player.Update();
-	cursor.Update();
-	goalBox.portalEffect.sprite->data.handleData = potalTexHandle;
-	goalBox.Update();
-	movieEffect.Update();
-	stageUI.Update();
-	stages[stageNum]->Update();
-	doneSprite.Update();
-	tutorialWindow.Update();
+		//更新処理----------------------------------------------------------------
+		player.Update();
+		cursor.Update();
+		goalBox.portalEffect.sprite->data.handleData = potalTexHandle;
+		goalBox.Update();
+		movieEffect.Update();
+		stageUI.Update();
+		stages[stageNum]->Update();
+		doneSprite.Update();
+		tutorialWindow.Update();
 
 
 
-	//配列外を超えない処理
-	if (stageNum + 1 < stages.size())
-	{
-		stages[stageNum + 1]->Update();
-	}
-	//ロックオンのリリース処理
-	if (cursor.releaseFlag)
-	{
+		//配列外を超えない処理
+		if (stageNum + 1 < stages.size())
+		{
+			stages[stageNum + 1]->Update();
+		}
+		//ロックオンのリリース処理
+		if (cursor.releaseFlag)
+		{
+			for (int i = 0; i < lineEffectArrayData.size(); ++i)
+			{
+				if (lineEffectArrayData[i].usedFlag)
+				{
+					int lineIndex = lineEffectArrayData[i].lineIndex;
+					lineLevel[lineIndex].ReleaseShot();
+				}
+			}
+		}
+
+		//ロックオン中に必要なデータ
 		for (int i = 0; i < lineEffectArrayData.size(); ++i)
 		{
 			if (lineEffectArrayData[i].usedFlag)
 			{
 				int lineIndex = lineEffectArrayData[i].lineIndex;
-				lineLevel[lineIndex].ReleaseShot();
+				//イベントブロックかどうか判断する
+				if (lineEffectArrayData[i].eventType != -1)
+				{
+					KazMath::Vec3<float> pos = *goalBox.hitBox.center;
+					lineLevel[lineIndex].CalucurateDistance(player.pos, pos);
+				}
+				else
+				{
+					int enemyTypeIndex = lineEffectArrayData[i].enemyTypeIndex;
+					int enemyIndex = lineEffectArrayData[i].enemyIndex;
+					KazMath::Vec3<float> pos = *enemies[enemyTypeIndex][enemyIndex]->GetData()->hitBox.center;
+					lineLevel[lineIndex].CalucurateDistance(player.pos, pos);
+				}
 			}
 		}
-	}
 
-	//ロックオン中に必要なデータ
-	for (int i = 0; i < lineEffectArrayData.size(); ++i)
-	{
-		if (lineEffectArrayData[i].usedFlag)
+
+		for (int i = 0; i < lineLevel.size(); ++i)
 		{
-			int lineIndex = lineEffectArrayData[i].lineIndex;
-			//イベントブロックかどうか判断する
-			if (lineEffectArrayData[i].eventType != -1)
+			if (lineEffectArrayData[i].usedFlag)
 			{
-				KazMath::Vec3<float> pos = *goalBox.hitBox.center;
-				lineLevel[lineIndex].CalucurateDistance(player.pos, pos);
+				lineLevel[i].playerPos = lineEffectArrayData[i].startPos;
 			}
-			else
+
+			if (!lineLevel[i].initFlag)
 			{
-				int enemyTypeIndex = lineEffectArrayData[i].enemyTypeIndex;
-				int enemyIndex = lineEffectArrayData[i].enemyIndex;
-				KazMath::Vec3<float> pos = *enemies[enemyTypeIndex][enemyIndex]->GetData()->hitBox.center;
-				lineLevel[lineIndex].CalucurateDistance(player.pos, pos);
+				lineEffectArrayData[i].Reset();
 			}
-		}
-	}
 
-
-	for (int i = 0; i < lineLevel.size(); ++i)
-	{
-		if (lineEffectArrayData[i].usedFlag)
-		{
-			lineLevel[i].playerPos = lineEffectArrayData[i].startPos;
+			lineLevel[i].Update();
 		}
 
-		if (!lineLevel[i].initFlag)
+		//敵の更新処理
+		for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
 		{
-			lineEffectArrayData[i].Reset();
-		}
-
-		lineLevel[i].Update();
-	}
-
-	//敵の更新処理
-	for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
-	{
-		for (int enemyCount = 0; enemyCount < enemies[enemyType].size(); ++enemyCount)
-		{
-			//生成されている、初期化している敵のみ更新処理を通す
-			bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
-			if (enableToUseDataFlag)
+			for (int enemyCount = 0; enemyCount < enemies[enemyType].size(); ++enemyCount)
 			{
-				enemies[enemyType][enemyCount]->Update();
+				//生成されている、初期化している敵のみ更新処理を通す
+				bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
+				if (enableToUseDataFlag)
+				{
+					enemies[enemyType][enemyCount]->Update();
+				}
 			}
 		}
-	}
-	//更新処理----------------------------------------------------------------
+		//更新処理----------------------------------------------------------------
 #pragma endregion
-
-
-
-
+	}
 
 
 
@@ -1192,6 +1137,8 @@ void Game::Update()
 
 void Game::Draw()
 {
+	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
+	RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
 
 	if (!gameOverFlag)
 	{
@@ -1208,7 +1155,7 @@ void Game::Draw()
 		stages[stageNum]->SetCamera(0);
 		stages[stageNum]->Draw();
 
-		//if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
+		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
 		{
 			goalBox.Draw();
 		}
@@ -1232,43 +1179,40 @@ void Game::Draw()
 			lineLevel[i].Draw();
 		}
 
-		//if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
+		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
 		{
 			goalBox.lightEffect.Draw();
 		}
-
-
 		doneSprite.Draw();
 		titleLogoTex.Draw();
 
 		tutorialWindow.Draw();
+		stageUI.Draw();
 
 
-		//輝度抽出
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, handles[0]);
 		RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
+		//輝度抽出
 		luminaceTex.Draw();
 		RenderTargetStatus::Instance()->PrepareToCloseBarrier(addHandle);
 		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
+		//RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
+		//ゲーム画面描画
+
 
 		mainRenderTarget.Draw();
 		addRenderTarget.data.handleData = buler->BlurImage(addHandle);
 		addRenderTarget.Draw();
 
-		movieEffect.Draw();
-		cursor.Draw();
-	
 
+		cursor.Draw();
+		movieEffect.Draw();
+
+		//ポータル演出
 		if (goalBox.startPortalEffectFlag)
 		{
 			RenderTargetStatus::Instance()->PrepareToChangeBarrier(potalTexHandle);
 			RenderTargetStatus::Instance()->ClearRenderTarget(potalTexHandle);
-
-			//float vel = subPotalSpritePos.z - goalBox.portalEffect.sprite->data.transform.pos.z;
-
-			//layerCameraMove.y = -vel;
-			//layerLevelEyePos = KazMath::CaluEyePosForDebug(layerLevelEyePos, layerCameraMove, angle);
-			//layerLevelTargetPos = KazMath::CaluTargetPosForDebug(layerLevelEyePos, angle.x);
 
 			CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 1);
 			stages[stageNum + 1]->SetCamera(1);
@@ -1287,8 +1231,8 @@ void Game::Draw()
 		}
 	}
 
-	stageUI.Draw();
 	blackTex.Draw();
+
 }
 
 int Game::SceneChange()

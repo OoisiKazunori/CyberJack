@@ -240,7 +240,7 @@ KazMath::Vec3<float> KazMath::CaluEyePosForDebug(const Vec3<float> &EYE_POS, con
 	float rad = ANGLE.x * 3.14f / 180.0f;
 
 
-	float speed = 1;
+	float speed = 1.0f;
 	//ç∂
 	if (MOVE.x < 0)
 	{
@@ -530,15 +530,14 @@ KazMath::Vec3<float> KazMath::SplinePosition(const std::vector<Vec3<float>> &poi
 		p2 = points[startIndex + 1].ConvertXMVECTOR();
 		p3 = points[startIndex + 2].ConvertXMVECTOR();
 	}
-	//DirectX::XMVECTOR anser2 = 0.5 * ((2 * p1 + (-p0 + p2) * t) +
-	//	(2 * p0 - 5 * p1 + 4 * p2 - p3) * (t * t) +
-	//	(-p0 + 3 * p1 - 3 * p2 + p3) * (t * t * t)
-	//	);
+	using namespace DirectX;
+	DirectX::XMVECTOR anser2 = 
+		0.5 * ((2 * p1  + (-p0 + p2) * t) +
+		(2 * p0 - 5 * p1 + 4 * p2 - p3) * (t * t) +
+		(-p0 + 3 * p1 - 3 * p2 + p3) * (t * t * t));
 
-	Vec3<float>result = {};
-	float tk = t;
-	++tk;
-	//{ anser2.m128_f32[0],anser2.m128_f32[1],anser2.m128_f32[2] };
+
+	Vec3<float>result = { anser2.m128_f32[0],anser2.m128_f32[1],anser2.m128_f32[2] };
 	return result;
 };
 

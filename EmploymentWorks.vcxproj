@@ -139,6 +139,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libfbxsdk-md.lib;libxml2-md.lib;zlib-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <TreatLinkerWarningAsErrors>false</TreatLinkerWarningAsErrors>
+      <AdditionalOptions>/IGNORE:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -287,8 +288,8 @@
     <ClInclude Include="Game\Event\GoalBoxPortalStringEffect.h" />
     <ClInclude Include="Game\Event\LineCpuEffect.h" />
     <ClInclude Include="Game\Event\LineLightEffect.h" />
-    <ClInclude Include="Game\Event\MoiveEffect.h" />
     <ClInclude Include="Game\Event\PortalFlame.h" />
+    <ClInclude Include="Game\Event\MoiveEffect.h" />
     <ClInclude Include="Game\Event\TutorialWindow.h" />
     <ClInclude Include="Game\Event\WindowFlame.h" />
     <ClInclude Include="Game\Game.h" />

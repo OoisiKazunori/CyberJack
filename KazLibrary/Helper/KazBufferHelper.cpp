@@ -83,7 +83,7 @@ KazBufferHelper::BufferResourceData KazBufferHelper::SetStructureBuffer(BUFFER_S
 
 KazBufferHelper::BufferResourceData KazBufferHelper::SetRWStructuredBuffer(BUFFER_SIZE BUFFER_SIZE, const string &BUFFER_NAME)
 {
-	D3D12_HEAP_PROPERTIES prop{};
+	D3D12_HEAP_PROPERTIES prop = {};
 	prop.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
 	prop.CreationNodeMask = 1;
 	prop.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
@@ -103,6 +103,24 @@ KazBufferHelper::BufferResourceData KazBufferHelper::SetRWStructuredBuffer(BUFFE
 		nullptr,
 		BUFFER_NAME
 	);
+	return data;
+}
+
+KazBufferHelper::BufferResourceData KazBufferHelper::SetCommandBufferData(const unsigned int &BUFFER_SIZE, const string &BUFFER_NAME)
+{
+	D3D12_HEAP_PROPERTIES prop = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
+	D3D12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Buffer(BUFFER_SIZE);
+
+	KazBufferHelper::BufferResourceData data
+	(
+		prop,
+		D3D12_HEAP_FLAG_NONE,
+		resourceDesc,
+		D3D12_RESOURCE_STATE_COPY_DEST,
+		nullptr,
+		BUFFER_NAME
+	);
+
 	return data;
 }
 

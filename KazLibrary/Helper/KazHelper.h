@@ -29,7 +29,7 @@ namespace KazHelper
 	/// <param name="STRING">string型の文字列</param>
 	/// <param name="WCHAR_STRING">wchar_t型の文字列</param>
 	/// <param name="ARRAY_SIZE">wchar_t型の文字列の最大の要素数</param>
-	void ConvertStringToWchar_t(string STRING, wchar_t *WCHAR_STRING, int ARRAY_SIZE);
+	void ConvertStringToWchar_t(string STRING, wchar_t *WCHAR_STRING, size_t ARRAY_SIZE);
 
 	/// <summary>
 	/// 毎フレーム値が変わったかどうか確認します
