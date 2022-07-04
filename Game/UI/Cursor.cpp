@@ -421,8 +421,8 @@ void Cursor::Update()
 		cursorFlameTex->data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
 	}
 
-	numberTex->data.color.color.a = cursorAlpha;
-	cursorFlameTex->data.color.color.a = cursorAlpha;
+	numberTex->data.colorData.color.a = cursorAlpha;
+	cursorFlameTex->data.colorData.color.a = cursorAlpha;
 	//ƒJ[ƒ\ƒ‹‚ðÁ‚·----------------------------------------------
 
 
@@ -459,7 +459,7 @@ void Cursor::Update()
 		if (releaseFlag && !cursorEffectTex[i].initFlag && !disappearFlag)
 		{
 			cursorEffectTex[i].cursorEffectTex->data.transform.pos = cursorPos;
-			cursorEffectTex[i].cursorEffectTex->data.color.color.a = 255;
+			cursorEffectTex[i].cursorEffectTex->data.colorData.color.a = 255;
 			cursorEffectTex[i].cursorEffectTex->data.transform.scale = baseScale;
 			cursorEffectTex[i].initFlag = true;
 			break;
@@ -470,11 +470,11 @@ void Cursor::Update()
 	{
 		if (cursorEffectTex[i].initFlag)
 		{
-			cursorEffectTex[i].cursorEffectTex->data.color.color.a -= 255 / 10;
+			cursorEffectTex[i].cursorEffectTex->data.colorData.color.a -= 255 / 10;
 			KazMath::Vec2<float> addSize = { 0.1f,0.1f };
 			cursorEffectTex[i].cursorEffectTex->data.transform.scale += addSize;
 		}
-		if (cursorEffectTex[i].cursorEffectTex->data.color.color.a <= 0)
+		if (cursorEffectTex[i].cursorEffectTex->data.colorData.color.a <= 0)
 		{
 			cursorEffectTex[i].initFlag = false;
 		}

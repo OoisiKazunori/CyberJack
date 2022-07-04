@@ -60,8 +60,8 @@ void LineEffect::RockOn(const KazMath::Vec3<float> &START_POS, const KazMath::Ve
 		releaseTime = 0.0f;
 
 
-		releaseCircle->data.color.color.a = 255;
-		circle->data.color.color.a = 255;
+		releaseCircle->data.colorData.color.a = 255;
+		circle->data.colorData.color.a = 255;
 
 
 		lineData.distance.x = -1.0f;
@@ -197,8 +197,8 @@ void LineEffect::Update()
 		float sub = (subSpeed / 255.0f);
 
 		bool lineDataColorFlag = 0 < lineData.color.w;
-		bool releaseCircleColorFlag = 0 < releaseCircle->data.color.color.a;
-		bool circleColorFlag = 0 < circle->data.color.color.a;
+		bool releaseCircleColorFlag = 0 < releaseCircle->data.colorData.color.a;
+		bool circleColorFlag = 0 < circle->data.colorData.color.a;
 
 		//完全に透明になったら全部終了する
 		if (lineDataColorFlag)
@@ -213,21 +213,21 @@ void LineEffect::Update()
 		//完全に透明になったら全部終了する
 		if (releaseCircleColorFlag)
 		{
-			releaseCircle->data.color.color.a -= static_cast<int>(subSpeed);
+			releaseCircle->data.colorData.color.a -= static_cast<int>(subSpeed);
 		}
 		else
 		{
-			releaseCircle->data.color.color.a = 0;
+			releaseCircle->data.colorData.color.a = 0;
 		}
 
 		//完全に透明になったら全部終了する
 		if (circleColorFlag)
 		{
-			circle->data.color.color.a -= static_cast<int>(subSpeed);
+			circle->data.colorData.color.a -= static_cast<int>(subSpeed);
 		}
 		else
 		{
-			circle->data.color.color.a = 0;
+			circle->data.colorData.color.a = 0;
 		}
 
 

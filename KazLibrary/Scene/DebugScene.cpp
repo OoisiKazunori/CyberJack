@@ -499,9 +499,14 @@ void DebugScene::Input()
 	{
 		angle.y += -debugSpeed;
 	}
+
+	eyePos.x = 0.0f;
+	eyePos.y = 0.0f;
+	eyePos.z = -5.0f;
+
 	eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
 	targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
-	//eyePos.z = -5.0f;
+	
 #pragma endregion
 
 }
@@ -510,7 +515,7 @@ int DebugScene::SceneChange()
 {
 	if (ControllerInputManager::Instance()->InputTrigger(XINPUT_GAMEPAD_BACK))
 	{
-		return 1;
+		return 0;
 	}
 	else
 	{

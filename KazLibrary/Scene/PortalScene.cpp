@@ -277,7 +277,7 @@ void PortalScene::Update()
 
 	ImGui::Begin("CheckDirtyFlag");
 	KazImGuiHelper::InputTransform3D(&box.data.transform);
-	KazImGuiHelper::InputVec4(&box.data.color.color, "Color");
+	KazImGuiHelper::InputVec4(&box.data.colorData.color, "Color");
 	ImGui::Checkbox("BillBoardFlag", &box.data.billBoardFlag);
 	ImGui::Checkbox("FlipX", &box.data.flip.x);
 	ImGui::Checkbox("FlipY", &box.data.flip.y);

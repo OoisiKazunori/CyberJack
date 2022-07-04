@@ -186,13 +186,13 @@ void Sprite3DRender::Draw()
 
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 	//行列
-	if (data.transform.Dirty() || renderData.cameraMgrInstance->ViewAndProjDirty() || renderData.cameraMgrInstance->BillboardDirty() || data.color.Dirty() || data.cameraIndex.dirty.Dirty() || data.motherMat.dirty.Dirty())
+	if (data.transform.Dirty() || renderData.cameraMgrInstance->ViewAndProjDirty() || renderData.cameraMgrInstance->BillboardDirty() || data.colorData.Dirty() || data.cameraIndex.dirty.Dirty() || data.motherMat.dirty.Dirty())
 	{
 		ConstBufferData lConstMap;
 		lConstMap.world = baseMatWorldData.matWorld;
 		lConstMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex.id);
 		lConstMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
-		lConstMap.color = data.color.ConvertColorRateToXMFLOAT4();
+		lConstMap.color = data.colorData.ConvertColorRateToXMFLOAT4();
 		lConstMap.mat = lConstMap.world * lConstMap.view * lConstMap.viewproj;
 
 		TransData(&lConstMap, constBufferHandle, typeid(lConstMap).name());

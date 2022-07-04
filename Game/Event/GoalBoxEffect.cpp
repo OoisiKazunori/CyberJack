@@ -46,7 +46,7 @@ void GoalBoxEffect::Init(DirectX::XMMATRIX *ADRESS)
 
 	for (int i = 0; i < lightRender.size(); ++i)
 	{
-		lightRender[i]->data.color.color.a = 0;
+		lightRender[i]->data.colorData.color.a = 0;
 	}
 	disappearFlag = false;
 }
@@ -72,13 +72,13 @@ void GoalBoxEffect::Update()
 	{
 		for (int i = 0; i < drawHandle; ++i)
 		{
-			if (lightRender[i]->data.color.color.a < 255)
+			if (lightRender[i]->data.colorData.color.a < 255)
 			{
-				lightRender[i]->data.color.color.a += 5;
+				lightRender[i]->data.colorData.color.a += 5;
 			}
-			if (255 <= lightRender[i]->data.color.color.a)
+			if (255 <= lightRender[i]->data.colorData.color.a)
 			{
-				lightRender[i]->data.color.color.a = 255;
+				lightRender[i]->data.colorData.color.a = 255;
 			}
 		}
 	}
@@ -87,13 +87,13 @@ void GoalBoxEffect::Update()
 	{
 		for (int i = 0; i < drawHandle; ++i)
 		{
-			if (0 <= lightRender[i]->data.color.color.a)
+			if (0 <= lightRender[i]->data.colorData.color.a)
 			{
-				lightRender[i]->data.color.color.a -= 5;
+				lightRender[i]->data.colorData.color.a -= 5;
 			}
-			if (lightRender[i]->data.color.color.a <= 0)
+			if (lightRender[i]->data.colorData.color.a <= 0)
 			{
-				lightRender[i]->data.color.color.a = 0;
+				lightRender[i]->data.colorData.color.a = 0;
 			}
 		}
 	}

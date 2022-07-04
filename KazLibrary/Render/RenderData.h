@@ -2,19 +2,6 @@
 #include"../Math/KazMath.h"
 #include"../Pipeline/GraphicsPipeLineMgr.h"
 
-struct IData
-{
-protected:
-	void *address;
-public:
-	string GetName()
-	{
-		return typeid(address).name();
-	}
-
-	int cameraIndex = 0;
-};
-
 struct AddTextureData
 {
 	array<RESOURCE_HANDLE, 10> handle;
@@ -101,7 +88,7 @@ struct CameraIndexData
 };
 
 
-struct Sprite2DData :public IData
+struct Sprite2DData
 {
 	KazMath::Transform2D transform;
 	ResourceHandle handleData;
@@ -109,12 +96,11 @@ struct Sprite2DData :public IData
 	FlipData flip;
 	PipeLineNames pipelineName;
 
-	KazMath::Color color;
+	KazMath::Color colorData;
 	AddTextureData addHandle;
 
-	Sprite2DData() :color(0, 0, 0, 255), pipelineName(PIPELINE_NAME_SPRITE)
+	Sprite2DData() :colorData(0, 0, 0, 255), pipelineName(PIPELINE_NAME_SPRITE)
 	{
-		address = this;
 	}
 
 	void Record()
@@ -123,12 +109,12 @@ struct Sprite2DData :public IData
 		handleData.flag.Record();
 		animationHandle.flag.Record();
 		flip.Record();
-		color.Record();
+		colorData.Record();
 	};
 };
 
 
-struct Sprite3DData :public IData
+struct Sprite3DData
 {
 	KazMath::Transform3D transform;
 	ResourceHandle handleData;
@@ -137,12 +123,11 @@ struct Sprite3DData :public IData
 	bool billBoardFlag;
 	MatMotherData motherMat;
 	PipeLineNames pipelineName;
-	KazMath::Color color;
+	KazMath::Color colorData;
 	CameraIndexData cameraIndex;
 
-	Sprite3DData() :pipelineName(PIPELINE_NAME_SPRITE), billBoardDirtyFlag(&billBoardFlag), color(0, 0, 0, 255)
+	Sprite3DData() :pipelineName(PIPELINE_NAME_SPRITE), billBoardDirtyFlag(&billBoardFlag), colorData(0, 0, 0, 255)
 	{
-		address = this;
 	}
 
 	void Record()
@@ -151,7 +136,7 @@ struct Sprite3DData :public IData
 		handleData.flag.Record();
 		animationHandle.flag.Record();
 		billBoardDirtyFlag.Record();
-		color.Record();
+		colorData.Record();
 		flip.Record();
 		motherMat.dirty.Record();
 		cameraIndex.dirty.Record();
@@ -160,7 +145,7 @@ struct Sprite3DData :public IData
 	DirtyFlag<bool>billBoardDirtyFlag;
 };
 
-struct Pera3DData :public IData
+struct Pera3DData
 {
 	KazMath::Transform3D transform;
 	bool billBoardFlag;
@@ -172,7 +157,6 @@ struct Pera3DData :public IData
 
 	Pera3DData() :pipelineName(PIPELINE_NAME_SPRITE), color(0, 0, 0, 255), billBoardDirtyFlag(&billBoardFlag)
 	{
-		address = this;
 	}
 	void Record()
 	{
@@ -184,7 +168,7 @@ struct Pera3DData :public IData
 	}
 };
 
-struct Obj3DData :public IData
+struct Obj3DData
 {
 	KazMath::Transform3D transform;
 	ResourceHandle handle;
@@ -200,12 +184,9 @@ struct Obj3DData :public IData
 	DirtyFlag<KazMath::Vec3<float>>frontVecDirtyFlag;
 	CameraIndexData cameraIndex;
 
-	Obj3DData() :pipelineName(PIPELINE_NAME_OBJ), color(0, 0, 0, 255), upVecDirtyFlag(&upVector), frontVecDirtyFlag(&frontVector)
+	Obj3DData() :pipelineName(PIPELINE_NAME_OBJ), color(0, 0, 0, 255), upVecDirtyFlag(&upVector), frontVecDirtyFlag(&frontVector), upVector({ 0,1,0 }), frontVector({ 0,0,1 }),
+		removeMaterialFlag(false)
 	{
-		address = this;
-		upVector = { 0,1,0 };
-		frontVector = { 0,0,1 };
-		removeMaterialFlag = false;
 	}
 
 	void Record()
@@ -220,7 +201,7 @@ struct Obj3DData :public IData
 	}
 };
 
-struct LineDrawData :public IData
+struct LineDrawData
 {
 	KazMath::Vec3<float> startPos;
 	KazMath::Vec3<float> endPos;
@@ -234,7 +215,6 @@ struct LineDrawData :public IData
 
 	LineDrawData() :pipelineName(PIPELINE_NAME_LINE), color(255, 255, 255, 255), startPosDirtyFlag(&startPos), endPosDirtyFlag(&endPos)
 	{
-		address = this;
 	}
 	void Record()
 	{
@@ -246,7 +226,7 @@ struct LineDrawData :public IData
 	}
 };
 
-struct PolygonDrawData :public IData
+struct PolygonDrawData
 {
 	KazMath::Transform3D transform;
 	KazMath::Color color;
@@ -256,7 +236,6 @@ struct PolygonDrawData :public IData
 
 	PolygonDrawData():color(255, 255, 255, 255), pipelineName(PIPELINE_NAME_COLOR)
 	{
-		address = this;
 	}
 
 	void Record()
@@ -269,7 +248,7 @@ struct PolygonDrawData :public IData
 
 };
 
-struct FbxModelData :public IData
+struct FbxModelData
 {
 	KazMath::Transform3D transform;
 	ResourceHandle handle;
@@ -279,11 +258,8 @@ struct FbxModelData :public IData
 	PipeLineNames pipelineName;
 	CameraIndexData cameraIndex;
 
-	FbxModelData()
+	FbxModelData() :pipelineName(PIPELINE_NAME_FBX), animationNumber(0), isPlay(false)
 	{
-		address = this;
-		pipelineName = PIPELINE_NAME_FBX;
-		animationNumber = 0;
 	}
 
 	void Record()
@@ -295,7 +271,7 @@ struct FbxModelData :public IData
 	}
 };
 
-struct CircleDrawData :public IData
+struct CircleDrawData
 {
 	KazMath::Transform3D transform;
 	KazMath::Color color;
@@ -306,7 +282,6 @@ struct CircleDrawData :public IData
 
 	CircleDrawData() :color(255, 255, 255, 255), radius(0.0f), pipelineName(PIPELINE_NAME_COLOR_NOCARING), change3DFlag(false), change3DDirtyFlag(&change3DFlag), radiusDirtyFlag(&radius)
 	{
-		address = this;
 	}
 
 	void Record()

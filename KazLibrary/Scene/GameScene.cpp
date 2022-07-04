@@ -436,7 +436,7 @@ int GameScene::SceneChange()
 	}
 	else if(ControllerInputManager::Instance()->InputTrigger(XINPUT_GAMEPAD_BACK))
 	{
-		return 0;
+		return 1;
 	}
 	else
 	{

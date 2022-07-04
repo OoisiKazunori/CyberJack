@@ -176,13 +176,13 @@ void Sprite2DRender::Draw()
 
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 	//行列
-	if (data.transform.Dirty() || renderData.cameraMgrInstance->ViewAndProjDirty()||data.color.Dirty())
+	if (data.transform.Dirty() || renderData.cameraMgrInstance->ViewAndProjDirty()||data.colorData.Dirty())
 	{
 		ConstBufferData lConstMap;
 		lConstMap.world = baseMatWorldData.matWorld;
 		lConstMap.view = DirectX::XMMatrixIdentity();
 		lConstMap.viewproj = renderData.cameraMgrInstance->GetOrthographicMatProjection();
-		lConstMap.color = data.color.ConvertColorRateToXMFLOAT4();
+		lConstMap.color = data.colorData.ConvertColorRateToXMFLOAT4();
 		lConstMap.mat = lConstMap.world * lConstMap.viewproj;
 		TransData(&lConstMap, constBufferHandle, typeid(lConstMap).name());
 	}

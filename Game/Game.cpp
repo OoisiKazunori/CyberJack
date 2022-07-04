@@ -75,7 +75,7 @@ Game::Game()
 	blackTex.data.pipelineName = PIPELINE_NAME_SPRITE_Z_ALWAYS;
 	blackTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	blackTex.data.transform.scale = { 2000.0f,2000.0f };
-	blackTex.data.color.color.a = 0;
+	blackTex.data.colorData.color.a = 0;
 
 
 	pressAButtonTex.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "PressAButton.png");
@@ -231,7 +231,7 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	layerLevelTargetPos = { -4.15f,3.0f,45.0f };
 
 
-	titleLogoTex.data.color.color.a = 255;
+	titleLogoTex.data.colorData.color.a = 255;
 	titleLogoTex.data.transform.pos = { 0.0f,50.0f,500.0f };
 	titleLogoTex.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TitlePath + "TitleName.png");
 	doneSprite.Init({ 0.0f,0.0f,500.0f }, TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TitlePath + "Start.png"));
@@ -947,12 +947,12 @@ void Game::Update()
 	if (readyToBlackOutFlag || readyToBlackOutToGoTitleFlag)
 	{
 		//暗転
-		if (blackTex.data.color.color.a <= 255.0f)
+		if (blackTex.data.colorData.color.a <= 255.0f)
 		{
-			blackTex.data.color.color.a += 5;
+			blackTex.data.colorData.color.a += 5;
 		}
 		//タイトル画面に戻る
-		else if (readyToBlackOutToGoTitleFlag && 255 <= blackTex.data.color.color.a)
+		else if (readyToBlackOutToGoTitleFlag && 255 <= blackTex.data.colorData.color.a)
 		{
 			sceneNum = 0;
 		}
@@ -966,9 +966,9 @@ void Game::Update()
 	else
 	{
 		//明転
-		if (0 <= blackTex.data.color.color.a)
+		if (0 <= blackTex.data.colorData.color.a)
 		{
-			blackTex.data.color.color.a -= 5;
+			blackTex.data.colorData.color.a -= 5;
 		}
 	}
 	if (gameOverFlag)
@@ -1106,8 +1106,8 @@ void Game::Update()
 
 
 	//ゲームループの経過時間----------------------------------------------------------------
-	titleLogoTex.data.color = doneSprite.spriteRender.data.color;
-	if (titleLogoTex.data.color.color.a <= 0 && !stages[0]->startFlag)
+	titleLogoTex.data.colorData = doneSprite.spriteRender.data.colorData;
+	if (titleLogoTex.data.colorData.color.a <= 0 && !stages[0]->startFlag)
 	{
 		//ゲーム開始
 		gameStartFlag = true;

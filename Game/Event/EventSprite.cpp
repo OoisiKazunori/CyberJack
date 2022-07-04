@@ -24,7 +24,7 @@ void EventSprite::Init(const KazMath::Vec3<float> &POS, int HANDLE)
 	selectingFlag = false;
 
 	spriteRender.data.transform.scale = { 0.5f,0.5f,1.0f };
-	spriteRender.data.color.color.a = 255;
+	spriteRender.data.colorData.color.a = 255;
 }
 
 void EventSprite::Update()
@@ -48,10 +48,10 @@ void EventSprite::Update()
 	}
 	if (60 <= timer)
 	{
-		spriteRender.data.color.color.a -= 5;
+		spriteRender.data.colorData.color.a -= 5;
 	}
 
-	if (spriteRender.data.color.color.a <= 0)
+	if (spriteRender.data.colorData.color.a <= 0)
 	{
 		deadFlag = true;
 	}
