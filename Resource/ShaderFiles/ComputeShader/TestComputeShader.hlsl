@@ -61,17 +61,13 @@ RWStructuredBuffer<InputData> updateInputData : register(u1);
 RWStructuredBuffer<IndirectCommand> outputCommands : register(u2);
 //?o??p??o?b?t?@-------------------------
 
-static const int NUM = 2;
+static const int NUM = 10;
 
 [numthreads(NUM, 1, 1)]
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
 {
     uint index = (groupId.x * NUM) + groupIndex;
     //uint index = 1;
-    if(1 <= index)
-    {
-        index = 1;
-    }
 
     //???W?v?Z-------------------------
     float3 outputPos = inputBuffer[index].pos.xyz;
