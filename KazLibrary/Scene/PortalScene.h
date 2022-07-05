@@ -57,7 +57,9 @@ private:
 	KazMath::Vec2<float> mulValue;							//カメラの上下左右の掛ける割合
 	KazMath::Vec2<float> mulValue2;							//カメラの上下左右の掛ける割合
 
-	Sprite3DRender box;
+	Sprite3DRender redPortal;
+	Sprite3DRender greenPortal;
+	std::array<BoxPolygonRender, 2>stage;
 };
 
 

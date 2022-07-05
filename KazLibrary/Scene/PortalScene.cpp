@@ -39,6 +39,14 @@ PortalScene::PortalScene()
 	changeFlag = true;
 	animFlag = false;
 	gameModeFlag = false;
+
+	stage[0].data.transform.pos = { -30.0f,0.0f,0.0f };
+	stage[0].data.transform.scale = { 20.0f,1.0f,30.0f };
+	stage[0].data.color = { 0,150,0,255 };
+
+	stage[1].data.transform.pos = { 30.0f,0.0f,0.0f };
+	stage[1].data.transform.scale = { 20.0f,1.0f,30.0f };
+	stage[1].data.color = { 150,0,0,255 };
 }
 
 PortalScene::~PortalScene()
@@ -211,14 +219,6 @@ void PortalScene::Input()
 		changeFlag = !changeFlag;
 	}
 
-	if (changeFlag)
-	{
-		box.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "tex.png");
-	}
-	else
-	{
-		box.data.handleData = TextureResourceMgr::Instance()->LoadDivGraph(KazFilePathName::TestPath + "AnimationTest.png", 2, 1, 32, 32);
-	}
 
 
 	if (input->InputTrigger(DIK_T))
@@ -275,25 +275,27 @@ void PortalScene::Update()
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 0);
 
 
-	ImGui::Begin("CheckDirtyFlag");
-	KazImGuiHelper::InputTransform3D(&box.data.transform);
-	KazImGuiHelper::InputVec4(&box.data.colorData.color, "Color");
-	ImGui::Checkbox("BillBoardFlag", &box.data.billBoardFlag);
-	ImGui::Checkbox("FlipX", &box.data.flip.x);
-	ImGui::Checkbox("FlipY", &box.data.flip.y);
-	ImGui::InputInt("Animation", &box.data.animationHandle.handle);
-	ImGui::End();
+	//ImGui::Begin("CheckDirtyFlag");
+	//KazImGuiHelper::InputTransform3D(&box.data.transform);
+	//KazImGuiHelper::InputVec4(&box.data.colorData.color, "Color");
+	//ImGui::Checkbox("BillBoardFlag", &box.data.billBoardFlag);
+	//ImGui::Checkbox("FlipX", &box.data.flip.x);
+	//ImGui::Checkbox("FlipY", &box.data.flip.y);
+	//ImGui::InputInt("Animation", &box.data.animationHandle.handle);
+	//ImGui::End();
 
 
 	portal.Update();
 	stringEffect.Update();
 	portalFlame.Update();
 	cursor.Update();
-	//WirteCpuLineData::Instance()->importFlag = false;
 }
 
 void PortalScene::Draw()
 {
+	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
+	RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
+
 	RenderTargetStatus::Instance()->PrepareToChangeBarrier(multipassHandle[0]);
 	RenderTargetStatus::Instance()->ClearRenderTarget(multipassHandle[0]);
 	//portal.Draw();
@@ -301,7 +303,13 @@ void PortalScene::Draw()
 	//portalFlame.Draw();
 	bg.Draw();
 
-	box.Draw();
+	//box.Draw();
+
+	for (int i = 0; i < stage.size(); ++i)
+	{
+		stage[i].Draw();
+	}
+
 	
 	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Draw Luminance");
 	RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, multipassHandle[0]);
