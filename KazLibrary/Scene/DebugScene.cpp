@@ -158,7 +158,7 @@ DebugScene::DebugScene()
 			std::array<InputData, TRIANGLE_ARRAY_NUM> data;
 			for (int i = 0; i < TRIANGLE_ARRAY_NUM; ++i)
 			{
-				data[i].pos = { 11.0f,10.0f,10.0f,0.0f };
+				data[i].pos = { 0.0f + static_cast<float>(i) * 10.0f,10.0f,10.0f,0.0f };
 				data[i].velocity = { 0.0f,0.0f,0.0f,0.0f };
 				data[i].color = { KazMath::Rand<float>(1.0f,0.0f),KazMath::Rand<float>(1.0f,0.0f),KazMath::Rand<float>(1.0f,0.0f),1.0f };
 			}
@@ -256,7 +256,7 @@ DebugScene::DebugScene()
 		{
 			drawCommandHandle = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(drawIndirectBufferSize));
 
-			std::array<IndirectCommand, TRIANGLE_ARRAY_NUM> lCommands;
+			/*std::array<IndirectCommand, TRIANGLE_ARRAY_NUM> lCommands;
 			D3D12_GPU_VIRTUAL_ADDRESS cbGpuAddress = buffer->GetGpuAddress(cbvMatHandle);
 			for (int i = 0; i < lCommands.size(); ++i)
 			{
@@ -266,7 +266,7 @@ DebugScene::DebugScene()
 				lCommands[i].drawArguments.StartVertexLocation = 0;
 				lCommands[i].drawArguments.StartInstanceLocation = 0;
 			}
-			buffer->TransData(drawCommandHandle, &lCommands, drawIndirectBufferSize);
+			buffer->TransData(drawCommandHandle, &lCommands, drawIndirectBufferSize);*/
 
 
 			D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
@@ -333,10 +333,10 @@ void DebugScene::Update()
 	}
 
 	{
-		BufferMemorySize s = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_TEXTURE_COMPUTEBUFFER);
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(s.startSize + 1));
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(2, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(s.startSize + 2));
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(3, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(s.startSize + 3));
+		computeMemSize = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_TEXTURE_COMPUTEBUFFER);
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(computeMemSize.startSize + 1));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(2, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(computeMemSize.startSize + 2));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(3, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(computeMemSize.startSize + 3));
 	}
 
 	//Common
@@ -349,28 +349,15 @@ void DebugScene::Update()
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(4, buffer->GetGpuAddress(commonHandle));
 
 
-	//DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(2, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(computeMemSize.startSize + 2));
 	DirectX12CmdList::Instance()->cmdList->Dispatch(1, 1, 1);
 
 	//Compute------------------------
-
-	//std::array<OutPutData, TRIANGLE_ARRAY_NUM> *result = static_cast<std::array<OutPutData, TRIANGLE_ARRAY_NUM> *>(buffer->GetMapAddres(outputMatHandle));
-
-	/*{
-		void *dataMap = nullptr;
-		auto result = buffer->GetBufferData(cbvMatHandle)->Map(0, nullptr, (void **)&dataMap);
-		if (SUCCEEDED(result))
-		{
-			memcpy(dataMap, buffer->GetMapAddres(outputMatHandle), TRIANGLE_ARRAY_NUM * sizeof(OutPutData));
-			buffer->GetBufferData(cbvMatHandle)->Unmap(0, nullptr);
-		}
-	}*/
 
 	//GPU‚Ö‚Ì“]‘—-------------------------
 	std::array<OutPutData, TRIANGLE_ARRAY_NUM> data;
 	for (int i = 0; i < data.size(); ++i)
 	{
-		KazMath::Vec3<float> pos = { 0.0f,0.0f,20.0f };
+		KazMath::Vec3<float> pos = { 0.0f + static_cast<float>(i) * 30.0f ,0.0f,20.0f };
 		KazMath::Vec3<float> scale = { 15.0f,15.0f,15.0f };
 		KazMath::Vec3<float> rota = { 0.0f,0.0f,0.0f };
 
@@ -383,7 +370,18 @@ void DebugScene::Update()
 		data[i].mat = (scaleM * rotaM * trans) * v * p;
 		data[i].color = { 1.0f,0.0f,0.0f,1.0f };
 	}
-	buffer->TransData(cbvMatHandle, &data, TRIANGLE_ARRAY_NUM * sizeof(OutPutData));
+	//buffer->TransData(outputMatHandle, &data, TRIANGLE_ARRAY_NUM * sizeof(OutPutData));
+
+	{
+		void *dataMap = nullptr;
+		auto result = buffer->GetBufferData(cbvMatHandle)->Map(0, nullptr, (void **)&dataMap);
+		if (SUCCEEDED(result))
+		{
+			memcpy(dataMap, buffer->GetMapAddres(outputMatHandle), TRIANGLE_ARRAY_NUM * sizeof(OutPutData));
+			buffer->GetBufferData(cbvMatHandle)->Unmap(0, nullptr);
+		}
+	}
+
 
 
 }
