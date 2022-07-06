@@ -42,24 +42,24 @@ struct OutputData
 
 cbuffer RootConstants : register(b0)
 {
-    matrix view; //?r???[?s??
-    matrix projection; //?v???W?F?N?V?????s??
-    uint increSize; //?C???N???????g??T?C?Y
-    uint64_t gpuAddress; //?\????o?b?t?@????A?h???X
+    matrix view;        //ビュー行列
+    matrix projection;  //プロジェクション行列
+    uint increSize;     //定数バッファの構造体サイズ
+    uint64_t gpuAddress; //定数バッファの先頭アドレス
 };
 
-//????p??o?b?t?@-------------------------
+//入力用のバッファ-------------------------
 StructuredBuffer<InputData> inputBuffer : register(t0);
-//????p??o?b?t?@-------------------------
+//入力用のバッファ-------------------------
 
-//?o??p??o?b?t?@-------------------------
-//?s??v?Z
-RWStructuredBuffer<OutputData> matrixData : register(u0);
-//????X?V
-RWStructuredBuffer<InputData> updateInputData : register(u1);
-//?C???_?C???N?g?R?}???h
-RWStructuredBuffer<IndirectCommand> outputCommands : register(u2);
-//?o??p??o?b?t?@-------------------------
+//出力用のバッファ-------------------------
+//行列
+AppendStructuredBuffer<OutputData> matrixData : register(u0);
+//入力更新
+AppendStructuredBuffer<InputData> updateInputData : register(u1);
+//描画コマンド
+AppendStructuredBuffer<IndirectCommand> outputCommands : register(u2);
+//出力用のバッファ-------------------------
 
 static const int NUM = 10;
 
@@ -67,17 +67,10 @@ static const int NUM = 10;
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
 {
     uint index = (groupId.x * NUM) + groupIndex;
-    //uint index = 1;
 
-    //???W?v?Z-------------------------
+    //行列計算-------------------------
     float3 outputPos = inputBuffer[index].pos.xyz;
     
-    //outputPos += float3(1.0f, 0.0f, 0.0f);
-    //if (50.0f <= outputPos.x)
-    //{
-    //    outputPos = 0.0f;
-    //}
-
     outputPos = float3(0.0f + index * 20.0f,0.0f,20.0f);
     matrix pMatTrans = Translate(outputPos);
     matrix pMatRot = Rotate(float3(0.0f,0.0f,0.0f));
@@ -87,40 +80,42 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     pMatWorld = mul(pMatScale, pMatWorld);
     pMatWorld = mul(pMatRot, pMatWorld);
     pMatWorld = mul(pMatTrans, pMatWorld);
-    //???W?v?Z-------------------------
+    //行列計算-------------------------
     
     
-    //???W?o??-------------------------
+    //出力用-------------------------
     OutputData outputMat;
     matrix lView = view;
     matrix lproj = projection;
 
+    //行列出力
     outputMat.mat = MatrixIdentity();
     outputMat.mat = mul(pMatWorld,outputMat.mat);
     outputMat.mat = mul(lView,    outputMat.mat);
     outputMat.mat = mul(lproj,    outputMat.mat);
     outputMat.color = inputBuffer[index].color;
-    //matrixData.Append(outputMat);
-    matrixData[index] = outputMat;
-  
+    matrixData.Append(outputMat);
+    //matrixData[index] = outputMat;
+
+
+    //入力更新出力-------------------------
     InputData inputData;
     inputData.pos = float4(outputPos.xyz, 0.0f);
     inputData.velocity = inputBuffer[index].velocity;
     inputData.color = inputBuffer[index].color;
-    //updateInputData.Append(inputData);
-    updateInputData[index] = inputData;
-    //???W?o??-------------------------
+    updateInputData.Append(inputData);
+    //updateInputData[index] = inputData;
+
     
-    
-    //?`??R?}???h?o??-------------------------
+    //描画コマンド出力-------------------------
     IndirectCommand outputCommand;
     outputCommand.cbvAddress = gpuAddress + index * increSize;
     outputCommand.drawArguments.VertexCountPerInstance = 3;
     outputCommand.drawArguments.InstanceCount = 1;
     outputCommand.drawArguments.StartVertexLocation = 0;
     outputCommand.drawArguments.StartInstanceLocation = 0;
-    outputCommands[index] = outputCommand;
-    //outputCommands.Append(outputCommand);    
-    //?`??R?}???h?o??-------------------------
+    outputCommands.Append(outputCommand);
+    //outputCommands[index] = outputCommand;
+    //出力用-------------------------
 
 }

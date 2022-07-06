@@ -283,7 +283,6 @@ DebugScene::DebugScene()
 		}
 		//DrawInDirect---------------------------
 #pragma endregion
-
 	}
 }
 
@@ -504,7 +503,10 @@ void DebugScene::Input()
 
 	eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
 	targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
-	
+
+	eyePos = { 42.0f,0.0f,-148.0f };
+	targetPos = { 42.0f,0.0f,-143.0f };
+
 #pragma endregion
 
 }

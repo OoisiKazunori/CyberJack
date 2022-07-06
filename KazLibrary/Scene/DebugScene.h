@@ -119,7 +119,6 @@ private:
 	BackGroundForDebug bg;
 
 
-
 	DirectX::XMMATRIX Translate(DirectX::XMFLOAT3 VECTOR)
 	{
 		DirectX::XMMATRIX result;
