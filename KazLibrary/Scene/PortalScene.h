@@ -6,6 +6,19 @@
 #include"../Game/Event/PortalFlame.h"
 #include"../KazLibrary/Render/KazRender.h"
 
+struct PortalRender
+{
+	BackGroundForDebug bg;
+	std::array<BoxPolygonRender, 2>stage;
+};
+
+enum
+{
+	STAGE_RED,
+	STAGE_GREEN,
+	STAGE_GAME,
+};
+
 class PortalScene :public SceneBase
 {
 public:
@@ -30,17 +43,12 @@ private:
 	GoalBoxPortalStringEffect stringEffect;
 
 
-	Sprite2DRender mainRenderTarget;
-	Sprite2DRender addRenderTarget;
-	Sprite2DRender luminaceTex;
 	bool changeFlag;
 	bool animFlag;
-	BackGroundForDebug bg;
+	std::array<PortalRender, 3> stages;
 
-	std::vector<RESOURCE_HANDLE>multipassHandle;
-	RESOURCE_HANDLE addHandle;
-
-	std::unique_ptr<GaussianBuler> buler;
+	RESOURCE_HANDLE redPortalRenderHandle;
+	RESOURCE_HANDLE greenPortalRenderHandle;
 
 
 	PortalFlame portalFlame;
@@ -59,7 +67,7 @@ private:
 
 	Sprite3DRender redPortal;
 	Sprite3DRender greenPortal;
-	std::array<BoxPolygonRender, 2>stage;
+	
 };
 
 

@@ -6,33 +6,14 @@
 
 PortalScene::PortalScene()
 {
-	std::vector<MultiRenderTargetData> data;
-	data.push_back(MultiRenderTargetData());
-	data.push_back(MultiRenderTargetData());
-	data[0].graphSize = { WIN_X,WIN_Y };
-	data[0].backGroundColor = BG_COLOR;
-	data[1].graphSize = { WIN_X,WIN_Y };
-	data[1].backGroundColor = { 0.0f,0.0f,0.0f };
 
-	multipassHandle =
-		RenderTargetStatus::Instance()->CreateMultiRenderTarget(data, DXGI_FORMAT_R8G8B8A8_UNORM);
-	mainRenderTarget.data.handleData = multipassHandle[0];
-	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
-	mainRenderTarget.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
+	redPortalRenderHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, DirectX::XMFLOAT3(0, 0, 100.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
+	redPortal.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
+	redPortal.data.handleData = redPortalRenderHandle;
 
-
-	addHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
-	addRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
-	addRenderTarget.data.pipelineName = PIPELINE_NAME_ADDBLEND;
-
-
-	luminaceTex.data.pipelineName = PIPELINE_NAME_SPRITE_LUMI;
-	luminaceTex.data.handleData = multipassHandle[0];
-	luminaceTex.data.addHandle.handle[0] = multipassHandle[1];
-	luminaceTex.data.addHandle.paramType[0] = GRAPHICS_PRAMTYPE_TEX2;
-	luminaceTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
-
-	buler = std::make_unique<GaussianBuler>(KazMath::Vec2<UINT>(WIN_X, WIN_Y));
+	greenPortalRenderHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, DirectX::XMFLOAT3(0, 100.0f, 100.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
+	greenPortal.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
+	greenPortal.data.handleData = greenPortalRenderHandle;
 
 	//mainRenderTarget.data.handleData = TextureResourceMgr::Instance()->LoadDivGraph(KazFilePathName::TestPath + "AnimationTest.png", 2, 1, 32, 32);
 
@@ -40,13 +21,29 @@ PortalScene::PortalScene()
 	animFlag = false;
 	gameModeFlag = false;
 
-	stage[0].data.transform.pos = { -30.0f,0.0f,0.0f };
-	stage[0].data.transform.scale = { 20.0f,1.0f,30.0f };
-	stage[0].data.color = { 0,150,0,255 };
+	const int GREEN = 0;
+	const int RED = 1;
+	const float SCALE = 0.15f;
+	const float HEIGHT = 10.0f;
+	for (int i = 0; i < stages.size(); ++i)
+	{
+		stages[i].stage[GREEN].data.transform.pos = { -30.0f,0.0f,0.0f };
+		stages[i].stage[GREEN].data.transform.scale = { 20.0f,1.0f,30.0f };
+		stages[i].stage[GREEN].data.color = { 0,150,0,255 };
+		//RedPortal
+		redPortal.data.transform.pos = { -30.0f,HEIGHT,0.0f };
+		redPortal.data.transform.scale = { SCALE,SCALE,SCALE };
 
-	stage[1].data.transform.pos = { 30.0f,0.0f,0.0f };
-	stage[1].data.transform.scale = { 20.0f,1.0f,30.0f };
-	stage[1].data.color = { 150,0,0,255 };
+		stages[i].stage[RED].data.transform.pos = { 30.0f,0.0f,0.0f };
+		stages[i].stage[RED].data.transform.scale = { 20.0f,1.0f,30.0f };
+		stages[i].stage[RED].data.color = { 150,0,0,255 };
+		//GreenPortal
+		greenPortal.data.transform.pos = { 30.0f,HEIGHT,0.0f };
+		greenPortal.data.transform.scale = { SCALE,SCALE,SCALE };
+	}
+
+	stages[2].stage[GREEN].data.color = { 0,100,0,255 };
+	stages[2].stage[RED].data.color = { 100,0,0,255 };
 }
 
 PortalScene::~PortalScene()
@@ -296,37 +293,35 @@ void PortalScene::Draw()
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 	RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
 
-	RenderTargetStatus::Instance()->PrepareToChangeBarrier(multipassHandle[0]);
-	RenderTargetStatus::Instance()->ClearRenderTarget(multipassHandle[0]);
-	//portal.Draw();
-	//stringEffect.Draw();
-	//portalFlame.Draw();
-	bg.Draw();
+	RenderTargetStatus::Instance()->PrepareToChangeBarrier(redPortalRenderHandle);
+	RenderTargetStatus::Instance()->ClearRenderTarget(redPortalRenderHandle);
 
-	//box.Draw();
-
-	for (int i = 0; i < stage.size(); ++i)
+	stages[STAGE_RED].bg.Draw();
+	for (int i = 0; i < stages[STAGE_RED].stage.size(); ++i)
 	{
-		stage[i].Draw();
+		stages[STAGE_RED].stage[i].Draw();
 	}
 
-	
-	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Draw Luminance");
-	RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, multipassHandle[0]);
-	RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
-	luminaceTex.Draw();
-	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
+	RenderTargetStatus::Instance()->PrepareToChangeBarrier(greenPortalRenderHandle, redPortalRenderHandle);
+	RenderTargetStatus::Instance()->ClearRenderTarget(greenPortalRenderHandle);
 
+	stages[STAGE_GREEN].bg.Draw();
+	for (int i = 0; i < stages[STAGE_GREEN].stage.size(); ++i)
+	{
+		stages[STAGE_GREEN].stage[i].Draw();
+	}
 
-	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Draw Main RenderTarget");
-	RenderTargetStatus::Instance()->PrepareToCloseBarrier(addHandle);
+	RenderTargetStatus::Instance()->PrepareToCloseBarrier(greenPortalRenderHandle);
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
-	mainRenderTarget.Draw();
-	//addRenderTarget.data.handleData = buler->BlurImage(addHandle);
-	//addRenderTarget.Draw();
 
+	stages[STAGE_GAME].bg.Draw();
+	for (int i = 0; i < stages[STAGE_GAME].stage.size(); ++i)
+	{
+		stages[STAGE_GAME].stage[i].Draw();
+	}
 
-	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
+	greenPortal.Draw();
+	redPortal.Draw();
 
 	cursor.Draw();
 
