@@ -354,7 +354,7 @@ void DebugScene::Update()
 	//Compute------------------------
 
 	//GPU‚Ö‚Ì“]‘—-------------------------
-	std::array<OutPutData, TRIANGLE_ARRAY_NUM> data;
+	/*std::array<OutPutData, TRIANGLE_ARRAY_NUM> data;
 	for (int i = 0; i < data.size(); ++i)
 	{
 		KazMath::Vec3<float> pos = { 0.0f + static_cast<float>(i) * 30.0f ,0.0f,20.0f };
@@ -369,7 +369,7 @@ void DebugScene::Update()
 		DirectX::XMMATRIX p = CameraMgr::Instance()->GetPerspectiveMatProjection();
 		data[i].mat = (scaleM * rotaM * trans) * v * p;
 		data[i].color = { 1.0f,0.0f,0.0f,1.0f };
-	}
+	}*/
 	//buffer->TransData(outputMatHandle, &data, TRIANGLE_ARRAY_NUM * sizeof(OutPutData));
 
 	{
@@ -498,9 +498,9 @@ void DebugScene::Input()
 		angle.y += -debugSpeed;
 	}
 
-	eyePos.x = 0.0f;
-	eyePos.y = 0.0f;
-	eyePos.z = -5.0f;
+	//eyePos.x = 0.0f;
+	//eyePos.y = 0.0f;
+	//eyePos.z = -5.0f;
 
 	eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
 	targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
