@@ -276,14 +276,14 @@ void PortalScene::Update()
 	}
 
 	//赤ポータル
-	redPortalCameraPos = stages[STAGE_RED]->stage[FLOOR_GREEN].data.transform.pos;
+	redPortalCameraPos = stages[STAGE_RED]->stage[FLOOR_RED].data.transform.pos;
 	redPortalCameraPos.y = 10.0f;
-	CameraMgr::Instance()->Camera(redPortalCameraPos, redPortalCameraPos + KazMath::Vec3<float>(0.0f, 0.0f, 0.0f), { 0.0f,1.0f,0.0f }, STAGE_RED);
+	CameraMgr::Instance()->Camera(redPortalCameraPos, redPortalCameraPos + KazMath::Vec3<float>(0.0f, 0.0f, -6.0f), { 0.0f,1.0f,0.0f }, STAGE_RED);
 
 	//緑ポータル
-	greenPortalCameraPos = stages[STAGE_RED]->stage[FLOOR_RED].data.transform.pos;
+	greenPortalCameraPos = stages[STAGE_RED]->stage[FLOOR_GREEN].data.transform.pos;
 	greenPortalCameraPos.y = 10.0f;
-	CameraMgr::Instance()->Camera(greenPortalCameraPos, greenPortalCameraPos + KazMath::Vec3<float>(0.0f, 0.0f, 0.0f), { 0.0f,1.0f,0.0f }, STAGE_GREEN);
+	CameraMgr::Instance()->Camera(greenPortalCameraPos, greenPortalCameraPos + KazMath::Vec3<float>(0.0f, 0.0f, -6.0f), { 0.0f,1.0f,0.0f }, STAGE_GREEN);
 
 	//ゲーム画面
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, STAGE_GAME);
