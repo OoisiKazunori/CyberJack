@@ -1,6 +1,6 @@
 #include"../Render/BackGroundForDebug.h"
 
-BackGroundForDebug::BackGroundForDebug():color(41,163,231,255)
+BackGroundForDebug::BackGroundForDebug(int CAMERA_INDEX) :color(41, 163, 231, 255), cameraId(CAMERA_INDEX)
 {
 	for (int i = 0; i < 100; i++)
 	{
@@ -36,6 +36,7 @@ void BackGroundForDebug::Draw()
 		horizontalLine[yoko].data.endPos = { horizontalLinePos[1][yoko].x, horizontalLinePos[1][yoko].y, horizontalLinePos[1][yoko].z };
 		horizontalLine[yoko].data.color = color;
 		horizontalLine[yoko].data.pipelineName = pipeline;
+		horizontalLine[yoko].data.cameraIndex = cameraId;
 
 		horizontalLine[yoko].Draw();
 	}
@@ -46,6 +47,7 @@ void BackGroundForDebug::Draw()
 		verticalLine[tate].data.endPos = { verticalLinePos[1][tate].x,verticalLinePos[1][tate].y, verticalLinePos[1][tate].z };
 		verticalLine[tate].data.color = color;
 		verticalLine[tate].data.pipelineName = pipeline;
+		verticalLine[tate].data.cameraIndex = cameraId;
 
 		verticalLine[tate].Draw();
 	}

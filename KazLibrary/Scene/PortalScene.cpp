@@ -21,29 +21,34 @@ PortalScene::PortalScene()
 	animFlag = false;
 	gameModeFlag = false;
 
-	const int GREEN = 0;
-	const int RED = 1;
 	const float SCALE = 0.15f;
 	const float HEIGHT = 10.0f;
 	for (int i = 0; i < stages.size(); ++i)
 	{
-		stages[i].stage[GREEN].data.transform.pos = { -30.0f,0.0f,0.0f };
-		stages[i].stage[GREEN].data.transform.scale = { 20.0f,1.0f,30.0f };
-		stages[i].stage[GREEN].data.color = { 0,150,0,255 };
+		stages[i] = std::make_unique<PortalRender>(i);
+
+		stages[i]->stage[FLOOR_GREEN].data.transform.pos = { -30.0f,0.0f,0.0f };
+		stages[i]->stage[FLOOR_GREEN].data.transform.scale = { 20.0f,1.0f,30.0f };
+		stages[i]->stage[FLOOR_GREEN].data.color = { 0,150,0,255 };
+		stages[i]->stage[FLOOR_GREEN].data.cameraIndex = i;
 		//RedPortal
 		redPortal.data.transform.pos = { -30.0f,HEIGHT,0.0f };
 		redPortal.data.transform.scale = { SCALE,SCALE,SCALE };
+		redPortal.data.cameraIndex = i;
 
-		stages[i].stage[RED].data.transform.pos = { 30.0f,0.0f,0.0f };
-		stages[i].stage[RED].data.transform.scale = { 20.0f,1.0f,30.0f };
-		stages[i].stage[RED].data.color = { 150,0,0,255 };
+		stages[i]->stage[FLOOR_RED].data.transform.pos = { 30.0f,0.0f,0.0f };
+		stages[i]->stage[FLOOR_RED].data.transform.scale = { 20.0f,1.0f,30.0f };
+		stages[i]->stage[FLOOR_RED].data.color = { 150,0,0,255 };
+		stages[i]->stage[FLOOR_RED].data.cameraIndex = i;
+
 		//GreenPortal
 		greenPortal.data.transform.pos = { 30.0f,HEIGHT,0.0f };
 		greenPortal.data.transform.scale = { SCALE,SCALE,SCALE };
+		greenPortal.data.cameraIndex = i;
 	}
 
-	stages[2].stage[GREEN].data.color = { 0,100,0,255 };
-	stages[2].stage[RED].data.color = { 100,0,0,255 };
+	stages[2]->stage[FLOOR_GREEN].data.color = { 0,100,0,255 };
+	stages[2]->stage[FLOOR_RED].data.color = { 100,0,0,255 };
 }
 
 PortalScene::~PortalScene()
@@ -269,7 +274,19 @@ void PortalScene::Update()
 
 		eyePos = KazMath::Vec3<float>(0.0f, 3.0f, 0.0f) + (besidePoly.data.transform.pos + verticlaPoly.data.transform.pos);
 	}
-	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 0);
+
+	//赤ポータル
+	redPortalCameraPos = stages[STAGE_RED]->stage[FLOOR_GREEN].data.transform.pos;
+	redPortalCameraPos.y = 10.0f;
+	CameraMgr::Instance()->Camera(redPortalCameraPos, redPortalCameraPos + KazMath::Vec3<float>(0.0f, 0.0f, 0.0f), { 0.0f,1.0f,0.0f }, STAGE_RED);
+
+	//緑ポータル
+	greenPortalCameraPos = stages[STAGE_RED]->stage[FLOOR_RED].data.transform.pos;
+	greenPortalCameraPos.y = 10.0f;
+	CameraMgr::Instance()->Camera(greenPortalCameraPos, greenPortalCameraPos + KazMath::Vec3<float>(0.0f, 0.0f, 0.0f), { 0.0f,1.0f,0.0f }, STAGE_GREEN);
+
+	//ゲーム画面
+	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, STAGE_GAME);
 
 
 	//ImGui::Begin("CheckDirtyFlag");
@@ -296,28 +313,28 @@ void PortalScene::Draw()
 	RenderTargetStatus::Instance()->PrepareToChangeBarrier(redPortalRenderHandle);
 	RenderTargetStatus::Instance()->ClearRenderTarget(redPortalRenderHandle);
 
-	stages[STAGE_RED].bg.Draw();
-	for (int i = 0; i < stages[STAGE_RED].stage.size(); ++i)
+	stages[STAGE_RED]->bg.Draw();
+	for (int i = 0; i < stages[STAGE_RED]->stage.size(); ++i)
 	{
-		stages[STAGE_RED].stage[i].Draw();
+		stages[STAGE_RED]->stage[i].Draw();
 	}
 
 	RenderTargetStatus::Instance()->PrepareToChangeBarrier(greenPortalRenderHandle, redPortalRenderHandle);
 	RenderTargetStatus::Instance()->ClearRenderTarget(greenPortalRenderHandle);
 
-	stages[STAGE_GREEN].bg.Draw();
-	for (int i = 0; i < stages[STAGE_GREEN].stage.size(); ++i)
+	stages[STAGE_GREEN]->bg.Draw();
+	for (int i = 0; i < stages[STAGE_GREEN]->stage.size(); ++i)
 	{
-		stages[STAGE_GREEN].stage[i].Draw();
+		stages[STAGE_GREEN]->stage[i].Draw();
 	}
 
 	RenderTargetStatus::Instance()->PrepareToCloseBarrier(greenPortalRenderHandle);
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 
-	stages[STAGE_GAME].bg.Draw();
-	for (int i = 0; i < stages[STAGE_GAME].stage.size(); ++i)
+	stages[STAGE_GAME]->bg.Draw();
+	for (int i = 0; i < stages[STAGE_GAME]->stage.size(); ++i)
 	{
-		stages[STAGE_GAME].stage[i].Draw();
+		stages[STAGE_GAME]->stage[i].Draw();
 	}
 
 	greenPortal.Draw();

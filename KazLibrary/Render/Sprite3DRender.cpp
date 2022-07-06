@@ -186,7 +186,7 @@ void Sprite3DRender::Draw()
 
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 	//行列
-	if (data.transform.Dirty() || renderData.cameraMgrInstance->ViewAndProjDirty() || renderData.cameraMgrInstance->BillboardDirty() || data.colorData.Dirty() || data.cameraIndex.dirty.Dirty() || data.motherMat.dirty.Dirty())
+	if (data.transform.Dirty() || renderData.cameraMgrInstance->ViewAndProjDirty(data.cameraIndex.id) || renderData.cameraMgrInstance->BillboardDirty() || data.colorData.Dirty() || data.cameraIndex.dirty.Dirty() || data.motherMat.dirty.Dirty())
 	{
 		ConstBufferData lConstMap;
 		lConstMap.world = baseMatWorldData.matWorld;

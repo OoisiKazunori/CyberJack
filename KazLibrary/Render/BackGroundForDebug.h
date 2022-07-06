@@ -10,7 +10,7 @@
 class BackGroundForDebug
 {
 public:
-	BackGroundForDebug();
+	BackGroundForDebug(int CAMERA_INDEX = 0);
 
 	/// <summary>
 	/// X...ê‘é≤ÅAY...óŒé≤ÅAZ...ê¬é≤
@@ -29,5 +29,6 @@ private:
 	LineRender xLine, yLine, zLine, rayDir;
 
 	KazMath::Color color;
+	int cameraId;
 };
 

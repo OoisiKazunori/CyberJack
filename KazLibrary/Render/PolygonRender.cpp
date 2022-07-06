@@ -86,7 +86,7 @@ void PolygonRender::Draw()
 
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 	//行列
-	if (data.transform.Dirty() || renderData.cameraMgrInstance->ViewAndProjDirty() || renderData.cameraMgrInstance->BillboardDirty() || data.motherMat.dirty.Dirty() || data.cameraIndex.dirty.Dirty())
+	if (data.transform.Dirty() || renderData.cameraMgrInstance->ViewAndProjDirty(data.cameraIndex.id) || renderData.cameraMgrInstance->BillboardDirty() || data.motherMat.dirty.Dirty() || data.cameraIndex.dirty.Dirty())
 	{
 		ConstBufferData constMap;
 		constMap.world = baseMatWorldData.matWorld;

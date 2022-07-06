@@ -10,6 +10,10 @@ struct PortalRender
 {
 	BackGroundForDebug bg;
 	std::array<BoxPolygonRender, 2>stage;
+
+	PortalRender(int CAMERA_INDEX) :bg(CAMERA_INDEX)
+	{
+	}
 };
 
 enum
@@ -17,6 +21,12 @@ enum
 	STAGE_RED,
 	STAGE_GREEN,
 	STAGE_GAME,
+};
+
+enum 
+{
+	FLOOR_GREEN,
+	FLOOR_RED
 };
 
 class PortalScene :public SceneBase
@@ -45,7 +55,7 @@ private:
 
 	bool changeFlag;
 	bool animFlag;
-	std::array<PortalRender, 3> stages;
+	std::array<std::unique_ptr<PortalRender>, 3> stages;
 
 	RESOURCE_HANDLE redPortalRenderHandle;
 	RESOURCE_HANDLE greenPortalRenderHandle;
@@ -66,8 +76,11 @@ private:
 	KazMath::Vec2<float> mulValue2;							//ÉJÉÅÉâÇÃè„â∫ç∂âEÇÃä|ÇØÇÈäÑçá
 
 	Sprite3DRender redPortal;
+	KazMath::Vec3<float>redPortalCameraPos;
+
 	Sprite3DRender greenPortal;
-	
+	KazMath::Vec3<float>greenPortalCameraPos;
+
 };
 
 
