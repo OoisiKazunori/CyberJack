@@ -11,7 +11,7 @@ public:
 
 	Box2DRenderData data;
 private:
-	std::array<SpriteVertex, 4> vertices;
+	std::array<SpriteVertex, 5> vertices;
 
 	PipeLineNames pipeline;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
@@ -29,8 +29,8 @@ private:
 	{
 		LEFT_UP,
 		LEFT_DOWN,
+		RIGHT_DOWN,
 		RIGHT_UP,
-		RIGHT_DOWN
 	};
 
 	UINT indicesNum;

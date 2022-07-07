@@ -14,7 +14,7 @@ Box2DRender::Box2DRender()
 
 	drawInstanceCommandData =
 		KazRenderHelper::SetDrawInstanceCommandData(D3D_PRIMITIVE_TOPOLOGY_LINELIST,
-			KazBufferHelper::SetVertexBufferView(vertByte, vertByte, sizeof(vertices[0])),
+			KazBufferHelper::SetVertexBufferView(gpuBuffer->GetGpuAddress(vertexBufferHandle), vertByte, sizeof(vertices[0])),
 			static_cast<UINT>(vertices.size()),
 			1
 		);
@@ -33,6 +33,7 @@ void Box2DRender::Draw()
 		vertices[LEFT_DOWN].pos = KazMath::Vec3<float>(data.leftUpPos.x, data.rightDownPos.y, 0.0f).ConvertXMFLOAT3();
 		vertices[RIGHT_UP].pos = KazMath::Vec3<float>(data.rightDownPos.x, data.leftUpPos.y, 0.0f).ConvertXMFLOAT3();
 		vertices[RIGHT_DOWN].pos = KazMath::Vec3<float>(data.rightDownPos, 0.0f).ConvertXMFLOAT3();
+		vertices[4].pos = vertices[LEFT_UP].pos;
 
 		gpuBuffer->TransData(vertexBufferHandle, vertices.data(), vertByte);
 	}
@@ -43,7 +44,7 @@ void Box2DRender::Draw()
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 	if (data.color.Dirty() || data.leftUpPosDirtyFlag.Dirty() || data.rightDownPosDirtyFlag.Dirty())
 	{
-		constMap.world = baseMatWorldData.matWorld;
+		constMap.world = DirectX::XMMatrixIdentity();
 		constMap.view = DirectX::XMMatrixIdentity();
 		constMap.viewproj = renderData.cameraMgrInstance->GetOrthographicMatProjection();
 		constMap.color = data.color.ConvertColorRateToXMFLOAT4();
@@ -58,7 +59,7 @@ void Box2DRender::Draw()
 	//バッファをコマンドリストに積む-----------------------------------------------------------------------------------------------------
 
 	//描画命令-----------------------------------------------------------------------------------------------------
-	DrawIndexInstanceCommand(drawIndexInstanceCommandData);
+	DrawInstanceCommand(drawInstanceCommandData);
 	//描画命令-----------------------------------------------------------------------------------------------------
 
 	data.Record();

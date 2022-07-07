@@ -109,5 +109,8 @@ private:
 
 	int clickSoundHandle;
 	bool initClickSoundFlag;
+
+	Box2DRender box;
+	
 };
 

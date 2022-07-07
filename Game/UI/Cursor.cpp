@@ -523,6 +523,11 @@ void Cursor::Draw()
 		}
 	}
 	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
+
+	box.data.leftUpPos = { 300.0f,300.0f };
+	box.data.rightDownPos = { 310.0f,310.0f };
+	box.Draw();
+
 }
 
 bool Cursor::LockOn()
