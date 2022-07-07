@@ -71,6 +71,7 @@ void Cursor::Init()
 	notEnableLockOnFlag = false;
 
 	boxAngle = 0.0f;
+	boxDisappearTimer = 0;
 }
 
 void Cursor::Input(bool UP_FLAG, bool DOWN_FLAG, bool LEFT_FLAG, bool RIGHT_FLAG, bool DONE_FLAG, bool RELEASE_FLAG, const KazMath::Vec2<float> &ANGLE)
@@ -526,31 +527,25 @@ void Cursor::Draw()
 	}
 	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
+
+
 	++boxAngle;
+
+	if (boxDisappearTimer < 60)
+	{
+		++boxDisappearTimer;
+	}
+
+	const int MAX_TIME = 60;
 	//ç∂è„
-	{
-		KazMath::Vec2<float>lPos = KazMath::Vec2<float>(200.0f, 200.0f);
-		KazMath::Vec2<float>lCpos = KazMath::Vec2<float>(300.0f, 300.0f);
-		box.data.leftUpPos = KazMath::CaluAngle(lPos, static_cast<float>(boxAngle), lCpos);
-	}
+	CaluBox(KazMath::Vec2<float>(200.0f, 200.0f), KazMath::Vec2<float>(300.0f, 300.0f), &box.data.leftUpPos, boxDisappearTimer, MAX_TIME);
 	//âEâ∫
-	{
-		KazMath::Vec2<float>lPos = KazMath::Vec2<float>(400.0f, 400.0f);
-		KazMath::Vec2<float>lCpos = KazMath::Vec2<float>(300.0f, 300.0f);
-		box.data.rightDownPos = KazMath::CaluAngle(lPos, static_cast<float>(boxAngle), lCpos);
-	}
+	CaluBox(KazMath::Vec2<float>(400.0f, 400.0f), KazMath::Vec2<float>(300.0f, 300.0f), &box.data.rightDownPos, boxDisappearTimer, MAX_TIME);
 	//ç∂â∫
-	{
-		KazMath::Vec2<float>lPos = KazMath::Vec2<float>(200.0f, 400.0f);
-		KazMath::Vec2<float>lCpos = KazMath::Vec2<float>(300.0f, 300.0f);
-		box.data.leftDownPos = KazMath::CaluAngle(lPos, static_cast<float>(boxAngle), lCpos);
-	}
+	CaluBox(KazMath::Vec2<float>(200.0f, 400.0f), KazMath::Vec2<float>(300.0f, 300.0f), &box.data.leftDownPos, boxDisappearTimer, MAX_TIME);
 	//âEè„
-	{
-		KazMath::Vec2<float>lPos = KazMath::Vec2<float>(400.0f, 200.0f);
-		KazMath::Vec2<float>lCpos = KazMath::Vec2<float>(300.0f, 300.0f);
-		box.data.rightUpPos = KazMath::CaluAngle(lPos, static_cast<float>(boxAngle), lCpos);
-	}
+	CaluBox(KazMath::Vec2<float>(400.0f, 200.0f), KazMath::Vec2<float>(300.0f, 300.0f), &box.data.rightUpPos, boxDisappearTimer, MAX_TIME);
+
 	box.Draw();
 
 }

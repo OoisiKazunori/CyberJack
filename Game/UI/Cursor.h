@@ -112,6 +112,14 @@ private:
 
 	Box2DRender box;
 	float boxAngle;
-	
+	int boxDisappearTimer;
+	void CaluBox(const KazMath::Vec2<float> &START_POS, const KazMath::Vec2<float> &END_POS, KazMath::Vec2<float> *NOW_POS, int TIMER, int MAX_TIMER)
+	{		
+		KazMath::Vec2<float>lCpos = END_POS;
+		KazMath::Vec2<float>distance = END_POS - START_POS;
+		KazMath::Vec2<float>lPos = START_POS + distance * (static_cast<float>(TIMER) / static_cast<float>(MAX_TIMER));
+
+		*NOW_POS = KazMath::CaluAngle(lPos, static_cast<float>(boxAngle), lCpos);
+	}
 };
 
