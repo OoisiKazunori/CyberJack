@@ -26,12 +26,13 @@ void Box2DRender::Draw()
 	renderData.pipelineMgr->SetPipeLineAndRootSignature(data.pipelineName);
 	//パイプライン設定-----------------------------------------------------------------------------------------------------
 
+
 	//位置変更-------------------------
-	if (data.leftUpPosDirtyFlag.Dirty() || data.rightDownPosDirtyFlag.Dirty())
+	if (data.VertDirty())
 	{
 		vertices[LEFT_UP].pos = KazMath::Vec3<float>(data.leftUpPos, 0.0f).ConvertXMFLOAT3();
-		vertices[LEFT_DOWN].pos = KazMath::Vec3<float>(data.leftUpPos.x, data.rightDownPos.y, 0.0f).ConvertXMFLOAT3();
-		vertices[RIGHT_UP].pos = KazMath::Vec3<float>(data.rightDownPos.x, data.leftUpPos.y, 0.0f).ConvertXMFLOAT3();
+		vertices[LEFT_DOWN].pos = KazMath::Vec3<float>(data.leftDownPos, 0.0f).ConvertXMFLOAT3();
+		vertices[RIGHT_UP].pos = KazMath::Vec3<float>(data.rightUpPos, 0.0f).ConvertXMFLOAT3();
 		vertices[RIGHT_DOWN].pos = KazMath::Vec3<float>(data.rightDownPos, 0.0f).ConvertXMFLOAT3();
 		vertices[4].pos = vertices[LEFT_UP].pos;
 
@@ -42,7 +43,7 @@ void Box2DRender::Draw()
 
 
 	//バッファの転送-----------------------------------------------------------------------------------------------------
-	if (data.color.Dirty() || data.leftUpPosDirtyFlag.Dirty() || data.rightDownPosDirtyFlag.Dirty())
+	if (data.color.Dirty() || data.VertDirty())
 	{
 		constMap.world = DirectX::XMMatrixIdentity();
 		constMap.view = DirectX::XMMatrixIdentity();

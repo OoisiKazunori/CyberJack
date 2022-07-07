@@ -300,20 +300,34 @@ struct Box2DRenderData
 {
 	KazMath::Vec2<float> leftUpPos;
 	KazMath::Vec2<float> rightDownPos;
+	KazMath::Vec2<float> leftDownPos;
+	KazMath::Vec2<float> rightUpPos;
 	KazMath::Color color;
 	PipeLineNames pipelineName;
 
 	DirtyFlag<KazMath::Vec2<float>> leftUpPosDirtyFlag;
 	DirtyFlag<KazMath::Vec2<float>> rightDownPosDirtyFlag;
+	DirtyFlag<KazMath::Vec2<float>> leftDownPosDirtyFlag;
+	DirtyFlag<KazMath::Vec2<float>> rightUpPosDirtyFlag;
 
 
-	Box2DRenderData() :leftUpPosDirtyFlag(&leftUpPos), rightDownPosDirtyFlag(&rightDownPos), color(255, 255, 255, 255), pipelineName(PIPELINE_NAME_COLOR_LINE)
+	Box2DRenderData() :
+		leftUpPosDirtyFlag(&leftUpPos), rightDownPosDirtyFlag(&rightDownPos),
+		leftDownPosDirtyFlag(&leftDownPos), rightUpPosDirtyFlag(&rightUpPos),
+		color(255, 255, 255, 255), pipelineName(PIPELINE_NAME_COLOR_LINE)
 	{};
+
+	bool VertDirty()
+	{
+		return leftUpPosDirtyFlag.Dirty() || leftDownPosDirtyFlag.Dirty() || rightUpPosDirtyFlag.Dirty() || rightDownPosDirtyFlag.Dirty();
+	}
 
 	void Record()
 	{
 		color.Record();
 		leftUpPosDirtyFlag.Record();
+		leftDownPosDirtyFlag.Record();
+		rightUpPosDirtyFlag.Record();
 		rightDownPosDirtyFlag.Record();
 	};
 };

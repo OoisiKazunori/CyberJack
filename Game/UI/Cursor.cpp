@@ -527,15 +527,29 @@ void Cursor::Draw()
 	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
 	++boxAngle;
+	//ç∂è„
 	{
 		KazMath::Vec2<float>lPos = KazMath::Vec2<float>(200.0f, 200.0f);
 		KazMath::Vec2<float>lCpos = KazMath::Vec2<float>(300.0f, 300.0f);
 		box.data.leftUpPos = KazMath::CaluAngle(lPos, static_cast<float>(boxAngle), lCpos);
 	}
+	//âEâ∫
 	{
 		KazMath::Vec2<float>lPos = KazMath::Vec2<float>(400.0f, 400.0f);
 		KazMath::Vec2<float>lCpos = KazMath::Vec2<float>(300.0f, 300.0f);
 		box.data.rightDownPos = KazMath::CaluAngle(lPos, static_cast<float>(boxAngle), lCpos);
+	}
+	//ç∂â∫
+	{
+		KazMath::Vec2<float>lPos = KazMath::Vec2<float>(200.0f, 400.0f);
+		KazMath::Vec2<float>lCpos = KazMath::Vec2<float>(300.0f, 300.0f);
+		box.data.leftDownPos = KazMath::CaluAngle(lPos, static_cast<float>(boxAngle), lCpos);
+	}
+	//âEè„
+	{
+		KazMath::Vec2<float>lPos = KazMath::Vec2<float>(400.0f, 200.0f);
+		KazMath::Vec2<float>lCpos = KazMath::Vec2<float>(300.0f, 300.0f);
+		box.data.rightUpPos = KazMath::CaluAngle(lPos, static_cast<float>(boxAngle), lCpos);
 	}
 	box.Draw();
 
