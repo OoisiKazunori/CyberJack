@@ -55,6 +55,7 @@ Cursor::Cursor()
 
 	clickSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Push.wav", false);
 	initClickSoundFlag = false;
+
 }
 
 void Cursor::Init()
@@ -69,6 +70,7 @@ void Cursor::Init()
 	enableLockOnTimer = 0;
 	notEnableLockOnFlag = false;
 
+	boxAngle = 0.0f;
 }
 
 void Cursor::Input(bool UP_FLAG, bool DOWN_FLAG, bool LEFT_FLAG, bool RIGHT_FLAG, bool DONE_FLAG, bool RELEASE_FLAG, const KazMath::Vec2<float> &ANGLE)
@@ -524,8 +526,17 @@ void Cursor::Draw()
 	}
 	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
-	box.data.leftUpPos = { 200.0f,200.0f };
-	box.data.rightDownPos = { 400.0f,400.0f };
+	++boxAngle;
+	{
+		KazMath::Vec2<float>lPos = KazMath::Vec2<float>(200.0f, 200.0f);
+		KazMath::Vec2<float>lCpos = KazMath::Vec2<float>(300.0f, 300.0f);
+		box.data.leftUpPos = KazMath::CaluAngle(lPos, static_cast<float>(boxAngle), lCpos);
+	}
+	{
+		KazMath::Vec2<float>lPos = KazMath::Vec2<float>(400.0f, 400.0f);
+		KazMath::Vec2<float>lCpos = KazMath::Vec2<float>(300.0f, 300.0f);
+		box.data.rightDownPos = KazMath::CaluAngle(lPos, static_cast<float>(boxAngle), lCpos);
+	}
 	box.Draw();
 
 }

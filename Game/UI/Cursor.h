@@ -111,6 +111,7 @@ private:
 	bool initClickSoundFlag;
 
 	Box2DRender box;
+	float boxAngle;
 	
 };
 
