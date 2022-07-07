@@ -42,33 +42,33 @@ struct OutputData
 
 cbuffer RootConstants : register(b0)
 {
-    matrix view;        //ƒrƒ…[s—ñ
-    matrix projection;  //ƒvƒƒWƒFƒNƒVƒ‡ƒ“s—ñ
-    uint increSize;     //’è”ƒoƒbƒtƒ@‚Ì\‘¢‘ÌƒTƒCƒY
-    uint64_t gpuAddress; //’è”ƒoƒbƒtƒ@‚Ìæ“ªƒAƒhƒŒƒX
+    matrix view;        //ï¿½rï¿½ï¿½ï¿½[ï¿½sï¿½ï¿½
+    matrix projection;  //ï¿½vï¿½ï¿½ï¿½Wï¿½Fï¿½Nï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½
+    uint increSize;     //ï¿½è”ï¿½oï¿½bï¿½tï¿½@ï¿½Ì\ï¿½ï¿½ï¿½ÌƒTï¿½Cï¿½Y
+    uint64_t gpuAddress; //ï¿½è”ï¿½oï¿½bï¿½tï¿½@ï¿½Ìæ“ªï¿½Aï¿½hï¿½ï¿½ï¿½X
 };
 
-//“ü—Í—p‚Ìƒoƒbƒtƒ@-------------------------
+//ï¿½ï¿½ï¿½Í—pï¿½Ìƒoï¿½bï¿½tï¿½@-------------------------
 StructuredBuffer<InputData> inputBuffer : register(t0);
-//“ü—Í—p‚Ìƒoƒbƒtƒ@-------------------------
+//ï¿½ï¿½ï¿½Í—pï¿½Ìƒoï¿½bï¿½tï¿½@-------------------------
 
-//o—Í—p‚Ìƒoƒbƒtƒ@-------------------------
-//s—ñ
+//ï¿½oï¿½Í—pï¿½Ìƒoï¿½bï¿½tï¿½@-------------------------
+//ï¿½sï¿½ï¿½
 AppendStructuredBuffer<OutputData> matrixData : register(u0);
-//“ü—ÍXV
+//ï¿½ï¿½ï¿½ÍXï¿½V
 AppendStructuredBuffer<InputData> updateInputData : register(u1);
-//•`‰æƒRƒ}ƒ“ƒh
+//ï¿½`ï¿½ï¿½Rï¿½}ï¿½ï¿½ï¿½h
 AppendStructuredBuffer<IndirectCommand> outputCommands : register(u2);
-//o—Í—p‚Ìƒoƒbƒtƒ@-------------------------
+//ï¿½oï¿½Í—pï¿½Ìƒoï¿½bï¿½tï¿½@-------------------------
 
-static const int NUM = 10;
+static const int NUM = 32;
 
 [numthreads(NUM, 1, 1)]
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
 {
     uint index = (groupId.x * NUM) + groupIndex;
 
-    //s—ñŒvZ-------------------------
+    //ï¿½sï¿½ï¿½vï¿½Z-------------------------
     float3 outputPos = inputBuffer[index].pos.xyz;
     
     outputPos = float3(0.0f + index * 20.0f,0.0f,20.0f);
@@ -80,15 +80,15 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     pMatWorld = mul(pMatScale, pMatWorld);
     pMatWorld = mul(pMatRot, pMatWorld);
     pMatWorld = mul(pMatTrans, pMatWorld);
-    //s—ñŒvZ-------------------------
+    //ï¿½sï¿½ï¿½vï¿½Z-------------------------
     
     
-    //o—Í—p-------------------------
+    //ï¿½oï¿½Í—p-------------------------
     OutputData outputMat;
     matrix lView = view;
     matrix lproj = projection;
 
-    //s—ño—Í
+    //ï¿½sï¿½ï¿½oï¿½ï¿½
     outputMat.mat = MatrixIdentity();
     outputMat.mat = mul(pMatWorld,outputMat.mat);
     outputMat.mat = mul(lView,    outputMat.mat);
@@ -98,7 +98,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     //matrixData[index] = outputMat;
 
 
-    //“ü—ÍXVo—Í-------------------------
+    //ï¿½ï¿½ï¿½ÍXï¿½Vï¿½oï¿½ï¿½-------------------------
     InputData inputData;
     inputData.pos = float4(outputPos.xyz, 0.0f);
     inputData.velocity = inputBuffer[index].velocity;
@@ -107,7 +107,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     //updateInputData[index] = inputData;
 
     
-    //•`‰æƒRƒ}ƒ“ƒho—Í-------------------------
+    //ï¿½`ï¿½ï¿½Rï¿½}ï¿½ï¿½ï¿½hï¿½oï¿½ï¿½-------------------------
     IndirectCommand outputCommand;
     outputCommand.cbvAddress = gpuAddress + index * increSize;
     outputCommand.drawArguments.VertexCountPerInstance = 3;
@@ -116,6 +116,6 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     outputCommand.drawArguments.StartInstanceLocation = 0;
     outputCommands.Append(outputCommand);
     //outputCommands[index] = outputCommand;
-    //o—Í—p-------------------------
+    //ï¿½oï¿½Í—p-------------------------
 
 }
