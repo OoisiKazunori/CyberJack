@@ -332,18 +332,18 @@ private:
 
 	//ìoò^ÉfÅ[É^
 
-	std::vector<InputLayOutData> InputLayOutRegisterData;
-	std::vector<Microsoft::WRL::ComPtr<IDxcBlob>> VertexShaderRegisterData;
-	std::vector<Microsoft::WRL::ComPtr<IDxcBlob>> PixcelShaderRegisterData;
-	std::vector<Microsoft::WRL::ComPtr<IDxcBlob>> GeometoryShaderRegisterData;
-	std::vector<RootSignatureMode> RootSignatureName;
-	std::vector<D3D12_GRAPHICS_PIPELINE_STATE_DESC> PipeLineDataRegisterData;
-	std::vector<Microsoft::WRL::ComPtr<ID3D12PipelineState>> PipeLineRegisterData;
+	std::array<InputLayOutData, 100> InputLayOutRegisterData;
+	std::array<Microsoft::WRL::ComPtr<IDxcBlob>, 100> VertexShaderRegisterData;
+	std::array<Microsoft::WRL::ComPtr<IDxcBlob>, 100> PixcelShaderRegisterData;
+	std::array<Microsoft::WRL::ComPtr<IDxcBlob>, 100> GeometoryShaderRegisterData;
+	std::array<RootSignatureMode, 100> RootSignatureName;
+	std::array<D3D12_GRAPHICS_PIPELINE_STATE_DESC, 100> PipeLineDataRegisterData;
+	std::array<Microsoft::WRL::ComPtr<ID3D12PipelineState>, 100> PipeLineRegisterData;
 
-	std::vector<Microsoft::WRL::ComPtr<IDxcBlob>> ComputeShaderRegisterData;
-	std::vector<D3D12_COMPUTE_PIPELINE_STATE_DESC> computePipeLineDataRegisterData;
-	std::vector<Microsoft::WRL::ComPtr<ID3D12PipelineState>> ComputePipeLineRegisterData;
-	std::vector<RootSignatureMode> computeRootSignatureName;
+	std::array<Microsoft::WRL::ComPtr<IDxcBlob>, 100> ComputeShaderRegisterData;
+	std::array<D3D12_COMPUTE_PIPELINE_STATE_DESC, 100> computePipeLineDataRegisterData;
+	std::array<Microsoft::WRL::ComPtr<ID3D12PipelineState>, 100> ComputePipeLineRegisterData;
+	std::array<RootSignatureMode, 100> computeRootSignatureName;
 
 	bool geo;
 	template <typename T>
