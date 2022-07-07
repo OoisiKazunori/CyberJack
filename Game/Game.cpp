@@ -436,13 +436,6 @@ void Game::Input()
 	//	}
 	//}
 
-	if (input->InputTrigger(DIK_SPACE))
-	{
-		tPos = { KazMath::Rand<float>((float)WIN_X,0.0f),KazMath::Rand<float>((float)WIN_Y,0.0f),0.0f };
-		cursor.Hit(&tPos);
-	}
-
-
 }
 
 void Game::Update()

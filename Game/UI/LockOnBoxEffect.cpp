@@ -39,7 +39,7 @@ void LockOnBoxEffect::Update()
 	}
 	KazMath::Vec3<float>screenPos = 
 		KazMath::ConvertWorldPosToScreenPos(*targetPos, CameraMgr::Instance()->GetViewMatrix(0), CameraMgr::Instance()->GetPerspectiveMatProjection());
-	lockOnPos = { 300.0f,300.0f };
+	lockOnPos = { screenPos.x,screenPos.y };
 
 	boxAngle += BOX_ROTA_SPEED;
 

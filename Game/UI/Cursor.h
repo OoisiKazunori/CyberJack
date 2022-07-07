@@ -113,7 +113,7 @@ private:
 
 
 	//ロックオン演出
-	std::array<LockOnBoxEffect, 8> boxEffectArray;
+	std::array<LockOnBoxEffect, LOCKON_MAX_NUM * 2> boxEffectArray;
 
 };
 
