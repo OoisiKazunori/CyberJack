@@ -682,8 +682,7 @@ namespace KazMath
 
 	DirectX::XMVECTOR CalculateScreenToWorld(DirectX::XMVECTOR pout, DirectX::XMMATRIX View, DirectX::XMMATRIX Prj);
 
-	template<typename T>
-	Vec2<T> CaluAngle(const Vec2<T> &POS, float Angle, const Vec2<T> &CPos);
+	Vec2<float> CaluAngle(const Vec2<float> &POS, float Angle, const Vec2<float> &CPos);
 	template<typename T>
 	Vec3<T> CaluAngle3D(const Vec3<T> &POS, float ANGLE, const Vec3<T> &CENTRAL_POS);
 
