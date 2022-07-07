@@ -10,7 +10,7 @@
 
 struct Sound
 {
-	string filePass;
+	std::string filePass;
 	SoundData *soundData;
 	IXAudio2SourceVoice *soundSorce;
 };
@@ -32,7 +32,7 @@ public:
 	/// </summary>
 	/// <param name="FILE_PASS">ファイルパス</param>
 	/// <returns>ハンドル</returns>
-	RESOURCE_HANDLE LoadSoundMem(string FILE_PASS, bool BGM_FLAG = true);
+	RESOURCE_HANDLE LoadSoundMem(std::string FILE_PASS, bool BGM_FLAG = true);
 
 	/// <summary>
 	/// 音を再生します
@@ -58,7 +58,7 @@ public:
 
 private:
 	HandleMaker handle;
-	array<Sound, 30> masterSoundData;
+	std::array<Sound, 30> masterSoundData;
 
 	Microsoft::WRL::ComPtr<IXAudio2> xAudio2;
 	IXAudio2MasteringVoice *masterVoice;

@@ -17,7 +17,7 @@ void SoundManager::Finalize()
 	}
 }
 
-RESOURCE_HANDLE SoundManager::LoadSoundMem(string FILE_PASS, bool BGM_FLAG)
+RESOURCE_HANDLE SoundManager::LoadSoundMem(std::string FILE_PASS, bool BGM_FLAG)
 {
 	//ì«Ç›çûÇ›èdï°ñhé~
 	for (int i = 0; i < masterSoundData.size(); i++)
@@ -29,8 +29,8 @@ RESOURCE_HANDLE SoundManager::LoadSoundMem(string FILE_PASS, bool BGM_FLAG)
 	}
 
 
-	ifstream file;
-	file.open(FILE_PASS, ios_base::binary);
+	std::ifstream file;
+	file.open(FILE_PASS, std::ios_base::binary);
 	if (file.fail())
 	{
 		FailCheck(FILE_PASS + "ÇÃì«Ç›çûÇ›Ç…é∏îsÇµÇ‹ÇµÇΩ\n");
@@ -73,13 +73,13 @@ RESOURCE_HANDLE SoundManager::LoadSoundMem(string FILE_PASS, bool BGM_FLAG)
 	file.read((char *)&data, sizeof(data));
 	if (strncmp(data.id, "JUNK", 4) == 0)
 	{
-		file.seekg(data.size, ios_base::cur);
+		file.seekg(data.size, std::ios_base::cur);
 		file.read((char *)&data, sizeof(data));
 	}
 
 	if (strncmp(data.id, "LIST ", 4) == 0)
 	{
-		file.seekg(data.size, ios_base::cur);
+		file.seekg(data.size, std::ios_base::cur);
 		file.read((char *)&data, sizeof(data));
 	}
 

@@ -5,18 +5,6 @@
 
 GraphicsPipeLineMgr::GraphicsPipeLineMgr()
 {
-	InputLayOutRegisterData.resize(100);
-	VertexShaderRegisterData.resize(100);
-	PixcelShaderRegisterData.resize(100);
-	PipeLineDataRegisterData.resize(100);
-	GeometoryShaderRegisterData.resize(100);
-	RootSignatureName.resize(100);
-	PipeLineRegisterData.resize(100);
-	computeRootSignatureName.resize(100);
-
-	ComputeShaderRegisterData.resize(100);
-	computePipeLineDataRegisterData.resize(100);
-	ComputePipeLineRegisterData.resize(100);
 	geo = false;
 }
 
