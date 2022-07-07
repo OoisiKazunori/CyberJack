@@ -307,7 +307,7 @@ struct Box2DRenderData
 	DirtyFlag<KazMath::Vec2<float>> rightDownPosDirtyFlag;
 
 
-	Box2DRenderData() :leftUpPosDirtyFlag(&leftUpPos), rightDownPosDirtyFlag(&rightDownPos), color(255, 255, 255, 255), pipelineName(PIPELINE_NAME_COLOR)
+	Box2DRenderData() :leftUpPosDirtyFlag(&leftUpPos), rightDownPosDirtyFlag(&rightDownPos), color(255, 255, 255, 255), pipelineName(PIPELINE_NAME_COLOR_LINE)
 	{};
 
 	void Record()

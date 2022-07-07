@@ -15,7 +15,7 @@ Box2DRender::Box2DRender()
 	drawInstanceCommandData =
 		KazRenderHelper::SetDrawInstanceCommandData(D3D_PRIMITIVE_TOPOLOGY_LINELIST,
 			KazBufferHelper::SetVertexBufferView(vertByte, vertByte, sizeof(vertices[0])),
-			vertices.size(),
+			static_cast<UINT>(vertices.size()),
 			1
 		);
 }

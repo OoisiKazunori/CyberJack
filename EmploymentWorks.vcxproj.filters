@@ -96,6 +96,7 @@
     <ClCompile Include="KazLibrary\Sound\SoundMgr.cpp" />
     <ClCompile Include="KazLibrary\WinApi\Msg.cpp" />
     <ClCompile Include="KazLibrary\WinApi\WinApi.cpp" />
+    <ClCompile Include="KazLibrary\Render\Box2DRender.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -204,6 +205,7 @@
     <ClInclude Include="KazLibrary\Sound\SoundMgr.h" />
     <ClInclude Include="KazLibrary\WinApi\Msg.h" />
     <ClInclude Include="KazLibrary\WinApi\WinApi.h" />
+    <ClInclude Include="KazLibrary\Render\Box2DRender.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
