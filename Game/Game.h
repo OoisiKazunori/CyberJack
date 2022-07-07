@@ -210,5 +210,7 @@ private:
 
 	TutorialWindow tutorialWindow;
 
+	KazMath::Vec3<float>tPos;
+
 };
 

@@ -69,9 +69,6 @@ void Cursor::Init()
 
 	enableLockOnTimer = 0;
 	notEnableLockOnFlag = false;
-
-	boxAngle = 0.0f;
-	boxDisappearTimer = 0;
 }
 
 void Cursor::Input(bool UP_FLAG, bool DOWN_FLAG, bool LEFT_FLAG, bool RIGHT_FLAG, bool DONE_FLAG, bool RELEASE_FLAG, const KazMath::Vec2<float> &ANGLE)
@@ -496,20 +493,13 @@ void Cursor::Update()
 	//ìñÇΩÇËîªíË----------------------------------------------------------------
 
 
-	/*ImGui::Begin("Curosr");
-	ImGui::InputFloat("Speed", &baseSpeed);
-	ImGui::InputFloat("KOCKBACK_MAX_VALUE_X", &KOCKBACK_MAX_VALUE.x);
-	ImGui::InputFloat("KOCKBACK_MAX_VALUE_Y", &KOCKBACK_MAX_VALUE.y);
-	ImGui::InputFloat("KOCKBACK_VELOCITY_X", &KOCKBACK_VELOCITY.x);
-	ImGui::InputFloat("KOCKBACK_VELOCITY_Y", &KOCKBACK_VELOCITY.y);
-	ImGui::InputFloat("deadLine", &deadLine);
-	ImGui::Text("NowSpeed:%f", speed);
-	ImGui::Text("MaxSpeed:%f", baseSpeed * (1.0 - deadLine));
-	ImGui::Text("KnockBackValX%f", knockBackVal.x);
-	ImGui::Text("KnockBackValY%f", knockBackVal.y);
-	ImGui::Text("stickAngleX:%f", honraiStick.x);
-	ImGui::Text("stickAngleY:%f", honraiStick.y);
-	ImGui::End();*/
+	for (int i = 0; i < boxEffectArray.size(); ++i)
+	{
+		if (boxEffectArray[i].IsAlive())
+		{
+			boxEffectArray[i].Update();
+		}
+	}
 
 }
 
@@ -528,25 +518,10 @@ void Cursor::Draw()
 	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
 
-
-	++boxAngle;
-
-	if (boxDisappearTimer < 60)
+	for (int i = 0; i < boxEffectArray.size(); ++i)
 	{
-		++boxDisappearTimer;
+		boxEffectArray[i].Draw();
 	}
-
-	const int MAX_TIME = 60;
-	//ç∂è„
-	CaluBox(KazMath::Vec2<float>(200.0f, 200.0f), KazMath::Vec2<float>(300.0f, 300.0f), &box.data.leftUpPos, boxDisappearTimer, MAX_TIME);
-	//âEâ∫
-	CaluBox(KazMath::Vec2<float>(400.0f, 400.0f), KazMath::Vec2<float>(300.0f, 300.0f), &box.data.rightDownPos, boxDisappearTimer, MAX_TIME);
-	//ç∂â∫
-	CaluBox(KazMath::Vec2<float>(200.0f, 400.0f), KazMath::Vec2<float>(300.0f, 300.0f), &box.data.leftDownPos, boxDisappearTimer, MAX_TIME);
-	//âEè„
-	CaluBox(KazMath::Vec2<float>(400.0f, 200.0f), KazMath::Vec2<float>(300.0f, 300.0f), &box.data.rightUpPos, boxDisappearTimer, MAX_TIME);
-
-	box.Draw();
 
 }
 
@@ -566,10 +541,20 @@ bool Cursor::Release()
 	return releaseFlag;
 }
 
-void Cursor::Count()
+void Cursor::Hit(KazMath::Vec3<float> *POS)
 {
 	++lockOnNum;
 	notEnableLockOnFlag = true;
+
+
+	for (int i = 0; i < boxEffectArray.size(); ++i)
+	{
+		if (!boxEffectArray[i].IsAlive())
+		{
+			boxEffectArray[i].Start(POS);
+			break;
+		}
+	}
 }
 
 const int &Cursor::GetCount()

@@ -9,11 +9,11 @@ LockOnBoxEffect::LockOnBoxEffect()
 	aliveFlag = false;
 }
 
-void LockOnBoxEffect::Start(KazMath::Vec2<float> *POS)
+void LockOnBoxEffect::Start(KazMath::Vec3<float> *POS)
 {
 	if (!aliveFlag)
 	{
-		lockOnPos = POS;
+		targetPos = POS;
 		boxAngle = 0.0f;
 
 
@@ -21,7 +21,7 @@ void LockOnBoxEffect::Start(KazMath::Vec2<float> *POS)
 		boxSize[LEFT_DOWN] = { -100.0f,100.0f };
 		boxSize[RIGHT_UP] = { 100.0f,-100.0f };
 		boxSize[RIGHT_DOWN] = { 100.0f,100.0f };
-
+		boxDisappearTimer = 0;
 		aliveFlag = true;
 	}
 }
@@ -37,20 +37,25 @@ void LockOnBoxEffect::Update()
 		boxDisappearTimer = BOX_DISAPPEAR_MAX_TIMER;
 		aliveFlag = false;
 	}
+	KazMath::Vec3<float>screenPos = 
+		KazMath::ConvertWorldPosToScreenPos(*targetPos, CameraMgr::Instance()->GetViewMatrix(0), CameraMgr::Instance()->GetPerspectiveMatProjection());
+	lockOnPos = { 300.0f,300.0f };
+
+	boxAngle += BOX_ROTA_SPEED;
 
 	KazMath::Vec2<float>lPos = {};
 	//ç∂è„
-	lPos = *lockOnPos + boxSize[LEFT_UP];
-	CaluBox(lPos, *lockOnPos, &box.data.leftUpPos, boxDisappearTimer, BOX_DISAPPEAR_MAX_TIMER);
+	lPos = lockOnPos + boxSize[LEFT_UP];
+	CaluBox(lPos, lockOnPos, &box.data.leftUpPos, boxDisappearTimer, BOX_DISAPPEAR_MAX_TIMER);
 	//âEâ∫
-	lPos = *lockOnPos + boxSize[RIGHT_DOWN];
-	CaluBox(lPos, *lockOnPos, &box.data.rightDownPos, boxDisappearTimer, BOX_DISAPPEAR_MAX_TIMER);
+	lPos = lockOnPos + boxSize[RIGHT_DOWN];
+	CaluBox(lPos, lockOnPos, &box.data.rightDownPos, boxDisappearTimer, BOX_DISAPPEAR_MAX_TIMER);
 	//ç∂â∫
-	lPos = *lockOnPos + boxSize[LEFT_DOWN];
-	CaluBox(lPos, *lockOnPos, &box.data.leftDownPos, boxDisappearTimer, BOX_DISAPPEAR_MAX_TIMER);
+	lPos = lockOnPos + boxSize[LEFT_DOWN];
+	CaluBox(lPos, lockOnPos, &box.data.leftDownPos, boxDisappearTimer, BOX_DISAPPEAR_MAX_TIMER);
 	//âEè„
-	lPos = *lockOnPos + boxSize[RIGHT_UP];
-	CaluBox(lPos, *lockOnPos, &box.data.rightUpPos, boxDisappearTimer, BOX_DISAPPEAR_MAX_TIMER);
+	lPos = lockOnPos + boxSize[RIGHT_UP];
+	CaluBox(lPos, lockOnPos, &box.data.rightUpPos, boxDisappearTimer, BOX_DISAPPEAR_MAX_TIMER);
 }
 
 void LockOnBoxEffect::Draw()

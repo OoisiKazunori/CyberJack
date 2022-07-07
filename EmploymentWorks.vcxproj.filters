@@ -97,6 +97,7 @@
     <ClCompile Include="KazLibrary\WinApi\Msg.cpp" />
     <ClCompile Include="KazLibrary\WinApi\WinApi.cpp" />
     <ClCompile Include="KazLibrary\Render\Box2DRender.cpp" />
+    <ClCompile Include="Game\UI\LockOnBoxEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -206,6 +207,7 @@
     <ClInclude Include="KazLibrary\WinApi\Msg.h" />
     <ClInclude Include="KazLibrary\WinApi\WinApi.h" />
     <ClInclude Include="KazLibrary\Render\Box2DRender.h" />
+    <ClInclude Include="Game\UI\LockOnBoxEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

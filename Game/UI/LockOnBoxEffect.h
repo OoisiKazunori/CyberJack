@@ -7,14 +7,15 @@ class LockOnBoxEffect
 public:
 	LockOnBoxEffect();
 
-	void Start(KazMath::Vec2<float> *POS);
+	void Start(KazMath::Vec3<float> *POS);
 	void Update();
 	void Draw();
 
 	bool IsAlive();
 private:
 	Box2DRender box;
-	KazMath::Vec2<float>*lockOnPos;
+	KazMath::Vec2<float>lockOnPos;
+	KazMath::Vec3<float>*targetPos;
 	float boxAngle;
 	int boxDisappearTimer;
 	bool aliveFlag;

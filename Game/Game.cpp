@@ -436,6 +436,12 @@ void Game::Input()
 	//	}
 	//}
 
+	if (input->InputTrigger(DIK_SPACE))
+	{
+		tPos = { KazMath::Rand<float>((float)WIN_X,0.0f),KazMath::Rand<float>((float)WIN_Y,0.0f),0.0f };
+		cursor.Hit(&tPos);
+	}
+
 
 }
 
@@ -701,7 +707,7 @@ void Game::Update()
 
 
 					//カーソルのカウント数を増やす
-					cursor.Count();
+					cursor.Hit(enemyData->hitBox.center);
 					//敵が当たった情報を書く
 					enemies[enemyType][enemyCount]->Hit();
 
@@ -737,7 +743,7 @@ void Game::Update()
 			SoundManager::Instance()->PlaySoundMem(lockSoundHandle, 1);
 
 			//カーソルのカウント数を増やす
-			cursor.Count();
+			cursor.Hit(goalBox.hitBox.center);
 			goalBox.Hit();
 
 			//線演出をかける際にどの配列を使用するか決める
