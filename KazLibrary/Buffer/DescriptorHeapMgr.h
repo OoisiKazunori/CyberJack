@@ -32,10 +32,10 @@ private:
 	//デスクリプタヒープの処理-----------------------------------------------------------------------------
 	static const short DESCRIPTOR_HEAP_SIZE_MAX = 4096;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> heaps;
-	array<BufferMemorySize, DESCRIPTORHEAP_MEMORY_MAX> heapMaxSizes;
+	std::array<BufferMemorySize, DESCRIPTORHEAP_MEMORY_MAX> heapMaxSizes;
 	UINT64 shaderResourceHeapIncreSize;
 	UINT64 rtvHeapIncreSize;
-	array<bool, DESCRIPTOR_HEAP_SIZE_MAX> usedHandle;
+	std::array<bool, DESCRIPTOR_HEAP_SIZE_MAX> usedHandle;
 
 	bool isSafeToReadThisHandle(RESOURCE_HANDLE HANDLE)
 	{

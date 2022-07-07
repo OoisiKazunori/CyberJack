@@ -7,36 +7,36 @@
 /// </summary>
 namespace KazFilePathName
 {
-	static string RelativeResourcePath = "Resource/";
+	static std::string RelativeResourcePath = "Resource/";
 
 	//シェーダーパス-----------------------
 
-	static string RelativeShaderPath = RelativeResourcePath + "ShaderFiles/";
-	static string VertexShaderPath = RelativeShaderPath + "VertexShader/";
-	static string PixelShaderPath = RelativeShaderPath + "PixelShader/";
-	static string GeometryShaderPath = RelativeShaderPath + "GeometryShader/";
-	static string ComputeShaderPath = RelativeShaderPath + "ComputeShader/";
+	static std::string RelativeShaderPath = RelativeResourcePath + "ShaderFiles/";
+	static std::string VertexShaderPath = RelativeShaderPath + "VertexShader/";
+	static std::string PixelShaderPath = RelativeShaderPath + "PixelShader/";
+	static std::string GeometryShaderPath = RelativeShaderPath + "GeometryShader/";
+	static std::string ComputeShaderPath = RelativeShaderPath + "ComputeShader/";
 
 
 	//画像パス-----------------------
 
-	static string TestPath = RelativeResourcePath + "Test/";
-	static string CursorPath = RelativeResourcePath + "Cursor/";
-	static string HpPath = RelativeResourcePath + "Hp/";
-	static string GoalPath = RelativeResourcePath + "Goal/";
-	static string GameOverPath = RelativeResourcePath + "GameOver/";
-	static string StageUIPath = RelativeResourcePath + "StageUI/";
-	static string TitlePath = RelativeResourcePath + "Title/";
-	static string SceneChangePath = RelativeResourcePath + "SceneChange/";
-	static string TutorialPath = RelativeResourcePath + "Tutorial/";
-	static string EnemyPath = RelativeResourcePath + "Enemy/";
-	static string LinePath = RelativeResourcePath + "Line/";
-	static string SoundPath = RelativeResourcePath + "Sound/";
+	static std::string TestPath = RelativeResourcePath + "Test/";
+	static std::string CursorPath = RelativeResourcePath + "Cursor/";
+	static std::string HpPath = RelativeResourcePath + "Hp/";
+	static std::string GoalPath = RelativeResourcePath + "Goal/";
+	static std::string GameOverPath = RelativeResourcePath + "GameOver/";
+	static std::string StageUIPath = RelativeResourcePath + "StageUI/";
+	static std::string TitlePath = RelativeResourcePath + "Title/";
+	static std::string SceneChangePath = RelativeResourcePath + "SceneChange/";
+	static std::string TutorialPath = RelativeResourcePath + "Tutorial/";
+	static std::string EnemyPath = RelativeResourcePath + "Enemy/";
+	static std::string LinePath = RelativeResourcePath + "Line/";
+	static std::string SoundPath = RelativeResourcePath + "Sound/";
 
 
 	//デバックパス-----------------------
 
-	static string ParamPath = RelativeResourcePath + "Parameter/";
-	static string StageParamPath = ParamPath + "Stage/";
+	static std::string ParamPath = RelativeResourcePath + "Parameter/";
+	static std::string StageParamPath = ParamPath + "Stage/";
 
 }

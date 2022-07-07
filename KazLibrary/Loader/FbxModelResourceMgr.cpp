@@ -29,7 +29,7 @@ FbxModelResourceMgr::~FbxModelResourceMgr()
 	modelResource.clear();
 }
 
-RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const string &MODEL_NAME)
+RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME)
 {
 	fbxImporter->Initialize(MODEL_NAME.c_str());
 	fbxImporter->Import(fbxScene);
@@ -121,7 +121,7 @@ void FbxModelResourceMgr::ParseNodeRecursive(Model *MODEL, FbxNode *FBX_NODE, No
 	MODEL->nodes.emplace_back();
 	Node &node = MODEL->nodes.back();
 	//ノード名を取得
-	string name = FBX_NODE->GetName();
+	std::string name = FBX_NODE->GetName();
 
 	//Fbxノードのローカル移動情報
 	FbxDouble3 rotation = FBX_NODE->LclRotation.Get();
@@ -329,8 +329,8 @@ void FbxModelResourceMgr::ParseMaterial(Model *MODEL, FbxNode *FBX_NODE)
 				{
 					const char *filePath = texture->GetRelativeFileName();
 					//ファイルパスからファイル名抽出
-					string path_str(filePath);
-					string name = ExtractFileName(path_str);
+					std::string path_str(filePath);
+					std::string name = ExtractFileName(path_str);
 
 					//テクスチャ読み込み
 					LoadTexture(MODEL, name);
@@ -349,7 +349,7 @@ void FbxModelResourceMgr::ParseMaterial(Model *MODEL, FbxNode *FBX_NODE)
 }
 
 
-void FbxModelResourceMgr::LoadTexture(Model *MODEL, const string &FULL_PATH)
+void FbxModelResourceMgr::LoadTexture(Model *MODEL, const std::string &FULL_PATH)
 {
 	// ファイル名を取得
 	std::string file_path = FULL_PATH;
@@ -360,8 +360,8 @@ void FbxModelResourceMgr::LoadTexture(Model *MODEL, const string &FULL_PATH)
 	memcpy(buffer, file_path.c_str(), sizeof(char) * 256);
 
 	char *file_name = buffer;
-	string rename = file_name;
-	string rename2 = MODEL->name;
+	std::string rename = file_name;
+	std::string rename2 = MODEL->name;
 
 	rename.erase(0, 3);
 	rename.insert(0, rename2);
@@ -385,21 +385,21 @@ DirectX::XMVECTOR FbxModelResourceMgr::FbxDoubleToXMVECTOR(const FbxDouble3 &DOU
 	return result;
 }
 
-string FbxModelResourceMgr::ExtractFileName(const string &PATH)
+std::string FbxModelResourceMgr::ExtractFileName(const std::string &PATH)
 {
 	size_t pos1;
 
 	std::string search = "\\";
 	//区切り文字'￥￥'が出てくる一番最後の部分を検索
 	pos1 = PATH.rfind(search);
-	if (pos1 != string::npos)
+	if (pos1 != std::string::npos)
 	{
 		return PATH.substr(pos1 + 1, PATH.size() - pos1 - 1);
 	}
 
 	//区切り文字'/'が出てくる一番最後の部分を検索
 	pos1 = PATH.rfind('/');
-	if (pos1 != string::npos)
+	if (pos1 != std::string::npos)
 	{
 		return PATH.substr(pos1 + 1, PATH.size() - pos1 - 1);
 	}

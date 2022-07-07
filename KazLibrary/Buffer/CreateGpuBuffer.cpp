@@ -81,7 +81,7 @@ RESOURCE_HANDLE CreateGpuBuffer::CreateBuffer(const KazBufferHelper::BufferResou
 	}
 
 	const unsigned int BUFFER_SIZE = 256;
-	array<wchar_t, BUFFER_SIZE> string;
+	std::array<wchar_t, BUFFER_SIZE> string;
 	KazHelper::ConvertStringToWchar_t(BUFFER_OPTION.BufferName, string.data(), BUFFER_SIZE);
 	buffers[lCaluHandle]->SetName(string.data());
 	return lHandle;

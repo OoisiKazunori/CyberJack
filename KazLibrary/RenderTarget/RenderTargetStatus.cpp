@@ -234,7 +234,7 @@ RESOURCE_HANDLE RenderTargetStatus::CreateRenderTarget(const KazMath::Vec2<UINT>
 		multiPassRTVHanlde
 	);
 
-	vector<RESOURCE_HANDLE> lHandles;
+	std::vector<RESOURCE_HANDLE> lHandles;
 	lHandles.push_back(lHandle);
 	renderTargetData[buffers->handle->CaluNowHandle(lHandle)] = lHandles;
 	return lHandle;

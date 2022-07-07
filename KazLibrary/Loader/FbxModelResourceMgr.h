@@ -25,7 +25,7 @@ struct Node
 	/// <summary>
 	/// 名前
 	/// </summary>
-	string name;
+	std::string name;
 
 	DirectX::XMFLOAT2 pad;
 	//ローカルスケール
@@ -56,13 +56,13 @@ public:
 	struct Bone
 	{
 		//名前
-		string name;
+		std::string name;
 		//初期姿勢の逆行列
 		DirectX::XMMATRIX invInitialPose;
 		//クラスター(FBXのボーン情報)
 		FbxCluster *fbxCluster;
 
-		Bone(const string &NAME)
+		Bone(const std::string &NAME)
 		{
 			this->name = NAME;
 		}
@@ -77,23 +77,23 @@ private:
 		float boneWeight[MAX_BONE_INDICES];
 	};	
 
-	string name;
-	vector<Node>nodes;
-	vector<Bone>bones;
+	std::string name;
+	std::vector<Node>nodes;
+	std::vector<Bone>bones;
 
 
 	Node *meshNode = nullptr;
-	vector<VertexPosNormalUvSkin>vertices;
-	vector<unsigned short>indices;
+	std::vector<VertexPosNormalUvSkin>vertices;
+	std::vector<unsigned short>indices;
 
 
 	DirectX::XMFLOAT3 ambient = { 1.0f,1.0f,1.0f };
 	DirectX::XMFLOAT3 diffuse = { 1.0f,1.0f,1.0f };
-	vector<RESOURCE_HANDLE> textureHandle;
+	std::vector<RESOURCE_HANDLE> textureHandle;
 public:
 	friend class FbxModelResourceMgr;
 
-	vector<Bone> &GetBone()
+	std::vector<Bone> &GetBone()
 	{
 		return bones;
 	};
@@ -126,7 +126,7 @@ public:
 	FbxModelResourceMgr();
 	~FbxModelResourceMgr();
 
-	RESOURCE_HANDLE LoadModel(const string &MODEL_NAME);
+	RESOURCE_HANDLE LoadModel(const std::string &MODEL_NAME);
 
 	const std::shared_ptr<FbxResourceData> &GetResourceData(RESOURCE_HANDLE HANDLE);
 
@@ -161,14 +161,14 @@ private:
 	//マテリアル読み取り
 	void ParseMaterial(Model *MODEL, FbxNode *FBX_NODE);
 	//テクスチャ読み取り
-	void LoadTexture(Model *MODEL, const string &FULL_PATH);
+	void LoadTexture(Model *MODEL, const std::string &FULL_PATH);
 	//スキニング情報の読み取り
 	void ParseSkin(Model *MODEL, FbxMesh *FBX_MESH);
 
 
 	DirectX::XMVECTOR FbxDoubleToXMVECTOR(const FbxDouble3 &DOUBLE_3);
 
-	string ExtractFileName(const string &PATH);
+	std::string ExtractFileName(const std::string &PATH);
 
 };
 

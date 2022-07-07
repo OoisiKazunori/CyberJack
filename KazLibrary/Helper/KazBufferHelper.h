@@ -32,7 +32,7 @@ namespace KazBufferHelper
 		D3D12_RESOURCE_DESC resourceDesc;
 		D3D12_RESOURCE_STATES resourceState;
 		D3D12_CLEAR_VALUE *clearValue;
-		string BufferName;
+		std::string BufferName;
 
 		BufferResourceData
 		(
@@ -41,7 +41,7 @@ namespace KazBufferHelper
 			const D3D12_RESOURCE_DESC &RESOURCE_DESC,
 			const D3D12_RESOURCE_STATES &RESOURCE_STATE,
 			D3D12_CLEAR_VALUE *CLEAR_VALUE,
-			const string &BUFFER_NAME
+			const std::string &BUFFER_NAME
 		)
 			:heapProperties(HEAP_PROP),
 			heapFlags(HEAP_FLAGS),
@@ -59,29 +59,29 @@ namespace KazBufferHelper
 	/// </summary>
 	/// <param name="BUFFER_SIZE">定数バッファのサイズ</param>
 	/// <returns>定数バッファの生成に必要な設定</returns>
-	KazBufferHelper::BufferResourceData SetConstBufferData(const unsigned int &BUFFER_SIZE, const string &BUFFER_NAME = "ConstBuffer");
+	KazBufferHelper::BufferResourceData SetConstBufferData(const unsigned int &BUFFER_SIZE, const std::string &BUFFER_NAME = "ConstBuffer");
 
 	/// <summary>
 	/// シェーダーリソースバッファを生成する際に必要な設定を簡易に纏めた物
 	/// <param name="TEXTURE_DATA">読み込んだテクスチャの設定</param>
 	/// <returns>シェーダーリソースバッファの生成に必要な設定</returns>
-	KazBufferHelper::BufferResourceData SetShaderResourceBufferData(const D3D12_RESOURCE_DESC &TEXTURE_DATA, const string &BUFFER_NAME = "ShaderResourceBuffer");
+	KazBufferHelper::BufferResourceData SetShaderResourceBufferData(const D3D12_RESOURCE_DESC &TEXTURE_DATA, const std::string &BUFFER_NAME = "ShaderResourceBuffer");
 
 
-	KazBufferHelper::BufferResourceData SetVertexBufferData(BUFFER_SIZE BUFFER_SIZE, const string &BUFFER_NAME = "VertexBuffer");
+	KazBufferHelper::BufferResourceData SetVertexBufferData(BUFFER_SIZE BUFFER_SIZE, const std::string &BUFFER_NAME = "VertexBuffer");
 
 
-	KazBufferHelper::BufferResourceData SetIndexBufferData(BUFFER_SIZE BUFFER_SIZE, const string &BUFFER_NAME = "IndexBuffer");
+	KazBufferHelper::BufferResourceData SetIndexBufferData(BUFFER_SIZE BUFFER_SIZE, const std::string &BUFFER_NAME = "IndexBuffer");
 
 
-	KazBufferHelper::BufferResourceData SetRenderTargetData(const D3D12_HEAP_PROPERTIES &HEAP_PROPERTIES, const D3D12_RESOURCE_DESC &RESOURCE, D3D12_CLEAR_VALUE *CLEAR_COLOR, const string &BUFFER_NAME = "RenderTarget");
+	KazBufferHelper::BufferResourceData SetRenderTargetData(const D3D12_HEAP_PROPERTIES &HEAP_PROPERTIES, const D3D12_RESOURCE_DESC &RESOURCE, D3D12_CLEAR_VALUE *CLEAR_COLOR, const std::string &BUFFER_NAME = "RenderTarget");
 
-	KazBufferHelper::BufferResourceData SetStructureBuffer(BUFFER_SIZE BUFFER_SIZE, const string &BUFFER_NAME = "StructureBuffer");
+	KazBufferHelper::BufferResourceData SetStructureBuffer(BUFFER_SIZE BUFFER_SIZE, const std::string &BUFFER_NAME = "StructureBuffer");
 
-	KazBufferHelper::BufferResourceData SetRWStructuredBuffer(BUFFER_SIZE BUFFER_SIZE, const string &BUFFER_NAME = "RWStructureBuffer");
+	KazBufferHelper::BufferResourceData SetRWStructuredBuffer(BUFFER_SIZE BUFFER_SIZE, const std::string &BUFFER_NAME = "RWStructureBuffer");
 
 
-	KazBufferHelper::BufferResourceData SetCommandBufferData(const unsigned int &BUFFER_SIZE, const string &BUFFER_NAME = "CommandBuffer");
+	KazBufferHelper::BufferResourceData SetCommandBufferData(const unsigned int &BUFFER_SIZE, const std::string &BUFFER_NAME = "CommandBuffer");
 
 	D3D12_VERTEX_BUFFER_VIEW SetVertexBufferView(const D3D12_GPU_VIRTUAL_ADDRESS &GPU_ADDRESS, BUFFER_SIZE BUFFER_SIZE, const unsigned int &ONE_VERTICES_SIZE);
 

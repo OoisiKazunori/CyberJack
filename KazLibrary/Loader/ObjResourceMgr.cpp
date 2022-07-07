@@ -4,14 +4,14 @@
 
 ObjResourceMgr::ObjResourceMgr()
 {
-	modelDataBuffers.reset(new CreateGpuBuffer);
+	modelDataBuffers = std::make_unique<CreateGpuBuffer>();
 }
 
 ObjResourceMgr::~ObjResourceMgr()
 {
 }
 
-RESOURCE_HANDLE ObjResourceMgr::LoadModel(string RESOURCE)
+RESOURCE_HANDLE ObjResourceMgr::LoadModel(std::string RESOURCE)
 {
 
 	//ÉtÉ@ÉCÉãì«Ç›çûÇ›
@@ -256,7 +256,7 @@ ObjResourceData ObjResourceMgr::GetResourceData(RESOURCE_HANDLE HANDLE)
 	}
 }
 
-RESOURCE_HANDLE ObjResourceMgr::LoadMaterial(const string &FILE_NAME, ObjResourceData *RESOURCE, string MTL_RESOURE)
+RESOURCE_HANDLE ObjResourceMgr::LoadMaterial(const std::string &FILE_NAME, ObjResourceData *RESOURCE, std::string MTL_RESOURE)
 {
 
 	ifstream file;

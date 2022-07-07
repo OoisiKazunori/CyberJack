@@ -384,8 +384,6 @@ void DebugScene::Update()
 		data[i].color = { 1.0f,0.0f,0.0f,1.0f };
 	}
 	buffer->TransData(cbvMatHandle, &data, TRIANGLE_ARRAY_NUM * sizeof(OutPutData));
-
-
 }
 
 void DebugScene::Draw()

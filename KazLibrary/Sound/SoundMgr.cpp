@@ -9,11 +9,11 @@ SoundMgr::SoundMgr()
 	xAudio2->CreateMasteringVoice(&masterVoice);
 }
 
-SoundData SoundMgr::SoundLoadWave(string FILENAME)
+SoundData SoundMgr::SoundLoadWave(std::string FILENAME)
 {
-	ifstream file;
+	std::ifstream file;
 
-	file.open(FILENAME, ios_base::binary);
+	file.open(FILENAME, std::ios_base::binary);
 	assert(file.is_open());
 
 	RiffHeader riff;
@@ -46,13 +46,13 @@ SoundData SoundMgr::SoundLoadWave(string FILENAME)
 	file.read((char *)&data, sizeof(data));
 	if (strncmp(data.id, "JUNK", 4) == 0)
 	{
-		file.seekg(data.size, ios_base::cur);
+		file.seekg(data.size, std::ios_base::cur);
 		file.read((char *)&data, sizeof(data));
 	}
 
 	if (strncmp(data.id, "LIST ", 4) == 0)
 	{
-		file.seekg(data.size, ios_base::cur);
+		file.seekg(data.size, std::ios_base::cur);
 		file.read((char *)&data, sizeof(data));
 	}
 

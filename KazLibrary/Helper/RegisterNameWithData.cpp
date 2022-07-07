@@ -9,13 +9,13 @@ RegisterNameWithData::~RegisterNameWithData()
 {
 }
 
-bool RegisterNameWithData::RegisterName(string NAME)
+bool RegisterNameWithData::RegisterName(std::string NAME)
 {
 	for (int i = 0; i < name.size(); i++)
 	{
 		if (name[i] == NAME)
 		{
-			string dangerString = "ŠëŒ¯:" + NAME + "‚ð“o˜^‚µ‚æ‚¤‚Æ‚µ‚Ü‚µ‚½‚ªA“¯‚¶–¼‘O‚ª‚ ‚Á‚½ˆ×“o˜^‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½";
+			std::string dangerString = "ŠëŒ¯:" + NAME + "‚ð“o˜^‚µ‚æ‚¤‚Æ‚µ‚Ü‚µ‚½‚ªA“¯‚¶–¼‘O‚ª‚ ‚Á‚½ˆ×“o˜^‚Å‚«‚Ü‚¹‚ñ‚Å‚µ‚½";
 			ErrorCheck(dangerString.c_str());
 			return false;
 		}
@@ -25,7 +25,7 @@ bool RegisterNameWithData::RegisterName(string NAME)
 	return true;
 }
 
-bool RegisterNameWithData::UnRegisterName(string NAME)
+bool RegisterNameWithData::UnRegisterName(std::string NAME)
 {
 	for (int i = 0; i < name.size(); i++)
 	{
@@ -36,12 +36,12 @@ bool RegisterNameWithData::UnRegisterName(string NAME)
 		}
 	}
 
-	string dangerString = "ŠëŒ¯:" + NAME + "‚ðíœ‚µ‚æ‚¤‚Æ‚µ‚Ü‚µ‚½‚ªA–³‚©‚Á‚½ˆ×íœ‚ÉŽ¸”s‚µ‚Ü‚µ‚½";
+	std::string dangerString = "ŠëŒ¯:" + NAME + "‚ðíœ‚µ‚æ‚¤‚Æ‚µ‚Ü‚µ‚½‚ªA–³‚©‚Á‚½ˆ×íœ‚ÉŽ¸”s‚µ‚Ü‚µ‚½";
 	ErrorCheck(dangerString.c_str());
 	return false;
 }
 
-int RegisterNameWithData::IsNameExists(string NAME)
+int RegisterNameWithData::IsNameExists(std::string NAME)
 {
 	for (int i = 0; i < name.size(); i++)
 	{
@@ -50,7 +50,7 @@ int RegisterNameWithData::IsNameExists(string NAME)
 			return i;
 		}
 	}
-	string dangerString = "ŠëŒ¯:" + NAME + "‚ª“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ";
+	std::string dangerString = "ŠëŒ¯:" + NAME + "‚ª“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñ";
 	ErrorCheck(dangerString.c_str());
 	return -1;
 }

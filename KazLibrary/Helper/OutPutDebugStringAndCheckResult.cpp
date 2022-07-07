@@ -8,17 +8,17 @@ HRESULT CheckResult(std::string OUTPUT_DEBUG_STRING, HRESULT RESULT) {
 	if (RESULT == S_OK) {
 		std::string SucceedString = "Ç…ê¨å˜ÇµÇ‹ÇµÇΩ\n";
 		String += SucceedString;
-		cout << green;
+		std::cout << green;
 	}
 	else {
 		std::string FailedString = "Ç…é∏îsÇµÇ‹ÇµÇΩ\n";
 		String += FailedString;
-		cout << red;
+		std::cout << red;
 	}
 
 	const char *OutPutString = String.c_str();
-	cout << OutPutString;
-	cout << white;
+	std::cout << OutPutString;
+	std::cout << white;
 
 	return RESULT;
 }
@@ -50,37 +50,37 @@ HRESULT CheckResult(HRESULT RESULT, std::string SUCCEED_STRING, std::string FAIL
 	std::string string;
 	if (RESULT == S_OK) 
 	{	
-		cout << green;
+		std::cout << green;
 		string = SUCCEED_STRING;
 	}
 	else
 	{
-		cout << red;
+		std::cout << red;
 		string = FAIL_STRING;
 	}
 
-	cout << string;
-	cout << white;
+	std::cout << string;
+	std::cout << white;
 	return RESULT;
 }
 
 void FailCheck(std::string FAIL_STRING)
 {
-	cout << red;
-	cout << FAIL_STRING;
-	cout << white;
+	std::cout << red;
+	std::cout << FAIL_STRING;
+	std::cout << white;
 }
 
 void SucceedCheck(std::string SUCCEED_STRING)
 {
-	cout << green;
-	cout << SUCCEED_STRING;
-	cout << white;
+	std::cout << green;
+	std::cout << SUCCEED_STRING;
+	std::cout << white;
 }
 
 void ErrorCheck(std::string ERROR_STRING)
 {
-	cout << yellow;
-	cout << ERROR_STRING;
-	cout << white;
+	std::cout << yellow;
+	std::cout << ERROR_STRING;
+	std::cout << white;
 }

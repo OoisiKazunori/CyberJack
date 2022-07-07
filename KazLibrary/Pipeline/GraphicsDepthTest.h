@@ -11,10 +11,10 @@ public:
 	RESOURCE_HANDLE CreateBuffer();
 	void Clear(RESOURCE_HANDLE HANDLE);
 
-	vector<D3D12_CPU_DESCRIPTOR_HANDLE> dsvH;
+	std::vector<D3D12_CPU_DESCRIPTOR_HANDLE> dsvH;
 private:
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> dsvHeap;
-	vector<Microsoft::WRL::ComPtr<ID3D12Resource>> depthBuffer;
+	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> depthBuffer;
 
 	HandleMaker handle;
 };

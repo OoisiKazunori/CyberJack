@@ -773,7 +773,7 @@ namespace KazMath
 	/// <param name="count"></param>
 	/// <param name="s"></param>
 	/// <returns></returns>
-	vector<float> GetGaussianWeights(size_t count, float s);
+	std::vector<float> GetGaussianWeights(size_t count, float s);
 
 	/// <summary>
 	/// バッファのサイズをアライメントする

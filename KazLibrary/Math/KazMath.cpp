@@ -186,7 +186,7 @@ DirectX::XMMATRIX KazMath::CaluTransMatrix(const Vec3<float> &POS)
 	return matTrans;
 }
 
-vector<float> KazMath::GetGaussianWeights(size_t count, float s)
+std::vector<float> KazMath::GetGaussianWeights(size_t count, float s)
 {
 	//ウェイト配列返却用
 	std::vector<float> weights(count);

@@ -8,12 +8,12 @@
 
 struct materia
 {
-	string name;//マテリアル名
+	std::string name;//マテリアル名
 	DirectX::XMFLOAT3 ambient;//アンビエント影響度
 	DirectX::XMFLOAT3 diffuse;//ディフューズ影響度
 	DirectX::XMFLOAT3 specular;//スペキュラー影響度
 	float alpha;//α
-	string textureFilename;//テクスチャファイル名
+	std::string textureFilename;//テクスチャファイル名
 
 	materia()
 	{
@@ -44,7 +44,7 @@ struct ObjResourceData
 	materia material;
 	RESOURCE_HANDLE mtlHanlde;
 	
-	vector<unsigned short> posKey;
+	std::vector<unsigned short> posKey;
 
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 	D3D12_INDEX_BUFFER_VIEW indexBufferView;
@@ -69,7 +69,7 @@ public:
 	/// <param name="RESOURCE">.objのデータがあるファイルパス</param>
 	/// <param name="TEX_RESOURCE">.mtlの画像データがあるファイルパス</param>
 	/// <returns>ハンドル</returns>
-	RESOURCE_HANDLE LoadModel(string RESOURCE);
+	RESOURCE_HANDLE LoadModel(std::string RESOURCE);
 
 	/// <summary>
 	/// 指定のモデルデータを削除します
@@ -86,12 +86,12 @@ public:
 private:
 	HandleMaker handle;
 
-	vector<ObjResourceData> resource;
-	vector<string> name;
+	std::vector<ObjResourceData> resource;
+	std::vector<std::string> name;
 
-	unique_ptr<CreateGpuBuffer> modelDataBuffers;
+	std::unique_ptr<CreateGpuBuffer> modelDataBuffers;
 
 
-	RESOURCE_HANDLE LoadMaterial(const string &filename, ObjResourceData *resource, string MTL_RESOURCE);
+	RESOURCE_HANDLE LoadMaterial(const std::string &filename, ObjResourceData *resource, std::string MTL_RESOURCE);
 
 };

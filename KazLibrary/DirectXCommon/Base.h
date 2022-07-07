@@ -7,12 +7,10 @@
 #include<DirectXMath.h>
 #include<wrl.h>
 #include"d3dx12.h"
-using namespace std;
 #include<array>
 #include<memory>
 #include"pix3.h"
 
-#include"pix3.h"
 
 static const int WIN_X = 1280;
 static const int WIN_Y = 720;
@@ -100,12 +98,12 @@ struct GradationData
 
 struct Material
 {
-	string name;//マテリアル名
+	std::string name;//マテリアル名
 	DirectX::XMFLOAT3 ambient;//アンビエント影響度
 	DirectX::XMFLOAT3 diffuse;//ディフューズ影響度
 	DirectX::XMFLOAT3 specular;//スペキュラー影響度
 	float alpha;//α
-	string textureFilename;//テクスチャファイル名
+	std::string textureFilename;//テクスチャファイル名
 
 	Material()
 	{

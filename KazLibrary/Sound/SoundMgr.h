@@ -40,7 +40,7 @@ public:
 	/// </summary>
 	/// <param name="FILENAME">ファイル名</param>
 	/// <returns>音データ</returns>
-	SoundData SoundLoadWave(string FILENAME);
+	SoundData SoundLoadWave(std::string FILENAME);
 
 	/// <summary>
 	/// 音データを削除します

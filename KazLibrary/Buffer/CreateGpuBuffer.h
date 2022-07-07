@@ -80,7 +80,7 @@ public:
 	void *GetMapAddres(RESOURCE_HANDLE HANDLE);
 
 
-	unique_ptr<HandleMaker> handle;
+	std::unique_ptr<HandleMaker> handle;
 private:	
 	std::array<Microsoft::WRL::ComPtr<ID3D12Resource>, 100> buffers;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> heap;
