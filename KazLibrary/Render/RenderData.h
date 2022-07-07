@@ -295,3 +295,25 @@ struct CircleDrawData
 	DirtyFlag<float> radiusDirtyFlag;
 	DirtyFlag<bool> change3DDirtyFlag;
 };
+
+struct Box2DRenderData
+{
+	KazMath::Vec2<float> leftUpPos;
+	KazMath::Vec2<float> rightDownPos;
+	KazMath::Color color;
+	PipeLineNames pipelineName;
+
+	DirtyFlag<KazMath::Vec2<float>> leftUpPosDirtyFlag;
+	DirtyFlag<KazMath::Vec2<float>> rightDownPosDirtyFlag;
+
+
+	Box2DRenderData() :leftUpPosDirtyFlag(&leftUpPos), rightDownPosDirtyFlag(&rightDownPos), color(255, 255, 255, 255), pipelineName(PIPELINE_NAME_COLOR)
+	{};
+
+	void Record()
+	{
+		color.Record();
+		leftUpPosDirtyFlag.Record();
+		rightDownPosDirtyFlag.Record();
+	};
+};
