@@ -96,7 +96,7 @@ private:
 	DirectX::XMMATRIX orthographicMatProjection;
 
 
-	static const int CAMERA_ARRAY_NUM = 2;
+	static const int CAMERA_ARRAY_NUM = 3;
 	std::array<DirectX::XMMATRIX, CAMERA_ARRAY_NUM> viewArray;
 	std::array<DirectX::XMMATRIX, CAMERA_ARRAY_NUM> billBoardArray;
 

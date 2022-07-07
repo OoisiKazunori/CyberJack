@@ -6,39 +6,49 @@
 
 PortalScene::PortalScene()
 {
-	std::vector<MultiRenderTargetData> data;
-	data.push_back(MultiRenderTargetData());
-	data.push_back(MultiRenderTargetData());
-	data[0].graphSize = { WIN_X,WIN_Y };
-	data[0].backGroundColor = BG_COLOR;
-	data[1].graphSize = { WIN_X,WIN_Y };
-	data[1].backGroundColor = { 0.0f,0.0f,0.0f };
 
-	multipassHandle =
-		RenderTargetStatus::Instance()->CreateMultiRenderTarget(data, DXGI_FORMAT_R8G8B8A8_UNORM);
-	mainRenderTarget.data.handleData = multipassHandle[0];
-	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
-	mainRenderTarget.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
+	redPortalRenderHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, DirectX::XMFLOAT3(0, 0, 100.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
+	redPortal.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
+	redPortal.data.handleData = redPortalRenderHandle;
 
-
-	addHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
-	addRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
-	addRenderTarget.data.pipelineName = PIPELINE_NAME_ADDBLEND;
-
-
-	luminaceTex.data.pipelineName = PIPELINE_NAME_SPRITE_LUMI;
-	luminaceTex.data.handleData = multipassHandle[0];
-	luminaceTex.data.addHandle.handle[0] = multipassHandle[1];
-	luminaceTex.data.addHandle.paramType[0] = GRAPHICS_PRAMTYPE_TEX2;
-	luminaceTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
-
-	buler = std::make_unique<GaussianBuler>(KazMath::Vec2<UINT>(WIN_X, WIN_Y));
+	greenPortalRenderHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, DirectX::XMFLOAT3(0, 100.0f, 100.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
+	greenPortal.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
+	greenPortal.data.handleData = greenPortalRenderHandle;
 
 	//mainRenderTarget.data.handleData = TextureResourceMgr::Instance()->LoadDivGraph(KazFilePathName::TestPath + "AnimationTest.png", 2, 1, 32, 32);
 
 	changeFlag = true;
 	animFlag = false;
 	gameModeFlag = false;
+
+	const float SCALE = 0.15f;
+	const float HEIGHT = 10.0f;
+	for (int i = 0; i < stages.size(); ++i)
+	{
+		stages[i] = std::make_unique<PortalRender>(i);
+
+		stages[i]->stage[FLOOR_GREEN].data.transform.pos = { -30.0f,0.0f,0.0f };
+		stages[i]->stage[FLOOR_GREEN].data.transform.scale = { 20.0f,1.0f,30.0f };
+		stages[i]->stage[FLOOR_GREEN].data.color = { 0,150,0,255 };
+		stages[i]->stage[FLOOR_GREEN].data.cameraIndex = i;
+		//RedPortal
+		redPortal.data.transform.pos = { -30.0f,HEIGHT,0.0f };
+		redPortal.data.transform.scale = { SCALE,SCALE,SCALE };
+		redPortal.data.cameraIndex = i;
+
+		stages[i]->stage[FLOOR_RED].data.transform.pos = { 30.0f,0.0f,0.0f };
+		stages[i]->stage[FLOOR_RED].data.transform.scale = { 20.0f,1.0f,30.0f };
+		stages[i]->stage[FLOOR_RED].data.color = { 150,0,0,255 };
+		stages[i]->stage[FLOOR_RED].data.cameraIndex = i;
+
+		//GreenPortal
+		greenPortal.data.transform.pos = { 30.0f,HEIGHT,0.0f };
+		greenPortal.data.transform.scale = { SCALE,SCALE,SCALE };
+		greenPortal.data.cameraIndex = i;
+	}
+
+	stages[2]->stage[FLOOR_GREEN].data.color = { 0,100,0,255 };
+	stages[2]->stage[FLOOR_RED].data.color = { 100,0,0,255 };
 }
 
 PortalScene::~PortalScene()
@@ -211,14 +221,6 @@ void PortalScene::Input()
 		changeFlag = !changeFlag;
 	}
 
-	if (changeFlag)
-	{
-		box.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "tex.png");
-	}
-	else
-	{
-		box.data.handleData = TextureResourceMgr::Instance()->LoadDivGraph(KazFilePathName::TestPath + "AnimationTest.png", 2, 1, 32, 32);
-	}
 
 
 	if (input->InputTrigger(DIK_T))
@@ -272,53 +274,64 @@ void PortalScene::Update()
 
 		eyePos = KazMath::Vec3<float>(0.0f, 3.0f, 0.0f) + (besidePoly.data.transform.pos + verticlaPoly.data.transform.pos);
 	}
-	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 0);
+
+	//赤ポータル
+	redPortalCameraPos = stages[STAGE_RED]->stage[FLOOR_RED].data.transform.pos;
+	redPortalCameraPos.y = 10.0f;
+	CameraMgr::Instance()->Camera(redPortalCameraPos, redPortalCameraPos + KazMath::Vec3<float>(0.0f, 0.0f, -6.0f), { 0.0f,1.0f,0.0f }, STAGE_RED);
+
+	//緑ポータル
+	greenPortalCameraPos = stages[STAGE_RED]->stage[FLOOR_GREEN].data.transform.pos;
+	greenPortalCameraPos.y = 10.0f;
+	CameraMgr::Instance()->Camera(greenPortalCameraPos, greenPortalCameraPos + KazMath::Vec3<float>(0.0f, 0.0f, -6.0f), { 0.0f,1.0f,0.0f }, STAGE_GREEN);
+
+	//ゲーム画面
+	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, STAGE_GAME);
 
 
-	ImGui::Begin("CheckDirtyFlag");
-	KazImGuiHelper::InputTransform3D(&box.data.transform);
-	KazImGuiHelper::InputVec4(&box.data.colorData.color, "Color");
-	ImGui::Checkbox("BillBoardFlag", &box.data.billBoardFlag);
-	ImGui::Checkbox("FlipX", &box.data.flip.x);
-	ImGui::Checkbox("FlipY", &box.data.flip.y);
-	ImGui::InputInt("Animation", &box.data.animationHandle.handle);
-	ImGui::End();
+
 
 
 	portal.Update();
 	stringEffect.Update();
 	portalFlame.Update();
 	cursor.Update();
-	//WirteCpuLineData::Instance()->importFlag = false;
 }
 
 void PortalScene::Draw()
 {
-	RenderTargetStatus::Instance()->PrepareToChangeBarrier(multipassHandle[0]);
-	RenderTargetStatus::Instance()->ClearRenderTarget(multipassHandle[0]);
-	//portal.Draw();
-	//stringEffect.Draw();
-	//portalFlame.Draw();
-	bg.Draw();
-
-	box.Draw();
-	
-	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Draw Luminance");
-	RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, multipassHandle[0]);
-	RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
-	luminaceTex.Draw();
-	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
-
-
-	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Draw Main RenderTarget");
-	RenderTargetStatus::Instance()->PrepareToCloseBarrier(addHandle);
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
-	mainRenderTarget.Draw();
-	//addRenderTarget.data.handleData = buler->BlurImage(addHandle);
-	//addRenderTarget.Draw();
+	RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
 
+	RenderTargetStatus::Instance()->PrepareToChangeBarrier(redPortalRenderHandle);
+	RenderTargetStatus::Instance()->ClearRenderTarget(redPortalRenderHandle);
 
-	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
+	stages[STAGE_RED]->bg.Draw();
+	for (int i = 0; i < stages[STAGE_RED]->stage.size(); ++i)
+	{
+		stages[STAGE_RED]->stage[i].Draw();
+	}
+
+	RenderTargetStatus::Instance()->PrepareToChangeBarrier(greenPortalRenderHandle, redPortalRenderHandle);
+	RenderTargetStatus::Instance()->ClearRenderTarget(greenPortalRenderHandle);
+
+	stages[STAGE_GREEN]->bg.Draw();
+	for (int i = 0; i < stages[STAGE_GREEN]->stage.size(); ++i)
+	{
+		stages[STAGE_GREEN]->stage[i].Draw();
+	}
+
+	RenderTargetStatus::Instance()->PrepareToCloseBarrier(greenPortalRenderHandle);
+	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
+
+	stages[STAGE_GAME]->bg.Draw();
+	for (int i = 0; i < stages[STAGE_GAME]->stage.size(); ++i)
+	{
+		stages[STAGE_GAME]->stage[i].Draw();
+	}
+
+	greenPortal.Draw();
+	redPortal.Draw();
 
 	cursor.Draw();
 

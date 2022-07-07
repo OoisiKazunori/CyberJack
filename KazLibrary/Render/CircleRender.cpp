@@ -131,7 +131,7 @@ void CircleRender::Draw()
 
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 	
-	if (data.color.Dirty() || data.transform.Dirty() || data.change3DDirtyFlag.Dirty() || (renderData.cameraMgrInstance->ViewAndProjDirty() && data.change3DFlag) || data.cameraIndex.dirty.Dirty())
+	if (data.color.Dirty() || data.transform.Dirty() || data.change3DDirtyFlag.Dirty() || (renderData.cameraMgrInstance->ViewAndProjDirty(data.cameraIndex.id) && data.change3DFlag) || data.cameraIndex.dirty.Dirty())
 	{
 		//行列
 		if (data.change3DFlag)

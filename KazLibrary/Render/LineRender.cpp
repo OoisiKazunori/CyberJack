@@ -63,7 +63,7 @@ void LineRender::Draw()
 
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 	//行列
-	if (renderData.cameraMgrInstance->ViewAndProjDirty() || data.color.Dirty() || data.motherMat.dirty.Dirty() || data.cameraIndex.dirty.Dirty())
+	if (renderData.cameraMgrInstance->ViewAndProjDirty(data.cameraIndex.id) || data.color.Dirty() || data.motherMat.dirty.Dirty() || data.cameraIndex.dirty.Dirty())
 	{
 		ConstBufferData constMap;
 		constMap.world = baseMatWorldData.matWorld;

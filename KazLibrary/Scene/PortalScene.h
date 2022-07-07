@@ -6,6 +6,29 @@
 #include"../Game/Event/PortalFlame.h"
 #include"../KazLibrary/Render/KazRender.h"
 
+struct PortalRender
+{
+	BackGroundForDebug bg;
+	std::array<BoxPolygonRender, 2>stage;
+
+	PortalRender(int CAMERA_INDEX) :bg(CAMERA_INDEX)
+	{
+	}
+};
+
+enum
+{
+	STAGE_RED,
+	STAGE_GREEN,
+	STAGE_GAME,
+};
+
+enum 
+{
+	FLOOR_GREEN,
+	FLOOR_RED
+};
+
 class PortalScene :public SceneBase
 {
 public:
@@ -30,17 +53,12 @@ private:
 	GoalBoxPortalStringEffect stringEffect;
 
 
-	Sprite2DRender mainRenderTarget;
-	Sprite2DRender addRenderTarget;
-	Sprite2DRender luminaceTex;
 	bool changeFlag;
 	bool animFlag;
-	BackGroundForDebug bg;
+	std::array<std::unique_ptr<PortalRender>, 3> stages;
 
-	std::vector<RESOURCE_HANDLE>multipassHandle;
-	RESOURCE_HANDLE addHandle;
-
-	std::unique_ptr<GaussianBuler> buler;
+	RESOURCE_HANDLE redPortalRenderHandle;
+	RESOURCE_HANDLE greenPortalRenderHandle;
 
 
 	PortalFlame portalFlame;
@@ -57,7 +75,12 @@ private:
 	KazMath::Vec2<float> mulValue;							//カメラの上下左右の掛ける割合
 	KazMath::Vec2<float> mulValue2;							//カメラの上下左右の掛ける割合
 
-	Sprite3DRender box;
+	Sprite3DRender redPortal;
+	KazMath::Vec3<float>redPortalCameraPos;
+
+	Sprite3DRender greenPortal;
+	KazMath::Vec3<float>greenPortalCameraPos;
+
 };
 
 
