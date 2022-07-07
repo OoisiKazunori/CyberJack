@@ -11,10 +11,6 @@ SoundManager::SoundManager()
 
 void SoundManager::Finalize()
 {
-	for (int i = 0; i < masterSoundData.size(); i++)
-	{
-		delete masterSoundData[i].soundData;
-	}
 }
 
 RESOURCE_HANDLE SoundManager::LoadSoundMem(std::string FILE_PASS, bool BGM_FLAG)
@@ -41,12 +37,12 @@ RESOURCE_HANDLE SoundManager::LoadSoundMem(std::string FILE_PASS, bool BGM_FLAG)
 	RiffHeader riff;
 	file.read((char *)&riff, sizeof(riff));
 
-	if (strncmp(riff.chunk.id, "RIFF", 4) != 0)
+	if (strncmp(riff.chunk.id.data(), "RIFF", 4) != 0)
 	{
 		FailCheck(FILE_PASS + "の読み込みに失敗しました\n");
 		return -1;
 	}
-	if (strncmp(riff.type, "WAVE", 4) != 0)
+	if (strncmp(riff.type.data(), "WAVE", 4) != 0)
 	{
 		FailCheck(FILE_PASS + "の読み込みに失敗しました\n");
 		return -1;
@@ -58,7 +54,7 @@ RESOURCE_HANDLE SoundManager::LoadSoundMem(std::string FILE_PASS, bool BGM_FLAG)
 	FormatChunk format = {};
 	file.read((char *)&format, sizeof(ChunkHeader));
 
-	if (strncmp(format.chunk.id, "fmt ", 4) != 0)
+	if (strncmp(format.chunk.id.data(), "fmt ", 4) != 0)
 	{
 		FailCheck(FILE_PASS + "の読み込みに失敗しました\n");
 		return -1;
@@ -71,19 +67,19 @@ RESOURCE_HANDLE SoundManager::LoadSoundMem(std::string FILE_PASS, bool BGM_FLAG)
 	//ChunkHeader------------------------------------------
 	ChunkHeader data;
 	file.read((char *)&data, sizeof(data));
-	if (strncmp(data.id, "JUNK", 4) == 0)
+	if (strncmp(data.id.data(), "JUNK", 4) == 0)
 	{
 		file.seekg(data.size, std::ios_base::cur);
 		file.read((char *)&data, sizeof(data));
 	}
 
-	if (strncmp(data.id, "LIST ", 4) == 0)
+	if (strncmp(data.id.data(), "LIST ", 4) == 0)
 	{
 		file.seekg(data.size, std::ios_base::cur);
 		file.read((char *)&data, sizeof(data));
 	}
 
-	if (strncmp(data.id, "data ", 4) != 0)
+	if (strncmp(data.id.data(), "data ", 4) != 0)
 	{
 		FailCheck(FILE_PASS + "の読み込みに失敗しました\n");
 		return -1;
@@ -98,12 +94,12 @@ RESOURCE_HANDLE SoundManager::LoadSoundMem(std::string FILE_PASS, bool BGM_FLAG)
 	if (masterSoundData.size() <= lHandle)
 	{
 		//masterSoundData.push_back({});
-		masterSoundData[lHandle].soundData = new SoundData;
+		masterSoundData[lHandle].soundData = std::make_unique<SoundData>();
 		masterSoundData[lHandle].filePass = FILE_PASS;
 	}
 	else
 	{
-		masterSoundData[lHandle].soundData = new SoundData;
+		masterSoundData[lHandle].soundData = std::make_unique<SoundData>();
 		masterSoundData[lHandle].filePass = FILE_PASS;
 	}
 
@@ -228,8 +224,8 @@ void SoundManager::ReleaseSoundMem(RESOURCE_HANDLE HANDLE)
 			masterSoundData[HANDLE].soundSorce->Stop();
 			masterSoundData[HANDLE].soundSorce->DestroyVoice();			
 			//サウンドデータの削除
-			delete masterSoundData[HANDLE].soundData->pBuffer;
-			delete masterSoundData[HANDLE].soundData;			
+			masterSoundData[HANDLE].soundData.reset();
+			masterSoundData[HANDLE].soundData.reset();
 			masterSoundData[HANDLE].soundData = nullptr;
 			//ファイルパスの削除
 			masterSoundData[HANDLE].filePass = "";

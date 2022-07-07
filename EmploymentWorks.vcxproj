@@ -270,7 +270,6 @@
     <ClCompile Include="KazLibrary\Scene\TitleScene.cpp" />
     <ClCompile Include="KazLibrary\Sound\IAXAudio2VoiceCallback.cpp" />
     <ClCompile Include="KazLibrary\Sound\SoundManager.cpp" />
-    <ClCompile Include="KazLibrary\Sound\SoundMgr.cpp" />
     <ClCompile Include="KazLibrary\WinApi\Msg.cpp" />
     <ClCompile Include="KazLibrary\WinApi\WinApi.cpp" />
   </ItemGroup>
@@ -378,7 +377,6 @@
     <ClInclude Include="KazLibrary\Scene\TitleScene.h" />
     <ClInclude Include="KazLibrary\Sound\IAXAudio2VoiceCallback.h" />
     <ClInclude Include="KazLibrary\Sound\SoundManager.h" />
-    <ClInclude Include="KazLibrary\Sound\SoundMgr.h" />
     <ClInclude Include="KazLibrary\WinApi\Msg.h" />
     <ClInclude Include="KazLibrary\WinApi\WinApi.h" />
   </ItemGroup>

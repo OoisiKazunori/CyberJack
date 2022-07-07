@@ -1,18 +1,41 @@
 #pragma once
 #include"../DirectXCommon/Base.h"
-#include"SoundMgr.h"
 #include<xaudio2.h>
 #pragma comment(lib,"xaudio2.lib")
 #include<fstream>
 #include"../Helper/ISinglton.h"
 #include"../Helper/HandleMaker.h"
 
+struct ChunkHeader
+{
+	std::array<char,4> id;		//チャンク毎のID
+	int32_t size;	//チャンクサイズ
+};
+
+struct RiffHeader
+{
+	ChunkHeader chunk;	//RIFF
+	std::array<char,4> type;	//WAVE
+};
+
+struct FormatChunk
+{
+	ChunkHeader chunk;	//fmt
+	WAVEFORMATEX fmt; //波形フォーマット
+};
+
+struct SoundData
+{
+	WAVEFORMATEX wfex;
+	BYTE *pBuffer;
+	unsigned int bufferSize;
+};
 
 struct Sound
 {
 	std::string filePass;
-	SoundData *soundData;
-	IXAudio2SourceVoice *soundSorce;
+	std::unique_ptr<SoundData> soundData;
+	IXAudio2SourceVoice* soundSorce;
 };
 /// <summary>
 /// 音再生に関するクラスです
