@@ -440,9 +440,6 @@ void Game::Input()
 
 void Game::Update()
 {
-
-
-
 	for (int i = 0; i < lineStartPoly.size(); ++i)
 	{
 		lineStartPoly[i].data.pipelineName = PIPELINE_NAME_COLOR_MULTITEX;
@@ -1122,7 +1119,6 @@ void Game::Update()
 		++gameFlame;
 	}
 
-	//ちょっと遅らせる事で同時に起こる事柄を少なくし、混乱しないようにする
 	if (60 * 4 <= gameFlame)
 	{
 		//チュートリアル用のUI非表示

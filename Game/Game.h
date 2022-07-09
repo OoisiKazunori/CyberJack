@@ -212,5 +212,6 @@ private:
 
 	KazMath::Vec3<float>tPos;
 
+	CircleRender circle;
 };
 

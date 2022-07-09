@@ -279,8 +279,9 @@ struct CircleDrawData
 	PipeLineNames pipelineName;
 	bool change3DFlag;
 	CameraIndexData cameraIndex;
+	bool fillFlag;
 
-	CircleDrawData() :color(255, 255, 255, 255), radius(0.0f), pipelineName(PIPELINE_NAME_COLOR_NOCARING), change3DFlag(false), change3DDirtyFlag(&change3DFlag), radiusDirtyFlag(&radius)
+	CircleDrawData() :color(255, 255, 255, 255), radius(0.0f), pipelineName(PIPELINE_NAME_COLOR_NOCARING), change3DFlag(false), change3DDirtyFlag(&change3DFlag), radiusDirtyFlag(&radius), fillFlag(false)
 	{
 	}
 

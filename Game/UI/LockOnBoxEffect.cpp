@@ -1,6 +1,6 @@
 #include "LockOnBoxEffect.h"
 
-const int LockOnBoxEffect::BOX_DISAPPEAR_MAX_TIMER = 60;
+const int LockOnBoxEffect::BOX_DISAPPEAR_MAX_TIMER = 30;
 const float LockOnBoxEffect::BOX_ROTA_SPEED = 1.0f;
 
 LockOnBoxEffect::LockOnBoxEffect()
@@ -15,7 +15,6 @@ void LockOnBoxEffect::Start(KazMath::Vec3<float> *POS)
 	{
 		targetPos = POS;
 		boxAngle = 0.0f;
-
 
 		boxSize[LEFT_UP] = { -100.0f,-100.0f };
 		boxSize[LEFT_DOWN] = { -100.0f,100.0f };

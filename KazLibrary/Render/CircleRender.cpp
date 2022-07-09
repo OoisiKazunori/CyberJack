@@ -60,10 +60,17 @@ CircleRender::CircleRender()
 	gpuBuffer->TransData(indexBufferHandle, lIndi.data(), IndexByte);
 	//バッファ転送-----------------------------------------------------------------------------------------------------
 
-	drawIndexInstanceCommandData = KazRenderHelper::SetDrawIndexInstanceCommandData(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, 
+	drawIndexInstanceCommandData = KazRenderHelper::SetDrawIndexInstanceCommandData(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
 		KazBufferHelper::SetVertexBufferView(gpuBuffer->GetGpuAddress(vertexBufferHandle), VertByte, sizeof(lVert[0])),
 		KazBufferHelper::SetIndexBufferView(gpuBuffer->GetGpuAddress(indexBufferHandle), IndexByte),
 		indicesNum,
+		1
+	);
+
+	drawInstanceCommandData = KazRenderHelper::SetDrawInstanceCommandData(
+		D3D_PRIMITIVE_TOPOLOGY_LINESTRIP,
+		KazBufferHelper::SetVertexBufferView(gpuBuffer->GetGpuAddress(vertexBufferHandle), VertByte, sizeof(lVert[0])),
+		300,
 		1
 	);
 }
@@ -71,7 +78,14 @@ CircleRender::CircleRender()
 void CircleRender::Draw()
 {
 	//パイプライン設定-----------------------------------------------------------------------------------------------------
-	renderData.pipelineMgr->SetPipeLineAndRootSignature(data.pipelineName);
+	if (data.fillFlag)
+	{
+		renderData.pipelineMgr->SetPipeLineAndRootSignature(PIPELINE_NAME_COLOR_LINE);
+	}
+	else
+	{
+		renderData.pipelineMgr->SetPipeLineAndRootSignature(data.pipelineName);
+	}
 	//パイプライン設定-----------------------------------------------------------------------------------------------------
 
 	//行列計算-----------------------------------------------------------------------------------------------------
@@ -114,7 +128,8 @@ void CircleRender::Draw()
 
 		float PI_F2 = DirectX::XM_2PI;
 		//頂点データ
-		for (int i = 0; i < lVert.size(); i++) {
+		for (int i = 0; i < lVert.size(); i++)
+		{
 			lVert[i].pos.x = (RADIUS * sin((PI_F2 / VERT_NUMBER) * i));
 			lVert[i].pos.y = -(RADIUS * cos((PI_F2 / VERT_NUMBER) * i));
 			lVert[i].pos.z = 0.0f;
@@ -123,6 +138,12 @@ void CircleRender::Draw()
 			lVert[i].uv.y = 1.0f;
 		}
 		BUFFER_SIZE lVertByte = KazBufferHelper::GetBufferSize<BUFFER_SIZE>(lVert.size(), sizeof(Vertex));
+
+
+		if (data.fillFlag)
+		{
+			lVert[lVert.size() - 1] = lVert[0];
+		}
 		gpuBuffer->TransData(vertexBufferHandle, lVert.data(), lVertByte);
 	}
 	//円の拡縮-------------------------
@@ -130,7 +151,7 @@ void CircleRender::Draw()
 
 
 	//バッファの転送-----------------------------------------------------------------------------------------------------
-	
+
 	if (data.color.Dirty() || data.transform.Dirty() || data.change3DDirtyFlag.Dirty() || (renderData.cameraMgrInstance->ViewAndProjDirty() && data.change3DFlag) || data.cameraIndex.dirty.Dirty())
 	{
 		//行列
@@ -160,7 +181,14 @@ void CircleRender::Draw()
 	//バッファをコマンドリストに積む-----------------------------------------------------------------------------------------------------
 
 	//描画命令-----------------------------------------------------------------------------------------------------
-	DrawIndexInstanceCommand(drawIndexInstanceCommandData);
+	if (data.fillFlag)
+	{
+		DrawInstanceCommand(drawInstanceCommandData);
+	}
+	else
+	{
+		DrawIndexInstanceCommand(drawIndexInstanceCommandData);
+	}
 	//描画命令-----------------------------------------------------------------------------------------------------
 
 	data.Record();
