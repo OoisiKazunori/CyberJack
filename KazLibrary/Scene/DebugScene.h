@@ -100,7 +100,7 @@ private:
 	int cbvHandle;
 
 
-	static const int TRIANGLE_ARRAY_NUM = 32;
+	static const int TRIANGLE_ARRAY_NUM = 10;
 	static const int FRAME_COUNT = 2;
 	static const int TRIANGLE_RESOURCE_COUNT = TRIANGLE_ARRAY_NUM * FRAME_COUNT;
 	static const int ComputeThreadBlockSize = TRIANGLE_ARRAY_NUM * FRAME_COUNT;

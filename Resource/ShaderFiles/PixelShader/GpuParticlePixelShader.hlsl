@@ -2,5 +2,5 @@
 
 float4 PSmain(ColorOutPut input) : SV_TARGET
 {
-    return color;
+    return matrixData[input.id].color;
 }

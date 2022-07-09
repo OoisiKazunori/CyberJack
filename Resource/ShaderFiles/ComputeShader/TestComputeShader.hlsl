@@ -42,33 +42,35 @@ struct OutputData
 
 cbuffer RootConstants : register(b0)
 {
-    matrix view;        //ï¿½rï¿½ï¿½ï¿½[ï¿½sï¿½ï¿½
-    matrix projection;  //ï¿½vï¿½ï¿½ï¿½Wï¿½Fï¿½Nï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½
-    uint increSize;     //ï¿½è”ï¿½oï¿½bï¿½tï¿½@ï¿½Ì\ï¿½ï¿½ï¿½ÌƒTï¿½Cï¿½Y
-    uint64_t gpuAddress; //ï¿½è”ï¿½oï¿½bï¿½tï¿½@ï¿½Ìæ“ªï¿½Aï¿½hï¿½ï¿½ï¿½X
+    matrix view;        //?¿½r?¿½?¿½?¿½[?¿½s?¿½?¿½
+    matrix projection;  //?¿½v?¿½?¿½?¿½W?¿½F?¿½N?¿½V?¿½?¿½?¿½?¿½?¿½s?¿½?¿½
+    uint increSize;     //?¿½è”ï¿½o?¿½b?¿½t?¿½@?¿½Ì\?¿½?¿½?¿½ÌƒT?¿½C?¿½Y
+    uint64_t gpuAddress; //?¿½è”ï¿½o?¿½b?¿½t?¿½@?¿½Ìæ“ª?¿½A?¿½h?¿½?¿½?¿½X
+    float pad;
+    float4 pad2[7];
 };
 
-//ï¿½ï¿½ï¿½Í—pï¿½Ìƒoï¿½bï¿½tï¿½@-------------------------
+//?¿½?¿½?¿½Í—p?¿½Ìƒo?¿½b?¿½t?¿½@-------------------------
 StructuredBuffer<InputData> inputBuffer : register(t0);
-//ï¿½ï¿½ï¿½Í—pï¿½Ìƒoï¿½bï¿½tï¿½@-------------------------
+//?¿½?¿½?¿½Í—p?¿½Ìƒo?¿½b?¿½t?¿½@-------------------------
 
-//ï¿½oï¿½Í—pï¿½Ìƒoï¿½bï¿½tï¿½@-------------------------
-//ï¿½sï¿½ï¿½
-AppendStructuredBuffer<OutputData> matrixData : register(u0);
-//ï¿½ï¿½ï¿½ÍXï¿½V
-AppendStructuredBuffer<InputData> updateInputData : register(u1);
-//ï¿½`ï¿½ï¿½Rï¿½}ï¿½ï¿½ï¿½h
-AppendStructuredBuffer<IndirectCommand> outputCommands : register(u2);
-//ï¿½oï¿½Í—pï¿½Ìƒoï¿½bï¿½tï¿½@-------------------------
+//?¿½o?¿½Í—p?¿½Ìƒo?¿½b?¿½t?¿½@-------------------------
+//?¿½s?¿½?¿½
+AppendStructuredBuffer<OutputData> matrixData : register(u1);
+//?¿½?¿½?¿½ÍX?¿½V
+AppendStructuredBuffer<InputData> updateInputData : register(u2);
+//?¿½`?¿½?¿½R?¿½}?¿½?¿½?¿½h
+AppendStructuredBuffer<IndirectCommand> outputCommands : register(u3);
+//?¿½o?¿½Í—p?¿½Ìƒo?¿½b?¿½t?¿½@-------------------------
 
-static const int NUM = 32;
+static const int NUM = 10;
 
 [numthreads(NUM, 1, 1)]
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
 {
     uint index = (groupId.x * NUM) + groupIndex;
 
-    //ï¿½sï¿½ï¿½vï¿½Z-------------------------
+    //?¿½s?¿½?¿½v?¿½Z-------------------------
     float3 outputPos = inputBuffer[index].pos.xyz;
     
     outputPos = float3(0.0f + index * 20.0f,0.0f,20.0f);
@@ -80,15 +82,15 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     pMatWorld = mul(pMatScale, pMatWorld);
     pMatWorld = mul(pMatRot, pMatWorld);
     pMatWorld = mul(pMatTrans, pMatWorld);
-    //ï¿½sï¿½ï¿½vï¿½Z-------------------------
+    //?¿½s?¿½?¿½v?¿½Z-------------------------
     
     
-    //ï¿½oï¿½Í—p-------------------------
+    //?¿½o?¿½Í—p-------------------------
     OutputData outputMat;
     matrix lView = view;
     matrix lproj = projection;
 
-    //ï¿½sï¿½ï¿½oï¿½ï¿½
+    //?¿½s?¿½?¿½o?¿½?¿½
     outputMat.mat = MatrixIdentity();
     outputMat.mat = mul(pMatWorld,outputMat.mat);
     outputMat.mat = mul(lView,    outputMat.mat);
@@ -98,7 +100,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     //matrixData[index] = outputMat;
 
 
-    //ï¿½ï¿½ï¿½ÍXï¿½Vï¿½oï¿½ï¿½-------------------------
+    //?¿½?¿½?¿½ÍX?¿½V?¿½o?¿½?¿½-------------------------
     InputData inputData;
     inputData.pos = float4(outputPos.xyz, 0.0f);
     inputData.velocity = inputBuffer[index].velocity;
@@ -107,15 +109,18 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     //updateInputData[index] = inputData;
 
     
-    //ï¿½`ï¿½ï¿½Rï¿½}ï¿½ï¿½ï¿½hï¿½oï¿½ï¿½-------------------------
-    IndirectCommand outputCommand;
-    outputCommand.cbvAddress = gpuAddress + index * increSize;
-    outputCommand.drawArguments.VertexCountPerInstance = 3;
-    outputCommand.drawArguments.InstanceCount = 1;
-    outputCommand.drawArguments.StartVertexLocation = 0;
-    outputCommand.drawArguments.StartInstanceLocation = 0;
-    outputCommands.Append(outputCommand);
+    //?¿½`?¿½?¿½R?¿½}?¿½?¿½?¿½h?¿½o?¿½?¿½-------------------------
+    if(index < 1)
+    {
+        IndirectCommand outputCommand;
+        outputCommand.cbvAddress = gpuAddress + index * increSize;
+        outputCommand.drawArguments.VertexCountPerInstance = 3;
+        outputCommand.drawArguments.InstanceCount = NUM;
+        outputCommand.drawArguments.StartVertexLocation = 0;
+        outputCommand.drawArguments.StartInstanceLocation = 0;
+        outputCommands.Append(outputCommand);
+    }
     //outputCommands[index] = outputCommand;
-    //ï¿½oï¿½Í—p-------------------------
+    //?¿½o?¿½Í—p-------------------------
 
 }

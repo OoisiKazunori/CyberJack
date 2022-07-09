@@ -22,8 +22,8 @@ DebugScene::DebugScene()
 
 	//CommandBuffer---------------------------
 	std::array<D3D12_INDIRECT_ARGUMENT_DESC, 2> args{};
-	args[0].Type = D3D12_INDIRECT_ARGUMENT_TYPE_CONSTANT_BUFFER_VIEW;
-	args[0].ConstantBufferView.RootParameterIndex = 0;
+	args[0].Type = D3D12_INDIRECT_ARGUMENT_TYPE_UNORDERED_ACCESS_VIEW;
+	args[0].UnorderedAccessView.RootParameterIndex = 0;
 	args[1].Type = D3D12_INDIRECT_ARGUMENT_TYPE_DRAW;
 
 	//CommandArgument------------------------
@@ -33,7 +33,7 @@ DebugScene::DebugScene()
 	desc.ByteStride = sizeof(IndirectCommand);
 	//CommandArgument------------------------
 
-	DirectX12Device::Instance()->dev->CreateCommandSignature(&desc, GraphicsRootSignature::Instance()->GetRootSignature(ROOTSIGNATURE_DATA_DRAW).Get(), IID_PPV_ARGS(&commandSig));
+	DirectX12Device::Instance()->dev->CreateCommandSignature(&desc, GraphicsRootSignature::Instance()->GetRootSignature(ROOTSIGNATURE_DATA_DRAW_UAV).Get(), IID_PPV_ARGS(&commandSig));
 	//CommandArgument---------------------------
 
 	//Parameter---------------------------
@@ -343,7 +343,7 @@ void DebugScene::Update()
 	commonData.cameraMat = CameraMgr::Instance()->GetViewMatrix();
 	commonData.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
 	commonData.increSize = sizeof(OutPutData);
-	commonData.gpuAddress = buffer->GetGpuAddress(cbvMatHandle);
+	commonData.gpuAddress = buffer->GetGpuAddress(outputMatHandle);
 	buffer->TransData(commonHandle, &commonData, sizeof(CommonData));
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(4, buffer->GetGpuAddress(commonHandle));
 
@@ -353,7 +353,8 @@ void DebugScene::Update()
 	//Compute------------------------
 
 	//GPU‚Ö‚Ì“]‘—-------------------------
-	/*std::array<OutPutData, TRIANGLE_ARRAY_NUM> data;
+	/*
+	std::array<OutPutData, TRIANGLE_ARRAY_NUM> data;
 	for (int i = 0; i < data.size(); ++i)
 	{
 		KazMath::Vec3<float> pos = { 0.0f + static_cast<float>(i) * 30.0f ,0.0f,20.0f };
@@ -368,9 +369,11 @@ void DebugScene::Update()
 		DirectX::XMMATRIX p = CameraMgr::Instance()->GetPerspectiveMatProjection();
 		data[i].mat = (scaleM * rotaM * trans) * v * p;
 		data[i].color = { 1.0f,0.0f,0.0f,1.0f };
-	}*/
-	//buffer->TransData(outputMatHandle, &data, TRIANGLE_ARRAY_NUM * sizeof(OutPutData));
+	}
+	buffer->TransData(outputMatHandle, &data, TRIANGLE_ARRAY_NUM * sizeof(OutPutData));
+	*/
 
+	/*
 	{
 		void *dataMap = nullptr;
 		auto result = buffer->GetBufferData(cbvMatHandle)->Map(0, nullptr, (void **)&dataMap);
@@ -380,6 +383,7 @@ void DebugScene::Update()
 			buffer->GetBufferData(cbvMatHandle)->Unmap(0, nullptr);
 		}
 	}
+	*/
 
 
 
@@ -430,7 +434,7 @@ void DebugScene::Draw()
 		DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
 		(
 			commandSig.Get(),
-			TRIANGLE_ARRAY_NUM,
+			1,
 			buffer->GetBufferData(commandBuffHandle).Get(),
 			0,
 			nullptr,
@@ -450,7 +454,7 @@ void DebugScene::Draw()
 	}
 
 
-	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
+	//RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 
 
 }
@@ -504,8 +508,8 @@ void DebugScene::Input()
 	eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
 	targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
 
-	eyePos = { 42.0f,0.0f,-148.0f };
-	targetPos = { 42.0f,0.0f,-143.0f };
+	//eyePos = { 42.0f,0.0f,-148.0f };
+	//targetPos = { 42.0f,0.0f,-143.0f };
 
 #pragma endregion
 
