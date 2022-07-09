@@ -254,7 +254,7 @@ DebugScene::DebugScene()
 
 		//DrawIndirect
 		{
-			drawCommandHandle = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(drawIndirectBufferSize));
+			drawCommandHandle = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(drawIndirectBufferSize, "DrawCommand"));
 
 			/*std::array<IndirectCommand, TRIANGLE_ARRAY_NUM> lCommands;
 			D3D12_GPU_VIRTUAL_ADDRESS cbGpuAddress = buffer->GetGpuAddress(cbvMatHandle);
@@ -391,38 +391,23 @@ void DebugScene::Update()
 
 void DebugScene::Draw()
 {
-	int num = RenderTargetStatus::Instance()->copySwapchain->GetCurrentBackBufferIndex();
-	RenderTargetStatus::Instance()->bbIndex = num;
+
+	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
+	RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
+
 	{
 		//RESOURCE_HANDLE commandBuffHandle = commandBufferHandle;
 		RESOURCE_HANDLE commandBuffHandle = drawCommandHandle;
 
 		//DrawIndirect------------------------
-
-		std::array<D3D12_RESOURCE_BARRIER, 2> barriers = {
+		
+		std::array<D3D12_RESOURCE_BARRIER, 1> barriers = {
 		CD3DX12_RESOURCE_BARRIER::Transition(
 			buffer->GetBufferData(commandBuffHandle).Get(),
-			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-			D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT),
-		CD3DX12_RESOURCE_BARRIER::Transition(
-			RenderTargetStatus::Instance()->backBuffers[num].Get(),
-			D3D12_RESOURCE_STATE_PRESENT,
-			D3D12_RESOURCE_STATE_RENDER_TARGET)
+			D3D12_RESOURCE_STATE_RENDER_TARGET,
+			D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT)
 		};
-		DirectX12CmdList::Instance()->cmdList->ResourceBarrier(static_cast<unsigned int>(barriers.size()), barriers.data());
-
-
-
-		//Clear-------------------------
-
-		D3D12_CPU_DESCRIPTOR_HANDLE rtvH;
-		rtvH = RenderTargetStatus::Instance()->rtvHeaps->GetCPUDescriptorHandleForHeapStart();
-		rtvH.ptr += num * DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(RenderTargetStatus::Instance()->heapDesc.Type);
-		DirectX12CmdList::Instance()->cmdList->OMSetRenderTargets(1, &rtvH, false, &RenderTargetStatus::Instance()->gDepth.dsvH[RenderTargetStatus::Instance()->handle]);
-		RenderTargetStatus::Instance()->gDepth.Clear(RenderTargetStatus::Instance()->handle);
-
-		RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
-		//Clear-------------------------
+		//DirectX12CmdList::Instance()->cmdList->ResourceBarrier(static_cast<unsigned int>(barriers.size()), barriers.data());
 
 
 		GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE);
@@ -430,7 +415,7 @@ void DebugScene::Draw()
 		DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
 
-		//PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Cull invisible triangles");
+		PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Cull invisible triangles");
 		DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
 		(
 			commandSig.Get(),
@@ -440,23 +425,19 @@ void DebugScene::Draw()
 			nullptr,
 			0
 		);
-		//PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
+		PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
+
+		barriers[0].Transition.StateBefore = D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT;
+		barriers[0].Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+		DirectX12CmdList::Instance()->cmdList->ResourceBarrier(static_cast<unsigned int>(barriers.size()), barriers.data());
+		//DrawIndirect------------------------
+
 
 
 		bg.Draw();
 
-		barriers[0].Transition.StateBefore = D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT;
-		barriers[0].Transition.StateAfter = D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
-		barriers[1].Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-		barriers[1].Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-		DirectX12CmdList::Instance()->cmdList->ResourceBarrier(static_cast<unsigned int>(barriers.size()), barriers.data());
-		//DrawIndirect------------------------
+		RenderTargetStatus::Instance()->SwapResourceBarrier();
 	}
-
-
-	//RenderTargetStatus::Instance()->SetDoubleBufferFlame();
-
-
 }
 
 void DebugScene::Input()

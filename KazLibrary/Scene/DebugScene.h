@@ -45,7 +45,6 @@ struct CSRootConstants
 	DirectX::XMMATRIX projection;
 	float size;
 	UINT64 gpuAddress;
-	DirectX::XMFLOAT2 pad;
 };
 
 //ˆÚ“®î•ñ
