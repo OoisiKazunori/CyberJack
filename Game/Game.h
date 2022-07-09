@@ -23,6 +23,7 @@
 #include"../Game/UI/AnnounceStageUI.h"
 #include"../Game/Event/EventSprite.h"
 #include"../Game/Event/TutorialWindow.h"
+#include"../Game/Enemy/HitEnemyEffect.h"
 
 struct ResponeData
 {
@@ -213,5 +214,7 @@ private:
 	KazMath::Vec3<float>tPos;
 
 	CircleRender circle;
+
+	HitEnemyEffect hit;
 };
 

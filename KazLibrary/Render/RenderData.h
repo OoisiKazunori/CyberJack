@@ -274,21 +274,21 @@ struct FbxModelData
 struct CircleDrawData
 {
 	KazMath::Transform3D transform;
-	KazMath::Color color;
+	KazMath::Color colorData;
 	float radius;
 	PipeLineNames pipelineName;
 	bool change3DFlag;
 	CameraIndexData cameraIndex;
 	bool fillFlag;
 
-	CircleDrawData() :color(255, 255, 255, 255), radius(0.0f), pipelineName(PIPELINE_NAME_COLOR_NOCARING), change3DFlag(false), change3DDirtyFlag(&change3DFlag), radiusDirtyFlag(&radius), fillFlag(false)
+	CircleDrawData() :colorData(255, 255, 255, 255), radius(0.0f), pipelineName(PIPELINE_NAME_COLOR_NOCARING), change3DFlag(false), change3DDirtyFlag(&change3DFlag), radiusDirtyFlag(&radius), fillFlag(true)
 	{
 	}
 
 	void Record()
 	{
 		transform.Record();
-		color.Record();
+		colorData.Record();
 		radiusDirtyFlag.Record();
 		change3DDirtyFlag.Record();
 		cameraIndex.dirty.Record();

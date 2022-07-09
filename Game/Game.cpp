@@ -436,6 +436,11 @@ void Game::Input()
 	//	}
 	//}
 
+	if (input->InputTrigger(DIK_SPACE))
+	{
+		hit.Start(KazMath::Vec3<float>(0.0f, 0.0f, 10.0f));
+	}
+
 }
 
 void Game::Update()
@@ -997,7 +1002,7 @@ void Game::Update()
 		stages[stageNum]->Update();
 		doneSprite.Update();
 		tutorialWindow.Update();
-
+		hit.Update();
 
 
 		//配列外を超えない処理
@@ -1183,6 +1188,9 @@ void Game::Draw()
 
 		tutorialWindow.Draw();
 		stageUI.Draw();
+
+
+		hit.Draw();
 
 
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, handles[0]);

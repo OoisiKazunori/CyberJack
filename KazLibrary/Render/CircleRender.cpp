@@ -80,11 +80,11 @@ void CircleRender::Draw()
 	//パイプライン設定-----------------------------------------------------------------------------------------------------
 	if (data.fillFlag)
 	{
-		renderData.pipelineMgr->SetPipeLineAndRootSignature(PIPELINE_NAME_COLOR_LINE);
+		renderData.pipelineMgr->SetPipeLineAndRootSignature(data.pipelineName);
 	}
 	else
 	{
-		renderData.pipelineMgr->SetPipeLineAndRootSignature(data.pipelineName);
+		renderData.pipelineMgr->SetPipeLineAndRootSignature(PIPELINE_NAME_COLOR_LINE);
 	}
 	//パイプライン設定-----------------------------------------------------------------------------------------------------
 
@@ -152,7 +152,7 @@ void CircleRender::Draw()
 
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 
-	if (data.color.Dirty() || data.transform.Dirty() || data.change3DDirtyFlag.Dirty() || (renderData.cameraMgrInstance->ViewAndProjDirty() && data.change3DFlag) || data.cameraIndex.dirty.Dirty())
+	if (data.colorData.Dirty() || data.transform.Dirty() || data.change3DDirtyFlag.Dirty() || (renderData.cameraMgrInstance->ViewAndProjDirty() && data.change3DFlag) || data.cameraIndex.dirty.Dirty())
 	{
 		//行列
 		if (data.change3DFlag)
@@ -160,7 +160,7 @@ void CircleRender::Draw()
 			constMap.world = baseMatWorldData.matWorld;
 			constMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex.id);
 			constMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
-			constMap.color = data.color.ConvertColorRateToXMFLOAT4();
+			constMap.color = data.colorData.ConvertColorRateToXMFLOAT4();
 			constMap.mat = constMap.world * constMap.view * constMap.viewproj;
 		}
 		else
@@ -168,7 +168,7 @@ void CircleRender::Draw()
 			constMap.world = baseMatWorldData.matWorld;
 			constMap.view = DirectX::XMMatrixIdentity();
 			constMap.viewproj = renderData.cameraMgrInstance->GetOrthographicMatProjection();
-			constMap.color = data.color.ConvertColorRateToXMFLOAT4();
+			constMap.color = data.colorData.ConvertColorRateToXMFLOAT4();
 			constMap.mat = constMap.world * constMap.viewproj;
 		}
 		TransData(&constMap, constBufferHandle, typeid(constMap).name());
@@ -183,11 +183,11 @@ void CircleRender::Draw()
 	//描画命令-----------------------------------------------------------------------------------------------------
 	if (data.fillFlag)
 	{
-		DrawInstanceCommand(drawInstanceCommandData);
+		DrawIndexInstanceCommand(drawIndexInstanceCommandData);
 	}
 	else
 	{
-		DrawIndexInstanceCommand(drawIndexInstanceCommandData);
+		DrawInstanceCommand(drawInstanceCommandData);
 	}
 	//描画命令-----------------------------------------------------------------------------------------------------
 

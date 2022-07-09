@@ -86,6 +86,8 @@ private:
 	KazMath::Vec3<float> eyePos, targetPos;
 	KazMath::Vec2<float> angle;
 
+
+
 	//BackGroundForDebug bg;
 
 	unique_ptr<CreateGpuBuffer>buffer;
