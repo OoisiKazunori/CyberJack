@@ -280,8 +280,9 @@ struct CircleDrawData
 	bool change3DFlag;
 	CameraIndexData cameraIndex;
 	bool fillFlag;
+	bool billBoardFlag;
 
-	CircleDrawData() :colorData(255, 255, 255, 255), radius(0.0f), pipelineName(PIPELINE_NAME_COLOR_NOCARING), change3DFlag(false), change3DDirtyFlag(&change3DFlag), radiusDirtyFlag(&radius), fillFlag(true)
+	CircleDrawData() :colorData(255, 255, 255, 255), radius(0.0f), pipelineName(PIPELINE_NAME_COLOR_NOCARING), change3DFlag(false), change3DDirtyFlag(&change3DFlag), radiusDirtyFlag(&radius), fillFlag(true), billBoardFlag(false)
 	{
 	}
 

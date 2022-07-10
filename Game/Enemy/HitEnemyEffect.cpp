@@ -6,6 +6,7 @@ HitEnemyEffect::HitEnemyEffect() :startFlag(false)
 	for (int i = 0; i < circleR.size(); ++i)
 	{
 		circleR[i].data.change3DFlag = true;
+		circleR[i].data.billBoardFlag = true;
 		circleR[i].data.fillFlag = false;
 
 	}

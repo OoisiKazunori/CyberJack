@@ -89,7 +89,7 @@ void CircleRender::Draw()
 	//パイプライン設定-----------------------------------------------------------------------------------------------------
 
 	//行列計算-----------------------------------------------------------------------------------------------------
-	if (data.transform.Dirty() || data.change3DDirtyFlag.Dirty())
+	if (data.transform.Dirty() || data.change3DDirtyFlag.Dirty() || renderData.cameraMgrInstance->BillboardDirty(data.cameraIndex.id))
 	{
 		if (data.change3DFlag)
 		{
@@ -102,6 +102,11 @@ void CircleRender::Draw()
 			baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 			baseMatWorldData.matWorld *= baseMatWorldData.matScale;
 			baseMatWorldData.matWorld *= baseMatWorldData.matRota;
+			//ビルボード行列を掛ける
+			if (data.billBoardFlag)
+			{
+				baseMatWorldData.matWorld *= renderData.cameraMgrInstance->GetMatBillBoard(data.cameraIndex.id);
+			}
 			baseMatWorldData.matWorld *= baseMatWorldData.matTrans;
 		}
 		else
@@ -114,6 +119,7 @@ void CircleRender::Draw()
 			baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 			baseMatWorldData.matWorld *= baseMatWorldData.matScale;
 			baseMatWorldData.matWorld *= baseMatWorldData.matTrans;
+
 		}
 	}
 	//行列計算-----------------------------------------------------------------------------------------------------
@@ -152,7 +158,7 @@ void CircleRender::Draw()
 
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 
-	if (data.colorData.Dirty() || data.transform.Dirty() || data.change3DDirtyFlag.Dirty() || (renderData.cameraMgrInstance->ViewAndProjDirty() && data.change3DFlag) || data.cameraIndex.dirty.Dirty())
+	if (data.colorData.Dirty() || data.transform.Dirty() || data.change3DDirtyFlag.Dirty() || (renderData.cameraMgrInstance->ViewAndProjDirty(data.cameraIndex.id) && data.change3DFlag) || data.cameraIndex.dirty.Dirty() || renderData.cameraMgrInstance->BillboardDirty(data.cameraIndex.id))
 	{
 		//行列
 		if (data.change3DFlag)
