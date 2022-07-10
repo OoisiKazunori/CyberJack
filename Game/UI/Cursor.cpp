@@ -55,6 +55,7 @@ Cursor::Cursor()
 
 	clickSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Push.wav", false);
 	initClickSoundFlag = false;
+
 }
 
 void Cursor::Init()
@@ -68,7 +69,6 @@ void Cursor::Init()
 
 	enableLockOnTimer = 0;
 	notEnableLockOnFlag = false;
-
 }
 
 void Cursor::Input(bool UP_FLAG, bool DOWN_FLAG, bool LEFT_FLAG, bool RIGHT_FLAG, bool DONE_FLAG, bool RELEASE_FLAG, const KazMath::Vec2<float> &ANGLE)
@@ -493,20 +493,13 @@ void Cursor::Update()
 	//“–‚½‚è”»’è----------------------------------------------------------------
 
 
-	/*ImGui::Begin("Curosr");
-	ImGui::InputFloat("Speed", &baseSpeed);
-	ImGui::InputFloat("KOCKBACK_MAX_VALUE_X", &KOCKBACK_MAX_VALUE.x);
-	ImGui::InputFloat("KOCKBACK_MAX_VALUE_Y", &KOCKBACK_MAX_VALUE.y);
-	ImGui::InputFloat("KOCKBACK_VELOCITY_X", &KOCKBACK_VELOCITY.x);
-	ImGui::InputFloat("KOCKBACK_VELOCITY_Y", &KOCKBACK_VELOCITY.y);
-	ImGui::InputFloat("deadLine", &deadLine);
-	ImGui::Text("NowSpeed:%f", speed);
-	ImGui::Text("MaxSpeed:%f", baseSpeed * (1.0 - deadLine));
-	ImGui::Text("KnockBackValX%f", knockBackVal.x);
-	ImGui::Text("KnockBackValY%f", knockBackVal.y);
-	ImGui::Text("stickAngleX:%f", honraiStick.x);
-	ImGui::Text("stickAngleY:%f", honraiStick.y);
-	ImGui::End();*/
+	for (int i = 0; i < boxEffectArray.size(); ++i)
+	{
+		if (boxEffectArray[i].IsAlive())
+		{
+			boxEffectArray[i].Update();
+		}
+	}
 
 }
 
@@ -514,7 +507,11 @@ void Cursor::Draw()
 {
 	numberTex->Draw();
 	cursorFlameTex->Draw();
-	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Cursor");
+
+	for (int i = 0; i < boxEffectArray.size(); ++i)
+	{
+		boxEffectArray[i].Draw();
+	}
 	for (int i = 0; i < cursorEffectTex.size(); ++i)
 	{
 		if (cursorEffectTex[i].initFlag)
@@ -522,7 +519,7 @@ void Cursor::Draw()
 			cursorEffectTex[i].cursorEffectTex->Draw();
 		}
 	}
-	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
+
 }
 
 bool Cursor::LockOn()
@@ -541,10 +538,20 @@ bool Cursor::Release()
 	return releaseFlag;
 }
 
-void Cursor::Count()
+void Cursor::Hit(KazMath::Vec3<float> *POS)
 {
 	++lockOnNum;
 	notEnableLockOnFlag = true;
+
+
+	for (int i = 0; i < boxEffectArray.size(); ++i)
+	{
+		if (!boxEffectArray[i].IsAlive())
+		{
+			boxEffectArray[i].Start(POS);
+			break;
+		}
+	}
 }
 
 const int &Cursor::GetCount()

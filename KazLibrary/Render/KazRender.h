@@ -10,6 +10,7 @@
 #include"../Loader/FbxModelResourceMgr.h"
 #include"../Loader/ObjResourceMgr.h"
 #include"../Render/RenderData.h"
+#include"Box2DRender.h"
 
 typedef unique_ptr<Sprite2DRender> Sprite2DRenderPtr;
 typedef unique_ptr<Sprite3DRender> Sprite3DRenderPtr;

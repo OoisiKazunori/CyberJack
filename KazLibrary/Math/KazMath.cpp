@@ -61,19 +61,18 @@ DirectX::XMVECTOR KazMath::CalculateScreenToWorld(DirectX::XMVECTOR pout, Direct
 	return pout;
 }
 
-template<typename T>
-inline KazMath::Vec2<T> KazMath::CaluAngle(const KazMath::Vec2<T> &POS, float Angle, const KazMath::Vec2<T> &CPos)
+KazMath::Vec2<float> KazMath::CaluAngle(const KazMath::Vec2<float> &POS, float Angle, const KazMath::Vec2<float> &CPos)
 {
-	KazMath::Vec2<T> V, oldV;
-	KazMath::Vec2<T> calu;
-	double Radian;
+	KazMath::Vec2<float> V, oldV;
+	KazMath::Vec2<float> calu;
+	float Radian;
 
 	oldV = POS;
 
 
-	Radian = Angle * PI_2F / static_cast<T>(180);
-	double Cos = cos(Radian);
-	double Sin = sin(Radian);
+	Radian = Angle * PI_2F / static_cast<float>(180);
+	float Cos = std::cosf(Radian);
+	float Sin = std::sinf(Radian);
 
 	V = POS - CPos;
 
@@ -81,9 +80,7 @@ inline KazMath::Vec2<T> KazMath::CaluAngle(const KazMath::Vec2<T> &POS, float An
 	calu.y = V.x * Sin + V.y * Cos;
 	calu = calu + CPos;
 
-
-	Vec2<float> result = oldV - calu;
-	return result;
+	return calu;
 }
 
 template<typename T>

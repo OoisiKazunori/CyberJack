@@ -60,10 +60,17 @@ CircleRender::CircleRender()
 	gpuBuffer->TransData(indexBufferHandle, lIndi.data(), IndexByte);
 	//バッファ転送-----------------------------------------------------------------------------------------------------
 
-	drawIndexInstanceCommandData = KazRenderHelper::SetDrawIndexInstanceCommandData(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, 
+	drawIndexInstanceCommandData = KazRenderHelper::SetDrawIndexInstanceCommandData(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
 		KazBufferHelper::SetVertexBufferView(gpuBuffer->GetGpuAddress(vertexBufferHandle), VertByte, sizeof(lVert[0])),
 		KazBufferHelper::SetIndexBufferView(gpuBuffer->GetGpuAddress(indexBufferHandle), IndexByte),
 		indicesNum,
+		1
+	);
+
+	drawInstanceCommandData = KazRenderHelper::SetDrawInstanceCommandData(
+		D3D_PRIMITIVE_TOPOLOGY_LINESTRIP,
+		KazBufferHelper::SetVertexBufferView(gpuBuffer->GetGpuAddress(vertexBufferHandle), VertByte, sizeof(lVert[0])),
+		300,
 		1
 	);
 }
@@ -71,11 +78,18 @@ CircleRender::CircleRender()
 void CircleRender::Draw()
 {
 	//パイプライン設定-----------------------------------------------------------------------------------------------------
-	renderData.pipelineMgr->SetPipeLineAndRootSignature(data.pipelineName);
+	if (data.fillFlag)
+	{
+		renderData.pipelineMgr->SetPipeLineAndRootSignature(data.pipelineName);
+	}
+	else
+	{
+		renderData.pipelineMgr->SetPipeLineAndRootSignature(PIPELINE_NAME_COLOR_LINE);
+	}
 	//パイプライン設定-----------------------------------------------------------------------------------------------------
 
 	//行列計算-----------------------------------------------------------------------------------------------------
-	if (data.transform.Dirty() || data.change3DDirtyFlag.Dirty())
+	if (data.transform.Dirty() || data.change3DDirtyFlag.Dirty() || renderData.cameraMgrInstance->BillboardDirty(data.cameraIndex.id))
 	{
 		if (data.change3DFlag)
 		{
@@ -88,6 +102,11 @@ void CircleRender::Draw()
 			baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 			baseMatWorldData.matWorld *= baseMatWorldData.matScale;
 			baseMatWorldData.matWorld *= baseMatWorldData.matRota;
+			//ビルボード行列を掛ける
+			if (data.billBoardFlag)
+			{
+				baseMatWorldData.matWorld *= renderData.cameraMgrInstance->GetMatBillBoard(data.cameraIndex.id);
+			}
 			baseMatWorldData.matWorld *= baseMatWorldData.matTrans;
 		}
 		else
@@ -100,6 +119,7 @@ void CircleRender::Draw()
 			baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
 			baseMatWorldData.matWorld *= baseMatWorldData.matScale;
 			baseMatWorldData.matWorld *= baseMatWorldData.matTrans;
+
 		}
 	}
 	//行列計算-----------------------------------------------------------------------------------------------------
@@ -114,7 +134,8 @@ void CircleRender::Draw()
 
 		float PI_F2 = DirectX::XM_2PI;
 		//頂点データ
-		for (int i = 0; i < lVert.size(); i++) {
+		for (int i = 0; i < lVert.size(); i++)
+		{
 			lVert[i].pos.x = (RADIUS * sin((PI_F2 / VERT_NUMBER) * i));
 			lVert[i].pos.y = -(RADIUS * cos((PI_F2 / VERT_NUMBER) * i));
 			lVert[i].pos.z = 0.0f;
@@ -123,6 +144,12 @@ void CircleRender::Draw()
 			lVert[i].uv.y = 1.0f;
 		}
 		BUFFER_SIZE lVertByte = KazBufferHelper::GetBufferSize<BUFFER_SIZE>(lVert.size(), sizeof(Vertex));
+
+
+		if (data.fillFlag)
+		{
+			lVert[lVert.size() - 1] = lVert[0];
+		}
 		gpuBuffer->TransData(vertexBufferHandle, lVert.data(), lVertByte);
 	}
 	//円の拡縮-------------------------
@@ -130,8 +157,8 @@ void CircleRender::Draw()
 
 
 	//バッファの転送-----------------------------------------------------------------------------------------------------
-	
-	if (data.color.Dirty() || data.transform.Dirty() || data.change3DDirtyFlag.Dirty() || (renderData.cameraMgrInstance->ViewAndProjDirty(data.cameraIndex.id) && data.change3DFlag) || data.cameraIndex.dirty.Dirty())
+
+	if (data.colorData.Dirty() || data.transform.Dirty() || data.change3DDirtyFlag.Dirty() || (renderData.cameraMgrInstance->ViewAndProjDirty(data.cameraIndex.id) && data.change3DFlag) || data.cameraIndex.dirty.Dirty() || renderData.cameraMgrInstance->BillboardDirty(data.cameraIndex.id))
 	{
 		//行列
 		if (data.change3DFlag)
@@ -139,7 +166,7 @@ void CircleRender::Draw()
 			constMap.world = baseMatWorldData.matWorld;
 			constMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex.id);
 			constMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
-			constMap.color = data.color.ConvertColorRateToXMFLOAT4();
+			constMap.color = data.colorData.ConvertColorRateToXMFLOAT4();
 			constMap.mat = constMap.world * constMap.view * constMap.viewproj;
 		}
 		else
@@ -147,7 +174,7 @@ void CircleRender::Draw()
 			constMap.world = baseMatWorldData.matWorld;
 			constMap.view = DirectX::XMMatrixIdentity();
 			constMap.viewproj = renderData.cameraMgrInstance->GetOrthographicMatProjection();
-			constMap.color = data.color.ConvertColorRateToXMFLOAT4();
+			constMap.color = data.colorData.ConvertColorRateToXMFLOAT4();
 			constMap.mat = constMap.world * constMap.viewproj;
 		}
 		TransData(&constMap, constBufferHandle, typeid(constMap).name());
@@ -160,7 +187,14 @@ void CircleRender::Draw()
 	//バッファをコマンドリストに積む-----------------------------------------------------------------------------------------------------
 
 	//描画命令-----------------------------------------------------------------------------------------------------
-	DrawIndexInstanceCommand(drawIndexInstanceCommandData);
+	if (data.fillFlag)
+	{
+		DrawIndexInstanceCommand(drawIndexInstanceCommandData);
+	}
+	else
+	{
+		DrawInstanceCommand(drawInstanceCommandData);
+	}
 	//描画命令-----------------------------------------------------------------------------------------------------
 
 	data.Record();

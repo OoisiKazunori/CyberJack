@@ -95,6 +95,9 @@
     <ClCompile Include="KazLibrary\Sound\SoundManager.cpp" />
     <ClCompile Include="KazLibrary\WinApi\Msg.cpp" />
     <ClCompile Include="KazLibrary\WinApi\WinApi.cpp" />
+    <ClCompile Include="KazLibrary\Render\Box2DRender.cpp" />
+    <ClCompile Include="Game\UI\LockOnBoxEffect.cpp" />
+    <ClCompile Include="Game\Enemy\HitEnemyEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -202,6 +205,9 @@
     <ClInclude Include="KazLibrary\Sound\SoundManager.h" />
     <ClInclude Include="KazLibrary\WinApi\Msg.h" />
     <ClInclude Include="KazLibrary\WinApi\WinApi.h" />
+    <ClInclude Include="KazLibrary\Render\Box2DRender.h" />
+    <ClInclude Include="Game\UI\LockOnBoxEffect.h" />
+    <ClInclude Include="Game\Enemy\HitEnemyEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

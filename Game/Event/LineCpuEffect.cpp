@@ -67,7 +67,7 @@ void LineCpuEffect::Init(LineEffectVec VEC, KazMath::Vec3<float> &POS)
 	circleRender.data.transform.pos.z -= 0.1f;
 	circleRender.data.radius = 0.5f;
 	circleRender.data.change3DFlag = true;
-	circleRender.data.color.color.a = 0;
+	circleRender.data.colorData.color.a = 0;
 
 	appearTimer = 0;
 	maxAppearTimer = 30;
@@ -112,7 +112,7 @@ void LineCpuEffect::Update()
 			{
 				++circleAppearTimer;
 			}
-			circleRender.data.color.color.a = static_cast<int>(EasingMaker(Out, Quint, KazMath::ConvertTimerToRate(circleAppearTimer, circleMaxAppearTimer)) * 255.0f);
+			circleRender.data.colorData.color.a = static_cast<int>(EasingMaker(Out, Quint, KazMath::ConvertTimerToRate(circleAppearTimer, circleMaxAppearTimer)) * 255.0f);
 		}
 		else
 		{

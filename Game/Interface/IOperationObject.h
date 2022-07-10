@@ -83,5 +83,5 @@ protected:
 
 	void LockOnWindow(const KazMath::Vec3<float> &POS);
 
-	Sprite3DRender lockOnWindowRender;
+	Sprite2DRender lockOnWindowRender;
 };

@@ -435,15 +435,10 @@ void Game::Input()
 	//		addEnemiesHandle[i] = 0;;
 	//	}
 	//}
-
-
 }
 
 void Game::Update()
 {
-
-
-
 	for (int i = 0; i < lineStartPoly.size(); ++i)
 	{
 		lineStartPoly[i].data.pipelineName = PIPELINE_NAME_COLOR_MULTITEX;
@@ -701,7 +696,7 @@ void Game::Update()
 
 
 					//カーソルのカウント数を増やす
-					cursor.Count();
+					cursor.Hit(enemyData->hitBox.center);
 					//敵が当たった情報を書く
 					enemies[enemyType][enemyCount]->Hit();
 
@@ -737,7 +732,7 @@ void Game::Update()
 			SoundManager::Instance()->PlaySoundMem(lockSoundHandle, 1);
 
 			//カーソルのカウント数を増やす
-			cursor.Count();
+			cursor.Hit(goalBox.hitBox.center);
 			goalBox.Hit();
 
 			//線演出をかける際にどの配列を使用するか決める
@@ -876,11 +871,20 @@ void Game::Update()
 					//lineEffectArrayData[i].Reset();
 					//lineLevel[lineIndex].lineReachObjFlag = false;
 				}
-				else if (lineLevel[lineIndex].lineReachObjFlag && !enemies[enemyTypeIndex][enemyIndex]->IsAlive())
+				else if (lineLevel[lineIndex].lineReachObjFlag && !enemies[enemyTypeIndex][enemyIndex]->IsAlive() && !lineEffectArrayData[i].hitFlag)
 				{
 					enemies[enemyTypeIndex][enemyIndex]->Dead();
+					lineEffectArrayData[i].hitFlag = true;
 					//lineEffectArrayData[i].Reset();
 					//lineLevel[lineIndex].lineReachObjFlag = false;
+					for (int hitEffectIndex = 0; hitEffectIndex < hitEffect.size(); ++hitEffectIndex)
+					{
+						if (!hitEffect[hitEffectIndex].IsAlive())
+						{
+							hitEffect[hitEffectIndex].Start(*enemies[enemyTypeIndex][enemyIndex]->GetData()->hitBox.center);
+							break;
+						}
+					}
 				}
 			}
 			else
@@ -1002,6 +1006,10 @@ void Game::Update()
 		doneSprite.Update();
 		tutorialWindow.Update();
 
+		for (int i = 0; i < hitEffect.size(); ++i)
+		{
+			hitEffect[i].Update();
+		}
 
 
 		//配列外を超えない処理
@@ -1123,7 +1131,6 @@ void Game::Update()
 		++gameFlame;
 	}
 
-	//ちょっと遅らせる事で同時に起こる事柄を少なくし、混乱しないようにする
 	if (60 * 4 <= gameFlame)
 	{
 		//チュートリアル用のUI非表示
@@ -1174,6 +1181,11 @@ void Game::Draw()
 			}
 		}
 
+		for (int i = 0; i < hitEffect.size(); ++i)
+		{
+			hitEffect[i].Draw();
+		}
+
 		for (int i = 0; i < lineLevel.size(); ++i)
 		{
 			lineLevel[i].Draw();
@@ -1188,7 +1200,6 @@ void Game::Draw()
 
 		tutorialWindow.Draw();
 		stageUI.Draw();
-
 
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, handles[0]);
 		RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);

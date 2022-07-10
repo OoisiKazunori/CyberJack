@@ -2,6 +2,7 @@
 #include"../KazLibrary/DirectXCommon/Base.h"
 #include"../KazLibrary/Collision/CollisionManager.h"
 #include"../KazLibrary/Render/KazRender.h"
+#include"../Game/UI/LockOnBoxEffect.h"
 
 class Cursor
 {
@@ -21,7 +22,7 @@ public:
 	bool LockOn();
 	bool Release();
 
-	void Count();
+	void Hit(KazMath::Vec3<float> *POS);
 	const int &GetCount();
 
 	KazMath::Vec2<float> GetValue();
@@ -109,5 +110,10 @@ private:
 
 	int clickSoundHandle;
 	bool initClickSoundFlag;
+
+
+	//ロックオン演出
+	std::array<LockOnBoxEffect, LOCKON_MAX_NUM * 2> boxEffectArray;
+
 };
 

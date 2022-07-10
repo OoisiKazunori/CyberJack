@@ -274,24 +274,62 @@ struct FbxModelData
 struct CircleDrawData
 {
 	KazMath::Transform3D transform;
-	KazMath::Color color;
+	KazMath::Color colorData;
 	float radius;
 	PipeLineNames pipelineName;
 	bool change3DFlag;
 	CameraIndexData cameraIndex;
+	bool fillFlag;
+	bool billBoardFlag;
 
-	CircleDrawData() :color(255, 255, 255, 255), radius(0.0f), pipelineName(PIPELINE_NAME_COLOR_NOCARING), change3DFlag(false), change3DDirtyFlag(&change3DFlag), radiusDirtyFlag(&radius)
+	CircleDrawData() :colorData(255, 255, 255, 255), radius(0.0f), pipelineName(PIPELINE_NAME_COLOR_NOCARING), change3DFlag(false), change3DDirtyFlag(&change3DFlag), radiusDirtyFlag(&radius), fillFlag(true), billBoardFlag(false)
 	{
 	}
 
 	void Record()
 	{
 		transform.Record();
-		color.Record();
+		colorData.Record();
 		radiusDirtyFlag.Record();
 		change3DDirtyFlag.Record();
 		cameraIndex.dirty.Record();
 	};
 	DirtyFlag<float> radiusDirtyFlag;
 	DirtyFlag<bool> change3DDirtyFlag;
+};
+
+struct Box2DRenderData
+{
+	KazMath::Vec2<float> leftUpPos;
+	KazMath::Vec2<float> rightDownPos;
+	KazMath::Vec2<float> leftDownPos;
+	KazMath::Vec2<float> rightUpPos;
+	KazMath::Color color;
+	PipeLineNames pipelineName;
+
+	DirtyFlag<KazMath::Vec2<float>> leftUpPosDirtyFlag;
+	DirtyFlag<KazMath::Vec2<float>> rightDownPosDirtyFlag;
+	DirtyFlag<KazMath::Vec2<float>> leftDownPosDirtyFlag;
+	DirtyFlag<KazMath::Vec2<float>> rightUpPosDirtyFlag;
+
+
+	Box2DRenderData() :
+		leftUpPosDirtyFlag(&leftUpPos), rightDownPosDirtyFlag(&rightDownPos),
+		leftDownPosDirtyFlag(&leftDownPos), rightUpPosDirtyFlag(&rightUpPos),
+		color(255, 255, 255, 255), pipelineName(PIPELINE_NAME_COLOR_LINE)
+	{};
+
+	bool VertDirty()
+	{
+		return leftUpPosDirtyFlag.Dirty() || leftDownPosDirtyFlag.Dirty() || rightUpPosDirtyFlag.Dirty() || rightDownPosDirtyFlag.Dirty();
+	}
+
+	void Record()
+	{
+		color.Record();
+		leftUpPosDirtyFlag.Record();
+		leftDownPosDirtyFlag.Record();
+		rightUpPosDirtyFlag.Record();
+		rightDownPosDirtyFlag.Record();
+	};
 };

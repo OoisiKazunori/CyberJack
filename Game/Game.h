@@ -23,6 +23,7 @@
 #include"../Game/UI/AnnounceStageUI.h"
 #include"../Game/Event/EventSprite.h"
 #include"../Game/Event/TutorialWindow.h"
+#include"../Game/Enemy/HitEnemyEffect.h"
 
 struct ResponeData
 {
@@ -43,8 +44,9 @@ struct LineEffectData
 	int enemyTypeIndex;
 	int enemyIndex;
 	int eventType;
+	bool hitFlag;
 
-	LineEffectData() :startPos({}), usedFlag(false), lineIndex(-1), enemyTypeIndex(-1), enemyIndex(-1), eventType(-1)
+	LineEffectData() :startPos({}), usedFlag(false), lineIndex(-1), enemyTypeIndex(-1), enemyIndex(-1), eventType(-1), hitFlag(false)
 	{
 	}
 
@@ -56,6 +58,7 @@ struct LineEffectData
 		enemyTypeIndex = -1;
 		enemyIndex = -1;
 		eventType = -1;
+		hitFlag = false;
 	}
 };
 
@@ -148,6 +151,10 @@ private:
 	KazMath::Vec3<float> testEnemyPos;			//ロックオンする対象座標(テスト)
 	//線演出----------------------------------------------------------------
 
+	//攻撃演出-------------------------
+	std::array<HitEnemyEffect, 30> hitEffect;
+	//攻撃演出-------------------------
+
 	ObjModelRenderPtr model;
 
 	GoalBox goalBox;
@@ -209,6 +216,11 @@ private:
 	int doneSoundHandle;
 
 	TutorialWindow tutorialWindow;
+
+	KazMath::Vec3<float>tPos;
+
+	CircleRender circle;
+
 
 };
 
