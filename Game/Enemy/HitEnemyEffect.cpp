@@ -12,7 +12,7 @@ HitEnemyEffect::HitEnemyEffect() :startFlag(false)
 
 
 	baseRadius[BIG_CIRCLE] = 3.0f;
-	baseRadius[SMALL_CIRCLE] = 1.0f;
+	baseRadius[SMALL_CIRCLE] = 0.5f;
 
 	maxRadius = 5.0f;
 	addRadius[BIG_CIRCLE] = maxRadius;
@@ -31,16 +31,18 @@ void HitEnemyEffect::Update()
 
 			if (maxTimer <= timer[i])
 			{
-				circleR[i].data.colorData.color.a -= 10;
-				if (circleR[i].data.colorData.color.a <= 0)
-				{
-					circleR[i].data.colorData.color.a = 0;
-					startFlag = false;
-				}
+				startFlag = false;
 			}
 			else
 			{
 				++timer[i];
+			}
+
+			circleR[i].data.colorData.color.a -= 10;
+			if (circleR[i].data.colorData.color.a <= 0)
+			{
+				circleR[i].data.colorData.color.a = 0;
+				
 			}
 		}
 	}

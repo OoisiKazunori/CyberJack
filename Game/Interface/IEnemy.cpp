@@ -17,8 +17,8 @@ IEnemy::IEnemy()
 	//“Gî•ñ‚Ì‰Šú‰»----------------------------------------------------------------
 
 	lockOnWindowRender.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::LinePath + "LockOn.png");
-	lockOnWindowRender.data.transform.scale = { 0.2f,0.2f,1.0f };
-	lockOnWindowRender.data.billBoardFlag = true;
+	lockOnWindowRender.data.transform.scale = { 0.3f,0.3f };
+	//lockOnWindowRender.data.billBoardFlag = true;
 	lockOnWindowRender.data.pipelineName = PIPELINE_NAME_SPRITE_Z_ALWAYS;
 
 	deadSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "EnemyDead.wav", false);

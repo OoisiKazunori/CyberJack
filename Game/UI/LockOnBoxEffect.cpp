@@ -1,7 +1,7 @@
 #include "LockOnBoxEffect.h"
 
-const int LockOnBoxEffect::BOX_DISAPPEAR_MAX_TIMER = 30;
-const float LockOnBoxEffect::BOX_ROTA_SPEED = 1.0f;
+const int LockOnBoxEffect::BOX_DISAPPEAR_MAX_TIMER = 20;
+const float LockOnBoxEffect::BOX_ROTA_SPEED = 1.5f;
 
 LockOnBoxEffect::LockOnBoxEffect()
 {

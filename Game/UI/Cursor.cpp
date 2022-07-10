@@ -507,20 +507,17 @@ void Cursor::Draw()
 {
 	numberTex->Draw();
 	cursorFlameTex->Draw();
-	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Cursor");
+
+	for (int i = 0; i < boxEffectArray.size(); ++i)
+	{
+		boxEffectArray[i].Draw();
+	}
 	for (int i = 0; i < cursorEffectTex.size(); ++i)
 	{
 		if (cursorEffectTex[i].initFlag)
 		{
 			cursorEffectTex[i].cursorEffectTex->Draw();
 		}
-	}
-	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
-
-
-	for (int i = 0; i < boxEffectArray.size(); ++i)
-	{
-		boxEffectArray[i].Draw();
 	}
 
 }
