@@ -289,8 +289,27 @@ void PortalScene::Update()
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, STAGE_GAME);
 
 
+	{
+		DirectX::XMVECTOR an = { 90.0f,0.0f,0.0f };
+		//角度の計算
+		DirectX::XMVECTOR vec = DirectX::XMQuaternionRotationRollPitchYawFromVector(an);
+		//回転行列に変換
+		DirectX::XMMATRIX mat = DirectX::XMMatrixRotationQuaternion(vec);
+	}
 
+	{
+		float max = 360.0f, min = 0.0f;
+		DirectX::XMMATRIX tmat = KazMath::CaluTransMatrix(KazMath::Vec3<float>(50.0f, 100.0f, 0.0f));
+		DirectX::XMMATRIX smat = KazMath::CaluScaleMatrix(KazMath::Vec3<float>(1.0f, 1.0f, 1.0f));
+		DirectX::XMMATRIX rmat = KazMath::CaluRotaMatrix(KazMath::Vec3<float>(KazMath::Rand<float>(max, min), KazMath::Rand<float>(max, min), KazMath::Rand<float>(max, min)));
 
+		DirectX::XMMATRIX wmat = smat * rmat * tmat;
+		DirectX::XMVECTOR qmat = DirectX::XMQuaternionRotationMatrix(wmat);		
+		DirectX::XMMATRIX resultmat = DirectX::XMMatrixRotationQuaternion(qmat);
+
+		bool debug = false;
+		debug = true;
+	}
 
 	portal.Update();
 	stringEffect.Update();
