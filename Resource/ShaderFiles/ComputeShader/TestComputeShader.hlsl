@@ -46,8 +46,6 @@ cbuffer RootConstants : register(b0)
     matrix projection;  //?ｿｽv?ｿｽ?ｿｽ?ｿｽW?ｿｽF?ｿｽN?ｿｽV?ｿｽ?ｿｽ?ｿｽ?ｿｽ?ｿｽs?ｿｽ?ｿｽ
     uint increSize;     //?ｿｽ關費ｿｽo?ｿｽb?ｿｽt?ｿｽ@?ｿｽﾌ構?ｿｽ?ｿｽ?ｿｽﾌサ?ｿｽC?ｿｽY
     uint64_t gpuAddress; //?ｿｽ關費ｿｽo?ｿｽb?ｿｽt?ｿｽ@?ｿｽﾌ先頭?ｿｽA?ｿｽh?ｿｽ?ｿｽ?ｿｽX
-    float pad;
-    float4 pad2[7];
 };
 
 //?ｿｽ?ｿｽ?ｿｽﾍ用?ｿｽﾌバ?ｿｽb?ｿｽt?ｿｽ@-------------------------
@@ -119,8 +117,8 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
         outputCommand.drawArguments.StartVertexLocation = 0;
         outputCommand.drawArguments.StartInstanceLocation = 0;
         outputCommands.Append(outputCommand);
+        //outputCommands[index] = outputCommand;
     }
-    //outputCommands[index] = outputCommand;
     //?ｿｽo?ｿｽﾍ用-------------------------
 
 }

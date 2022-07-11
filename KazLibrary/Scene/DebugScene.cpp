@@ -339,14 +339,18 @@ void DebugScene::Update()
 	}
 
 	//Common
-	CommonData commonData;
-	commonData.cameraMat = CameraMgr::Instance()->GetViewMatrix();
-	commonData.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
-	commonData.increSize = sizeof(OutPutData);
-	commonData.gpuAddress = buffer->GetGpuAddress(outputMatHandle);
-	buffer->TransData(commonHandle, &commonData, sizeof(CommonData));
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(4, buffer->GetGpuAddress(commonHandle));
-
+	{
+		std::array<CommonData, TRIANGLE_ARRAY_NUM> commonData;
+		for (int i = 0; i < commonData.size(); ++i)
+		{
+			commonData[i].cameraMat = CameraMgr::Instance()->GetViewMatrix();
+			commonData[i].projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
+			commonData[i].increSize = sizeof(OutPutData);
+			commonData[i].gpuAddress = buffer->GetGpuAddress(outputMatHandle);
+		}
+		buffer->TransData(commonHandle, commonData.data(), sizeof(CommonData));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(4, buffer->GetGpuAddress(commonHandle));
+	}
 
 	DirectX12CmdList::Instance()->cmdList->Dispatch(1, 1, 1);
 
@@ -399,31 +403,26 @@ void DebugScene::Draw()
 
 		//DrawIndirect------------------------
 
-		std::array<D3D12_RESOURCE_BARRIER, 2> barriers = {
-		CD3DX12_RESOURCE_BARRIER::Transition(
-			buffer->GetBufferData(commandBuffHandle).Get(),
-			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-			D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT),
-		CD3DX12_RESOURCE_BARRIER::Transition(
+		RenderTargetStatus::Instance()->ChangeBarrier(
 			RenderTargetStatus::Instance()->backBuffers[num].Get(),
 			D3D12_RESOURCE_STATE_PRESENT,
-			D3D12_RESOURCE_STATE_RENDER_TARGET)
-		};
-		DirectX12CmdList::Instance()->cmdList->ResourceBarrier(static_cast<unsigned int>(barriers.size()), barriers.data());
-
-
+			D3D12_RESOURCE_STATE_RENDER_TARGET
+		);
 
 		//Clear-------------------------
-
 		D3D12_CPU_DESCRIPTOR_HANDLE rtvH;
 		rtvH = RenderTargetStatus::Instance()->rtvHeaps->GetCPUDescriptorHandleForHeapStart();
 		rtvH.ptr += num * DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(RenderTargetStatus::Instance()->heapDesc.Type);
 		DirectX12CmdList::Instance()->cmdList->OMSetRenderTargets(1, &rtvH, false, &RenderTargetStatus::Instance()->gDepth.dsvH[RenderTargetStatus::Instance()->handle]);
 		RenderTargetStatus::Instance()->gDepth.Clear(RenderTargetStatus::Instance()->handle);
-
 		RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
 		//Clear-------------------------
 
+		RenderTargetStatus::Instance()->ChangeBarrier(
+			buffer->GetBufferData(commandBuffHandle).Get(),
+			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+			D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT
+		);
 
 		GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE);
 
@@ -442,14 +441,24 @@ void DebugScene::Draw()
 		);
 		//PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
+		RenderTargetStatus::Instance()->ChangeBarrier(
+			buffer->GetBufferData(commandBuffHandle).Get(),
+			D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
+			D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+		);
+
+
 
 		bg.Draw();
 
-		barriers[0].Transition.StateBefore = D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT;
-		barriers[0].Transition.StateAfter = D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
-		barriers[1].Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-		barriers[1].Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-		DirectX12CmdList::Instance()->cmdList->ResourceBarrier(static_cast<unsigned int>(barriers.size()), barriers.data());
+
+
+		RenderTargetStatus::Instance()->ChangeBarrier(
+			RenderTargetStatus::Instance()->backBuffers[num].Get(),
+			D3D12_RESOURCE_STATE_RENDER_TARGET,
+			D3D12_RESOURCE_STATE_PRESENT
+		);
+
 		//DrawIndirect------------------------
 	}
 
