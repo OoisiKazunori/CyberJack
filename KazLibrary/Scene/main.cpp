@@ -28,13 +28,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
 #ifdef _DEBUG
 	//DebugLayer
-	Microsoft::WRL::ComPtr<ID3D12Debug1> debugController;
-	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
-	{
-		debugController->EnableDebugLayer();
-		debugController->SetEnableGPUBasedValidation(TRUE);
-	}
-	debugController.ReleaseAndGetAddressOf();
+	CComPtr<ID3D12Debug> spDebugController0;
+	CComPtr<ID3D12Debug1> spDebugController1;
+	D3D12GetDebugInterface(IID_PPV_ARGS(&spDebugController0));
+	spDebugController0->QueryInterface(IID_PPV_ARGS(&spDebugController1));
+	spDebugController1->SetEnableGPUBasedValidation(true);
 #endif
 	//CheckDirectXError
 	int CheckWinError = 0;
