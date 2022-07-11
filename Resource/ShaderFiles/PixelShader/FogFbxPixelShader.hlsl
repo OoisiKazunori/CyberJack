@@ -12,7 +12,7 @@ float4 PSmain(VSOutput input) : SV_TARGET
     float brightness = diffuse + 0.3f;
     float4 texColor = float4(tex.Sample(smp, input.uv));
     
-    //ƒtƒHƒO   
+    //ãƒ•ã‚©ã‚°
     float4 fog = CaluFog(input.svpos, texColor, fogData.xyz, fogData.w);
     //return float4(brightness, brightness, brightness, 1);
     return fog;

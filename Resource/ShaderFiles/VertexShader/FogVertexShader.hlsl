@@ -5,9 +5,9 @@
 FogOutPut VSmain(float4 pos : POSITION)
 {
     FogOutPut op;
-    op.svpos = mul(world, pos); // モデルの頂点をワールド座標系に変換
+    op.svpos = mul(world, pos); // 繝｢繝�繝ｫ縺ｮ鬆らせ繧偵Ρ繝ｼ繝ｫ繝牙ｺｧ讓咏ｳｻ縺ｫ螟画鋤
     op.fogFactor = op.svpos;
-    op.svpos = mul(view, op.svpos); // ワールド座標系からカメラ座標系に変換
-    op.svpos = mul(viewproj, op.svpos); // カメラ座標系からスクリーン座標系に変換
+    op.svpos = mul(view, op.svpos); // 繝ｯ繝ｼ繝ｫ繝牙ｺｧ讓咏ｳｻ縺九ｉ繧ｫ繝｡繝ｩ蠎ｧ讓咏ｳｻ縺ｫ螟画鋤
+    op.svpos = mul(viewproj, op.svpos); // 繧ｫ繝｡繝ｩ蠎ｧ讓咏ｳｻ縺九ｉ繧ｹ繧ｯ繝ｪ繝ｼ繝ｳ蠎ｧ讓咏ｳｻ縺ｫ螟画鋤
     return op;
 }
