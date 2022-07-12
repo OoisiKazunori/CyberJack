@@ -88,7 +88,7 @@ private:
 	//BackGroundForDebug bg;
 
 	unique_ptr<CreateGpuBuffer>buffer;
-	RESOURCE_HANDLE inputHandle, updateInputHandle, outputMatHandle, drawCommandHandle;
+	RESOURCE_HANDLE inputHandle, updateInputHandle, outputMatHandle, drawCommandHandle, counterBufferHandle;
 	RESOURCE_HANDLE commonHandle, cbvMatHandle;
 	void *pointer;
 
