@@ -67,6 +67,10 @@ void PortalScene::Init()
 	mulValue2 = { 60.0f,60.0f };
 
 	forceCameraDirVel.x = -90.0f;
+
+
+	redPortalCameraPos = stages[STAGE_RED]->stage[FLOOR_RED].data.transform.pos;
+	redPortalCameraPos.y = 10.0f;
 }
 
 void PortalScene::Finalize()
@@ -276,8 +280,6 @@ void PortalScene::Update()
 	}
 
 	//赤ポータル
-	redPortalCameraPos = stages[STAGE_RED]->stage[FLOOR_RED].data.transform.pos;
-	redPortalCameraPos.y = 10.0f;
 	CameraMgr::Instance()->Camera(redPortalCameraPos, redPortalCameraPos + KazMath::Vec3<float>(0.0f, 0.0f, -6.0f), { 0.0f,1.0f,0.0f }, STAGE_RED);
 
 	//緑ポータル
@@ -287,6 +289,42 @@ void PortalScene::Update()
 
 	//ゲーム画面
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, STAGE_GAME);
+
+
+	//赤ポータルから緑ポータル
+	{
+		DirectX::XMMATRIX portalMatrix = 
+			KazMath::CaluScaleMatrix({ 1.0f,1.0f,1.0f }) * 
+			KazMath::CaluRotaMatrix(KazMath::Vec3<float>(0.0f, 0.0f, 0.0f)) * 
+			KazMath::CaluTransMatrix(stages[STAGE_RED]->stage[FLOOR_RED].data.transform.pos);
+
+		DirectX::XMMATRIX linkedPortalMatrix =
+			KazMath::CaluScaleMatrix({ 1.0f,1.0f,1.0f }) *
+			KazMath::CaluRotaMatrix(KazMath::Vec3<float>(0.0f, 0.0f, 0.0f)) *
+			KazMath::CaluTransMatrix(stages[STAGE_RED]->stage[FLOOR_GREEN].data.transform.pos);
+
+		DirectX::XMMATRIX cameraMatrix = CameraMgr::Instance()->GetViewMatrix(STAGE_GAME);
+
+		cameraMatrix = portalMatrix * linkedPortalMatrix * cameraMatrix;
+
+		KazMath::Vec3<float> cameraPos = 
+		{
+			cameraMatrix.r[3].m128_f32[0],
+			cameraMatrix.r[3].m128_f32[1],
+			cameraMatrix.r[3].m128_f32[2],
+		};
+		CameraMgr::Instance()->viewArray[0] = cameraMatrix;
+		CameraMgr::Instance()->viewArray[0].r[3] = { cameraPos.x,cameraPos.y,cameraPos.z };
+		
+
+		redPortalCameraPos = cameraPos;
+
+	}
+	//緑ポータルから赤ポータル
+	{
+
+	}
+
 
 
 	{
