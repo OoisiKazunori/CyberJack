@@ -67,7 +67,6 @@ static const int NUM = 10;
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
 {
     uint index = (groupId.x * NUM) + groupIndex;
-
     //?¿½s?¿½?¿½v?¿½Z-------------------------
     float3 outputPos = inputBuffer[index].pos.xyz;
     
@@ -116,7 +115,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
         outputCommand.drawArguments.InstanceCount = NUM;
         outputCommand.drawArguments.StartVertexLocation = 0;
         outputCommand.drawArguments.StartInstanceLocation = 0;
-        outputCommands.Append(outputCommand);
+        //outputCommands.Append(outputCommand);
         //outputCommands[index] = outputCommand;
     }
     //?¿½o?¿½Í—p-------------------------

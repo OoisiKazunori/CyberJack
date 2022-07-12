@@ -186,7 +186,7 @@ DebugScene::DebugScene()
 		BUFFER_SIZE outputBufferSize = static_cast<BUFFER_SIZE>(TRIANGLE_ARRAY_NUM * sizeof(OutPutData));
 		BUFFER_SIZE inputBufferSize = static_cast<BUFFER_SIZE>(TRIANGLE_ARRAY_NUM * sizeof(InputData));
 		BUFFER_SIZE commonBufferSize = static_cast<BUFFER_SIZE>(TRIANGLE_ARRAY_NUM * sizeof(CommonData));
-		BUFFER_SIZE drawIndirectBufferSize = static_cast<BUFFER_SIZE>(TRIANGLE_ARRAY_NUM * sizeof(IndirectCommand));
+		//BUFFER_SIZE drawIndirectBufferSize = static_cast<BUFFER_SIZE>(TRIANGLE_ARRAY_NUM * sizeof(IndirectCommand));
 
 		//OutputBuffer---------------------------
 		{
@@ -254,26 +254,26 @@ DebugScene::DebugScene()
 
 		//DrawIndirect
 		{
-			drawCommandHandle = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(drawIndirectBufferSize, "DrawCommand"));
+			drawCommandHandle = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(IndirectCommand), "DrawCommand"));
 
-			/*std::array<IndirectCommand, TRIANGLE_ARRAY_NUM> lCommands;
-			D3D12_GPU_VIRTUAL_ADDRESS cbGpuAddress = buffer->GetGpuAddress(cbvMatHandle);
+			std::array<IndirectCommand, 1> lCommands;
+			D3D12_GPU_VIRTUAL_ADDRESS cbGpuAddress = buffer->GetGpuAddress(outputMatHandle);
 			for (int i = 0; i < lCommands.size(); ++i)
 			{
-				lCommands[i].cbv = cbGpuAddress + i * sizeof(OutPutData);
+				lCommands[i].cbv = cbGpuAddress + i * sizeof(IndirectCommand);
 				lCommands[i].drawArguments.VertexCountPerInstance = 3;
-				lCommands[i].drawArguments.InstanceCount = 1;
+				lCommands[i].drawArguments.InstanceCount = TRIANGLE_ARRAY_NUM;
 				lCommands[i].drawArguments.StartVertexLocation = 0;
 				lCommands[i].drawArguments.StartInstanceLocation = 0;
 			}
-			buffer->TransData(drawCommandHandle, &lCommands, drawIndirectBufferSize);*/
+			buffer->TransData(drawCommandHandle, &lCommands, sizeof(IndirectCommand));
 
 
 			D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
 			uavDesc.Format = DXGI_FORMAT_UNKNOWN;
 			uavDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
 			uavDesc.Buffer.FirstElement = 0;
-			uavDesc.Buffer.NumElements = TRIANGLE_ARRAY_NUM;
+			uavDesc.Buffer.NumElements = 1;
 			uavDesc.Buffer.StructureByteStride = sizeof(IndirectCommand);
 			uavDesc.Buffer.CounterOffsetInBytes = 0;
 			uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
@@ -403,6 +403,9 @@ void DebugScene::Draw()
 		//RESOURCE_HANDLE commandBuffHandle = commandBufferHandle;
 		RESOURCE_HANDLE commandBuffHandle = drawCommandHandle;
 
+
+		int num = RenderTargetStatus::Instance()->bbIndex;
+
 		//DrawIndirect------------------------
 
 		RenderTargetStatus::Instance()->ChangeBarrier(
@@ -431,7 +434,7 @@ void DebugScene::Draw()
 		DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
 
-		PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Cull invisible triangles");
+		//PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, L"Cull invisible triangles");
 		DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
 		(
 			commandSig.Get(),
@@ -441,7 +444,7 @@ void DebugScene::Draw()
 			nullptr,
 			0
 		);
-		PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
+		//PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
 		RenderTargetStatus::Instance()->ChangeBarrier(
 			buffer->GetBufferData(commandBuffHandle).Get(),

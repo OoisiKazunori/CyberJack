@@ -76,7 +76,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	while (CheckMessageFlag)
 	{
 		CheckMessageFlag = msg.CheckMessage();
-		imgui.NewFlame();
+		//imgui.NewFlame();
 		KeyBoradInputManager::Instance()->InputLog();
 		ControllerInputManager::Instance()->InputLog();
 #ifdef _DEBUG
@@ -87,7 +87,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		sm.Draw();
 	
 		CameraMgr::Instance()->Record();
-		imgui.Set();
+		//imgui.Set();
 		//RenderTargetStatus::Instance()->SwapResourceBarrier();
 
 		directX.ActCommand();
