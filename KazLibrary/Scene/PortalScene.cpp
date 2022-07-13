@@ -10,6 +10,7 @@ PortalScene::PortalScene()
 	redPortalRenderHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, DirectX::XMFLOAT3(0, 0, 100.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
 	redPortal.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
 	redPortal.data.handleData = redPortalRenderHandle;
+	redPortal.data.transform.rotation = { 0.0f,0.0f,0.0f };
 
 	greenPortalRenderHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, DirectX::XMFLOAT3(0, 100.0f, 100.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
 	greenPortal.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
@@ -313,16 +314,51 @@ void PortalScene::Update()
 			cameraMatrix.r[3].m128_f32[1],
 			cameraMatrix.r[3].m128_f32[2],
 		};
-		CameraMgr::Instance()->viewArray[0] = cameraMatrix;
-		CameraMgr::Instance()->viewArray[0].r[3] = { cameraPos.x,cameraPos.y,cameraPos.z };
-		
 
-		redPortalCameraPos = cameraPos;
+		DirectX::XMVECTOR qmat = DirectX::XMQuaternionRotationMatrix(cameraMatrix);
+		DirectX::XMMATRIX resultmat = DirectX::XMMatrixRotationQuaternion(qmat);
+
+		CameraMgr::Instance()->viewArray[0] = 
+			KazMath::CaluScaleMatrix({ 1.0f,1.0f,1.0f }) *
+			resultmat *
+			KazMath::CaluTransMatrix(cameraPos);
+
+		//redPortalCameraPos = cameraPos;
 
 	}
+
 	//緑ポータルから赤ポータル
 	{
+		DirectX::XMMATRIX portalMatrix =
+			KazMath::CaluScaleMatrix({ 1.0f,1.0f,1.0f }) *
+			KazMath::CaluRotaMatrix(KazMath::Vec3<float>(0.0f, 0.0f, 0.0f)) *
+			KazMath::CaluTransMatrix(stages[STAGE_RED]->stage[FLOOR_GREEN].data.transform.pos);
 
+		DirectX::XMMATRIX linkedPortalMatrix =
+			KazMath::CaluScaleMatrix({ 1.0f,1.0f,1.0f }) *
+			KazMath::CaluRotaMatrix(KazMath::Vec3<float>(0.0f, 0.0f, 0.0f)) *
+			KazMath::CaluTransMatrix(stages[STAGE_RED]->stage[FLOOR_RED].data.transform.pos);
+
+		DirectX::XMMATRIX cameraMatrix = CameraMgr::Instance()->GetViewMatrix(STAGE_GAME);
+
+		cameraMatrix = portalMatrix * linkedPortalMatrix * cameraMatrix;
+
+		KazMath::Vec3<float> cameraPos =
+		{
+			cameraMatrix.r[3].m128_f32[0],
+			cameraMatrix.r[3].m128_f32[1],
+			cameraMatrix.r[3].m128_f32[2],
+		};
+
+		DirectX::XMVECTOR qmat = DirectX::XMQuaternionRotationMatrix(cameraMatrix);
+		DirectX::XMMATRIX resultmat = DirectX::XMMatrixRotationQuaternion(qmat);
+
+		CameraMgr::Instance()->viewArray[1] =
+			KazMath::CaluScaleMatrix({ 1.0f,1.0f,1.0f }) *
+			resultmat *
+			KazMath::CaluTransMatrix(cameraPos);
+
+		//redPortalCameraPos = cameraPos;
 	}
 
 
