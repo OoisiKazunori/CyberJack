@@ -188,6 +188,12 @@ DebugScene::DebugScene()
 		BUFFER_SIZE commonBufferSize = static_cast<BUFFER_SIZE>(TRIANGLE_ARRAY_NUM * sizeof(CommonData));
 		//BUFFER_SIZE drawIndirectBufferSize = static_cast<BUFFER_SIZE>(TRIANGLE_ARRAY_NUM * sizeof(IndirectCommand));
 
+		{
+			counterBufferHandle = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(UINT)));
+			UINT num = 0;
+			buffer->TransData(counterBufferHandle, &num, sizeof(UINT));
+		}
+
 		//OutputBuffer---------------------------
 		{
 			outputMatHandle = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(outputBufferSize));
@@ -201,7 +207,7 @@ DebugScene::DebugScene()
 			uavDesc.Buffer.CounterOffsetInBytes = 0;
 			uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
 
-			DescriptorHeapMgr::Instance()->CreateBufferView(computeMemSize.startSize + uavHandle, uavDesc, buffer->GetBufferData(outputMatHandle).Get(), nullptr);
+			DescriptorHeapMgr::Instance()->CreateBufferView(computeMemSize.startSize + uavHandle, uavDesc, buffer->GetBufferData(outputMatHandle).Get(), buffer->GetBufferData(counterBufferHandle).Get());
 		}
 		++uavHandle;
 
@@ -326,6 +332,9 @@ void DebugScene::Update()
 	//ComputeShader------------------------
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_TEST);
 
+	UINT num = 0;
+	buffer->TransData(counterBufferHandle, &num, sizeof(UINT));
+
 	{
 		BufferMemorySize s = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_SRV);
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(s.startSize + (srvHandle - 1)));
@@ -441,7 +450,7 @@ void DebugScene::Draw()
 			1,
 			buffer->GetBufferData(commandBuffHandle).Get(),
 			0,
-			nullptr,
+			buffer->GetBufferData(counterBufferHandle).Get(),
 			0
 		);
 		//PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());

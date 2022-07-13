@@ -93,7 +93,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     outputMat.mat = mul(lView,    outputMat.mat);
     outputMat.mat = mul(lproj,    outputMat.mat);
     outputMat.color = inputBuffer[index].color;
-    matrixData.Append(outputMat);
+    matrixData.Append(outputMat);    
     //matrixData[index] = outputMat;
 
 
