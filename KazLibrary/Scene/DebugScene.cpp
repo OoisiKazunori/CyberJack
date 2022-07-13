@@ -20,6 +20,14 @@ DebugScene::DebugScene()
 	buffer = std::make_unique<CreateGpuBuffer>();
 
 
+	mainHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, BG_COLOR, DXGI_FORMAT_R8G8B8A8_UNORM);
+	lumiHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, { 0.0f,0.0f,0.0f }, DXGI_FORMAT_R8G8B8A8_UNORM);
+
+	lumiRender.data.handleData = lumiHandle;
+	mainRender.data.handleData = mainHandle;
+	mainRender.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+	lumiRender.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+
 	//CommandBuffer---------------------------
 	std::array<D3D12_INDIRECT_ARGUMENT_DESC, 2> args{};
 	args[0].Type = D3D12_INDIRECT_ARGUMENT_TYPE_UNORDERED_ACCESS_VIEW;
@@ -342,43 +350,6 @@ void DebugScene::Update()
 
 	DirectX12CmdList::Instance()->cmdList->Dispatch(1, 1, 1);
 
-	//Compute------------------------
-
-	//GPU‚Ö‚Ì“]‘—-------------------------
-	/*
-	std::array<OutPutData, TRIANGLE_ARRAY_NUM> data;
-	for (int i = 0; i < data.size(); ++i)
-	{
-		KazMath::Vec3<float> pos = { 0.0f + static_cast<float>(i) * 30.0f ,0.0f,20.0f };
-		KazMath::Vec3<float> scale = { 15.0f,15.0f,15.0f };
-		KazMath::Vec3<float> rota = { 0.0f,0.0f,0.0f };
-
-		DirectX::XMMATRIX trans = KazMath::CaluTransMatrix(pos);
-		DirectX::XMMATRIX scaleM = KazMath::CaluScaleMatrix(scale);
-		DirectX::XMMATRIX rotaM = KazMath::CaluRotaMatrix(rota);
-
-		DirectX::XMMATRIX v = CameraMgr::Instance()->GetViewMatrix();
-		DirectX::XMMATRIX p = CameraMgr::Instance()->GetPerspectiveMatProjection();
-		data[i].mat = (scaleM * rotaM * trans) * v * p;
-		data[i].color = { 1.0f,0.0f,0.0f,1.0f };
-	}
-	buffer->TransData(outputMatHandle, &data, TRIANGLE_ARRAY_NUM * sizeof(OutPutData));
-	*/
-
-	/*
-	{
-		void *dataMap = nullptr;
-		auto result = buffer->GetBufferData(cbvMatHandle)->Map(0, nullptr, (void **)&dataMap);
-		if (SUCCEEDED(result))
-		{
-			memcpy(dataMap, buffer->GetMapAddres(outputMatHandle), TRIANGLE_ARRAY_NUM * sizeof(OutPutData));
-			buffer->GetBufferData(cbvMatHandle)->Unmap(0, nullptr);
-		}
-	}
-	*/
-
-
-
 }
 
 void DebugScene::Draw()
@@ -411,6 +382,11 @@ void DebugScene::Draw()
 		RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
 		//Clear-------------------------
 
+
+		RenderTargetStatus::Instance()->PrepareToChangeBarrier(mainHandle);
+		RenderTargetStatus::Instance()->ClearRenderTarget(mainHandle);
+
+
 		RenderTargetStatus::Instance()->ChangeBarrier(
 			buffer->GetBufferData(commandBuffHandle).Get(),
 			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
@@ -418,7 +394,6 @@ void DebugScene::Draw()
 		);
 
 		GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE);
-
 		DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
 
@@ -441,8 +416,16 @@ void DebugScene::Draw()
 		);
 
 
-
 		bg.Draw();
+
+
+		RenderTargetStatus::Instance()->PrepareToChangeBarrier(lumiHandle, mainHandle);
+		RenderTargetStatus::Instance()->ClearRenderTarget(lumiHandle);		
+		lumiRender.Draw();
+		RenderTargetStatus::Instance()->PrepareToCloseBarrier(lumiHandle);
+		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
+
+		mainRender.Draw();
 
 
 
@@ -453,10 +436,6 @@ void DebugScene::Draw()
 		);
 
 		//DrawIndirect------------------------
-
-
-
-		bg.Draw();
 
 		RenderTargetStatus::Instance()->SwapResourceBarrier();
 	}

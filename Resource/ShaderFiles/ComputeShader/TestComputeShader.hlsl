@@ -59,7 +59,7 @@ AppendStructuredBuffer<OutputData> matrixData : register(u0);
 //XV
 RWStructuredBuffer<UpdateData> updateData : register(u1);
 
-static const int NUM = 10;
+static const int NUM = 100;
 
 [numthreads(NUM, 1, 1)]
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)

@@ -88,6 +88,12 @@ private:
 	KazMath::Vec2<float> angle;
 
 	//BackGroundForDebug bg;
+	Sprite2DRender mainRender;
+	Sprite2DRender lumiRender;
+	RESOURCE_HANDLE mainHandle;
+	RESOURCE_HANDLE lumiHandle;
+
+
 
 	unique_ptr<CreateGpuBuffer>buffer;
 	RESOURCE_HANDLE inputHandle, updateHandle, outputMatHandle, drawCommandHandle, counterBufferHandle;
@@ -101,7 +107,7 @@ private:
 	int cbvHandle;
 
 
-	static const int TRIANGLE_ARRAY_NUM = 10;
+	static const int TRIANGLE_ARRAY_NUM = 100;
 	static const int FRAME_COUNT = 2;
 	static const int TRIANGLE_RESOURCE_COUNT = TRIANGLE_ARRAY_NUM * FRAME_COUNT;
 	static const int ComputeThreadBlockSize = TRIANGLE_ARRAY_NUM * FRAME_COUNT;
