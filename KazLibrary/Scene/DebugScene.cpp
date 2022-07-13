@@ -153,9 +153,9 @@ DebugScene::DebugScene()
 
 		//InputBuffer-------------------------
 		{
-			inputHandle = buffer->CreateBuffer(KazBufferHelper::SetStructureBuffer(TRIANGLE_ARRAY_NUM * sizeof(InputData), "InputParam"));
+			inputHandle = buffer->CreateBuffer(KazBufferHelper::SetStructureBuffer(TRIANGLE_ARRAY_NUM * sizeof(UpdateData), "InputParam"));
 
-			std::array<InputData, TRIANGLE_ARRAY_NUM> data;
+			std::array<UpdateData, TRIANGLE_ARRAY_NUM> data;
 			for (int i = 0; i < TRIANGLE_ARRAY_NUM; ++i)
 			{
 				data[i].pos = { 0.0f + static_cast<float>(i) * 10.0f,10.0f,10.0f,0.0f };
@@ -163,14 +163,14 @@ DebugScene::DebugScene()
 				data[i].color = { KazMath::Rand<float>(1.0f,0.0f),KazMath::Rand<float>(1.0f,0.0f),KazMath::Rand<float>(1.0f,0.0f),1.0f };
 			}
 
-			buffer->TransData(inputHandle, data.data(), TRIANGLE_ARRAY_NUM * sizeof(InputData));
+			buffer->TransData(inputHandle, data.data(), TRIANGLE_ARRAY_NUM * sizeof(UpdateData));
 
 			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 			srvDesc.Format = DXGI_FORMAT_UNKNOWN;
 			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
 			srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 			srvDesc.Buffer.NumElements = TRIANGLE_ARRAY_NUM;
-			srvDesc.Buffer.StructureByteStride = sizeof(InputData);
+			srvDesc.Buffer.StructureByteStride = sizeof(UpdateData);
 			srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
 			BufferMemorySize s = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_SRV);
 			DescriptorHeapMgr::Instance()->CreateBufferView(s.startSize + srvHandle, srvDesc, buffer->GetBufferData(inputHandle).Get());
@@ -181,10 +181,10 @@ DebugScene::DebugScene()
 
 		computeMemSize = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_TEXTURE_COMPUTEBUFFER);
 
-		int uavHandle = 1;
+		int uavHandle = 0;
 
 		BUFFER_SIZE outputBufferSize = static_cast<BUFFER_SIZE>(TRIANGLE_ARRAY_NUM * sizeof(OutPutData));
-		BUFFER_SIZE inputBufferSize = static_cast<BUFFER_SIZE>(TRIANGLE_ARRAY_NUM * sizeof(InputData));
+		//BUFFER_SIZE inputBufferSize = static_cast<BUFFER_SIZE>(TRIANGLE_ARRAY_NUM * sizeof(UpdateData));
 		BUFFER_SIZE commonBufferSize = static_cast<BUFFER_SIZE>(TRIANGLE_ARRAY_NUM * sizeof(CommonData));
 		//BUFFER_SIZE drawIndirectBufferSize = static_cast<BUFFER_SIZE>(TRIANGLE_ARRAY_NUM * sizeof(IndirectCommand));
 
@@ -212,20 +212,20 @@ DebugScene::DebugScene()
 		++uavHandle;
 
 
-		//InputUpdateBuffer
+		//UpdateBuffer
 		{
-			updateInputHandle = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(inputBufferSize));
+			updateHandle = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(UpdateData) * TRIANGLE_ARRAY_NUM));
 
 			D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
 			uavDesc.Format = DXGI_FORMAT_UNKNOWN;
 			uavDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
 			uavDesc.Buffer.FirstElement = 0;
 			uavDesc.Buffer.NumElements = TRIANGLE_ARRAY_NUM;
-			uavDesc.Buffer.StructureByteStride = sizeof(InputData);
+			uavDesc.Buffer.StructureByteStride = sizeof(UpdateData);
 			uavDesc.Buffer.CounterOffsetInBytes = 0;
 			uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
 
-			DescriptorHeapMgr::Instance()->CreateBufferView(computeMemSize.startSize + uavHandle, uavDesc, buffer->GetBufferData(updateInputHandle).Get(), nullptr);
+			DescriptorHeapMgr::Instance()->CreateBufferView(computeMemSize.startSize + uavHandle, uavDesc, buffer->GetBufferData(updateHandle).Get(), nullptr);
 		}
 		++uavHandle;
 
@@ -290,6 +290,8 @@ DebugScene::DebugScene()
 		//DrawInDirect---------------------------
 #pragma endregion
 	}
+
+	seed = 0;
 }
 
 DebugScene::~DebugScene()
@@ -309,26 +311,6 @@ void DebugScene::Update()
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
 
 
-	//for (UINT n = 0; n < TRIANGLE_ARRAY_NUM; n++)
-	//{
-	//	const float offsetBounds = 2.5f;
-
-	//	// Animate the triangles
-	//	constantBufferData[n].offset.x += constantBufferData[n].velocity.x;
-	//	if (constantBufferData[n].offset.x > offsetBounds)
-	//	{
-	//		constantBufferData[n].velocity.x = KazMath::Rand<float>(0.01f, 0.02f);
-	//		constantBufferData[n].offset.x = -offsetBounds;
-	//	}
-	//}
-
-	//int num = RenderTargetStatus::Instance()->copySwapchain->GetCurrentBackBufferIndex();
-
-	//UINT8 *destination = static_cast<UINT8 *>(pointer) + (TRIANGLE_ARRAY_NUM * num * sizeof(SceneConstantBuffer));
-	//memcpy(destination, constantBufferData.data(), TRIANGLE_ARRAY_NUM * sizeof(SceneConstantBuffer));
-
-
-
 	//ComputeShader------------------------
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_TEST);
 
@@ -336,15 +318,9 @@ void DebugScene::Update()
 	buffer->TransData(counterBufferHandle, &num, sizeof(UINT));
 
 	{
-		BufferMemorySize s = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_SRV);
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(s.startSize + (srvHandle - 1)));
-	}
-
-	{
 		computeMemSize = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_TEXTURE_COMPUTEBUFFER);
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(computeMemSize.startSize + 0));
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(computeMemSize.startSize + 1));
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(2, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(computeMemSize.startSize + 2));
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(3, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(computeMemSize.startSize + 3));
 	}
 
 	//Common
@@ -356,9 +332,12 @@ void DebugScene::Update()
 			commonData[i].projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
 			commonData[i].increSize = sizeof(OutPutData);
 			commonData[i].gpuAddress = buffer->GetGpuAddress(outputMatHandle);
+			commonData[i].emittPos = { 0.0f,0.0f,0.0f,0.0f };
+			commonData[i].seed = seed;
 		}
+		++seed;
 		buffer->TransData(commonHandle, commonData.data(), sizeof(CommonData));
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(4, buffer->GetGpuAddress(commonHandle));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffer->GetGpuAddress(commonHandle));
 	}
 
 	DirectX12CmdList::Instance()->cmdList->Dispatch(1, 1, 1);

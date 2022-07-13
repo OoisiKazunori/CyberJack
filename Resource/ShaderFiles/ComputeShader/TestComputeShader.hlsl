@@ -25,41 +25,39 @@ struct IndirectCommand
     D3D12_DRAW_ARGUMENTS drawArguments;
 };
 
-
-struct InputData
-{
-    float4 pos;
-    float4 velocity;
-    float4 color;
-};
-
 struct OutputData
 {
     matrix mat;
     float4 color;
 };
 
+struct UpdateData
+{
+    float4 pos;
+    float4 vel;
+    float4 color;
+    int timer;
+};
 
 cbuffer RootConstants : register(b0)
 {
-    matrix view;        //?ｿｽr?ｿｽ?ｿｽ?ｿｽ[?ｿｽs?ｿｽ?ｿｽ
-    matrix projection;  //?ｿｽv?ｿｽ?ｿｽ?ｿｽW?ｿｽF?ｿｽN?ｿｽV?ｿｽ?ｿｽ?ｿｽ?ｿｽ?ｿｽs?ｿｽ?ｿｽ
-    uint increSize;     //?ｿｽ關費ｿｽo?ｿｽb?ｿｽt?ｿｽ@?ｿｽﾌ構?ｿｽ?ｿｽ?ｿｽﾌサ?ｿｽC?ｿｽY
-    uint64_t gpuAddress; //?ｿｽ關費ｿｽo?ｿｽb?ｿｽt?ｿｽ@?ｿｽﾌ先頭?ｿｽA?ｿｽh?ｿｽ?ｿｽ?ｿｽX
+    matrix view;        
+    matrix projection;
+    float4 emmittPos;
+    uint increSize;     //行列と色を出力する構造体のサイズ
+    uint64_t gpuAddress; //行列と色を出力するバッファのGPUアドレス
+    int seed;
 };
 
-//?ｿｽ?ｿｽ?ｿｽﾍ用?ｿｽﾌバ?ｿｽb?ｿｽt?ｿｽ@-------------------------
-StructuredBuffer<InputData> inputBuffer : register(t0);
-//?ｿｽ?ｿｽ?ｿｽﾍ用?ｿｽﾌバ?ｿｽb?ｿｽt?ｿｽ@-------------------------
+float Rand(int seed)
+{
+    return frac(sin(dot(float2(seed,seed * 2), float2(12.9898, 78.233)) + seed) * 43758.5453);
+}
 
-//?ｿｽo?ｿｽﾍ用?ｿｽﾌバ?ｿｽb?ｿｽt?ｿｽ@-------------------------
-//?ｿｽs?ｿｽ?ｿｽ
-AppendStructuredBuffer<OutputData> matrixData : register(u1);
-//?ｿｽ?ｿｽ?ｿｽﾍ更?ｿｽV
-AppendStructuredBuffer<InputData> updateInputData : register(u2);
-//?ｿｽ`?ｿｽ?ｿｽR?ｿｽ}?ｿｽ?ｿｽ?ｿｽh
-AppendStructuredBuffer<IndirectCommand> outputCommands : register(u3);
-//?ｿｽo?ｿｽﾍ用?ｿｽﾌバ?ｿｽb?ｿｽt?ｿｽ@-------------------------
+//出力
+AppendStructuredBuffer<OutputData> matrixData : register(u0);
+//更新
+RWStructuredBuffer<UpdateData> updateData : register(u1);
 
 static const int NUM = 10;
 
@@ -67,11 +65,31 @@ static const int NUM = 10;
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
 {
     uint index = (groupId.x * NUM) + groupIndex;
-    //?ｿｽs?ｿｽ?ｿｽv?ｿｽZ-------------------------
-    float3 outputPos = inputBuffer[index].pos.xyz;
-    
-    outputPos = float3(0.0f + index * 20.0f,0.0f,20.0f);
-    matrix pMatTrans = Translate(outputPos);
+
+    float4 initPos = emmittPos;
+
+    //生成するパーティクルの判断-------------------------
+    //移動量と生存時間の初期化
+    if(updateData[index].timer <= 0)
+    {
+        updateData[index].timer = 120;
+        updateData[index].pos = initPos;
+        updateData[index].color = float4(Rand(seed),Rand(seed/2),Rand(seed*2),1.0f);
+        updateData[index].vel = float4(0.5f,0.0f,0.0f,0.0f);
+    }    
+    //生成するパーティクルの判断-------------------------
+    float rand = Rand(seed);
+
+    //更新
+    if(0 < updateData[index].timer)
+    {
+        updateData[index].pos += updateData[index].vel;
+        --updateData[index].timer;
+    }
+
+
+    //行列計算-------------------------
+    matrix pMatTrans = Translate(updateData[index].pos.xyz);
     matrix pMatRot = Rotate(float3(0.0f,0.0f,0.0f));
     matrix pMatScale = Scale(float3(15.0f, 15.0f, 15.0f));
     
@@ -79,45 +97,20 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     pMatWorld = mul(pMatScale, pMatWorld);
     pMatWorld = mul(pMatRot, pMatWorld);
     pMatWorld = mul(pMatTrans, pMatWorld);
-    //?ｿｽs?ｿｽ?ｿｽv?ｿｽZ-------------------------
+    //行列計算-------------------------
     
     
-    //?ｿｽo?ｿｽﾍ用-------------------------
+    //出力用-------------------------
     OutputData outputMat;
     matrix lView = view;
     matrix lproj = projection;
 
-    //?ｿｽs?ｿｽ?ｿｽo?ｿｽ?ｿｽ
     outputMat.mat = MatrixIdentity();
     outputMat.mat = mul(pMatWorld,outputMat.mat);
     outputMat.mat = mul(lView,    outputMat.mat);
     outputMat.mat = mul(lproj,    outputMat.mat);
-    outputMat.color = inputBuffer[index].color;
+    outputMat.color = updateData[index].color;
     matrixData.Append(outputMat);    
-    //matrixData[index] = outputMat;
-
-
-    //?ｿｽ?ｿｽ?ｿｽﾍ更?ｿｽV?ｿｽo?ｿｽ?ｿｽ-------------------------
-    InputData inputData;
-    inputData.pos = float4(outputPos.xyz, 0.0f);
-    inputData.velocity = inputBuffer[index].velocity;
-    inputData.color = inputBuffer[index].color;
-    updateInputData.Append(inputData);
-    //updateInputData[index] = inputData;
-
-    
-    //?ｿｽ`?ｿｽ?ｿｽR?ｿｽ}?ｿｽ?ｿｽ?ｿｽh?ｿｽo?ｿｽ?ｿｽ-------------------------
-    if(index < 1)
-    {
-        IndirectCommand outputCommand;
-        outputCommand.cbvAddress = gpuAddress + index * increSize;
-        outputCommand.drawArguments.VertexCountPerInstance = 3;
-        outputCommand.drawArguments.InstanceCount = NUM;
-        outputCommand.drawArguments.StartVertexLocation = 0;
-        outputCommand.drawArguments.StartInstanceLocation = 0;
-        //outputCommands.Append(outputCommand);
-        //outputCommands[index] = outputCommand;
-    }
-    //?ｿｽo?ｿｽﾍ用-------------------------
+    //出力用-------------------------
 
 }

@@ -8,11 +8,12 @@
 /// <summary>
 /// パーティクルの移動系
 /// </summary>
-struct InputData
+struct UpdateData
 {
 	DirectX::XMFLOAT4 pos;
 	DirectX::XMFLOAT4 velocity;
 	DirectX::XMFLOAT4 color;
+	int timer;
 };
 
 /// <summary>
@@ -28,9 +29,10 @@ struct CommonData
 {
 	DirectX::XMMATRIX cameraMat;
 	DirectX::XMMATRIX projectionMat;
+	DirectX::XMFLOAT4 emittPos;
 	UINT increSize;
 	UINT64 gpuAddress;
-	DirectX::XMUINT2 pad;
+	int seed;
 };
 
 struct IndirectCommand
@@ -88,11 +90,11 @@ private:
 	//BackGroundForDebug bg;
 
 	unique_ptr<CreateGpuBuffer>buffer;
-	RESOURCE_HANDLE inputHandle, updateInputHandle, outputMatHandle, drawCommandHandle, counterBufferHandle;
+	RESOURCE_HANDLE inputHandle, updateHandle, outputMatHandle, drawCommandHandle, counterBufferHandle;
 	RESOURCE_HANDLE commonHandle, cbvMatHandle;
 	void *pointer;
 
-	InputData inputData;
+	UpdateData inputData;
 	BufferMemorySize cbvSize;
 	BufferMemorySize computeMemSize;
 	int srvHandle;
@@ -110,7 +112,7 @@ private:
 	std::array<SceneConstantBuffer, TRIANGLE_ARRAY_NUM> constantBufferData;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 
-
+	int seed;
 	CSRootConstants rootConst;
 
 	RESOURCE_HANDLE paramCBHandle;
