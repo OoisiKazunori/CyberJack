@@ -90,8 +90,10 @@ private:
 	//BackGroundForDebug bg;
 	Sprite2DRender mainRender;
 	Sprite2DRender lumiRender;
+	Sprite2DRender addRender;
 	RESOURCE_HANDLE mainHandle;
 	RESOURCE_HANDLE lumiHandle;
+	RESOURCE_HANDLE addHandle;
 
 
 

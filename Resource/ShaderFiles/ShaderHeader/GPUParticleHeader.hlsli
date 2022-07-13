@@ -1,3 +1,5 @@
+#include"../ShaderHeader/MultipassHeader.hlsli"
+
 struct ColorOutPut
 {
     float4 svpos : SV_POSITION;

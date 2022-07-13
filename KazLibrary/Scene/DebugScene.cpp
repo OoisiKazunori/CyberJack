@@ -20,13 +20,33 @@ DebugScene::DebugScene()
 	buffer = std::make_unique<CreateGpuBuffer>();
 
 
-	mainHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, BG_COLOR, DXGI_FORMAT_R8G8B8A8_UNORM);
+	std::vector<MultiRenderTargetData> renderData;
+	renderData.push_back(MultiRenderTargetData());
+	renderData.push_back(MultiRenderTargetData());
+	renderData[0].graphSize = { WIN_X,WIN_Y };
+	renderData[0].backGroundColor = BG_COLOR;
+	renderData[1].graphSize = { WIN_X,WIN_Y };
+	renderData[1].backGroundColor = { 0.0f,0.0f,0.0f };
+
+	std::vector<RESOURCE_HANDLE> handles =
+		RenderTargetStatus::Instance()->CreateMultiRenderTarget(renderData, DXGI_FORMAT_R8G8B8A8_UNORM);
+	mainHandle = handles[0];
+	addHandle = handles[1];
 	lumiHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, { 0.0f,0.0f,0.0f }, DXGI_FORMAT_R8G8B8A8_UNORM);
 
-	lumiRender.data.handleData = lumiHandle;
 	mainRender.data.handleData = mainHandle;
 	mainRender.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+
+	lumiRender.data.pipelineName = PIPELINE_NAME_SPRITE_LUMI;
 	lumiRender.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+	lumiRender.data.handleData = mainHandle;
+	lumiRender.data.addHandle.handle[0] = addHandle;
+	lumiRender.data.addHandle.paramType[0] = GRAPHICS_PRAMTYPE_TEX2;
+
+
+	addRender.data.handleData = lumiHandle;
+	addRender.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+
 
 	//CommandBuffer---------------------------
 	std::array<D3D12_INDIRECT_ARGUMENT_DESC, 2> args{};
@@ -364,9 +384,6 @@ void DebugScene::Draw()
 
 
 		int num = RenderTargetStatus::Instance()->bbIndex;
-
-		//DrawIndirect------------------------
-
 		RenderTargetStatus::Instance()->ChangeBarrier(
 			RenderTargetStatus::Instance()->backBuffers[num].Get(),
 			D3D12_RESOURCE_STATE_PRESENT,
@@ -420,13 +437,13 @@ void DebugScene::Draw()
 
 
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(lumiHandle, mainHandle);
-		RenderTargetStatus::Instance()->ClearRenderTarget(lumiHandle);		
+		RenderTargetStatus::Instance()->ClearRenderTarget(lumiHandle);
 		lumiRender.Draw();
 		RenderTargetStatus::Instance()->PrepareToCloseBarrier(lumiHandle);
 		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 
-		mainRender.Draw();
-
+		//mainRender.Draw();
+		addRender.Draw();
 
 
 		RenderTargetStatus::Instance()->ChangeBarrier(
