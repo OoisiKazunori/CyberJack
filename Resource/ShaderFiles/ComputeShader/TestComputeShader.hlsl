@@ -49,9 +49,9 @@ cbuffer RootConstants : register(b0)
     int seed;
 };
 
-float Rand(int seed)
+float Rand(int seed,int index)
 {
-    return frac(sin(dot(float2(seed,seed * 2), float2(12.9898, 78.233)) + seed) * 43758.5453);
+    return frac(sin(dot(float2(seed,seed * 2), float2(12.9898, 78.233)) + index) * 43758.5453);
 }
 
 //出力
@@ -72,18 +72,24 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     //移動量と生存時間の初期化
     if(updateData[index].timer <= 0)
     {
-        updateData[index].timer = 120;
+        updateData[index].timer = Rand(seed,index) * 120;
         updateData[index].pos = initPos;
-        updateData[index].color = float4(Rand(seed),Rand(seed/2),Rand(seed*2),1.0f);
-        updateData[index].vel = float4(0.5f,0.0f,0.0f,0.0f);
+        updateData[index].color = float4(Rand(seed,index),Rand(seed/2,index),Rand(seed*2,index),1.0f);
+        updateData[index].vel = float4(Rand(seed,index),0.0f,0.0f,0.0f);
+
+        if(0.5 <= Rand(seed,index))
+        {
+            updateData[index].vel.x *= -1.0f;
+        }
     }    
     //生成するパーティクルの判断-------------------------
-    float rand = Rand(seed);
+    float rand = Rand(seed,index);
 
     //更新
     if(0 < updateData[index].timer)
     {
         updateData[index].pos += updateData[index].vel;
+        updateData[index].vel.y -= 0.1f;
         --updateData[index].timer;
     }
 
