@@ -289,19 +289,19 @@ DebugScene::DebugScene() :bulr({ WIN_X,WIN_Y })
 
 		//DrawIndirect
 		{
-			drawCommandHandle = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(IndirectCommand), "DrawCommand"));
+			drawCommandHandle = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(IndirectCommand) * DRAW_CALL, "DrawCommand"));
 
-			std::array<IndirectCommand, 1> lCommands;
+			std::array<IndirectCommand, DRAW_CALL> lCommands;
 			D3D12_GPU_VIRTUAL_ADDRESS cbGpuAddress = buffer->GetGpuAddress(outputMatHandle);
 			for (int i = 0; i < lCommands.size(); ++i)
 			{
-				lCommands[i].cbv = cbGpuAddress + i * sizeof(IndirectCommand);
+				lCommands[i].cbv = cbGpuAddress;
 				lCommands[i].drawArguments.VertexCountPerInstance = 3;
 				lCommands[i].drawArguments.InstanceCount = TRIANGLE_ARRAY_NUM;
 				lCommands[i].drawArguments.StartVertexLocation = 0;
 				lCommands[i].drawArguments.StartInstanceLocation = 0;
 			}
-			buffer->TransData(drawCommandHandle, &lCommands, sizeof(IndirectCommand));
+			buffer->TransData(drawCommandHandle, &lCommands, sizeof(IndirectCommand) *DRAW_CALL);
 
 
 			D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
@@ -364,7 +364,7 @@ void DebugScene::Update()
 			commonData[i].emittPos = { 0.0f,0.0f,0.0f,0.0f };
 			commonData[i].seed = seed;
 		}
-		++seed;
+		seed = KazMath::Rand<int>(100, 0);
 		buffer->TransData(commonHandle, commonData.data(), sizeof(CommonData));
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffer->GetGpuAddress(commonHandle));
 	}
@@ -419,7 +419,7 @@ void DebugScene::Draw()
 		DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
 		(
 			commandSig.Get(),
-			1,
+			DRAW_CALL,
 			buffer->GetBufferData(commandBuffHandle).Get(),
 			0,
 			buffer->GetBufferData(counterBufferHandle).Get(),
@@ -434,7 +434,7 @@ void DebugScene::Draw()
 		);
 
 
-		//bg.Draw();
+		bg.Draw();
 
 
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(lumiHandle, mainHandle);

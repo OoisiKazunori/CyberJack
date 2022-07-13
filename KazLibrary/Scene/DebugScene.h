@@ -97,7 +97,7 @@ private:
 	RESOURCE_HANDLE addHandle;
 
 
-
+	static const int DRAW_CALL = 1;
 	unique_ptr<CreateGpuBuffer>buffer;
 	RESOURCE_HANDLE inputHandle, updateHandle, outputMatHandle, drawCommandHandle, counterBufferHandle;
 	RESOURCE_HANDLE commonHandle, cbvMatHandle;
@@ -111,7 +111,7 @@ private:
 	int cbvHandle;
 
 
-	static const int TRIANGLE_ARRAY_NUM = 9500;
+	static const int TRIANGLE_ARRAY_NUM = 9900;
 	static const int FRAME_COUNT = 2;
 	static const int TRIANGLE_RESOURCE_COUNT = TRIANGLE_ARRAY_NUM * FRAME_COUNT;
 	static const int ComputeThreadBlockSize = TRIANGLE_ARRAY_NUM * FRAME_COUNT;

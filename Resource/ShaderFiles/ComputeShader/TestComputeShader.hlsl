@@ -51,7 +51,7 @@ cbuffer RootConstants : register(b0)
 
 float Rand(int seed,int index)
 {
-    return frac(sin(dot(float2(seed,seed * 2), float2(12.9898, 78.233)) + index) * 43758.5453);
+    return frac(sin(dot(float2(seed/2,seed * 2), float2(12.9898, 78.233)) + (index*5+seed)) * 43758.5453);
 }
 
 //出力
@@ -67,7 +67,6 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     uint index = (groupId.x * NUM) + groupIndex;
     //uint index = 9000;
 
-
     float4 initPos = emmittPos;
 
     //生成するパーティクルの判断-------------------------
@@ -77,12 +76,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
         updateData[index].timer = Rand(seed,index) * 120;
         updateData[index].pos = initPos;
         updateData[index].color = float4(Rand(seed,index),Rand(seed/2,index),Rand(seed*2,index),1.0f);
-        updateData[index].vel = float4(Rand(seed,index),0.0f,0.0f,0.0f);
-
-        if(0.5 <= Rand(seed,index))
-        {
-            updateData[index].vel.x *= -1.0f;
-        }
+        updateData[index].vel = float4(1.0f-Rand(seed,index)*2.0f,0.0f,0.0f,0.0f);
     }    
     //生成するパーティクルの判断-------------------------
     float rand = Rand(seed,index);
