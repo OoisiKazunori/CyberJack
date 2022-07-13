@@ -185,7 +185,7 @@ DebugScene::DebugScene()
 
 		BUFFER_SIZE outputBufferSize = static_cast<BUFFER_SIZE>(TRIANGLE_ARRAY_NUM * sizeof(OutPutData));
 		//BUFFER_SIZE inputBufferSize = static_cast<BUFFER_SIZE>(TRIANGLE_ARRAY_NUM * sizeof(UpdateData));
-		BUFFER_SIZE commonBufferSize = static_cast<BUFFER_SIZE>(TRIANGLE_ARRAY_NUM * sizeof(CommonData));
+		//BUFFER_SIZE commonBufferSize = static_cast<BUFFER_SIZE>(TRIANGLE_ARRAY_NUM * sizeof(CommonData));
 		//BUFFER_SIZE drawIndirectBufferSize = static_cast<BUFFER_SIZE>(TRIANGLE_ARRAY_NUM * sizeof(IndirectCommand));
 
 		{
@@ -229,13 +229,13 @@ DebugScene::DebugScene()
 		}
 		++uavHandle;
 
-		commonHandle = buffer->CreateBuffer(KazBufferHelper::SetConstBufferData(commonBufferSize, "CommonData"));
+		commonHandle = buffer->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(CommonData), "CommonData"));
 		{
 			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 			srvDesc.Format = DXGI_FORMAT_UNKNOWN;
 			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
 			srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-			srvDesc.Buffer.NumElements = TRIANGLE_ARRAY_NUM;
+			srvDesc.Buffer.NumElements = 1;
 			srvDesc.Buffer.StructureByteStride = sizeof(CommonData);
 			srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
 
@@ -325,7 +325,7 @@ void DebugScene::Update()
 
 	//Common
 	{
-		std::array<CommonData, TRIANGLE_ARRAY_NUM> commonData;
+		std::array<CommonData, 1> commonData;
 		for (int i = 0; i < commonData.size(); ++i)
 		{
 			commonData[i].cameraMat = CameraMgr::Instance()->GetViewMatrix();
