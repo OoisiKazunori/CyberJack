@@ -13,7 +13,7 @@
 #include"../KazLibrary/RenderTarget/RenderTargetStatus.h"
 #include"../Imgui/MyImgui.h"
 
-DebugScene::DebugScene()
+DebugScene::DebugScene() :bulr({ WIN_X,WIN_Y })
 {
 	//short texHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "");
 	srvHandle = 0;
@@ -45,6 +45,7 @@ DebugScene::DebugScene()
 
 
 	addRender.data.handleData = lumiHandle;
+	addRender.data.pipelineName = PIPELINE_NAME_ADDBLEND;
 	addRender.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 
 
@@ -368,7 +369,7 @@ void DebugScene::Update()
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffer->GetGpuAddress(commonHandle));
 	}
 
-	DirectX12CmdList::Instance()->cmdList->Dispatch(1, 1, 1);
+	DirectX12CmdList::Instance()->cmdList->Dispatch(TRIANGLE_ARRAY_NUM, 1, 1);
 
 }
 
@@ -433,7 +434,7 @@ void DebugScene::Draw()
 		);
 
 
-		bg.Draw();
+		//bg.Draw();
 
 
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(lumiHandle, mainHandle);
@@ -442,7 +443,9 @@ void DebugScene::Draw()
 		RenderTargetStatus::Instance()->PrepareToCloseBarrier(lumiHandle);
 		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 
-		//mainRender.Draw();
+		mainRender.Draw();
+
+		addRender.data.handleData = bulr.BlurImage(lumiHandle);
 		addRender.Draw();
 
 

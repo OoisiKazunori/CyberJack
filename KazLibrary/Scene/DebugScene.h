@@ -4,6 +4,7 @@
 #include"../Render/BackGroundForDebug.h"
 #include"../KazLibrary/Buffer/CreateGpuBuffer.h"
 #include"../KazLibrary/Render/KazRender.h"
+#include"../KazLibrary/RenderTarget/GaussianBuler.h"
 
 /// <summary>
 /// パーティクルの移動系
@@ -101,6 +102,7 @@ private:
 	RESOURCE_HANDLE inputHandle, updateHandle, outputMatHandle, drawCommandHandle, counterBufferHandle;
 	RESOURCE_HANDLE commonHandle, cbvMatHandle;
 	void *pointer;
+	GaussianBuler bulr;
 
 	UpdateData inputData;
 	BufferMemorySize cbvSize;
@@ -109,7 +111,7 @@ private:
 	int cbvHandle;
 
 
-	static const int TRIANGLE_ARRAY_NUM = 100;
+	static const int TRIANGLE_ARRAY_NUM = 9500;
 	static const int FRAME_COUNT = 2;
 	static const int TRIANGLE_RESOURCE_COUNT = TRIANGLE_ARRAY_NUM * FRAME_COUNT;
 	static const int ComputeThreadBlockSize = TRIANGLE_ARRAY_NUM * FRAME_COUNT;
@@ -126,6 +128,7 @@ private:
 	RESOURCE_HANDLE paramCBHandle;
 
 	BackGroundForDebug bg;
+	
 
 
 	DirectX::XMMATRIX Translate(DirectX::XMFLOAT3 VECTOR)

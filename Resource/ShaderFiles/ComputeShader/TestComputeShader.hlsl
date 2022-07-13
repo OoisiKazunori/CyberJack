@@ -59,12 +59,14 @@ AppendStructuredBuffer<OutputData> matrixData : register(u0);
 //更新
 RWStructuredBuffer<UpdateData> updateData : register(u1);
 
-static const int NUM = 100;
+static const int NUM = 1;
 
 [numthreads(NUM, 1, 1)]
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
 {
     uint index = (groupId.x * NUM) + groupIndex;
+    //uint index = 9000;
+
 
     float4 initPos = emmittPos;
 
@@ -97,7 +99,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     //行列計算-------------------------
     matrix pMatTrans = Translate(updateData[index].pos.xyz);
     matrix pMatRot = Rotate(float3(0.0f,0.0f,0.0f));
-    matrix pMatScale = Scale(float3(15.0f, 15.0f, 15.0f));
+    matrix pMatScale = Scale(float3(1.0f, 1.0f, 1.0f));
     
     matrix pMatWorld = MatrixIdentity();
     pMatWorld = mul(pMatScale, pMatWorld);
