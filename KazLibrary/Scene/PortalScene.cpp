@@ -28,7 +28,7 @@ PortalScene::PortalScene()
 	{
 		stages[i] = std::make_unique<PortalRender>(i);
 
-		stages[i]->stage[FLOOR_GREEN].data.transform.pos = { -30.0f,0.0f,0.0f };
+		stages[i]->stage[FLOOR_GREEN].data.transform.pos = { 30.0f,0.0f,0.0f };
 		stages[i]->stage[FLOOR_GREEN].data.transform.scale = { 20.0f,1.0f,30.0f };
 		stages[i]->stage[FLOOR_GREEN].data.color = { 0,150,0,255 };
 		stages[i]->stage[FLOOR_GREEN].data.cameraIndex = i;
@@ -37,7 +37,7 @@ PortalScene::PortalScene()
 		redPortal.data.transform.scale = { SCALE,SCALE,SCALE };
 		redPortal.data.cameraIndex = i;
 
-		stages[i]->stage[FLOOR_RED].data.transform.pos = { 30.0f,0.0f,0.0f };
+		stages[i]->stage[FLOOR_RED].data.transform.pos = { -30.0f,0.0f,0.0f };
 		stages[i]->stage[FLOOR_RED].data.transform.scale = { 20.0f,1.0f,30.0f };
 		stages[i]->stage[FLOOR_RED].data.color = { 150,0,0,255 };
 		stages[i]->stage[FLOOR_RED].data.cameraIndex = i;
@@ -48,6 +48,8 @@ PortalScene::PortalScene()
 		greenPortal.data.cameraIndex = i;
 	}
 
+	stages[2]->stage[FLOOR_GREEN].data.transform.pos = { -30.0f,0.0f,0.0f };
+	stages[2]->stage[FLOOR_RED].data.transform.pos = { 30.0f,0.0f,0.0f };
 	stages[2]->stage[FLOOR_GREEN].data.color = { 0,100,0,255 };
 	stages[2]->stage[FLOOR_RED].data.color = { 100,0,0,255 };
 }
@@ -230,7 +232,7 @@ void PortalScene::Input()
 
 	if (input->InputTrigger(DIK_T))
 	{
-		
+
 	}
 	if (input->InputTrigger(DIK_R))
 	{
@@ -281,12 +283,12 @@ void PortalScene::Update()
 	}
 
 	//赤ポータル
-	CameraMgr::Instance()->Camera(redPortalCameraPos, redPortalCameraPos + KazMath::Vec3<float>(0.0f, 0.0f, -6.0f), { 0.0f,1.0f,0.0f }, STAGE_RED);
+	//CameraMgr::Instance()->Camera(redPortalCameraPos, redPortalCameraPos + KazMath::Vec3<float>(0.0f, 0.0f, -6.0f), { 0.0f,1.0f,0.0f }, STAGE_RED);
 
 	//緑ポータル
 	greenPortalCameraPos = stages[STAGE_RED]->stage[FLOOR_GREEN].data.transform.pos;
 	greenPortalCameraPos.y = 10.0f;
-	CameraMgr::Instance()->Camera(greenPortalCameraPos, greenPortalCameraPos + KazMath::Vec3<float>(0.0f, 0.0f, -6.0f), { 0.0f,1.0f,0.0f }, STAGE_GREEN);
+	//CameraMgr::Instance()->Camera(greenPortalCameraPos, greenPortalCameraPos + KazMath::Vec3<float>(0.0f, 0.0f, -6.0f), { 0.0f,1.0f,0.0f }, STAGE_GREEN);
 
 	//ゲーム画面
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, STAGE_GAME);
@@ -294,9 +296,9 @@ void PortalScene::Update()
 
 	//赤ポータルから緑ポータル
 	{
-		DirectX::XMMATRIX portalMatrix = 
-			KazMath::CaluScaleMatrix({ 1.0f,1.0f,1.0f }) * 
-			KazMath::CaluRotaMatrix(KazMath::Vec3<float>(0.0f, 0.0f, 0.0f)) * 
+		DirectX::XMMATRIX portalMatrix =
+			KazMath::CaluScaleMatrix({ 1.0f,1.0f,1.0f }) *
+			KazMath::CaluRotaMatrix(KazMath::Vec3<float>(0.0f, 0.0f, 0.0f)) *
 			KazMath::CaluTransMatrix(stages[STAGE_RED]->stage[FLOOR_RED].data.transform.pos);
 
 		DirectX::XMMATRIX linkedPortalMatrix =
@@ -306,9 +308,24 @@ void PortalScene::Update()
 
 		DirectX::XMMATRIX cameraMatrix = CameraMgr::Instance()->GetViewMatrix(STAGE_GAME);
 
-		cameraMatrix = portalMatrix * linkedPortalMatrix * cameraMatrix;
+		portalMatrix.r[0] = { 1.0f, 0.0f, 0.0f, -9.384122f };
+		portalMatrix.r[1] = { 0.0f, 1.0f, 0.0f, 0.04999995f };
+		portalMatrix.r[2] = { 0.0f, 0.0f, 1.0f, 2.89f };
+		portalMatrix.r[3] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
-		KazMath::Vec3<float> cameraPos = 
+		linkedPortalMatrix.r[0] = { -0.8378661f, 0.0f, 0.545876f, -2.232517f };
+		linkedPortalMatrix.r[1] = { 0.0f,     1.0f, 	0.0f, 	-0.04999995f };
+		linkedPortalMatrix.r[2] = { -0.545876f, 0.0f, -0.8378661f, 1.338308f };
+		linkedPortalMatrix.r[3] = { 0.0f,     0.0f, 	0.0f, 	1.0f };
+
+		cameraMatrix.r[0] = { 1.0f, 0.0f,  0.0f,	-1.23f };
+		cameraMatrix.r[1] = { 0.0f, 1.0f,  0.0f,	1.4984f };
+		cameraMatrix.r[2] = { 0.0f, 0.0f,  1.0f,	-2.04f };
+		cameraMatrix.r[3] = { 0.0f, 0.0f,  0.0f,	1.0f };
+
+		cameraMatrix = cameraMatrix * linkedPortalMatrix * portalMatrix;
+		//cameraMatrix = DirectX::XMMatrixTranspose(cameraMatrix);
+		KazMath::Vec3<float> cameraPos =
 		{
 			cameraMatrix.r[3].m128_f32[0],
 			cameraMatrix.r[3].m128_f32[1],
@@ -318,7 +335,7 @@ void PortalScene::Update()
 		DirectX::XMVECTOR qmat = DirectX::XMQuaternionRotationMatrix(cameraMatrix);
 		DirectX::XMMATRIX resultmat = DirectX::XMMatrixRotationQuaternion(qmat);
 
-		CameraMgr::Instance()->viewArray[0] = 
+		CameraMgr::Instance()->viewArray[0] =
 			KazMath::CaluScaleMatrix({ 1.0f,1.0f,1.0f }) *
 			resultmat *
 			KazMath::CaluTransMatrix(cameraPos);
@@ -341,8 +358,8 @@ void PortalScene::Update()
 
 		DirectX::XMMATRIX cameraMatrix = CameraMgr::Instance()->GetViewMatrix(STAGE_GAME);
 
-		cameraMatrix = portalMatrix * linkedPortalMatrix * cameraMatrix;
-
+		cameraMatrix = cameraMatrix * linkedPortalMatrix * portalMatrix;
+		//cameraMatrix = DirectX::XMMatrixTranspose(cameraMatrix);
 		KazMath::Vec3<float> cameraPos =
 		{
 			cameraMatrix.r[3].m128_f32[0],
@@ -378,7 +395,7 @@ void PortalScene::Update()
 		DirectX::XMMATRIX rmat = KazMath::CaluRotaMatrix(KazMath::Vec3<float>(KazMath::Rand<float>(max, min), KazMath::Rand<float>(max, min), KazMath::Rand<float>(max, min)));
 
 		DirectX::XMMATRIX wmat = smat * rmat * tmat;
-		DirectX::XMVECTOR qmat = DirectX::XMQuaternionRotationMatrix(wmat);		
+		DirectX::XMVECTOR qmat = DirectX::XMQuaternionRotationMatrix(wmat);
 		DirectX::XMMATRIX resultmat = DirectX::XMMatrixRotationQuaternion(qmat);
 
 		bool debug = false;
