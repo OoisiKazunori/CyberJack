@@ -8,12 +8,12 @@ PortalScene::PortalScene()
 {
 
 	redPortalRenderHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, DirectX::XMFLOAT3(0, 0, 100.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
-	redPortal.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
+	redPortal.data.pipelineName = PIPELINE_NAME_PORTAL;
 	redPortal.data.handleData = redPortalRenderHandle;
 	redPortal.data.transform.rotation = { 0.0f,0.0f,0.0f };
 
 	greenPortalRenderHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, DirectX::XMFLOAT3(0, 100.0f, 100.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
-	greenPortal.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
+	greenPortal.data.pipelineName = PIPELINE_NAME_PORTAL;
 	greenPortal.data.handleData = greenPortalRenderHandle;
 
 	//mainRenderTarget.data.handleData = TextureResourceMgr::Instance()->LoadDivGraph(KazFilePathName::TestPath + "AnimationTest.png", 2, 1, 32, 32);
