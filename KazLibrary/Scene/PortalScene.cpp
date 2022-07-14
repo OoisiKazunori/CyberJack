@@ -231,17 +231,6 @@ void PortalScene::Input()
 		changeFlag = !changeFlag;
 	}
 
-	if (changeFlag)
-	{
-		stageGameMode = STAGE_GAME;
-		stagePortalMode = STAGE_GREEN;
-	}
-	else
-	{
-		stageGameMode = STAGE_GREEN;
-		stagePortalMode = STAGE_GAME;
-	}
-
 
 	if (input->InputTrigger(DIK_T))
 	{
@@ -294,6 +283,32 @@ void PortalScene::Update()
 
 		eyePos = KazMath::Vec3<float>(0.0f, 3.0f, 0.0f) + (besidePoly.data.transform.pos + verticlaPoly.data.transform.pos);
 	}
+
+	if (greenPortal.data.transform.pos.z < eyePos.z)
+	{
+		changeFlag = false;
+	}
+	else
+	{
+		changeFlag = true;
+	}
+
+
+	if (changeFlag)
+	{
+		stageGameMode = STAGE_GAME;
+		stagePortalMode = STAGE_GREEN;
+	}
+	else
+	{
+		stageGameMode = STAGE_GREEN;
+		stagePortalMode = STAGE_GAME;
+	}
+
+
+
+
+
 
 	//赤ポータル
 	//CameraMgr::Instance()->Camera(redPortalCameraPos, redPortalCameraPos + KazMath::Vec3<float>(0.0f, 0.0f, -6.0f), { 0.0f,1.0f,0.0f }, STAGE_RED);
