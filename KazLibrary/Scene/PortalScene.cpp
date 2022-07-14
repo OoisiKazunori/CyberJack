@@ -12,7 +12,7 @@ PortalScene::PortalScene()
 	redPortal.data.handleData = redPortalRenderHandle;
 	redPortal.data.transform.rotation = { 0.0f,0.0f,0.0f };
 
-	greenPortalRenderHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, DirectX::XMFLOAT3(0, 100.0f, 100.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
+	greenPortalRenderHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, BG_COLOR, DXGI_FORMAT_R8G8B8A8_UNORM);
 	greenPortal.data.pipelineName = PIPELINE_NAME_PORTAL;
 	greenPortal.data.handleData = greenPortalRenderHandle;
 
@@ -74,6 +74,9 @@ void PortalScene::Init()
 
 	redPortalCameraPos = stages[STAGE_RED]->stage[FLOOR_RED].data.transform.pos;
 	redPortalCameraPos.y = 10.0f;
+
+	stageGameMode = STAGE_GAME;
+	stagePortalMode = STAGE_GREEN;
 }
 
 void PortalScene::Finalize()
@@ -228,6 +231,16 @@ void PortalScene::Input()
 		changeFlag = !changeFlag;
 	}
 
+	if (changeFlag)
+	{
+		stageGameMode = STAGE_GAME;
+		stagePortalMode = STAGE_GREEN;
+	}
+	else
+	{
+		stageGameMode = STAGE_GREEN;
+		stagePortalMode = STAGE_GAME;
+	}
 
 
 	if (input->InputTrigger(DIK_T))
@@ -425,19 +438,34 @@ void PortalScene::Draw()
 	RenderTargetStatus::Instance()->PrepareToChangeBarrier(greenPortalRenderHandle, redPortalRenderHandle);
 	RenderTargetStatus::Instance()->ClearRenderTarget(greenPortalRenderHandle);
 
-	stages[STAGE_GREEN]->bg.Draw();
+	if (stagePortalMode != STAGE_GREEN)
+	{
+		stages[stagePortalMode]->bg.Draw();
+		stages[stagePortalMode]->stage[STAGE_GREEN].data.color.color = { 0,100,0,255 };
+		stages[stagePortalMode]->stage[STAGE_RED].data.color.color = { 100,0,0,255 };
+	}
 	for (int i = 0; i < stages[STAGE_GREEN]->stage.size(); ++i)
 	{
-		stages[STAGE_GREEN]->stage[i].Draw();
+		stages[stagePortalMode]->stage[i].Draw();
 	}
 
 	RenderTargetStatus::Instance()->PrepareToCloseBarrier(greenPortalRenderHandle);
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 
-	stages[STAGE_GAME]->bg.Draw();
-	for (int i = 0; i < stages[STAGE_GAME]->stage.size(); ++i)
+	if (stageGameMode == STAGE_GAME)
 	{
-		stages[STAGE_GAME]->stage[i].Draw();
+		stages[stageGameMode]->stage[FLOOR_GREEN].data.transform.pos = { -30.0f,0.0f,0.0f };
+		stages[stageGameMode]->stage[FLOOR_RED].data.transform.pos = { 30.0f,0.0f,0.0f };
+		stages[stageGameMode]->bg.Draw();
+	}
+	else
+	{
+		stages[stageGameMode]->stage[FLOOR_GREEN].data.transform.pos = { 30.0f,0.0f,0.0f };
+		stages[stageGameMode]->stage[FLOOR_RED].data.transform.pos = { -30.0f,0.0f,0.0f };
+	}
+	for (int i = 0; i < stages[stageGameMode]->stage.size(); ++i)
+	{
+		stages[stageGameMode]->stage[i].Draw();
 	}
 
 	greenPortal.Draw();

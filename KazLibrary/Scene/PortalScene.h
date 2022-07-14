@@ -16,7 +16,7 @@ struct PortalRender
 	}
 };
 
-enum
+enum StageE
 {
 	STAGE_RED,
 	STAGE_GREEN,
@@ -81,6 +81,9 @@ private:
 	Sprite3DRender greenPortal;
 	KazMath::Vec3<float>greenPortalCameraPos;
 
+
+	StageE stageGameMode;
+	StageE stagePortalMode;
 };
 
 
