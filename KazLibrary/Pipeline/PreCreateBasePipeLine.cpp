@@ -431,7 +431,6 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		//ラスタライザ
 		//背面カリング、塗りつぶし、深度クリッピング有効
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
-		rasterrize.CullMode = D3D12_CULL_MODE_NONE;
 		gPipeline.RasterizerState = rasterrize;
 		//ブレンドモード
 		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
@@ -1080,7 +1079,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		LAYOUT_POS,
 		SHADER_VERTEX_GPUPARTICLE,
 		SHADER_PIXEL_GPUPARTICLE,
-		PIPELINE_DATA_BACKCARING_ALPHABLEND,
+		PIPELINE_DATA_NOCARING_BLENDALPHA_MULTIPASS_TWO,
 		ROOTSIGNATURE_DATA_DRAW_UAV,
 		PIPELINE_NAME_GPUPARTICLE
 	);

@@ -9,6 +9,8 @@
 
 GpuParticleStage::GpuParticleStage()
 {
+	buffers = std::make_unique<CreateGpuBuffer>();
+
 	//コマンドシグネチャ---------------------------
 	std::array<D3D12_INDIRECT_ARGUMENT_DESC, 2> args{};
 	args[0].Type = D3D12_INDIRECT_ARGUMENT_TYPE_UNORDERED_ACCESS_VIEW;
@@ -29,6 +31,8 @@ GpuParticleStage::GpuParticleStage()
 	//頂点データ
 	KazRenderHelper::InitVerticesPos(&vertices[0].pos, &vertices[1].pos, &vertices[2].pos, &vertices[3].pos, { 0.5f,0.5f });
 	KazRenderHelper::InitUvPos(&vertices[0].uv, &vertices[1].uv, &vertices[2].uv, &vertices[3].uv);
+
+
 	//インデックスデータ
 	indices = KazRenderHelper::InitIndciesForPlanePolygon();
 
@@ -37,45 +41,51 @@ GpuParticleStage::GpuParticleStage()
 	BUFFER_SIZE indexBuffSize = KazBufferHelper::GetBufferSize<BUFFER_SIZE>(sizeof(USHORT), indices.size());
 
 	//バッファ生成-------------------------
-	vertexBufferHandle = buffers.CreateBuffer(KazBufferHelper::SetVertexBufferData(vertBuffSize));
-	indexBufferHandle = buffers.CreateBuffer(KazBufferHelper::SetIndexBufferData(indexBuffSize));
+	vertexBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetVertexBufferData(vertBuffSize));
+	indexBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetIndexBufferData(indexBuffSize));
 
-	commonBufferHandle = buffers.CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(CommonData)));
-	particleDataHandle = buffers.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(ParticleData) * PARTICLE_MAX_NUM));
-	drawCommandHandle = buffers.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(IndirectCommand) * DRAW_CALL));
-	counterBufferHandle = buffers.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(UINT)));
+	commonBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(CommonData)));
+	particleDataHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(ParticleData) * PARTICLE_MAX_NUM));
+	outputBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(OutputData) * PARTICLE_MAX_NUM));
+	drawCommandHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(IndirectCommand) * DRAW_CALL));
+	counterBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(UINT)));
 	//バッファ生成-------------------------
 
 	//転送-------------------------
-	buffers.TransData(vertexBufferHandle, vertices.data(), vertBuffSize);
-	buffers.TransData(indexBufferHandle, indices.data(), indexBuffSize);
+	buffers->TransData(vertexBufferHandle, vertices.data(), vertBuffSize);
+	buffers->TransData(indexBufferHandle, indices.data(), indexBuffSize);
 	UINT reset = 0;
-	buffers.TransData(counterBufferHandle, &reset, sizeof(UINT));
+	buffers->TransData(counterBufferHandle, &reset, sizeof(UINT));
 
 	IndirectCommand command;
-	command.drawArguments = { static_cast<UINT>(indices.size()),1,0,0,0 };
-	command.uav = buffers.GetGpuAddress(particleDataHandle);
-	buffers.TransData(drawCommandHandle, &command, sizeof(IndirectCommand) * DRAW_CALL);
+	command.drawArguments.IndexCountPerInstance = static_cast<UINT>(indices.size());
+	command.drawArguments.InstanceCount = PARTICLE_MAX_NUM;
+	command.drawArguments.StartIndexLocation = 0;
+	command.drawArguments.StartInstanceLocation = 0;
+	command.drawArguments.BaseVertexLocation = 0;
+
+	command.uav = buffers->GetGpuAddress(outputBufferHandle);
+	buffers->TransData(drawCommandHandle, &command, sizeof(IndirectCommand) * DRAW_CALL);
 	//転送-------------------------
 
 	computeMemSize = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_TEXTURE_COMPUTEBUFFER);
 	DescriptorHeapMgr::Instance()->CreateBufferView(
 		computeMemSize.startSize + 0,
-		KazBufferHelper::SetUnorderedAccessView(sizeof(ParticleData),PARTICLE_MAX_NUM),
-		buffers.GetBufferData(particleDataHandle).Get(),
-		buffers.GetBufferData(counterBufferHandle).Get()
+		KazBufferHelper::SetUnorderedAccessView(sizeof(OutputData),PARTICLE_MAX_NUM),
+		buffers->GetBufferData(outputBufferHandle).Get(),
+		buffers->GetBufferData(counterBufferHandle).Get()
 	);
 
 	DescriptorHeapMgr::Instance()->CreateBufferView(
 		computeMemSize.startSize + 1,
-		KazBufferHelper::SetUnorderedAccessView(sizeof(IndirectCommand), DRAW_CALL),
-		buffers.GetBufferData(particleDataHandle).Get(),
+		KazBufferHelper::SetUnorderedAccessView(sizeof(ParticleData), PARTICLE_MAX_NUM),
+		buffers->GetBufferData(particleDataHandle).Get(),
 		nullptr
 	);
 
 
-	vertexBufferView = KazBufferHelper::SetVertexBufferView(buffers.GetGpuAddress(vertexBufferHandle), vertBuffSize, sizeof(vertices[0]));
-	indexBufferView = KazBufferHelper::SetIndexBufferView(buffers.GetGpuAddress(indexBufferHandle), indexBuffSize);
+	vertexBufferView = KazBufferHelper::SetVertexBufferView(buffers->GetGpuAddress(vertexBufferHandle), vertBuffSize, sizeof(vertices[0]));
+	indexBufferView = KazBufferHelper::SetIndexBufferView(buffers->GetGpuAddress(indexBufferHandle), indexBuffSize);
 
 }
 
@@ -87,7 +97,7 @@ void GpuParticleStage::Update()
 
 	{
 		UINT reset = 0;
-		buffers.TransData(counterBufferHandle, &reset, sizeof(UINT));
+		buffers->TransData(counterBufferHandle, &reset, sizeof(UINT));
 	}
 
 	//共通用バッファのデータ送信
@@ -96,11 +106,11 @@ void GpuParticleStage::Update()
 		lData.cameraMat = CameraMgr::Instance()->GetViewMatrix();
 		lData.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
 		lData.increSize = sizeof(ParticleData);
-		lData.gpuAddress = buffers.GetGpuAddress(particleDataHandle);
-		lData.emittPos = { 0.0f,0.0f,0.0f,0.0f };
+		lData.gpuAddress = buffers->GetGpuAddress(outputBufferHandle);
+		lData.emittPos = { 0.0f,0.0f,0.0f,30.0f };
 		lData.seed = 0;
-		buffers.TransData(commonBufferHandle, &lData, sizeof(CommonData));
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers.GetGpuAddress(commonBufferHandle));
+		buffers->TransData(commonBufferHandle, &lData, sizeof(CommonData));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(commonBufferHandle));
 	}
 
 	{
@@ -120,7 +130,7 @@ void GpuParticleStage::Draw()
 
 
 	RenderTargetStatus::Instance()->ChangeBarrier(
-		buffers.GetBufferData(drawCommandHandle).Get(),
+		buffers->GetBufferData(drawCommandHandle).Get(),
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
 		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT
 	);
@@ -129,14 +139,14 @@ void GpuParticleStage::Draw()
 	(
 		commandSig.Get(),
 		1,
-		buffers.GetBufferData(drawCommandHandle).Get(),
+		buffers->GetBufferData(drawCommandHandle).Get(),
 		0,
-		buffers.GetBufferData(counterBufferHandle).Get(),
+		buffers->GetBufferData(counterBufferHandle).Get(),
 		0
 	);
 
 	RenderTargetStatus::Instance()->ChangeBarrier(
-		buffers.GetBufferData(drawCommandHandle).Get(),
+		buffers->GetBufferData(drawCommandHandle).Get(),
 		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
 	);

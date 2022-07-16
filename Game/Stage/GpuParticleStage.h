@@ -13,14 +13,14 @@ public:
 
 private:
 	//バッファ
-	CreateGpuBuffer buffers;
-	RESOURCE_HANDLE vertexBufferHandle, indexBufferHandle, particleDataHandle, drawCommandHandle, counterBufferHandle, commonBufferHandle;
+	std::unique_ptr<CreateGpuBuffer> buffers;
+	RESOURCE_HANDLE vertexBufferHandle, indexBufferHandle, outputBufferHandle, particleDataHandle, drawCommandHandle, counterBufferHandle, commonBufferHandle;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 	D3D12_INDEX_BUFFER_VIEW indexBufferView;
 	BufferMemorySize computeMemSize;
 	//バッファ
 
-	static const int PARTICLE_MAX_NUM = 1;
+	static const int PARTICLE_MAX_NUM = 10;
 	static const int DRAW_CALL = 1;
 
 	struct IndirectCommand
@@ -35,6 +35,12 @@ private:
 		DirectX::XMFLOAT4 vel;
 		DirectX::XMFLOAT4 color;
 		UINT timer;
+	};
+
+	struct OutputData
+	{
+		DirectX::XMMATRIX mat;
+		DirectX::XMFLOAT4 color;
 	};
 
 	struct CommonData

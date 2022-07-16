@@ -45,7 +45,9 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     //if(updateData[index].timer <= 0)
     {
         updateData[index].timer = 1;
-        updateData[index].pos = initPos;
+
+        float4 generatePos = initPos + float4(index*10,0,0,0);
+        updateData[index].pos = generatePos;
         updateData[index].color = float4(Rand(seed,index),Rand(seed/2,index),Rand(seed*2,index),1.0f);
         updateData[index].vel = float4(0.0f,0.0f,0.0f,0.0f);
     }    
@@ -57,7 +59,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     //s—ñŒvŽZ-------------------------
     matrix pMatTrans = Translate(updateData[index].pos.xyz);
     matrix pMatRot = Rotate(float3(0.0f,0.0f,0.0f));
-    matrix pMatScale = Scale(float3(15.0f, 15.0f, 15.0f));
+    matrix pMatScale = Scale(float3(1.0f, 1.0f, 1.0f));
     
     matrix pMatWorld = MatrixIdentity();
     pMatWorld = mul(pMatScale, pMatWorld);
