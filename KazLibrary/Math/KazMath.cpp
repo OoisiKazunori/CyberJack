@@ -157,13 +157,12 @@ KazMath::Vec3<float> KazMath::ConvertScreenPosToWorldPos(const KazMath::Vec3<flo
 	return KazMath::CastXMVECTOR<float>(result);
 }
 
-//ジンバルロックがかからないようにZYXからXYZに計算順を変更
 DirectX::XMMATRIX KazMath::CaluRotaMatrix(const Vec3<float> &ROTATION)
 {
 	DirectX::XMMATRIX matRot = DirectX::XMMatrixIdentity();
+	matRot *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(ROTATION.z));
 	matRot *= DirectX::XMMatrixRotationX(DirectX::XMConvertToRadians(ROTATION.x));
 	matRot *= DirectX::XMMatrixRotationY(DirectX::XMConvertToRadians(ROTATION.y));
-	matRot *= DirectX::XMMatrixRotationZ(DirectX::XMConvertToRadians(ROTATION.z));
 
 	return matRot;
 }
@@ -416,8 +415,10 @@ DirectX::XMMATRIX KazMath::CaluFrontMatrix(const Vec3<float> &Y, const Vec3<floa
 
 int KazMath::RadianToAngle(float RADIAN)
 {
-	float angle = RADIAN * (180.0f / PI_2F);
-	return static_cast<int>(angle);
+	float anglef = RADIAN * (180.0f / PI_2F);
+	double angled = std::ceil(std::abs(anglef));
+
+	return static_cast<int>(angled);
 }
 
 float KazMath::AngleToRadian(int ANGLE)
@@ -568,4 +569,28 @@ KazMath::Vec3<float> KazMath::ConvertWorldPosToScreenPos(const KazMath::Vec3<flo
 
 	result = XMVector3TransformCoord(result, mat);
 	return KazMath::CastXMVECTOR<float>(result);
-};
+}
+
+void KazMath::ConvertMatrixToAngles(const DirectX::XMMATRIX &MAT, Vec3<float> *ANGLE)
+{
+	double threshold = 0.001;
+
+	if (abs(MAT.r[2].m128_f32[1] - 1.0) < threshold)
+	{ // R(2,1) = sin(x) = 1の時
+		ANGLE->x = DirectX::XM_PI / 2.0f;
+		ANGLE->y = 0;
+		ANGLE->z = atan2(MAT.r[1].m128_f32[0], MAT.r[0].m128_f32[0]);
+	}
+	else if (abs(MAT.r[2].m128_f32[1] + 1.0) < threshold)
+	{ // R(2,1) = sin(x) = -1の時
+		ANGLE->x = -DirectX::XM_PI / 2.0f;
+		ANGLE->y = 0.0f;
+		ANGLE->z = atan2(MAT.r[1].m128_f32[0], MAT.r[0].m128_f32[0]);
+	}
+	else
+	{
+		ANGLE->x = asin(MAT.r[2].m128_f32[1]);
+		ANGLE->y = atan2(-MAT.r[2].m128_f32[0], MAT.r[2].m128_f32[2]);
+		ANGLE->z = atan2(-MAT.r[0].m128_f32[1], MAT.r[1].m128_f32[1]);
+	}
+}

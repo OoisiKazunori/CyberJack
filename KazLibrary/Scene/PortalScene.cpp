@@ -8,11 +8,12 @@ PortalScene::PortalScene()
 {
 
 	redPortalRenderHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, DirectX::XMFLOAT3(0, 0, 100.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
-	redPortal.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
+	redPortal.data.pipelineName = PIPELINE_NAME_PORTAL;
 	redPortal.data.handleData = redPortalRenderHandle;
+	redPortal.data.transform.rotation = { 0.0f,0.0f,0.0f };
 
-	greenPortalRenderHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, DirectX::XMFLOAT3(0, 100.0f, 100.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
-	greenPortal.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
+	greenPortalRenderHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, BG_COLOR, DXGI_FORMAT_R8G8B8A8_UNORM);
+	greenPortal.data.pipelineName = PIPELINE_NAME_PORTAL;
 	greenPortal.data.handleData = greenPortalRenderHandle;
 
 	//mainRenderTarget.data.handleData = TextureResourceMgr::Instance()->LoadDivGraph(KazFilePathName::TestPath + "AnimationTest.png", 2, 1, 32, 32);
@@ -27,7 +28,7 @@ PortalScene::PortalScene()
 	{
 		stages[i] = std::make_unique<PortalRender>(i);
 
-		stages[i]->stage[FLOOR_GREEN].data.transform.pos = { -30.0f,0.0f,0.0f };
+		stages[i]->stage[FLOOR_GREEN].data.transform.pos = { 30.0f,0.0f,0.0f };
 		stages[i]->stage[FLOOR_GREEN].data.transform.scale = { 20.0f,1.0f,30.0f };
 		stages[i]->stage[FLOOR_GREEN].data.color = { 0,150,0,255 };
 		stages[i]->stage[FLOOR_GREEN].data.cameraIndex = i;
@@ -36,7 +37,7 @@ PortalScene::PortalScene()
 		redPortal.data.transform.scale = { SCALE,SCALE,SCALE };
 		redPortal.data.cameraIndex = i;
 
-		stages[i]->stage[FLOOR_RED].data.transform.pos = { 30.0f,0.0f,0.0f };
+		stages[i]->stage[FLOOR_RED].data.transform.pos = { -30.0f,0.0f,0.0f };
 		stages[i]->stage[FLOOR_RED].data.transform.scale = { 20.0f,1.0f,30.0f };
 		stages[i]->stage[FLOOR_RED].data.color = { 150,0,0,255 };
 		stages[i]->stage[FLOOR_RED].data.cameraIndex = i;
@@ -47,6 +48,8 @@ PortalScene::PortalScene()
 		greenPortal.data.cameraIndex = i;
 	}
 
+	stages[2]->stage[FLOOR_GREEN].data.transform.pos = { -30.0f,0.0f,0.0f };
+	stages[2]->stage[FLOOR_RED].data.transform.pos = { 30.0f,0.0f,0.0f };
 	stages[2]->stage[FLOOR_GREEN].data.color = { 0,100,0,255 };
 	stages[2]->stage[FLOOR_RED].data.color = { 100,0,0,255 };
 }
@@ -67,6 +70,16 @@ void PortalScene::Init()
 	mulValue2 = { 60.0f,60.0f };
 
 	forceCameraDirVel.x = -90.0f;
+
+
+	redPortalCameraPos = stages[STAGE_RED]->stage[FLOOR_RED].data.transform.pos;
+	redPortalCameraPos.y = 10.0f;
+
+	stageGameMode = STAGE_GAME;
+	stagePortalMode = STAGE_GREEN;
+
+	baseEyePos = { 30.0f,10.0f,-5.0f };
+	baseTargetPos = { 30.0f,10.0f,0.0f };
 }
 
 void PortalScene::Finalize()
@@ -222,10 +235,9 @@ void PortalScene::Input()
 	}
 
 
-
 	if (input->InputTrigger(DIK_T))
 	{
-		
+
 	}
 	if (input->InputTrigger(DIK_R))
 	{
@@ -272,30 +284,170 @@ void PortalScene::Update()
 		};
 
 
-		eyePos = KazMath::Vec3<float>(0.0f, 3.0f, 0.0f) + (besidePoly.data.transform.pos + verticlaPoly.data.transform.pos);
+		eyePos = baseEyePos + (besidePoly.data.transform.pos + verticlaPoly.data.transform.pos);
+		targetPos = baseTargetPos;
 	}
 
+	if (greenPortal.data.transform.pos.z < eyePos.z)
+	{
+		changeFlag = false;
+	}
+	else
+	{
+		changeFlag = true;
+	}
+
+
+	if (changeFlag)
+	{
+		stageGameMode = STAGE_GAME;
+		stagePortalMode = STAGE_GREEN;
+	}
+	else
+	{
+		stageGameMode = STAGE_GREEN;
+		stagePortalMode = STAGE_GAME;
+	}
+
+
+
+
+
+
 	//赤ポータル
-	redPortalCameraPos = stages[STAGE_RED]->stage[FLOOR_RED].data.transform.pos;
-	redPortalCameraPos.y = 10.0f;
-	CameraMgr::Instance()->Camera(redPortalCameraPos, redPortalCameraPos + KazMath::Vec3<float>(0.0f, 0.0f, -6.0f), { 0.0f,1.0f,0.0f }, STAGE_RED);
+	//CameraMgr::Instance()->Camera(redPortalCameraPos, redPortalCameraPos + KazMath::Vec3<float>(0.0f, 0.0f, -6.0f), { 0.0f,1.0f,0.0f }, STAGE_RED);
 
 	//緑ポータル
 	greenPortalCameraPos = stages[STAGE_RED]->stage[FLOOR_GREEN].data.transform.pos;
 	greenPortalCameraPos.y = 10.0f;
-	CameraMgr::Instance()->Camera(greenPortalCameraPos, greenPortalCameraPos + KazMath::Vec3<float>(0.0f, 0.0f, -6.0f), { 0.0f,1.0f,0.0f }, STAGE_GREEN);
+	//CameraMgr::Instance()->Camera(greenPortalCameraPos, greenPortalCameraPos + KazMath::Vec3<float>(0.0f, 0.0f, -6.0f), { 0.0f,1.0f,0.0f }, STAGE_GREEN);
 
 	//ゲーム画面
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, STAGE_GAME);
 
 
+	//赤ポータルから緑ポータル
+	{
+		DirectX::XMMATRIX portalMatrix =
+			KazMath::CaluScaleMatrix({ 1.0f,1.0f,1.0f }) *
+			KazMath::CaluRotaMatrix(KazMath::Vec3<float>(0.0f, 0.0f, 0.0f)) *
+			KazMath::CaluTransMatrix(stages[STAGE_RED]->stage[FLOOR_RED].data.transform.pos);
 
+		DirectX::XMMATRIX linkedPortalMatrix =
+			KazMath::CaluScaleMatrix({ 1.0f,1.0f,1.0f }) *
+			KazMath::CaluRotaMatrix(KazMath::Vec3<float>(0.0f, 0.0f, 0.0f)) *
+			KazMath::CaluTransMatrix(stages[STAGE_RED]->stage[FLOOR_GREEN].data.transform.pos);
+
+		DirectX::XMMATRIX cameraMatrix = CameraMgr::Instance()->GetViewMatrix(STAGE_GAME);
+
+		portalMatrix.r[0] = { 1.0f, 0.0f, 0.0f, -9.384122f };
+		portalMatrix.r[1] = { 0.0f, 1.0f, 0.0f, 0.04999995f };
+		portalMatrix.r[2] = { 0.0f, 0.0f, 1.0f, 2.89f };
+		portalMatrix.r[3] = { 0.0f, 0.0f, 0.0f, 1.0f };
+
+		linkedPortalMatrix.r[0] = { -0.8378661f, 0.0f, 0.545876f, -2.232517f };
+		linkedPortalMatrix.r[1] = { 0.0f,     1.0f, 	0.0f, 	-0.04999995f };
+		linkedPortalMatrix.r[2] = { -0.545876f, 0.0f, -0.8378661f, 1.338308f };
+		linkedPortalMatrix.r[3] = { 0.0f,     0.0f, 	0.0f, 	1.0f };
+
+		cameraMatrix.r[0] = { 1.0f, 0.0f,  0.0f,	-1.23f };
+		cameraMatrix.r[1] = { 0.0f, 1.0f,  0.0f,	1.4984f };
+		cameraMatrix.r[2] = { 0.0f, 0.0f,  1.0f,	-2.04f };
+		cameraMatrix.r[3] = { 0.0f, 0.0f,  0.0f,	1.0f };
+
+		cameraMatrix = cameraMatrix * linkedPortalMatrix * portalMatrix;
+		//cameraMatrix = DirectX::XMMatrixTranspose(cameraMatrix);
+		KazMath::Vec3<float> cameraPos =
+		{
+			cameraMatrix.r[3].m128_f32[0],
+			cameraMatrix.r[3].m128_f32[1],
+			cameraMatrix.r[3].m128_f32[2],
+		};
+
+		DirectX::XMVECTOR qmat = DirectX::XMQuaternionRotationMatrix(cameraMatrix);
+		DirectX::XMMATRIX resultmat = DirectX::XMMatrixRotationQuaternion(qmat);
+
+		CameraMgr::Instance()->viewArray[0] =
+			KazMath::CaluScaleMatrix({ 1.0f,1.0f,1.0f }) *
+			resultmat *
+			KazMath::CaluTransMatrix(cameraPos);
+
+		//redPortalCameraPos = cameraPos;
+
+	}
+
+	//緑ポータルから赤ポータル
+	{
+		DirectX::XMMATRIX portalMatrix =
+			KazMath::CaluScaleMatrix({ 1.0f,1.0f,1.0f }) *
+			KazMath::CaluRotaMatrix(KazMath::Vec3<float>(0.0f, 0.0f, 0.0f)) *
+			KazMath::CaluTransMatrix(stages[STAGE_RED]->stage[FLOOR_GREEN].data.transform.pos);
+
+		DirectX::XMMATRIX linkedPortalMatrix =
+			KazMath::CaluScaleMatrix({ 1.0f,1.0f,1.0f }) *
+			KazMath::CaluRotaMatrix(KazMath::Vec3<float>(0.0f, 0.0f, 0.0f)) *
+			KazMath::CaluTransMatrix(stages[STAGE_RED]->stage[FLOOR_RED].data.transform.pos);
+
+		DirectX::XMMATRIX cameraMatrix = CameraMgr::Instance()->GetViewMatrix(STAGE_GAME);
+
+		//cameraMatrix = cameraMatrix * linkedPortalMatrix * portalMatrix;
+		//cameraMatrix = DirectX::XMMatrixTranspose(cameraMatrix);
+		KazMath::Vec3<float> cameraPos =
+		{
+			cameraMatrix.r[3].m128_f32[0],
+			cameraMatrix.r[3].m128_f32[1],
+			cameraMatrix.r[3].m128_f32[2],
+		};
+
+		DirectX::XMVECTOR qmat = DirectX::XMQuaternionRotationMatrix(cameraMatrix);
+		DirectX::XMMATRIX resultmat = DirectX::XMMatrixRotationQuaternion(qmat);
+
+		CameraMgr::Instance()->viewArray[1] =
+			KazMath::CaluScaleMatrix({ 1.0f,1.0f,1.0f }) *
+			resultmat *
+			KazMath::CaluTransMatrix(cameraPos);
+
+		//redPortalCameraPos = cameraPos;
+	}
+
+
+
+	{
+		DirectX::XMVECTOR an = { 90.0f,0.0f,0.0f };
+		//角度の計算
+		DirectX::XMVECTOR vec = DirectX::XMQuaternionRotationRollPitchYawFromVector(an);
+		//回転行列に変換
+		DirectX::XMMATRIX mat = DirectX::XMMatrixRotationQuaternion(vec);
+	}
+
+	{
+		float max = 360.0f, min = 0.0f;
+		DirectX::XMMATRIX tmat = KazMath::CaluTransMatrix(KazMath::Vec3<float>(50.0f, 100.0f, 0.0f));
+		DirectX::XMMATRIX smat = KazMath::CaluScaleMatrix(KazMath::Vec3<float>(1.0f, 1.0f, 1.0f));
+		DirectX::XMMATRIX rmat = KazMath::CaluRotaMatrix(KazMath::Vec3<float>(KazMath::Rand<float>(max, min), KazMath::Rand<float>(max, min), KazMath::Rand<float>(max, min)));
+
+		DirectX::XMMATRIX wmat = smat * rmat * tmat;
+		DirectX::XMVECTOR qmat = DirectX::XMQuaternionRotationMatrix(wmat);
+		DirectX::XMMATRIX resultmat = DirectX::XMMatrixRotationQuaternion(qmat);
+
+		bool debug = false;
+		debug = true;
+	}
 
 
 	portal.Update();
 	stringEffect.Update();
 	portalFlame.Update();
 	cursor.Update();
+
+	playerBox.data.transform.pos = baseTargetPos;
+	//playerBox.data.transform.pos.y -= 5.0f;
+	playerBox.data.transform.scale = { 1.0f,1.0f,1.0f };
+	playerBox.data.cameraIndex = 2;
+	
+	warpPlayerBox.data.transform = playerBox.data.transform;
+	warpPlayerBox.data.cameraIndex = 1;
+	//warpPlayerBox.data.color = { 255,0,0,255 };
 }
 
 void PortalScene::Draw()
@@ -315,25 +467,60 @@ void PortalScene::Draw()
 	RenderTargetStatus::Instance()->PrepareToChangeBarrier(greenPortalRenderHandle, redPortalRenderHandle);
 	RenderTargetStatus::Instance()->ClearRenderTarget(greenPortalRenderHandle);
 
-	stages[STAGE_GREEN]->bg.Draw();
+	if (stagePortalMode != STAGE_GREEN)
+	{
+		stages[stagePortalMode]->bg.Draw();
+		stages[stagePortalMode]->stage[STAGE_GREEN].data.color.color = { 0,100,0,255 };
+		stages[stagePortalMode]->stage[STAGE_RED].data.color.color = { 100,0,0,255 };
+	}
 	for (int i = 0; i < stages[STAGE_GREEN]->stage.size(); ++i)
 	{
-		stages[STAGE_GREEN]->stage[i].Draw();
+		stages[stagePortalMode]->stage[i].Draw();
 	}
+	warpPlayerBox.Draw();
+
 
 	RenderTargetStatus::Instance()->PrepareToCloseBarrier(greenPortalRenderHandle);
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 
-	stages[STAGE_GAME]->bg.Draw();
-	for (int i = 0; i < stages[STAGE_GAME]->stage.size(); ++i)
+	if (stageGameMode == STAGE_GAME)
 	{
-		stages[STAGE_GAME]->stage[i].Draw();
+		stages[stageGameMode]->stage[FLOOR_GREEN].data.transform.pos = { -30.0f,0.0f,0.0f };
+		stages[stageGameMode]->stage[FLOOR_RED].data.transform.pos = { 30.0f,0.0f,0.0f };
+		stages[stageGameMode]->bg.Draw();
 	}
+	else
+	{
+		stages[stageGameMode]->stage[FLOOR_GREEN].data.transform.pos = { 30.0f,0.0f,0.0f };
+		stages[stageGameMode]->stage[FLOOR_RED].data.transform.pos = { -30.0f,0.0f,0.0f };
+	}
+
+
+
+	for (int i = 0; i < stages[stageGameMode]->stage.size(); ++i)
+	{
+		stages[stageGameMode]->stage[i].Draw();
+	}
+
+
+	playerBox.Draw();
 
 	greenPortal.Draw();
 	redPortal.Draw();
 
+
 	cursor.Draw();
+
+
+	ImGui::Begin("Camera");
+	KazImGuiHelper::InputVec3(&baseEyePos, "Eye");
+	KazImGuiHelper::InputVec3(&baseTargetPos, "Target");
+	ImGui::End();
+
+
+	ImGui::Begin("Gate");
+	KazImGuiHelper::InputTransform3D(&greenPortal.data.transform);
+	ImGui::End();
 
 }
 

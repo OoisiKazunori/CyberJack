@@ -878,5 +878,8 @@ namespace KazMath
 		return static_cast<float>(TIMER) / static_cast<float>(MAX_TIMER);
 	}
 
+
+	void ConvertMatrixToAngles(const DirectX::XMMATRIX &MAT, Vec3<float> *ANGLE);
+
 }
 

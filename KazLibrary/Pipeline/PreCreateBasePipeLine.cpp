@@ -359,6 +359,9 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "NoiseSignalPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_NOISE);
 
+	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "PortalVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_PORTAL);
+	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "PortalPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_PORTAL);
+
 	OutputDebugStringA("シェーダーのコンパイルを終了します\n");
 #pragma endregion
 
@@ -1081,6 +1084,15 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_DATA_BACKCARING_ALPHABLEND,
 		ROOTSIGNATURE_DATA_DRAW,
 		PIPELINE_NAME_COLOR
+	);
+
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS_TEX,
+		SHADER_VERTEX_PORTAL,
+		SHADER_PIXEL_PORTAL,
+		PIPELINE_DATA_NOCARING_NOBLEND,
+		ROOTSIGNATURE_DATA_DRAW_TEX,
+		PIPELINE_NAME_PORTAL
 	);
 
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(

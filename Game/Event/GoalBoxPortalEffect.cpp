@@ -5,51 +5,41 @@
 
 GoalBoxPortalEffect::GoalBoxPortalEffect()
 {
-	sprite = std::make_unique<Sprite3DRender>();
-	constBuffHandle = sprite->CreateConstBuffer(sizeof(float), typeid(float).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+	noiseSprite = std::make_unique<Sprite3DRender>();
+	constBuffHandle = noiseSprite->CreateConstBuffer(sizeof(float), typeid(float).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
 
-	sprite->data.pipelineName = PIPELINE_NAME_SPRITE_NOISE;
-	sprite->data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "Test.png");
+	noiseSprite->data.pipelineName = PIPELINE_NAME_SPRITE_NOISE;
+	portalSprite.data.pipelineName = PIPELINE_NAME_PORTAL;
+	noiseSprite->data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "Test.png");
 }
 
 void GoalBoxPortalEffect::Init(const KazMath::Vec3<float> &POS)
 {
 	startFlag = false;
-	sprite->data.transform.pos = POS;
-	sprite->data.transform.scale = { 0.0f,0.18f,0.0f };
-	lerpScale = sprite->data.transform.scale;
-	sprite->data.transform.rotation = { 0.0f,0.0f,0.0f };
+	noiseSprite->data.transform.pos = POS;
+	noiseSprite->data.transform.scale = { 0.18f,0.18f,0.0f };
+	//lerpScale = noiseSprite->data.transform.scale;
+	noiseSprite->data.transform.rotation = { 0.0f,0.0f,0.0f };
 	timer = 0;
 	appearNextStageFlag = false;
+	changeStageFlag = false;
+	//noiseSprite->data.transform.scale.x = lerpScale.x;
 }
 
 void GoalBoxPortalEffect::Update()
 {
 	if (startFlag)
 	{
-		if (sprite->data.transform.pos.z <= 12.2f)
-		{
-			sprite->data.transform.pos.z = 12.2f;
-		}
 		if (45 <= timer)
 		{
 			appearNextStageFlag = true;
 		}
 
 		float lSeed = static_cast<float>(timer);
-		sprite->TransData(&lSeed, constBuffHandle, typeid(float).name());
+		noiseSprite->TransData(&lSeed, constBuffHandle, typeid(float).name());
 
 
 
-		lerpScale.x = 0.18f;
-		{
-			KazMath::Vec3<float> distance = lerpScale - sprite->data.transform.scale;
-			sprite->data.transform.scale += distance * 0.1f;
-		}
-		if (lerpScale.x <= sprite->data.transform.scale.x)
-		{
-			sprite->data.transform.scale.x = lerpScale.x;
-		}
 		if (appearNextStageFlag)
 		{
 			timer = -1;
@@ -58,6 +48,16 @@ void GoalBoxPortalEffect::Update()
 		{
 			++timer;
 		}
+
+
+		float limitPosZ = -5.7f;
+		if (noiseSprite->data.transform.pos.z <= limitPosZ)
+		{
+			noiseSprite->data.transform.pos.z = limitPosZ;
+			changeStageFlag = true;
+		}
+		portalSprite.data.handleData = noiseSprite->data.handleData;
+		portalSprite.data.transform = noiseSprite->data.transform;
 	}
 }
 
@@ -65,7 +65,14 @@ void GoalBoxPortalEffect::Draw()
 {
 	if (startFlag)
 	{
-		sprite->Draw();
+		if (timer != -1)
+		{
+			noiseSprite->Draw();
+		}
+		else
+		{
+			portalSprite.Draw();
+		}
 	}
 }
 
@@ -76,5 +83,5 @@ void GoalBoxPortalEffect::Start()
 
 bool GoalBoxPortalEffect::AllHidden()
 {
-	return sprite->data.transform.pos.z <= 12.2f;
+	return changeStageFlag;
 }

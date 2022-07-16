@@ -88,6 +88,8 @@ public:
 	void Record();
 
 
+	static const int CAMERA_ARRAY_NUM = 3;
+	std::array<DirectX::XMMATRIX, CAMERA_ARRAY_NUM> viewArray;
 private:
 
 	DirectX::XMMATRIX view;
@@ -96,8 +98,6 @@ private:
 	DirectX::XMMATRIX orthographicMatProjection;
 
 
-	static const int CAMERA_ARRAY_NUM = 3;
-	std::array<DirectX::XMMATRIX, CAMERA_ARRAY_NUM> viewArray;
 	std::array<DirectX::XMMATRIX, CAMERA_ARRAY_NUM> billBoardArray;
 
 	std::array<std::unique_ptr<DirtySet>, CAMERA_ARRAY_NUM> viewDirtyFlagArray;

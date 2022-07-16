@@ -7,7 +7,7 @@ class Player
 {
 public:
 	Player();
-	void Init(const KazMath::Vec3<float> &POS);
+	void Init(const KazMath::Vec3<float> &POS, bool DRAW_UI_FLAG = true);
 	void Finalize();
 	void Input();
 	void Update();
@@ -22,6 +22,7 @@ private:
 	bool redFlag;
 	int redTimer;
 	BoxPolygonRenderPtr render;
+	bool drawHpFlag;
 
 	PlayerHpUi hpUi;
 

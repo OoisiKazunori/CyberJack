@@ -22,7 +22,7 @@ CameraMgr::CameraMgr() :perspectiveProjDirtyFlag(perspectiveMat), orthographicMa
 		1.0f
 	);
 
-	for (int i = 0; i < CAMERA_ARRAY_NUM; ++i)
+	for (int i = 0; i < CAMERA_ARRAY_NUM; i++)
 	{
 		viewArray[i] = DirectX::XMMatrixIdentity();
 		viewDirtyFlagArray[i] = std::make_unique<DirtySet>(viewArray[i]);

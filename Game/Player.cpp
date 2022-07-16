@@ -14,7 +14,7 @@ Player::Player()
 
 }
 
-void Player::Init(const KazMath::Vec3<float> &POS)
+void Player::Init(const KazMath::Vec3<float> &POS, bool DRAW_UI_FLAG)
 {
 	pos = POS;
 	render->data.transform.pos = pos;
@@ -26,6 +26,8 @@ void Player::Init(const KazMath::Vec3<float> &POS)
 	prevHp = hp;
 	redFlag = false;
 	redTimer = 0;
+
+	drawHpFlag = DRAW_UI_FLAG;
 }
 
 void Player::Finalize()
@@ -89,7 +91,11 @@ void Player::Update()
 void Player::Draw()
 {
 	render->Draw();
-	hpUi.Draw();
+
+	if (drawHpFlag)
+	{
+		hpUi.Draw();
+	}
 }
 
 void Player::Hit()

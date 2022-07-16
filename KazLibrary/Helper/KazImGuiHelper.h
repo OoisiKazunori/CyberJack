@@ -6,24 +6,24 @@ namespace KazImGuiHelper
 {
 	void InputTransform3D(KazMath::Transform3D *TRANSFORM)
 	{
-		ImGui::InputFloat("PosX", &TRANSFORM->pos.x);
-		ImGui::InputFloat("PosY", &TRANSFORM->pos.y);
-		ImGui::InputFloat("PosZ", &TRANSFORM->pos.z);
-		ImGui::InputFloat("ScaleX", &TRANSFORM->scale.x);
-		ImGui::InputFloat("ScaleY", &TRANSFORM->scale.y);
-		ImGui::InputFloat("ScaleZ", &TRANSFORM->scale.z);
-		ImGui::InputFloat("RotationX", &TRANSFORM->rotation.x);
-		ImGui::InputFloat("RotationY", &TRANSFORM->rotation.y);
-		ImGui::InputFloat("RotationZ", &TRANSFORM->rotation.z);
+		ImGui::DragFloat("PosX", &TRANSFORM->pos.x);
+		ImGui::DragFloat("PosY", &TRANSFORM->pos.y);
+		ImGui::DragFloat("PosZ", &TRANSFORM->pos.z);
+		ImGui::DragFloat("ScaleX", &TRANSFORM->scale.x);
+		ImGui::DragFloat("ScaleY", &TRANSFORM->scale.y);
+		ImGui::DragFloat("ScaleZ", &TRANSFORM->scale.z);
+		ImGui::DragFloat("RotationX", &TRANSFORM->rotation.x);
+		ImGui::DragFloat("RotationY", &TRANSFORM->rotation.y);
+		ImGui::DragFloat("RotationZ", &TRANSFORM->rotation.z);
 	}
 
 	void InputTransform2D(KazMath::Transform2D *TRANSFORM)
 	{
-		ImGui::InputFloat("PosX", &TRANSFORM->pos.x);
-		ImGui::InputFloat("PosY", &TRANSFORM->pos.y);
-		ImGui::InputFloat("ScaleX", &TRANSFORM->scale.x);
-		ImGui::InputFloat("ScaleY", &TRANSFORM->scale.y);
-		ImGui::InputFloat("Rotation", &TRANSFORM->rotation);
+		ImGui::DragFloat("PosX", &TRANSFORM->pos.x);
+		ImGui::DragFloat("PosY", &TRANSFORM->pos.y);
+		ImGui::DragFloat("ScaleX", &TRANSFORM->scale.x);
+		ImGui::DragFloat("ScaleY", &TRANSFORM->scale.y);
+		ImGui::DragFloat("Rotation", &TRANSFORM->rotation);
 	}
 
 	void InputVec4(KazMath::Vec4<int> *VEC_4, const std::string &LABEL)

@@ -139,7 +139,7 @@ void GoalBox::Update()
 
 		if (60.0f * 5.0f <= addRota)
 		{
-			lerpScale = { 22.0f ,22.0f,22.0f };
+			lerpScale = { 25.0f ,25.0f,25.0f };
 		}
 		if (60.0f * 10.0f <= addRota)
 		{
@@ -177,7 +177,7 @@ void GoalBox::Update()
 		KazMath::Vec3<float> distance = lerpScale - model->data.transform.scale;
 		model->data.transform.scale += distance * 0.1f;
 	}
-	portalEffect.sprite->data.transform.pos.z = portalFlame.basePos.z + 0.01f;
+	portalEffect.noiseSprite->data.transform.pos.z = portalFlame.basePos.z + 0.01f;
 
 	lightEffect.Update();
 	portalEffect.Update();
