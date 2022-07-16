@@ -13,11 +13,12 @@ public:
 
 	void Start();
 	bool AllHidden();
-	Sprite3DRenderPtr sprite;
+	Sprite3DRenderPtr noiseSprite;
 	int timer;
 private:
 	bool startFlag;
-
+	bool changeStageFlag;
+	Sprite3DRender portalSprite;
 	bool appearNextStageFlag;
 	RESOURCE_HANDLE constBuffHandle;
 	KazMath::Vec3<float> lerpScale;

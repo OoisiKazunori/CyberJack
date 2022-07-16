@@ -448,7 +448,6 @@ void PortalScene::Update()
 	warpPlayerBox.data.transform = playerBox.data.transform;
 	warpPlayerBox.data.cameraIndex = 1;
 	//warpPlayerBox.data.color = { 255,0,0,255 };
-
 }
 
 void PortalScene::Draw()
