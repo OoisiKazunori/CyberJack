@@ -1058,22 +1058,22 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 #pragma region パイプラインの生成と登録
 
-	//GPUパーティクル用のパイプライン
-	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
-		LAYOUT_POS,
-		SHADER_VERTEX_GPUPARTICLE,
-		SHADER_PIXEL_GPUPARTICLE,
-		PIPELINE_DATA_BACKCARING_ALPHABLEND,
-		ROOTSIGNATURE_DATA_DRAW,
-		PIPELINE_NAME_GPUPARTICLE
-	);
-
 	//コンピュートパイプラインの作成
 	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 		SHADER_COMPUTE_TEST,
 		PIPELINE_COMPUTE_DATA_TEST,
 		ROOTSIGNATURE_DATA_SRV_UAV,
 		PIPELINE_COMPUTE_NAME_TEST
+	);
+
+	//GPUパーティクル用のパイプライン
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS,
+		SHADER_VERTEX_GPUPARTICLE,
+		SHADER_PIXEL_GPUPARTICLE,
+		PIPELINE_DATA_BACKCARING_ALPHABLEND,
+		ROOTSIGNATURE_DATA_DRAW_UAV,
+		PIPELINE_NAME_GPUPARTICLE
 	);
 
 	//色パイプライン

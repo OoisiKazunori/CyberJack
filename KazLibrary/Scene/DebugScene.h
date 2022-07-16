@@ -4,15 +4,17 @@
 #include"../Render/BackGroundForDebug.h"
 #include"../KazLibrary/Buffer/CreateGpuBuffer.h"
 #include"../KazLibrary/Render/KazRender.h"
+#include"../KazLibrary/RenderTarget/GaussianBuler.h"
 
 /// <summary>
 /// パーティクルの移動系
 /// </summary>
-struct InputData
+struct UpdateData
 {
 	DirectX::XMFLOAT4 pos;
 	DirectX::XMFLOAT4 velocity;
 	DirectX::XMFLOAT4 color;
+	int timer;
 };
 
 /// <summary>
@@ -28,9 +30,10 @@ struct CommonData
 {
 	DirectX::XMMATRIX cameraMat;
 	DirectX::XMMATRIX projectionMat;
+	DirectX::XMFLOAT4 emittPos;
 	UINT increSize;
 	UINT64 gpuAddress;
-	DirectX::XMUINT2 pad;
+	int seed;
 };
 
 struct IndirectCommand
@@ -45,7 +48,6 @@ struct CSRootConstants
 	DirectX::XMMATRIX projection;
 	float size;
 	UINT64 gpuAddress;
-	DirectX::XMFLOAT2 pad;
 };
 
 //移動情報
@@ -89,20 +91,29 @@ private:
 
 
 	//BackGroundForDebug bg;
+	Sprite2DRender mainRender;
+	Sprite2DRender lumiRender;
+	Sprite2DRender addRender;
+	RESOURCE_HANDLE mainHandle;
+	RESOURCE_HANDLE lumiHandle;
+	RESOURCE_HANDLE addHandle;
 
+
+	static const int DRAW_CALL = 1;
 	unique_ptr<CreateGpuBuffer>buffer;
-	RESOURCE_HANDLE inputHandle, updateInputHandle, outputMatHandle, drawCommandHandle;
+	RESOURCE_HANDLE inputHandle, updateHandle, outputMatHandle, drawCommandHandle, counterBufferHandle;
 	RESOURCE_HANDLE commonHandle, cbvMatHandle;
 	void *pointer;
+	GaussianBuler bulr;
 
-	InputData inputData;
+	UpdateData inputData;
 	BufferMemorySize cbvSize;
 	BufferMemorySize computeMemSize;
 	int srvHandle;
 	int cbvHandle;
 
 
-	static const int TRIANGLE_ARRAY_NUM = 1;
+	static const int TRIANGLE_ARRAY_NUM = 9900;
 	static const int FRAME_COUNT = 2;
 	static const int TRIANGLE_RESOURCE_COUNT = TRIANGLE_ARRAY_NUM * FRAME_COUNT;
 	static const int ComputeThreadBlockSize = TRIANGLE_ARRAY_NUM * FRAME_COUNT;
@@ -113,13 +124,13 @@ private:
 	std::array<SceneConstantBuffer, TRIANGLE_ARRAY_NUM> constantBufferData;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 
-
+	int seed;
 	CSRootConstants rootConst;
 
 	RESOURCE_HANDLE paramCBHandle;
 
 	BackGroundForDebug bg;
-
+	
 
 
 	DirectX::XMMATRIX Translate(DirectX::XMFLOAT3 VECTOR)

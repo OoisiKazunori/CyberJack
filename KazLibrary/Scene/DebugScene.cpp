@@ -13,17 +13,46 @@
 #include"../KazLibrary/RenderTarget/RenderTargetStatus.h"
 #include"../Imgui/MyImgui.h"
 
-DebugScene::DebugScene()
+DebugScene::DebugScene() :bulr({ WIN_X,WIN_Y })
 {
 	//short texHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "");
 	srvHandle = 0;
 	buffer = std::make_unique<CreateGpuBuffer>();
 
 
+	std::vector<MultiRenderTargetData> renderData;
+	renderData.push_back(MultiRenderTargetData());
+	renderData.push_back(MultiRenderTargetData());
+	renderData[0].graphSize = { WIN_X,WIN_Y };
+	renderData[0].backGroundColor = BG_COLOR;
+	renderData[1].graphSize = { WIN_X,WIN_Y };
+	renderData[1].backGroundColor = { 0.0f,0.0f,0.0f };
+
+	std::vector<RESOURCE_HANDLE> handles =
+		RenderTargetStatus::Instance()->CreateMultiRenderTarget(renderData, DXGI_FORMAT_R8G8B8A8_UNORM);
+	mainHandle = handles[0];
+	addHandle = handles[1];
+	lumiHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, { 0.0f,0.0f,0.0f }, DXGI_FORMAT_R8G8B8A8_UNORM);
+
+	mainRender.data.handleData = mainHandle;
+	mainRender.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+
+	lumiRender.data.pipelineName = PIPELINE_NAME_SPRITE_LUMI;
+	lumiRender.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+	lumiRender.data.handleData = mainHandle;
+	lumiRender.data.addHandle.handle[0] = addHandle;
+	lumiRender.data.addHandle.paramType[0] = GRAPHICS_PRAMTYPE_TEX2;
+
+
+	addRender.data.handleData = lumiHandle;
+	addRender.data.pipelineName = PIPELINE_NAME_ADDBLEND;
+	addRender.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+
+
 	//CommandBuffer---------------------------
 	std::array<D3D12_INDIRECT_ARGUMENT_DESC, 2> args{};
-	args[0].Type = D3D12_INDIRECT_ARGUMENT_TYPE_CONSTANT_BUFFER_VIEW;
-	args[0].ConstantBufferView.RootParameterIndex = 0;
+	args[0].Type = D3D12_INDIRECT_ARGUMENT_TYPE_UNORDERED_ACCESS_VIEW;
+	args[0].UnorderedAccessView.RootParameterIndex = 0;
 	args[1].Type = D3D12_INDIRECT_ARGUMENT_TYPE_DRAW;
 
 	//CommandArgument------------------------
@@ -33,7 +62,7 @@ DebugScene::DebugScene()
 	desc.ByteStride = sizeof(IndirectCommand);
 	//CommandArgument------------------------
 
-	DirectX12Device::Instance()->dev->CreateCommandSignature(&desc, GraphicsRootSignature::Instance()->GetRootSignature(ROOTSIGNATURE_DATA_DRAW).Get(), IID_PPV_ARGS(&commandSig));
+	DirectX12Device::Instance()->dev->CreateCommandSignature(&desc, GraphicsRootSignature::Instance()->GetRootSignature(ROOTSIGNATURE_DATA_DRAW_UAV).Get(), IID_PPV_ARGS(&commandSig));
 	//CommandArgument---------------------------
 
 	//Parameter---------------------------
@@ -153,24 +182,24 @@ DebugScene::DebugScene()
 
 		//InputBuffer-------------------------
 		{
-			inputHandle = buffer->CreateBuffer(KazBufferHelper::SetStructureBuffer(TRIANGLE_ARRAY_NUM * sizeof(InputData), "InputParam"));
+			inputHandle = buffer->CreateBuffer(KazBufferHelper::SetStructureBuffer(TRIANGLE_ARRAY_NUM * sizeof(UpdateData), "InputParam"));
 
-			std::array<InputData, TRIANGLE_ARRAY_NUM> data;
+			std::array<UpdateData, TRIANGLE_ARRAY_NUM> data;
 			for (int i = 0; i < TRIANGLE_ARRAY_NUM; ++i)
 			{
-				data[i].pos = { 11.0f,10.0f,10.0f,0.0f };
+				data[i].pos = { 0.0f + static_cast<float>(i) * 10.0f,10.0f,10.0f,0.0f };
 				data[i].velocity = { 0.0f,0.0f,0.0f,0.0f };
 				data[i].color = { KazMath::Rand<float>(1.0f,0.0f),KazMath::Rand<float>(1.0f,0.0f),KazMath::Rand<float>(1.0f,0.0f),1.0f };
 			}
 
-			buffer->TransData(inputHandle, data.data(), TRIANGLE_ARRAY_NUM * sizeof(InputData));
+			buffer->TransData(inputHandle, data.data(), TRIANGLE_ARRAY_NUM * sizeof(UpdateData));
 
 			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 			srvDesc.Format = DXGI_FORMAT_UNKNOWN;
 			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
 			srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 			srvDesc.Buffer.NumElements = TRIANGLE_ARRAY_NUM;
-			srvDesc.Buffer.StructureByteStride = sizeof(InputData);
+			srvDesc.Buffer.StructureByteStride = sizeof(UpdateData);
 			srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
 			BufferMemorySize s = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_SRV);
 			DescriptorHeapMgr::Instance()->CreateBufferView(s.startSize + srvHandle, srvDesc, buffer->GetBufferData(inputHandle).Get());
@@ -181,12 +210,18 @@ DebugScene::DebugScene()
 
 		computeMemSize = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_TEXTURE_COMPUTEBUFFER);
 
-		int uavHandle = 1;
+		int uavHandle = 0;
 
 		BUFFER_SIZE outputBufferSize = static_cast<BUFFER_SIZE>(TRIANGLE_ARRAY_NUM * sizeof(OutPutData));
-		BUFFER_SIZE inputBufferSize = static_cast<BUFFER_SIZE>(TRIANGLE_ARRAY_NUM * sizeof(InputData));
-		BUFFER_SIZE commonBufferSize = static_cast<BUFFER_SIZE>(TRIANGLE_ARRAY_NUM * sizeof(CommonData));
-		BUFFER_SIZE drawIndirectBufferSize = static_cast<BUFFER_SIZE>(TRIANGLE_ARRAY_NUM * sizeof(IndirectCommand));
+		//BUFFER_SIZE inputBufferSize = static_cast<BUFFER_SIZE>(TRIANGLE_ARRAY_NUM * sizeof(UpdateData));
+		//BUFFER_SIZE commonBufferSize = static_cast<BUFFER_SIZE>(TRIANGLE_ARRAY_NUM * sizeof(CommonData));
+		//BUFFER_SIZE drawIndirectBufferSize = static_cast<BUFFER_SIZE>(TRIANGLE_ARRAY_NUM * sizeof(IndirectCommand));
+
+		{
+			counterBufferHandle = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(UINT)));
+			UINT num = 0;
+			buffer->TransData(counterBufferHandle, &num, sizeof(UINT));
+		}
 
 		//OutputBuffer---------------------------
 		{
@@ -201,35 +236,35 @@ DebugScene::DebugScene()
 			uavDesc.Buffer.CounterOffsetInBytes = 0;
 			uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
 
-			DescriptorHeapMgr::Instance()->CreateBufferView(computeMemSize.startSize + uavHandle, uavDesc, buffer->GetBufferData(outputMatHandle).Get(), nullptr);
+			DescriptorHeapMgr::Instance()->CreateBufferView(computeMemSize.startSize + uavHandle, uavDesc, buffer->GetBufferData(outputMatHandle).Get(), buffer->GetBufferData(counterBufferHandle).Get());
 		}
 		++uavHandle;
 
 
-		//InputUpdateBuffer
+		//UpdateBuffer
 		{
-			updateInputHandle = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(inputBufferSize));
+			updateHandle = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(UpdateData) * TRIANGLE_ARRAY_NUM));
 
 			D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
 			uavDesc.Format = DXGI_FORMAT_UNKNOWN;
 			uavDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
 			uavDesc.Buffer.FirstElement = 0;
 			uavDesc.Buffer.NumElements = TRIANGLE_ARRAY_NUM;
-			uavDesc.Buffer.StructureByteStride = sizeof(InputData);
+			uavDesc.Buffer.StructureByteStride = sizeof(UpdateData);
 			uavDesc.Buffer.CounterOffsetInBytes = 0;
 			uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
 
-			DescriptorHeapMgr::Instance()->CreateBufferView(computeMemSize.startSize + uavHandle, uavDesc, buffer->GetBufferData(updateInputHandle).Get(), nullptr);
+			DescriptorHeapMgr::Instance()->CreateBufferView(computeMemSize.startSize + uavHandle, uavDesc, buffer->GetBufferData(updateHandle).Get(), nullptr);
 		}
 		++uavHandle;
 
-		commonHandle = buffer->CreateBuffer(KazBufferHelper::SetConstBufferData(commonBufferSize, "CommonData"));
+		commonHandle = buffer->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(CommonData), "CommonData"));
 		{
 			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 			srvDesc.Format = DXGI_FORMAT_UNKNOWN;
 			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
 			srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-			srvDesc.Buffer.NumElements = TRIANGLE_ARRAY_NUM;
+			srvDesc.Buffer.NumElements = 1;
 			srvDesc.Buffer.StructureByteStride = sizeof(CommonData);
 			srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
 
@@ -254,26 +289,26 @@ DebugScene::DebugScene()
 
 		//DrawIndirect
 		{
-			drawCommandHandle = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(drawIndirectBufferSize));
+			drawCommandHandle = buffer->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(IndirectCommand) * DRAW_CALL, "DrawCommand"));
 
-			std::array<IndirectCommand, TRIANGLE_ARRAY_NUM> lCommands;
-			D3D12_GPU_VIRTUAL_ADDRESS cbGpuAddress = buffer->GetGpuAddress(cbvMatHandle);
+			std::array<IndirectCommand, DRAW_CALL> lCommands;
+			D3D12_GPU_VIRTUAL_ADDRESS cbGpuAddress = buffer->GetGpuAddress(outputMatHandle);
 			for (int i = 0; i < lCommands.size(); ++i)
 			{
-				lCommands[i].cbv = cbGpuAddress + i * sizeof(OutPutData);
+				lCommands[i].cbv = cbGpuAddress;
 				lCommands[i].drawArguments.VertexCountPerInstance = 3;
-				lCommands[i].drawArguments.InstanceCount = 1;
+				lCommands[i].drawArguments.InstanceCount = TRIANGLE_ARRAY_NUM;
 				lCommands[i].drawArguments.StartVertexLocation = 0;
 				lCommands[i].drawArguments.StartInstanceLocation = 0;
 			}
-			buffer->TransData(drawCommandHandle, &lCommands, drawIndirectBufferSize);
+			buffer->TransData(drawCommandHandle, &lCommands, sizeof(IndirectCommand) *DRAW_CALL);
 
 
 			D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
 			uavDesc.Format = DXGI_FORMAT_UNKNOWN;
 			uavDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
 			uavDesc.Buffer.FirstElement = 0;
-			uavDesc.Buffer.NumElements = TRIANGLE_ARRAY_NUM;
+			uavDesc.Buffer.NumElements = 1;
 			uavDesc.Buffer.StructureByteStride = sizeof(IndirectCommand);
 			uavDesc.Buffer.CounterOffsetInBytes = 0;
 			uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
@@ -283,8 +318,9 @@ DebugScene::DebugScene()
 		}
 		//DrawInDirect---------------------------
 #pragma endregion
-
 	}
+
+	seed = 0;
 }
 
 DebugScene::~DebugScene()
@@ -304,126 +340,78 @@ void DebugScene::Update()
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
 
 
-	//for (UINT n = 0; n < TRIANGLE_ARRAY_NUM; n++)
-	//{
-	//	const float offsetBounds = 2.5f;
-
-	//	// Animate the triangles
-	//	constantBufferData[n].offset.x += constantBufferData[n].velocity.x;
-	//	if (constantBufferData[n].offset.x > offsetBounds)
-	//	{
-	//		constantBufferData[n].velocity.x = KazMath::Rand<float>(0.01f, 0.02f);
-	//		constantBufferData[n].offset.x = -offsetBounds;
-	//	}
-	//}
-
-	//int num = RenderTargetStatus::Instance()->copySwapchain->GetCurrentBackBufferIndex();
-
-	//UINT8 *destination = static_cast<UINT8 *>(pointer) + (TRIANGLE_ARRAY_NUM * num * sizeof(SceneConstantBuffer));
-	//memcpy(destination, constantBufferData.data(), TRIANGLE_ARRAY_NUM * sizeof(SceneConstantBuffer));
-
-
-
 	//ComputeShader------------------------
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_TEST);
 
-	{
-		BufferMemorySize s = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_SRV);
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(s.startSize + (srvHandle - 1)));
-	}
+	UINT num = 0;
+	buffer->TransData(counterBufferHandle, &num, sizeof(UINT));
 
 	{
-		BufferMemorySize s = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_TEXTURE_COMPUTEBUFFER);
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(s.startSize + 1));
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(2, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(s.startSize + 2));
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(3, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(s.startSize + 3));
+		computeMemSize = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_TEXTURE_COMPUTEBUFFER);
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(computeMemSize.startSize + 0));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(computeMemSize.startSize + 1));
 	}
 
 	//Common
-	CommonData commonData;
-	commonData.cameraMat = CameraMgr::Instance()->GetViewMatrix();
-	commonData.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
-	commonData.increSize = sizeof(OutPutData);
-	commonData.gpuAddress = buffer->GetGpuAddress(cbvMatHandle);
-	buffer->TransData(commonHandle, &commonData, sizeof(CommonData));
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(4, buffer->GetGpuAddress(commonHandle));
-
-
-	//DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(2, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(computeMemSize.startSize + 2));
-	DirectX12CmdList::Instance()->cmdList->Dispatch(1, 1, 1);
-
-	//Compute------------------------
-
-	//std::array<OutPutData, TRIANGLE_ARRAY_NUM> *result = static_cast<std::array<OutPutData, TRIANGLE_ARRAY_NUM> *>(buffer->GetMapAddres(outputMatHandle));
-
-	/*{
-		void *dataMap = nullptr;
-		auto result = buffer->GetBufferData(cbvMatHandle)->Map(0, nullptr, (void **)&dataMap);
-		if (SUCCEEDED(result))
-		{
-			memcpy(dataMap, buffer->GetMapAddres(outputMatHandle), TRIANGLE_ARRAY_NUM * sizeof(OutPutData));
-			buffer->GetBufferData(cbvMatHandle)->Unmap(0, nullptr);
-		}
-	}*/
-
-	//GPU‚Ö‚Ì“]‘—-------------------------
-	std::array<OutPutData, TRIANGLE_ARRAY_NUM> data;
-	for (int i = 0; i < data.size(); ++i)
 	{
-		KazMath::Vec3<float> pos = { 0.0f,0.0f,20.0f };
-		KazMath::Vec3<float> scale = { 15.0f,15.0f,15.0f };
-		KazMath::Vec3<float> rota = { 0.0f,0.0f,0.0f };
-
-		DirectX::XMMATRIX trans = KazMath::CaluTransMatrix(pos);
-		DirectX::XMMATRIX scaleM = KazMath::CaluScaleMatrix(scale);
-		DirectX::XMMATRIX rotaM = KazMath::CaluRotaMatrix(rota);
-
-		DirectX::XMMATRIX v = CameraMgr::Instance()->GetViewMatrix();
-		DirectX::XMMATRIX p = CameraMgr::Instance()->GetPerspectiveMatProjection();
-		data[i].mat = (scaleM * rotaM * trans) * v * p;
-		data[i].color = { 1.0f,0.0f,0.0f,1.0f };
+		std::array<CommonData, 1> commonData;
+		for (int i = 0; i < commonData.size(); ++i)
+		{
+			commonData[i].cameraMat = CameraMgr::Instance()->GetViewMatrix();
+			commonData[i].projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
+			commonData[i].increSize = sizeof(OutPutData);
+			commonData[i].gpuAddress = buffer->GetGpuAddress(outputMatHandle);
+			commonData[i].emittPos = { 0.0f,0.0f,0.0f,0.0f };
+			commonData[i].seed = seed;
+		}
+		seed = KazMath::Rand<int>(100, 0);
+		buffer->TransData(commonHandle, commonData.data(), sizeof(CommonData));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffer->GetGpuAddress(commonHandle));
 	}
-	buffer->TransData(cbvMatHandle, &data, TRIANGLE_ARRAY_NUM * sizeof(OutPutData));
+
+	DirectX12CmdList::Instance()->cmdList->Dispatch(TRIANGLE_ARRAY_NUM, 1, 1);
+
 }
 
 void DebugScene::Draw()
 {
-	int num = RenderTargetStatus::Instance()->copySwapchain->GetCurrentBackBufferIndex();
-	RenderTargetStatus::Instance()->bbIndex = num;
+
+	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
+	RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
+
 	{
 		//RESOURCE_HANDLE commandBuffHandle = commandBufferHandle;
 		RESOURCE_HANDLE commandBuffHandle = drawCommandHandle;
 
-		//DrawIndirect------------------------
 
-		std::array<D3D12_RESOURCE_BARRIER, 2> barriers = {
-		CD3DX12_RESOURCE_BARRIER::Transition(
-			buffer->GetBufferData(commandBuffHandle).Get(),
-			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-			D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT),
-		CD3DX12_RESOURCE_BARRIER::Transition(
+		int num = RenderTargetStatus::Instance()->bbIndex;
+		RenderTargetStatus::Instance()->ChangeBarrier(
 			RenderTargetStatus::Instance()->backBuffers[num].Get(),
 			D3D12_RESOURCE_STATE_PRESENT,
-			D3D12_RESOURCE_STATE_RENDER_TARGET)
-		};
-		DirectX12CmdList::Instance()->cmdList->ResourceBarrier(static_cast<unsigned int>(barriers.size()), barriers.data());
-
-
+			D3D12_RESOURCE_STATE_RENDER_TARGET
+		);
 
 		//Clear-------------------------
-
 		D3D12_CPU_DESCRIPTOR_HANDLE rtvH;
 		rtvH = RenderTargetStatus::Instance()->rtvHeaps->GetCPUDescriptorHandleForHeapStart();
 		rtvH.ptr += num * DirectX12Device::Instance()->dev->GetDescriptorHandleIncrementSize(RenderTargetStatus::Instance()->heapDesc.Type);
 		DirectX12CmdList::Instance()->cmdList->OMSetRenderTargets(1, &rtvH, false, &RenderTargetStatus::Instance()->gDepth.dsvH[RenderTargetStatus::Instance()->handle]);
 		RenderTargetStatus::Instance()->gDepth.Clear(RenderTargetStatus::Instance()->handle);
-
 		RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
 		//Clear-------------------------
 
 
-		GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE);
+		RenderTargetStatus::Instance()->PrepareToChangeBarrier(mainHandle);
+		RenderTargetStatus::Instance()->ClearRenderTarget(mainHandle);
 
+
+		RenderTargetStatus::Instance()->ChangeBarrier(
+			buffer->GetBufferData(commandBuffHandle).Get(),
+			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+			D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT
+		);
+
+		GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE);
 		DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
 
@@ -431,29 +419,46 @@ void DebugScene::Draw()
 		DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
 		(
 			commandSig.Get(),
-			TRIANGLE_ARRAY_NUM,
+			DRAW_CALL,
 			buffer->GetBufferData(commandBuffHandle).Get(),
 			0,
-			nullptr,
+			buffer->GetBufferData(counterBufferHandle).Get(),
 			0
 		);
 		//PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
+		RenderTargetStatus::Instance()->ChangeBarrier(
+			buffer->GetBufferData(commandBuffHandle).Get(),
+			D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
+			D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+		);
+
 
 		bg.Draw();
 
-		barriers[0].Transition.StateBefore = D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT;
-		barriers[0].Transition.StateAfter = D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE;
-		barriers[1].Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-		barriers[1].Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-		DirectX12CmdList::Instance()->cmdList->ResourceBarrier(static_cast<unsigned int>(barriers.size()), barriers.data());
+
+		RenderTargetStatus::Instance()->PrepareToChangeBarrier(lumiHandle, mainHandle);
+		RenderTargetStatus::Instance()->ClearRenderTarget(lumiHandle);
+		lumiRender.Draw();
+		RenderTargetStatus::Instance()->PrepareToCloseBarrier(lumiHandle);
+		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
+
+		mainRender.Draw();
+
+		addRender.data.handleData = bulr.BlurImage(lumiHandle);
+		addRender.Draw();
+
+
+		RenderTargetStatus::Instance()->ChangeBarrier(
+			RenderTargetStatus::Instance()->backBuffers[num].Get(),
+			D3D12_RESOURCE_STATE_RENDER_TARGET,
+			D3D12_RESOURCE_STATE_PRESENT
+		);
+
 		//DrawIndirect------------------------
+
+		RenderTargetStatus::Instance()->SwapResourceBarrier();
 	}
-
-
-	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
-
-
 }
 
 void DebugScene::Input()
@@ -498,13 +503,16 @@ void DebugScene::Input()
 		angle.y += -debugSpeed;
 	}
 
-	eyePos.x = 0.0f;
-	eyePos.y = 0.0f;
-	eyePos.z = -5.0f;
+	//eyePos.x = 0.0f;
+	//eyePos.y = 0.0f;
+	//eyePos.z = -5.0f;
 
 	eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
 	targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
-	
+
+	//eyePos = { 42.0f,0.0f,-148.0f };
+	//targetPos = { 42.0f,0.0f,-143.0f };
+
 #pragma endregion
 
 }

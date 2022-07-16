@@ -1,6 +1,10 @@
 #include"../ShaderHeader/GPUParticleHeader.hlsli"
 
-float4 PSmain(ColorOutPut input) : SV_TARGET
+TwoRender PSmain(ColorOutPut input) : SV_TARGET
 {
-    return color;
+    TwoRender output;
+    output.target0 = matrixData[input.id].color;
+    output.target1 = float4(1.0f,0.0f,0.0f,1.0f);
+
+    return output;
 }

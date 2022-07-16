@@ -25,77 +25,84 @@ struct IndirectCommand
     D3D12_DRAW_ARGUMENTS drawArguments;
 };
 
-
-struct InputData
-{
-    float4 pos;
-    float4 velocity;
-    float4 color;
-};
-
 struct OutputData
 {
     matrix mat;
     float4 color;
 };
 
+struct UpdateData
+{
+    float4 pos;
+    float4 vel;
+    float4 color;
+    int timer;
+};
 
 cbuffer RootConstants : register(b0)
 {
-    matrix view; //ビュー行列
-    matrix projection; //プロジェクション行列
-    uint increSize; //インクリメントのサイズ
-    uint64_t gpuAddress; //構造体バッファの先頭アドレス
+    matrix view;        
+    matrix projection;
+    float4 emmittPos;
+    uint increSize;     //行列と色を出力する構造体のサイズ
+    uint64_t gpuAddress; //行列と色を出力するバッファのGPUアドレス
+    int seed;
 };
 
-//入力用のバッファ-------------------------
-StructuredBuffer<InputData> inputBuffer : register(t0);
-//入力用のバッファ-------------------------
+float Rand(int seed,int index)
+{
+    return frac(sin(dot(float2(seed/2,seed * 2), float2(12.9898, 78.233)) + (index*5+seed)) * 43758.5453);
+}
 
-//出力用のバッファ-------------------------
-//行列計算
+//出力
 AppendStructuredBuffer<OutputData> matrixData : register(u0);
-//入力更新
-AppendStructuredBuffer<InputData> updateInputData : register(u1);
-//インダイレクトコマンド
-AppendStructuredBuffer<IndirectCommand> outputCommands : register(u2);
-//出力用のバッファ-------------------------
+//更新
+RWStructuredBuffer<UpdateData> updateData : register(u1);
 
-static const int NUM = 2;
+static const int NUM = 1;
 
 [numthreads(NUM, 1, 1)]
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
 {
     uint index = (groupId.x * NUM) + groupIndex;
-    //uint index = 1;
-    if(1 <= index)
+    //uint index = 9000;
+
+    float4 initPos = emmittPos;
+
+    //生成するパーティクルの判断-------------------------
+    //移動量と生存時間の初期化
+    if(updateData[index].timer <= 0)
     {
-        index = 1;
+        updateData[index].timer = Rand(seed,index) * 120;
+        updateData[index].pos = initPos;
+        updateData[index].color = float4(Rand(seed,index),Rand(seed/2,index),Rand(seed*2,index),1.0f);
+        updateData[index].vel = float4(1.0f-Rand(seed,index)*2.0f,0.0f,0.0f,0.0f);
+    }    
+    //生成するパーティクルの判断-------------------------
+    float rand = Rand(seed,index);
+
+    //更新
+    if(0 < updateData[index].timer)
+    {
+        updateData[index].pos += updateData[index].vel;
+        updateData[index].vel.y -= 0.1f;
+        --updateData[index].timer;
     }
 
 
-    //座標計算-------------------------
-    float3 outputPos = inputBuffer[index].pos.xyz;
-    
-    //outputPos += float3(1.0f, 0.0f, 0.0f);
-    //if (50.0f <= outputPos.x)
-    //{
-    //    outputPos = 0.0f;
-    //}
-
-    outputPos = float3(0.0f + index * 10.0f,0.0f,20.0f);
-    matrix pMatTrans = Translate(outputPos);
+    //行列計算-------------------------
+    matrix pMatTrans = Translate(updateData[index].pos.xyz);
     matrix pMatRot = Rotate(float3(0.0f,0.0f,0.0f));
-    matrix pMatScale = Scale(float3(15.0f, 15.0f, 15.0f));
+    matrix pMatScale = Scale(float3(1.0f, 1.0f, 1.0f));
     
     matrix pMatWorld = MatrixIdentity();
     pMatWorld = mul(pMatScale, pMatWorld);
     pMatWorld = mul(pMatRot, pMatWorld);
     pMatWorld = mul(pMatTrans, pMatWorld);
-    //座標計算-------------------------
+    //行列計算-------------------------
     
     
-    //座標出力-------------------------
+    //出力用-------------------------
     OutputData outputMat;
     matrix lView = view;
     matrix lproj = projection;
@@ -104,27 +111,8 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     outputMat.mat = mul(pMatWorld,outputMat.mat);
     outputMat.mat = mul(lView,    outputMat.mat);
     outputMat.mat = mul(lproj,    outputMat.mat);
-
-    outputMat.color = inputBuffer[index].color;
-    //matrixData.Append(outputMat);
-    
-    InputData inputData;
-    inputData.pos = float4(outputPos.xyz, 0.0f);
-    inputData.velocity = inputBuffer[index].velocity;
-    inputData.color = inputBuffer[index].color;
-    updateInputData.Append(inputData);
-    //座標出力-------------------------
-    
-    
-    //描画コマンド出力-------------------------
-    IndirectCommand outputCommand;
-    outputCommand.cbvAddress = gpuAddress + index * increSize;
-    outputCommand.drawArguments.VertexCountPerInstance = 3;
-    outputCommand.drawArguments.InstanceCount = 1;
-    outputCommand.drawArguments.StartVertexLocation = 0;
-    outputCommand.drawArguments.StartInstanceLocation = 0;
-
-    //outputCommands.Append(outputCommand);    
-    //描画コマンド出力-------------------------
+    outputMat.color = updateData[index].color;
+    matrixData.Append(outputMat);    
+    //出力用-------------------------
 
 }
