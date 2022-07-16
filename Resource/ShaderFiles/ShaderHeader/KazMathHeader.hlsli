@@ -84,3 +84,8 @@ matrix Rotate(float3 ANGLE)
     matRot = mul(RotateY(ANGLE.y),matRot);
     return matRot;
 }
+
+float Rand(int seed,int index)
+{
+    return frac(sin(dot(float2(seed/2,seed * 2), float2(12.9898, 78.233)) + (index*5+seed)) * 43758.5453);
+}

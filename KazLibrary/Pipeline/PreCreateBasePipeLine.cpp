@@ -331,6 +331,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 	//コンピュートシェーダーのコンパイル
 	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "TestComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_TEST);
+	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "FloorParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_FLOORPARTICLE);
 
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "VHSPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_WIHITENOISE);
 
@@ -1064,6 +1065,14 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_COMPUTE_DATA_TEST,
 		ROOTSIGNATURE_DATA_SRV_UAV,
 		PIPELINE_COMPUTE_NAME_TEST
+	);
+
+	//床に散らばらっているパーティクル
+	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+		SHADER_COMPUTE_FLOORPARTICLE,
+		PIPELINE_COMPUTE_DATA_TEST,
+		ROOTSIGNATURE_DATA_DRAW_UAB_CB,
+		PIPELINE_COMPUTE_NAME_FLOORPARTICLE
 	);
 
 	//GPUパーティクル用のパイプライン

@@ -87,6 +87,8 @@ namespace KazBufferHelper
 
 	D3D12_INDEX_BUFFER_VIEW SetIndexBufferView(const D3D12_GPU_VIRTUAL_ADDRESS &GPU_ADDRESS, BUFFER_SIZE BUFFER_SIZE);
 
+	D3D12_UNORDERED_ACCESS_VIEW_DESC SetUnorderedAccessView(BUFFER_SIZE BUFFER_SIZE, UINT NUM_ELEMENTS);
+
 
 	template<typename T>
 	T GetBufferSize(size_t BUFFER_SIZE, unsigned long long STRUCTURE_SIZE)

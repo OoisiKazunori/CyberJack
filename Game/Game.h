@@ -19,6 +19,8 @@
 #include"../Game/Stage/FirstStage.h"
 #include"../Game/Stage/SecondStage.h"
 #include"../Game/Stage/ThridStage.h"
+#include"../Game/Stage/GpuParticleStage.h"
+
 #include"../Game/Event/MoiveEffect.h"
 #include"../Game/UI/AnnounceStageUI.h"
 #include"../Game/Event/EventSprite.h"

@@ -139,3 +139,16 @@ D3D12_INDEX_BUFFER_VIEW KazBufferHelper::SetIndexBufferView(const D3D12_GPU_VIRT
 	view.SizeInBytes = BUFFER_SIZE;
 	return view;
 }
+
+D3D12_UNORDERED_ACCESS_VIEW_DESC KazBufferHelper::SetUnorderedAccessView(BUFFER_SIZE BUFFER_SIZE, UINT NUM_ELEMENTS)
+{
+	D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
+	uavDesc.Format = DXGI_FORMAT_UNKNOWN;
+	uavDesc.ViewDimension = D3D12_UAV_DIMENSION_BUFFER;
+	uavDesc.Buffer.FirstElement = 0;
+	uavDesc.Buffer.NumElements = NUM_ELEMENTS;
+	uavDesc.Buffer.StructureByteStride = BUFFER_SIZE;
+	uavDesc.Buffer.CounterOffsetInBytes = 0;
+	uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
+	return uavDesc;
+}

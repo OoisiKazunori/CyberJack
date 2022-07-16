@@ -415,4 +415,19 @@ PreCreateBaseRootSignature::PreCreateBaseRootSignature()
 	}
 #pragma endregion
 
+
+	{
+		RootSignatureData uaAndCbData;
+		uaAndCbData.paramData[0].param = 0;
+		uaAndCbData.paramData[0].type = GRAPHICS_PRAMTYPE_DATA;
+		uaAndCbData.range[0] = GRAPHICS_RANGE_TYPE_UAV;
+		uaAndCbData.paramData[1].param = 1;
+		uaAndCbData.paramData[1].type = GRAPHICS_PRAMTYPE_DATA2;
+		uaAndCbData.range[1] = GRAPHICS_RANGE_TYPE_UAV;
+		uaAndCbData.paramData[2].param = 0;
+		uaAndCbData.paramData[2].type = GRAPHICS_PRAMTYPE_DATA3;
+		uaAndCbData.range[2] = GRAPHICS_RANGE_TYPE_CBV;
+		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_DRAW_UAB_CB, uaAndCbData, 3);
+	}
+
 }

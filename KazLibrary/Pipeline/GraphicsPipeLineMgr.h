@@ -145,7 +145,8 @@ enum GeometoryShaderNames
 enum ComputeShaderNames
 {
 	SHADER_COMPUTE_NONE = -1,
-	SHADER_COMPUTE_TEST
+	SHADER_COMPUTE_TEST,
+	SHADER_COMPUTE_FLOORPARTICLE
 };
 
 enum PipeLineNames
@@ -227,7 +228,8 @@ enum PipeLineNames
 enum ComputePipeLineNames
 {
 	PIPELINE_COMPUTE_NAME_NONE = -1,
-	PIPELINE_COMPUTE_NAME_TEST
+	PIPELINE_COMPUTE_NAME_TEST,
+	PIPELINE_COMPUTE_NAME_FLOORPARTICLE
 };
 
 /// <summary>

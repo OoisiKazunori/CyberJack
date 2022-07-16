@@ -49,11 +49,6 @@ cbuffer RootConstants : register(b0)
     int seed;
 };
 
-float Rand(int seed,int index)
-{
-    return frac(sin(dot(float2(seed/2,seed * 2), float2(12.9898, 78.233)) + (index*5+seed)) * 43758.5453);
-}
-
 //o—Í
 AppendStructuredBuffer<OutputData> matrixData : register(u0);
 //XV
