@@ -108,7 +108,7 @@ void GpuParticleStage::Update()
 		lData.increSize = sizeof(ParticleData);
 		lData.gpuAddress = buffers->GetGpuAddress(outputBufferHandle);
 		lData.emittPos = { 0.0f,0.0f,0.0f,30.0f };
-		lData.seed = 0;
+		lData.seed = 100;
 		buffers->TransData(commonBufferHandle, &lData, sizeof(CommonData));
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(commonBufferHandle));
 	}

@@ -42,13 +42,20 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
 
     //生成するパーティクルの判断-------------------------
     //移動量と生存時間の初期化
-    //if(updateData[index].timer <= 0)
+    if(updateData[index].timer <= 0)
     {
         updateData[index].timer = 1;
 
-        float4 generatePos = initPos + float4(index*10,0,0,0);
+        float4 generatePos = initPos + 
+        float4
+        (
+            Rand(seed/2,index*2,150,-150),
+            Rand(seed/3,index*5,150,-150),
+            Rand(seed/2,index*6,150,-150),
+            0.0f
+        );
         updateData[index].pos = generatePos;
-        updateData[index].color = float4(Rand(seed,index),Rand(seed/2,index),Rand(seed*2,index),1.0f);
+        updateData[index].color = float4(Rand(seed,index,50,-50),Rand(seed/2,index,50,-50),Rand(seed*2,index,50,-50),1.0f);
         updateData[index].vel = float4(0.0f,0.0f,0.0f,0.0f);
     }    
     //生成するパーティクルの判断-------------------------
