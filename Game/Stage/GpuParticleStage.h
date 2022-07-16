@@ -15,6 +15,7 @@ private:
 	//バッファ
 	std::unique_ptr<CreateGpuBuffer> buffers;
 	RESOURCE_HANDLE vertexBufferHandle, indexBufferHandle, outputBufferHandle, particleDataHandle, drawCommandHandle, counterBufferHandle, commonBufferHandle;
+	RESOURCE_HANDLE texHandle;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 	D3D12_INDEX_BUFFER_VIEW indexBufferView;
 	BufferMemorySize computeMemSize;
@@ -47,6 +48,7 @@ private:
 	{
 		DirectX::XMMATRIX cameraMat;
 		DirectX::XMMATRIX projectionMat;
+		DirectX::XMMATRIX bollboardMat;
 		DirectX::XMFLOAT4 emittPos;
 		UINT increSize;
 		UINT64 gpuAddress;

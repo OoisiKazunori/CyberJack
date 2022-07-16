@@ -135,7 +135,11 @@ void GraphicsPipeLineMgr::CreatePipeLine(InputLayOutNames INPUT_LAYOUT_NAME, Ver
 	//パイプラインの生成
 	if (IsitSafe(PIPELINE_NAME, PipeLineRegisterData.size()))
 	{
-		DirectX12Device::Instance()->dev->CreateGraphicsPipelineState(&grahicsPipeLine, IID_PPV_ARGS(&PipeLineRegisterData[PIPELINE_NAME]));
+		HRESULT lResult = DirectX12Device::Instance()->dev->CreateGraphicsPipelineState(&grahicsPipeLine, IID_PPV_ARGS(&PipeLineRegisterData[PIPELINE_NAME]));
+		if (lResult != S_OK)
+		{
+			assert(0);
+		}
 	}
 	else
 	{

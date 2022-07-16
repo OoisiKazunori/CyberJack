@@ -19,6 +19,7 @@ cbuffer RootConstants : register(b0)
 {
     matrix view;        
     matrix projection;
+    matrix billBoard;
     float4 emmittPos;
     uint increSize;     //行列と色を出力する構造体のサイズ
     uint64_t gpuAddress; //行列と色を出力するバッファのGPUアドレス
@@ -72,6 +73,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     matrix pMatWorld = MatrixIdentity();
     pMatWorld = mul(pMatScale, pMatWorld);
     pMatWorld = mul(pMatRot, pMatWorld);
+    pMatWorld = mul(billBoard, pMatWorld);
     pMatWorld = mul(pMatTrans, pMatWorld);
     //行列計算-------------------------
     

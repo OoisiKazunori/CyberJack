@@ -82,8 +82,9 @@ public:
 	/// <returns>•ªŠ„‚·‚é‰æ‘œ‚Ìî•ñ</returns>
 	DivGraphData GetDivData(RESOURCE_HANDLE HANDLE);
 
+	std::unique_ptr<CreateGpuBuffer> buffers;
 private:
-	unique_ptr<CreateGpuBuffer> buffers;
+	//std::unique_ptr<CreateGpuBuffer> buffers;
 	const DirectX::Image *img;
 
 	D3D12_STATIC_SAMPLER_DESC samplerDesc;

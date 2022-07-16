@@ -129,6 +129,16 @@ void GraphicsRootSignature::CreateRootSignature(RootSignatureMode ROOTSIGNATURE,
 		CreateMyRootSignature(ROOTSIGNATURE_DATA.sample, computeRootParameters.data(), computeRootParameters.size(), ROOTSIGNATURE);
 
 	}
+	else if (ROOTSIGNATURE == ROOTSIGNATURE_DATA_DRAW_UAB_TEX)
+	{
+		std::array<CD3DX12_DESCRIPTOR_RANGE, 1> computeRootParametersRange;
+		std::array<CD3DX12_ROOT_PARAMETER, 2> computeRootParameters;
+		computeRootParametersRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+		computeRootParameters[0].InitAsUnorderedAccessView(0, 0);
+		computeRootParameters[1].InitAsDescriptorTable(1, &computeRootParametersRange[0]);
+	
+		CreateMyRootSignature(ROOTSIGNATURE_DATA.sample, computeRootParameters.data(), computeRootParameters.size(), ROOTSIGNATURE);
+	}
 	else
 	{
 		CreateMyRootSignature(ROOTSIGNATURE_DATA.sample, rootparam.data(), rootparam.size(), ROOTSIGNATURE);

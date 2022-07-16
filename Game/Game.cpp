@@ -297,7 +297,6 @@ void Game::Input()
 #pragma endregion
 
 
-
 	bool upFlag = false;
 	bool downFlag = false;
 	bool leftFlag = false;

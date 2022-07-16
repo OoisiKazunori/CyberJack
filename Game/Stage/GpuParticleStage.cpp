@@ -6,15 +6,23 @@
 #include"../KazLibrary/Helper/KazRenderHelper.h"
 #include"../KazLibrary/RenderTarget/RenderTargetStatus.h"
 #include"../KazLibrary/Buffer/DescriptorHeapMgr.h"
+#include"../KazLibrary/Helper/ResourceFilePass.h"
+
 
 GpuParticleStage::GpuParticleStage()
 {
 	buffers = std::make_unique<CreateGpuBuffer>();
 
+
+	texHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "Circle.png");
+
+
 	//コマンドシグネチャ---------------------------
 	std::array<D3D12_INDIRECT_ARGUMENT_DESC, 2> args{};
 	args[0].Type = D3D12_INDIRECT_ARGUMENT_TYPE_UNORDERED_ACCESS_VIEW;
 	args[0].UnorderedAccessView.RootParameterIndex = 0;
+	//args[1].Type = D3D12_INDIRECT_ARGUMENT_TYPE_SHADER_RESOURCE_VIEW;
+	//args[1].ShaderResourceView.RootParameterIndex = 0;
 	args[1].Type = D3D12_INDIRECT_ARGUMENT_TYPE_DRAW_INDEXED;
 
 	D3D12_COMMAND_SIGNATURE_DESC desc{};
@@ -22,9 +30,13 @@ GpuParticleStage::GpuParticleStage()
 	desc.NumArgumentDescs = static_cast<UINT>(args.size());
 	desc.ByteStride = sizeof(IndirectCommand);
 
+	HRESULT lR=
 	DirectX12Device::Instance()->dev->CreateCommandSignature(&desc, GraphicsRootSignature::Instance()->GetRootSignature(ROOTSIGNATURE_DATA_DRAW_UAV).Get(), IID_PPV_ARGS(&commandSig));
 	//コマンドシグネチャ---------------------------
-
+	if (lR != S_OK)
+	{
+		assert(0);
+	}
 
 	std::array<Vertex, 4>vertices;
 	std::array<USHORT, 6> indices;
@@ -91,7 +103,6 @@ GpuParticleStage::GpuParticleStage()
 
 void GpuParticleStage::Update()
 {
-
 	//カリング用
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_FLOORPARTICLE);
 
@@ -105,6 +116,7 @@ void GpuParticleStage::Update()
 		CommonData lData;
 		lData.cameraMat = CameraMgr::Instance()->GetViewMatrix();
 		lData.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
+		lData.bollboardMat = CameraMgr::Instance()->GetMatBillBoard();
 		lData.increSize = sizeof(ParticleData);
 		lData.gpuAddress = buffers->GetGpuAddress(outputBufferHandle);
 		lData.emittPos = { 0.0f,0.0f,0.0f,30.0f };
@@ -127,6 +139,7 @@ void GpuParticleStage::Draw()
 	DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
 	DirectX12CmdList::Instance()->cmdList->IASetIndexBuffer(&indexBufferView);
+	DirectX12CmdList::Instance()->cmdList->SetGraphicsRootShaderResourceView(0, TextureResourceMgr::Instance()->buffers->GetBufferData(texHandle)->GetGPUVirtualAddress());
 
 
 	RenderTargetStatus::Instance()->ChangeBarrier(
