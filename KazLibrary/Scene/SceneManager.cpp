@@ -93,5 +93,5 @@ void SceneManager::Draw() {
 	}
 
 	change.Draw();
-	RenderTargetStatus::Instance()->SwapResourceBarrier();
+	//RenderTargetStatus::Instance()->SwapResourceBarrier();
 }

@@ -77,6 +77,9 @@ void PortalScene::Init()
 
 	stageGameMode = STAGE_GAME;
 	stagePortalMode = STAGE_GREEN;
+
+	baseEyePos = { 30.0f,10.0f,-5.0f };
+	baseTargetPos = { 30.0f,10.0f,0.0f };
 }
 
 void PortalScene::Finalize()
@@ -281,7 +284,8 @@ void PortalScene::Update()
 		};
 
 
-		eyePos = KazMath::Vec3<float>(0.0f, 3.0f, 0.0f) + (besidePoly.data.transform.pos + verticlaPoly.data.transform.pos);
+		eyePos = baseEyePos + (besidePoly.data.transform.pos + verticlaPoly.data.transform.pos);
+		targetPos = baseTargetPos;
 	}
 
 	if (greenPortal.data.transform.pos.z < eyePos.z)
@@ -386,7 +390,7 @@ void PortalScene::Update()
 
 		DirectX::XMMATRIX cameraMatrix = CameraMgr::Instance()->GetViewMatrix(STAGE_GAME);
 
-		cameraMatrix = cameraMatrix * linkedPortalMatrix * portalMatrix;
+		//cameraMatrix = cameraMatrix * linkedPortalMatrix * portalMatrix;
 		//cameraMatrix = DirectX::XMMatrixTranspose(cameraMatrix);
 		KazMath::Vec3<float> cameraPos =
 		{
@@ -430,10 +434,21 @@ void PortalScene::Update()
 		debug = true;
 	}
 
+
 	portal.Update();
 	stringEffect.Update();
 	portalFlame.Update();
 	cursor.Update();
+
+	playerBox.data.transform.pos = baseTargetPos;
+	//playerBox.data.transform.pos.y -= 5.0f;
+	playerBox.data.transform.scale = { 1.0f,1.0f,1.0f };
+	playerBox.data.cameraIndex = 2;
+	
+	warpPlayerBox.data.transform = playerBox.data.transform;
+	warpPlayerBox.data.cameraIndex = 1;
+	//warpPlayerBox.data.color = { 255,0,0,255 };
+
 }
 
 void PortalScene::Draw()
@@ -463,6 +478,8 @@ void PortalScene::Draw()
 	{
 		stages[stagePortalMode]->stage[i].Draw();
 	}
+	warpPlayerBox.Draw();
+
 
 	RenderTargetStatus::Instance()->PrepareToCloseBarrier(greenPortalRenderHandle);
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
@@ -478,15 +495,33 @@ void PortalScene::Draw()
 		stages[stageGameMode]->stage[FLOOR_GREEN].data.transform.pos = { 30.0f,0.0f,0.0f };
 		stages[stageGameMode]->stage[FLOOR_RED].data.transform.pos = { -30.0f,0.0f,0.0f };
 	}
+
+
+
 	for (int i = 0; i < stages[stageGameMode]->stage.size(); ++i)
 	{
 		stages[stageGameMode]->stage[i].Draw();
 	}
 
+
+	playerBox.Draw();
+
 	greenPortal.Draw();
 	redPortal.Draw();
 
+
 	cursor.Draw();
+
+
+	ImGui::Begin("Camera");
+	KazImGuiHelper::InputVec3(&baseEyePos, "Eye");
+	KazImGuiHelper::InputVec3(&baseTargetPos, "Target");
+	ImGui::End();
+
+
+	ImGui::Begin("Gate");
+	KazImGuiHelper::InputTransform3D(&greenPortal.data.transform);
+	ImGui::End();
 
 }
 

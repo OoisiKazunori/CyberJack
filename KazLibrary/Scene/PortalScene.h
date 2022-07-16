@@ -46,6 +46,7 @@ public:
 private:
 	KazMath::Vec3<float> debugCameraMove;
 	KazMath::Vec3<float> eyePos, targetPos;
+	KazMath::Vec3<float> baseEyePos, baseTargetPos;
 	KazMath::Vec2<float> angle;
 
 	KazMath::Vec3<float>initPos;
@@ -65,7 +66,7 @@ private:
 	bool gameModeFlag;
 
 	Cursor cursor;
-	BoxPolygonRender besidePoly, verticlaPoly, cameraPoly;
+	BoxPolygonRender besidePoly, verticlaPoly, cameraPoly, playerBox, warpPlayerBox;;
 	KazMath::Vec3<float> nowTargerPos, trackingTargetPos;	//本来ポズ、現在ポズ
 	KazMath::Vec2<float> leftRightAngleVel;					//左右視点座標の向く角度
 	KazMath::Vec2<float> upDownAngleVel;					//上下視点座標の向く角度
