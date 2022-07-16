@@ -49,13 +49,13 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
         float4 generatePos = initPos + 
         float4
         (
-            Rand(seed/2,index*2,150,-150),
-            Rand(seed/3,index*5,150,-150),
-            Rand(seed/2,index*6,150,-150),
+            Rand(seed / 2,index * 2,400,-400),
+            Rand(seed / 3,index * 5,0, -50),
+            Rand(seed / 2,index * 6,500,-10),
             0.0f
         );
         updateData[index].pos = generatePos;
-        updateData[index].color = float4(Rand(seed,index,50,-50),Rand(seed/2,index,50,-50),Rand(seed*2,index,50,-50),1.0f);
+        updateData[index].color = float4(Rand(seed,index,1,0),Rand(seed/2,index,1,0),Rand(seed*2,index,1,0),1.0f);
         updateData[index].vel = float4(0.0f,0.0f,0.0f,0.0f);
     }    
     //生成するパーティクルの判断-------------------------
@@ -66,7 +66,8 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     //行列計算-------------------------
     matrix pMatTrans = Translate(updateData[index].pos.xyz);
     matrix pMatRot = Rotate(float3(0.0f,0.0f,0.0f));
-    matrix pMatScale = Scale(float3(1.0f, 1.0f, 1.0f));
+    float scale=1.5f;
+    matrix pMatScale = Scale(float3(scale, scale, scale));
     
     matrix pMatWorld = MatrixIdentity();
     pMatWorld = mul(pMatScale, pMatWorld);
@@ -84,7 +85,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex)
     outputMat.mat = mul(pMatWorld,outputMat.mat);
     outputMat.mat = mul(lView,    outputMat.mat);
     outputMat.mat = mul(lproj,    outputMat.mat);
-    outputMat.color = float4(1,1,1,1);
+    outputMat.color = updateData[index].color;
     matrixData.Append(outputMat);    
     //出力用-------------------------
 

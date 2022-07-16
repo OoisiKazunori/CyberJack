@@ -430,4 +430,15 @@ PreCreateBaseRootSignature::PreCreateBaseRootSignature()
 		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_DRAW_UAB_CB, uaAndCbData, 3);
 	}
 
+	{
+		RootSignatureData uaAndTexData;
+		uaAndTexData.paramData[0].param = 0;
+		uaAndTexData.paramData[0].type = GRAPHICS_PRAMTYPE_DATA;
+		uaAndTexData.range[0] = GRAPHICS_RANGE_TYPE_UAV;
+		uaAndTexData.paramData[1].param = 0;
+		uaAndTexData.paramData[1].type = GRAPHICS_PRAMTYPE_TEX;
+		uaAndTexData.range[1] = GRAPHICS_RANGE_TYPE_SRV;
+		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_DRAW_UAB_TEX, uaAndTexData, 2);
+	}
+
 }
