@@ -136,7 +136,7 @@ void GoalBox::Update()
 
 		if (60.0f * 5.0f <= addRota)
 		{
-			lerpScale = { 25.0f ,25.0f,25.0f };
+			lerpScale = { 35.0f ,35.0f,35.0f };
 		}
 		if (60.0f * 10.0f <= addRota)
 		{

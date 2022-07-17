@@ -8,6 +8,7 @@ class GpuParticleStage :public IStage
 {
 public:
 	GpuParticleStage();
+	~GpuParticleStage();
 	void Update()override;
 	void Draw()override;
 

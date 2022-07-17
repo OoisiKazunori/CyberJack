@@ -115,6 +115,12 @@ GpuParticleStage::GpuParticleStage()
 
 }
 
+GpuParticleStage::~GpuParticleStage()
+{
+	DescriptorHeapMgr::Instance()->Release(computeMemSize.startSize + 0);
+	DescriptorHeapMgr::Instance()->Release(computeMemSize.startSize + 1);
+}
+
 void GpuParticleStage::Update()
 {
 	//ƒJƒŠƒ“ƒO—p

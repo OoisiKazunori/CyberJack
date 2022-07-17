@@ -18,10 +18,10 @@ public:
 
 	Sprite3DRenderPtr noiseSprite;
 	int timer;
+	bool changeStageFlag;
 private:
 	bool startFlag;
 	bool allHiddenCalledFlag;
-	bool changeStageFlag;
 	bool drawPrevStageFlag;
 	Sprite3DRender portalSprite;
 	bool appearNextStageFlag;

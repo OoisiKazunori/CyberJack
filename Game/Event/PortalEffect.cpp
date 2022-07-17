@@ -9,6 +9,7 @@ void PortalEffect::Init(const KazMath::Vec3<float> &POS)
 	KazMath::Vec3<float> adj = { 0.0f,0.0f,45.0f };
 	portalEffect.Init(POS + adj);
 	portalFlame.Init(POS + adj, KazMath::Vec2<float>(41.5f, 23.5f));
+	initwarpFlameFlag = false;
 }
 
 void PortalEffect::Update()
@@ -24,17 +25,34 @@ void PortalEffect::Update()
 		initWarpSoundFlag = true;
 	}*/
 
-	portalEffect.noiseSprite->data.transform.pos.z = portalFlame.basePos.z + 0.01f;
+	float lAdjPos = 0.0f;
+	if (portalFlame.basePos.z < playerCameraPosZ + 1.0f && !initwarpFlameFlag)
+	{
+		portalFlame.basePos.z -= 0.5f;
+		portalEffect.changeStageFlag = true;
+		initwarpFlameFlag = true;
+		lAdjPos = -0.5f;
+	}
+	else if(initwarpFlameFlag)
+	{
+		lAdjPos = -0.5f;
+	}
+
+	portalEffect.noiseSprite->data.transform.pos.z = portalFlame.basePos.z + lAdjPos;
 	portalEffect.noiseSprite->data.handleData = portalTexHandle;
 
 	portalEffect.Update();
 	portalFlame.Update();
 }
 
-void PortalEffect::Draw()
+void PortalEffect::DrawFlame()
+{
+	portalFlame.Draw();
+}
+
+void PortalEffect::DrawPortal()
 {
 	portalEffect.Draw();
-	portalFlame.Draw();
 }
 
 void PortalEffect::Start()
@@ -49,7 +67,7 @@ bool PortalEffect::AllHidden()
 
 bool PortalEffect::DrawPrevStageFlag()
 {
-	return portalEffect.DrawPrevStageFlag();
+	return initwarpFlameFlag;
 }
 
 bool PortalEffect::Reset()
@@ -59,5 +77,6 @@ bool PortalEffect::Reset()
 
 void PortalEffect::CheckCameraPos(float POS_Z)
 {
+	playerCameraPosZ = POS_Z;
 	portalEffect.CheckCameraPos(POS_Z);
 }

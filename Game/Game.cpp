@@ -564,6 +564,8 @@ void Game::Update()
 
 
 	portal.CheckCameraPos(eyePos.z);
+	portal.portalTexHandle = potalTexHandle;
+	portal.Update();
 
 	//全部隠れたら次ステージの描画をする
 	if (portal.AllHidden())
@@ -1007,8 +1009,6 @@ void Game::Update()
 		//更新処理----------------------------------------------------------------
 		player.Update();
 		cursor.Update();
-		portal.portalTexHandle = potalTexHandle;
-		portal.Update();
 		goalBox.Update();
 		movieEffect.Update();
 		stageUI.Update();
@@ -1157,6 +1157,34 @@ void Game::Draw()
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 	RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
 
+	//ポータル演出
+	//if (goalBox.startPortalEffectFlag)
+	{
+		int lStageNum = -1;
+		if (portal.DrawPrevStageFlag())
+		{
+			lStageNum = stageNum - 1;
+			if (lStageNum < 0)
+			{
+				lStageNum = 0;
+			}
+		}
+		else
+		{
+			lStageNum = stageNum + 1;
+		}
+		RenderTargetStatus::Instance()->PrepareToChangeBarrier(potalTexHandle);
+		RenderTargetStatus::Instance()->ClearRenderTarget(potalTexHandle);
+
+		CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 1);
+		player.Draw();
+		stages[lStageNum]->SetCamera(1);
+		stages[lStageNum]->Draw();
+		RenderTargetStatus::Instance()->PrepareToCloseBarrier(potalTexHandle);
+		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
+	}
+
+
 	if (!gameOverFlag)
 	{
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(handles[0]);
@@ -1167,10 +1195,11 @@ void Game::Draw()
 			bg.Draw();
 		}
 		player.Draw();
+
 		stages[stageNum]->SetCamera(0);
 		stages[stageNum]->Draw();
-
-		portal.Draw();
+		portal.DrawPortal();
+		portal.DrawFlame();
 
 		//if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
 		if (100 <= gameFlame)
@@ -1235,32 +1264,6 @@ void Game::Draw()
 		cursor.Draw();
 		movieEffect.Draw();
 
-		//ポータル演出
-		//if (goalBox.startPortalEffectFlag)
-		{
-			int lStageNum = -1;
-			if (portal.DrawPrevStageFlag())
-			{
-				lStageNum = stageNum - 1;
-				if (lStageNum < 0)
-				{
-					lStageNum = 0;
-				}
-			}
-			else
-			{
-				lStageNum = stageNum + 1;
-			}
-			RenderTargetStatus::Instance()->PrepareToChangeBarrier(potalTexHandle);
-			RenderTargetStatus::Instance()->ClearRenderTarget(potalTexHandle);
-
-			CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 1);
-			player.Draw();
-			stages[lStageNum]->SetCamera(1);
-			stages[lStageNum]->Draw();
-			RenderTargetStatus::Instance()->PrepareToCloseBarrier(potalTexHandle);
-			RenderTargetStatus::Instance()->SetDoubleBufferFlame();
-		}
 	}
 	else
 	{

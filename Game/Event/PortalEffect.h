@@ -11,7 +11,8 @@ public:
 
 	void Init(const KazMath::Vec3<float> &POS);
 	void Update();
-	void Draw();
+	void DrawFlame();
+	void DrawPortal();
 
 	void Start();
 	bool AllHidden();
@@ -23,6 +24,8 @@ public:
 	RESOURCE_HANDLE portalTexHandle;
 private:
 	GoalBoxPortalEffect portalEffect;
+	bool initwarpFlameFlag;
+	float playerCameraPosZ;
 	PortalFlame portalFlame;
 
 };

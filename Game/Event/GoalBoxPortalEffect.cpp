@@ -93,7 +93,7 @@ bool GoalBoxPortalEffect::DrawPrevStageFlag()
 
 void GoalBoxPortalEffect::CheckCameraPos(float POS_Z)
 {
-	if (noiseSprite->data.transform.pos.z <= POS_Z + 1.0f)
+	if (noiseSprite->data.transform.pos.z <= POS_Z)
 	{
 		changeStageFlag = true;
 		drawPrevStageFlag = true;
