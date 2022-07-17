@@ -74,8 +74,8 @@ Game::Game()
 
 	CameraMgr::Instance()->CameraSetting(60.0f, 1200.0f);
 
-	stages[0] = std::make_unique<GpuParticleStage>();
-	stages[1] = std::make_unique<SecondStage>();
+	stages[0] = std::make_unique<FirstStage>();
+	stages[1] = std::make_unique<GpuParticleStage>();
 	stages[2] = std::make_unique<ThridStage>();
 
 
@@ -1205,10 +1205,9 @@ void Game::Draw()
 		{
 			goalBox.lightEffect.Draw();
 		}
-		//doneSprite.Draw();
-		//titleLogoTex.Draw();
-
-		//tutorialWindow.Draw();
+		doneSprite.Draw();
+		titleLogoTex.Draw();
+		tutorialWindow.Draw();
 		stageUI.Draw();
 
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, handles[0]);
