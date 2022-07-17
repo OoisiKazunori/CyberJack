@@ -87,6 +87,6 @@ matrix Rotate(float3 ANGLE)
 
 float Rand(int SEED,int SEED2,int MAX,int MIN)
 {
-    float rand = frac(sin(dot(float2(SEED/2,SEED * 2), float2(12.9898, 78.233)) + (SEED2 * 5 + SEED)) * 43758.5453);    
+    float rand = frac(sin(dot(float2(SEED / 2,SEED * 2), float2(12.9898, 78.233)) + (SEED2 * 5 + SEED)) * 43758.5453);
     return (MAX + abs(MIN)) * rand - abs(MIN);
 }

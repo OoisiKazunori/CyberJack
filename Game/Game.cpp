@@ -1196,10 +1196,10 @@ void Game::Draw()
 		{
 			goalBox.lightEffect.Draw();
 		}
-		doneSprite.Draw();
-		titleLogoTex.Draw();
+		//doneSprite.Draw();
+		//titleLogoTex.Draw();
 
-		tutorialWindow.Draw();
+		//tutorialWindow.Draw();
 		stageUI.Draw();
 
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, handles[0]);

@@ -38,13 +38,27 @@ GpuParticleStage::GpuParticleStage()
 		assert(0);
 	}
 
+	//static const int VERT_MAX_NUM = 200;
 	std::array<Vertex, 4>vertices;
+	//for (int i = 0; i < vertices.size(); i++)
+	//{
+	//	vertices[i].pos.x = (1.0f * sin((KazMath::PI_2F / static_cast<float>(vertices.size())) * i));
+	//	vertices[i].pos.y = -(1.0f * cos((KazMath::PI_2F / static_cast<float>(vertices.size())) * i));
+	//	vertices[i].pos.z = 0.0f;
+	//}
+
 	std::array<USHORT, 6> indices;
+	//for (int i = 0; i < VERT_MAX_NUM; i++)
+	//{
+	//	indices[i * 3] = VERT_MAX_NUM;	//中心
+	//	indices[i * 3 + 1] = static_cast<USHORT>(i);			//再利用
+	//	indices[i * 3 + 2] = static_cast<USHORT>(i + 1);		//新しい頂点
+	//}
+	//indices[indices.size() - 1] = 0;
+
 	//頂点データ
 	KazRenderHelper::InitVerticesPos(&vertices[0].pos, &vertices[1].pos, &vertices[2].pos, &vertices[3].pos, { 0.5f,0.5f });
 	KazRenderHelper::InitUvPos(&vertices[0].uv, &vertices[1].uv, &vertices[2].uv, &vertices[3].uv);
-
-
 	//インデックスデータ
 	indices = KazRenderHelper::InitIndciesForPlanePolygon();
 
@@ -120,7 +134,7 @@ void GpuParticleStage::Update()
 		lData.increSize = sizeof(ParticleData);
 		lData.gpuAddress = buffers->GetGpuAddress(outputBufferHandle);
 		lData.emittPos = { 0.0f,0.0f,0.0f,30.0f };
-		lData.seed = 100;
+		lData.seed = KazMath::Rand<int>(100, 0);
 		buffers->TransData(commonBufferHandle, &lData, sizeof(CommonData));
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(commonBufferHandle));
 	}
@@ -130,7 +144,7 @@ void GpuParticleStage::Update()
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(computeMemSize.startSize + 1));
 	}
 
-	DirectX12CmdList::Instance()->cmdList->Dispatch(PARTICLE_MAX_NUM, 1, 1);
+	DirectX12CmdList::Instance()->cmdList->Dispatch(PARTICLE_MAX_NUM / 1000, 1, 1);
 }
 
 void GpuParticleStage::Draw()
