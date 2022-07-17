@@ -26,6 +26,7 @@
 #include"../Game/Event/EventSprite.h"
 #include"../Game/Event/TutorialWindow.h"
 #include"../Game/Enemy/HitEnemyEffect.h"
+#include"../Game//Event/PortalEffect.h"
 
 struct ResponeData
 {
@@ -119,7 +120,6 @@ private:
 	KazMath::Vec3<float> layerLevelEyePos;
 	KazMath::Vec3<float> layerLevelTargetPos;
 	KazMath::Vec3<float> layerCameraMove;
-	KazMath::Vec3<float> subPotalSpritePos;
 
 	//ÉJÉÅÉâ----------------------------------------------------------------
 
@@ -222,7 +222,7 @@ private:
 	KazMath::Vec3<float>tPos;
 
 	CircleRender circle;
-
+	PortalEffect portal;
 
 };
 

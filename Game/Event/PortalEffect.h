@@ -1,11 +1,13 @@
 #pragma once
 #include"../KazLibrary/DirectXCommon/Base.h"
 #include"../KazLibrary/Render/KazRender.h"
+#include"../Game/Event/GoalBoxPortalEffect.h"
+#include"../Game/Event/PortalFlame.h"
 
-class GoalBoxPortalEffect
+class PortalEffect
 {
 public:
-	GoalBoxPortalEffect();
+	PortalEffect();
 
 	void Init(const KazMath::Vec3<float> &POS);
 	void Update();
@@ -14,17 +16,13 @@ public:
 	void Start();
 	bool AllHidden();
 	bool DrawPrevStageFlag();
+	bool Reset();
 	void CheckCameraPos(float POS_Z);
 
-	Sprite3DRenderPtr noiseSprite;
 	int timer;
+	RESOURCE_HANDLE portalTexHandle;
 private:
-	bool startFlag;
-	bool allHiddenCalledFlag;
-	bool changeStageFlag;
-	bool drawPrevStageFlag;
-	Sprite3DRender portalSprite;
-	bool appearNextStageFlag;
-	RESOURCE_HANDLE constBuffHandle;
-	KazMath::Vec3<float> lerpScale;
+	GoalBoxPortalEffect portalEffect;
+	PortalFlame portalFlame;
+
 };

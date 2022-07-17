@@ -99,6 +99,7 @@
     <ClCompile Include="Game\UI\LockOnBoxEffect.cpp" />
     <ClCompile Include="Game\Enemy\HitEnemyEffect.cpp" />
     <ClCompile Include="Game\Stage\GpuParticleStage.cpp" />
+    <ClCompile Include="Game\Event\PortalEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -210,8 +211,13 @@
     <ClInclude Include="Game\UI\LockOnBoxEffect.h" />
     <ClInclude Include="Game\Enemy\HitEnemyEffect.h" />
     <ClInclude Include="Game\Stage\GpuParticleStage.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Game\Event\PortalEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="KazLib.rc" />
   </ItemGroup>
 </Project>

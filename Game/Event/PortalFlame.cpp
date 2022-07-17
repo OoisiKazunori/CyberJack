@@ -143,7 +143,7 @@ void PortalFlame::Update()
 {
 	if (startFlag)
 	{
-		const float lSpeed = 0.4f;
+		const float lSpeed = 0.3f;
 		basePos.z -= lSpeed;
 
 

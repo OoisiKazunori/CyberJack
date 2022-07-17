@@ -23,6 +23,8 @@ void GoalBoxPortalEffect::Init(const KazMath::Vec3<float> &POS)
 	timer = 0;
 	appearNextStageFlag = false;
 	changeStageFlag = false;
+	drawPrevStageFlag = false;
+	allHiddenCalledFlag = false;
 	//noiseSprite->data.transform.scale.x = lerpScale.x;
 }
 
@@ -49,13 +51,6 @@ void GoalBoxPortalEffect::Update()
 			++timer;
 		}
 
-
-		float limitPosZ = -5.7f;
-		if (noiseSprite->data.transform.pos.z <= limitPosZ)
-		{
-			noiseSprite->data.transform.pos.z = limitPosZ;
-			changeStageFlag = true;
-		}
 		portalSprite.data.handleData = noiseSprite->data.handleData;
 		portalSprite.data.transform = noiseSprite->data.transform;
 	}
@@ -83,5 +78,24 @@ void GoalBoxPortalEffect::Start()
 
 bool GoalBoxPortalEffect::AllHidden()
 {
-	return changeStageFlag;
+	bool lPrevFlag = allHiddenCalledFlag;
+	if (changeStageFlag)
+	{
+		allHiddenCalledFlag = true;
+	}
+	return changeStageFlag && !lPrevFlag;
+}
+
+bool GoalBoxPortalEffect::DrawPrevStageFlag()
+{
+	return drawPrevStageFlag;
+}
+
+void GoalBoxPortalEffect::CheckCameraPos(float POS_Z)
+{
+	if (noiseSprite->data.transform.pos.z <= POS_Z + 1.0f)
+	{
+		changeStageFlag = true;
+		drawPrevStageFlag = true;
+	}
 }

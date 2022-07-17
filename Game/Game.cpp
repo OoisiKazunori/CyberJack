@@ -250,6 +250,7 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 
 	startFlag = false;
 
+	portal.Init(KazMath::Vec3<float>(0.0f, 3.0f, 50.0f));
 }
 
 void Game::Finalize()
@@ -465,17 +466,6 @@ void Game::Update()
 
 #pragma region カメラ挙動
 
-	//カメラ固定
-	if (goalBox.startPortalEffectFlag)
-	{
-		//leftRightAngleVel = { -90.0f,-90.0f };
-		//upDownAngleVel = { 0.0f,0.0f };
-		//targetPos = { 0.0f,3.0f,0.0f };
-		//movieEffect.startFlag = true;
-		//cursor.Disappear();
-	}
-
-
 	//左右の角度変更のイージング
 	{
 		KazMath::Vec2<float> distance = leftRightAngleVel - trackLeftRightAngleVel;
@@ -533,11 +523,6 @@ void Game::Update()
 		{
 			honraiPlayerCameraPos.z = 0.0f;
 		}
-
-		if (goalBox.startPortalEffectFlag)
-		{
-			//honraiPlayerCameraPos = { 0.0f,0.0f,0.0f };
-		}
 		KazMath::Vec3<float> distance = honraiPlayerCameraPos - player.pos;
 		player.pos += distance * 0.1f;
 	}
@@ -576,8 +561,12 @@ void Game::Update()
 	//敵が一通り生成終わった際に登場させる----------------------------------------------------------------
 
 	changeStageFlag = false;
+
+
+	portal.CheckCameraPos(eyePos.z);
+
 	//全部隠れたら次ステージの描画をする
-	if (goalBox.portalEffect.AllHidden())
+	if (portal.AllHidden())
 	{
 		//ゲームループの初期化----------------------------------------------
 		++gameStageLevel;
@@ -604,6 +593,18 @@ void Game::Update()
 		stageUI.Init();
 		stageUI.AnnounceStage(stageNum + 1);
 		//cursor.Appear();
+	}
+
+
+	if (goalBox.startPortalEffectFlag)
+	{
+		portal.Start();
+	}
+
+	if (portal.Reset())
+	{
+		portal.Init(KazMath::Vec3<float>(0.0f, 3.0f, 50.0f));
+		goalBox.startPortalEffectFlag = false;
 	}
 
 
@@ -1003,11 +1004,11 @@ void Game::Update()
 
 		goalBox.releaseFlag = cursor.releaseFlag;
 
-
 		//更新処理----------------------------------------------------------------
 		player.Update();
 		cursor.Update();
-		goalBox.portalEffect.noiseSprite->data.handleData = potalTexHandle;
+		portal.portalTexHandle = potalTexHandle;
+		portal.Update();
 		goalBox.Update();
 		movieEffect.Update();
 		stageUI.Update();
@@ -1161,8 +1162,6 @@ void Game::Draw()
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(handles[0]);
 		RenderTargetStatus::Instance()->ClearRenderTarget(handles[0]);
 
-		goalBox.portalEffect.Draw();
-
 		if (lineDebugFlag)
 		{
 			bg.Draw();
@@ -1170,6 +1169,8 @@ void Game::Draw()
 		player.Draw();
 		stages[stageNum]->SetCamera(0);
 		stages[stageNum]->Draw();
+
+		portal.Draw();
 
 		//if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
 		if (100 <= gameFlame)
@@ -1235,19 +1236,31 @@ void Game::Draw()
 		movieEffect.Draw();
 
 		//ポータル演出
-		if (goalBox.startPortalEffectFlag)
+		//if (goalBox.startPortalEffectFlag)
 		{
+			int lStageNum = -1;
+			if (portal.DrawPrevStageFlag())
+			{
+				lStageNum = stageNum - 1;
+				if (lStageNum < 0)
+				{
+					lStageNum = 0;
+				}
+			}
+			else
+			{
+				lStageNum = stageNum + 1;
+			}
 			RenderTargetStatus::Instance()->PrepareToChangeBarrier(potalTexHandle);
 			RenderTargetStatus::Instance()->ClearRenderTarget(potalTexHandle);
 
 			CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 1);
 			player.Draw();
-			stages[stageNum + 1]->SetCamera(1);
-			stages[stageNum + 1]->Draw();
+			stages[lStageNum]->SetCamera(1);
+			stages[lStageNum]->Draw();
 			RenderTargetStatus::Instance()->PrepareToCloseBarrier(potalTexHandle);
 			RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 		}
-		subPotalSpritePos.z = goalBox.portalEffect.noiseSprite->data.transform.pos.z;
 	}
 	else
 	{

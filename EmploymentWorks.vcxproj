@@ -189,6 +189,7 @@
     <ClCompile Include="Game\Event\LineCpuEffect.cpp" />
     <ClCompile Include="Game\Event\LineLightEffect.cpp" />
     <ClCompile Include="Game\Event\MoiveEffect.cpp" />
+    <ClCompile Include="Game\Event\PortalEffect.cpp" />
     <ClCompile Include="Game\Event\PortalFlame.cpp" />
     <ClCompile Include="Game\Event\TutorialWindow.cpp" />
     <ClCompile Include="Game\Event\WindowFlame.cpp" />
@@ -288,6 +289,7 @@
     <ClInclude Include="Game\Event\GoalBoxPortalStringEffect.h" />
     <ClInclude Include="Game\Event\LineCpuEffect.h" />
     <ClInclude Include="Game\Event\LineLightEffect.h" />
+    <ClInclude Include="Game\Event\PortalEffect.h" />
     <ClInclude Include="Game\Event\PortalFlame.h" />
     <ClInclude Include="Game\Event\MoiveEffect.h" />
     <ClInclude Include="Game\Event\TutorialWindow.h" />
@@ -383,6 +385,7 @@
     <ClInclude Include="KazLibrary\Sound\SoundManager.h" />
     <ClInclude Include="KazLibrary\WinApi\Msg.h" />
     <ClInclude Include="KazLibrary\WinApi\WinApi.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -391,6 +394,9 @@
     <ProjectReference Include="DirectXTex\DirectXTex_Desktop_2019_Win10.vcxproj">
       <Project>{371b9fa9-4c90-4ac6-a123-aced756d6c77}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="KazLib.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

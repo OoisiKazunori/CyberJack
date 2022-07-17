@@ -21,8 +21,6 @@ public:
 
 	//ゴールエフェクト
 	GoalBoxEffect lightEffect;
-	GoalBoxPortalEffect portalEffect;
-	PortalFlame portalFlame;
 	Sphere hitBox;
 	bool releaseFlag;
 	bool startPortalEffectFlag;
