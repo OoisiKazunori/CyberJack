@@ -102,7 +102,7 @@ Game::Game()
 	lockSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Lock.wav", false);
 	doneSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Done.wav");
 	SoundManager::Instance()->StopSoundMem(bgmSoundHandle);
-	SoundManager::Instance()->PlaySoundMem(bgmSoundHandle, 1, true);
+	//SoundManager::Instance()->PlaySoundMem(bgmSoundHandle, 1, true);
 
 }
 
@@ -1217,7 +1217,6 @@ void Game::Draw()
 		luminaceTex.Draw();
 		RenderTargetStatus::Instance()->PrepareToCloseBarrier(addHandle);
 		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
-		//RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
 		//ゲーム画面描画
 
 
