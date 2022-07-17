@@ -26,10 +26,10 @@ GaussianBuler::GaussianBuler(const KazMath::Vec2<UINT> &GRAPH_SIZE)
 
 
 	renderTargetBlurUpHandle =
-		RenderTargetStatus::Instance()->CreateRenderTarget(graphSize, BG_COLOR, DXGI_FORMAT_R8G8B8A8_UNORM);
+		RenderTargetStatus::Instance()->CreateRenderTarget({WIN_X,WIN_Y}, BG_COLOR, DXGI_FORMAT_R8G8B8A8_UNORM);
 
 	renderTargetBlurSideHandle =
-		RenderTargetStatus::Instance()->CreateRenderTarget(graphSize, BG_COLOR, DXGI_FORMAT_R8G8B8A8_UNORM);
+		RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, BG_COLOR, DXGI_FORMAT_R8G8B8A8_UNORM);
 
 
 	tex[0].data.pipelineName = PIPELINE_NAME_GAUSSIAN_UPBLUR;
@@ -47,6 +47,8 @@ GaussianBuler::~GaussianBuler()
 
 RESOURCE_HANDLE GaussianBuler::BlurImage(RESOURCE_HANDLE TEXTURE_HANDLE, RESOURCE_HANDLE CURRENT_RENDERTARGET_HANDLE)
 {
+	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "Bulr");
+
 	renderData.pipelineMgr->SetPipeLineAndRootSignature(PIPELINE_NAME_GAUSSIAN_UPBLUR);
 	
 	//renderData.constBufferMgrInstacnce->SetCBV(cbvHandle, GraphicsRootSignature::Instance()->GetRootParam(renderData.pipelineMgr->GetRootSignatureName(PIPELINE_NAME_GAUSSIAN_UPBLUR)), GRAPHICS_PRAMTYPE_DATA);
@@ -61,8 +63,8 @@ RESOURCE_HANDLE GaussianBuler::BlurImage(RESOURCE_HANDLE TEXTURE_HANDLE, RESOURC
 	RenderTargetStatus::Instance()->ClearRenderTarget(renderTargetBlurUpHandle);
 
 	//•`‰æ
-	renderData.cmdListInstance->cmdList->RSSetViewports(1, &viewport);
-	renderData.cmdListInstance->cmdList->RSSetScissorRects(1, &rect);
+	//renderData.cmdListInstance->cmdList->RSSetViewports(1, &viewport);
+	//renderData.cmdListInstance->cmdList->RSSetScissorRects(1, &rect);
 	tex[0].data.handleData = TEXTURE_HANDLE;
 	tex[0].Draw();
 
@@ -71,8 +73,8 @@ RESOURCE_HANDLE GaussianBuler::BlurImage(RESOURCE_HANDLE TEXTURE_HANDLE, RESOURC
 	RenderTargetStatus::Instance()->ClearRenderTarget(renderTargetBlurSideHandle);
 
 	//•`‰æ
-	renderData.cmdListInstance->cmdList->RSSetViewports(1, &viewport);
-	renderData.cmdListInstance->cmdList->RSSetScissorRects(1, &rect);
+	//renderData.cmdListInstance->cmdList->RSSetViewports(1, &viewport);
+	//renderData.cmdListInstance->cmdList->RSSetScissorRects(1, &rect);
 	tex[1].data.handleData = renderTargetBlurUpHandle;
 	tex[1].Draw();
 
@@ -92,6 +94,7 @@ RESOURCE_HANDLE GaussianBuler::BlurImage(RESOURCE_HANDLE TEXTURE_HANDLE, RESOURC
 	CD3DX12_VIEWPORT Viewport(0.0f, 0.0f, static_cast<float>(WIN_X), static_cast<float>(WIN_Y));
 	renderData.cmdListInstance->cmdList->RSSetViewports(1, &Viewport);
 	renderData.cmdListInstance->cmdList->RSSetScissorRects(1, &Rect);
+	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
 
 	return renderTargetBlurSideHandle;

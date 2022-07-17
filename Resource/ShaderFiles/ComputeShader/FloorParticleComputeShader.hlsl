@@ -74,14 +74,14 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
         );
         updateData[index].pos = generatePos;
         updateData[index].color = float4(Rand(seed,index,1,0),Rand(seed/2,index,1,0),Rand(seed*2,index,1,0),1.0f);
-        updateData[index].vel = float4(0.0f,0.0f,-Rand(seed,index,3,0),0.0f);
+        updateData[index].vel = float4(0.0f,0.0f,-Rand(seed,index,1,0),0.0f);
         //updateData[index].color = float4(cRate,1.0f,1.0f,1.0f);
     }
     else
     {
         updateData[index].pos += updateData[index].vel;
 
-        if(updateData[index].pos.z <= -50.0f)
+        if(updateData[index].pos.z <= -100.0f)
         {
             updateData[index].pos.z = 500.0f;
         }

@@ -150,39 +150,27 @@ PreCreateBaseRootSignature::PreCreateBaseRootSignature()
 		bloomData.range[0] = GRAPHICS_RANGE_TYPE_CBV;
 
 
-		bloomData.paramData[1].param = 0;
+		bloomData.paramData[1].param = 1;
 		bloomData.paramData[1].type = GRAPHICS_PRAMTYPE_TEX;
 		bloomData.range[1] = GRAPHICS_RANGE_TYPE_SRV;
 
-		bloomData.paramData[2].param = 1;
-		bloomData.paramData[2].type = GRAPHICS_PRAMTYPE_TEX;
+		bloomData.paramData[2].param = 2;
+		bloomData.paramData[2].type = GRAPHICS_PRAMTYPE_TEX2;
 		bloomData.range[2] = GRAPHICS_RANGE_TYPE_SRV;
 
-		bloomData.paramData[3].param = 2;
-		bloomData.paramData[3].type = GRAPHICS_PRAMTYPE_TEX;
+		bloomData.paramData[3].param = 3;
+		bloomData.paramData[3].type = GRAPHICS_PRAMTYPE_TEX3;
 		bloomData.range[3] = GRAPHICS_RANGE_TYPE_SRV;
 
-		bloomData.paramData[4].param = 3;
-		bloomData.paramData[4].type = GRAPHICS_PRAMTYPE_TEX;
+		bloomData.paramData[4].param = 4;
+		bloomData.paramData[4].type = GRAPHICS_PRAMTYPE_TEX4;
 		bloomData.range[4] = GRAPHICS_RANGE_TYPE_SRV;
-
-		bloomData.paramData[5].param = 4;
-		bloomData.paramData[5].type = GRAPHICS_PRAMTYPE_TEX;
-		bloomData.range[5] = GRAPHICS_RANGE_TYPE_SRV;
-
-		bloomData.paramData[6].param = 5;
-		bloomData.paramData[6].type = GRAPHICS_PRAMTYPE_TEX;
-		bloomData.range[6] = GRAPHICS_RANGE_TYPE_SRV;
-
-		bloomData.paramData[7].param = 6;
-		bloomData.paramData[7].type = GRAPHICS_PRAMTYPE_TEX;
-		bloomData.range[7] = GRAPHICS_RANGE_TYPE_SRV;
 
 
 		bloomData.sample.AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
 		bloomData.sample.AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
 		bloomData.sample.AddressW = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
-		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_DRAW_TEX4, bloomData, 8);
+		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_DRAW_TEX4, bloomData, 5);
 	}
 #pragma endregion
 

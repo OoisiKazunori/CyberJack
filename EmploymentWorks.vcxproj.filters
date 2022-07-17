@@ -98,6 +98,7 @@
     <ClCompile Include="KazLibrary\Render\Box2DRender.cpp" />
     <ClCompile Include="Game\UI\LockOnBoxEffect.cpp" />
     <ClCompile Include="Game\Enemy\HitEnemyEffect.cpp" />
+    <ClCompile Include="Game\Stage\GpuParticleStage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -208,6 +209,7 @@
     <ClInclude Include="KazLibrary\Render\Box2DRender.h" />
     <ClInclude Include="Game\UI\LockOnBoxEffect.h" />
     <ClInclude Include="Game\Enemy\HitEnemyEffect.h" />
+    <ClInclude Include="Game\Stage\GpuParticleStage.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

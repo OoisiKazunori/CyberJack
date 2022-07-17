@@ -43,9 +43,17 @@ Game::Game()
 
 	addHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
 	addRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
-	addRenderTarget.data.pipelineName = PIPELINE_NAME_ADDBLEND;
+	addRenderTarget.data.pipelineName = PIPELINE_NAME_BLOOM;
+	addRenderTarget.data.addHandle.paramType[0] = GRAPHICS_PRAMTYPE_TEX;
+	addRenderTarget.data.addHandle.paramType[1] = GRAPHICS_PRAMTYPE_TEX2;
+	addRenderTarget.data.addHandle.paramType[2] = GRAPHICS_PRAMTYPE_TEX3;
+	addRenderTarget.data.addHandle.paramType[3] = GRAPHICS_PRAMTYPE_TEX4;
 
-	buler = std::make_unique<GaussianBuler>(KazMath::Vec2<UINT>(WIN_X, WIN_Y));
+
+	buler[0] = std::make_unique<GaussianBuler>(KazMath::Vec2<UINT>(WIN_X, WIN_Y));
+	buler[1] = std::make_unique<GaussianBuler>(KazMath::Vec2<UINT>(WIN_X / 2, WIN_Y / 2));
+	buler[2] = std::make_unique<GaussianBuler>(KazMath::Vec2<UINT>(WIN_X / 3, WIN_Y / 3));
+	buler[3] = std::make_unique<GaussianBuler>(KazMath::Vec2<UINT>(WIN_X / 4, WIN_Y / 4));
 
 
 	luminaceTex.data.pipelineName = PIPELINE_NAME_SPRITE_LUMI;
@@ -95,6 +103,7 @@ Game::Game()
 	doneSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Done.wav");
 	SoundManager::Instance()->StopSoundMem(bgmSoundHandle);
 	SoundManager::Instance()->PlaySoundMem(bgmSoundHandle, 1, true);
+
 }
 
 Game::~Game()
@@ -1213,9 +1222,16 @@ void Game::Draw()
 
 
 		mainRenderTarget.Draw();
-		addRenderTarget.data.handleData = buler->BlurImage(addHandle);
-		addRenderTarget.Draw();
 
+		addRenderTarget.data.handleData = addHandle;
+		addRenderTarget.data.addHandle.handle[0] = buler[0]->BlurImage(addHandle);
+		addRenderTarget.data.addHandle.handle[1] = buler[1]->BlurImage(addRenderTarget.data.addHandle.handle[0]);
+		addRenderTarget.data.addHandle.handle[2] = buler[2]->BlurImage(addRenderTarget.data.addHandle.handle[1]);
+		addRenderTarget.data.addHandle.handle[3] = buler[3]->BlurImage(addRenderTarget.data.addHandle.handle[2]);
+
+		PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "AddRenderTarget");
+		addRenderTarget.Draw();
+		PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
 		cursor.Draw();
 		movieEffect.Draw();

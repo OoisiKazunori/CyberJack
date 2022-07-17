@@ -171,7 +171,7 @@ private:
 	Sprite2DRender luminaceTex;
 	RESOURCE_HANDLE addHandle;
 	RESOURCE_HANDLE potalTexHandle;
-	std::unique_ptr<GaussianBuler> buler;
+	std::array<std::unique_ptr<GaussianBuler>, 4> buler;
 
 	int stageNum;
 	std::array<std::unique_ptr<IStage>, 3>stages;
