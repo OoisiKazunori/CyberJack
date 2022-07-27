@@ -3,6 +3,7 @@
 
 RezStage::RezStage()
 {
+#pragma region Grid
 	const float space = 500.0f;
 	const float y = -150.0f;
 
@@ -36,6 +37,23 @@ RezStage::RezStage()
 		lineR[lineRIndex].data.endPos = gridFloorXLinePos[i][1].pos;
 		++lineRIndex;
 	}
+
+	for (int i = 0; i < lineR.size(); ++i)
+	{
+		lineR[i].data.color = { 255,255,255,255 };
+		lineR[i].data.pipelineName = PIPELINE_NAME_FOG_LINE;
+
+		FogData lData;
+		RESOURCE_HANDLE lHandle = lineR[i].CreateConstBuffer(sizeof(FogData), typeid(FogData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+		lData.fogdata = { 1.0f,1.0f,1.0f,0.4f };
+		lineR[i].TransData(&lData, lHandle, typeid(lData).name());
+	}
+#pragma endregion
+
+
+#pragma region Cross
+
+#pragma endregion
 }
 
 void RezStage::Update()

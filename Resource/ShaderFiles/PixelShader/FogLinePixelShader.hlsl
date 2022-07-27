@@ -5,7 +5,7 @@
 float4 PSmain(ColorOutPut input) : SV_TARGET
 {
     float3 fogC = float3(0.0f, 0.0f, 0.0f);
-    float4 fog = CaluFog(input.svpos, color, fogC, 0.003);
+    float4 fog = CaluFog(input.svpos, color, fogC, 0.0006);
     fog.a = 1;
     return fog;
 }
