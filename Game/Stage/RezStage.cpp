@@ -54,7 +54,7 @@ RezStage::RezStage()
 #pragma region Cross
 	{
 		int lineWallIndex = 0;
-		float height = 200.0f;
+		float height = 300.0f;
 		float width = 300.0f;
 		float fIndex = 0.0f;
 		float zInterval = 100.0f;
@@ -107,7 +107,7 @@ RezStage::RezStage()
 	//KazMath::Color backGroundColor(0, 0, 0, 255);
 	//InitBackGround(backGroundColor, backGroundColor, 5000.0f, 60.0f);
 
-	float cWallSpace = 170.0f;
+	float cWallSpace = 280.0f;
 	gridCentralLineRender[0].data.startPos = { cWallSpace,-cWallSpace,10000.0f };
 	gridCentralLineRender[0].data.endPos = { cWallSpace,-cWallSpace,-10000.0f };
 
@@ -173,12 +173,12 @@ RezStage::RezStage()
 
 void RezStage::Update()
 {
-	float lVelZ = 5.0f;
+	float lVelZ = -5.0f;
 
 	for (int i = 0; i < gridFloorZLinePos.size(); ++i)
 	{
-		gridFloorZLinePos[i][0].pos.z += -lVelZ;
-		gridFloorZLinePos[i][1].pos.z += -lVelZ;
+		gridFloorZLinePos[i][0].pos.z += lVelZ;
+		gridFloorZLinePos[i][1].pos.z += lVelZ;
 
 		if (gridFloorZLinePos[i][0].pos.z <= -700.0f)
 		{
@@ -201,8 +201,8 @@ void RezStage::Update()
 	{
 		for (int wallIndex = 0; wallIndex < gridCentralWallLineRender[i].size(); ++wallIndex)
 		{
-			gridCentralWallLineRender[i][wallIndex].data.startPos.z += -lVelZ;
-			gridCentralWallLineRender[i][wallIndex].data.endPos.z += -lVelZ;
+			gridCentralWallLineRender[i][wallIndex].data.startPos.z += lVelZ;
+			gridCentralWallLineRender[i][wallIndex].data.endPos.z += lVelZ;
 
 			if (gridCentralWallLineRender[i][wallIndex].data.startPos.z <= -100.0f)
 			{
@@ -210,6 +210,63 @@ void RezStage::Update()
 				gridCentralWallLineRender[i][wallIndex].data.endPos.z = -100.0f + static_cast<float>(gridCentralWallLineRender.size()) * 400.0f;
 			}
 		}
+	}
+
+
+
+	int lineWallIndex = 0;
+	float fIndex = 0.0f;
+	float zInterval = 100.0f;
+	lVelZ = -0.5f;
+	for (int i = 0; i < wallTopLinePos.size(); ++i)
+	{
+		fIndex = static_cast<float>(i);
+		wallTopLinePos[i][0].pos.z += lVelZ;
+		wallTopLinePos[i][1].pos.z += lVelZ;
+
+		if (wallTopLinePos[i][0].pos.z <= -100.0f)
+		{
+			wallTopLinePos[i][0].pos.z = -100.0f + static_cast<float>(wallTopLinePos.size()) * zInterval;
+			wallTopLinePos[i][1].pos.z = -100.0f + static_cast<float>(wallTopLinePos.size()) * zInterval;
+		}
+
+		gridWallLineRender[lineWallIndex].data.startPos = wallTopLinePos[i][0].pos;
+		gridWallLineRender[lineWallIndex].data.endPos = wallTopLinePos[i][1].pos;
+		lineWallIndex++;
+	}
+
+	for (int i = 0; i < wallLeftLinePos.size(); ++i)
+	{
+		fIndex = static_cast<float>(i);
+		wallLeftLinePos[i][0].pos.z += lVelZ;
+		wallLeftLinePos[i][1].pos.z += lVelZ;
+
+		if (wallLeftLinePos[i][0].pos.z <= -100.0f)
+		{
+			wallLeftLinePos[i][0].pos.z = -100.0f + static_cast<float>(wallLeftLinePos.size()) * zInterval;
+			wallLeftLinePos[i][1].pos.z = -100.0f + static_cast<float>(wallLeftLinePos.size()) * zInterval;
+		}
+
+		gridWallLineRender[lineWallIndex].data.startPos = wallLeftLinePos[i][0].pos;
+		gridWallLineRender[lineWallIndex].data.endPos = wallLeftLinePos[i][1].pos;
+		lineWallIndex++;
+	}
+
+	for (int i = 0; i < wallRightLinePos.size(); ++i)
+	{
+		fIndex = static_cast<float>(i);
+		wallRightLinePos[i][0].pos.z += lVelZ;
+		wallRightLinePos[i][1].pos.z += lVelZ;
+
+		if (wallRightLinePos[i][0].pos.z <= -100.0f)
+		{
+			wallRightLinePos[i][0].pos.z = -100.0f + static_cast<float>(wallRightLinePos.size()) * zInterval;
+			wallRightLinePos[i][1].pos.z = -100.0f + static_cast<float>(wallRightLinePos.size()) * zInterval;
+		}
+
+		gridWallLineRender[lineWallIndex].data.startPos = wallRightLinePos[i][0].pos;
+		gridWallLineRender[lineWallIndex].data.endPos = wallRightLinePos[i][1].pos;
+		lineWallIndex++;
 	}
 
 }
