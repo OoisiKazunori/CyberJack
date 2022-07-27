@@ -20,6 +20,7 @@
 #include"../Game/Stage/SecondStage.h"
 #include"../Game/Stage/ThridStage.h"
 #include"../Game/Stage/GpuParticleStage.h"
+#include"../Game/Stage/RezStage.h"
 
 #include"../Game/Event/MoiveEffect.h"
 #include"../Game/UI/AnnounceStageUI.h"

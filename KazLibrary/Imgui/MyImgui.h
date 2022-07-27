@@ -5,13 +5,15 @@
 #include"imgui.h"
 #include"imgui_impl_win32.h"
 #include"imgui_impl_dx12.h"
+#include"imgui_internal.h"
 #pragma warning(pop)
 
 /// <summary>
 /// ImGuiの為のデスクリプタヒープの生成とImGUiの初期化を行います
 /// なお、ImGuiの関数を呼び出すためのhもまとめて書いています
 /// </summary>
-class MyImgui {
+class MyImgui
+{
 public:
 	MyImgui();
 	~MyImgui();

@@ -74,7 +74,7 @@ Game::Game()
 
 	CameraMgr::Instance()->CameraSetting(60.0f, 1200.0f);
 
-	stages[0] = std::make_unique<FirstStage>();
+	stages[0] = std::make_unique<RezStage>();
 	stages[1] = std::make_unique<GpuParticleStage>();
 	stages[2] = std::make_unique<ThridStage>();
 
