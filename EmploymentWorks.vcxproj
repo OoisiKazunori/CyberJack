@@ -224,6 +224,7 @@
     <ClCompile Include="KazLibrary\Helper\ISinglton.cpp" />
     <ClCompile Include="KazLibrary\Helper\KazBufferHelper.cpp" />
     <ClCompile Include="KazLibrary\Helper\KazHelper.cpp" />
+    <ClCompile Include="KazLibrary\Helper\KazImGuiHelper.cpp" />
     <ClCompile Include="KazLibrary\Helper\KazRenderHelper.cpp" />
     <ClCompile Include="KazLibrary\Helper\OutPutDebugStringAndCheckResult.cpp" />
     <ClCompile Include="KazLibrary\Helper\RegisterNameWithData.cpp" />

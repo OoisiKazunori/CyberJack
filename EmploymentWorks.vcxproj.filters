@@ -101,6 +101,7 @@
     <ClCompile Include="Game\Stage\GpuParticleStage.cpp" />
     <ClCompile Include="Game\Event\PortalEffect.cpp" />
     <ClCompile Include="Game\Stage\RezStage.cpp" />
+    <ClCompile Include="KazLibrary\Helper\KazImGuiHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />

@@ -1,7 +1,6 @@
 ﻿#include "PortalScene.h"
 #include"../KazLibrary/Input/KeyBoradInputManager.h"
 #include"../KazLibrary/Input/ControllerInputManager.h"
-#include"../KazLibrary/Imgui/MyImgui.h"
 #include"../KazLibrary/Helper/KazImGuiHelper.h"
 
 PortalScene::PortalScene()

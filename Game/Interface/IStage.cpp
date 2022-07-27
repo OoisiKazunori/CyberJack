@@ -9,18 +9,18 @@ IStage::~IStage()
 {
 }
 
-void IStage::InitBackGround(const KazMath::Color &START_COLOR, const KazMath::Color &END_COLOR)
+void IStage::InitBackGround(const KazMath::Color &START_COLOR, const KazMath::Color &END_COLOR, float SPACE, float HEIGHT)
 {
 	{
 		std::array<SpriteVertex, 4>vert;
 		DirectX::XMVECTOR adjPos = { 50.0f,0.0f,0.0f };
-		vert[0].pos = { -768.0f,407.0f,0.0f };
+		vert[0].pos = { -7680.0f,407.0f,0.0f };
 		vert[0].uv = { 0.0f,0.0f };
-		vert[1].pos = { 768.0f,407.0f,0.0f };
+		vert[1].pos = { 7680.0f,407.0f,0.0f };
 		vert[1].uv = { 1.0f,0.0f };
-		vert[2].pos = { -768.0f,-407.0f,0.0f };
+		vert[2].pos = { -7680.0f,-407.0f,0.0f };
 		vert[2].uv = { 0.0f,1.0f };
-		vert[3].pos = { 768.0f,-407.0f,0.0f };
+		vert[3].pos = { 7680.0f,-407.0f,0.0f };
 		vert[3].uv = { 1.0f,1.0f };
 
 		GradationData gradationData;
@@ -34,12 +34,12 @@ void IStage::InitBackGround(const KazMath::Color &START_COLOR, const KazMath::Co
 			backGround[i]->data.pipelineName = PIPELINE_NAME_SPRITE_GRADATION;
 		}
 
-		backGround[0]->data.transform.pos.z = 650.0f;
-		backGround[1]->data.transform.pos.x = 550.0f;
+		backGround[0]->data.transform.pos.z = SPACE;
+		backGround[1]->data.transform.pos.x = SPACE;
 		backGround[1]->data.transform.rotation.y = 100.0f;
-		backGround[2]->data.transform.pos.x = -550.0f;
+		backGround[2]->data.transform.pos.x = -SPACE;
 		backGround[2]->data.transform.rotation.y = 100.0f;
-		backGround[3]->data.transform.pos.z = -650.0f;
+		backGround[3]->data.transform.pos.z = -SPACE;
 	}
 
 	{
@@ -63,7 +63,7 @@ void IStage::InitBackGround(const KazMath::Color &START_COLOR, const KazMath::Co
 		gradData.firstColor = END_COLOR.ConvertColorRateToXMFLOAT4();
 		topPolygon->TransData(&gradData, handle, typeid(gradData).name());
 
-		topPolygon->data.transform.pos.y = 400.0f;
+		topPolygon->data.transform.pos.y = HEIGHT;
 	}
 }
 

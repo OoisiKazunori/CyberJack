@@ -11,7 +11,7 @@ SecondStage::SecondStage()
 		line[i].data.pipelineName = PIPELINE_NAME_FOG_LINE;
 
 		fogHandle[i].handle = line[i].CreateConstBuffer(sizeof(FogData), typeid(FogData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
-		fogHandle[i].fogColor.fogdata = { 1.0f,1.0f,1.0f,0.4f };
+		fogHandle[i].fogColor.fogdata = { 1.0f,1.0f,1.0f,0.0006f };
 
 		FogData tmpColor = fogHandle[i].fogColor;
 		line[i].TransData(&tmpColor, fogHandle[i].handle, typeid(tmpColor).name());

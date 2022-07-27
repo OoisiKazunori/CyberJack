@@ -13,7 +13,7 @@ public:
 	IStage();
 
 	virtual ~IStage();
-	void InitBackGround(const KazMath::Color& START_COLOR, const KazMath::Color &END_COLOR);
+	void InitBackGround(const KazMath::Color &START_COLOR, const KazMath::Color &END_COLOR, float SPACE, float HEIGHT);
 	void DrawBackGround();
 
 	virtual void Update() = 0;

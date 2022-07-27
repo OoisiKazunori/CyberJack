@@ -62,7 +62,7 @@ FirstStage::FirstStage()
 	//fogData[0].fogdata.y = BG_COLOR.y / 255.0f;
 	//fogData[0].fogdata.z = BG_COLOR.z / 255.0f;
 
-	InitBackGround(KazMath::Color(237, 165, 135, 255), KazMath::Color(61, 23, 158, 255));
+	InitBackGround(KazMath::Color(237, 165, 135, 255), KazMath::Color(61, 23, 158, 255), 650.0f, 400.0f);
 
 
 	for (int i = 0; i < stageDebugBox.size(); ++i)

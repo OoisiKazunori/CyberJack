@@ -72,9 +72,10 @@ Game::Game()
 	lineStartPoly[6].data.transform.pos = { 0.5f,0.3f,-0.3f };
 	lineStartPoly[7].data.transform.pos = { 0.0f,-0.3f,-1.0f };
 
-	CameraMgr::Instance()->CameraSetting(60.0f, 5000.0f);
+	CameraMgr::Instance()->CameraSetting(60.0f, 10000.0f);
 
-	stages[0] = std::make_unique<FirstStage>();
+	stages[0] = std::make_unique<RezStage>();
+	//stages[0] = std::make_unique<FirstStage>();
 	stages[1] = std::make_unique<GpuParticleStage>();
 	stages[2] = std::make_unique<ThridStage>();
 
@@ -1235,10 +1236,10 @@ void Game::Draw()
 		{
 			goalBox.lightEffect.Draw();
 		}
-		doneSprite.Draw();
-		titleLogoTex.Draw();
-		tutorialWindow.Draw();
-		stageUI.Draw();
+		//doneSprite.Draw();
+		//titleLogoTex.Draw();
+		//tutorialWindow.Draw();
+		//stageUI.Draw();
 
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, handles[0]);
 		RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
