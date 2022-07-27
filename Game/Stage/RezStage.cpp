@@ -27,26 +27,26 @@ RezStage::RezStage()
 	int lineRIndex = 0;
 	for (int i = 0; i < gridFloorZLinePos.size(); ++i)
 	{
-		lineR[lineRIndex].data.startPos = gridFloorZLinePos[i][0].pos;
-		lineR[lineRIndex].data.endPos = gridFloorZLinePos[i][1].pos;
+		gridLineRender[lineRIndex].data.startPos = gridFloorZLinePos[i][0].pos;
+		gridLineRender[lineRIndex].data.endPos = gridFloorZLinePos[i][1].pos;
 		++lineRIndex;
 	}
 	for (int i = 0; i < gridFloorXLinePos.size(); ++i)
 	{
-		lineR[lineRIndex].data.startPos = gridFloorXLinePos[i][0].pos;
-		lineR[lineRIndex].data.endPos = gridFloorXLinePos[i][1].pos;
+		gridLineRender[lineRIndex].data.startPos = gridFloorXLinePos[i][0].pos;
+		gridLineRender[lineRIndex].data.endPos = gridFloorXLinePos[i][1].pos;
 		++lineRIndex;
 	}
 
-	for (int i = 0; i < lineR.size(); ++i)
+	for (int i = 0; i < gridLineRender.size(); ++i)
 	{
-		lineR[i].data.color = { 255,255,255,255 };
-		lineR[i].data.pipelineName = PIPELINE_NAME_FOG_LINE;
+		gridLineRender[i].data.color = { 255,255,255,255 };
+		gridLineRender[i].data.pipelineName = PIPELINE_NAME_FOG_LINE;
 
 		FogData lData;
-		RESOURCE_HANDLE lHandle = lineR[i].CreateConstBuffer(sizeof(FogData), typeid(FogData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+		RESOURCE_HANDLE lHandle = gridLineRender[i].CreateConstBuffer(sizeof(FogData), typeid(FogData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
 		lData.fogdata = { 1.0f,1.0f,1.0f,0.4f };
-		lineR[i].TransData(&lData, lHandle, typeid(lData).name());
+		gridLineRender[i].TransData(&lData, lHandle, typeid(lData).name());
 	}
 #pragma endregion
 
@@ -75,16 +75,16 @@ void RezStage::Update()
 	int lineRIndex = 0;
 	for (int i = 0; i < gridFloorZLinePos.size(); ++i)
 	{
-		lineR[lineRIndex].data.startPos = gridFloorZLinePos[i][0].pos;
-		lineR[lineRIndex].data.endPos = gridFloorZLinePos[i][1].pos;
+		gridLineRender[lineRIndex].data.startPos = gridFloorZLinePos[i][0].pos;
+		gridLineRender[lineRIndex].data.endPos = gridFloorZLinePos[i][1].pos;
 		++lineRIndex;
 	}
 }
 
 void RezStage::Draw()
 {
-	for (int i = 0; i < lineR.size(); ++i)
+	for (int i = 0; i < gridLineRender.size(); ++i)
 	{
-		lineR[i].Draw();
+		gridLineRender[i].Draw();
 	}
 }

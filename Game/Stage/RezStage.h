@@ -18,7 +18,7 @@ private:
 	static const int LINE_Z_MAX = LINE_MAX / 2;
 	static const int LINE_X_MAX = LINE_MAX / 2;
 
-	std::array<LineRender, LINE_MAX> lineR;
+	std::array<LineRender, LINE_MAX> gridLineRender;
 	std::array<std::array<KazMath::Transform3D, 2>, LINE_Z_MAX> gridFloorZLinePos;
 	std::array<std::array<KazMath::Transform3D, 2>, LINE_X_MAX> gridFloorXLinePos;
 	std::array<KazMath::Transform3D, 20> gridWallLinePos;

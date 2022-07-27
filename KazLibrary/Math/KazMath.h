@@ -386,9 +386,13 @@ namespace KazMath
 		};
 		Vec4(T X, T Y, T Z, T A) :x(X), y(Y), z(Z), a(A) {};
 
-		DirectX::XMFLOAT3 ConvertXMFLOAT3()
+		DirectX::XMFLOAT3 ConvertXMFLOAT3()const
 		{
-			return DirectX::DirectX::XMFLOAT3(x, y, z);
+			return DirectX::XMFLOAT3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
+		};
+		DirectX::XMFLOAT4 ConvertXMFLOAT4()const
+		{
+			return DirectX::XMFLOAT4(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), static_cast<float>(a));
 		};
 		DirectX::XMVECTOR ConvertXMVECTOR()
 		{
@@ -527,12 +531,12 @@ namespace KazMath
 		Color(int R, int G, int B, int A) :color({ R,G,B,A }), dirtyFlag(&color)
 		{};
 
-		DirectX::XMFLOAT4 ConvertColorRateToXMFLOAT4()
+		DirectX::XMFLOAT4 ConvertColorRateToXMFLOAT4()const
 		{
 			KazMath::Vec4<float> result = GetColorRate();
 			return DirectX::XMFLOAT4(result.x, result.y, result.z, result.a);
 		};
-		Vec4<float> GetColorRate()
+		Vec4<float> GetColorRate()const
 		{
 			KazMath::Vec4<float> result = CovertToFloat();
 			return KazMath::Vec4<float>(
@@ -559,7 +563,7 @@ namespace KazMath
 		}
 
 	private:
-		KazMath::Vec4<float> CovertToFloat()
+		KazMath::Vec4<float> CovertToFloat()const
 		{
 			return KazMath::Vec4<float>(
 				static_cast<float>(color.x),
