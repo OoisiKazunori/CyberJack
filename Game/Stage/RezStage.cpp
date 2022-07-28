@@ -1,5 +1,6 @@
 #include "RezStage.h"
 #include"../KazLibrary/Imgui/MyImgui.h"
+#include"../KazLibrary/Helper/ResourceFilePass.h"
 
 RezStage::RezStage()
 {
@@ -55,7 +56,7 @@ RezStage::RezStage()
 	{
 		int lineWallIndex = 0;
 		float height = 300.0f;
-		float width = 300.0f;
+		float width = 700.0f;
 		float fIndex = 0.0f;
 		float zInterval = 100.0f;
 		for (int i = 0; i < wallTopLinePos.size(); ++i)
@@ -96,8 +97,58 @@ RezStage::RezStage()
 			gridWallLineRender[i].data.pipelineName = PIPELINE_NAME_FOG_LINE;
 			FogData lData;
 			RESOURCE_HANDLE lHandle = gridWallLineRender[i].CreateConstBuffer(sizeof(FogData), typeid(FogData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
-			lData.fogdata = { 0.0f,0.0f,0.0f,0.004f };
+			lData.fogdata = { 0.0f,0.0f,0.0f,0.0006f };
 			gridWallLineRender[i].TransData(&lData, lHandle, typeid(lData).name());
+		}
+
+
+
+		lineWallIndex = 0;
+		for (int i = 0; i < zWallTopLinePos.size(); ++i)
+		{
+			fIndex = static_cast<float>(i);
+			float lineWidth = (width * 2.0f) / static_cast<float>(zWallTopLinePos.size());
+
+			zWallTopLinePos[i][0].pos = { -width + lineWidth * fIndex,height,-1000.0f };
+			zWallTopLinePos[i][1].pos = { -width + lineWidth * fIndex,height,1000.0f };
+
+			zGridWallLineRender[lineWallIndex].data.startPos = zWallTopLinePos[i][0].pos;
+			zGridWallLineRender[lineWallIndex].data.endPos = zWallTopLinePos[i][1].pos;
+			lineWallIndex++;
+		}
+
+		for (int i = 0; i < zWallLeftLinePos.size(); ++i)
+		{
+			fIndex = static_cast<float>(i);
+			float lineWidth = (width * 2.0f) / static_cast<float>(zWallLeftLinePos.size());
+			zWallLeftLinePos[i][0].pos = { -width,height - lineWidth * fIndex,-1000.0f };
+			zWallLeftLinePos[i][1].pos = { -width,height - lineWidth * fIndex,1000.0f };
+
+			zGridWallLineRender[lineWallIndex].data.startPos = zWallLeftLinePos[i][0].pos;
+			zGridWallLineRender[lineWallIndex].data.endPos = zWallLeftLinePos[i][1].pos;
+			lineWallIndex++;
+		}
+
+		for (int i = 0; i < zWallRightLinePos.size(); ++i)
+		{
+			fIndex = static_cast<float>(i);
+			float lineWidth = (width * 2.0f) / static_cast<float>(zWallRightLinePos.size());
+			zWallRightLinePos[i][0].pos = { width,height - lineWidth * fIndex,-1000.0f };
+			zWallRightLinePos[i][1].pos = { width,height - lineWidth * fIndex,1000.0f };
+
+			zGridWallLineRender[lineWallIndex].data.startPos = zWallRightLinePos[i][0].pos;
+			zGridWallLineRender[lineWallIndex].data.endPos = zWallRightLinePos[i][1].pos;
+			lineWallIndex++;
+		}
+
+
+		for (int i = 0; i < zGridWallLineRender.size(); ++i)
+		{
+			zGridWallLineRender[i].data.pipelineName = PIPELINE_NAME_FOG_LINE;
+			FogData lData;
+			RESOURCE_HANDLE lHandle = zGridWallLineRender[i].CreateConstBuffer(sizeof(FogData), typeid(FogData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+			lData.fogdata = { 0.0f,0.0f,0.0f,0.0006f };
+			zGridWallLineRender[i].TransData(&lData, lHandle, typeid(lData).name());
 		}
 	}
 #pragma endregion
@@ -165,9 +216,33 @@ RezStage::RezStage()
 			gridCentralWallLineRender[i][wallIndex].data.pipelineName = PIPELINE_NAME_FOG_LINE;
 			FogData lData;
 			RESOURCE_HANDLE lHandle = gridCentralWallLineRender[i][wallIndex].CreateConstBuffer(sizeof(FogData), typeid(FogData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
-			lData.fogdata = { 0.0f,0.0f,0.0f,0.001f };
+			lData.fogdata = { 0.0f,0.0f,0.0f,0.0006f };
 			gridCentralWallLineRender[i][wallIndex].TransData(&lData, lHandle, typeid(lData).name());
 		}
+	}
+
+
+	model.data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "test_game_model.obj");
+
+
+	for (int i = 0; i < floorObjectRender.size(); ++i)
+	{
+		floorObjectRender[i][0].data.transform.scale = { KazMath::Rand<float>(300.0f,100.0f), KazMath::Rand<float>(300.0f,100.0f), KazMath::Rand<float>(300.0f,100.0f) };
+		floorObjectRender[i][0].data.transform.pos = { KazMath::Rand<float>(5000,-5000),gridFloorZLinePos[0][0].pos.y + floorObjectRender[i][0].data.transform.scale.y,KazMath::Rand<float>(10000,-100) };
+		floorObjectRender[i][0].data.color = { 255,255,255,255 };
+		floorObjectRender[i][0].data.pipelineName = PIPELINE_NAME_FOG_COLOR;
+
+		floorObjectRender[i][1].data.transform.pos = floorObjectRender[i][0].data.transform.pos + KazMath::Vec3<float>(0.0f, -(floorObjectRender[i][0].data.transform.scale.y * 2), 0.0f);
+		floorObjectRender[i][1].data.transform.scale = floorObjectRender[i][0].data.transform.scale;
+		floorObjectRender[i][1].data.color = { 255,0,0,255 };
+		floorObjectRender[i][1].data.pipelineName = PIPELINE_NAME_FOG_COLOR;
+
+		RESOURCE_HANDLE lHandle = floorObjectRender[i][0].CreateConstBuffer(sizeof(FogData), typeid(FogData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+		RESOURCE_HANDLE lHandle2 = floorObjectRender[i][1].CreateConstBuffer(sizeof(FogData), typeid(FogData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+		FogData lData;
+		lData.fogdata = { 0.0f,0.0f,0.0f,0.0006f };
+		floorObjectRender[i][0].TransData(&lData, lHandle, typeid(lData).name());
+		floorObjectRender[i][1].TransData(&lData, lHandle2, typeid(lData).name());
 	}
 }
 
@@ -268,12 +343,10 @@ void RezStage::Update()
 		gridWallLineRender[lineWallIndex].data.endPos = wallRightLinePos[i][1].pos;
 		lineWallIndex++;
 	}
-
 }
 
 void RezStage::Draw()
 {
-
 	for (int i = 0; i < gridLineRender.size(); ++i)
 	{
 		gridLineRender[i].Draw();
@@ -282,17 +355,45 @@ void RezStage::Draw()
 	{
 		gridWallLineRender[i].Draw();
 	}
+
+	for (int i = 0; i < floorObjectRender.size(); ++i)
+	{
+		for (int objIndex = 0; objIndex < floorObjectRender[i].size(); ++objIndex)
+		{
+			floorObjectRender[i][objIndex].Draw();
+		}
+	}
+
+
 	for (int i = 0; i < gridCentralLineRender.size(); ++i)
 	{
-		gridCentralLineRender[i].Draw();
+		//gridCentralLineRender[i].Draw();
 	}
 
 	for (int i = 0; i < gridCentralWallLineRender.size(); ++i)
 	{
 		for (int wallIndex = 0; wallIndex < gridCentralWallLineRender[i].size(); ++wallIndex)
 		{
-			gridCentralWallLineRender[i][wallIndex].Draw();
+			//gridCentralWallLineRender[i][wallIndex].Draw();
 		}
 	}
+
+	for (int i = 0; i < zGridWallLineRender.size(); ++i)
+	{
+		zGridWallLineRender[i].Draw();
+	}
+
+	
+	ImGui::Begin("Model");
+	ImGui::DragFloat("POS_X", &model.data.transform.pos.x);
+	ImGui::DragFloat("POS_Y", &model.data.transform.pos.y);
+	ImGui::DragFloat("POS_Z", &model.data.transform.pos.z);
+	ImGui::End();
+
+	model.data.transform.rotation.y = 180.0f;
+	model.data.transform.rotation.z += 0.5f;
+	model.Draw();
 	//DrawBackGround();
+
+
 }

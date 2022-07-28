@@ -34,11 +34,23 @@ private:
 	std::array<std::array<KazMath::Transform3D, 2>, WALL_LINE_LEFT_MAX> wallLeftLinePos;
 	std::array<std::array<KazMath::Transform3D, 2>, WALL_LINE_RIGHT_MAX> wallRightLinePos;
 	std::array<LineRender, WALL_LINE_MAX> gridWallLineRender;
+
+	std::array<std::array<KazMath::Transform3D, 2>, 10> zWallTopLinePos;
+	std::array<std::array<KazMath::Transform3D, 2>, 10> zWallLeftLinePos;
+	std::array<std::array<KazMath::Transform3D, 2>, 10> zWallRightLinePos;
+	std::array<LineRender, 10 * 3> zGridWallLineRender;
 	//檻の描画ーーー
+
 
 
 	//真ん中線の描画ーーー
 	std::array<LineRender, 4> gridCentralLineRender;
 	std::array<std::array<LineRender, 4>, 20> gridCentralWallLineRender;
 	//真ん中線の描画ーーー
+
+	ObjModelRender model;
+
+	//床にOBJ配置
+	std::array<std::array<BoxPolygonRender, 2>, 50>floorObjectRender;
+
 };

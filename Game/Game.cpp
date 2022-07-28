@@ -219,7 +219,7 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	testEnemyPos = { 0.0f,0.0f,100.0f };
 	mulValue = { 10.0f,30.0f };
 	mulValue2 = { 60.0f,60.0f };
-	cameraChangeFlag = true;
+	cameraChangeFlag = false;
 
 	forceCameraDirVel.x = -90.0f;
 
