@@ -411,11 +411,13 @@ void RezStage::Update()
 	for (int i = 0; i < floorObjectRender.size(); ++i)
 	{
 		floorObjectRender[i].objRender[0].data.transform.pos.z += lVelZ;
-		floorObjectRender[i].objRender[1].data.transform.pos.z += lVelZ;
 		bool limitZLineFlag = floorObjectRender[i].objRender[0].data.transform.pos.z <= -100.0f;
 
 		floorObjectRender[i].objRender[0].data.transform.scale.y = floorObjectRender[i].initScale.y + EasingMaker(Out, Cubic, scaleRate) * 50.0f;
+		floorObjectRender[i].objRender[0].data.transform.pos.y = -150.0f + floorObjectRender[i].objRender[0].data.transform.scale.y;
+
 		floorObjectRender[i].objRender[1].data.transform.scale.y = floorObjectRender[i].objRender[0].data.transform.scale.y;
+		floorObjectRender[i].objRender[1].data.transform.pos = floorObjectRender[i].objRender[0].data.transform.pos + KazMath::Vec3<float>(50.0f, -(floorObjectRender[i].objRender[0].data.transform.scale.y * 2), 0.0f);
 
 
 		if (limitZLineFlag)
