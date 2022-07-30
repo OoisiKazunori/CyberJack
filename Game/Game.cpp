@@ -552,8 +552,8 @@ void Game::Update()
 
 
 	//敵が一通り生成終わった際に登場させる----------------------------------------------------------------
-	//if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame && !initAppearFlag)
-	if (100 <= gameFlame && !initAppearFlag)
+	if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame && !initAppearFlag)
+	//if (100 <= gameFlame && !initAppearFlag)
 	{
 		goalBox.Appear(appearGoalBoxPos);
 		initAppearFlag = true;
@@ -1201,8 +1201,8 @@ void Game::Draw()
 		portal.DrawPortal();
 		portal.DrawFlame();
 
-		//if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
-		if (100 <= gameFlame)
+		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
+		//if (100 <= gameFlame)
 		{
 			goalBox.Draw();
 		}
@@ -1216,7 +1216,7 @@ void Game::Draw()
 				bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
 				if (enableToUseDataFlag)
 				{
-					//enemies[enemyType][enemyCount]->Draw();
+					enemies[enemyType][enemyCount]->Draw();
 				}
 			}
 		}
