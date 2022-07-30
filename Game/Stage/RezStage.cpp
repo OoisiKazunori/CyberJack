@@ -1,6 +1,7 @@
 #include "RezStage.h"
 #include"../KazLibrary/Imgui/MyImgui.h"
 #include"../KazLibrary/Helper/ResourceFilePass.h"
+#include"../KazLibrary/Easing/easing.h"
 
 RezStage::RezStage()
 {
@@ -237,47 +238,46 @@ RezStage::RezStage()
 		const float minXPos = 1000.0f;
 		if (KazMath::Rand<int>(2, 0))
 		{
-			floorObjectRender[i][0].data.transform.pos.x = KazMath::Rand<float>(-maxXPos,-minXPos);
+			floorObjectRender[i].objRender[0].data.transform.pos.x = KazMath::Rand<float>(-maxXPos, -minXPos);
 		}
 		else
 		{
-			floorObjectRender[i][0].data.transform.pos.x = KazMath::Rand<float>(maxXPos, minXPos);
+			floorObjectRender[i].objRender[0].data.transform.pos.x = KazMath::Rand<float>(maxXPos, minXPos);
 		}
-		floorObjectRender[i][0].data.transform.pos.z = KazMath::Rand<float>(10000, -100);
+		floorObjectRender[i].objRender[0].data.transform.pos.z = KazMath::Rand<float>(10000, -100);
 
-		const float lScaleRate = abs(floorObjectRender[i][0].data.transform.pos.x) / abs(maxXPos);
+		const float lScaleRate = abs(floorObjectRender[i].objRender[0].data.transform.pos.x) / abs(maxXPos);
 		const float lScaleMin = 100.0f;
 		const float lScaleMax = (lScaleRate * 200.0f) + lScaleMin;
-		floorObjectRender[i][0].data.transform.scale = 
+		floorObjectRender[i].objRender[0].data.transform.scale =
 		{
 			KazMath::Rand<float>(lScaleMax,lScaleMin),
 			KazMath::Rand<float>(lScaleMax,lScaleMin),
 			KazMath::Rand<float>(lScaleMax,lScaleMin)
 		};
-		floorObjectRender[i][0].data.transform.pos.y = gridFloorZLinePos[0][0].pos.y + floorObjectRender[i][0].data.transform.scale.y;
+		floorObjectRender[i].initScale = floorObjectRender[i].objRender[0].data.transform.scale;
+		floorObjectRender[i].objRender[0].data.transform.pos.y = gridFloorZLinePos[0][0].pos.y + floorObjectRender[i].objRender[0].data.transform.scale.y;
 
 
-		floorObjectRender[i][0].data.color = { 255,255,255,255 };
-		floorObjectRender[i][0].data.pipelineName = PIPELINE_NAME_FOG_COLOR;
+		floorObjectRender[i].objRender[0].data.color = { 255,255,255,255 };
+		floorObjectRender[i].objRender[0].data.pipelineName = PIPELINE_NAME_FOG_COLOR;
 
-		floorObjectRender[i][1].data.transform.pos = floorObjectRender[i][0].data.transform.pos + KazMath::Vec3<float>(0.0f, -(floorObjectRender[i][0].data.transform.scale.y * 2), 0.0f);
-		floorObjectRender[i][1].data.transform.scale = floorObjectRender[i][0].data.transform.scale;
-		floorObjectRender[i][1].data.color = { 255,0,0,255 };
-		floorObjectRender[i][1].data.pipelineName = PIPELINE_NAME_FOG_COLOR;
+		floorObjectRender[i].objRender[1].data.transform.pos = floorObjectRender[i].objRender[0].data.transform.pos + KazMath::Vec3<float>(0.0f, -(floorObjectRender[i].objRender[0].data.transform.scale.y * 2), 0.0f);
+		floorObjectRender[i].objRender[1].data.transform.scale = floorObjectRender[i].objRender[0].data.transform.scale;
+		floorObjectRender[i].objRender[1].data.color = { 255,0,0,255 };
+		floorObjectRender[i].objRender[1].data.pipelineName = PIPELINE_NAME_FOG_COLOR;
 
-		RESOURCE_HANDLE lHandle = floorObjectRender[i][0].CreateConstBuffer(sizeof(FogData), typeid(FogData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
-		RESOURCE_HANDLE lHandle2 = floorObjectRender[i][1].CreateConstBuffer(sizeof(FogData), typeid(FogData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+		RESOURCE_HANDLE lHandle = floorObjectRender[i].objRender[0].CreateConstBuffer(sizeof(FogData), typeid(FogData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+		RESOURCE_HANDLE lHandle2 = floorObjectRender[i].objRender[1].CreateConstBuffer(sizeof(FogData), typeid(FogData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
 		FogData lData;
 
 		KazMath::Color lColor(29, 19, 72, 255);
 		DirectX::XMFLOAT3 colorRate = lColor.ConvertColorRateToXMFLOAT3();
 		lData.fogdata = { colorRate.x,colorRate.y,colorRate.z,0.0006f };
 
-		floorObjectRender[i][0].TransData(&lData, lHandle, typeid(lData).name());
-		floorObjectRender[i][1].TransData(&lData, lHandle2, typeid(lData).name());
+		floorObjectRender[i].objRender[0].TransData(&lData, lHandle, typeid(lData).name());
+		floorObjectRender[i].objRender[1].TransData(&lData, lHandle2, typeid(lData).name());
 	}
-
-
 
 
 	vaporWaveSunRender.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::RelativeResourcePath + "Stage/" + "vaporWaveSun.png");
@@ -287,7 +287,7 @@ RezStage::RezStage()
 
 void RezStage::Update()
 {
-	float lVelZ = -5.0f;
+	const float lVelZ = -5.0f;
 
 	for (int i = 0; i < gridFloorZLinePos.size(); ++i)
 	{
@@ -331,7 +331,6 @@ void RezStage::Update()
 	int lineWallIndex = 0;
 	float fIndex = 0.0f;
 	float zInterval = 100.0f;
-	lVelZ = -0.5f;
 	for (int i = 0; i < wallTopLinePos.size(); ++i)
 	{
 		fIndex = static_cast<float>(i);
@@ -382,12 +381,61 @@ void RezStage::Update()
 		gridWallLineRender[lineWallIndex].data.endPos = wallRightLinePos[i][1].pos;
 		lineWallIndex++;
 	}
+
+
+
+
+	if (reversValueFlag)
+	{
+		scaleRate += 1.0f / 30.0f;
+	}
+	else
+	{
+		scaleRate += -(1.0f / 10.0f);
+	}
+
+	if (scaleRate <= 0.0f)
+	{
+		scaleRate = 0.0f;
+		reversValueFlag = true;
+	}
+	else if (1.0f <= scaleRate)
+	{
+		scaleRate = 1.0f;
+		reversValueFlag = false;
+	}
+
+
+	for (int i = 0; i < floorObjectRender.size(); ++i)
+	{
+		floorObjectRender[i].objRender[0].data.transform.pos.z += lVelZ;
+		floorObjectRender[i].objRender[1].data.transform.pos.z += lVelZ;
+		bool limitZLineFlag = floorObjectRender[i].objRender[0].data.transform.pos.z <= -100.0f;
+
+		floorObjectRender[i].objRender[0].data.transform.scale.y = floorObjectRender[i].initScale.y + EasingMaker(Out, Cubic, scaleRate) * 50.0f;
+		floorObjectRender[i].objRender[1].data.transform.scale.y = floorObjectRender[i].objRender[0].data.transform.scale.y;
+
+
+		if (limitZLineFlag)
+		{
+			floorObjectRender[i].objRender[0].data.transform.pos.z = 8000.0f;
+			floorObjectRender[i].objRender[1].data.transform.pos = floorObjectRender[i].objRender[0].data.transform.pos + KazMath::Vec3<float>(0.0f, -(floorObjectRender[i].objRender[0].data.transform.scale.y * 2), 0.0f);
+		}
+	}
+
 }
 
 void RezStage::Draw()
 {
 	for (int i = 0; i < gridLineRender.size(); ++i)
 	{
+		KazMath::Color baseColor(115, 85, 140, 255);
+		KazMath::Color flashColor(213, 5, 228, 255);
+		KazMath::Color nowColor(0, 0, 0, 255);
+		nowColor.color = (flashColor.color - baseColor.color);
+		KazMath::Vec4<float> tmpFloatColor = baseColor.color.Float() + nowColor.color.Float() * scaleRate;
+		gridLineRender[i].data.color.color = tmpFloatColor.Int();
+
 		gridLineRender[i].Draw();
 	}
 	for (int i = 0; i < gridWallLineRender.size(); ++i)
@@ -397,9 +445,9 @@ void RezStage::Draw()
 
 	for (int i = 0; i < floorObjectRender.size(); ++i)
 	{
-		for (int objIndex = 0; objIndex < floorObjectRender[i].size(); ++objIndex)
+		for (int objIndex = 0; objIndex < floorObjectRender[i].objRender.size(); ++objIndex)
 		{
-			floorObjectRender[i][objIndex].Draw();
+			floorObjectRender[i].objRender[objIndex].Draw();
 		}
 	}
 

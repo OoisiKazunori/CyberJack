@@ -51,7 +51,16 @@ private:
 	ObjModelRender model;
 
 	//è∞Ç…OBJîzíu
-	std::array<std::array<BoxPolygonRender, 2>, 50>floorObjectRender;
+	struct FloorObjData
+	{
+		std::array<BoxPolygonRender, 2> objRender;
+		KazMath::Vec3<float>initScale;
+	};
+	std::array<FloorObjData, 50>floorObjectRender;
+
+	float scaleRate;
+	bool reversValueFlag;
+
 
 	Sprite3DRender vaporWaveSunRender;
 

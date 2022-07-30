@@ -402,7 +402,7 @@ namespace KazMath
 
 		Vec4<int>Int()const
 		{
-			return Vec4<int>(x, y, z, a);
+			return Vec4<int>(static_cast<int>(x), static_cast<int>(y), static_cast<int>(z), static_cast<int>(a));
 		}
 		Vec4<float>Float()const
 		{
@@ -424,19 +424,19 @@ namespace KazMath
 		}
 		Vec4 operator+(const Vec4 &rhs)const
 		{
-			return Vec4(x + rhs.x, y + rhs.y, z + rhs.z);
+			return Vec4(x + rhs.x, y + rhs.y, z + rhs.z, a + rhs.a);
 		};
 		Vec4 operator-(const Vec4 &rhs)const
 		{
-			return Vec4(x - rhs.x, y - rhs.y, z - rhs.z);
+			return Vec4(x - rhs.x, y - rhs.y, z - rhs.z, a - rhs.a);
 		};
 		Vec4 operator*(const Vec4 &rhs) const
 		{
-			return Vec4(x * rhs.x, y * rhs.y, z * rhs.z);
+			return Vec4(x * rhs.x, y * rhs.y, z * rhs.z, a * rhs.a);
 		};
 		Vec4 operator*(const float &rhs)const
 		{
-			return Vec4(x * rhs, y * rhs, z * rhs);
+			return Vec4(x * rhs, y * rhs, z * rhs, a * rhs);
 		};
 		Vec4 operator/(const Vec4 &rhs)const
 		{
