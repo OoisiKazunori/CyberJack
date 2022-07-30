@@ -283,6 +283,8 @@ RezStage::RezStage()
 	vaporWaveSunRender.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::RelativeResourcePath + "Stage/" + "vaporWaveSun.png");
 	vaporWaveSunRender.data.transform.pos = { 0.0f,2000.0f,5000.0f };
 	vaporWaveSunRender.data.transform.scale = { 3.0f,3.0f,1.0f };
+	vaporWaveSunRender.data.colorData = { 255,0,0,255 };
+	vaporWaveSunRender.data.pipelineName = PIPELINE_NAME_SPRITE_MULTITEX;
 }
 
 void RezStage::Update()

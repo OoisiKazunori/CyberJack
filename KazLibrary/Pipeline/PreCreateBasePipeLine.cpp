@@ -6,7 +6,6 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 {
 	GraphicsPipeLineMgr *pipelineMgr = GraphicsPipeLineMgr::Instance();
 
-
 #pragma region InputLayOutの登録
 	{
 		D3D12_INPUT_ELEMENT_DESC *input3DLayOut = new D3D12_INPUT_ELEMENT_DESC[3];
@@ -208,6 +207,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		GraphicsPipeLineMgr::Instance()->RegisterInputLayOutWithData(*input, LAYOUT_POS_TICK);
 	}
 #pragma endregion
+
 
 #pragma region シェーダーのコンパイルと登録
 	OutputDebugStringA("シェーダーのコンパイルを開始します\n");
@@ -1625,6 +1625,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		ROOTSIGNATURE_DATA_DRAW_TEX,
 		PIPELINE_NAME_SPRITE_MULTITEX
 	);
+
 
 	//Objパイプライン
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
