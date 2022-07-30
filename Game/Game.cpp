@@ -219,7 +219,6 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	testEnemyPos = { 0.0f,0.0f,100.0f };
 	mulValue = { 10.0f,30.0f };
 	mulValue2 = { 60.0f,60.0f };
-	cameraChangeFlag = false;
 
 	forceCameraDirVel.x = -90.0f;
 
@@ -531,6 +530,12 @@ void Game::Update()
 
 	//上下左右の回転
 	cameraPoly->data.transform.pos = centralPos + (besidePoly->data.transform.pos + verticlaPoly->data.transform.pos);
+
+
+
+	ImGui::Begin("cameraChangeFlag");
+	ImGui::Checkbox("GameCamera", &cameraChangeFlag);
+	ImGui::End();
 
 
 

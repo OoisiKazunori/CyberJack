@@ -235,7 +235,7 @@ RezStage::RezStage()
 	for (int i = 0; i < floorObjectRender.size(); ++i)
 	{
 		const float maxXPos = 4000.0f;
-		const float minXPos = 1000.0f;
+		const float minXPos = 500.0f;
 		if (KazMath::Rand<int>(2, 0))
 		{
 			floorObjectRender[i].objRender[0].data.transform.pos.x = KazMath::Rand<float>(-maxXPos, -minXPos);
@@ -417,7 +417,7 @@ void RezStage::Update()
 		floorObjectRender[i].objRender[0].data.transform.pos.y = -150.0f + floorObjectRender[i].objRender[0].data.transform.scale.y;
 
 		floorObjectRender[i].objRender[1].data.transform.scale.y = floorObjectRender[i].objRender[0].data.transform.scale.y;
-		floorObjectRender[i].objRender[1].data.transform.pos = floorObjectRender[i].objRender[0].data.transform.pos + KazMath::Vec3<float>(50.0f, -(floorObjectRender[i].objRender[0].data.transform.scale.y * 2), 0.0f);
+		floorObjectRender[i].objRender[1].data.transform.pos = floorObjectRender[i].objRender[0].data.transform.pos + KazMath::Vec3<float>(0.0f, -(floorObjectRender[i].objRender[0].data.transform.scale.y * 2), 0.0f);
 
 
 		if (limitZLineFlag)
