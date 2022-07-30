@@ -53,4 +53,6 @@ private:
 	//è∞Ç…OBJîzíu
 	std::array<std::array<BoxPolygonRender, 2>, 50>floorObjectRender;
 
+	Sprite3DRender vaporWaveSunRender;
+
 };

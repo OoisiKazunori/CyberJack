@@ -536,6 +536,11 @@ namespace KazMath
 			KazMath::Vec4<float> result = GetColorRate();
 			return DirectX::XMFLOAT4(result.x, result.y, result.z, result.a);
 		};
+		DirectX::XMFLOAT3 ConvertColorRateToXMFLOAT3()const
+		{
+			KazMath::Vec4<float> result = GetColorRate();
+			return DirectX::XMFLOAT3(result.x, result.y, result.z);
+		};
 		Vec4<float> GetColorRate()const
 		{
 			KazMath::Vec4<float> result = CovertToFloat();
