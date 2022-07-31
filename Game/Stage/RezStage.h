@@ -4,6 +4,7 @@
 #include<array>
 #include<vector>
 #include"../KazLibrary/Render/KazRender.h"
+#include"../Game/Event/LineFlashLight.h"
 
 class RezStage :public IStage
 {
@@ -63,5 +64,5 @@ private:
 
 
 	Sprite3DRender vaporWaveSunRender;
-
+	LineFlashLight lineEffect;
 };

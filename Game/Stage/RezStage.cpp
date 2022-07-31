@@ -285,6 +285,12 @@ RezStage::RezStage()
 	vaporWaveSunRender.data.transform.scale = { 3.0f,3.0f,1.0f };
 	vaporWaveSunRender.data.colorData = { 255,0,0,255 };
 	vaporWaveSunRender.data.pipelineName = PIPELINE_NAME_SPRITE_MULTITEX;
+
+
+	std::vector<KazMath::Vec3<float>>lPosArray;
+	lPosArray.push_back({ -10.0f,0.0f,10.0f });
+	lPosArray.push_back({ 10.0f,0.0f,10.0f });
+	lineEffect.Init(lPosArray, 60);
 }
 
 void RezStage::Update()
@@ -427,10 +433,13 @@ void RezStage::Update()
 		}
 	}
 
+	lineEffect.Update();
 }
 
 void RezStage::Draw()
 {
+	lineEffect.Draw();
+
 	for (int i = 0; i < gridLineRender.size(); ++i)
 	{
 		KazMath::Color baseColor(115, 85, 140, 255);

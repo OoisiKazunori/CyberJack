@@ -102,6 +102,8 @@
     <ClCompile Include="Game\Event\PortalEffect.cpp" />
     <ClCompile Include="Game\Stage\RezStage.cpp" />
     <ClCompile Include="KazLibrary\Helper\KazImGuiHelper.cpp" />
+    <ClCompile Include="Game\Event\LineLight.cpp" />
+    <ClCompile Include="Game\Event\LineFlashLight.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -216,6 +218,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="Game\Event\PortalEffect.h" />
     <ClInclude Include="Game\Stage\RezStage.h" />
+    <ClInclude Include="Game\Event\LineFlashLight.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
