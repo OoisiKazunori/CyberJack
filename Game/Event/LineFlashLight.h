@@ -20,6 +20,7 @@ private:
 	BoxPolygonRender boxR;
 
 	void CheckWhereToGo();
+	float CaluDisntace();
 
 	float *nowPos = nullptr;
 	float *nextPos = nullptr;

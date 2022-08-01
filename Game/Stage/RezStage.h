@@ -65,4 +65,6 @@ private:
 
 	Sprite3DRender vaporWaveSunRender;
 	LineFlashLight lineEffect;
+	int timer;
+	int maxTimer;
 };

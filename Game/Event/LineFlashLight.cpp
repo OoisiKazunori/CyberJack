@@ -1,7 +1,7 @@
 #include "LineFlashLight.h"
 #include"../KazLibrary/Helper/KazHelper.h"
 
-LineFlashLight::LineFlashLight()
+LineFlashLight::LineFlashLight() :finishFlag(true)
 {
 }
 
@@ -33,39 +33,67 @@ void LineFlashLight::Init(const std::vector<KazMath::Vec3<float>> &POS_ARRAY, in
 
 void LineFlashLight::Update()
 {
-	//ボックスをどの方向に向かわせるか決める
-	CheckWhereToGo();
-
-	//ボックスを動かす
-	if (nowPos != nullptr)
+	if (!finishFlag)
 	{
-		*nowPos += speed;
-	}
+		//ボックスをどの方向に向かわせるか決める
+		CheckWhereToGo();
 
-	//線を超えたら次の線に行く
-	if (nowPos != nullptr && nextPos != nullptr && *nextPos - *nowPos <= 0.0f)
-	{
-		++lineIndex;
-
-		int lLoopCount = 0;
-		float lDistance = 0.0f;
-		//一度に線を越えた回数が100回以下&&線を越えなかった時ループを終える
-		while (lLoopCount <= 100 && 0.0f <= lDistance)
+		//ボックスを動かす
+		if (nowPos != nullptr)
 		{
-			//線を越えた判定
-			lDistance = *nextPos - *nowPos;
-			if (lDistance <= -0.1f)
+			*nowPos += speed;
+		}
+
+		bool lIsReachToGoalDistanceFlag = false;
+		float lDistance = CaluDisntace();
+
+		lIsReachToGoalDistanceFlag = lDistance <= 0.0f;
+
+		//線を超えたら次の線に行く
+		if (nowPos != nullptr && nextPos != nullptr && lIsReachToGoalDistanceFlag)
+		{
+			++lineIndex;
+
+			int lLoopCount = 0;
+
+			//一度に線を越えた回数が100回以下&&線を越えなかった時ループを終える
+			while (lDistance <= 0.0f)
 			{
-				boxR.data.transform.pos = posArray[lineIndex];
+				//線を超えた範囲にボックスがいるので超えた分を修正する
+				if (lDistance <= -0.1f)
+				{
+					float subDistance = posArray[lineIndex].Distance(boxR.data.transform.pos);
+					boxR.data.transform.pos = posArray[lineIndex];
+					CheckWhereToGo();
+					lDistance = CaluDisntace();
+					*nowPos += subDistance;
+				}
+				//ぴったりぐらいの位置にボックスがいる場合はなにもしない
+				else
+				{
+					//最後の制御点なら終了する
+					if (!KazHelper::IsitInAnArray(lineIndex + 1, posArray.size()))
+					{
+						finishFlag = true;
+						break;
+					}
+					break;
+				}
+
 				//最後の制御点なら終了する
 				if (!KazHelper::IsitInAnArray(lineIndex + 1, posArray.size()))
 				{
+					finishFlag = true;
 					break;
 				}
-				CheckWhereToGo();
-				*nowPos += lDistance;
-
+			
 				++lLoopCount;
+
+				//無限ループ防止
+				if (100 <= lLoopCount)
+				{
+					assert(0);
+				}
 			}
 		}
 	}
@@ -83,51 +111,66 @@ bool LineFlashLight::IsFinish()
 
 void LineFlashLight::CheckWhereToGo()
 {
-	KazMath::Vec3<float> lDistance = posArray[lineIndex + 1] - posArray[lineIndex];
+	if (KazHelper::IsitInAnArray(lineIndex + 1, posArray.size()))
+	{
+		KazMath::Vec3<float> lDistance = posArray[lineIndex + 1] - posArray[lineIndex];
 
-	if (0.1f <= abs(lDistance.x))
-	{
-		//X軸の距離が- && 現在のスピードが-ではない場合に-方向に進ませる
-		if (signbit(lDistance.x) && !signbit(speed))
+		if (0.1f <= abs(lDistance.x))
 		{
-			speed *= -1.0f;
+			//X軸の距離が- && 現在のスピードが-ではない場合に-方向に進ませる
+			if (signbit(lDistance.x) && !signbit(speed))
+			{
+				speed *= -1.0f;
+			}
+			//X軸の距離が-ではない && 現在のスピードが-の場合+方向に進ませる
+			else if (!signbit(lDistance.x) && signbit(speed))
+			{
+				speed *= -1.0f;
+			}
+			nowPos = &boxR.data.transform.pos.x;
+			nextPos = &posArray[lineIndex + 1].x;
 		}
-		//X軸の距離が-ではない && 現在のスピードが-の場合+方向に進ませる
-		else if (!signbit(lDistance.x) && signbit(speed))
+		else if (0.1f <= abs(lDistance.y))
 		{
-			speed *= -1.0f;
+			//Y軸の距離が- && 現在のスピードが-ではない場合に-方向に進ませる
+			if (signbit(lDistance.y) && !signbit(speed))
+			{
+				speed *= -1.0f;
+			}
+			//Y軸の距離が-ではない && 現在のスピードが-の場合+方向に進ませる
+			else if (!signbit(lDistance.y) && signbit(speed))
+			{
+				speed *= -1.0f;
+			}
+			nowPos = &boxR.data.transform.pos.y;
+			nextPos = &posArray[lineIndex + 1].y;
 		}
-		nowPos = &boxR.data.transform.pos.x;
-		nextPos = &posArray[lineIndex + 1].x;
+		else if (0.1f <= abs(lDistance.z))
+		{
+			//Z軸の距離が- && 現在のスピードが-ではない場合に-方向に進ませる
+			if (signbit(lDistance.z) && !signbit(speed))
+			{
+				speed *= -1.0f;
+			}
+			//Z軸の距離が-ではない && 現在のスピードが-の場合+方向に進ませる
+			else if (!signbit(lDistance.z) && signbit(speed))
+			{
+				speed *= -1.0f;
+			}
+			nowPos = &boxR.data.transform.pos.z;
+			nextPos = &posArray[lineIndex + 1].z;
+		}
 	}
-	else if (0.1f <= abs(lDistance.y))
+}
+
+float LineFlashLight::CaluDisntace()
+{
+	if (signbit(*nextPos))
 	{
-		//Y軸の距離が- && 現在のスピードが-ではない場合に-方向に進ませる
-		if (signbit(lDistance.y) && !signbit(speed))
-		{
-			speed *= -1.0f;
-		}
-		//Y軸の距離が-ではない && 現在のスピードが-の場合+方向に進ませる
-		else if (!signbit(lDistance.y) && signbit(speed))
-		{
-			speed *= -1.0f;
-		}
-		nowPos = &boxR.data.transform.pos.y;
-		nextPos = &posArray[lineIndex + 1].y;
+		return *nowPos - *nextPos;
 	}
-	else if (0.1f <= abs(lDistance.z))
+	else
 	{
-		//Z軸の距離が- && 現在のスピードが-ではない場合に-方向に進ませる
-		if (signbit(lDistance.z) && !signbit(speed))
-		{
-			speed *= -1.0f;
-		}
-		//Z軸の距離が-ではない && 現在のスピードが-の場合+方向に進ませる
-		else if (!signbit(lDistance.z) && signbit(speed))
-		{
-			speed *= -1.0f;
-		}
-		nowPos = &boxR.data.transform.pos.z;
-		nextPos = &posArray[lineIndex + 1].z;
-	}
+		return *nextPos - *nowPos;
+	};
 }

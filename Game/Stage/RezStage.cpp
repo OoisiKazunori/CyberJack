@@ -286,11 +286,6 @@ RezStage::RezStage()
 	vaporWaveSunRender.data.colorData = { 255,0,0,255 };
 	vaporWaveSunRender.data.pipelineName = PIPELINE_NAME_SPRITE_MULTITEX;
 
-
-	std::vector<KazMath::Vec3<float>>lPosArray;
-	lPosArray.push_back({ -10.0f,0.0f,10.0f });
-	lPosArray.push_back({ 10.0f,0.0f,10.0f });
-	lineEffect.Init(lPosArray, 60);
 }
 
 void RezStage::Update()
@@ -433,6 +428,16 @@ void RezStage::Update()
 		}
 	}
 
+	if (lineEffect.IsFinish())
+	{
+		std::vector<KazMath::Vec3<float>>lPosArray;
+		lPosArray.push_back({ 0.0f,0.0f,0.0f });
+		lPosArray.push_back({ 0.0f,0.0f,10.0f });
+		lPosArray.push_back({ -10.0f,0.0f,10.0f });
+		lPosArray.push_back({ -10.0f,0.0f,-10.0f });
+		maxTimer = 120;
+		lineEffect.Init(lPosArray, maxTimer);
+	}
 	lineEffect.Update();
 }
 
@@ -487,12 +492,15 @@ void RezStage::Draw()
 
 
 	ImGui::Begin("Model");
-	ImGui::DragFloat("POS_X", &vaporWaveSunRender.data.transform.pos.x);
-	ImGui::DragFloat("POS_Y", &vaporWaveSunRender.data.transform.pos.y);
-	ImGui::DragFloat("POS_Z", &vaporWaveSunRender.data.transform.pos.z);
-	ImGui::DragFloat("SCALE_X", &vaporWaveSunRender.data.transform.scale.x);
-	ImGui::DragFloat("SCALE_Y", &vaporWaveSunRender.data.transform.scale.y);
+	ImGui::Text("Timer:%d", timer);
 	ImGui::End();
+
+	++timer;
+	if (maxTimer <= timer)
+	{
+		timer = 0;
+	}
+
 
 	model.data.transform.rotation.y = 180.0f;
 	model.data.transform.rotation.z += 0.5f;
