@@ -5,7 +5,7 @@ LineFlashLight::LineFlashLight() :finishFlag(true)
 {
 }
 
-void LineFlashLight::Init(const std::vector<KazMath::Vec3<float>> &POS_ARRAY, int TIMER)
+void LineFlashLight::Init(const std::vector<KazMath::Vec3<float>*> &POS_ARRAY, int TIMER)
 {
 	posArray = POS_ARRAY;
 
@@ -15,7 +15,7 @@ void LineFlashLight::Init(const std::vector<KazMath::Vec3<float>> &POS_ARRAY, in
 	{
 		if (i + 1 < posArray.size())
 		{
-			distance += posArray[i + 1].Distance(posArray[i]);
+			distance += posArray[i + 1]->Distance(*posArray[i]);
 		}
 		else
 		{
@@ -26,7 +26,8 @@ void LineFlashLight::Init(const std::vector<KazMath::Vec3<float>> &POS_ARRAY, in
 	speed = distance / static_cast<float>(TIMER);
 
 	lineIndex = 0;
-	boxR.data.transform.pos = posArray[lineIndex];
+	boxR.data.transform.pos = *posArray[lineIndex];
+	boxR.data.transform.scale = { 5.0f,5.0f,5.0f };
 
 	finishFlag = false;
 }
@@ -37,6 +38,27 @@ void LineFlashLight::Update()
 	{
 		//ボックスをどの方向に向かわせるか決める
 		CheckWhereToGo();
+
+
+		if (KazHelper::IsitInAnArray(lineIndex, posArray.size()))
+		{
+			if (useXPosFlag)
+			{
+				boxR.data.transform.pos.y = posArray[lineIndex]->y;
+				boxR.data.transform.pos.z = posArray[lineIndex]->z;
+			}
+			else if (useYPosFlag)
+			{
+				boxR.data.transform.pos.x = posArray[lineIndex]->x;
+				boxR.data.transform.pos.z = posArray[lineIndex]->z;
+			}
+			else if (useZPosFlag)
+			{
+				boxR.data.transform.pos.x = posArray[lineIndex]->x;
+				boxR.data.transform.pos.y = posArray[lineIndex]->y;
+			}
+		}
+
 
 		//ボックスを動かす
 		if (nowPos != nullptr)
@@ -62,8 +84,8 @@ void LineFlashLight::Update()
 				//線を超えた範囲にボックスがいるので超えた分を修正する
 				if (lDistance <= -0.1f)
 				{
-					float subDistance = posArray[lineIndex].Distance(boxR.data.transform.pos);
-					boxR.data.transform.pos = posArray[lineIndex];
+					float subDistance = posArray[lineIndex]->Distance(boxR.data.transform.pos);
+					boxR.data.transform.pos = *posArray[lineIndex];
 					CheckWhereToGo();
 					lDistance = CaluDisntace();
 					*nowPos += subDistance;
@@ -86,7 +108,7 @@ void LineFlashLight::Update()
 					finishFlag = true;
 					break;
 				}
-			
+
 				++lLoopCount;
 
 				//無限ループ防止
@@ -113,7 +135,12 @@ void LineFlashLight::CheckWhereToGo()
 {
 	if (KazHelper::IsitInAnArray(lineIndex + 1, posArray.size()))
 	{
-		KazMath::Vec3<float> lDistance = posArray[lineIndex + 1] - posArray[lineIndex];
+		KazMath::Vec3<float> lDistance = *posArray[lineIndex + 1] - *posArray[lineIndex];
+
+
+		useXPosFlag = false;
+		useYPosFlag = false;
+		useZPosFlag = false;
 
 		if (0.1f <= abs(lDistance.x))
 		{
@@ -128,7 +155,9 @@ void LineFlashLight::CheckWhereToGo()
 				speed *= -1.0f;
 			}
 			nowPos = &boxR.data.transform.pos.x;
-			nextPos = &posArray[lineIndex + 1].x;
+			nextPos = &posArray[lineIndex + 1]->x;
+
+			useXPosFlag = true;
 		}
 		else if (0.1f <= abs(lDistance.y))
 		{
@@ -143,7 +172,9 @@ void LineFlashLight::CheckWhereToGo()
 				speed *= -1.0f;
 			}
 			nowPos = &boxR.data.transform.pos.y;
-			nextPos = &posArray[lineIndex + 1].y;
+			nextPos = &posArray[lineIndex + 1]->y;
+
+			useYPosFlag = true;
 		}
 		else if (0.1f <= abs(lDistance.z))
 		{
@@ -158,7 +189,9 @@ void LineFlashLight::CheckWhereToGo()
 				speed *= -1.0f;
 			}
 			nowPos = &boxR.data.transform.pos.z;
-			nextPos = &posArray[lineIndex + 1].z;
+			nextPos = &posArray[lineIndex + 1]->z;
+
+			useZPosFlag = true;
 		}
 	}
 }

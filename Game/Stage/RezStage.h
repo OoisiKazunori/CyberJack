@@ -22,6 +22,11 @@ private:
 	std::array<LineRender, LINE_MAX> gridLineRender;
 	std::array<std::array<KazMath::Transform3D, 2>, LINE_Z_MAX> gridFloorZLinePos;
 	std::array<std::array<KazMath::Transform3D, 2>, LINE_X_MAX> gridFloorXLinePos;
+
+	int timer;
+	int maxTimer;
+	int lightEffectIndex;
+	std::array<std::array<LineFlashLight, 1>, LINE_MAX> lightEffectArray;
 	//グリッドの描画ーーー
 
 
@@ -64,7 +69,4 @@ private:
 
 
 	Sprite3DRender vaporWaveSunRender;
-	LineFlashLight lineEffect;
-	int timer;
-	int maxTimer;
 };

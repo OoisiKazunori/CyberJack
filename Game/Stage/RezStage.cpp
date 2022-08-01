@@ -286,6 +286,9 @@ RezStage::RezStage()
 	vaporWaveSunRender.data.colorData = { 255,0,0,255 };
 	vaporWaveSunRender.data.pipelineName = PIPELINE_NAME_SPRITE_MULTITEX;
 
+
+	maxTimer = 60;
+
 }
 
 void RezStage::Update()
@@ -428,22 +431,56 @@ void RezStage::Update()
 		}
 	}
 
-	if (lineEffect.IsFinish())
+
+	if (maxTimer <= timer)
 	{
-		std::vector<KazMath::Vec3<float>>lPosArray;
-		lPosArray.push_back({ 0.0f,0.0f,0.0f });
-		lPosArray.push_back({ 0.0f,0.0f,10.0f });
-		lPosArray.push_back({ -10.0f,0.0f,10.0f });
-		lPosArray.push_back({ -10.0f,0.0f,-10.0f });
-		maxTimer = 120;
-		lineEffect.Init(lPosArray, maxTimer);
+		maxTimer = KazMath::Rand<int>(60, 10);
+		while (true)
+		{
+			lightEffectIndex = KazMath::Rand<int>(static_cast<int>(lightEffectArray.size() - 1), 0);
+			if (lightEffectArray[lightEffectIndex][0].IsFinish())
+			{
+				break;
+			}
+		}
+		timer = 0;
 	}
-	lineEffect.Update();
+	else
+	{
+		++timer;
+	}
+
+	for (int squareIndex = 0; squareIndex < lightEffectArray[lightEffectIndex].size(); ++squareIndex)
+	{
+		if (lightEffectArray[lightEffectIndex][squareIndex].IsFinish())
+		{
+			std::vector<KazMath::Vec3<float>*>lPosArray;
+			lPosArray.push_back(&gridLineRender[lightEffectIndex].data.startPos);
+			lPosArray.push_back(&gridLineRender[lightEffectIndex].data.endPos);
+
+			lightEffectArray[lightEffectIndex][squareIndex].Init(lPosArray, 60 * 10);
+		}
+	}
+
+
+	for (int i = 0; i < lightEffectArray.size(); ++i)
+	{
+		for (int squareIndex = 0; squareIndex < lightEffectArray[i].size(); ++squareIndex)
+		{
+			lightEffectArray[i][squareIndex].Update();
+		}
+	}
 }
 
 void RezStage::Draw()
 {
-	lineEffect.Draw();
+	for (int i = 0; i < lightEffectArray.size(); ++i)
+	{
+		for (int squareIndex = 0; squareIndex < lightEffectArray[i].size(); ++squareIndex)
+		{
+			lightEffectArray[i][squareIndex].Draw();
+		}
+	}
 
 	for (int i = 0; i < gridLineRender.size(); ++i)
 	{
@@ -494,12 +531,6 @@ void RezStage::Draw()
 	ImGui::Begin("Model");
 	ImGui::Text("Timer:%d", timer);
 	ImGui::End();
-
-	++timer;
-	if (maxTimer <= timer)
-	{
-		timer = 0;
-	}
 
 
 	model.data.transform.rotation.y = 180.0f;
