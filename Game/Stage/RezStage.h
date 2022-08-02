@@ -14,6 +14,7 @@ public:
 	void Draw()override;
 
 private:
+
 	//グリッドの描画ーーー
 	static const int LINE_MAX = 100;
 	static const int LINE_Z_MAX = LINE_MAX / 2;
@@ -26,7 +27,9 @@ private:
 	int timer;
 	int maxTimer;
 	int lightEffectIndex;
-	std::array<std::array<LineFlashLight, 1>, LINE_MAX> lightEffectArray;
+	std::array<std::array<KazMath::Vec3<float>, 5>, LINE_MAX> lightEffectGridFloorLinePos;
+	std::array<std::array<LineFlashLight, 5>, LINE_MAX> lightEffectArray;
+	std::array<bool, LINE_MAX> lightEffectInitFlagArray;
 	//グリッドの描画ーーー
 
 
@@ -54,8 +57,6 @@ private:
 	std::array<std::array<LineRender, 4>, 20> gridCentralWallLineRender;
 	//真ん中線の描画ーーー
 
-	ObjModelRender model;
-
 	//床にOBJ配置
 	struct FloorObjData
 	{
@@ -67,6 +68,9 @@ private:
 	float scaleRate;
 	bool reversValueFlag;
 
-
 	Sprite3DRender vaporWaveSunRender;
+
+
+	FbxModelRender model;
+	ObjModelRender objModel;
 };

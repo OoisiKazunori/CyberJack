@@ -3,6 +3,9 @@
 
 LineFlashLight::LineFlashLight() :finishFlag(true)
 {
+	RESOURCE_HANDLE lHandle = boxR.CreateConstBuffer(sizeof(DirectX::XMFLOAT4), "XMFLOAT4", GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+	DirectX::XMFLOAT4 colorData = { 1.0f,0.0f,0.0f,0.0f };
+	boxR.TransData(&colorData, lHandle, "XMFLOAT4");
 }
 
 void LineFlashLight::Init(const std::vector<KazMath::Vec3<float>*> &POS_ARRAY, int TIMER)
@@ -28,8 +31,9 @@ void LineFlashLight::Init(const std::vector<KazMath::Vec3<float>*> &POS_ARRAY, i
 	lineIndex = 0;
 	boxR.data.transform.pos = *posArray[lineIndex];
 	boxR.data.transform.scale = { 5.0f,5.0f,5.0f };
-
+	boxR.data.color = { 0,255,0,255 };
 	finishFlag = false;
+	boxR.data.pipelineName = PIPELINE_NAME_COLOR_MULTITEX;
 }
 
 void LineFlashLight::Update()
@@ -123,7 +127,10 @@ void LineFlashLight::Update()
 
 void LineFlashLight::Draw()
 {
-	boxR.Draw();
+	if (!finishFlag)
+	{
+		boxR.Draw();
+	}
 }
 
 bool LineFlashLight::IsFinish()

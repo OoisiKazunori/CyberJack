@@ -228,10 +228,6 @@ RezStage::RezStage()
 		}
 	}
 
-
-	model.data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "test_game_model.obj");
-
-
 	for (int i = 0; i < floorObjectRender.size(); ++i)
 	{
 		const float maxXPos = 4000.0f;
@@ -289,6 +285,11 @@ RezStage::RezStage()
 
 	maxTimer = 60;
 
+
+
+	//model.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "boneTest.fbx");
+	//model.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "Gunner_Switch_anim.fbx");
+	//objModel.data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "Gunner_Switch_anim.obj");
 }
 
 void RezStage::Update()
@@ -317,27 +318,27 @@ void RezStage::Update()
 	}
 
 
-	for (int i = 0; i < gridCentralWallLineRender.size(); ++i)
-	{
-		for (int wallIndex = 0; wallIndex < gridCentralWallLineRender[i].size(); ++wallIndex)
-		{
-			gridCentralWallLineRender[i][wallIndex].data.startPos.z += lVelZ;
-			gridCentralWallLineRender[i][wallIndex].data.endPos.z += lVelZ;
+	//for (int i = 0; i < gridCentralWallLineRender.size(); ++i)
+	//{
+	//	for (int wallIndex = 0; wallIndex < gridCentralWallLineRender[i].size(); ++wallIndex)
+	//	{
+	//		gridCentralWallLineRender[i][wallIndex].data.startPos.z += lVelZ;
+	//		gridCentralWallLineRender[i][wallIndex].data.endPos.z += lVelZ;
 
-			if (gridCentralWallLineRender[i][wallIndex].data.startPos.z <= -100.0f)
-			{
-				gridCentralWallLineRender[i][wallIndex].data.startPos.z = -100.0f + static_cast<float>(gridCentralWallLineRender.size()) * 400.0f;
-				gridCentralWallLineRender[i][wallIndex].data.endPos.z = -100.0f + static_cast<float>(gridCentralWallLineRender.size()) * 400.0f;
-			}
-		}
-	}
+	//		if (gridCentralWallLineRender[i][wallIndex].data.startPos.z <= -100.0f)
+	//		{
+	//			gridCentralWallLineRender[i][wallIndex].data.startPos.z = -100.0f + static_cast<float>(gridCentralWallLineRender.size()) * 400.0f;
+	//			gridCentralWallLineRender[i][wallIndex].data.endPos.z = -100.0f + static_cast<float>(gridCentralWallLineRender.size()) * 400.0f;
+	//		}
+	//	}
+	//}
 
 
 
-	int lineWallIndex = 0;
-	float fIndex = 0.0f;
-	float zInterval = 100.0f;
-	for (int i = 0; i < wallTopLinePos.size(); ++i)
+	//int lineWallIndex = 0;
+	//float fIndex = 0.0f;
+	//float zInterval = 100.0f;
+	/*for (int i = 0; i < wallTopLinePos.size(); ++i)
 	{
 		fIndex = static_cast<float>(i);
 		wallTopLinePos[i][0].pos.z += lVelZ;
@@ -386,7 +387,7 @@ void RezStage::Update()
 		gridWallLineRender[lineWallIndex].data.startPos = wallRightLinePos[i][0].pos;
 		gridWallLineRender[lineWallIndex].data.endPos = wallRightLinePos[i][1].pos;
 		lineWallIndex++;
-	}
+	}*/
 
 
 
@@ -432,16 +433,39 @@ void RezStage::Update()
 	}
 
 
+	for (int i = 0; i < gridFloorZLinePos.size(); ++i)
+	{
+		for (int limitPointIndex = 0; limitPointIndex < lightEffectGridFloorLinePos[i].size(); limitPointIndex++)
+		{
+			lightEffectGridFloorLinePos[i][limitPointIndex] = gridFloorZLinePos[i][0].pos + KazMath::Vec3<float>(static_cast<float>(limitPointIndex) * -10.0f, 0.0f, 0.0f);
+		}
+	}
+	for (int i = static_cast<int>(gridFloorZLinePos.size()); i < gridFloorZLinePos.size() + gridFloorXLinePos.size(); ++i)
+	{
+		for (int limitPointIndex = 0; limitPointIndex < lightEffectGridFloorLinePos[i].size(); limitPointIndex++)
+		{
+			lightEffectGridFloorLinePos[i][limitPointIndex] = gridFloorXLinePos[i - 50][0].pos + KazMath::Vec3<float>(0.0f, 0.0f, static_cast<float>(limitPointIndex) * -10.0f);
+		}
+	}
+
+
+
+
+
+
 	if (maxTimer <= timer)
 	{
 		maxTimer = KazMath::Rand<int>(60, 10);
-		while (true)
+		int countTrue = 0;
+		while (countTrue < lightEffectArray.size())
 		{
 			lightEffectIndex = KazMath::Rand<int>(static_cast<int>(lightEffectArray.size() - 1), 0);
-			if (lightEffectArray[lightEffectIndex][0].IsFinish())
+			if (lightEffectArray[lightEffectIndex][0].IsFinish() && lightEffectInitFlagArray[lightEffectIndex])
 			{
 				break;
 			}
+			lightEffectInitFlagArray[lightEffectIndex] = true;
+			++countTrue;
 		}
 		timer = 0;
 	}
@@ -455,10 +479,24 @@ void RezStage::Update()
 		if (lightEffectArray[lightEffectIndex][squareIndex].IsFinish())
 		{
 			std::vector<KazMath::Vec3<float>*>lPosArray;
-			lPosArray.push_back(&gridLineRender[lightEffectIndex].data.startPos);
+			lPosArray.push_back(&lightEffectGridFloorLinePos[lightEffectIndex][squareIndex]);
 			lPosArray.push_back(&gridLineRender[lightEffectIndex].data.endPos);
 
 			lightEffectArray[lightEffectIndex][squareIndex].Init(lPosArray, 60 * 10);
+		}
+	}
+
+	for (int i = 0; i < lightEffectArray.size(); ++i)
+	{
+		for (int squareIndex = 0; squareIndex < lightEffectArray[i].size(); ++squareIndex)
+		{
+			if (lightEffectArray[i][squareIndex].IsFinish() && lightEffectInitFlagArray[i])
+			{
+				std::vector<KazMath::Vec3<float> *>lPosArray;
+				lPosArray.push_back(&lightEffectGridFloorLinePos[i][squareIndex]);
+				lPosArray.push_back(&gridLineRender[i].data.endPos);
+				lightEffectArray[i][squareIndex].Init(lPosArray, 60 * 10);
+			}
 		}
 	}
 
@@ -474,13 +512,6 @@ void RezStage::Update()
 
 void RezStage::Draw()
 {
-	for (int i = 0; i < lightEffectArray.size(); ++i)
-	{
-		for (int squareIndex = 0; squareIndex < lightEffectArray[i].size(); ++squareIndex)
-		{
-			lightEffectArray[i][squareIndex].Draw();
-		}
-	}
 
 	for (int i = 0; i < gridLineRender.size(); ++i)
 	{
@@ -493,10 +524,10 @@ void RezStage::Draw()
 
 		gridLineRender[i].Draw();
 	}
-	for (int i = 0; i < gridWallLineRender.size(); ++i)
-	{
-		//gridWallLineRender[i].Draw();
-	}
+	//for (int i = 0; i < gridWallLineRender.size(); ++i)
+	//{
+	//	//gridWallLineRender[i].Draw();
+	//}
 
 	for (int i = 0; i < floorObjectRender.size(); ++i)
 	{
@@ -506,35 +537,45 @@ void RezStage::Draw()
 		}
 	}
 
-
-	for (int i = 0; i < gridCentralLineRender.size(); ++i)
+	for (int i = 0; i < lightEffectArray.size(); ++i)
 	{
-		//gridCentralLineRender[i].Draw();
-	}
-
-	for (int i = 0; i < gridCentralWallLineRender.size(); ++i)
-	{
-		for (int wallIndex = 0; wallIndex < gridCentralWallLineRender[i].size(); ++wallIndex)
+		for (int squareIndex = 0; squareIndex < lightEffectArray[i].size(); ++squareIndex)
 		{
-			//gridCentralWallLineRender[i][wallIndex].Draw();
+			lightEffectArray[i][squareIndex].Draw();
 		}
 	}
 
-	for (int i = 0; i < zGridWallLineRender.size(); ++i)
-	{
-		//zGridWallLineRender[i].Draw();
-	}
+	//for (int i = 0; i < gridCentralLineRender.size(); ++i)
+	//{
+	//	//gridCentralLineRender[i].Draw();
+	//}
+
+	//for (int i = 0; i < gridCentralWallLineRender.size(); ++i)
+	//{
+	//	for (int wallIndex = 0; wallIndex < gridCentralWallLineRender[i].size(); ++wallIndex)
+	//	{
+	//		//gridCentralWallLineRender[i][wallIndex].Draw();
+	//	}
+	//}
+
+	//for (int i = 0; i < zGridWallLineRender.size(); ++i)
+	//{
+	//	//zGridWallLineRender[i].Draw();
+	//}
+
+	//model.data.transform.pos = { 30.0f,0.0f,30.0f };
+	//model.Draw();
+
+	//objModel.data.transform.pos = { 0.0f,0.0f,30.0f };
+	//objModel.Draw();
 
 	vaporWaveSunRender.Draw();
 
-
+	
 	ImGui::Begin("Model");
 	ImGui::Text("Timer:%d", timer);
 	ImGui::End();
 
-
-	model.data.transform.rotation.y = 180.0f;
-	model.data.transform.rotation.z += 0.5f;
 	//model.Draw();
 	//DrawBackGround();
 

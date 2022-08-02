@@ -95,6 +95,13 @@ void FbxModelRender::Draw()
 					constMap->bones[i] = resourceData->bone[i].invInitialPose * matCurrentPose;
 				}
 			}
+			if (resourceData->bone.size() == 0)
+			{
+				for (int i = 0; i < 32; i++)
+				{
+					constMap->bones[i] = DirectX::XMMatrixIdentity();
+				}
+			}
 			gpuBuffer->GetBufferData(constBufferHandle[1])->Unmap(0, nullptr);
 		}
 
