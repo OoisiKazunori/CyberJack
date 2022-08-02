@@ -455,7 +455,7 @@ void RezStage::Update()
 
 	if (maxTimer <= timer)
 	{
-		maxTimer = KazMath::Rand<int>(60, 10);
+		maxTimer = KazMath::Rand<int>(60 * 2, 60);
 		int countTrue = 0;
 		while (countTrue < lightEffectArray.size())
 		{
