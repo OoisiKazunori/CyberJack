@@ -14,6 +14,10 @@
 
 Game::Game()
 {
+	smokeR.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::RelativeResourcePath + "Effect/Smoke/smoke9.png");
+	smokeR.data.billBoardFlag = true;
+	smokeR.data.pipelineName = PIPELINE_NAME_SPRITE;
+
 	besidePoly = std::make_unique<BoxPolygonRender>();
 	verticlaPoly = std::make_unique<BoxPolygonRender>();
 	cameraPoly = std::make_unique<BoxPolygonRender>();
@@ -1155,7 +1159,32 @@ void Game::Update()
 
 	//ゲームループの経過時間----------------------------------------------------------------
 
+	ImGui::Begin("Smoke");
+	ImGui::Checkbox("Start", &smokeFlag);
+	ImGui::DragFloat("POS_X", &smokeR.data.transform.pos.x);
+	ImGui::DragFloat("POS_Y", &smokeR.data.transform.pos.y);
+	ImGui::DragFloat("POS_Z", &smokeR.data.transform.pos.z);
+	ImGui::DragFloat("SCALE_X", &smokeR.data.transform.scale.x);
+	ImGui::DragFloat("SCALE_Y", &smokeR.data.transform.scale.y);
+	ImGui::DragFloat("SCALE_Z", &smokeR.data.transform.scale.z);
+	ImGui::End();
 
+	if (smokeFlag)
+	{
+		float vel = 0.01f;
+		smokeR.data.transform.scale += KazMath::Vec3<float>(vel, vel, 0.1f);
+		float max = 0.25f;
+		if (max <= smokeR.data.transform.scale.x)
+		{
+			//smokeR.data.transform.scale = { max,max,2.0f };
+		}
+		smokeR.data.colorData.color.a -= 5;
+	}
+	else
+	{
+		smokeR.data.transform.scale = { 0.01f,0.01f,2.0f };
+		smokeR.data.colorData.color.a = 255;
+	}
 }
 
 void Game::Draw()
@@ -1207,6 +1236,8 @@ void Game::Draw()
 		portal.DrawPortal();
 		portal.DrawFlame();
 
+		smokeR.Draw();
+		
 		//if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
 		if (100 <= gameFlame)
 		{

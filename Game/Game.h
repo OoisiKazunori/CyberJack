@@ -225,5 +225,7 @@ private:
 	CircleRender circle;
 	PortalEffect portal;
 
+	bool smokeFlag;
+	Sprite3DRender smokeR;
 };
 
