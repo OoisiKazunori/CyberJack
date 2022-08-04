@@ -176,6 +176,8 @@
   <ItemGroup>
     <ClCompile Include="Game\Debug\ParameterMgr.cpp" />
     <ClCompile Include="Game\Debug\WirteCpuLineData.cpp" />
+    <ClCompile Include="Game\Effect\EaseScaleParticle.cpp" />
+    <ClCompile Include="Game\Effect\HitEffectPattern1Emitter.cpp" />
     <ClCompile Include="Game\Enemy\HitEnemyEffect.cpp" />
     <ClCompile Include="Game\Enemy\KidEnemy.cpp" />
     <ClCompile Include="Game\Enemy\NormalMisileEnemy.cpp" />
@@ -281,6 +283,8 @@
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
     <ClInclude Include="Game\Debug\WirteCpuLineData.h" />
+    <ClInclude Include="Game\Effect\EaseScaleParticle.h" />
+    <ClInclude Include="Game\Effect\HitEffectPattern1Emitter.h" />
     <ClInclude Include="Game\Enemy\HitEnemyEffect.h" />
     <ClInclude Include="Game\Enemy\KidEnemy.h" />
     <ClInclude Include="Game\Enemy\NormalMisileEnemy.h" />

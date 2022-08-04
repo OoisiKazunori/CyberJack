@@ -288,7 +288,7 @@ RezStage::RezStage()
 
 
 	//model.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "boneTest.fbx");
-	//model.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "Gunner_Switch_anim.fbx");
+	model.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "Gunner_Switch_anim_v02.fbx");
 	//objModel.data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "Gunner_Switch_anim.obj");
 }
 
@@ -563,8 +563,8 @@ void RezStage::Draw()
 	//	//zGridWallLineRender[i].Draw();
 	//}
 
-	//model.data.transform.pos = { 30.0f,0.0f,30.0f };
-	//model.Draw();
+	model.data.isPlay = true;
+	model.Draw();
 
 	//objModel.data.transform.pos = { 0.0f,0.0f,30.0f };
 	//objModel.Draw();
@@ -573,7 +573,12 @@ void RezStage::Draw()
 
 	
 	ImGui::Begin("Model");
-	ImGui::Text("Timer:%d", timer);
+	ImGui::DragFloat("POS_X", &model.data.transform.pos.x);
+	ImGui::DragFloat("POS_Y", &model.data.transform.pos.y);
+	ImGui::DragFloat("POS_Z", &model.data.transform.pos.z);
+	ImGui::DragFloat("SCALE_X", &model.data.transform.scale.x);
+	ImGui::DragFloat("SCALE_Y", &model.data.transform.scale.y);
+	ImGui::DragFloat("SCALE_Z", &model.data.transform.scale.z);
 	ImGui::End();
 
 	//model.Draw();

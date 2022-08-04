@@ -965,6 +965,62 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 
 
+	//スプライト用
+#pragma region PIPELINE_DATA_NOCARING_BLENDALPHA_ZOFF
+	{
+		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
+		//スプライト用
+		//サンプルマスク
+		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+
+		//ラスタライザ
+		//背面カリング、塗りつぶし、深度クリッピング有効
+		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
+		gPipeline.RasterizerState = rasterrize;
+		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+
+
+		//加算とα合成
+		D3D12_RENDER_TARGET_BLEND_DESC addAndAlphaBlendDesc{};
+		addAndAlphaBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+		addAndAlphaBlendDesc.BlendEnable = true;
+		addAndAlphaBlendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+		addAndAlphaBlendDesc.SrcBlendAlpha = D3D12_BLEND_ONE;
+		addAndAlphaBlendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
+
+		addAndAlphaBlendDesc.BlendOp = D3D12_BLEND_OP_ADD;
+		addAndAlphaBlendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
+		addAndAlphaBlendDesc.DestBlend = D3D12_BLEND_ONE;
+
+		//D3D12_BLEND_ONE;
+		//alphaBlendDesc.BlendOp = D3D12_BLEND_OP_ADD;
+		//alphaBlendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
+		//alphaBlendDesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+
+
+		gPipeline.BlendState.RenderTarget[0] = addAndAlphaBlendDesc;
+		gPipeline.BlendState.AlphaToCoverageEnable = false;
+
+		//図形の形状
+		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+
+
+		//その他設定
+		gPipeline.NumRenderTargets = 1;
+		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		gPipeline.SampleDesc.Count = 1;
+
+
+		//デプスステンシルステートの設定
+		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_BLENDALPHA_DEPTH_OFF);
+	}
+#pragma endregion
+
+
 	//スプライトの加算合成用 αあり
 #pragma region PIPELINE_DATA_NOCARING_ADDBLEND
 	{
@@ -1195,6 +1251,17 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_DATA_NOCARING_BLENDALPHA_DEPTH_ALWAYS,
 		ROOTSIGNATURE_DATA_DRAW_TEX,
 		PIPELINE_NAME_SPRITE_Z_ALWAYS
+	);
+
+
+	//スプライトパイプライン
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS_TEX,
+		SHADER_VERTEX_SPRITE,
+		SHADER_PIXCEL_SPRITE,
+		PIPELINE_DATA_NOCARING_BLENDALPHA_DEPTH_OFF,
+		ROOTSIGNATURE_DATA_DRAW_TEX,
+		PIPELINE_NAME_SPRITE_Z_OFF
 	);
 
 

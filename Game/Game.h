@@ -27,7 +27,9 @@
 #include"../Game/Event/EventSprite.h"
 #include"../Game/Event/TutorialWindow.h"
 #include"../Game/Enemy/HitEnemyEffect.h"
-#include"../Game//Event/PortalEffect.h"
+#include"../Game/Event/PortalEffect.h"
+#include"../Game/Effect/HitEffectPattern1Emitter.h"
+
 
 struct ResponeData
 {
@@ -226,6 +228,8 @@ private:
 	PortalEffect portal;
 
 	bool smokeFlag;
-	Sprite3DRender smokeR;
+	std::array<Sprite2DRender,4> smokeR;
+
+	HitEffectPattern1Emitter emitter;
 };
 
