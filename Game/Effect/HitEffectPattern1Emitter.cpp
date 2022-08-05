@@ -1,4 +1,5 @@
 #include "HitEffectPattern1Emitter.h"
+#include"../KazLibrary/Imgui/MyImgui.h"
 
 HitEffectPattern1Emitter::HitEffectPattern1Emitter()
 {
@@ -24,18 +25,44 @@ void HitEffectPattern1Emitter::Init(const KazMath::Vec2<float> &POS)
 	{
 		if (i == 0)
 		{
-			particle[i].Init(POS + KazMath::Vec2<float>(0.0f, 53.0f), baseScale[i], easeScale[i], timer[i]);
+			particle[i].Init(POS + KazMath::Vec2<float>(0.0f, 53.0f), baseScale[i], easeScale[i], timer[i], false);
 		}
 		else
 		{
-			particle[i].Init(POS, baseScale[i], easeScale[i], timer[i]);
+			particle[i].Init(POS, baseScale[i], easeScale[i], timer[i], false);
 		}
 	}
-
 }
 
 void HitEffectPattern1Emitter::Update()
 {
+	ImGui::Begin("Smoke");
+	for (int i = 0; i < PARTICLE_MAX; ++i)
+	{
+		std::string motherName = "Particle" + std::to_string(i);
+		if (ImGui::TreeNode(motherName.c_str()))
+		{
+			std::string name = "BaseScaleX" + std::to_string(i);
+			ImGui::DragFloat(name.c_str(), &baseScale[i].x);
+			name = "BaseScaleY" + std::to_string(i);
+			ImGui::DragFloat(name.c_str(), &baseScale[i].y);
+
+
+			name = "EaseScaleX" + std::to_string(i);
+			ImGui::DragFloat(name.c_str(), &easeScale[i].x);
+			name = "EaseScaleY" + std::to_string(i);
+			ImGui::DragFloat(name.c_str(), &easeScale[i].y);
+
+
+			name = "TimerX" + std::to_string(i);
+			ImGui::DragInt(name.c_str(), &timer[i].x);
+			name = "TimerY" + std::to_string(i);
+			ImGui::DragInt(name.c_str(), &timer[i].y);
+
+			ImGui::TreePop();
+		}
+	}
+	ImGui::End();
 	for (int i = 0; i < particle.size(); ++i)
 	{
 		particle[i].Update();
@@ -48,4 +75,16 @@ void HitEffectPattern1Emitter::Draw()
 	{
 		particle[i].Draw();
 	}
+}
+
+bool HitEffectPattern1Emitter::IsActive()
+{
+	for (int i = 0; i < particle.size(); ++i)
+	{
+		if (particle[i].IsAlive())
+		{
+			return true;
+		}
+	}
+	return false;
 }

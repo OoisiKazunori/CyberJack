@@ -7,7 +7,7 @@ class EaseScaleParticle
 public:
 	EaseScaleParticle();
 
-	void Init(const KazMath::Vec2<float> &POS, const KazMath::Vec2<float> &BASE_SCALE, const KazMath::Vec2<float> &EASE_SCALE, const KazMath::Vec2<int> &TIMER);
+	void Init(const KazMath::Vec2<float> &POS, const KazMath::Vec2<float> &BASE_SCALE, const KazMath::Vec2<float> &EASE_SCALE, const KazMath::Vec2<int> &TIMER, bool ROTA_FLAG);
 	void Update();
 	void Draw();
 
@@ -19,5 +19,6 @@ private:
 	static const float MAX_RATE;
 	KazMath::Vec2<float> rate;
 	bool initFlag;
+	bool rotaFlag;
 };
 

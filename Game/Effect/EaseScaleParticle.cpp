@@ -9,7 +9,7 @@ EaseScaleParticle::EaseScaleParticle() :initFlag(false)
 	render.data.pipelineName = PIPELINE_NAME_SPRITE_Z_OFF;
 }
 
-void EaseScaleParticle::Init(const KazMath::Vec2<float> &POS, const KazMath::Vec2<float> &BASE_SCALE, const KazMath::Vec2<float> &EASE_SCALE, const KazMath::Vec2<int> &TIMER)
+void EaseScaleParticle::Init(const KazMath::Vec2<float> &POS, const KazMath::Vec2<float> &BASE_SCALE, const KazMath::Vec2<float> &EASE_SCALE, const KazMath::Vec2<int> &TIMER, bool ROTA_FLAG)
 {
 	baseScale.x = BASE_SCALE.x;
 	baseScale.y = BASE_SCALE.y;
@@ -23,10 +23,13 @@ void EaseScaleParticle::Init(const KazMath::Vec2<float> &POS, const KazMath::Vec
 	easeMaxTimer.y = static_cast<float>(TIMER.y);
 
 	render.data.transform.scale = baseScale;
+	render.data.transform.rotation = 0.0f;
+
 	render.data.colorData.color.a = 255;
 
 	rate = { 0.0f,0.0f };
 	initFlag = true;
+	rotaFlag = ROTA_FLAG;
 }
 
 void EaseScaleParticle::Update()
@@ -47,6 +50,11 @@ void EaseScaleParticle::Update()
 		{
 			render.data.colorData.color.a = 0;
 			initFlag = false;
+		}
+
+		if (rotaFlag)
+		{
+			render.data.transform.rotation += 5.0f;
 		}
 	}
 }

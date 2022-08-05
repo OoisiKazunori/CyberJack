@@ -14,6 +14,34 @@
 
 Game::Game()
 {
+	emitters[0] = std::make_unique<HitEffectPattern1Emitter>();
+	emitters[1] = std::make_unique<HitEffectPattern2Emitter>();
+	emitters[2] = std::make_unique<HitEffectPattern3Emitter>();
+
+
+	for (int emitterTypeIndex = 0; emitterTypeIndex < deadEffectEmitter.size(); ++emitterTypeIndex)
+	{
+		for (int stackIndex = 0; stackIndex < deadEffectEmitter[emitterTypeIndex].size(); ++stackIndex)
+		{
+			switch (emitterTypeIndex)
+			{
+			case 0:
+				deadEffectEmitter[emitterTypeIndex][stackIndex] = std::make_unique<HitEffectPattern1Emitter>();
+				break;
+			case 1:
+				deadEffectEmitter[emitterTypeIndex][stackIndex] = std::make_unique<HitEffectPattern2Emitter>();
+				break;
+			case 2:
+				deadEffectEmitter[emitterTypeIndex][stackIndex] = std::make_unique<HitEffectPattern3Emitter>();
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+
+
 	for (int i = 0; i < smokeR.size(); ++i)
 	{
 		smokeR[i].data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::RelativeResourcePath + "Effect/Smoke/smoke9.png");
@@ -455,7 +483,13 @@ void Game::Input()
 
 	if (input->InputTrigger(DIK_G))
 	{
-		emitter.Init(KazMath::Vec2<float>(WIN_X / 2.0f, WIN_Y / 2.0f));
+		emittNum = 2;
+		emitters[emittNum]->Init(KazMath::Vec2<float>(WIN_X / 2.0f, WIN_Y / 2.0f));
+	}
+	if (input->InputTrigger(DIK_H))
+	{
+		emittNum = KazMath::Rand<int>(3, 0);
+		emitters[emittNum]->Init(KazMath::Vec2<float>(WIN_X / 2.0f, WIN_Y / 2.0f));
 	}
 }
 
@@ -901,6 +935,10 @@ void Game::Update()
 				{
 					//lineEffectArrayData[i].Reset();
 					//lineLevel[lineIndex].lineReachObjFlag = false;
+
+					//死亡演出候補
+					bool debug = false;
+					debug = true;
 				}
 				else if (lineLevel[lineIndex].lineReachObjFlag && !enemies[enemyTypeIndex][enemyIndex]->IsAlive() && !lineEffectArrayData[i].hitFlag)
 				{
@@ -908,11 +946,26 @@ void Game::Update()
 					lineEffectArrayData[i].hitFlag = true;
 					//lineEffectArrayData[i].Reset();
 					//lineLevel[lineIndex].lineReachObjFlag = false;
+
+					//ヒット時の円演出
 					for (int hitEffectIndex = 0; hitEffectIndex < hitEffect.size(); ++hitEffectIndex)
 					{
 						if (!hitEffect[hitEffectIndex].IsAlive())
 						{
 							hitEffect[hitEffectIndex].Start(*enemies[enemyTypeIndex][enemyIndex]->GetData()->hitBox.center);
+							break;
+						}
+					}
+
+					//死亡時の煙演出
+					int lEmitterType = KazMath::Rand<int>(3, 0);
+					for (int stackIndex = 0; stackIndex < deadEffectEmitter[lEmitterType].size(); ++stackIndex)
+					{
+						if (!deadEffectEmitter[lEmitterType][stackIndex]->IsActive())
+						{
+							KazMath::Vec3<float>screenPos =
+								KazMath::ConvertWorldPosToScreenPos(*enemies[enemyTypeIndex][enemyIndex]->GetData()->hitBox.center, CameraMgr::Instance()->GetViewMatrix(0), CameraMgr::Instance()->GetPerspectiveMatProjection());
+							deadEffectEmitter[lEmitterType][stackIndex]->Init(KazMath::Vec2<float>(screenPos.x, screenPos.y));
 							break;
 						}
 					}
@@ -1114,7 +1167,15 @@ void Game::Update()
 #pragma endregion
 
 
-		emitter.Update();
+		emitters[emittNum]->Update();
+
+		for (int emitterTypeIndex = 0; emitterTypeIndex < deadEffectEmitter.size(); ++emitterTypeIndex)
+		{
+			for (int stackIndex = 0; stackIndex < deadEffectEmitter[emitterTypeIndex].size(); ++stackIndex)
+			{
+				deadEffectEmitter[emitterTypeIndex][stackIndex]->Update();
+			}
+		}
 	}
 
 
@@ -1170,34 +1231,6 @@ void Game::Update()
 	}
 
 	//ゲームループの経過時間----------------------------------------------------------------
-
-	ImGui::Begin("Smoke");
-	for (int i = 0; i < emitter.PARTICLE_MAX; ++i)
-	{
-		std::string motherName = "Particle" + std::to_string(i);
-		if (ImGui::TreeNode(motherName.c_str()))
-		{
-			std::string name = "BaseScaleX" + std::to_string(i);
-			ImGui::DragFloat(name.c_str(), &emitter.baseScale[i].x);
-			name = "BaseScaleY" + std::to_string(i);
-			ImGui::DragFloat(name.c_str(), &emitter.baseScale[i].y);
-
-
-			name = "EaseScaleX" + std::to_string(i);
-			ImGui::DragFloat(name.c_str(), &emitter.easeScale[i].x);
-			name = "EaseScaleY" + std::to_string(i);
-			ImGui::DragFloat(name.c_str(), &emitter.easeScale[i].y);
-
-
-			name = "TimerX" + std::to_string(i);
-			ImGui::DragInt(name.c_str(), &emitter.timer[i].x);
-			name = "TimerY" + std::to_string(i);
-			ImGui::DragInt(name.c_str(), &emitter.timer[i].y);
-
-			ImGui::TreePop();
-		}
-	}
-	ImGui::End();
 
 }
 
@@ -1265,7 +1298,7 @@ void Game::Draw()
 				bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
 				if (enableToUseDataFlag)
 				{
-					//enemies[enemyType][enemyCount]->Draw();
+					enemies[enemyType][enemyCount]->Draw();
 				}
 			}
 		}
@@ -1308,17 +1341,19 @@ void Game::Draw()
 		PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "AddRenderTarget");
 		addRenderTarget.Draw();
 		PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
-		
-		emitter.Draw();
 
-		for (int i = 0; i < smokeR.size(); ++i)
-		{
-			//smokeR[i].Draw();
-		}
-
-	
 
 		cursor.Draw();
+
+		emitters[emittNum]->Draw();
+		for (int emitterTypeIndex = 0; emitterTypeIndex < deadEffectEmitter.size(); ++emitterTypeIndex)
+		{
+			for (int stackIndex = 0; stackIndex < deadEffectEmitter[emitterTypeIndex].size(); ++stackIndex)
+			{
+				deadEffectEmitter[emitterTypeIndex][stackIndex]->Draw();
+			}
+		}
+
 		movieEffect.Draw();
 
 	}

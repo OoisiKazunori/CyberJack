@@ -178,6 +178,9 @@
     <ClCompile Include="Game\Debug\WirteCpuLineData.cpp" />
     <ClCompile Include="Game\Effect\EaseScaleParticle.cpp" />
     <ClCompile Include="Game\Effect\HitEffectPattern1Emitter.cpp" />
+    <ClCompile Include="Game\Effect\HitEffectPattern2Emitter.cpp" />
+    <ClCompile Include="Game\Effect\HitEffectPattern3Emitter.cpp" />
+    <ClCompile Include="Game\Effect\IHitEffectEmitter.cpp" />
     <ClCompile Include="Game\Enemy\HitEnemyEffect.cpp" />
     <ClCompile Include="Game\Enemy\KidEnemy.cpp" />
     <ClCompile Include="Game\Enemy\NormalMisileEnemy.cpp" />
@@ -285,6 +288,9 @@
     <ClInclude Include="Game\Debug\WirteCpuLineData.h" />
     <ClInclude Include="Game\Effect\EaseScaleParticle.h" />
     <ClInclude Include="Game\Effect\HitEffectPattern1Emitter.h" />
+    <ClInclude Include="Game\Effect\HitEffectPattern2Emitter.h" />
+    <ClInclude Include="Game\Effect\HitEffectPattern3Emitter.h" />
+    <ClInclude Include="Game\Effect\IHitEffectEmitter.h" />
     <ClInclude Include="Game\Enemy\HitEnemyEffect.h" />
     <ClInclude Include="Game\Enemy\KidEnemy.h" />
     <ClInclude Include="Game\Enemy\NormalMisileEnemy.h" />

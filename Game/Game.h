@@ -28,7 +28,10 @@
 #include"../Game/Event/TutorialWindow.h"
 #include"../Game/Enemy/HitEnemyEffect.h"
 #include"../Game/Event/PortalEffect.h"
+#include"../Game/Effect/IHitEffectEmitter.h"
 #include"../Game/Effect/HitEffectPattern1Emitter.h"
+#include"../Game/Effect/HitEffectPattern2Emitter.h"
+#include"../Game/Effect/HitEffectPattern3Emitter.h"
 
 
 struct ResponeData
@@ -230,6 +233,9 @@ private:
 	bool smokeFlag;
 	std::array<Sprite2DRender,4> smokeR;
 
-	HitEffectPattern1Emitter emitter;
+	int emittNum;
+	std::array<std::unique_ptr<IHitEffectEmitter>, 3>emitters;
+
+	std::array<std::array<std::unique_ptr<IHitEffectEmitter>, 10>, 3>deadEffectEmitter;
 };
 
