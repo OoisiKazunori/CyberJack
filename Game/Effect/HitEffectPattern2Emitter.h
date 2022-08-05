@@ -18,6 +18,6 @@ private:
 	KazMath::Vec2<float>baseScale;
 	KazMath::Vec2<float>easeScale;
 	KazMath::Vec2<int>timer;
-	EaseScaleParticle particle;
+	std::unique_ptr<EaseScaleParticle> particle;
 };
 

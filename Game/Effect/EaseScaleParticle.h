@@ -5,9 +5,15 @@
 class EaseScaleParticle
 {
 public:
-	EaseScaleParticle();
+	EaseScaleParticle(int GRAPH_HANDLE);
 
-	void Init(const KazMath::Vec2<float> &POS, const KazMath::Vec2<float> &BASE_SCALE, const KazMath::Vec2<float> &EASE_SCALE, const KazMath::Vec2<int> &TIMER, bool ROTA_FLAG);
+	void Init(
+		const KazMath::Vec2<float> &POS,
+		const KazMath::Vec2<float> &BASE_SCALE,
+		const KazMath::Vec2<float> &EASE_SCALE,
+		const KazMath::Vec2<int> &TIMER,
+		bool ROTA_FLAG
+	);
 	void Update();
 	void Draw();
 

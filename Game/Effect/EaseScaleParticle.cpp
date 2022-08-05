@@ -3,9 +3,9 @@
 
 const float EaseScaleParticle::MAX_RATE = 1.0f;
 
-EaseScaleParticle::EaseScaleParticle() :initFlag(false)
+EaseScaleParticle::EaseScaleParticle(int GRAPH_HANDLE) :initFlag(false)
 {
-	render.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::RelativeResourcePath + "Effect/Smoke/smoke9.png");
+	render.data.handleData = GRAPH_HANDLE;
 	render.data.pipelineName = PIPELINE_NAME_SPRITE_Z_OFF;
 }
 

@@ -1,8 +1,15 @@
 #include "HitEffectPattern1Emitter.h"
 #include"../KazLibrary/Imgui/MyImgui.h"
+#include"../KazLibrary/Helper/ResourceFilePass.h"
 
 HitEffectPattern1Emitter::HitEffectPattern1Emitter()
 {
+	for (int i = 0; i < particle.size(); ++i)
+	{
+		particle[i] = std::make_unique<EaseScaleParticle>(TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::RelativeResourcePath + "Effect/Smoke/smoke9.png"));
+	}
+
+
 	baseScale[0] = { 0.1f,0.1f };
 	baseScale[1] = { 0.1f,0.1f };
 	baseScale[2] = { 0.1f,0.1f };
@@ -25,11 +32,11 @@ void HitEffectPattern1Emitter::Init(const KazMath::Vec2<float> &POS)
 	{
 		if (i == 0)
 		{
-			particle[i].Init(POS + KazMath::Vec2<float>(0.0f, 53.0f), baseScale[i], easeScale[i], timer[i], false);
+			particle[i]->Init(POS + KazMath::Vec2<float>(0.0f, 53.0f), baseScale[i], easeScale[i], timer[i], false);
 		}
 		else
 		{
-			particle[i].Init(POS, baseScale[i], easeScale[i], timer[i], false);
+			particle[i]->Init(POS, baseScale[i], easeScale[i], timer[i], false);
 		}
 	}
 }
@@ -65,7 +72,7 @@ void HitEffectPattern1Emitter::Update()
 	ImGui::End();
 	for (int i = 0; i < particle.size(); ++i)
 	{
-		particle[i].Update();
+		particle[i]->Update();
 	}
 }
 
@@ -73,7 +80,7 @@ void HitEffectPattern1Emitter::Draw()
 {
 	for (int i = 0; i < particle.size(); ++i)
 	{
-		particle[i].Draw();
+		particle[i]->Draw();
 	}
 }
 
@@ -81,7 +88,7 @@ bool HitEffectPattern1Emitter::IsActive()
 {
 	for (int i = 0; i < particle.size(); ++i)
 	{
-		if (particle[i].IsAlive())
+		if (particle[i]->IsAlive())
 		{
 			return true;
 		}
