@@ -10,7 +10,7 @@ SplineMisile::SplineMisile()
 	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "misile.obj");
 }
 
-void SplineMisile::Init(const KazMath::Vec3<float> &POS)
+void SplineMisile::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
 {
 	iEnemy_ModelRender->data.transform.pos = POS;
 	iEnemy_ModelRender->data.transform.scale = { 1.3f,1.3f,1.3f };
@@ -58,6 +58,8 @@ void SplineMisile::Init(const KazMath::Vec3<float> &POS)
 
 	initDeadSoundFlag = false;
 	hitFlag = false;
+
+	demoFlag = DEMO_FLAG;
 }
 
 void SplineMisile::Finalize()

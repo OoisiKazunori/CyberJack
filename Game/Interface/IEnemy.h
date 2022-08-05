@@ -80,7 +80,7 @@ public:
 	/// ‰Šú‰»ˆ—
 	/// </summary>
 	/// <param name="POS">‰ŠúÀ•W</param>
-	virtual void Init(const KazMath::Vec3<float> &POS) = 0;
+	virtual void Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG = false) = 0;
 
 	/// <summary>
 	/// I—¹ˆ—
@@ -118,7 +118,7 @@ public:
 
 protected:
 	bool initDeadSoundFlag;
-
+	bool demoFlag;
 private:
 	int deadSoundHandle;
 	int damageSoundHandle;

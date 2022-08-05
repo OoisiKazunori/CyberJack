@@ -7,12 +7,13 @@
 #include"../Fps/FPSManager.h"
 #include"../Scene/ClassScene.h"
 #include"../Scene/PortalScene.h"
+#include"../Scene/EnemyDebugScene.h"
 
 
 SceneManager::SceneManager()
 {
 	//scene.emplace_back(std::make_unique<PortalScene>());
-	scene.emplace_back(std::make_unique<GameScene>());
+	scene.emplace_back(std::make_unique<EnemyDebugScene>());
 	//scene.emplace_back(std::make_unique<DebugScene>());	
 	//scene.emplace_back(std::make_unique<TitleScene>());
 

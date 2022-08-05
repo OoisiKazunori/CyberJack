@@ -7,7 +7,7 @@ NormalEnemy::NormalEnemy()
 {
 }
 
-void NormalEnemy::Init(const KazMath::Vec3<float> &POS)
+void NormalEnemy::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
 {
 	iEnemy_ModelRender->data.transform.pos = POS;	//座標の初期化
 	iEnemy_ModelRender->data.transform.scale = { 10.0f,10.0f,10.0f };
@@ -26,6 +26,7 @@ void NormalEnemy::Init(const KazMath::Vec3<float> &POS)
 	iEnemy_ModelRender->data.transform.rotation.z = 0.0f;
 
 	initDeadSoundFlag = false;
+	demoFlag = DEMO_FLAG;
 }
 
 void NormalEnemy::Finalize()
@@ -35,8 +36,11 @@ void NormalEnemy::Finalize()
 void NormalEnemy::Update()
 {
 	//移動
-	float speed = 0.5f;
-	iEnemy_ModelRender->data.transform.pos.z += -speed;
+	if (!demoFlag)
+	{
+		float speed = 0.5f;
+		iEnemy_ModelRender->data.transform.pos.z += -speed;
+	}
 
 	//死亡演出処理
 	//デバックキーor当たり判定内&&死亡時

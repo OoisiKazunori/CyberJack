@@ -8,7 +8,7 @@ NormalMisileEnemy::NormalMisileEnemy()
 	shotSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Shot.wav", false);
 }
 
-void NormalMisileEnemy::Init(const KazMath::Vec3<float> &POS)
+void NormalMisileEnemy::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
 {
 	iEnemy_ModelRender->data.transform.pos = POS;	//À•W‚Ì‰Šú‰»
 	lerpPos = POS;	//À•W‚Ì‰Šú‰»
@@ -29,6 +29,7 @@ void NormalMisileEnemy::Init(const KazMath::Vec3<float> &POS)
 	initShotFlag = false;
 
 	initDeadSoundFlag = false;
+	demoFlag = DEMO_FLAG;
 }
 
 void NormalMisileEnemy::Finalize()
@@ -85,8 +86,10 @@ void NormalMisileEnemy::Update()
 		KazMath::Vec3<float> vel = { 0.0f,0.0f,-1.0f };
 		lerpPos += vel;
 	}
-
-	KazMath::Larp(lerpPos.z, &iEnemy_ModelRender->data.transform.pos.z, 0.1f);
+	if (!demoFlag)
+	{
+		KazMath::Larp(lerpPos.z, &iEnemy_ModelRender->data.transform.pos.z, 0.1f);
+	}
 
 	if (!EnableToHit(iEnemy_ModelRender->data.transform.pos.z))
 	{
