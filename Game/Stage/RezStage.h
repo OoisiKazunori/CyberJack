@@ -7,7 +7,7 @@
 #include"../Game/Event/LineFlashLight.h"
 #include"../Game/Debug/ParameterMgr.h"
 #include"../KazLibrary/Collision/CollisionManager.h"
-
+#include"../Game/Stage/DrawGrid.h"
 
 class RezStage :public IStage
 {
@@ -19,20 +19,8 @@ public:
 private:
 
 	//グリッドの描画ーーー
-	static const int LINE_MAX = 100;
-	static const int LINE_Z_MAX = LINE_MAX / 2;
-	static const int LINE_X_MAX = LINE_MAX / 2;
-
-	std::array<LineRender, LINE_MAX> gridLineRender;
-	std::array<std::array<KazMath::Transform3D, 2>, LINE_Z_MAX> gridFloorZLinePos;
-	std::array<std::array<KazMath::Transform3D, 2>, LINE_X_MAX> gridFloorXLinePos;
-
 	int timer;
 	int maxTimer;
-	int lightEffectIndex;
-	std::array<std::array<KazMath::Vec3<float>, 5>, LINE_MAX> lightEffectGridFloorLinePos;
-	std::array<std::array<LineFlashLight, 5>, LINE_MAX> lightEffectArray;
-	std::array<bool, LINE_MAX> lightEffectInitFlagArray;
 	//グリッドの描画ーーー
 
 
@@ -65,4 +53,7 @@ private:
 	LineRenderPtr ray;
 
 	BoxPolygonRender c1, c2;
+
+
+	DrawGrid floorGrid, leftWallGrid, rightWallGrid;
 };

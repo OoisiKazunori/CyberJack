@@ -109,6 +109,7 @@
     <ClCompile Include="Game\Effect\IHitEffectEmitter.cpp" />
     <ClCompile Include="Game\Effect\HitEffectPattern2Emitter.cpp" />
     <ClCompile Include="Game\Effect\HitEffectPattern3Emitter.cpp" />
+    <ClCompile Include="Game\Stage\DrawGrid.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -229,6 +230,7 @@
     <ClInclude Include="Game\Effect\IHitEffectEmitter.h" />
     <ClInclude Include="Game\Effect\HitEffectPattern2Emitter.h" />
     <ClInclude Include="Game\Effect\HitEffectPattern3Emitter.h" />
+    <ClInclude Include="Game\Stage\DrawGrid.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
