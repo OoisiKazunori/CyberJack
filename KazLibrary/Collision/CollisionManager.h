@@ -161,6 +161,9 @@ public:
 	bool CheckThicklineAndSphere(const Sphere& SPHERE, const ModiRectangle& RECTANGLE);
 
 
+	std::array<KazMath::Vec2<float>, 2> CheckCircleAndRay(const Sphere &SPHERE, const KazMath::Vec2<float> &START_POS, const KazMath::Vec2<float> &END_POS);
+
+
 	friend ISingleton<CollisionManager>;
 private:
 

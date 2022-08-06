@@ -6,6 +6,8 @@
 #include"../KazLibrary/Render/KazRender.h"
 #include"../Game/Event/LineFlashLight.h"
 #include"../Game/Debug/ParameterMgr.h"
+#include"../KazLibrary/Collision/CollisionManager.h"
+
 
 class RezStage :public IStage
 {
@@ -56,4 +58,11 @@ private:
 
 	int selectNum;
 	BoxPolygonRender selectingR;
+
+
+	Sphere sphere;
+	KazMath::Vec3<float>pos;
+	LineRenderPtr ray;
+
+	BoxPolygonRender c1, c2;
 };

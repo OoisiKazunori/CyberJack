@@ -146,9 +146,9 @@ RezStage::RezStage()
 		{
 			for (int i = 0; i < floorObjectRender.size(); ++i)
 			{
-				DirectX::XMVECTOR pos = KazMath::Transform3D().pos.ConvertXMVECTOR();
-				DirectX::XMVECTOR scale = KazMath::Transform3D().scale.ConvertXMVECTOR();
-				DirectX::XMVECTOR rota = KazMath::Transform3D().rotation.ConvertXMVECTOR();
+				DirectX::XMVECTOR lPos = KazMath::Transform3D().pos.ConvertXMVECTOR();
+				DirectX::XMVECTOR lScale = KazMath::Transform3D().scale.ConvertXMVECTOR();
+				DirectX::XMVECTOR lRota = KazMath::Transform3D().rotation.ConvertXMVECTOR();
 
 				//Box毎のメンバ変数を追加
 				rapidjson::Value posArray(rapidjson::kArrayType);
@@ -156,9 +156,9 @@ RezStage::RezStage()
 				rapidjson::Value rotaArray(rapidjson::kArrayType);
 				for (int axisIndex = 0; axisIndex < 3; ++axisIndex)
 				{
-					posArray.PushBack(rapidjson::Value(pos.m128_f32[axisIndex]), stageParamLoader.doc.GetAllocator());
-					scaleArray.PushBack(rapidjson::Value(scale.m128_f32[axisIndex]), stageParamLoader.doc.GetAllocator());
-					rotaArray.PushBack(rapidjson::Value(rota.m128_f32[axisIndex]), stageParamLoader.doc.GetAllocator());
+					posArray.PushBack(rapidjson::Value(lPos.m128_f32[axisIndex]), stageParamLoader.doc.GetAllocator());
+					scaleArray.PushBack(rapidjson::Value(lScale.m128_f32[axisIndex]), stageParamLoader.doc.GetAllocator());
+					rotaArray.PushBack(rapidjson::Value(lRota.m128_f32[axisIndex]), stageParamLoader.doc.GetAllocator());
 				}
 
 				//Boxオブジェクトにデータを追加
@@ -176,6 +176,8 @@ RezStage::RezStage()
 	selectingR.data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
 	selectingR.data.color = { 255,0,0,255 };
 
+
+	ray = std::make_unique<LineRender>();
 }
 
 void RezStage::Update()
@@ -448,6 +450,33 @@ void RezStage::Update()
 	}
 
 #pragma endregion
+
+
+	ImGui::Begin("C");
+	ImGui::DragFloat("CirclePosX", &pos.x);
+	ImGui::DragFloat("CircleposY", &pos.y);
+	ImGui::DragFloat("CircleposZ", &pos.z);
+	ImGui::DragFloat("radius", &sphere.radius);
+	ImGui::DragFloat("RayPosX1", &ray->data.startPos.x);
+	ImGui::DragFloat("RayposY1", &ray->data.startPos.y);
+	ImGui::DragFloat("RayposZ1", &ray->data.startPos.z);
+	ImGui::DragFloat("RayPosX2", &ray->data.endPos.x);
+	ImGui::DragFloat("RayposY2", &ray->data.endPos.y);
+	ImGui::DragFloat("RayposZ2", &ray->data.endPos.z);
+	ImGui::End();
+
+
+
+	sphere.center = &pos;
+	std::array<KazMath::Vec2<float>, 2>lTmp =
+		CollisionManager::Instance()->CheckCircleAndRay(sphere, ray->data.startPos.ConvertVec2(), ray->data.endPos.ConvertVec2());
+
+	c1.data.transform.pos.x = lTmp[0].x;
+	c1.data.transform.pos.y = lTmp[0].y;
+	c2.data.transform.pos.x = lTmp[1].x;
+	c2.data.transform.pos.y = lTmp[1].y;
+
+
 }
 
 void RezStage::Draw()
@@ -485,6 +514,9 @@ void RezStage::Draw()
 
 	vaporWaveSunRender.Draw();
 
+	ray->Draw();
+	c1.Draw();
+	c2.Draw();
 
 	ImGui::Begin("Model");
 	ImGui::DragFloat("POS_X", &model.data.transform.pos.x);

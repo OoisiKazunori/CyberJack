@@ -230,6 +230,11 @@ namespace KazMath
 			DirectX::XMVECTOR result = { static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), 0.0f };
 			return result;
 		};
+		Vec2<T> ConvertVec2()const
+		{
+			Vec2<T> result = { x,y };
+			return result;
+		};
 
 		Vec3<int>Int()const
 		{
