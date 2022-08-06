@@ -300,7 +300,8 @@ void Game::Input()
 
 #pragma region カメラ操作
 	debugCameraMove = { 0,0,0 };
-	float debugSpeed = 1;
+	float debugSpeed = 100.0f;
+	float debugSideSpeed = 5.0f;
 	//�J�����ړ�
 	if (input->InputState(DIK_D))
 	{
@@ -324,20 +325,20 @@ void Game::Input()
 	//�J�����p�x
 	if (input->InputState(DIK_RIGHTARROW))
 	{
-		angle.x += debugSpeed;
+		angle.x += debugSideSpeed;
 	}
 	if (input->InputState(DIK_LEFTARROW))
 	{
-		angle.x += -debugSpeed;
+		angle.x += -debugSideSpeed;
 	}
 
 	if (input->InputState(DIK_UPARROW))
 	{
-		angle.y += debugSpeed;
+		angle.y += debugSideSpeed;
 	}
 	if (input->InputState(DIK_DOWNARROW))
 	{
-		angle.y += -debugSpeed;
+		angle.y += -debugSideSpeed;
 	}
 
 #pragma endregion
@@ -621,7 +622,7 @@ void Game::Update()
 	portal.Update();
 
 	//全部隠れたら次ステージの描画をする
-	if (portal.AllHidden())
+	if (portal.AllHidden()&&false)
 	{
 		//ゲームループの初期化----------------------------------------------
 		++gameStageLevel;

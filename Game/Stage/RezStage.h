@@ -5,6 +5,7 @@
 #include<vector>
 #include"../KazLibrary/Render/KazRender.h"
 #include"../Game/Event/LineFlashLight.h"
+#include"../Game/Debug/ParameterMgr.h"
 
 class RezStage :public IStage
 {
@@ -49,4 +50,10 @@ private:
 
 	FbxModelRender model;
 	ObjModelRender objModel;
+
+	std::array<std::array<char, 100>, 50>filePassChar;
+	ParameterMgr stageParamLoader;
+
+	int selectNum;
+	BoxPolygonRender selectingR;
 };

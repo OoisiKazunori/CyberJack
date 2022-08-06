@@ -2,6 +2,7 @@
 #include"../KazLibrary/Imgui/MyImgui.h"
 #include"../KazLibrary/Helper/ResourceFilePass.h"
 #include"../KazLibrary/Easing/easing.h"
+#include"../KazLibrary/Helper/KazHelper.h"
 
 RezStage::RezStage()
 {
@@ -54,6 +55,18 @@ RezStage::RezStage()
 	}
 #pragma endregion
 
+
+	for (int i = 0; i < filePassChar.size(); ++i)
+	{
+		filePassChar[i][0] = 'n';
+		filePassChar[i][1] = 'o';
+		filePassChar[i][2] = '_';
+		filePassChar[i][3] = 'p';
+		filePassChar[i][4] = 'a';
+		filePassChar[i][5] = 's';
+		filePassChar[i][6] = 's';
+		filePassChar[i][7] = '\0';
+	}
 
 	for (int i = 0; i < floorObjectRender.size(); ++i)
 	{
@@ -117,10 +130,57 @@ RezStage::RezStage()
 	//model.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "boneTest.fbx");
 	model.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "Gunner_Switch_anim_v02.fbx");
 	//objModel.data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "Gunner_Switch_anim.obj");
+
+
+
+	stageParamLoader.LoadFile(KazFilePathName::StageParamPath + "RezStageParamData.json");
+	if (false)
+	{
+		std::array<std::vector<char>, 50> data;
+		for (int i = 0; i < floorObjectRender.size(); ++i)
+		{
+			data[i] = KazHelper::CovertStringToChar("FloorObj" + std::to_string(i));
+		}
+
+		if (true)
+		{
+			for (int i = 0; i < floorObjectRender.size(); ++i)
+			{
+				DirectX::XMVECTOR pos = KazMath::Transform3D().pos.ConvertXMVECTOR();
+				DirectX::XMVECTOR scale = KazMath::Transform3D().scale.ConvertXMVECTOR();
+				DirectX::XMVECTOR rota = KazMath::Transform3D().rotation.ConvertXMVECTOR();
+
+				//Box毎のメンバ変数を追加
+				rapidjson::Value posArray(rapidjson::kArrayType);
+				rapidjson::Value scaleArray(rapidjson::kArrayType);
+				rapidjson::Value rotaArray(rapidjson::kArrayType);
+				for (int axisIndex = 0; axisIndex < 3; ++axisIndex)
+				{
+					posArray.PushBack(rapidjson::Value(pos.m128_f32[axisIndex]), stageParamLoader.doc.GetAllocator());
+					scaleArray.PushBack(rapidjson::Value(scale.m128_f32[axisIndex]), stageParamLoader.doc.GetAllocator());
+					rotaArray.PushBack(rapidjson::Value(rota.m128_f32[axisIndex]), stageParamLoader.doc.GetAllocator());
+				}
+
+				//Boxオブジェクトにデータを追加
+				rapidjson::Value object(rapidjson::kObjectType);
+				object.AddMember("Pos", posArray, stageParamLoader.doc.GetAllocator());
+				object.AddMember("Scale", scaleArray, stageParamLoader.doc.GetAllocator());
+				object.AddMember("Rota", rotaArray, stageParamLoader.doc.GetAllocator());
+				object.AddMember("FilePass", "no_pass", stageParamLoader.doc.GetAllocator());
+
+				stageParamLoader.doc.AddMember(rapidjson::GenericStringRef<char>(data[i].data()), object, stageParamLoader.doc.GetAllocator());
+			}
+			stageParamLoader.ExportFile(KazFilePathName::StageParamPath + "RezStageParamData.json");
+		}
+	}
+	selectingR.data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
+	selectingR.data.color = { 255,0,0,255 };
+
 }
 
 void RezStage::Update()
 {
+#pragma region Grid
 	const float lVelZ = -5.0f;
 
 	for (int i = 0; i < gridFloorZLinePos.size(); ++i)
@@ -143,11 +203,129 @@ void RezStage::Update()
 		gridLineRender[lineRIndex].data.endPos = gridFloorZLinePos[i][1].pos;
 		++lineRIndex;
 	}
+#pragma endregion
+
+
+#pragma region ImGuiObj
+	bool lImportFlag = false;
+	bool lExportFlag = false;
+	ImGui::Begin("FloorObject");
+	lImportFlag = ImGui::Button("Import");
+	ImGui::SameLine();
+	lExportFlag = ImGui::Button("Export");
+	for (int i = 0; i < floorObjectRender.size(); ++i)
+	{
+		std::string name = "FloorObj" + std::to_string(i);
+		if (ImGui::TreeNode(name.c_str()))
+		{
+			ImGui::DragFloat("POS_X", &floorObjectRender[i].objRender[0].data.transform.pos.x);
+			ImGui::DragFloat("POS_Y", &floorObjectRender[i].objRender[0].data.transform.pos.y);
+			ImGui::DragFloat("POS_Z", &floorObjectRender[i].objRender[0].data.transform.pos.z);
+			ImGui::DragFloat("SCALE_X", &floorObjectRender[i].objRender[0].data.transform.scale.x);
+			ImGui::DragFloat("SCALE_Y", &floorObjectRender[i].objRender[0].data.transform.scale.y);
+			ImGui::DragFloat("SCALE_Z", &floorObjectRender[i].objRender[0].data.transform.scale.z);
+			ImGui::DragFloat("ROTA_X", &floorObjectRender[i].objRender[0].data.transform.rotation.x);
+			ImGui::DragFloat("ROTA_Y", &floorObjectRender[i].objRender[0].data.transform.rotation.y);
+			ImGui::DragFloat("ROTA_Z", &floorObjectRender[i].objRender[0].data.transform.rotation.z);
+			ImGui::InputText("FilePass", filePassChar[i].data(), sizeof(char) * 100);
+			std::string lFilePass = filePassChar[i].data();
+			//floorObjectRender[i].objRender[0].data.handle = ObjResourceMgr::Instance()->LoadModel(lFilePass);
+			ImGui::TreePop();
+		}
+
+		if (floorObjectRender[i].objRender[0].data.transform.Dirty())
+		{
+			selectingR.data.transform = floorObjectRender[i].objRender[0].data.transform;
+			selectingR.data.transform.scale += KazMath::Vec3<float>(1.0f, 1.0f, 1.0f);
+		}
+	}
+	ImGui::End();
+
+	//ファイル読み込み
+	if (lImportFlag)
+	{
+		for (int i = 0; i < floorObjectRender.size(); ++i)
+		{
+			std::string name = "FloorObj" + std::to_string(i);
+			for (int axisIndex = 0; axisIndex < 3; ++axisIndex)
+			{
+				switch (axisIndex)
+				{
+				case 0:
+					floorObjectRender[i].objRender[0].data.transform.pos.x = stageParamLoader.doc[name.c_str()]["Pos"][axisIndex].GetFloat();
+					floorObjectRender[i].objRender[0].data.transform.scale.x = stageParamLoader.doc[name.c_str()]["Scale"][axisIndex].GetFloat();
+					floorObjectRender[i].objRender[0].data.transform.rotation.x = stageParamLoader.doc[name.c_str()]["Rota"][axisIndex].GetFloat();
+					break;
+				case 1:
+					floorObjectRender[i].objRender[0].data.transform.pos.y = stageParamLoader.doc[name.c_str()]["Pos"][axisIndex].GetFloat();
+					floorObjectRender[i].objRender[0].data.transform.scale.y = stageParamLoader.doc[name.c_str()]["Scale"][axisIndex].GetFloat();
+					floorObjectRender[i].objRender[0].data.transform.rotation.y = stageParamLoader.doc[name.c_str()]["Rota"][axisIndex].GetFloat();
+					break;
+				case 2:
+					floorObjectRender[i].objRender[0].data.transform.pos.z = stageParamLoader.doc[name.c_str()]["Pos"][axisIndex].GetFloat();
+					floorObjectRender[i].objRender[0].data.transform.scale.z = stageParamLoader.doc[name.c_str()]["Scale"][axisIndex].GetFloat();
+					floorObjectRender[i].objRender[0].data.transform.rotation.z = stageParamLoader.doc[name.c_str()]["Rota"][axisIndex].GetFloat();
+					break;
+				default:
+					break;
+				}
+			}
+			const char *lTmp = stageParamLoader.doc[name.c_str()]["FilePass"].GetString();
+
+			for (int charIndex = 0; charIndex < filePassChar[i].size(); ++charIndex)
+			{
+				if (lTmp[charIndex] != '\0')
+				{
+					filePassChar[i][charIndex] = lTmp[charIndex];
+				}
+				else
+				{
+					break;
+				}
+			}
+		}
+	}
+
+	//ファイル書き込み
+	if (lExportFlag)
+	{
+		for (int i = 0; i < floorObjectRender.size(); ++i)
+		{
+			std::string name = "FloorObj" + std::to_string(i);
+			for (int axisIndex = 0; axisIndex < 3; ++axisIndex)
+			{
+				switch (axisIndex)
+				{
+				case 0:
+					stageParamLoader.doc[name.c_str()]["Pos"][axisIndex].SetFloat(floorObjectRender[i].objRender[0].data.transform.pos.x);
+					stageParamLoader.doc[name.c_str()]["Scale"][axisIndex].SetFloat(floorObjectRender[i].objRender[0].data.transform.scale.y);
+					stageParamLoader.doc[name.c_str()]["Rota"][axisIndex].SetFloat(floorObjectRender[i].objRender[0].data.transform.rotation.z);
+					break;
+				case 1:
+					stageParamLoader.doc[name.c_str()]["Pos"][axisIndex].SetFloat(floorObjectRender[i].objRender[0].data.transform.pos.x);
+					stageParamLoader.doc[name.c_str()]["Scale"][axisIndex].SetFloat(floorObjectRender[i].objRender[0].data.transform.scale.y);
+					stageParamLoader.doc[name.c_str()]["Rota"][axisIndex].SetFloat(floorObjectRender[i].objRender[0].data.transform.rotation.z);
+					break;
+				case 2:
+					stageParamLoader.doc[name.c_str()]["Pos"][axisIndex].SetFloat(floorObjectRender[i].objRender[0].data.transform.pos.x);
+					stageParamLoader.doc[name.c_str()]["Scale"][axisIndex].SetFloat(floorObjectRender[i].objRender[0].data.transform.scale.y);
+					stageParamLoader.doc[name.c_str()]["Rota"][axisIndex].SetFloat(floorObjectRender[i].objRender[0].data.transform.rotation.z);
+
+					break;
+				default:
+					break;
+				}
+			}
+			stageParamLoader.doc[name.c_str()]["FilePass"].SetString(rapidjson::GenericStringRef<char>(filePassChar[i].data()));
+		}
+		stageParamLoader.ExportFile(KazFilePathName::StageParamPath + "RezStageParamData.json");
+	}
+
+#pragma endregion
 
 
 
-
-
+#pragma region Obj
 	if (reversValueFlag)
 	{
 		scaleRate += 1.0f / 30.0f;
@@ -171,10 +349,11 @@ void RezStage::Update()
 
 	for (int i = 0; i < floorObjectRender.size(); ++i)
 	{
-		floorObjectRender[i].objRender[0].data.transform.pos.z += lVelZ;
+		floorObjectRender[i].objRender[0].data.transform.pos.z += 0.0f;
 		bool limitZLineFlag = floorObjectRender[i].objRender[0].data.transform.pos.z <= -100.0f;
 
-		floorObjectRender[i].objRender[0].data.transform.scale.y = floorObjectRender[i].initScale.y + EasingMaker(Out, Cubic, scaleRate) * 50.0f;
+		floorObjectRender[i].objRender[1].data.transform = floorObjectRender[i].objRender[0].data.transform;
+		//floorObjectRender[i].objRender[0].data.transform.scale.y = floorObjectRender[i].initScale.y + EasingMaker(Out, Cubic, scaleRate) * 50.0f;
 		floorObjectRender[i].objRender[0].data.transform.pos.y = -150.0f + floorObjectRender[i].objRender[0].data.transform.scale.y;
 
 		floorObjectRender[i].objRender[1].data.transform.scale.y = floorObjectRender[i].objRender[0].data.transform.scale.y;
@@ -187,7 +366,10 @@ void RezStage::Update()
 			floorObjectRender[i].objRender[1].data.transform.pos = floorObjectRender[i].objRender[0].data.transform.pos + KazMath::Vec3<float>(0.0f, -(floorObjectRender[i].objRender[0].data.transform.scale.y * 2), 0.0f);
 		}
 	}
+#pragma endregion
 
+
+#pragma region LightEffect
 
 	for (int i = 0; i < gridFloorZLinePos.size(); ++i)
 	{
@@ -234,7 +416,7 @@ void RezStage::Update()
 	{
 		if (lightEffectArray[lightEffectIndex][squareIndex].IsFinish())
 		{
-			std::vector<KazMath::Vec3<float>*>lPosArray;
+			std::vector<KazMath::Vec3<float> *>lPosArray;
 			lPosArray.push_back(&lightEffectGridFloorLinePos[lightEffectIndex][squareIndex]);
 			lPosArray.push_back(&gridLineRender[lightEffectIndex].data.endPos);
 
@@ -264,6 +446,8 @@ void RezStage::Update()
 			lightEffectArray[i][squareIndex].Update();
 		}
 	}
+
+#pragma endregion
 }
 
 void RezStage::Draw()
@@ -297,10 +481,11 @@ void RezStage::Draw()
 		}
 	}
 
+	selectingR.Draw();
 
 	vaporWaveSunRender.Draw();
 
-	
+
 	ImGui::Begin("Model");
 	ImGui::DragFloat("POS_X", &model.data.transform.pos.x);
 	ImGui::DragFloat("POS_Y", &model.data.transform.pos.y);
