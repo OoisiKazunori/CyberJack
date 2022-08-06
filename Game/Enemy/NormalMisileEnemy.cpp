@@ -8,7 +8,7 @@ NormalMisileEnemy::NormalMisileEnemy()
 	shotSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Shot.wav", false);
 }
 
-void NormalMisileEnemy::Init(const KazMath::Vec3<float> &POS)
+void NormalMisileEnemy::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
 {
 	iEnemy_ModelRender->data.transform.pos = POS;	//座標の初期化
 	lerpPos = POS;	//座標の初期化
@@ -29,6 +29,9 @@ void NormalMisileEnemy::Init(const KazMath::Vec3<float> &POS)
 	initShotFlag = false;
 
 	initDeadSoundFlag = false;
+	demoFlag = DEMO_FLAG;
+
+	shotTimer = 0;
 }
 
 void NormalMisileEnemy::Finalize()
@@ -38,7 +41,11 @@ void NormalMisileEnemy::Finalize()
 void NormalMisileEnemy::Update()
 {
 	//発射
-	if (120 <= shotTimer && !initShotFlag && iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
+	//ゲーム内で攻撃モーションの起動
+	bool lGameShotFlag = !demoFlag && 120 <= shotTimer && !initShotFlag && iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag;
+	bool lDebugShotFlag = demoFlag && debugShotFlag;
+
+	if (lGameShotFlag || lDebugShotFlag)
 	{
 		iEnemy_EnemyStatusData->genarateData.initPos = iEnemy_ModelRender->data.transform.pos;
 		iEnemy_EnemyStatusData->genarateData.enemyType = ENEMY_TYPE_MISILE_SPLINE;
@@ -48,6 +55,7 @@ void NormalMisileEnemy::Update()
 		lerpPos = iEnemy_ModelRender->data.transform.pos + kockBackVel;
 		SoundManager::Instance()->PlaySoundMem(shotSoundHandle, 1);
 		initShotFlag = true;
+		debugShotFlag = false;
 	}
 
 	//死亡演出処理
@@ -83,7 +91,10 @@ void NormalMisileEnemy::Update()
 
 		++shotTimer;
 		KazMath::Vec3<float> vel = { 0.0f,0.0f,-1.0f };
-		lerpPos += vel;
+		if (!demoFlag)
+		{
+			lerpPos += vel;
+		}
 	}
 
 	KazMath::Larp(lerpPos.z, &iEnemy_ModelRender->data.transform.pos.z, 0.1f);
