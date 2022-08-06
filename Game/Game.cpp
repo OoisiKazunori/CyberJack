@@ -11,7 +11,6 @@
 #include<iostream>
 #include"../KazLibrary/Sound/SoundManager.h"
 
-
 Game::Game()
 {
 	besidePoly = std::make_unique<BoxPolygonRender>();
@@ -115,7 +114,7 @@ Game::~Game()
 	SoundManager::Instance()->StopSoundMem(bgmSoundHandle);
 }
 
-void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> &RESPONE_DATA)
+void Game::Init(const array<array<KazEnemyHelper::ResponeData, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> &RESPONE_DATA)
 {
 	player.Init(KazMath::Transform3D().pos);
 	cursor.Init();
@@ -128,51 +127,16 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	const int NO_ENEMY_NUM = 0;
 	BufferMemorySize enemySize;
 	enemySize.startSize = NO_ENEMY_NUM;
-	enemySize.endSize = ENEMY_NUM_MAX;
+	enemySize.endSize = KazEnemyHelper::ENEMY_NUM_MAX;
 
 	BufferMemorySize eventSize;
-	enemySize.startSize = ENEMY_NUM_MAX;
-	enemySize.endSize = ENEMY_NUM_MAX + 50;
+	enemySize.startSize = KazEnemyHelper::ENEMY_NUM_MAX;
+	enemySize.endSize = KazEnemyHelper::ENEMY_NUM_MAX + 50;
 
 	responeData = RESPONE_DATA;
 
 	//操作可能OBJを纏めて生成する処理----------------------------------------------------------------
-	for (int enemyType = 0; enemyType < responeData.size(); ++enemyType)
-	{
-		for (int enemyCount = 0; enemyCount < responeData[enemyType].size(); ++enemyCount)
-		{
-			if (responeData[enemyType][enemyCount].layerLevel != -1)
-			{
-				switch (enemyType)
-				{
-				case ENEMY_TYPE_NORMAL:
-					enemies[enemyType][enemyCount] = std::make_unique<NormalEnemy>();
-					break;
-
-				case ENEMY_TYPE_MOTHER:
-					enemies[enemyType][enemyCount] = std::make_unique<NormalEnemy>();
-					//子敵の生成(テスト用)
-					for (int i = 0; i < 8; ++i)
-					{
-						int index = enemiesHandle[ENEMY_TYPE_KID];
-						enemies[ENEMY_TYPE_KID][index] = std::make_unique<KidEnemy>();
-						++enemiesHandle[ENEMY_TYPE_KID];
-					}
-					break;
-
-				case ENEMY_TYPE_MISILE:
-					enemies[enemyType][enemyCount] = std::make_unique<NormalMisileEnemy>();
-					enemies[ENEMY_TYPE_MISILE_SPLINE][enemiesHandle[ENEMY_TYPE_MISILE_SPLINE]] = std::make_unique<SplineMisile>();
-					++enemiesHandle[ENEMY_TYPE_MISILE_SPLINE];
-					break;
-
-				default:
-					break;
-				}
-				++enemiesHandle[enemyType];
-			}
-		}
-	}
+	KazEnemyHelper::GenerateEnemy(enemies, responeData, enemiesHandle);
 	//敵を纏めて生成する処理----------------------------------------------------------------
 
 
@@ -187,7 +151,7 @@ void Game::Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> 
 	}
 	changeLayerLevelMaxTime[0] = 60 * 28;
 	changeLayerLevelMaxTime[1] = 60 * 39;
-	gameStageLevel = 0;
+	gameStageLevel = 1;
 	stageNum = gameStageLevel;
 	//ゲームループの初期化----------------------------------------------------------------
 
@@ -612,73 +576,12 @@ void Game::Update()
 
 #pragma region 生成処理
 	//敵を追加で初期化する処理----------------------------------------------------------------
-	for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
-	{
-		for (int enemyCount = 0; enemyCount < enemies[enemyType].size(); ++enemyCount)
-		{
-			//生成されている、初期化している敵のみ更新処理を通す
-			bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
-			if (enableToUseDataFlag)
-			{
-				EnemyData *enemyData = enemies[enemyType][enemyCount]->GetData().get();
-				//追加で生成するデータを検知したら生成する
-				if (enemyData->genarateData.enemyType != -1)
-				{
-					//生成する敵の種類
-					int enemyTypeData = enemyData->genarateData.enemyType;
-					//最後に生成して次のハンドル
-					int nowHandle = addEnemiesHandle[enemyTypeData];
-					//現在のレイヤーレベルに合わせる
-					responeData[enemyTypeData][nowHandle].layerLevel = gameStageLevel;
-					//現在のフレーム数+インターバルフレーム*個数で設定する
-					responeData[enemyTypeData][nowHandle].flame = gameFlame;
-					responeData[enemyTypeData][nowHandle].initPos = enemyData->genarateData.initPos;
-					//ハンドルを増やす
-					++addEnemiesHandle[enemyTypeData];
-
-					//追加したら終了処理を入れる
-					enemies[enemyType][enemyCount]->GetData()->genarateData.Finalize();
-				}
-			}
-		}
-	}
+	KazEnemyHelper::AddEnemy(enemies, responeData, addEnemiesHandle, gameFlame, gameStageLevel);
 	//敵を追加で初期化する処理----------------------------------------------------------------
 
 
 	//敵をどのタイミングで初期化する処理----------------------------------------------------------------
-	for (int enemyType = 0; enemyType < responeData.size(); ++enemyType)
-	{
-		for (int enemyCount = 0; enemyCount < responeData[enemyType].size(); ++enemyCount)
-		{
-			bool enableToUseThisDataFlag = responeData[enemyType][enemyCount].layerLevel != -1;
-			bool readyToInitDataFlag = responeData[enemyType][enemyCount].flame == gameFlame &&
-				responeData[enemyType][enemyCount].layerLevel == gameStageLevel;
-
-			if (enableToUseThisDataFlag && readyToInitDataFlag)
-			{
-				switch (enemyType)
-				{
-				case ENEMY_TYPE_NORMAL:
-					enemies[enemyType][enemyCount]->Init(responeData[enemyType][enemyCount].initPos);
-					break;
-
-				case ENEMY_TYPE_KID:
-					enemies[enemyType][enemyCount]->Init(responeData[enemyType][enemyCount].initPos);
-					break;
-
-				case ENEMY_TYPE_MISILE:
-					enemies[enemyType][enemyCount]->Init(responeData[enemyType][enemyCount].initPos);
-					break;
-
-				case ENEMY_TYPE_MISILE_SPLINE:
-					enemies[enemyType][enemyCount]->Init(responeData[enemyType][enemyCount].initPos);
-					break;
-				default:
-					break;
-				}
-			}
-		}
-	}
+	KazEnemyHelper::InitEnemy(enemies, responeData, gameFlame, gameStageLevel);
 	//敵をどのタイミングで初期化する処理----------------------------------------------------------------
 #pragma endregion
 
@@ -1216,7 +1119,7 @@ void Game::Draw()
 				bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
 				if (enableToUseDataFlag)
 				{
-					//enemies[enemyType][enemyCount]->Draw();
+					enemies[enemyType][enemyCount]->Draw();
 				}
 			}
 		}

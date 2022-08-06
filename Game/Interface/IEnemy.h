@@ -10,9 +10,9 @@ enum eEnemyType
 {
 	ENEMY_TYPE_NONE = -1,
 	ENEMY_TYPE_NORMAL,
-	ENEMY_TYPE_MOTHER,
 	ENEMY_TYPE_MISILE,
 	ENEMY_TYPE_MISILE_SPLINE,
+	ENEMY_TYPE_MOTHER,
 	ENEMY_TYPE_KID
 };
 
@@ -107,18 +107,22 @@ public:
 
 	
 	/// <returns>敵の情報</returns>
-	const unique_ptr<EnemyData> &GetData();
+	const std::unique_ptr<EnemyData> &GetData();
 
 	void HitSound();
 	void DeadSound();
 
-	unique_ptr<EnemyData> iEnemy_EnemyStatusData;		//敵の状態を保存するデータ
+	//攻撃を確認する用の関数
+	virtual void DebugShot() { debugShotFlag = true; };
+
+	std::unique_ptr<EnemyData> iEnemy_EnemyStatusData;		//敵の状態を保存するデータ
 	ObjModelRenderPtr iEnemy_ModelRender;				//敵の描画
 	KazMath::Vec3<float> lerpPos;
 
 protected:
 	bool initDeadSoundFlag;
 	bool demoFlag;
+	bool debugShotFlag;
 private:
 	int deadSoundHandle;
 	int damageSoundHandle;

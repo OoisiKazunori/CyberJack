@@ -101,6 +101,7 @@
     <ClCompile Include="Game\Stage\GpuParticleStage.cpp" />
     <ClCompile Include="Game\Event\PortalEffect.cpp" />
     <ClCompile Include="KazLibrary\Scene\EnemyDebugScene.cpp" />
+    <ClCompile Include="Game\Helper\EnemyHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -215,6 +216,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="Game\Event\PortalEffect.h" />
     <ClInclude Include="KazLibrary\Scene\EnemyDebugScene.h" />
+    <ClInclude Include="Game\Helper\EnemyHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

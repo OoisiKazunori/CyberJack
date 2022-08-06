@@ -23,6 +23,8 @@ IEnemy::IEnemy()
 
 	deadSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "EnemyDead.wav", false);
 	//damageSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "EnemyDamage.wav");
+
+	debugShotFlag = false;
 }
 
 void IEnemy::Dead()

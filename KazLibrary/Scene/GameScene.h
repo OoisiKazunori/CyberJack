@@ -1,6 +1,7 @@
 #pragma once
 #include"../Game/Game.h"
 #include"../KazLibrary/Scene/SceneBase.h"
+#include"../Game/Helper/EnemyHelper.h"
 
 class GameScene :public SceneBase
 {
@@ -19,6 +20,6 @@ public:
 private:
 	std::unique_ptr<Game> game;//ゲームに関するデータ
 
-	array<array<ResponeData, Game::ENEMY_NUM_MAX>, Game::LAYER_LEVEL_MAX>responeData;
+	std::array<std::array<KazEnemyHelper::ResponeData, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX>responeData;
 
 };

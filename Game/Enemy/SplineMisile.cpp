@@ -19,6 +19,7 @@ void SplineMisile::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
 	iEnemy_ModelRender->data.color.color.x = 255;
 	iEnemy_ModelRender->data.color.color.y = 255;
 	iEnemy_ModelRender->data.color.color.z = 255;
+	iEnemy_ModelRender->data.color.color.a = 255;
 
 	iEnemy_EnemyStatusData->timer = maxTime;
 	iEnemy_EnemyStatusData->hitBox.radius = 5.0f;
@@ -55,7 +56,7 @@ void SplineMisile::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
 	points.push_back(endPos);
 
 	pointTime = maxTime / (static_cast<int>(points.size() )- 3);
-
+	nowTime = 0;
 	initDeadSoundFlag = false;
 	hitFlag = false;
 
@@ -152,10 +153,13 @@ void SplineMisile::Update()
 
 void SplineMisile::Draw()
 {
-	//for (int i = 0; i < pointsRender.size(); ++i)
-	//{
-		//pointsRender[i].Draw();
-	//}
+	if (demoFlag)
+	{
+		for (int i = 0; i < pointsRender.size(); ++i)
+		{
+			pointsRender[i].Draw();
+		}
+	}
 	iEnemy_ModelRender->Draw();
 	LockOnWindow(iEnemy_ModelRender->data.transform.pos);
 }

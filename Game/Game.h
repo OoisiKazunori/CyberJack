@@ -4,11 +4,6 @@
 #include<memory>
 #include"../Game/Player.h"
 #include"../Game/UI/Cursor.h"
-#include"../Game/Interface/IEnemy.h"
-#include"../Game/Enemy/NormalEnemy.h"
-#include"../Game/Enemy/KidEnemy.h"
-#include"../Game/Enemy/SplineMisile.h"
-#include"../Game/Enemy/NormalMisileEnemy.h"
 #include"../Game/LineEffect/LineLevel1.h"
 #include"../Game/Event/GoalBox.h"
 #include"../KazLibrary/RenderTarget/RenderTargetStatus.h"
@@ -27,17 +22,8 @@
 #include"../Game/Event/TutorialWindow.h"
 #include"../Game/Enemy/HitEnemyEffect.h"
 #include"../Game//Event/PortalEffect.h"
+#include"../Game/Helper/EnemyHelper.h"
 
-struct ResponeData
-{
-	ResponeData() :layerLevel(-1), flame(-1), initPos({})
-	{
-	}
-	int layerLevel;		//どのレイヤーレベルで現れるか
-	int flame;		//敵が現れるフレーム数
-	KazMath::Vec3<float> initPos;	//初期座標
-	
-};
 
 struct LineEffectData
 {
@@ -70,13 +56,11 @@ class Game
 
 public:
 	//定数--------------------------
-	static const int LAYER_LEVEL_MAX = 10;				//レイヤーレベルの最大数
-	static const int ENEMY_NUM_MAX = 100;				//1レイヤーレベルに登場する敵の最大数
 
 
 	Game();
 	~Game();
-	void Init(const array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> &RESPONE_DATA);
+	void Init(const array<array<KazEnemyHelper::ResponeData,KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> &RESPONE_DATA);
 	void Finalize();
 	void Input();
 	void Update();
@@ -139,11 +123,11 @@ private:
 
 	//敵----------------------------------------------------------------
 	array<unique_ptr<IEnemy>, 2>enemy;					//敵(サンプル)
-	array<array<unique_ptr<IEnemy>, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> enemies;	//1ステージに生成する敵の総数
+	array<array<unique_ptr<IEnemy>, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> enemies;	//1ステージに生成する敵の総数
 	array<int, 10> enemiesHandle;						//0から順番に初期化する際に必要
 	array<int, 10> addEnemiesHandle;					//0から順番に追加で初期化する際に必要
-	array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> responeData;		//敵を生成する際に必要な設定
-	array<ResponeData, 50>addResponeData;				//敵を追加で生成する際に必要な設定をスタックしたもの
+	array<array<KazEnemyHelper::ResponeData, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> responeData;		//敵を生成する際に必要な設定
+	array<KazEnemyHelper::ResponeData, 50>addResponeData;				//敵を追加で生成する際に必要な設定をスタックしたもの
 	//敵----------------------------------------------------------------
 
 	//線演出----------------------------------------------------------------
@@ -225,4 +209,3 @@ private:
 	PortalEffect portal;
 
 };
-

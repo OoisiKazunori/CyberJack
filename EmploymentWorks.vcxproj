@@ -194,6 +194,7 @@
     <ClCompile Include="Game\Event\TutorialWindow.cpp" />
     <ClCompile Include="Game\Event\WindowFlame.cpp" />
     <ClCompile Include="Game\Game.cpp" />
+    <ClCompile Include="Game\Helper\EnemyHelper.cpp" />
     <ClCompile Include="Game\Interface\IEnemy.cpp" />
     <ClCompile Include="Game\Interface\IOperationObject.cpp" />
     <ClCompile Include="Game\Interface\IStage.cpp" />
@@ -296,6 +297,7 @@
     <ClInclude Include="Game\Event\TutorialWindow.h" />
     <ClInclude Include="Game\Event\WindowFlame.h" />
     <ClInclude Include="Game\Game.h" />
+    <ClInclude Include="Game\Helper\EnemyHelper.h" />
     <ClInclude Include="Game\Interface\IEnemy.h" />
     <ClInclude Include="Game\Interface\IOperationObject.h" />
     <ClInclude Include="Game\Interface\IStage.h" />
