@@ -55,5 +55,5 @@ private:
 	BoxPolygonRender c1, c2;
 
 
-	DrawGrid floorGrid, leftWallGrid, rightWallGrid;
+	std::array<DrawGrid, 4> gridRender;
 };

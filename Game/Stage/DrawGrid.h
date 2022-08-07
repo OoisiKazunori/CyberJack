@@ -10,7 +10,7 @@ class DrawGrid
 {
 public:
 	DrawGrid();
-	void Init(bool USE_FOR_FLOOR_FLAG, float SPACE);
+	void Init(bool USE_FOR_FLOOR_FLAG, float SPACE, float BASE_POS);
 	void Update();
 	void Draw();
 
@@ -36,8 +36,8 @@ private:
 	float scaleRate;
 
 
-	void InitFloor(float SPACE);
-	void InitWall(float SPACE);
+	void InitFloor(float SPACE, float BASE_POS);
+	void InitWall(float SPACE, float BASE_POS);
 
 };
 

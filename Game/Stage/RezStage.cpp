@@ -6,8 +6,10 @@
 
 RezStage::RezStage()
 {
-
-	floorGrid.Init(true, 300.0f);
+	gridRender[0].Init(true, 300.0f, -150.0f);
+	gridRender[1].Init(true, 300.0f, 3000.0f);
+	gridRender[2].Init(false, 300.0f, -3000.0f);
+	gridRender[3].Init(false, 300.0f, 3000.0f);
 
 	for (int i = 0; i < filePassChar.size(); ++i)
 	{
@@ -135,7 +137,10 @@ RezStage::RezStage()
 
 void RezStage::Update()
 {
-	floorGrid.Update();
+	for (int i = 0; i < gridRender.size(); ++i)
+	{
+		gridRender[i].Update();
+	}
 
 #pragma region ImGuiObj
 	bool lImportFlag = false;
@@ -328,9 +333,6 @@ void RezStage::Update()
 
 void RezStage::Draw()
 {
-
-	floorGrid.Draw();
-
 	for (int i = 0; i < floorObjectRender.size(); ++i)
 	{
 		for (int objIndex = 0; objIndex < floorObjectRender[i].objRender.size(); ++objIndex)
@@ -338,6 +340,12 @@ void RezStage::Draw()
 			floorObjectRender[i].objRender[objIndex].Draw();
 		}
 	}
+
+	for (int i = 0; i < gridRender.size(); ++i)
+	{
+		gridRender[i].Draw();
+	}
+
 
 	selectingR.Draw();
 

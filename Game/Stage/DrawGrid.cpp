@@ -16,15 +16,15 @@ DrawGrid::DrawGrid()
 	}
 }
 
-void DrawGrid::Init(bool USE_FOR_FLOOR_FLAG, float SPACE)
+void DrawGrid::Init(bool USE_FOR_FLOOR_FLAG, float SPACE, float BASE_POS)
 {
 	if (USE_FOR_FLOOR_FLAG)
 	{
-		InitFloor(SPACE);
+		InitFloor(SPACE, BASE_POS);
 	}
 	else
 	{
-		InitWall(SPACE);
+		InitWall(SPACE, BASE_POS);
 	}
 
 	int lLineRIndex = 0;
@@ -196,10 +196,10 @@ void DrawGrid::Draw()
 	}
 }
 
-void DrawGrid::InitFloor(float SPACE)
+void DrawGrid::InitFloor(float SPACE, float BASE_POS)
 {
 	const float L_SPACE = SPACE;
-	const float L_Y = -150.0f;
+	const float L_Y = BASE_POS;
 	const float L_X = -10000.0f;
 	for (int i = 0; i < gridFloorZLinePos.size(); ++i)
 	{
@@ -218,15 +218,15 @@ void DrawGrid::InitFloor(float SPACE)
 	}
 }
 
-void DrawGrid::InitWall(float SPACE)
+void DrawGrid::InitWall(float SPACE, float BASE_POS)
 {
 	const float L_SPACE = SPACE;
 	const float L_Y = -150.0f;
-	const float L_X = -1000.0f;
+	const float L_X = BASE_POS;
 	for (int i = 0; i < gridFloorZLinePos.size(); ++i)
 	{
 		float index = static_cast<float>(i);
-		gridFloorZLinePos[i][0].pos = { L_X,L_Y,-700.0f + index * L_SPACE };
+		gridFloorZLinePos[i][0].pos = { L_X,10000.0f,-700.0f + index * L_SPACE };
 		gridFloorZLinePos[i][1] = gridFloorZLinePos[i][0];
 		gridFloorZLinePos[i][1].pos.y *= -1;
 	}
