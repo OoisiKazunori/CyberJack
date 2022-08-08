@@ -433,8 +433,7 @@ float KazMath::AngleToRadian(float ANGLE)
 	return radian;
 }
 
-template <typename T>
-inline DirectX::XMMATRIX KazMath::CaluMat(const KazMath::Transform3D &TRANSFORM, const Vec3<T> &Y_VEC, const Vec3<T> &Z_VEC, const DirectX::XMMATRIX &VIEW_MAT, const DirectX::XMMATRIX &PROJECT_MAT)
+DirectX::XMMATRIX KazMath::CaluMat(const KazMath::Transform3D &TRANSFORM, const DirectX::XMMATRIX &VIEW_MAT, const DirectX::XMMATRIX &PROJECT_MAT, const Vec3<float> &Y_VEC, const Vec3<float> &Z_VEC)
 {
 	BaseMatWorldData baseMatWorldData;
 	baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();

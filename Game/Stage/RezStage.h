@@ -56,4 +56,14 @@ private:
 
 
 	std::array<DrawGrid, 4> gridRender;
+
+	std::unique_ptr<BoxPolygonRender> poly;
+	RESOURCE_HANDLE lineDrawHandle;
+
+
+	struct MatData
+	{
+		DirectX::XMFLOAT4 color;
+		DirectX::XMMATRIX mat;
+	};
 };

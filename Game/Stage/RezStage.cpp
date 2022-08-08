@@ -6,10 +6,16 @@
 
 RezStage::RezStage()
 {
+	poly = std::make_unique<BoxPolygonRender>(true, 400);
+	poly->data.pipelineName = PIPELINE_NAME_INSTANCE_COLOR;
+	lineDrawHandle = poly->CreateConstBuffer(sizeof(MatData) * 500, "MatData", GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DRAW);
+
+
 	gridRender[0].Init(true, 300.0f, -150.0f);
 	gridRender[1].Init(true, 300.0f, 3000.0f);
 	gridRender[2].Init(false, 300.0f, -3000.0f);
 	gridRender[3].Init(false, 300.0f, 3000.0f);
+
 
 	for (int i = 0; i < filePassChar.size(); ++i)
 	{
@@ -289,7 +295,7 @@ void RezStage::Update()
 		bool limitZLineFlag = floorObjectRender[i].objRender[0].data.transform.pos.z <= -100.0f;
 
 		floorObjectRender[i].objRender[1].data.transform = floorObjectRender[i].objRender[0].data.transform;
-		floorObjectRender[i].objRender[0].data.transform.scale.y = floorObjectRender[i].initScale.y + EasingMaker(Out, Cubic, scaleRate) * 50.0f;
+		//floorObjectRender[i].objRender[0].data.transform.scale.y = floorObjectRender[i].initScale.y + EasingMaker(Out, Cubic, scaleRate) * 50.0f;
 		floorObjectRender[i].objRender[0].data.transform.pos.y = -150.0f + floorObjectRender[i].objRender[0].data.transform.scale.y;
 
 		floorObjectRender[i].objRender[1].data.transform.scale.y = floorObjectRender[i].objRender[0].data.transform.scale.y;
@@ -305,6 +311,14 @@ void RezStage::Update()
 #pragma endregion
 
 
+	std::array<MatData, 400>lArrayData;
+	for (int i = 0; i < 400; ++i)
+	{
+		lArrayData[i].mat = DirectX::XMMatrixIdentity() * CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
+		lArrayData[i].color = { 1.0f,1.0f,1.0f,1.0f };
+	}
+	poly->TransData(lArrayData.data(), lineDrawHandle, "MatData");
+
 
 	ImGui::Begin("C");
 	ImGui::DragFloat("CirclePosX", &pos.x);
@@ -318,6 +332,8 @@ void RezStage::Update()
 	ImGui::DragFloat("RayposY2", &ray->data.endPos.y);
 	ImGui::DragFloat("RayposZ2", &ray->data.endPos.z);
 	ImGui::End();
+
+
 
 
 
@@ -345,6 +361,9 @@ void RezStage::Draw()
 	{
 		gridRender[i].Draw();
 	}
+
+
+	poly->Draw();
 
 
 	selectingR.Draw();

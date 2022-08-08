@@ -27,7 +27,8 @@ private:
 	int timer;
 	int maxTimer;
 	int lightEffectIndex;
-	std::array<std::array<KazMath::Vec3<float>, 5>, LINE_MAX> lightEffectGridFloorLinePos;
+	std::array<std::array<KazMath::Vec3<float>, 5>, LINE_MAX> lightEffectGridFloorLineStartPos;
+	std::array<std::array<KazMath::Vec3<float>, 5>, LINE_MAX> lightEffectGridFloorLineEndPos;
 	std::array<std::array<LineFlashLight, 5>, LINE_MAX> lightEffectArray;
 	std::array<bool, LINE_MAX> lightEffectInitFlagArray;
 	//グリッドの描画ーーー
@@ -35,7 +36,7 @@ private:
 	bool reversValueFlag;
 	float scaleRate;
 
-
+	bool floorFlag;
 	void InitFloor(float SPACE, float BASE_POS);
 	void InitWall(float SPACE, float BASE_POS);
 

@@ -29,4 +29,5 @@ private:
 	bool useXPosFlag;
 	bool useYPosFlag;
 	bool useZPosFlag;
+
 };
