@@ -203,13 +203,13 @@ void DrawGrid::Draw()
 		gridLineRender[i].Draw();
 	}
 
-	for (int i = 0; i < lightEffectArray.size(); ++i)
+	/*for (int i = 0; i < lightEffectArray.size(); ++i)
 	{
 		for (int squareIndex = 0; squareIndex < lightEffectArray[i].size(); ++squareIndex)
 		{
 			lightEffectArray[i][squareIndex].Draw();
 		}
-	}
+	}*/
 }
 
 void DrawGrid::InitFloor(float SPACE, float BASE_POS)
