@@ -5,12 +5,24 @@
 
 NormalEnemy::NormalEnemy()
 {
+	fireRender.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::EffectFirePath + "Fire.png");
+	fireRender.data.billBoardFlag = false;
+	
+	fireRender.data.transform.pos = { 0.0f,0.0f,-45.0f };
+	fireRender.data.transform.scale = { 0.5f,1.5f,1.0f };
+	fireRender.data.transform.rotation = { 0.0f,-90.0f,90.0f };
+	fireRender.data.pipelineName = PIPELINE_NAME_SPRITE_DEPTH_NOTEQUAL;
+
+	bloomTexPos = { 0.0f,0.0f,20.0f };
+	bloomRender.data.change3DFlag = true;
+	bloomRender.data.billBoardFlag = true;
+	bloomRender.data.radius = 5.0f;
 }
 
 void NormalEnemy::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
 {
 	iEnemy_ModelRender->data.transform.pos = POS;	//座標の初期化
-	iEnemy_ModelRender->data.transform.scale = { 10.0f,10.0f,10.0f };
+	iEnemy_ModelRender->data.transform.scale = { 1.0f,1.0f,1.0f };
 	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "MoveEnemy_Model.obj");	//モデル読み込み
 	iEnemy_EnemyStatusData->hitBox.radius = 15.0f;	//当たり判定の大きさ変更
 	iOperationData.Init(1);							//残りロックオン数等の初期化
@@ -22,11 +34,12 @@ void NormalEnemy::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
 	iEnemy_ModelRender->data.color.color.z = 255;
 	iEnemy_ModelRender->data.color.color.a = 0;
 	iEnemy_ModelRender->data.transform.rotation.x = 0.0f;
-	iEnemy_ModelRender->data.transform.rotation.y = 90.0f;
+	iEnemy_ModelRender->data.transform.rotation.y = 180.0f;
 	iEnemy_ModelRender->data.transform.rotation.z = 0.0f;
 
 	initDeadSoundFlag = false;
 	demoFlag = DEMO_FLAG;
+
 }
 
 void NormalEnemy::Finalize()
@@ -79,6 +92,19 @@ void NormalEnemy::Update()
 		iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag = false;
 		iEnemy_EnemyStatusData->outOfStageFlag = true;
 	}
+
+
+
+	ImGui::Begin("Fire");
+	ImGui::DragFloat("POS_X", &bloomTexPos.x);
+	ImGui::DragFloat("POS_Y", &bloomTexPos.y);
+	ImGui::DragFloat("POS_Z", &bloomTexPos.z);
+	ImGui::DragFloat("SCALE_X", &bloomRender.data.radius);
+	ImGui::End();
+
+	fireRender.data.motherMat = iEnemy_ModelRender->GetMotherMatrixPtr();
+	bloomRender.data.transform.pos = {};
+	bloomRender.data.transform.pos = iEnemy_ModelRender->data.transform.pos + bloomTexPos;
 }
 
 void NormalEnemy::Draw()
@@ -86,6 +112,8 @@ void NormalEnemy::Draw()
 	if (1.0f <= iEnemy_ModelRender->data.color.color.a)
 	{
 		iEnemy_ModelRender->Draw();
+		bloomRender.Draw();
+		fireRender.Draw();
 		LockOnWindow(iEnemy_ModelRender->data.transform.pos);
 	}
 }

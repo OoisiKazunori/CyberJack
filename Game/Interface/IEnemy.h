@@ -2,6 +2,7 @@
 #include"../Game/Interface/IOperationObject.h"
 #include"../KazLibrary/Collision/CollisionManager.h"
 #include"../KazLibrary/Sound/SoundManager.h"
+#include"../KazLibrary/Imgui/MyImgui.h"
 
 /// <summary>
 /// “G‚ÌŽí—Þ
@@ -126,5 +127,6 @@ protected:
 private:
 	int deadSoundHandle;
 	int damageSoundHandle;
+
 
 };

@@ -16,6 +16,9 @@ public:
 	void Draw();
 
 private:
-
+	KazMath::Vec3<float>fireTexPos;
+	KazMath::Vec3<float>bloomTexPos;
+	Sprite3DRender fireRender;
+	CircleRender bloomRender;
 };
 

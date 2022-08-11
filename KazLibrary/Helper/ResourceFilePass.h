@@ -30,6 +30,8 @@ namespace KazFilePathName
 	static std::string SceneChangePath = RelativeResourcePath + "SceneChange/";
 	static std::string TutorialPath = RelativeResourcePath + "Tutorial/";
 	static std::string EnemyPath = RelativeResourcePath + "Enemy/";
+	static std::string EffectPath = RelativeResourcePath + "Effect/";
+	static std::string EffectFirePath = EffectPath + "Fire/";
 	static std::string LinePath = RelativeResourcePath + "Line/";
 	static std::string SoundPath = RelativeResourcePath + "Sound/";
 
