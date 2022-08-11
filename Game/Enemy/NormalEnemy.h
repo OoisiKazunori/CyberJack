@@ -1,6 +1,7 @@
 #pragma once
 #include"../KazLibrary/Render/KazRender.h"
 #include"../Game/Interface/IEnemy.h"
+#include"../Game/Effect/RocketEffect.h"
 
 /// <summary>
 /// ƒTƒ“ƒvƒ‹—p‚Ì“G
@@ -16,11 +17,6 @@ public:
 	void Draw();
 
 private:
-	KazMath::Vec3<float>fireTexPos;
-	KazMath::Vec3<float>bloomTexPos;
-	Sprite3DRender fireRender;
-	CircleRender bloomRender;
-
-	int bloomTimer;
+	RocketEffect rocketEffect;
 };
 

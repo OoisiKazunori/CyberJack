@@ -18,7 +18,6 @@ void NormalMisileEnemy::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
 	iOperationData.Init(1);							//残りロックオン数等の初期化
 
 	model.data.pipelineName = PIPELINE_NAME_FBX_RENDERTARGET_TWO;
-	//model.data.removeMaterialFlag = false;
 	model.data.color.color.x = 255;
 	model.data.color.color.y = 255;
 	model.data.color.color.z = 255;
@@ -32,6 +31,8 @@ void NormalMisileEnemy::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
 	demoFlag = DEMO_FLAG;
 
 	shotTimer = 0;
+
+	rocketEffect.Init(&model.data.transform.pos);
 }
 
 void NormalMisileEnemy::Finalize()
@@ -41,7 +42,7 @@ void NormalMisileEnemy::Finalize()
 void NormalMisileEnemy::Update()
 {
 
-	//++model.data.transform.rotation.z;
+	++model.data.transform.rotation.z;
 	//発射
 	//ゲーム内で攻撃モーションの起動
 	bool lGameShotFlag = !demoFlag && 120 <= shotTimer && !initShotFlag && iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag;
@@ -107,11 +108,15 @@ void NormalMisileEnemy::Update()
 		iEnemy_EnemyStatusData->outOfStageFlag = true;
 	}
 
+
+	rocketEffect.Update();
+
 }
 
 void NormalMisileEnemy::Draw()
 {
 	model.data.isPlay = true;
 	model.Draw();
+	rocketEffect.Draw();
 	LockOnWindow(model.data.transform.pos);
 }

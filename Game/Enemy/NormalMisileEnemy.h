@@ -1,5 +1,6 @@
 #pragma once
 #include"../Interface/IEnemy.h"
+#include"../Game/Effect/RocketEffect.h"
 
 class NormalMisileEnemy:public IEnemy
 {
@@ -16,4 +17,6 @@ private:
 	bool initShotFlag;
 	FbxModelRender model;
 	int shotSoundHandle;
+
+	RocketEffect rocketEffect;
 };
