@@ -29,6 +29,9 @@ void EnemyDebugScene::Init()
 	}
 
 	player.data.color = { 0,255,0,255 };
+
+	//kidFbxModel.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "Gunner_Model.fbx");
+	kidFbxModel.data.transform.scale = { 10.0f,10.0f,10.0f };
 }
 
 void EnemyDebugScene::Finalize()
@@ -146,7 +149,7 @@ void EnemyDebugScene::Update()
 		//ŠÈˆÕƒc[ƒ‹‚Ì‰Šú‰»--------------------------------------
 	}
 	//‰Šú‰»--------------------------------------
-
+	kidFbxModel.data.transform.pos = KazMath::Vec3<float>(20.0f, 0.0f, 0.0f);
 
 	//€–S--------------------------------------
 	if (deadFlag)
@@ -195,12 +198,18 @@ void EnemyDebugScene::Update()
 			misiles[specifiedEnemyType][i]->Update();
 		}
 	}
+
+	kidFbxModel.data.isPlay = false;
 }
 
 void EnemyDebugScene::Draw()
 {
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 	RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
+
+
+
+	bg.Draw();
 
 	player.Draw();
 
@@ -214,7 +223,7 @@ void EnemyDebugScene::Draw()
 		}
 	}
 
-	bg.Draw();
+
 }
 
 int EnemyDebugScene::SceneChange()

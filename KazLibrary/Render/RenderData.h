@@ -257,8 +257,9 @@ struct FbxModelData
 	int animationNumber;
 	PipeLineNames pipelineName;
 	CameraIndexData cameraIndex;
+	KazMath::Color color;
 
-	FbxModelData() :pipelineName(PIPELINE_NAME_FBX), animationNumber(0), isPlay(false)
+	FbxModelData() :pipelineName(PIPELINE_NAME_FBX), animationNumber(0), isPlay(false), color(255, 255, 255, 255)
 	{
 	}
 

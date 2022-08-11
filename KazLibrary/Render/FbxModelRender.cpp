@@ -70,7 +70,7 @@ void FbxModelRender::Draw()
 			constMap.world = baseMatWorldData.matWorld;
 			constMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex.id);
 			constMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
-			constMap.color = { 0.0f,0.0f,0.0f,0.0f };
+			constMap.color = data.color.ConvertColorRateToXMFLOAT4();
 			constMap.mat = constMap.world * constMap.view * constMap.viewproj;
 			TransData(&constMap, constBufferHandle[0], typeid(constMap).name());
 		}
@@ -79,20 +79,31 @@ void FbxModelRender::Draw()
 		{
 			ConstBufferDataSkin *constMap = nullptr;
 			gpuBuffer->GetBufferData(constBufferHandle[1])->Map(0, nullptr, (void **)&constMap);
-			for (int i = 0; i < resourceData->bone.size(); i++)
+
+			if (resourceData->bone.size() != 0)
 			{
-				DirectX::XMMATRIX matCurrentPose;
-				FbxAMatrix fbxCurrentPose = resourceData->bone[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime);
-				KazMath::ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
+				for (int i = 0; i < resourceData->bone.size(); i++)
+				{
+					DirectX::XMMATRIX matCurrentPose;
+					FbxAMatrix fbxCurrentPose = resourceData->bone[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime);
+					KazMath::ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
 
 
-				if (resourceData->startTime.size() == 0)
+					if (resourceData->startTime.size() == 0)
+					{
+						constMap->bones[i] = DirectX::XMMatrixIdentity();
+					}
+					else
+					{
+						constMap->bones[i] = resourceData->bone[i].invInitialPose * matCurrentPose;
+					}
+				}
+			}
+			else
+			{
+				for (int i = 0; i < MAX_BONES; i++)
 				{
 					constMap->bones[i] = DirectX::XMMatrixIdentity();
-				}
-				else
-				{
-					constMap->bones[i] = resourceData->bone[i].invInitialPose * matCurrentPose;
 				}
 			}
 			gpuBuffer->GetBufferData(constBufferHandle[1])->Unmap(0, nullptr);

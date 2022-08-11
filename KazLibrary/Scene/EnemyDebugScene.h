@@ -37,5 +37,8 @@ private:
 	bool initFlag, deadFlag, attackFlag;
 
 	BackGroundForDebug bg;
+
+	FbxModelRender kidFbxModel;
+	FbxModelRender kidObjModel;
 };
 
