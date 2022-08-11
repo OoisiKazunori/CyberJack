@@ -70,7 +70,7 @@ void FbxModelRender::Draw()
 			constMap.world = baseMatWorldData.matWorld;
 			constMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex.id);
 			constMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
-			constMap.color = { 0.0f,0.0f,0.0f,0.0f };
+			constMap.color = data.colorData.ConvertColorRateToXMFLOAT4();
 			constMap.mat = constMap.world * constMap.view * constMap.viewproj;
 			TransData(&constMap, constBufferHandle[0], typeid(constMap).name());
 		}
@@ -106,6 +106,7 @@ void FbxModelRender::Draw()
 		}
 
 
+		SetConstBufferOnCmdList(data.pipelineName);
 
 		for (int i = 0; i < resourceData->textureHandle.size(); i++)
 		{
@@ -116,15 +117,9 @@ void FbxModelRender::Draw()
 				renderData.cmdListInstance->cmdList->SetGraphicsRootDescriptorTable(param, gpuDescHandleSRV);
 			}
 		}
-		SetConstBufferOnCmdList(data.pipelineName);
-
+	
 
 		DrawIndexInstanceCommand(drawIndexInstanceCommandData);
-
-	}
-	else
-	{
-
 	}
 
 	data.Record();

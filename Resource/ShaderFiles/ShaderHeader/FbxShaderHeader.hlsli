@@ -6,18 +6,6 @@ cbuffer skinning : register(b1)
     matrix matSkinning[MAX_BONES];
 }
 
-//cbuffer fogBuffer : register(b2)
-//{
-//    //フォグがかかり始める距離
-//    float4 start;
-//    //フォグが最大になる距離
-//    float4 end;
-//    //カメラの位置と頂点の距離
-//    float4 distance;
-//    //フォグカラー
-//    float4 fogColor;
-//}
-
 struct VSInput
 {
     float4 pos : POSITION;
@@ -32,14 +20,6 @@ struct SkinOutPut
     float4 pos;
     float3 normal;
 };
-
-//struct VSOutput
-//{
-//    float4 svpos : SV_POSITION; //システム用頂点座標
-//    float3 normal : NORMAL; //法線ベクトル
-//    float2 uv : TEXCOORD; //uv値
-//};
-
 
 SkinOutPut ComputeSkin(VSInput input)
 {
@@ -82,3 +62,7 @@ SkinOutPut ComputeSkin(VSInput input)
 }
 
 
+struct ColorOutPut
+{
+    float4 svpos : SV_POSITION; //システム用頂点座標
+};

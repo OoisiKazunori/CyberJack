@@ -27,7 +27,7 @@ private:
 	//è∞Ç…OBJîzíu
 	struct FloorObjData
 	{
-		std::array<BoxPolygonRender, 2> objRender;
+		std::array<ObjModelRender, 2> objRender;
 		KazMath::Vec3<float>initScale;
 	};
 	std::array<FloorObjData, 50>floorObjectRender;
@@ -37,9 +37,6 @@ private:
 
 	Sprite3DRender vaporWaveSunRender;
 
-
-	FbxModelRender model;
-	ObjModelRender objModel;
 
 	std::array<std::array<char, 100>, 50>filePassChar;
 	ParameterMgr stageParamLoader;

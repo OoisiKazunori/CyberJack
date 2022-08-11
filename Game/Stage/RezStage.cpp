@@ -29,10 +29,16 @@ RezStage::RezStage()
 		filePassChar[i][7] = '\0';
 	}
 
+	RESOURCE_HANDLE lR = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "Mountain03_Model.obj");
+
 	for (int i = 0; i < floorObjectRender.size(); ++i)
 	{
 		const float maxXPos = 4000.0f;
 		const float minXPos = 500.0f;
+
+		floorObjectRender[i].objRender[0].data.handle = lR;
+		floorObjectRender[i].objRender[1].data.handle = lR;
+
 		if (KazMath::Rand<int>(2, 0))
 		{
 			floorObjectRender[i].objRender[0].data.transform.pos.x = KazMath::Rand<float>(-maxXPos, -minXPos);
@@ -43,26 +49,28 @@ RezStage::RezStage()
 		}
 		floorObjectRender[i].objRender[0].data.transform.pos.z = KazMath::Rand<float>(10000, -100);
 
-		const float lScaleRate = abs(floorObjectRender[i].objRender[0].data.transform.pos.x) / abs(maxXPos);
-		const float lScaleMin = 100.0f;
-		const float lScaleMax = (lScaleRate * 200.0f) + lScaleMin;
-		floorObjectRender[i].objRender[0].data.transform.scale =
+		//const float lScaleRate = abs(floorObjectRender[i].objRender[0].data.transform.pos.x) / abs(maxXPos);
+		//const float lScaleMin = 100.0f;
+		//const float lScaleMax = (lScaleRate * 200.0f) + lScaleMin;
+		/*floorObjectRender[i].objRender[0].data.transform.scale =
 		{
 			KazMath::Rand<float>(lScaleMax,lScaleMin),
 			KazMath::Rand<float>(lScaleMax,lScaleMin),
 			KazMath::Rand<float>(lScaleMax,lScaleMin)
-		};
+		};*/
 		floorObjectRender[i].initScale = floorObjectRender[i].objRender[0].data.transform.scale;
 		floorObjectRender[i].objRender[0].data.transform.pos.y = -150.0f + floorObjectRender[i].objRender[0].data.transform.scale.y;
 
 
-		floorObjectRender[i].objRender[0].data.color = { 255,255,255,255 };
-		floorObjectRender[i].objRender[0].data.pipelineName = PIPELINE_NAME_FOG_COLOR;
+		floorObjectRender[i].objRender[0].data.color = KazMath::Color(213, 5, 228, 255);
+		floorObjectRender[i].objRender[0].data.pipelineName = PIPELINE_NAME_OBJ_WIREFLAME_FOG;
+		floorObjectRender[i].objRender[0].data.removeMaterialFlag = true;
 
-		floorObjectRender[i].objRender[1].data.transform.pos = floorObjectRender[i].objRender[0].data.transform.pos + KazMath::Vec3<float>(0.0f, -(floorObjectRender[i].objRender[0].data.transform.scale.y * 2), 0.0f);
+		floorObjectRender[i].objRender[1].data.transform.pos = floorObjectRender[i].objRender[0].data.transform.pos + KazMath::Vec3<float>(0.0f, -50.0f, 0.0f);
 		floorObjectRender[i].objRender[1].data.transform.scale = floorObjectRender[i].objRender[0].data.transform.scale;
-		floorObjectRender[i].objRender[1].data.color = { 255,0,0,255 };
-		floorObjectRender[i].objRender[1].data.pipelineName = PIPELINE_NAME_FOG_COLOR;
+		floorObjectRender[i].objRender[1].data.transform.rotation = { 180.0f,0.0f,0.0f };
+		floorObjectRender[i].objRender[1].data.color = KazMath::Color(248, 58, 16, 255);
+		floorObjectRender[i].objRender[1].data.pipelineName = PIPELINE_NAME_OBJ_WIREFLAME_FOG;
 
 		RESOURCE_HANDLE lHandle = floorObjectRender[i].objRender[0].CreateConstBuffer(sizeof(FogData), typeid(FogData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
 		RESOURCE_HANDLE lHandle2 = floorObjectRender[i].objRender[1].CreateConstBuffer(sizeof(FogData), typeid(FogData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
@@ -86,11 +94,6 @@ RezStage::RezStage()
 
 	maxTimer = 60;
 
-
-
-	//model.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "boneTest.fbx");
-	model.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "Gunner_Switch_anim_v02.fbx");
-	//objModel.data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "Gunner_Switch_anim.obj");
 
 
 
@@ -291,15 +294,17 @@ void RezStage::Update()
 
 	for (int i = 0; i < floorObjectRender.size(); ++i)
 	{
-		//floorObjectRender[i].objRender[0].data.transform.pos.z += 0.0f;
+		float lVelZ = 0.0f;
+		floorObjectRender[i].objRender[0].data.transform.pos.z += lVelZ;
 		bool limitZLineFlag = floorObjectRender[i].objRender[0].data.transform.pos.z <= -100.0f;
 
 		floorObjectRender[i].objRender[1].data.transform = floorObjectRender[i].objRender[0].data.transform;
-		//floorObjectRender[i].objRender[0].data.transform.scale.y = floorObjectRender[i].initScale.y + EasingMaker(Out, Cubic, scaleRate) * 50.0f;
+		//floorObjectRender[i].objRender[0].data.transform.scale.y = floorObjectRender[i].initScale.y + EasingMaker(Out, Cubic, scaleRate) * 0.5f;
 		floorObjectRender[i].objRender[0].data.transform.pos.y = -150.0f + floorObjectRender[i].objRender[0].data.transform.scale.y;
 
 		floorObjectRender[i].objRender[1].data.transform.scale.y = floorObjectRender[i].objRender[0].data.transform.scale.y;
-		floorObjectRender[i].objRender[1].data.transform.pos = floorObjectRender[i].objRender[0].data.transform.pos + KazMath::Vec3<float>(0.0f, -(floorObjectRender[i].objRender[0].data.transform.scale.y * 2), 0.0f);
+		floorObjectRender[i].objRender[1].data.transform.pos = floorObjectRender[i].objRender[0].data.transform.pos;
+		floorObjectRender[i].objRender[1].data.transform.rotation = { 180.0f,0.0f,0.0f };
 
 
 		if (limitZLineFlag)
@@ -351,9 +356,9 @@ void RezStage::Draw()
 {
 	for (int i = 0; i < floorObjectRender.size(); ++i)
 	{
-		for (int objIndex = 0; objIndex < floorObjectRender[i].objRender.size(); ++objIndex)
+		for (int objectIndex = 0; objectIndex < floorObjectRender[i].objRender.size(); ++objectIndex)
 		{
-			floorObjectRender[i].objRender[objIndex].Draw();
+			floorObjectRender[i].objRender[objectIndex].Draw();
 		}
 	}
 
@@ -370,21 +375,6 @@ void RezStage::Draw()
 
 	vaporWaveSunRender.Draw();
 
-	ray->Draw();
-	c1.Draw();
-	c2.Draw();
-
-	ImGui::Begin("Model");
-	ImGui::DragFloat("POS_X", &model.data.transform.pos.x);
-	ImGui::DragFloat("POS_Y", &model.data.transform.pos.y);
-	ImGui::DragFloat("POS_Z", &model.data.transform.pos.z);
-	ImGui::DragFloat("SCALE_X", &model.data.transform.scale.x);
-	ImGui::DragFloat("SCALE_Y", &model.data.transform.scale.y);
-	ImGui::DragFloat("SCALE_Z", &model.data.transform.scale.z);
-	ImGui::End();
-
-	//model.Draw();
-	//DrawBackGround();
 
 
 }

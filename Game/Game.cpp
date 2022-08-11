@@ -1261,8 +1261,8 @@ void Game::Draw()
 
 		CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 1);
 		player.Draw();
-		stages[lStageNum]->SetCamera(1);
-		stages[lStageNum]->Draw();
+		//stages[lStageNum]->SetCamera(1);
+		//stages[lStageNum]->Draw();
 		RenderTargetStatus::Instance()->PrepareToCloseBarrier(potalTexHandle);
 		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 	}
