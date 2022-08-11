@@ -36,6 +36,10 @@ void NormalEnemy::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
 	iEnemy_ModelRender->data.transform.rotation.y = 180.0f;
 	iEnemy_ModelRender->data.transform.rotation.z = 0.0f;
 
+
+	fireRender.data.colorData.color.a = 0;
+	bloomRender.data.colorData.color.a = 0;
+
 	initDeadSoundFlag = false;
 	demoFlag = DEMO_FLAG;
 
@@ -79,10 +83,14 @@ void NormalEnemy::Update()
 		if (iEnemy_ModelRender->data.color.color.a < 255)
 		{
 			iEnemy_ModelRender->data.color.color.a += 5;
+			fireRender.data.colorData.color.a += 5;
+			bloomRender.data.colorData.color.a += 5;
 		}
 		else
 		{
 			iEnemy_ModelRender->data.color.color.a = 255;
+			fireRender.data.colorData.color.a = 255;
+			bloomRender.data.colorData.color.a = 255;
 		}
 	}
 
