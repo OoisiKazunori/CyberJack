@@ -103,6 +103,8 @@
     <ClCompile Include="KazLibrary\Scene\EnemyDebugScene.cpp" />
     <ClCompile Include="Game\Helper\EnemyHelper.cpp" />
     <ClCompile Include="Game\Effect\RocketEffect.cpp" />
+    <ClCompile Include="Game\Enemy\BattleshipEnemy.cpp" />
+    <ClCompile Include="PopEnemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -219,6 +221,8 @@
     <ClInclude Include="KazLibrary\Scene\EnemyDebugScene.h" />
     <ClInclude Include="Game\Helper\EnemyHelper.h" />
     <ClInclude Include="Game\Effect\RocketEffect.h" />
+    <ClInclude Include="Game\Enemy\BattleshipEnemy.h" />
+    <ClInclude Include="Game\Enemy\PopEnemy.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

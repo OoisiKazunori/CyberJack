@@ -875,7 +875,12 @@ namespace KazMath
 	/// <returns></returns>
 	inline float ConvertTimerToRate(int TIMER, int MAX_TIMER)
 	{
-		return static_cast<float>(TIMER) / static_cast<float>(MAX_TIMER);
+		float rate = static_cast<float>(TIMER) / static_cast<float>(MAX_TIMER);
+		if (1.0f <= rate)
+		{
+			rate = 1.0f;
+		}
+		return rate;
 	}
 
 

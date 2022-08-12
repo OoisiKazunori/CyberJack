@@ -26,7 +26,7 @@ private:
 
 	//“G----------------------------------------------------------------
 	std::array<std::unique_ptr<IEnemy>, 10>enemies;
-	std::array<std::array<std::unique_ptr<IEnemy>, 10>, 2>misiles;
+	std::array<std::array<std::unique_ptr<IEnemy>, 10>, 10>misiles;
 	std::array<int, 10>kidEnemyHandles;
 	//“G----------------------------------------------------------------
 

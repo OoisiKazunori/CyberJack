@@ -5,6 +5,8 @@
 #include"../KazLibrary/Loader/FbxModelResourceMgr.h"
 #include"../KazLibrary/Helper/ResourceFilePass.h"
 #include"../KazLibrary/Imgui/MyImgui.h"
+#include"../Game/Enemy/BattleshipEnemy.h"
+#include"../Game/Enemy/PopEnemy.h"
 
 EnemyDebugScene::EnemyDebugScene()
 {
@@ -13,6 +15,10 @@ EnemyDebugScene::EnemyDebugScene()
 	++lIndex;
 	enemies[lIndex] = std::make_unique<NormalMisileEnemy>();
 	misiles[lIndex][0] = std::make_unique<SplineMisile>();
+	++lIndex;
+	enemies[lIndex] = std::make_unique<BattleshipEnemy>();
+	++lIndex;
+	enemies[lIndex] = std::make_unique<PopEnemy>();
 }
 
 EnemyDebugScene::~EnemyDebugScene()

@@ -2,10 +2,14 @@
 #include"../KazLibrary/Loader/ObjResourceMgr.h"
 #include"../KazLibrary/Helper/ResourceFilePass.h"
 #include"../KazLibrary/Math/KazMath.h"
+#include"../KazLibrary/Easing/easing.h"
 
 NormalMisileEnemy::NormalMisileEnemy()
 {
 	shotSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Shot.wav", false);
+
+	circleFlashR.data.colorData.color = { 0,255,0,255 };
+	flashR.data.colorData.color = { 0,255,0,255 };
 }
 
 void NormalMisileEnemy::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
@@ -111,6 +115,96 @@ void NormalMisileEnemy::Update()
 
 	rocketEffect.Update();
 
+
+
+	ImGui::Begin("Flash");
+	ImGui::DragFloat("POS_X", &circleFlashR.data.transform.pos.x);
+	ImGui::DragFloat("POS_Y", &circleFlashR.data.transform.pos.y);
+	ImGui::DragFloat("POS_Z", &circleFlashR.data.transform.pos.z);
+	ImGui::DragFloat("SCALE_X", &circleFlashR.data.transform.scale.x);
+	ImGui::DragFloat("SCALE_Y", &circleFlashR.data.transform.scale.y);
+	ImGui::DragFloat("SCALE_Z", &circleFlashR.data.transform.scale.z);
+	ImGui::Checkbox("S", &startFlag);
+	ImGui::End();
+
+	ImGui::Begin("R");
+	ImGui::DragFloat("POS_X", &flashR.data.transform.pos.x);
+	ImGui::DragFloat("POS_Y", &flashR.data.transform.pos.y);
+	ImGui::DragFloat("POS_Z", &flashR.data.transform.pos.z);
+	ImGui::DragFloat("SCALE_X", &flashR.data.transform.scale.x);
+	ImGui::DragFloat("SCALE_Y", &flashR.data.transform.scale.y);
+	ImGui::DragFloat("SCALE_Z", &flashR.data.transform.scale.z);
+	ImGui::End();
+
+
+	if (!startFlag)
+	{
+		disappearTimer = 0;
+		flashTimer = 0;
+		circleFlashTimer = 0;
+	}
+
+	int lT = 0;
+	bool flashFlag = false;
+	if (15 <= flashTimer)
+	{
+		++disappearTimer;
+		lT = disappearTimer;
+		flashTimer = 15;
+		flashFlag = true;
+	}
+	else
+	{
+		++flashTimer;
+		lT = flashTimer;
+	}
+	++circleFlashTimer;
+
+	if (10 <= disappearTimer)
+	{
+		disappearTimer = 10;
+	}
+
+	if (!flashFlag)
+	{
+		flashR.data.transform.scale.x = EasingMaker(Out, Cubic, KazMath::ConvertTimerToRate(lT, 15)) * 3.0f;
+	}
+	else
+	{
+		flashR.data.transform.scale.x = 3.0f + -EasingMaker(In, Cubic, KazMath::ConvertTimerToRate(lT, 10)) * 3.0f;
+	}
+
+
+	float scale = 0.0f;
+	if (flashTimer <= 1)
+	{
+		circleFlashR.data.transform.scale.x = 0.1f;
+		circleFlashR.data.transform.scale.y = 0.1f;
+		circleFlashR.data.transform.scale.z = 0.1f;
+	}
+	else if (flashTimer <= 2)
+	{
+		circleFlashR.data.transform.scale.x = 1.5f;
+		circleFlashR.data.transform.scale.y = 1.0f;
+		circleFlashR.data.transform.scale.z = 1.0f;
+		scale = 0.15f;
+	}
+	else
+	{
+		circleFlashR.data.transform.scale.x = 1.0f + -EasingMaker(Out, Cubic, KazMath::ConvertTimerToRate(circleFlashTimer, 40)) * 1.0f;
+		circleFlashR.data.transform.scale.y = 1.0f + -EasingMaker(Out, Cubic, KazMath::ConvertTimerToRate(circleFlashTimer, 40)) * 1.0f;
+		circleFlashR.data.transform.scale.z = 1.0f + -EasingMaker(Out, Cubic, KazMath::ConvertTimerToRate(circleFlashTimer, 40)) * 1.0f;
+		scale = 0.15f;
+	}
+
+	flashR.data.transform.scale.y = scale + -EasingMaker(Out, Cubic, KazMath::ConvertTimerToRate(disappearTimer, 10)) * scale;
+
+
+
+	flashR.data.radius = 10.0f;
+	circleFlashR.data.radius = 10.0f;
+	flashR.data.change3DFlag = true;
+	circleFlashR.data.change3DFlag = true;
 }
 
 void NormalMisileEnemy::Draw()
@@ -119,4 +213,8 @@ void NormalMisileEnemy::Draw()
 	model.Draw();
 	rocketEffect.Draw();
 	LockOnWindow(model.data.transform.pos);
+
+
+	flashR.Draw();
+	circleFlashR.Draw();
 }

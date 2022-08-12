@@ -177,6 +177,7 @@
     <ClCompile Include="Game\Debug\ParameterMgr.cpp" />
     <ClCompile Include="Game\Debug\WirteCpuLineData.cpp" />
     <ClCompile Include="Game\Effect\RocketEffect.cpp" />
+    <ClCompile Include="Game\Enemy\BattleshipEnemy.cpp" />
     <ClCompile Include="Game\Enemy\HitEnemyEffect.cpp" />
     <ClCompile Include="Game\Enemy\KidEnemy.cpp" />
     <ClCompile Include="Game\Enemy\NormalMisileEnemy.cpp" />
@@ -276,14 +277,17 @@
     <ClCompile Include="KazLibrary\Sound\SoundManager.cpp" />
     <ClCompile Include="KazLibrary\WinApi\Msg.cpp" />
     <ClCompile Include="KazLibrary\WinApi\WinApi.cpp" />
+    <ClCompile Include="PopEnemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
     <ClInclude Include="Game\Debug\WirteCpuLineData.h" />
     <ClInclude Include="Game\Effect\RocketEffect.h" />
+    <ClInclude Include="Game\Enemy\BattleshipEnemy.h" />
     <ClInclude Include="Game\Enemy\HitEnemyEffect.h" />
     <ClInclude Include="Game\Enemy\KidEnemy.h" />
     <ClInclude Include="Game\Enemy\NormalMisileEnemy.h" />
+    <ClInclude Include="Game\Enemy\PopEnemy.h" />
     <ClInclude Include="Game\Enemy\SplineMisile.h" />
     <ClInclude Include="Game\Enemy\NormalEnemy.h" />
     <ClInclude Include="Game\Event\EventSprite.h" />
