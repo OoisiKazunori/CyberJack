@@ -105,6 +105,8 @@
     <ClCompile Include="Game\Effect\RocketEffect.cpp" />
     <ClCompile Include="Game\Enemy\BattleshipEnemy.cpp" />
     <ClCompile Include="Game\Enemy\PopEnemy.cpp" />
+    <ClCompile Include="Game\Enemy\BikeEnemy.cpp" />
+    <ClCompile Include="Game\Enemy\SplineMisileForBikeEnemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -223,6 +225,8 @@
     <ClInclude Include="Game\Effect\RocketEffect.h" />
     <ClInclude Include="Game\Enemy\BattleshipEnemy.h" />
     <ClInclude Include="Game\Enemy\PopEnemy.h" />
+    <ClInclude Include="Game\Enemy\BikeEnemy.h" />
+    <ClInclude Include="Game\Enemy\SplineMisileForBikeEnemy.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

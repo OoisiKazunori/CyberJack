@@ -7,6 +7,8 @@
 #include"../KazLibrary/Imgui/MyImgui.h"
 #include"../Game/Enemy/BattleshipEnemy.h"
 #include"../Game/Enemy/PopEnemy.h"
+#include"../Game/Enemy/BikeEnemy.h"
+#include"../Game/Enemy/SplineMisileForBikeEnemy.h"
 
 EnemyDebugScene::EnemyDebugScene()
 {
@@ -19,6 +21,10 @@ EnemyDebugScene::EnemyDebugScene()
 	enemies[lIndex] = std::make_unique<BattleshipEnemy>();
 	++lIndex;
 	enemies[lIndex] = std::make_unique<PopEnemy>();
+	++lIndex;
+	enemies[lIndex] = std::make_unique<BikeEnemy>();
+	misiles[lIndex][0] = std::make_unique<SplineMisileForBikeEnemy>();
+	misiles[lIndex][1] = std::make_unique<SplineMisileForBikeEnemy>();
 }
 
 EnemyDebugScene::~EnemyDebugScene()
@@ -145,7 +151,7 @@ void EnemyDebugScene::Update()
 		//“G‚ÆŽq“G‚ÌŽ€–S--------------------------------------
 
 		//‰Šú‰»--------------------------------------
-		enemies[specifiedEnemyType]->Init(KazMath::Vec3<float>(20.0f, 0.0f, 200.0f), true);
+		enemies[specifiedEnemyType]->Init(KazMath::Vec3<float>(-100.0f, -5.0f,10.0f), true);
 		//‰Šú‰»--------------------------------------
 
 		//ŠÈˆÕƒc[ƒ‹‚Ì‰Šú‰»--------------------------------------
@@ -219,8 +225,6 @@ void EnemyDebugScene::Draw()
 
 	player.Draw();
 
-	enemies[specifiedEnemyType]->Draw();
-
 	for (int i = 0; i < misiles[specifiedEnemyType].size(); ++i)
 	{
 		if (misiles[specifiedEnemyType][i] != nullptr)
@@ -228,6 +232,7 @@ void EnemyDebugScene::Draw()
 			misiles[specifiedEnemyType][i]->Draw();
 		}
 	}
+	enemies[specifiedEnemyType]->Draw();
 
 
 }

@@ -45,8 +45,6 @@ void NormalMisileEnemy::Finalize()
 
 void NormalMisileEnemy::Update()
 {
-
-	++model.data.transform.rotation.z;
 	//発射
 	//ゲーム内で攻撃モーションの起動
 	bool lGameShotFlag = !demoFlag && 120 <= shotTimer && !initShotFlag && iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag;
@@ -65,12 +63,16 @@ void NormalMisileEnemy::Update()
 		debugShotFlag = false;
 	}
 
+	if (initShotFlag)
+	{
+		model.data.transform.rotation.z += 5.0f;
+	}
+
 	//死亡演出処理
 	//デバックキーor当たり判定内&&死亡時
 	if (EnableToHit(model.data.transform.pos.z) && !iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
 	{
-		//model.data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME_MULTITEX;
-		//model.data.removeMaterialFlag = true;
+		model.data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME_MULTITEX;
 		model.data.color.color.x = 255;
 		model.data.color.color.y = 255;
 		model.data.color.color.z = 255;
@@ -216,7 +218,6 @@ void NormalMisileEnemy::Draw()
 	model.Draw();
 	rocketEffect.Draw();
 	LockOnWindow(model.data.transform.pos);
-
 
 	flashR.Draw();
 	circleFlashR.Draw();

@@ -1,19 +1,19 @@
-#include "SplineMisile.h"
+#include "SplineMisileForBikeEnemy.h"
 #include"../KazLibrary/Math/KazMath.h"
 #include"../KazLibrary/Helper/ResourceFilePass.h"
 
-SplineMisile::SplineMisile()
+SplineMisileForBikeEnemy::SplineMisileForBikeEnemy()
 {
 	maxTime = 60 * 5;
 	splineBox.data.color = { 255,0,0,255 };
-
-	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "missile_Model.obj");
+	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "BattleshipMissile_Model.obj");
 }
 
-void SplineMisile::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
+void SplineMisileForBikeEnemy::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
 {
 	iEnemy_ModelRender->data.transform.pos = POS;
-	iEnemy_ModelRender->data.transform.scale = { 1.3f,1.3f,1.3f };
+	float lScale = 0.2f;
+	iEnemy_ModelRender->data.transform.scale = { lScale,lScale,lScale };
 	iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX;
 	iEnemy_ModelRender->data.removeMaterialFlag = false;
 	iEnemy_ModelRender->data.color.color.x = 255;
@@ -38,10 +38,8 @@ void SplineMisile::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
 	KazMath::Vec3<float> endPos = { 0.0f,0.0f,0.0f };
 
 	KazMath::Vec3<float> distance = startPos - endPos;
-	float addDistance = distance.z / 4.0f;
-
-	distance.z /= 2.0f;	//中間はZ距離の半分
-	distance.z -= addDistance;
+	KazMath::Vec3<float> curvePoint = startPos;
+	curvePoint.z += 60.0f;
 
 
 	//スタート地点
@@ -49,13 +47,22 @@ void SplineMisile::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
 	points.push_back(startPos);
 
 	//中間
-	points.push_back(distance);
+	points.push_back(curvePoint);
+	if (0.0f <= distance.x)
+	{
+		curvePoint.x -= 60.0f;
+	}
+	else
+	{
+		curvePoint.x += 60.0f;
+	}
+	points.push_back(curvePoint);
 
 	//ゴール地点
 	points.push_back(endPos);
 	points.push_back(endPos);
 
-	pointTime = maxTime / (static_cast<int>(points.size() )- 3);
+	pointTime = maxTime / (static_cast<int>(points.size()) - 3);
 	nowTime = 0;
 	initDeadSoundFlag = false;
 	hitFlag = false;
@@ -63,11 +70,12 @@ void SplineMisile::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
 	demoFlag = DEMO_FLAG;
 }
 
-void SplineMisile::Finalize()
+void SplineMisileForBikeEnemy::Finalize()
 {
 }
 
-void SplineMisile::Update()
+void SplineMisileForBikeEnemy::Update()
+
 {
 	//当たったら描画しなくなる
 	if (iEnemy_EnemyStatusData->timer <= 0)
@@ -151,7 +159,7 @@ void SplineMisile::Update()
 	}
 }
 
-void SplineMisile::Draw()
+void SplineMisileForBikeEnemy::Draw()
 {
 	if (demoFlag)
 	{

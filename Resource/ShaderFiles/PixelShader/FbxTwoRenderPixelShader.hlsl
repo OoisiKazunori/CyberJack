@@ -14,6 +14,7 @@ TwoRender PSmain(VSOutput input) : SV_TARGET
     
     TwoRender outPut;
     outPut.target0 = texColor * float4(brightness, brightness, brightness, 1);
+    outPut.target0.a = color.a;
     outPut.target1 = float4(0.0f, 0.0f, 0.0f, 1.0f);
     
     return outPut;
