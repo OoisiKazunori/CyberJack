@@ -104,7 +104,7 @@
     <ClCompile Include="Game\Helper\EnemyHelper.cpp" />
     <ClCompile Include="Game\Effect\RocketEffect.cpp" />
     <ClCompile Include="Game\Enemy\BattleshipEnemy.cpp" />
-    <ClCompile Include="PopEnemy.cpp" />
+    <ClCompile Include="Game\Enemy\PopEnemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />

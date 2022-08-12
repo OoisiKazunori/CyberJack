@@ -181,6 +181,7 @@
     <ClCompile Include="Game\Enemy\HitEnemyEffect.cpp" />
     <ClCompile Include="Game\Enemy\KidEnemy.cpp" />
     <ClCompile Include="Game\Enemy\NormalMisileEnemy.cpp" />
+    <ClCompile Include="Game\Enemy\PopEnemy.cpp" />
     <ClCompile Include="Game\Enemy\SplineMisile.cpp" />
     <ClCompile Include="Game\Enemy\NormalEnemy.cpp" />
     <ClCompile Include="Game\Event\EventSprite.cpp" />
@@ -277,7 +278,6 @@
     <ClCompile Include="KazLibrary\Sound\SoundManager.cpp" />
     <ClCompile Include="KazLibrary\WinApi\Msg.cpp" />
     <ClCompile Include="KazLibrary\WinApi\WinApi.cpp" />
-    <ClCompile Include="PopEnemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />

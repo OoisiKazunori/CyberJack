@@ -116,6 +116,9 @@ void NormalMisileEnemy::Update()
 	rocketEffect.Update();
 
 
+	circleFlashR.data.transform.pos = model.data.transform.pos + KazMath::Vec3<float>(0.0f, 0.0f, -10.0f);
+	flashR.data.transform.pos = model.data.transform.pos;
+
 
 	ImGui::Begin("Flash");
 	ImGui::DragFloat("POS_X", &circleFlashR.data.transform.pos.x);

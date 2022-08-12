@@ -1,4 +1,4 @@
-#include "Game\Enemy\PopEnemy.h"
+#include"PopEnemy.h"
 #include"../KazLibrary/Helper/ResourceFilePass.h"
 
 PopEnemy::PopEnemy()
