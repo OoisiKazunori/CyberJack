@@ -44,20 +44,8 @@ RezStage::RezStage()
 			floorObjectRender[i].objRender[0].data.transform.pos.x = KazMath::Rand<float>(maxXPos, minXPos);
 		}
 		floorObjectRender[i].objRender[0].data.transform.pos.z = KazMath::Rand<float>(10000, -100);
-
-		//const float lScaleRate = abs(floorObjectRender[i].objRender[0].data.transform.pos.x) / abs(maxXPos);
-		//const float lScaleMin = 100.0f;
-		//const float lScaleMax = (lScaleRate * 200.0f) + lScaleMin;
-		/*floorObjectRender[i].objRender[0].data.transform.scale =
-		{
-			KazMath::Rand<float>(lScaleMax,lScaleMin),
-			KazMath::Rand<float>(lScaleMax,lScaleMin),
-			KazMath::Rand<float>(lScaleMax,lScaleMin)
-		};*/
 		floorObjectRender[i].initScale = floorObjectRender[i].objRender[0].data.transform.scale;
 		floorObjectRender[i].objRender[0].data.transform.pos.y = -150.0f + floorObjectRender[i].objRender[0].data.transform.scale.y;
-
-
 		floorObjectRender[i].objRender[0].data.colorData = KazMath::Color(213, 5, 228, 255);
 		floorObjectRender[i].objRender[0].data.pipelineName = PIPELINE_NAME_OBJ_WIREFLAME_FOG;
 		floorObjectRender[i].objRender[0].data.removeMaterialFlag = true;
@@ -293,12 +281,12 @@ void RezStage::Update()
 
 	for (int i = 0; i < floorObjectRender.size(); ++i)
 	{
-		float lVelZ = -0.0f;
+		float lVelZ = -5.0f;
 		floorObjectRender[i].objRender[0].data.transform.pos.z += lVelZ;
 		bool limitZLineFlag = floorObjectRender[i].objRender[0].data.transform.pos.z <= -1000.0f;
 
 		floorObjectRender[i].objRender[1].data.transform = floorObjectRender[i].objRender[0].data.transform;
-		//floorObjectRender[i].objRender[0].data.transform.scale.y = floorObjectRender[i].initScale.y + EasingMaker(Out, Cubic, scaleRate) * 0.2f;
+		floorObjectRender[i].objRender[0].data.transform.scale.y = floorObjectRender[i].initScale.y + EasingMaker(Out, Cubic, scaleRate) * 0.0f;
 		floorObjectRender[i].objRender[0].data.transform.pos.y = -150.0f + floorObjectRender[i].objRender[0].data.transform.scale.y;
 
 		floorObjectRender[i].objRender[1].data.transform.scale.y = floorObjectRender[i].objRender[0].data.transform.scale.y;
@@ -354,7 +342,7 @@ void RezStage::Update()
 
 void RezStage::Draw()
 {
-	for (int i = 0; i < floorObjectRender.size(); ++i)
+	for (int i = 0; i < 40; ++i)
 	{
 		for (int objectIndex = 0; objectIndex < floorObjectRender[i].objRender.size(); ++objectIndex)
 		{
