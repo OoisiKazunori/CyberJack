@@ -1,4 +1,7 @@
 #pragma once
+#include"../KazLibrary/Render/KazRender.h"
+#include<array>
+#include<memory>
 
 /// <summary>
 /// ステージの抽象クラス
@@ -7,7 +10,12 @@
 class IStage
 {
 public:
-	virtual ~IStage() {};
+	IStage();
+
+	virtual ~IStage();
+	void InitBackGround(const KazMath::Color &START_COLOR, const KazMath::Color &END_COLOR, float SPACE, float HEIGHT);
+	void DrawBackGround();
+
 	virtual void Update() = 0;
 	virtual void Draw() = 0;
 
@@ -19,5 +27,10 @@ public:
 	bool startFlag = false;
 protected:
 	int cameraIndex = 0;
+
+private:
+	std::array<std::unique_ptr<PolygonRender>, 4>backGround;
+	std::unique_ptr<PolygonRender> topPolygon;
+
 };
 

@@ -8,7 +8,7 @@
 class LineRender :public IRender
 {
 public:
-	LineRender();
+	LineRender(int INSTANCE_NUM = 1);
 	~LineRender();
 
 	void Draw();

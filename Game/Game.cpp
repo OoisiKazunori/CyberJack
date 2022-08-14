@@ -13,6 +13,42 @@
 
 Game::Game()
 {
+	emitters[0] = std::make_unique<HitEffectPattern1Emitter>();
+	emitters[1] = std::make_unique<HitEffectPattern2Emitter>();
+	emitters[2] = std::make_unique<HitEffectPattern3Emitter>();
+
+
+	for (int emitterTypeIndex = 0; emitterTypeIndex < deadEffectEmitter.size(); ++emitterTypeIndex)
+	{
+		for (int stackIndex = 0; stackIndex < deadEffectEmitter[emitterTypeIndex].size(); ++stackIndex)
+		{
+			switch (emitterTypeIndex)
+			{
+			case 0:
+				deadEffectEmitter[emitterTypeIndex][stackIndex] = std::make_unique<HitEffectPattern1Emitter>();
+				break;
+			case 1:
+				deadEffectEmitter[emitterTypeIndex][stackIndex] = std::make_unique<HitEffectPattern2Emitter>();
+				break;
+			case 2:
+				deadEffectEmitter[emitterTypeIndex][stackIndex] = std::make_unique<HitEffectPattern3Emitter>();
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+
+
+	for (int i = 0; i < smokeR.size(); ++i)
+	{
+		smokeR[i].data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::RelativeResourcePath + "Effect/Smoke/smoke9.png");
+		smokeR[i].data.pipelineName = PIPELINE_NAME_SPRITE_Z_OFF;
+
+		smokeR[i].data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+	}
+
 	besidePoly = std::make_unique<BoxPolygonRender>();
 	verticlaPoly = std::make_unique<BoxPolygonRender>();
 	cameraPoly = std::make_unique<BoxPolygonRender>();
@@ -71,9 +107,10 @@ Game::Game()
 	lineStartPoly[6].data.transform.pos = { 0.5f,0.3f,-0.3f };
 	lineStartPoly[7].data.transform.pos = { 0.0f,-0.3f,-1.0f };
 
-	CameraMgr::Instance()->CameraSetting(60.0f, 1200.0f);
+	CameraMgr::Instance()->CameraSetting(60.0f, 10000.0f);
 
-	stages[0] = std::make_unique<FirstStage>();
+	stages[0] = std::make_unique<RezStage>();
+	//stages[0] = std::make_unique<FirstStage>();
 	stages[1] = std::make_unique<GpuParticleStage>();
 	stages[2] = std::make_unique<ThridStage>();
 
@@ -151,7 +188,7 @@ void Game::Init(const array<array<KazEnemyHelper::ResponeData, KazEnemyHelper::E
 	}
 	changeLayerLevelMaxTime[0] = 60 * 28;
 	changeLayerLevelMaxTime[1] = 60 * 39;
-	gameStageLevel = 1;
+	gameStageLevel = 0;
 	stageNum = gameStageLevel;
 	//ゲームループの初期化----------------------------------------------------------------
 
@@ -182,7 +219,6 @@ void Game::Init(const array<array<KazEnemyHelper::ResponeData, KazEnemyHelper::E
 	testEnemyPos = { 0.0f,0.0f,100.0f };
 	mulValue = { 10.0f,30.0f };
 	mulValue2 = { 60.0f,60.0f };
-	cameraChangeFlag = true;
 
 	forceCameraDirVel.x = -90.0f;
 
@@ -228,7 +264,8 @@ void Game::Input()
 
 #pragma region カメラ操作
 	debugCameraMove = { 0,0,0 };
-	float debugSpeed = 1;
+	float debugSpeed = 100.0f;
+	float debugSideSpeed = 5.0f;
 	//�J�����ړ�
 	if (input->InputState(DIK_D))
 	{
@@ -252,20 +289,20 @@ void Game::Input()
 	//�J�����p�x
 	if (input->InputState(DIK_RIGHTARROW))
 	{
-		angle.x += debugSpeed;
+		angle.x += debugSideSpeed;
 	}
 	if (input->InputState(DIK_LEFTARROW))
 	{
-		angle.x += -debugSpeed;
+		angle.x += -debugSideSpeed;
 	}
 
 	if (input->InputState(DIK_UPARROW))
 	{
-		angle.y += debugSpeed;
+		angle.y += debugSideSpeed;
 	}
 	if (input->InputState(DIK_DOWNARROW))
 	{
-		angle.y += -debugSpeed;
+		angle.y += -debugSideSpeed;
 	}
 
 #pragma endregion
@@ -408,6 +445,17 @@ void Game::Input()
 	//		addEnemiesHandle[i] = 0;;
 	//	}
 	//}
+
+	if (input->InputTrigger(DIK_G))
+	{
+		emittNum = 2;
+		emitters[emittNum]->Init(KazMath::Vec2<float>(WIN_X / 2.0f, WIN_Y / 2.0f));
+	}
+	if (input->InputTrigger(DIK_H))
+	{
+		emittNum = KazMath::Rand<int>(3, 0);
+		emitters[emittNum]->Init(KazMath::Vec2<float>(WIN_X / 2.0f, WIN_Y / 2.0f));
+	}
 }
 
 void Game::Update()
@@ -497,6 +545,12 @@ void Game::Update()
 
 
 
+	ImGui::Begin("cameraChangeFlag");
+	ImGui::Checkbox("GameCamera", &cameraChangeFlag);
+	ImGui::End();
+
+
+
 	if (cameraChangeFlag)
 	{
 		eyePos = cameraPoly->data.transform.pos;
@@ -532,7 +586,7 @@ void Game::Update()
 	portal.Update();
 
 	//全部隠れたら次ステージの描画をする
-	if (portal.AllHidden())
+	if (portal.AllHidden()&&false)
 	{
 		//ゲームループの初期化----------------------------------------------
 		++gameStageLevel;
@@ -785,6 +839,10 @@ void Game::Update()
 				{
 					//lineEffectArrayData[i].Reset();
 					//lineLevel[lineIndex].lineReachObjFlag = false;
+
+					//死亡演出候補
+					bool debug = false;
+					debug = true;
 				}
 				else if (lineLevel[lineIndex].lineReachObjFlag && !enemies[enemyTypeIndex][enemyIndex]->IsAlive() && !lineEffectArrayData[i].hitFlag)
 				{
@@ -792,11 +850,26 @@ void Game::Update()
 					lineEffectArrayData[i].hitFlag = true;
 					//lineEffectArrayData[i].Reset();
 					//lineLevel[lineIndex].lineReachObjFlag = false;
+
+					//ヒット時の円演出
 					for (int hitEffectIndex = 0; hitEffectIndex < hitEffect.size(); ++hitEffectIndex)
 					{
 						if (!hitEffect[hitEffectIndex].IsAlive())
 						{
 							hitEffect[hitEffectIndex].Start(*enemies[enemyTypeIndex][enemyIndex]->GetData()->hitBox.center);
+							break;
+						}
+					}
+
+					//死亡時の煙演出
+					int lEmitterType = KazMath::Rand<int>(3, 0);
+					for (int stackIndex = 0; stackIndex < deadEffectEmitter[lEmitterType].size(); ++stackIndex)
+					{
+						if (!deadEffectEmitter[lEmitterType][stackIndex]->IsActive())
+						{
+							KazMath::Vec3<float>screenPos =
+								KazMath::ConvertWorldPosToScreenPos(*enemies[enemyTypeIndex][enemyIndex]->GetData()->hitBox.center, CameraMgr::Instance()->GetViewMatrix(0), CameraMgr::Instance()->GetPerspectiveMatProjection());
+							deadEffectEmitter[lEmitterType][stackIndex]->Init(KazMath::Vec2<float>(screenPos.x, screenPos.y));
 							break;
 						}
 					}
@@ -996,6 +1069,17 @@ void Game::Update()
 		}
 		//更新処理----------------------------------------------------------------
 #pragma endregion
+
+
+		emitters[emittNum]->Update();
+
+		for (int emitterTypeIndex = 0; emitterTypeIndex < deadEffectEmitter.size(); ++emitterTypeIndex)
+		{
+			for (int stackIndex = 0; stackIndex < deadEffectEmitter[emitterTypeIndex].size(); ++stackIndex)
+			{
+				deadEffectEmitter[emitterTypeIndex][stackIndex]->Update();
+			}
+		}
 	}
 
 
@@ -1052,7 +1136,6 @@ void Game::Update()
 
 	//ゲームループの経過時間----------------------------------------------------------------
 
-
 }
 
 void Game::Draw()
@@ -1081,8 +1164,8 @@ void Game::Draw()
 
 		CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 1);
 		player.Draw();
-		stages[lStageNum]->SetCamera(1);
-		stages[lStageNum]->Draw();
+		//stages[lStageNum]->SetCamera(1);
+		//stages[lStageNum]->Draw();
 		RenderTargetStatus::Instance()->PrepareToCloseBarrier(potalTexHandle);
 		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 	}
@@ -1138,10 +1221,10 @@ void Game::Draw()
 		{
 			goalBox.lightEffect.Draw();
 		}
-		doneSprite.Draw();
-		titleLogoTex.Draw();
-		tutorialWindow.Draw();
-		stageUI.Draw();
+		//doneSprite.Draw();
+		//titleLogoTex.Draw();
+		//tutorialWindow.Draw();
+		//stageUI.Draw();
 
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, handles[0]);
 		RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
@@ -1150,7 +1233,6 @@ void Game::Draw()
 		RenderTargetStatus::Instance()->PrepareToCloseBarrier(addHandle);
 		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 		//ゲーム画面描画
-
 
 		mainRenderTarget.Draw();
 
@@ -1164,7 +1246,18 @@ void Game::Draw()
 		addRenderTarget.Draw();
 		PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
+
 		cursor.Draw();
+
+		emitters[emittNum]->Draw();
+		for (int emitterTypeIndex = 0; emitterTypeIndex < deadEffectEmitter.size(); ++emitterTypeIndex)
+		{
+			for (int stackIndex = 0; stackIndex < deadEffectEmitter[emitterTypeIndex].size(); ++stackIndex)
+			{
+				deadEffectEmitter[emitterTypeIndex][stackIndex]->Draw();
+			}
+		}
+
 		movieEffect.Draw();
 
 	}
@@ -1178,6 +1271,7 @@ void Game::Draw()
 	}
 
 	blackTex.Draw();
+
 
 }
 

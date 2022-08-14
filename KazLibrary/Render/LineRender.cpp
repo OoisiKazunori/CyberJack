@@ -1,6 +1,6 @@
 #include "LineRender.h"
 
-LineRender::LineRender()
+LineRender::LineRender(int INSTANCE_NUM)
 {
 	gpuBuffer = std::make_unique<CreateGpuBuffer>();
 
@@ -25,8 +25,12 @@ LineRender::LineRender()
 	(
 		KazBufferHelper::SetVertexBufferData(vertByte)
 	);
-	//定数バッファ
-	constBufferHandle = CreateConstBuffer(sizeof(ConstBufferData), typeid(ConstBufferData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DRAW);
+
+	if (INSTANCE_NUM == 1)
+	{
+		//定数バッファ
+		constBufferHandle = CreateConstBuffer(sizeof(ConstBufferData), typeid(ConstBufferData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DRAW);
+	}
 	//バッファ生成-----------------------------------------------------------------------------------------------------
 
 
@@ -34,7 +38,7 @@ LineRender::LineRender()
 		D3D_PRIMITIVE_TOPOLOGY_LINELIST,
 		KazBufferHelper::SetVertexBufferView(gpuBuffer->GetGpuAddress(vertexBufferHandle), vertByte, sizeof(vertices[0])),
 		static_cast<UINT>(vertices.size()),
-		1
+		INSTANCE_NUM
 		);
 }
 
@@ -63,7 +67,8 @@ void LineRender::Draw()
 
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 	//行列
-	if (renderData.cameraMgrInstance->ViewAndProjDirty(data.cameraIndex.id) || data.color.Dirty() || data.motherMat.dirty.Dirty() || data.cameraIndex.dirty.Dirty())
+	if (drawInstanceCommandData.drawInstanceData.instanceCount == 1 &&
+		(renderData.cameraMgrInstance->ViewAndProjDirty(data.cameraIndex.id) || data.color.Dirty() || data.motherMat.dirty.Dirty() || data.cameraIndex.dirty.Dirty()))
 	{
 		ConstBufferData constMap;
 		constMap.world = baseMatWorldData.matWorld;

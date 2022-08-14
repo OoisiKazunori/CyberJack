@@ -170,5 +170,7 @@ private:
 
 	std::string ExtractFileName(const std::string &PATH);
 
+	std::vector<std::string> handleName;
+
 };
 

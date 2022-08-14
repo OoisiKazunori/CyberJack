@@ -1,10 +1,15 @@
 #include"../ShaderHeader/BasicShaderHeader.hlsli"
 #include"../ShaderHeader/MultiPassHeader.hlsli"
 
+cbuffer BloomData : register(b1)
+{
+    float4 luminanceColor;
+}
+
 TwoRender PSmain(ColorOutPut input) : SV_TARGET
 {
     TwoRender output;
     output.target0 = color;
-    output.target1 = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    output.target1 = float4(luminanceColor.xyz, 1.0f);
     return output;
 }

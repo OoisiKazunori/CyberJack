@@ -62,60 +62,7 @@ FirstStage::FirstStage()
 	//fogData[0].fogdata.y = BG_COLOR.y / 255.0f;
 	//fogData[0].fogdata.z = BG_COLOR.z / 255.0f;
 
-	{
-		std::array<SpriteVertex, 4>vert;
-		DirectX::XMVECTOR adjPos = { 50.0f,0.0f,0.0f };
-		vert[0].pos = { -768.0f,407.0f,0.0f };
-		vert[0].uv = { 0.0f,0.0f };
-		vert[1].pos = { 768.0f,407.0f,0.0f };
-		vert[1].uv = { 1.0f,0.0f };
-		vert[2].pos = { -768.0f,-407.0f,0.0f };
-		vert[2].uv = { 0.0f,1.0f };
-		vert[3].pos = { 768.0f,-407.0f,0.0f };
-		vert[3].uv = { 1.0f,1.0f };
-
-		GradationData gradationData;
-		gradationData.firstColor = DirectX::XMFLOAT4(0.93f, 0.65f, 0.53f, 1.0f);
-		gradationData.endColor = DirectX::XMFLOAT4(0.24f, 0.09f, 0.62f, 1.0f);
-		for (int i = 0; i < polygon.size(); ++i)
-		{
-			polygon[i] = std::make_unique<PolygonRender>(vert);
-			RESOURCE_HANDLE handle = polygon[i]->CreateConstBuffer(sizeof(GradationData), typeid(GradationData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
-			polygon[i]->TransData(&gradationData, handle, typeid(gradationData).name());
-			polygon[i]->data.pipelineName = PIPELINE_NAME_SPRITE_GRADATION;
-		}
-
-		polygon[0]->data.transform.pos.z = 650.0f;
-		polygon[1]->data.transform.pos.x = 550.0f;
-		polygon[1]->data.transform.rotation.y = 100.0f;
-		polygon[2]->data.transform.pos.x = -550.0f;
-		polygon[2]->data.transform.rotation.y = 100.0f;
-		polygon[3]->data.transform.pos.z = -650.0f;
-	}
-
-	{
-		std::array<SpriteVertex, 4>vert;
-		DirectX::XMVECTOR adjPos = { 50.0f,0.0f,0.0f };
-		vert[0].pos = DirectX::XMFLOAT3(-800.0f, 0.0f, 700.0f);
-		vert[0].uv = { 0.0f,0.0f };
-		vert[1].pos = DirectX::XMFLOAT3(800.0f, 0.0f, 700.0f);
-		vert[1].uv = { 1.0f,0.0f };
-		vert[2].pos = DirectX::XMFLOAT3(-800.0f, 0.0f, -700.0f);
-		vert[2].uv = { 0.0f,1.0f };
-		vert[3].pos = DirectX::XMFLOAT3(800.0f, 0.0f, -700.0f);
-		vert[3].uv = { 1.0f,1.0f };
-		topPolygon = std::make_unique<PolygonRender>(vert);
-
-		RESOURCE_HANDLE handle = topPolygon->CreateConstBuffer(sizeof(GradationData), typeid(GradationData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
-		topPolygon->data.pipelineName = PIPELINE_NAME_SPRITE_GRADATION;
-
-		GradationData gradData;
-		gradData.endColor = DirectX::XMFLOAT4(0.24f, 0.09f, 0.62f, 1.0f);
-		gradData.firstColor = DirectX::XMFLOAT4(0.24f, 0.09f, 0.62f, 1.0f);
-		topPolygon->TransData(&gradData, handle, typeid(gradData).name());
-
-		topPolygon->data.transform.pos.y = 400.0f;
-	}
+	InitBackGround(KazMath::Color(237, 165, 135, 255), KazMath::Color(61, 23, 158, 255), 650.0f, 400.0f);
 
 
 	for (int i = 0; i < stageDebugBox.size(); ++i)
@@ -375,9 +322,5 @@ void FirstStage::Draw()
 		stageDebugBox[i].Draw();
 	}
 
-	for (int i = 0; i < 4; ++i)
-	{
-		polygon[i]->Draw();
-	}
-	topPolygon->Draw();
+	DrawBackGround();
 }

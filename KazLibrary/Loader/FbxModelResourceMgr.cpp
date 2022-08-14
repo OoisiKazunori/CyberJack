@@ -31,6 +31,15 @@ FbxModelResourceMgr::~FbxModelResourceMgr()
 
 RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME)
 {
+
+	for (int i = 0; i < handleName.size(); i++)
+	{
+		if (handleName[i] == MODEL_NAME)
+		{
+			return i;
+		}
+	}
+
 	fbxImporter->Initialize(MODEL_NAME.c_str());
 	fbxImporter->Import(fbxScene);
 	//モデルの生成
@@ -47,7 +56,7 @@ RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME)
 
 
 
-	
+
 	//リソースに保管
 	unsigned short vertByte = KazBufferHelper::GetBufferSize<unsigned short>(model->vertices.size(), sizeof(Model::VertexPosNormalUvSkin));
 	unsigned short indexByte = KazBufferHelper::GetBufferSize<unsigned short>(model->indices.size(), sizeof(unsigned short));
@@ -71,7 +80,7 @@ RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME)
 	//バッファビュー設定-----------------------------------------------------------------------------------------------------
 
 	modelResource[lHandle]->textureHandle = model->textureHandle;
-	
+
 	modelResource[lHandle]->diffuse = model->diffuse;
 	modelResource[lHandle]->ambient = model->ambient;
 
@@ -98,6 +107,8 @@ RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME)
 		modelResource[lHandle]->endTime.push_back(takeInfo->mLocalTimeSpan.GetStop());
 	}
 
+
+	handleName.push_back(MODEL_NAME);
 
 	delete model;
 	return lHandle;
@@ -340,11 +351,11 @@ void FbxModelResourceMgr::ParseMaterial(Model *MODEL, FbxNode *FBX_NODE)
 		}
 
 		//テクスチャが無い場合
-		if (!textureLoaded)
-		{
-			RESOURCE_HANDLE lHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "white1x1.png");
-			MODEL->textureHandle.push_back(lHandle);
-		}
+		//if (!textureLoaded)
+	//	{
+			//RESOURCE_HANDLE lHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "white1x1.png");
+			//MODEL->textureHandle.push_back(lHandle);
+//		}
 	}
 }
 

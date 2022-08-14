@@ -27,6 +27,13 @@ struct MaterialData
     float m_alpha;
 };
 
+struct LineInstanceData
+{
+    float4 startPos;
+    float4 endPos;
+    float4 color;
+};
+
 
 cbuffer instanceBuff : register(b1)
 {
@@ -37,6 +44,11 @@ cbuffer instanceBuff : register(b1)
 cbuffer instanceConstBuff : register(b0)
 {
     InstanceConstBufferData constData[INSTANCE_DATA_MAX];
+};
+
+cbuffer instanceLineConstBuff : register(b0)
+{
+    LineInstanceData instaceLineData[INSTANCE_DATA_MAX];
 };
 
 //ƒ}ƒeƒŠƒAƒ‹î•ñ

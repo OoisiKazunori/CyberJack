@@ -236,7 +236,7 @@ KazMath::Vec3<float> KazMath::CaluEyePosForDebug(const Vec3<float> &EYE_POS, con
 	float rad = ANGLE.x * 3.14f / 180.0f;
 
 
-	float speed = 1.0f;
+	float speed = 40.0f;
 	//ç∂
 	if (MOVE.x < 0)
 	{
@@ -433,8 +433,7 @@ float KazMath::AngleToRadian(float ANGLE)
 	return radian;
 }
 
-template <typename T>
-inline DirectX::XMMATRIX KazMath::CaluMat(const KazMath::Transform3D &TRANSFORM, const Vec3<T> &Y_VEC, const Vec3<T> &Z_VEC, const DirectX::XMMATRIX &VIEW_MAT, const DirectX::XMMATRIX &PROJECT_MAT)
+DirectX::XMMATRIX KazMath::CaluMat(const KazMath::Transform3D &TRANSFORM, const DirectX::XMMATRIX &VIEW_MAT, const DirectX::XMMATRIX &PROJECT_MAT, const Vec3<float> &Y_VEC, const Vec3<float> &Z_VEC)
 {
 	BaseMatWorldData baseMatWorldData;
 	baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();

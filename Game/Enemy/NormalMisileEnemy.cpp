@@ -22,10 +22,10 @@ void NormalMisileEnemy::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
 	iOperationData.Init(1);							//残りロックオン数等の初期化
 
 	model.data.pipelineName = PIPELINE_NAME_FBX_RENDERTARGET_TWO;
-	model.data.color.color.x = 255;
-	model.data.color.color.y = 255;
-	model.data.color.color.z = 255;
-	model.data.color.color.a = 0;
+	model.data.colorData.color.x = 255;
+	model.data.colorData.color.y = 255;
+	model.data.colorData.color.z = 255;
+	model.data.colorData.color.a = 0;
 	model.data.transform.rotation.x = 180.0f;
 	model.data.transform.rotation.y = 0.0f;
 	model.data.transform.rotation.z = 0.0f;
@@ -73,10 +73,10 @@ void NormalMisileEnemy::Update()
 	if (EnableToHit(model.data.transform.pos.z) && !iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
 	{
 		model.data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME_MULTITEX;
-		model.data.color.color.x = 255;
-		model.data.color.color.y = 255;
-		model.data.color.color.z = 255;
-		DeadEffect(&model.data.transform.pos, &model.data.transform.rotation, &model.data.color.color.a);
+		model.data.colorData.color.x = 255;
+		model.data.colorData.color.y = 255;
+		model.data.colorData.color.z = 255;
+		DeadEffect(&model.data.transform.pos, &model.data.transform.rotation, &model.data.colorData.color.a);
 
 		if (!initDeadSoundFlag)
 		{
@@ -88,13 +88,13 @@ void NormalMisileEnemy::Update()
 	else
 	{
 		//登場処理
-		if (model.data.color.color.a < 255)
+		if (model.data.colorData.color.a < 255)
 		{
-			model.data.color.color.a += 5;
+			model.data.colorData.color.a += 5;
 		}
 		else
 		{
-			model.data.color.color.a = 255;
+			model.data.colorData.color.a = 255;
 		}
 
 

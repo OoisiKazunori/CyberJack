@@ -64,13 +64,13 @@ void FbxModelRender::Draw()
 
 		//バッファの転送-----------------------------------------------------------------------------------------------------
 		//行列
-		if (renderData.cameraMgrInstance->ViewAndProjDirty(data.cameraIndex.id) || data.transform.Dirty() || data.motherMat.dirty.Dirty() || data.cameraIndex.dirty.Dirty() || data.color.Dirty())
+		if (renderData.cameraMgrInstance->ViewAndProjDirty(data.cameraIndex.id) || data.transform.Dirty() || data.motherMat.dirty.Dirty() || data.cameraIndex.dirty.Dirty() || data.colorData.Dirty())
 		{
 			ConstBufferData constMap;
 			constMap.world = baseMatWorldData.matWorld;
 			constMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex.id);
 			constMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
-			constMap.color = data.color.ConvertColorRateToXMFLOAT4();
+			constMap.color = data.colorData.ConvertColorRateToXMFLOAT4();
 			constMap.mat = constMap.world * constMap.view * constMap.viewproj;
 			TransData(&constMap, constBufferHandle[0], typeid(constMap).name());
 		}
@@ -110,6 +110,7 @@ void FbxModelRender::Draw()
 		}
 
 
+		SetConstBufferOnCmdList(data.pipelineName);
 
 		for (int i = 0; i < resourceData->textureHandle.size(); i++)
 		{
@@ -120,15 +121,9 @@ void FbxModelRender::Draw()
 				renderData.cmdListInstance->cmdList->SetGraphicsRootDescriptorTable(param, gpuDescHandleSRV);
 			}
 		}
-		SetConstBufferOnCmdList(data.pipelineName);
-
+	
 
 		DrawIndexInstanceCommand(drawIndexInstanceCommandData);
-
-	}
-	else
-	{
-
 	}
 
 	data.Record();

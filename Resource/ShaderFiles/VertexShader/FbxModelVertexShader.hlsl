@@ -18,5 +18,3 @@ VSOutput VSmain(VSInput input)
 	
 	return op;
 }
-
-

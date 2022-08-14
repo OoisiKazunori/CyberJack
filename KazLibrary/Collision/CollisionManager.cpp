@@ -443,6 +443,74 @@ bool CollisionManager::CheckThicklineAndSphere(const Sphere &SPHERE, const ModiR
 	return isHitResult;
 }
 
+std::array<KazMath::Vec2<float>, 2> CollisionManager::CheckCircleAndRay(const Sphere &SPHERE, const KazMath::Vec2<float> &START_POS, const KazMath::Vec2<float> &END_POS)
+{
+	//ax + by + c = 0 の定数項
+	float a = END_POS.y - START_POS.y;
+	float b = START_POS.x - END_POS.x;
+	float c = -a * START_POS.x - b * START_POS.y;
+
+	//円の中心から直線までの距離
+	//mag(a, b) = √a^2+b^2
+	float d = abs((a * SPHERE.center->x + b * SPHERE.center->y + c) / (sqrtf(a * a) + b * b));
+
+	//直線の垂線とX軸と平行な線がなす角度θ
+	float theta = atan2(b, a);
+
+	if (d > SPHERE.radius)
+	{
+		std::array<KazMath::Vec2<float>, 2>resultArray;
+		return resultArray;
+	}
+	else if (d == SPHERE.radius)
+	{
+		//場合わけ
+		if (a * SPHERE.center->x + b * SPHERE.center->y + c > 0)
+		{
+			theta += KazMath::PI_2F;
+		}
+
+		float crossX = SPHERE.radius * cos(theta) + SPHERE.center->x;
+		float crossY = SPHERE.radius * sin(theta) + SPHERE.center->y;
+
+		KazMath::Vec2<float> result(crossX, crossY);
+		std::array<KazMath::Vec2<float>, 2>resultArray;
+		resultArray[0] = result;
+		return resultArray;
+	}
+	else
+	{
+		KazMath::Vec2<float> result1;
+		KazMath::Vec2<float> result2;
+
+		//alphaとbetaの角度を求める
+		float alpha, beta, phi;
+		phi = acos(d / SPHERE.radius);
+		alpha = theta - phi;
+		beta = theta + phi;
+
+		//場合わけ
+		if (a *SPHERE.center->x + b * SPHERE.center->y + c > 0) {
+			alpha += KazMath::PI_2F;
+			beta += KazMath::PI_2F;
+		}
+
+		//交点の座標を求める
+		result1.x = SPHERE.radius * cos(alpha) + SPHERE.center->x;
+		result1.y = SPHERE.radius * sin(alpha) + SPHERE.center->y;
+
+		result2.x = SPHERE.radius * cos(beta) + SPHERE.center->x;
+		result2.y = SPHERE.radius * sin(beta) + SPHERE.center->y;
+
+
+		std::array<KazMath::Vec2<float>, 2>resultArray;
+		resultArray[0] = result1;
+		resultArray[1] = result2;
+
+		return resultArray;
+	}
+}
+
 void CollisionManager::ClosestPtPoint2Triangle(const KazMath::Vec3<float> &point, const Triangle &triangle, KazMath::Vec3<float> *closest)
 {
 	// pointがp0の外側の頂点領域の中にあるかどうかチェック

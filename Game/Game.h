@@ -15,13 +15,18 @@
 #include"../Game/Stage/SecondStage.h"
 #include"../Game/Stage/ThridStage.h"
 #include"../Game/Stage/GpuParticleStage.h"
+#include"../Game/Stage/RezStage.h"
 
 #include"../Game/Event/MoiveEffect.h"
 #include"../Game/UI/AnnounceStageUI.h"
 #include"../Game/Event/EventSprite.h"
 #include"../Game/Event/TutorialWindow.h"
 #include"../Game/Enemy/HitEnemyEffect.h"
-#include"../Game//Event/PortalEffect.h"
+#include"../Game/Event/PortalEffect.h"
+#include"../Game/Effect/IHitEffectEmitter.h"
+#include"../Game/Effect/HitEffectPattern1Emitter.h"
+#include"../Game/Effect/HitEffectPattern2Emitter.h"
+#include"../Game/Effect/HitEffectPattern3Emitter.h"
 #include"../Game/Helper/EnemyHelper.h"
 
 
@@ -208,4 +213,11 @@ private:
 	CircleRender circle;
 	PortalEffect portal;
 
+	bool smokeFlag;
+	std::array<Sprite2DRender,4> smokeR;
+
+	int emittNum;
+	std::array<std::unique_ptr<IHitEffectEmitter>, 3>emitters;
+
+	std::array<std::array<std::unique_ptr<IHitEffectEmitter>, 10>, 3>deadEffectEmitter;
 };

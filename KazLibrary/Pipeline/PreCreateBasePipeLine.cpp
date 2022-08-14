@@ -6,7 +6,6 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 {
 	GraphicsPipeLineMgr *pipelineMgr = GraphicsPipeLineMgr::Instance();
 
-
 #pragma region InputLayOutの登録
 	{
 		D3D12_INPUT_ELEMENT_DESC *input3DLayOut = new D3D12_INPUT_ELEMENT_DESC[3];
@@ -209,6 +208,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	}
 #pragma endregion
 
+
 #pragma region シェーダーのコンパイルと登録
 	OutputDebugStringA("シェーダーのコンパイルを開始します\n");
 	//色シェーダー
@@ -259,6 +259,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 	//fbx
 	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "FbxModelVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_FBX);
+	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "FbxOutPutPosVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_FBX_FOG);
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FbxModelPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FBX);
 
 
@@ -279,8 +280,6 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	//Fog
 	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "FogVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_FOG_COLOR);
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_COLOR);
-
-
 
 
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogObjPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_OBJ);
@@ -344,6 +343,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ObjTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ_MULTITEX);
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GoalLightTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_GOALLIGHT_MULTITEX);
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogColorTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_COLOR_MULTITEX);
+	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogMultiPassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_MULTITEX);
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "MultiPassLuminancePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LUMINANCE_MULTI);
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineUvMultiTexPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_UV_MULTITEX);
 
@@ -422,7 +422,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 
 	//テクスチャ用
-#pragma region PIPELINE_DATA_BACKCARING_NOBLEND
+#pragma region PIPELINE_DATA_BACKCARING_ALPHABLEND
 	{
 		//パイプラインの設定
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
@@ -446,7 +446,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		//デプスステンシルステートの設定
 		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
 		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;		//小さければOK
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
 		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_BACKCARING_ALPHABLEND);
 	}
@@ -517,7 +517,105 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	}
 #pragma endregion
 
-#pragma region PIPELINE_DATA_BACKCARING_ALPHABLEND_WIREFLAME
+#pragma region PIPELINE_DATA_NOCARING_ALPHABLEND_WIREFLAME
+	{
+		//パイプラインの設定
+		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
+		//サンプルマスク
+		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+		//ラスタライザ
+		//背面カリング、塗りつぶし、深度クリッピング有効
+		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
+		rasterrize.FillMode = D3D12_FILL_MODE_WIREFRAME;
+		rasterrize.CullMode = D3D12_CULL_MODE_NONE;
+		gPipeline.RasterizerState = rasterrize;
+
+		//ブレンドモード
+		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
+
+		//図形の形状
+		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+
+		//その他設定
+		gPipeline.NumRenderTargets = 1;
+		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		gPipeline.SampleDesc.Count = 1;
+
+		//デプスステンシルステートの設定
+		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_ALPHABLEND_WIREFLAME);
+	}
+#pragma endregion
+
+#pragma region PIPELINE_DATA_BACKCARING_NOBLEND_WIREFLAME
+	{
+		//パイプラインの設定
+		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
+		//サンプルマスク
+		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+		//ラスタライザ
+		//背面カリング、塗りつぶし、深度クリッピング有効
+		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
+		rasterrize.FillMode = D3D12_FILL_MODE_WIREFRAME;
+		gPipeline.RasterizerState = rasterrize;
+
+		//ブレンドモード
+		gPipeline.BlendState.RenderTarget[0].BlendEnable = false;
+
+		//図形の形状
+		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+
+		//その他設定
+		gPipeline.NumRenderTargets = 1;
+		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		gPipeline.SampleDesc.Count = 1;
+
+		//デプスステンシルステートの設定
+		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_BACKCARING_NOBLEND_WIREFLAME);
+	}
+#pragma endregion
+
+#pragma region PIPELINE_DATA_NOCARING_NOBLEND_WIREFLAME
+	{
+		//パイプラインの設定
+		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
+		//サンプルマスク
+		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+		//ラスタライザ
+		//背面カリング、塗りつぶし、深度クリッピング有効
+		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
+		rasterrize.FillMode = D3D12_FILL_MODE_WIREFRAME;
+		rasterrize.CullMode = D3D12_CULL_MODE_NONE;
+		gPipeline.RasterizerState = rasterrize;
+
+		//ブレンドモード
+		gPipeline.BlendState.RenderTarget[0].BlendEnable = false;
+
+		//図形の形状
+		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+
+		//その他設定
+		gPipeline.NumRenderTargets = 1;
+		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		gPipeline.SampleDesc.Count = 1;
+
+		//デプスステンシルステートの設定
+		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_NOBLEND_WIREFLAME);
+	}
+#pragma endregion
+
+#pragma region PIPELINE_DATA_BACKCARING_ALPHABLEND_WIREFLAME_MULTITEX
 	{
 		//パイプラインの設定
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
@@ -551,6 +649,41 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	}
 #pragma endregion
 
+
+#pragma region PIPELINE_DATA_NOCARING_NOBLEND_WIREFLAME_MULTIPASS_TWO
+	{
+		//パイプラインの設定
+		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
+		//サンプルマスク
+		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+		//ラスタライザ
+		//背面カリング、塗りつぶし、深度クリッピング有効
+		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
+		rasterrize.FillMode = D3D12_FILL_MODE_WIREFRAME;
+		rasterrize.CullMode = D3D12_CULL_MODE_NONE;
+		gPipeline.RasterizerState = rasterrize;
+
+		//ブレンドモード
+		gPipeline.BlendState.RenderTarget[0].BlendEnable = false;
+		gPipeline.BlendState.RenderTarget[1].BlendEnable = false;
+
+		//図形の形状
+		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+
+		//その他設定
+		gPipeline.NumRenderTargets = 2;
+		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		gPipeline.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		gPipeline.SampleDesc.Count = 1;
+
+		//デプスステンシルステートの設定
+		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_NOBLEND_WIREFLAME_MULTIPASS_TWO);
+	}
+#pragma endregion
 
 
 	//スプライト用
@@ -700,6 +833,41 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
 		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_ALPHABLEND_LINE);
+	}
+#pragma endregion
+
+	//Line用
+#pragma region PIPELINE_DATA_NOCARING_NOBLEND_LINELIST
+	{
+		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
+		D3D12_RENDER_TARGET_BLEND_DESC blendDesc{};
+		//サンプルマスク
+		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+
+		//ラスタライザ
+		//背面カリング、塗りつぶし、深度クリッピング有効
+		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
+		gPipeline.RasterizerState = rasterrize;
+		gPipeline.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
+		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+
+		//ブレンドモード
+		blendDesc.BlendEnable = false;
+
+		//図形の形状
+		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
+
+		//その他設定
+		gPipeline.NumRenderTargets = 1;
+		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		gPipeline.SampleDesc.Count = 1;
+
+		//デプスステンシルステートの設定
+		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_NOBLEND_LINE);
 	}
 #pragma endregion
 
@@ -1001,6 +1169,62 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 
 
+	//スプライト用
+#pragma region PIPELINE_DATA_NOCARING_BLENDALPHA_ZOFF
+	{
+		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
+		//スプライト用
+		//サンプルマスク
+		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+
+		//ラスタライザ
+		//背面カリング、塗りつぶし、深度クリッピング有効
+		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
+		gPipeline.RasterizerState = rasterrize;
+		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+
+
+		//加算とα合成
+		D3D12_RENDER_TARGET_BLEND_DESC addAndAlphaBlendDesc{};
+		addAndAlphaBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+		addAndAlphaBlendDesc.BlendEnable = true;
+		addAndAlphaBlendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+		addAndAlphaBlendDesc.SrcBlendAlpha = D3D12_BLEND_ONE;
+		addAndAlphaBlendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
+
+		addAndAlphaBlendDesc.BlendOp = D3D12_BLEND_OP_ADD;
+		addAndAlphaBlendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
+		addAndAlphaBlendDesc.DestBlend = D3D12_BLEND_ONE;
+
+		//D3D12_BLEND_ONE;
+		//alphaBlendDesc.BlendOp = D3D12_BLEND_OP_ADD;
+		//alphaBlendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
+		//alphaBlendDesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+
+
+		gPipeline.BlendState.RenderTarget[0] = addAndAlphaBlendDesc;
+		gPipeline.BlendState.AlphaToCoverageEnable = false;
+
+		//図形の形状
+		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+
+
+		//その他設定
+		gPipeline.NumRenderTargets = 1;
+		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		gPipeline.SampleDesc.Count = 1;
+
+
+		//デプスステンシルステートの設定
+		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_BLENDALPHA_DEPTH_OFF);
+	}
+#pragma endregion
+
+
 	//スプライトの加算合成用 αあり
 #pragma region PIPELINE_DATA_NOCARING_ADDBLEND
 	{
@@ -1148,6 +1372,8 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_COLOR_LINE
 	);
 
+
+
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_COLOR,
@@ -1174,20 +1400,9 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		SHADER_VERTEX_INSTANCE_COLOR,
 		SHADER_PIXCEL_INSTANCE_COLOR,
 		PIPELINE_DATA_BACKCARING_ALPHABLEND,
-		ROOTSIGNATURE_DATA_DATA1,
+		ROOTSIGNATURE_DATA_DRAW,
 		PIPELINE_NAME_INSTANCE_COLOR
 	);
-
-	//インスタンシング描画色パイプライン
-	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
-		LAYOUT_POS,
-		SHADER_VERTEX_INSTANCE_COLOR,
-		SHADER_PIXCEL_INSTANCE_COLOR,
-		PIPELINE_DATA_BACKCARING_ALPHABLEND,
-		ROOTSIGNATURE_DATA_DATA1,
-		PIPELINE_NAME_INSTANCE_COLOR
-	);
-
 
 
 	//色パイプライン(ワイヤーフレーム)
@@ -1249,6 +1464,17 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
 		SHADER_PIXCEL_SPRITE,
+		PIPELINE_DATA_NOCARING_BLENDALPHA_DEPTH_OFF,
+		ROOTSIGNATURE_DATA_DRAW_TEX,
+		PIPELINE_NAME_SPRITE_Z_OFF
+	);
+
+
+	//スプライトパイプライン
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS_TEX,
+		SHADER_VERTEX_SPRITE,
+		SHADER_PIXCEL_SPRITE,
 		PIPELINE_DATA_NOCARING_NOBLEND,
 		ROOTSIGNATURE_DATA_DRAW_TEX,
 		PIPELINE_NAME_SPRITE_NOBLEND
@@ -1285,15 +1511,26 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_OBJ
 	);
 
-	////OBJパイプラインのワイヤーフレーム
-	//GraphicsPipeLineMgr::Instance()->CreatePipeLine(
-	//	LAYOUT_POS,
-	//	SHADER_VERTEX_COLOR,
-	//	SHADER_PIXCEL_COLOR,
-	//	PIPELINE_DATA_BACKCARING_ALPHABLEND_WIREFLAME,
-	//	ROOTSIGNATURE_DATA_DRAW_DATA1,
-	//	PIPELINE_NAME_OBJ_WIREFLAME
-	//);
+	//OBJパイプラインのワイヤーフレーム
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS,
+		SHADER_VERTEX_COLOR,
+		SHADER_PIXCEL_COLOR,
+		PIPELINE_DATA_BACKCARING_ALPHABLEND_WIREFLAME,
+		ROOTSIGNATURE_DATA_DRAW_DATA1,
+		PIPELINE_NAME_OBJ_WIREFLAME
+	);
+
+
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS,
+		SHADER_VERTEX_FOG_COLOR,
+		SHADER_PIXCEL_FOG_COLOR,
+		PIPELINE_DATA_NOCARING_ALPHABLEND_WIREFLAME,
+		ROOTSIGNATURE_DATA_DRAW_DATA1,
+		PIPELINE_NAME_OBJ_WIREFLAME_FOG
+	);
+
 
 	//インスタンシング描画Objパイプライン
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
@@ -1375,6 +1612,28 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		ROOTSIGNATURE_DATA_DRAW,
 		PIPELINE_NAME_LINE
 	);
+
+	//FogLineパイプライン
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS,
+		SHADER_VERTEX_FOG_COLOR,
+		SHADER_PIXCEL_FOG_COLOR,
+		PIPELINE_DATA_NOCARING_ALPHABLEND_LINE,
+		ROOTSIGNATURE_DATA_DRAW_DATA1,
+		PIPELINE_NAME_FOG_LINE
+	);
+
+
+	//インスタンシング描画色パイプライン
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS,
+		SHADER_VERTEX_INSTANCE_COLOR,
+		SHADER_PIXCEL_INSTANCE_COLOR,
+		PIPELINE_DATA_NOCARING_ALPHABLEND_LINE,
+		ROOTSIGNATURE_DATA_DRAW,
+		PIPELINE_NAME_INSTANCE_COLOR_LINE
+	);
+
 
 	//Lineパイプライン(uv付き)
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
@@ -1527,6 +1786,26 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_FOG_FBX
 	);
 
+
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS_NORMAL_TEX_BONE_WEIGHT,
+		SHADER_VERTEX_FBX_FOG,
+		SHADER_PIXCEL_FOG_COLOR,
+		PIPELINE_DATA_NOCARING_NOBLEND_WIREFLAME,
+		ROOTSIGNATURE_DATA_DRAW_SKINING_DATA1,
+		PIPELINE_NAME_FOG_FBX_WIREFLAME
+	);
+
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS_NORMAL_TEX_BONE_WEIGHT,
+		SHADER_VERTEX_FBX_FOG,
+		SHADER_PIXCEL_FOG_MULTITEX,
+		PIPELINE_DATA_NOCARING_NOBLEND_WIREFLAME_MULTIPASS_TWO,
+		ROOTSIGNATURE_DATA_DRAW_SKINING_DATA1,
+		PIPELINE_NAME_FOG_FBX_WIREFLAME_MULTI_TWO
+	);
+	
+
 	//Objパイプライン
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX,
@@ -1579,15 +1858,6 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_SPRITE_CUTALPHA
 	);
 
-	//FogLineパイプライン
-	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
-		LAYOUT_POS,
-		SHADER_VERTEX_COLOR,
-		SHADER_PIXCEL_LINE_FOG,
-		PIPELINE_DATA_NOCARING_ALPHABLEND_LINE,
-		ROOTSIGNATURE_MODE_LINE,
-		PIPELINE_NAME_FOG_LINE
-	);
 
 
 	//FogLineForBgパイプライン
@@ -1640,7 +1910,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		SHADER_VERTEX_COLOR,
 		SHADER_PIXCEL_COLOR_MULTITEX,
 		PIPELINE_DATA_BACKCARING_ALPHABLEND_RNEDERTARGET_SECOND,
-		ROOTSIGNATURE_DATA_DRAW,
+		ROOTSIGNATURE_DATA_DRAW_DATA1,
 		PIPELINE_NAME_COLOR_MULTITEX
 	);
 	//フォグ
@@ -1653,15 +1923,6 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_FOG_COLOR_MULTITEX
 	);
 
-	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
-		LAYOUT_POS,
-		SHADER_VERTEX_COLOR,
-		SHADER_PIXCEL_COLOR_MULTITEX,
-		PIPELINE_DATA_BACKCARING_ALPHABLEND_RNEDERTARGET_SECOND,
-		ROOTSIGNATURE_DATA_DRAW,
-		PIPELINE_NAME_COLOR_MULTITEX
-	);
-
 	//スプライトパイプライン
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
@@ -1671,6 +1932,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		ROOTSIGNATURE_DATA_DRAW_TEX,
 		PIPELINE_NAME_SPRITE_MULTITEX
 	);
+
 
 	//Objパイプライン
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
@@ -1719,7 +1981,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		SHADER_VERTEX_COLOR,
 		SHADER_PIXCEL_COLOR_MULTITEX,
 		PIPELINE_DATA_BACKCARING_ALPHABLEND_WIREFLAME_MUTITEX,
-		ROOTSIGNATURE_DATA_DRAW,
+		ROOTSIGNATURE_DATA_DRAW_DATA1,
 		PIPELINE_NAME_COLOR_WIREFLAME_MULTITEX
 	);
 
@@ -1730,7 +1992,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		SHADER_VERTEX_COLOR,
 		SHADER_PIXCEL_COLOR_MULTITEX,
 		PIPELINE_DATA_NOCARING_ALPHABLEND_LINE_MULTITEX,
-		ROOTSIGNATURE_DATA_DRAW,
+		ROOTSIGNATURE_DATA_DRAW_DATA1,
 		PIPELINE_NAME_LINE_MULTITEX
 	);
 

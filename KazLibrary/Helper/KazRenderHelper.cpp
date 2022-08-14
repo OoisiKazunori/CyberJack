@@ -5,11 +5,11 @@ KazRenderHelper::DrawIndexInstanceCommandData KazRenderHelper::SetDrawIndexInsta
 	KazRenderHelper::DrawIndexInstanceCommandData result;
 	result.topology = TOPOLOGY;
 	result.vertexBufferDrawData.vertexBufferView = VERTEX_VIEW;
-	result.vertexBufferDrawData.numViews = INSTANCE_NUM;
+	result.vertexBufferDrawData.numViews = 1;
 	result.vertexBufferDrawData.slot = 0;
 	result.indexBufferView = INDEX_VIEW;
 	result.drawIndexInstancedData.indexCountPerInstance = INDECIES_NUM;
-	result.drawIndexInstancedData.instanceCount = 1;
+	result.drawIndexInstancedData.instanceCount = INSTANCE_NUM;
 	result.drawIndexInstancedData.baseVertexLocation = 0;
 	result.drawIndexInstancedData.startIndexLocation = 0;
 	result.drawIndexInstancedData.startInstanceLocation = 0;
@@ -21,10 +21,10 @@ KazRenderHelper::DrawInstanceCommandData KazRenderHelper::SetDrawInstanceCommand
 	KazRenderHelper::DrawInstanceCommandData result;
 	result.topology = TOPOLOGY;
 	result.vertexBufferDrawData.vertexBufferView = VERTEX_VIEW;
-	result.vertexBufferDrawData.numViews = INSTANCE_NUM;
+	result.vertexBufferDrawData.numViews = 1;
 	result.vertexBufferDrawData.slot = 0;
 	result.drawInstanceData.vertexCountPerInstance = VERTEX_NUM;
-	result.drawInstanceData.instanceCount = 1;
+	result.drawInstanceData.instanceCount = INSTANCE_NUM;
 	result.drawInstanceData.startVertexLocation = 0;
 	result.drawInstanceData.startInstanceLocation = 0;
 	return result;

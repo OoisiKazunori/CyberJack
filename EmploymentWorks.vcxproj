@@ -179,6 +179,11 @@
     <ClCompile Include="Game\Effect\RocketEffect.cpp" />
     <ClCompile Include="Game\Enemy\BattleshipEnemy.cpp" />
     <ClCompile Include="Game\Enemy\BikeEnemy.cpp" />
+    <ClCompile Include="Game\Effect\EaseScaleParticle.cpp" />
+    <ClCompile Include="Game\Effect\HitEffectPattern1Emitter.cpp" />
+    <ClCompile Include="Game\Effect\HitEffectPattern2Emitter.cpp" />
+    <ClCompile Include="Game\Effect\HitEffectPattern3Emitter.cpp" />
+    <ClCompile Include="Game\Effect\IHitEffectEmitter.cpp" />
     <ClCompile Include="Game\Enemy\HitEnemyEffect.cpp" />
     <ClCompile Include="Game\Enemy\KidEnemy.cpp" />
     <ClCompile Include="Game\Enemy\NormalMisileEnemy.cpp" />
@@ -193,6 +198,8 @@
     <ClCompile Include="Game\Event\GoalBoxPortalEffect.cpp" />
     <ClCompile Include="Game\Event\GoalBoxPortalStringEffect.cpp" />
     <ClCompile Include="Game\Event\LineCpuEffect.cpp" />
+    <ClCompile Include="Game\Event\LineFlashLight.cpp" />
+    <ClCompile Include="Game\Event\LineLight.cpp" />
     <ClCompile Include="Game\Event\LineLightEffect.cpp" />
     <ClCompile Include="Game\Event\MoiveEffect.cpp" />
     <ClCompile Include="Game\Event\PortalEffect.cpp" />
@@ -207,8 +214,10 @@
     <ClCompile Include="Game\LineEffect\LineEffect.cpp" />
     <ClCompile Include="Game\LineEffect\LineLevel1.cpp" />
     <ClCompile Include="Game\Player.cpp" />
+    <ClCompile Include="Game\Stage\DrawGrid.cpp" />
     <ClCompile Include="Game\Stage\FirstStage.cpp" />
     <ClCompile Include="Game\Stage\GpuParticleStage.cpp" />
+    <ClCompile Include="Game\Stage\RezStage.cpp" />
     <ClCompile Include="Game\Stage\SecondStage.cpp" />
     <ClCompile Include="Game\Stage\StageMgr.cpp" />
     <ClCompile Include="Game\Stage\ThridStage.cpp" />
@@ -230,6 +239,7 @@
     <ClCompile Include="KazLibrary\Helper\ISinglton.cpp" />
     <ClCompile Include="KazLibrary\Helper\KazBufferHelper.cpp" />
     <ClCompile Include="KazLibrary\Helper\KazHelper.cpp" />
+    <ClCompile Include="KazLibrary\Helper\KazImGuiHelper.cpp" />
     <ClCompile Include="KazLibrary\Helper\KazRenderHelper.cpp" />
     <ClCompile Include="KazLibrary\Helper\OutPutDebugStringAndCheckResult.cpp" />
     <ClCompile Include="KazLibrary\Helper\RegisterNameWithData.cpp" />
@@ -288,6 +298,11 @@
     <ClInclude Include="Game\Effect\RocketEffect.h" />
     <ClInclude Include="Game\Enemy\BattleshipEnemy.h" />
     <ClInclude Include="Game\Enemy\BikeEnemy.h" />
+    <ClInclude Include="Game\Effect\EaseScaleParticle.h" />
+    <ClInclude Include="Game\Effect\HitEffectPattern1Emitter.h" />
+    <ClInclude Include="Game\Effect\HitEffectPattern2Emitter.h" />
+    <ClInclude Include="Game\Effect\HitEffectPattern3Emitter.h" />
+    <ClInclude Include="Game\Effect\IHitEffectEmitter.h" />
     <ClInclude Include="Game\Enemy\HitEnemyEffect.h" />
     <ClInclude Include="Game\Enemy\KidEnemy.h" />
     <ClInclude Include="Game\Enemy\NormalMisileEnemy.h" />
@@ -302,6 +317,7 @@
     <ClInclude Include="Game\Event\GoalBoxPortalEffect.h" />
     <ClInclude Include="Game\Event\GoalBoxPortalStringEffect.h" />
     <ClInclude Include="Game\Event\LineCpuEffect.h" />
+    <ClInclude Include="Game\Event\LineFlashLight.h" />
     <ClInclude Include="Game\Event\LineLightEffect.h" />
     <ClInclude Include="Game\Event\PortalEffect.h" />
     <ClInclude Include="Game\Event\PortalFlame.h" />
@@ -316,8 +332,10 @@
     <ClInclude Include="Game\LineEffect\LineEffect.h" />
     <ClInclude Include="Game\LineEffect\LineLevel1.h" />
     <ClInclude Include="Game\Player.h" />
+    <ClInclude Include="Game\Stage\DrawGrid.h" />
     <ClInclude Include="Game\Stage\FirstStage.h" />
     <ClInclude Include="Game\Stage\GpuParticleStage.h" />
+    <ClInclude Include="Game\Stage\RezStage.h" />
     <ClInclude Include="Game\Stage\SecondStage.h" />
     <ClInclude Include="Game\Stage\StageMgr.h" />
     <ClInclude Include="Game\Stage\ThridStage.h" />
@@ -407,12 +425,12 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="DirectXTex\DirectXTex_Desktop_2019_Win10.vcxproj">
-      <Project>{371b9fa9-4c90-4ac6-a123-aced756d6c77}</Project>
-    </ProjectReference>
+    <ResourceCompile Include="KazLib.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="KazLib.rc" />
+    <ProjectReference Include="DirectXTex\DirectXTex_Desktop_2019.vcxproj">
+      <Project>{371b9fa9-4c90-4ac6-a123-aced756d6c77}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

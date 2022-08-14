@@ -230,6 +230,11 @@ namespace KazMath
 			DirectX::XMVECTOR result = { static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), 0.0f };
 			return result;
 		};
+		Vec2<T> ConvertVec2()const
+		{
+			Vec2<T> result = { x,y };
+			return result;
+		};
 
 		Vec3<int>Int()const
 		{
@@ -386,9 +391,13 @@ namespace KazMath
 		};
 		Vec4(T X, T Y, T Z, T A) :x(X), y(Y), z(Z), a(A) {};
 
-		DirectX::XMFLOAT3 ConvertXMFLOAT3()
+		DirectX::XMFLOAT3 ConvertXMFLOAT3()const
 		{
-			return DirectX::DirectX::XMFLOAT3(x, y, z);
+			return DirectX::XMFLOAT3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
+		};
+		DirectX::XMFLOAT4 ConvertXMFLOAT4()const
+		{
+			return DirectX::XMFLOAT4(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), static_cast<float>(a));
 		};
 		DirectX::XMVECTOR ConvertXMVECTOR()
 		{
@@ -398,7 +407,7 @@ namespace KazMath
 
 		Vec4<int>Int()const
 		{
-			return Vec4<int>(x, y, z, a);
+			return Vec4<int>(static_cast<int>(x), static_cast<int>(y), static_cast<int>(z), static_cast<int>(a));
 		}
 		Vec4<float>Float()const
 		{
@@ -420,19 +429,19 @@ namespace KazMath
 		}
 		Vec4 operator+(const Vec4 &rhs)const
 		{
-			return Vec4(x + rhs.x, y + rhs.y, z + rhs.z);
+			return Vec4(x + rhs.x, y + rhs.y, z + rhs.z, a + rhs.a);
 		};
 		Vec4 operator-(const Vec4 &rhs)const
 		{
-			return Vec4(x - rhs.x, y - rhs.y, z - rhs.z);
+			return Vec4(x - rhs.x, y - rhs.y, z - rhs.z, a - rhs.a);
 		};
 		Vec4 operator*(const Vec4 &rhs) const
 		{
-			return Vec4(x * rhs.x, y * rhs.y, z * rhs.z);
+			return Vec4(x * rhs.x, y * rhs.y, z * rhs.z, a * rhs.a);
 		};
 		Vec4 operator*(const float &rhs)const
 		{
-			return Vec4(x * rhs, y * rhs, z * rhs);
+			return Vec4(x * rhs, y * rhs, z * rhs, a * rhs);
 		};
 		Vec4 operator/(const Vec4 &rhs)const
 		{
@@ -527,12 +536,17 @@ namespace KazMath
 		Color(int R, int G, int B, int A) :color({ R,G,B,A }), dirtyFlag(&color)
 		{};
 
-		DirectX::XMFLOAT4 ConvertColorRateToXMFLOAT4()
+		DirectX::XMFLOAT4 ConvertColorRateToXMFLOAT4()const
 		{
 			KazMath::Vec4<float> result = GetColorRate();
 			return DirectX::XMFLOAT4(result.x, result.y, result.z, result.a);
 		};
-		Vec4<float> GetColorRate()
+		DirectX::XMFLOAT3 ConvertColorRateToXMFLOAT3()const
+		{
+			KazMath::Vec4<float> result = GetColorRate();
+			return DirectX::XMFLOAT3(result.x, result.y, result.z);
+		};
+		Vec4<float> GetColorRate()const
 		{
 			KazMath::Vec4<float> result = CovertToFloat();
 			return KazMath::Vec4<float>(
@@ -559,7 +573,7 @@ namespace KazMath
 		}
 
 	private:
-		KazMath::Vec4<float> CovertToFloat()
+		KazMath::Vec4<float> CovertToFloat()const
 		{
 			return KazMath::Vec4<float>(
 				static_cast<float>(color.x),
@@ -819,8 +833,7 @@ namespace KazMath
 	float AngleToRadian(int ANGLE);
 	float AngleToRadian(float ANGLE);
 
-	template<typename T>
-	DirectX::XMMATRIX CaluMat(const KazMath::Transform3D &TRANSFORM, const Vec3<T> &Y_VEC, const Vec3<T> &Z_VEC, const DirectX::XMMATRIX &VIEW_MAT, const DirectX::XMMATRIX &PROJECT_MAT);
+	DirectX::XMMATRIX CaluMat(const KazMath::Transform3D &TRANSFORM, const DirectX::XMMATRIX &VIEW_MAT, const DirectX::XMMATRIX &PROJECT_MAT, const Vec3<float> &Y_VEC, const Vec3<float> &Z_VEC);
 	template<typename T>
 	DirectX::XMMATRIX CaluWorld(const KazMath::Transform3D &TRANSFORM, const Vec3<T> &Y_VEC, const Vec3<T> &Z_VEC);
 

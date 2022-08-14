@@ -11,5 +11,6 @@ float4 PSmain(VSOutput input) : SV_TARGET
     float brightness = diffuse + 0.3f;
 
     float4 texColor = float4(tex.Sample(smp, input.uv));
-    return texColor * float4(brightness, brightness, brightness, 1);
+    return texColor;
+    //float4(brightness, brightness, brightness, 1);
 }

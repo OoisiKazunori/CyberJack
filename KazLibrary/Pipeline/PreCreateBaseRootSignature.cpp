@@ -260,6 +260,26 @@ PreCreateBaseRootSignature::PreCreateBaseRootSignature()
 	}
 #pragma endregion
 
+#pragma region 座標とスキニング行列とフォグの値を送る
+	{
+		//フォグ込みfbxモデル
+		RootSignatureData fbxData;
+		fbxData.paramData[0].param = 0;
+		fbxData.paramData[0].type = GRAPHICS_PRAMTYPE_DRAW;
+		fbxData.range[0] = GRAPHICS_RANGE_TYPE_CBV;
+
+		fbxData.paramData[1].param = 1;
+		fbxData.paramData[1].type = GRAPHICS_PRAMTYPE_SKINING;
+		fbxData.range[1] = GRAPHICS_RANGE_TYPE_CBV;
+
+		fbxData.paramData[2].param = 2;
+		fbxData.paramData[2].type = GRAPHICS_PRAMTYPE_DATA;
+		fbxData.range[2] = GRAPHICS_RANGE_TYPE_CBV;
+
+		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_DRAW_SKINING_DATA1, fbxData, 3);
+	}
+#pragma endregion
+
 
 #pragma region 座標とフォグの値を送る
 	{
@@ -342,6 +362,22 @@ PreCreateBaseRootSignature::PreCreateBaseRootSignature()
 		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_DATA1_DATA2, lineData, 2);
 	}
 
+	{
+		RootSignatureData lineData;
+		lineData.paramData[0].param = 0;
+		lineData.paramData[0].type = GRAPHICS_PRAMTYPE_DRAW;
+		lineData.range[0] = GRAPHICS_RANGE_TYPE_CBV;
+
+		lineData.paramData[1].param = 1;
+		lineData.paramData[1].type = GRAPHICS_PRAMTYPE_DATA;
+		lineData.range[1] = GRAPHICS_RANGE_TYPE_CBV;
+
+		lineData.paramData[2].param = 2;
+		lineData.paramData[2].type = GRAPHICS_PRAMTYPE_DATA2;
+		lineData.range[2] = GRAPHICS_RANGE_TYPE_CBV;
+
+		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_DRAW_DATA1_DATA2, lineData, 3);
+	}
 
 
 	{
