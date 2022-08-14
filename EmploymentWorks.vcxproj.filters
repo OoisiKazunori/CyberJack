@@ -118,6 +118,7 @@
     <ClCompile Include="Game\Effect\HitEffectPattern2Emitter.cpp" />
     <ClCompile Include="Game\Effect\HitEffectPattern3Emitter.cpp" />
     <ClCompile Include="Game\Stage\DrawGrid.cpp" />
+    <ClCompile Include="Game\Stage\MountainObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -247,6 +248,7 @@
     <ClInclude Include="Game\Effect\HitEffectPattern2Emitter.h" />
     <ClInclude Include="Game\Effect\HitEffectPattern3Emitter.h" />
     <ClInclude Include="Game\Stage\DrawGrid.h" />
+    <ClInclude Include="Game\Stage\MountainObject.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

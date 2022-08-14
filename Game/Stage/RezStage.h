@@ -8,6 +8,7 @@
 #include"../Game/Debug/ParameterMgr.h"
 #include"../KazLibrary/Collision/CollisionManager.h"
 #include"../Game/Stage/DrawGrid.h"
+#include"../Game/Stage/MountainObject.h"
 
 class RezStage :public IStage
 {
@@ -31,6 +32,9 @@ private:
 		KazMath::Vec3<float>initScale;
 	};
 	std::array<FloorObjData, 50>floorObjectRender;
+
+
+	std::array<MountainObject, 40>floorObjectRender2;
 
 	float scaleRate;
 	bool reversValueFlag;

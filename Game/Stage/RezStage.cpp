@@ -126,6 +126,30 @@ RezStage::RezStage()
 
 
 	ray = std::make_unique<LineRender>();
+
+
+
+
+	//ƒpƒ‰ƒ[ƒ^‚©‚ç”»’f
+	for (int i = 0; i < 40; ++i)
+	{
+		std::string name = "FloorObj" + std::to_string(i);
+		KazMath::Transform3D initTrans;
+		initTrans.pos.x = stageParamLoader.doc[name.c_str()]["Pos"][0].GetFloat();
+		initTrans.pos.y = stageParamLoader.doc[name.c_str()]["Pos"][1].GetFloat();
+		initTrans.pos.z = stageParamLoader.doc[name.c_str()]["Pos"][2].GetFloat();
+		
+		initTrans.scale.x = stageParamLoader.doc[name.c_str()]["Scale"][0].GetFloat();
+		initTrans.scale.y = stageParamLoader.doc[name.c_str()]["Scale"][1].GetFloat();
+		initTrans.scale.z = stageParamLoader.doc[name.c_str()]["Scale"][2].GetFloat();
+
+		initTrans.rotation.x = stageParamLoader.doc[name.c_str()]["Rota"][0].GetFloat();
+		initTrans.rotation.y = stageParamLoader.doc[name.c_str()]["Rota"][1].GetFloat();
+		initTrans.rotation.z = stageParamLoader.doc[name.c_str()]["Rota"][2].GetFloat();
+
+		int lNum = stageParamLoader.doc[name.c_str()]["FilePass"].GetInt();
+		floorObjectRender2[i].Init(initTrans, stageModelhandle[lNum]);
+	}
 }
 
 void RezStage::Update()
@@ -257,6 +281,12 @@ void RezStage::Update()
 
 
 
+
+	for (int i = 0; i < floorObjectRender2.size(); ++i)
+	{
+		floorObjectRender2[i].Update();
+	}
+
 #pragma region Obj
 	if (reversValueFlag)
 	{
@@ -338,6 +368,8 @@ void RezStage::Update()
 	c1.data.transform.pos.y = lTmp[0].y;
 	c2.data.transform.pos.x = lTmp[1].x;
 	c2.data.transform.pos.y = lTmp[1].y;
+
+
 }
 
 void RezStage::Draw()
@@ -346,8 +378,14 @@ void RezStage::Draw()
 	{
 		for (int objectIndex = 0; objectIndex < floorObjectRender[i].objRender.size(); ++objectIndex)
 		{
-			floorObjectRender[i].objRender[objectIndex].Draw();
+			//floorObjectRender[i].objRender[objectIndex].Draw();
 		}
+	}
+
+
+	for (int i = 0; i < floorObjectRender2.size(); ++i)
+	{
+		floorObjectRender2[i].Draw();
 	}
 
 	for (int i = 0; i < gridRender.size(); ++i)

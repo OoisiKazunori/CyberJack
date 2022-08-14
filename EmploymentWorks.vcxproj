@@ -217,6 +217,7 @@
     <ClCompile Include="Game\Stage\DrawGrid.cpp" />
     <ClCompile Include="Game\Stage\FirstStage.cpp" />
     <ClCompile Include="Game\Stage\GpuParticleStage.cpp" />
+    <ClCompile Include="Game\Stage\MountainObject.cpp" />
     <ClCompile Include="Game\Stage\RezStage.cpp" />
     <ClCompile Include="Game\Stage\SecondStage.cpp" />
     <ClCompile Include="Game\Stage\StageMgr.cpp" />
@@ -335,6 +336,7 @@
     <ClInclude Include="Game\Stage\DrawGrid.h" />
     <ClInclude Include="Game\Stage\FirstStage.h" />
     <ClInclude Include="Game\Stage\GpuParticleStage.h" />
+    <ClInclude Include="Game\Stage\MountainObject.h" />
     <ClInclude Include="Game\Stage\RezStage.h" />
     <ClInclude Include="Game\Stage\SecondStage.h" />
     <ClInclude Include="Game\Stage\StageMgr.h" />
