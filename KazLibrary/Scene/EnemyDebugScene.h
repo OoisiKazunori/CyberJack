@@ -35,6 +35,7 @@ private:
 	int gameFlame;
 	int specifiedEnemyType, oldEnemyType;
 	bool initFlag, deadFlag, attackFlag;
+	KazMath::Vec3<float>responePos;
 
 	BackGroundForDebug bg;
 

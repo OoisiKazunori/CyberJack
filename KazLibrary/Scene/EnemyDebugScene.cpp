@@ -9,16 +9,25 @@
 #include"../Game/Enemy/PopEnemy.h"
 #include"../Game/Enemy/BikeEnemy.h"
 #include"../Game/Enemy/SplineMisileForBikeEnemy.h"
+#include"../Game/Enemy/SplineMisileForBattleShip.h"
 
 EnemyDebugScene::EnemyDebugScene()
 {
 	int lIndex = 0;
+	enemies[lIndex] = std::make_unique<BattleshipEnemy>();
+	misiles[lIndex][0] = std::make_unique<SplineMisileForBattleShip>();
+	misiles[lIndex][1] = std::make_unique<SplineMisileForBattleShip>();
+	misiles[lIndex][2] = std::make_unique<SplineMisileForBattleShip>();
+	misiles[lIndex][3] = std::make_unique<SplineMisileForBattleShip>();
+	misiles[lIndex][4] = std::make_unique<SplineMisileForBattleShip>();
+	misiles[lIndex][5] = std::make_unique<SplineMisileForBattleShip>();
+	misiles[lIndex][6] = std::make_unique<SplineMisileForBattleShip>();
+	misiles[lIndex][7] = std::make_unique<SplineMisileForBattleShip>();
+	++lIndex;
 	enemies[lIndex] = std::make_unique<NormalEnemy>();
 	++lIndex;
 	enemies[lIndex] = std::make_unique<NormalMisileEnemy>();
 	misiles[lIndex][0] = std::make_unique<SplineMisile>();
-	++lIndex;
-	enemies[lIndex] = std::make_unique<BattleshipEnemy>();
 	++lIndex;
 	enemies[lIndex] = std::make_unique<PopEnemy>();
 	++lIndex;
@@ -44,6 +53,7 @@ void EnemyDebugScene::Init()
 
 	//kidFbxModel.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "Gunner_Model.fbx");
 	kidFbxModel.data.transform.scale = { 10.0f,10.0f,10.0f };
+	responePos = { -20.0f,0.0f,100.0f };
 }
 
 void EnemyDebugScene::Finalize()
@@ -110,8 +120,13 @@ void EnemyDebugScene::Update()
 	ImGui::Begin("EnemyList");
 	ImGui::InputInt("enemyIndex", &specifiedEnemyType);
 	initFlag = ImGui::Button("Init");
+	ImGui::SameLine();
 	deadFlag = ImGui::Button("Dead");
+	ImGui::SameLine();
 	attackFlag = ImGui::Button("Attack");
+	ImGui::DragFloat("ResponePosX", &responePos.x);
+	ImGui::DragFloat("ResponePosY", &responePos.y);
+	ImGui::DragFloat("ResponePosZ", &responePos.z);
 	ImGui::End();
 
 	//サイズ上限--------------------------------------
@@ -151,7 +166,7 @@ void EnemyDebugScene::Update()
 		//敵と子敵の死亡--------------------------------------
 
 		//初期化--------------------------------------
-		enemies[specifiedEnemyType]->Init(KazMath::Vec3<float>(-100.0f, -5.0f,10.0f), true);
+		enemies[specifiedEnemyType]->Init(responePos, true);
 		//初期化--------------------------------------
 
 		//簡易ツールの初期化--------------------------------------

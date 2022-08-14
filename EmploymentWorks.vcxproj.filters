@@ -107,6 +107,7 @@
     <ClCompile Include="Game\Enemy\PopEnemy.cpp" />
     <ClCompile Include="Game\Enemy\BikeEnemy.cpp" />
     <ClCompile Include="Game\Enemy\SplineMisileForBikeEnemy.cpp" />
+    <ClCompile Include="Game\Enemy\SplineMisileForBattleShip.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -227,6 +228,7 @@
     <ClInclude Include="Game\Enemy\PopEnemy.h" />
     <ClInclude Include="Game\Enemy\BikeEnemy.h" />
     <ClInclude Include="Game\Enemy\SplineMisileForBikeEnemy.h" />
+    <ClInclude Include="Game\Enemy\SplineMisileForBattleShip.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

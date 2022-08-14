@@ -17,8 +17,8 @@ TwoRender PSmain(VSOutput input) : SV_TARGET
     float4 texColor = tex.Sample(smp, input.uv);
 
     TwoRender output;
-    //output.target0 = float4(texColor.rgb, m_alpha);
-    output.target0 = float4(1,1,1,1);
+    output.target0 = float4(texColor.rgb, m_alpha);
+    //output.target0 = float4(1,1,1,1);
     output.target1 = float4(0.0f, 0.0f, 0.0f, 0.0f);
     return output;
 }

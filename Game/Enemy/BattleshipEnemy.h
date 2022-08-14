@@ -13,5 +13,10 @@ public:
 	void Draw();
 
 private:
+	KazMath::Vec3<float>basePos;
+	int appearTimer;
+	float vel;
+	int misileShotIndex;
+	std::array<BoxPolygonRender, 8>misileR;
 };
 

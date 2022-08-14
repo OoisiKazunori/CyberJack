@@ -185,6 +185,7 @@
     <ClCompile Include="Game\Enemy\PopEnemy.cpp" />
     <ClCompile Include="Game\Enemy\SplineMisile.cpp" />
     <ClCompile Include="Game\Enemy\NormalEnemy.cpp" />
+    <ClCompile Include="Game\Enemy\SplineMisileForBattleShip.cpp" />
     <ClCompile Include="Game\Enemy\SplineMisileForBikeEnemy.cpp" />
     <ClCompile Include="Game\Event\EventSprite.cpp" />
     <ClCompile Include="Game\Event\GoalBox.cpp" />
@@ -293,6 +294,7 @@
     <ClInclude Include="Game\Enemy\PopEnemy.h" />
     <ClInclude Include="Game\Enemy\SplineMisile.h" />
     <ClInclude Include="Game\Enemy\NormalEnemy.h" />
+    <ClInclude Include="Game\Enemy\SplineMisileForBattleShip.h" />
     <ClInclude Include="Game\Enemy\SplineMisileForBikeEnemy.h" />
     <ClInclude Include="Game\Event\EventSprite.h" />
     <ClInclude Include="Game\Event\GoalBox.h" />
