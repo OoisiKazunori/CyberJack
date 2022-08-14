@@ -26,14 +26,6 @@ private:
 
 
 	//è∞Ç…OBJîzíu
-	struct FloorObjData
-	{
-		std::array<ObjModelRender, 2> objRender;
-		KazMath::Vec3<float>initScale;
-	};
-	std::array<FloorObjData, 50>floorObjectRender;
-
-
 	std::array<MountainObject, 80>floorObjectRender2;
 
 	float scaleRate;
