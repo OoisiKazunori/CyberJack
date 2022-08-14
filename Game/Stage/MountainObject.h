@@ -19,7 +19,7 @@ private:
 	};
 	FloorObjData floorObjectRender;
 
-	static float scaleRate;
-	static bool reversValueFlag;
+	float scaleRate;
+	bool reversValueFlag;
 };
 

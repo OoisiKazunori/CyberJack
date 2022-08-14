@@ -34,7 +34,7 @@ private:
 	std::array<FloorObjData, 50>floorObjectRender;
 
 
-	std::array<MountainObject, 40>floorObjectRender2;
+	std::array<MountainObject, 80>floorObjectRender2;
 
 	float scaleRate;
 	bool reversValueFlag;

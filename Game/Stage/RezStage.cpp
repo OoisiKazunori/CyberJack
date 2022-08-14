@@ -149,6 +149,9 @@ RezStage::RezStage()
 
 		int lNum = stageParamLoader.doc[name.c_str()]["FilePass"].GetInt();
 		floorObjectRender2[i].Init(initTrans, stageModelhandle[lNum]);
+
+		initTrans.pos.z -= 9000.0f;
+		floorObjectRender2[40 + i].Init(initTrans, stageModelhandle[lNum]);
 	}
 }
 

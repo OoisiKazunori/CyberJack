@@ -1,9 +1,6 @@
 #include "MountainObject.h"
 #include"../KazLibrary/Easing/easing.h"
 
-float MountainObject::scaleRate = 0.0f;
-bool MountainObject::reversValueFlag = false;
-
 MountainObject::MountainObject()
 {
 }
@@ -30,6 +27,10 @@ void MountainObject::Init(const KazMath::Transform3D &TRANSFORM, RESOURCE_HANDLE
 
 	floorObjectRender.objRender[0].data.colorData = KazMath::Color(213, 5, 228, 255);
 	floorObjectRender.objRender[1].data.colorData = KazMath::Color(248, 58, 16, 255);
+
+	scaleRate = 0.0f;
+	reversValueFlag = false;
+
 }
 
 void MountainObject::Update()
@@ -67,17 +68,13 @@ void MountainObject::Update()
 
 	//上のオブジェクトの状態に合わせてから下のオブジェクトの状態を変える
 	floorObjectRender.objRender[1].data.transform = floorObjectRender.objRender[0].data.transform;
-	floorObjectRender.objRender[1].data.transform.scale.y = floorObjectRender.objRender[0].data.transform.scale.y;
-	floorObjectRender.objRender[1].data.transform.pos = floorObjectRender.objRender[0].data.transform.pos;
-	floorObjectRender.objRender[1].data.transform.rotation = { 180.0f,0.0f,0.0f };
-	//Y軸角度を合わせる
-	floorObjectRender.objRender[1].data.transform.rotation.y = floorObjectRender.objRender[0].data.transform.rotation.y;
+	floorObjectRender.objRender[1].data.transform.rotation.x = 180.0f;
 
 	//ループ
-	bool limitZLineFlag = floorObjectRender.objRender[0].data.transform.pos.z <= -1000.0f;
+	bool limitZLineFlag = floorObjectRender.objRender[0].data.transform.pos.z <= -9000.0f;
 	if (limitZLineFlag)
 	{
-		floorObjectRender.objRender[0].data.transform.pos.z = 8000.0f;
+		floorObjectRender.objRender[0].data.transform.pos.z = 9000.0f;
 		floorObjectRender.objRender[1].data.transform.pos = floorObjectRender.objRender[0].data.transform.pos + KazMath::Vec3<float>(0.0f, -(floorObjectRender.objRender[0].data.transform.scale.y * 2), 0.0f);
 	}
 
