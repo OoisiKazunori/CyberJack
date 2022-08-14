@@ -176,7 +176,7 @@ struct Obj3DData
 	KazMath::Vec3<float> frontVector;
 	MatMotherData motherMat;
 	PipeLineNames pipelineName;
-	KazMath::Color color;
+	KazMath::Color colorData;
 	bool removeMaterialFlag;
 	AddTextureData addHandle;
 
@@ -184,7 +184,7 @@ struct Obj3DData
 	DirtyFlag<KazMath::Vec3<float>>frontVecDirtyFlag;
 	CameraIndexData cameraIndex;
 
-	Obj3DData() :pipelineName(PIPELINE_NAME_OBJ), color(0, 0, 0, 255), upVecDirtyFlag(&upVector), frontVecDirtyFlag(&frontVector), upVector({ 0,1,0 }), frontVector({ 0,0,1 }),
+	Obj3DData() :pipelineName(PIPELINE_NAME_OBJ), colorData(0, 0, 0, 255), upVecDirtyFlag(&upVector), frontVecDirtyFlag(&frontVector), upVector({ 0,1,0 }), frontVector({ 0,0,1 }),
 		removeMaterialFlag(false)
 	{
 	}
@@ -193,7 +193,7 @@ struct Obj3DData
 	{
 		transform.Record();
 		handle.flag.Record();
-		color.Record();
+		colorData.Record();
 		upVecDirtyFlag.Record();
 		frontVecDirtyFlag.Record();
 		motherMat.dirty.Record();

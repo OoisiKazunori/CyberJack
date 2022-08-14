@@ -31,7 +31,6 @@ FbxModelResourceMgr::~FbxModelResourceMgr()
 
 RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME)
 {
-
 	for (int i = 0; i < handleName.size(); i++)
 	{
 		if (handleName[i] == MODEL_NAME)
@@ -55,7 +54,12 @@ RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME)
 	ParseNodeRecursive(model, fbxScene->GetRootNode());
 
 
-
+	if (model->vertices.size() == 0)
+	{
+		string errorName = MODEL_NAME + "の読み込みに失敗しました\n";
+		FailCheck(errorName);
+		return -1;
+	}
 
 	//リソースに保管
 	unsigned short vertByte = KazBufferHelper::GetBufferSize<unsigned short>(model->vertices.size(), sizeof(Model::VertexPosNormalUvSkin));

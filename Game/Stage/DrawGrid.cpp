@@ -52,9 +52,9 @@ void DrawGrid::Update()
 		gridFloorZLinePos[i][0].pos.z += lVelZ;
 		gridFloorZLinePos[i][1].pos.z += lVelZ;
 
-		if (gridFloorZLinePos[i][0].pos.z <= -700.0f)
+		if (gridFloorZLinePos[i][0].pos.z <= -8000.0f)
 		{
-			gridFloorZLinePos[i][0].pos.z = -700.0f + static_cast<float>(gridFloorZLinePos.size()) * 300.0f;
+			gridFloorZLinePos[i][0].pos.z = -8000.0f + static_cast<float>(gridFloorZLinePos.size()) * 300.0f;
 			gridFloorZLinePos[i][1].pos.z = gridFloorZLinePos[i][0].pos.z;
 		}
 	}
@@ -229,7 +229,7 @@ void DrawGrid::InitFloor(float SPACE, float BASE_POS)
 	for (int i = 0; i < gridFloorXLinePos.size(); ++i)
 	{
 		float index = static_cast<float>(i);
-		gridFloorXLinePos[i][0].pos = { L_X + index * L_SPACE,L_Y,-5000.0f };
+		gridFloorXLinePos[i][0].pos = { L_X + index * L_SPACE,L_Y,-100000.0f };
 		gridFloorXLinePos[i][1] = gridFloorXLinePos[i][0];
 		gridFloorXLinePos[i][1].pos.z *= -1;
 	}
@@ -252,7 +252,7 @@ void DrawGrid::InitWall(float SPACE, float BASE_POS)
 	for (int i = 0; i < gridFloorXLinePos.size(); ++i)
 	{
 		float index = static_cast<float>(i);
-		gridFloorXLinePos[i][0].pos = { L_X,L_Y + index * L_SPACE,-5000.0f };
+		gridFloorXLinePos[i][0].pos = { L_X,L_Y + index * L_SPACE,-8000.0f };
 		gridFloorXLinePos[i][1] = gridFloorXLinePos[i][0];
 		gridFloorXLinePos[i][1].pos.z *= -1;
 	}

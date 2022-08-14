@@ -17,20 +17,16 @@ RezStage::RezStage()
 	gridRender[3].Init(false, 300.0f, 3000.0f);
 
 
-	for (int i = 0; i < filePassChar.size(); ++i)
+	for (int i = 0; i < filePassNum.size(); ++i)
 	{
-		filePassChar[i][0] = 'n';
-		filePassChar[i][1] = 'o';
-		filePassChar[i][2] = '_';
-		filePassChar[i][3] = 'p';
-		filePassChar[i][4] = 'a';
-		filePassChar[i][5] = 's';
-		filePassChar[i][6] = 's';
-		filePassChar[i][7] = '\0';
+		filePassNum[i] = 2;
 	}
 
-	RESOURCE_HANDLE lR = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "Mountain03_Model.obj");
+	stageModelhandle[0] = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "Mountain01_Model.obj");
+	stageModelhandle[1] = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "Mountain02_Model.obj");
+	stageModelhandle[2] = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "Mountain03_Model.obj");
 
+	RESOURCE_HANDLE lR = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "Mountain03_Model.obj");
 	for (int i = 0; i < floorObjectRender.size(); ++i)
 	{
 		const float maxXPos = 4000.0f;
@@ -62,14 +58,14 @@ RezStage::RezStage()
 		floorObjectRender[i].objRender[0].data.transform.pos.y = -150.0f + floorObjectRender[i].objRender[0].data.transform.scale.y;
 
 
-		floorObjectRender[i].objRender[0].data.color = KazMath::Color(213, 5, 228, 255);
+		floorObjectRender[i].objRender[0].data.colorData = KazMath::Color(213, 5, 228, 255);
 		floorObjectRender[i].objRender[0].data.pipelineName = PIPELINE_NAME_OBJ_WIREFLAME_FOG;
 		floorObjectRender[i].objRender[0].data.removeMaterialFlag = true;
 
 		floorObjectRender[i].objRender[1].data.transform.pos = floorObjectRender[i].objRender[0].data.transform.pos + KazMath::Vec3<float>(0.0f, -50.0f, 0.0f);
 		floorObjectRender[i].objRender[1].data.transform.scale = floorObjectRender[i].objRender[0].data.transform.scale;
 		floorObjectRender[i].objRender[1].data.transform.rotation = { 180.0f,0.0f,0.0f };
-		floorObjectRender[i].objRender[1].data.color = KazMath::Color(248, 58, 16, 255);
+		floorObjectRender[i].objRender[1].data.colorData = KazMath::Color(248, 58, 16, 255);
 		floorObjectRender[i].objRender[1].data.pipelineName = PIPELINE_NAME_OBJ_WIREFLAME_FOG;
 
 		RESOURCE_HANDLE lHandle = floorObjectRender[i].objRender[0].CreateConstBuffer(sizeof(FogData), typeid(FogData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
@@ -130,7 +126,7 @@ RezStage::RezStage()
 				object.AddMember("Pos", posArray, stageParamLoader.doc.GetAllocator());
 				object.AddMember("Scale", scaleArray, stageParamLoader.doc.GetAllocator());
 				object.AddMember("Rota", rotaArray, stageParamLoader.doc.GetAllocator());
-				object.AddMember("FilePass", "no_pass", stageParamLoader.doc.GetAllocator());
+				object.AddMember("FilePass", 0, stageParamLoader.doc.GetAllocator());
 
 				stageParamLoader.doc.AddMember(rapidjson::GenericStringRef<char>(data[i].data()), object, stageParamLoader.doc.GetAllocator());
 			}
@@ -172,9 +168,7 @@ void RezStage::Update()
 			ImGui::DragFloat("ROTA_X", &floorObjectRender[i].objRender[0].data.transform.rotation.x);
 			ImGui::DragFloat("ROTA_Y", &floorObjectRender[i].objRender[0].data.transform.rotation.y);
 			ImGui::DragFloat("ROTA_Z", &floorObjectRender[i].objRender[0].data.transform.rotation.z);
-			ImGui::InputText("FilePass", filePassChar[i].data(), sizeof(char) * 100);
-			std::string lFilePass = filePassChar[i].data();
-			//floorObjectRender[i].objRender[0].data.handle = ObjResourceMgr::Instance()->LoadModel(lFilePass);
+			ImGui::InputInt("FilePass", &filePassNum[i]);
 			ImGui::TreePop();
 		}
 
@@ -183,8 +177,22 @@ void RezStage::Update()
 			selectingR.data.transform = floorObjectRender[i].objRender[0].data.transform;
 			selectingR.data.transform.scale += KazMath::Vec3<float>(1.0f, 1.0f, 1.0f);
 		}
+
+
+		if (stageModelhandle.size() <= filePassNum[i])
+		{
+			filePassNum[i] = static_cast<int>(stageModelhandle.size() - 1);
+		}
+		if (filePassNum[i] <= -1)
+		{
+			filePassNum[i] = 0;
+		}
+		floorObjectRender[i].objRender[0].data.handle = stageModelhandle[filePassNum[i]];
+		floorObjectRender[i].objRender[1].data.handle = stageModelhandle[filePassNum[i]];
 	}
 	ImGui::End();
+
+
 
 	//ƒtƒ@ƒCƒ‹“Ç‚Ýž‚Ý
 	if (lImportFlag)
@@ -215,19 +223,11 @@ void RezStage::Update()
 					break;
 				}
 			}
-			const char *lTmp = stageParamLoader.doc[name.c_str()]["FilePass"].GetString();
 
-			for (int charIndex = 0; charIndex < filePassChar[i].size(); ++charIndex)
-			{
-				if (lTmp[charIndex] != '\0')
-				{
-					filePassChar[i][charIndex] = lTmp[charIndex];
-				}
-				else
-				{
-					break;
-				}
-			}
+			floorObjectRender[i].initScale.y = floorObjectRender[i].objRender[0].data.transform.scale.y;
+			filePassNum[i] = stageParamLoader.doc[name.c_str()]["FilePass"].GetInt();
+			floorObjectRender[i].objRender[0].data.handle = stageModelhandle[filePassNum[i]];
+			floorObjectRender[i].objRender[1].data.handle = stageModelhandle[filePassNum[i]];
 		}
 	}
 
@@ -243,25 +243,24 @@ void RezStage::Update()
 				{
 				case 0:
 					stageParamLoader.doc[name.c_str()]["Pos"][axisIndex].SetFloat(floorObjectRender[i].objRender[0].data.transform.pos.x);
-					stageParamLoader.doc[name.c_str()]["Scale"][axisIndex].SetFloat(floorObjectRender[i].objRender[0].data.transform.scale.y);
-					stageParamLoader.doc[name.c_str()]["Rota"][axisIndex].SetFloat(floorObjectRender[i].objRender[0].data.transform.rotation.z);
+					stageParamLoader.doc[name.c_str()]["Scale"][axisIndex].SetFloat(floorObjectRender[i].objRender[0].data.transform.scale.x);
+					stageParamLoader.doc[name.c_str()]["Rota"][axisIndex].SetFloat(floorObjectRender[i].objRender[0].data.transform.rotation.x);
 					break;
 				case 1:
-					stageParamLoader.doc[name.c_str()]["Pos"][axisIndex].SetFloat(floorObjectRender[i].objRender[0].data.transform.pos.x);
+					stageParamLoader.doc[name.c_str()]["Pos"][axisIndex].SetFloat(floorObjectRender[i].objRender[0].data.transform.pos.y);
 					stageParamLoader.doc[name.c_str()]["Scale"][axisIndex].SetFloat(floorObjectRender[i].objRender[0].data.transform.scale.y);
-					stageParamLoader.doc[name.c_str()]["Rota"][axisIndex].SetFloat(floorObjectRender[i].objRender[0].data.transform.rotation.z);
+					stageParamLoader.doc[name.c_str()]["Rota"][axisIndex].SetFloat(floorObjectRender[i].objRender[0].data.transform.rotation.y);
 					break;
 				case 2:
-					stageParamLoader.doc[name.c_str()]["Pos"][axisIndex].SetFloat(floorObjectRender[i].objRender[0].data.transform.pos.x);
-					stageParamLoader.doc[name.c_str()]["Scale"][axisIndex].SetFloat(floorObjectRender[i].objRender[0].data.transform.scale.y);
+					stageParamLoader.doc[name.c_str()]["Pos"][axisIndex].SetFloat(floorObjectRender[i].objRender[0].data.transform.pos.z);
+					stageParamLoader.doc[name.c_str()]["Scale"][axisIndex].SetFloat(floorObjectRender[i].objRender[0].data.transform.scale.z);
 					stageParamLoader.doc[name.c_str()]["Rota"][axisIndex].SetFloat(floorObjectRender[i].objRender[0].data.transform.rotation.z);
-
 					break;
 				default:
 					break;
 				}
 			}
-			stageParamLoader.doc[name.c_str()]["FilePass"].SetString(rapidjson::GenericStringRef<char>(filePassChar[i].data()));
+			stageParamLoader.doc[name.c_str()]["FilePass"].SetInt(filePassNum[i]);
 		}
 		stageParamLoader.ExportFile(KazFilePathName::StageParamPath + "RezStageParamData.json");
 	}
@@ -294,19 +293,20 @@ void RezStage::Update()
 
 	for (int i = 0; i < floorObjectRender.size(); ++i)
 	{
-		float lVelZ = 0.0f;
+		float lVelZ = -0.0f;
 		floorObjectRender[i].objRender[0].data.transform.pos.z += lVelZ;
-		bool limitZLineFlag = floorObjectRender[i].objRender[0].data.transform.pos.z <= -100.0f;
+		bool limitZLineFlag = floorObjectRender[i].objRender[0].data.transform.pos.z <= -1000.0f;
 
 		floorObjectRender[i].objRender[1].data.transform = floorObjectRender[i].objRender[0].data.transform;
-		//floorObjectRender[i].objRender[0].data.transform.scale.y = floorObjectRender[i].initScale.y + EasingMaker(Out, Cubic, scaleRate) * 0.5f;
+		//floorObjectRender[i].objRender[0].data.transform.scale.y = floorObjectRender[i].initScale.y + EasingMaker(Out, Cubic, scaleRate) * 0.2f;
 		floorObjectRender[i].objRender[0].data.transform.pos.y = -150.0f + floorObjectRender[i].objRender[0].data.transform.scale.y;
 
 		floorObjectRender[i].objRender[1].data.transform.scale.y = floorObjectRender[i].objRender[0].data.transform.scale.y;
 		floorObjectRender[i].objRender[1].data.transform.pos = floorObjectRender[i].objRender[0].data.transform.pos;
 		floorObjectRender[i].objRender[1].data.transform.rotation = { 180.0f,0.0f,0.0f };
 
-
+		floorObjectRender[i].objRender[1].data.transform.rotation.y = floorObjectRender[i].objRender[0].data.transform.rotation.y;
+		
 		if (limitZLineFlag)
 		{
 			floorObjectRender[i].objRender[0].data.transform.pos.z = 8000.0f;

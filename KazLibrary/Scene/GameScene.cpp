@@ -16,14 +16,14 @@ GameScene::GameScene()
 	float z = 300.0f;
 
 	//2-----------------------------------------------------------------
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = 0;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 3;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].initPos = { 20.0f,10.0f,z };
+	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].layerLevel = 0;
+	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 1;
+	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].initPos = { -1000.0f,-150.0f,100.0f };
 	++respoineIndex;
 
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = 0;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 3;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].initPos = { 60.0f,10.0f,z };
+	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].layerLevel = 0;
+	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 1;
+	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].initPos = { -100.0f,-150.0f,0.0f };
 	++respoineIndex;
 	//2-----------------------------------------------------------------
 

@@ -229,14 +229,14 @@ void KazMath::CalcWeightsTableFromGaussian(float *weightsTbl, int sizeOfWeightsT
 	}
 }
 
-KazMath::Vec3<float> KazMath::CaluEyePosForDebug(const Vec3<float> &EYE_POS, const Vec3<float> &MOVE, const Vec2<float> &ANGLE)
+KazMath::Vec3<float> KazMath::CaluEyePosForDebug(const Vec3<float> &EYE_POS, const Vec3<float> &MOVE, const Vec2<float> &ANGLE, float SPEED)
 {
 	Vec3<float> resultPos = EYE_POS;
 
 	float rad = ANGLE.x * 3.14f / 180.0f;
 
 
-	float speed = 40.0f;
+	float speed = SPEED;
 	//ç∂
 	if (MOVE.x < 0)
 	{

@@ -58,7 +58,7 @@ Game::Game()
 	model->data.transform.pos = { 0.0f,0.0f,20.0f };
 	model->data.transform.scale = { 5.0f,5.0f,5.0f };
 	model->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "hamster.obj");
-	model->data.color = { 255,0,0,255 };
+	model->data.colorData = { 255,0,0,255 };
 
 	//mainRenderTarget.data.handle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, BG_COLOR, DXGI_FORMAT_R8G8B8A8_UNORM);
 	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
@@ -179,7 +179,7 @@ void Game::Init(const array<array<KazEnemyHelper::ResponeData, KazEnemyHelper::E
 
 
 	//ゲームループの初期化----------------------------------------------------------------
-	gameStartFlag = false;
+	gameStartFlag = true;
 	gameFlame = 0;
 	//ゴールに触れ無かった場合に次のステージに移動する際の最大フレーム数
 	for (int i = 0; i < changeLayerLevelMaxTime.size(); ++i)
@@ -559,7 +559,7 @@ void Game::Update()
 	else
 	{
 		//デバック用
-		eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
+		eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle, 40.0f);
 		targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
 	}
 
@@ -921,7 +921,7 @@ void Game::Update()
 				//時間が0秒以下ならプレイヤーに当たったと判断する
 				if (enemies[enemyType][enemyCount]->GetData()->timer <= 0)
 				{
-					player.Hit();
+					//player.Hit();
 					//enemies[enemyType][enemyCount]->Dead();
 				}
 			}
@@ -1182,16 +1182,7 @@ void Game::Draw()
 		}
 		player.Draw();
 
-		stages[stageNum]->SetCamera(0);
-		stages[stageNum]->Draw();
-		portal.DrawPortal();
-		portal.DrawFlame();
 
-		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
-		//if (100 <= gameFlame)
-		{
-			goalBox.Draw();
-		}
 
 		//敵の描画処理----------------------------------------------------------------
 		for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
@@ -1206,6 +1197,20 @@ void Game::Draw()
 				}
 			}
 		}
+
+		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
+			//if (100 <= gameFlame)
+		{
+			goalBox.Draw();
+		}
+
+
+		stages[stageNum]->SetCamera(0);
+		stages[stageNum]->Draw();
+		portal.DrawPortal();
+		portal.DrawFlame();
+
+
 
 		for (int i = 0; i < hitEffect.size(); ++i)
 		{

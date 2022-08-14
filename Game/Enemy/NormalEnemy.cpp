@@ -11,16 +11,16 @@ void NormalEnemy::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
 {
 	iEnemy_ModelRender->data.transform.pos = POS;	//座標の初期化
 	iEnemy_ModelRender->data.transform.scale = { 1.0f,1.0f,1.0f };
-	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "MoveEnemy_Model.obj");	//モデル読み込み
+	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath +"Move/"+ "MoveEnemy_Model.obj");	//モデル読み込み
 	iEnemy_EnemyStatusData->hitBox.radius = 15.0f;	//当たり判定の大きさ変更
 	iOperationData.Init(1);							//残りロックオン数等の初期化
 
 	iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX;
 	iEnemy_ModelRender->data.removeMaterialFlag = false;
-	iEnemy_ModelRender->data.color.color.x = 255;
-	iEnemy_ModelRender->data.color.color.y = 255;
-	iEnemy_ModelRender->data.color.color.z = 255;
-	iEnemy_ModelRender->data.color.color.a = 0;
+	iEnemy_ModelRender->data.colorData.color.x = 255;
+	iEnemy_ModelRender->data.colorData.color.y = 255;
+	iEnemy_ModelRender->data.colorData.color.z = 255;
+	iEnemy_ModelRender->data.colorData.color.a = 0;
 	iEnemy_ModelRender->data.transform.rotation.x = 0.0f;
 	iEnemy_ModelRender->data.transform.rotation.y = 180.0f;
 	iEnemy_ModelRender->data.transform.rotation.z = 0.0f;
@@ -50,10 +50,10 @@ void NormalEnemy::Update()
 	{
 		iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME_MULTITEX;
 		iEnemy_ModelRender->data.removeMaterialFlag = true;
-		iEnemy_ModelRender->data.color.color.x = 255;
-		iEnemy_ModelRender->data.color.color.y = 255;
-		iEnemy_ModelRender->data.color.color.z = 255;
-		DeadEffect(&iEnemy_ModelRender->data.transform.pos, &iEnemy_ModelRender->data.transform.rotation, &iEnemy_ModelRender->data.color.color.a);
+		iEnemy_ModelRender->data.colorData.color.x = 255;
+		iEnemy_ModelRender->data.colorData.color.y = 255;
+		iEnemy_ModelRender->data.colorData.color.z = 255;
+		DeadEffect(&iEnemy_ModelRender->data.transform.pos, &iEnemy_ModelRender->data.transform.rotation, &iEnemy_ModelRender->data.colorData.color.a);
 
 		if (!initDeadSoundFlag)
 		{
@@ -65,13 +65,13 @@ void NormalEnemy::Update()
 	else
 	{
 		//登場処理
-		if (iEnemy_ModelRender->data.color.color.a < 255)
+		if (iEnemy_ModelRender->data.colorData.color.a < 255)
 		{
-			iEnemy_ModelRender->data.color.color.a += 5;
+			iEnemy_ModelRender->data.colorData.color.a += 5;
 		}
 		else
 		{
-			iEnemy_ModelRender->data.color.color.a = 255;
+			iEnemy_ModelRender->data.colorData.color.a = 255;
 		}
 	}
 
@@ -86,7 +86,7 @@ void NormalEnemy::Update()
 
 void NormalEnemy::Draw()
 {
-	if (1.0f <= iEnemy_ModelRender->data.color.color.a)
+	if (1.0f <= iEnemy_ModelRender->data.colorData.color.a)
 	{
 		iEnemy_ModelRender->Draw();
 		rocketEffect.Draw();

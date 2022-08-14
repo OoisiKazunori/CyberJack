@@ -5,6 +5,8 @@
 #include"../Game/Enemy/KidEnemy.h"
 #include"../Game/Enemy/SplineMisile.h"
 #include"../Game/Enemy/NormalMisileEnemy.h"
+#include"../Game/Enemy/BattleshipEnemy.h"
+#include"../Game/Enemy/SplineMisileForBattleShip.h"
 
 namespace KazEnemyHelper
 {

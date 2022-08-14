@@ -38,7 +38,7 @@ private:
 	Sprite3DRender vaporWaveSunRender;
 
 
-	std::array<std::array<char, 100>, 50>filePassChar;
+	std::array<int, 50>filePassNum;
 	ParameterMgr stageParamLoader;
 
 	int selectNum;
@@ -57,6 +57,8 @@ private:
 	std::unique_ptr<BoxPolygonRender> poly;
 	RESOURCE_HANDLE lineDrawHandle;
 
+
+	std::array<RESOURCE_HANDLE, 3> stageModelhandle;
 
 	struct MatData
 	{

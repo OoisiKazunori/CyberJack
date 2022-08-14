@@ -77,13 +77,13 @@ void ObjModelRender::Draw()
 
 		//バッファの転送-----------------------------------------------------------------------------------------------------
 		//行列
-		if (renderData.cameraMgrInstance->ViewAndProjDirty(data.cameraIndex.id) || data.transform.Dirty() || data.color.Dirty() || data.motherMat.dirty.Dirty() || data.cameraIndex.dirty.Dirty())
+		if (renderData.cameraMgrInstance->ViewAndProjDirty(data.cameraIndex.id) || data.transform.Dirty() || data.colorData.Dirty() || data.motherMat.dirty.Dirty() || data.cameraIndex.dirty.Dirty())
 		{
 			ConstBufferData constMap;
 			constMap.world = baseMatWorldData.matWorld;
 			constMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex.id);
 			constMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
-			constMap.color = data.color.ConvertColorRateToXMFLOAT4();
+			constMap.color = data.colorData.ConvertColorRateToXMFLOAT4();
 			constMap.mat = constMap.world * constMap.view * constMap.viewproj;
 
 			TransData(&constMap, constBufferHandle[0], typeid(constMap).name());
@@ -94,10 +94,10 @@ void ObjModelRender::Draw()
 	if (!data.removeMaterialFlag)
 	{
 		//マテリアルデータ
-		if (data.handle.flag.Dirty() || data.color.Dirty())
+		if (data.handle.flag.Dirty() || data.colorData.Dirty())
 		{
 			ConstBufferDataB1 constMap;
-			constMap.alpha = data.color.color.a / 255.0f;
+			constMap.alpha = data.colorData.color.a / 255.0f;
 			constMap.ambient = modelData.material.ambient;
 			constMap.diffuse = modelData.material.diffuse;
 			constMap.specular = modelData.material.specular;

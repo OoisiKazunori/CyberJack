@@ -12,7 +12,7 @@ void BikeEnemy::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
 	iEnemy_ModelRender->data.transform.pos = POS;	//座標の初期化
 	float lScale = 0.7f;
 	iEnemy_ModelRender->data.transform.scale = { lScale,lScale,lScale };
-	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "Bike_Model.obj");	//モデル読み込み
+	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "Bike/" + "Bike_Model.obj");	//モデル読み込み
 	iEnemy_EnemyStatusData->hitBox.radius = 15.0f;	//当たり判定の大きさ変更
 	iOperationData.Init(1);							//残りロックオン数等の初期化
 	initDeadSoundFlag = false;

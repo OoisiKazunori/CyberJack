@@ -812,7 +812,7 @@ namespace KazMath
 	/// <param name="EYE_POS">視点座標</param>
 	/// <param name="ANGLE">角度</param>
 	/// <returns>デバック用の視点座標</returns>
-	Vec3<float> CaluEyePosForDebug(const Vec3<float> &EYE_POS, const Vec3<float> &MOVE, const Vec2<float> &ANGLE);
+	Vec3<float> CaluEyePosForDebug(const Vec3<float> &EYE_POS, const Vec3<float> &MOVE, const Vec2<float> &ANGLE, float SPEED = 5.0f);
 
 	/// <summary>
 	/// デバック用の注視点を計算します

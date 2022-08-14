@@ -31,6 +31,16 @@ void KazEnemyHelper::GenerateEnemy(std::array<std::array<std::unique_ptr<IEnemy>
 					++ENEMISE_HANDLE[ENEMY_TYPE_MISILE_SPLINE];
 					break;
 
+				case ENEMY_TYPE_BATTLESHIP:
+					ENEMIES[enemyType][enemyCount] = std::make_unique<BattleshipEnemy>();
+					for (int i = 0; i < 8; ++i)
+					{
+						int index = ENEMISE_HANDLE[ENEMY_TYPE_BATTLESHIP_MISILE];
+						ENEMIES[ENEMY_TYPE_BATTLESHIP_MISILE][index] = std::make_unique<SplineMisileForBattleShip>();
+						++ENEMISE_HANDLE[ENEMY_TYPE_BATTLESHIP_MISILE];
+					}
+					break;
+
 				default:
 					break;
 				}
@@ -86,26 +96,7 @@ void KazEnemyHelper::InitEnemy(std::array<std::array<std::unique_ptr<IEnemy>, EN
 
 			if (enableToUseThisDataFlag && readyToInitDataFlag && ENEMIES[enemyType][enemyCount] != nullptr)
 			{
-				switch (enemyType)
-				{
-				case ENEMY_TYPE_NORMAL:
-					ENEMIES[enemyType][enemyCount]->Init(RESPONE_DATA[enemyType][enemyCount].initPos, DEMO_FLAG);
-					break;
-
-				case ENEMY_TYPE_KID:
-					ENEMIES[enemyType][enemyCount]->Init(RESPONE_DATA[enemyType][enemyCount].initPos, DEMO_FLAG);
-					break;
-
-				case ENEMY_TYPE_MISILE:
-					ENEMIES[enemyType][enemyCount]->Init(RESPONE_DATA[enemyType][enemyCount].initPos, DEMO_FLAG);
-					break;
-
-				case ENEMY_TYPE_MISILE_SPLINE:
-					ENEMIES[enemyType][enemyCount]->Init(RESPONE_DATA[enemyType][enemyCount].initPos, DEMO_FLAG);
-					break;
-				default:
-					break;
-				}
+				ENEMIES[enemyType][enemyCount]->Init(RESPONE_DATA[enemyType][enemyCount].initPos, DEMO_FLAG);
 			}
 		}
 	}

@@ -40,6 +40,6 @@ private:
 	BackGroundForDebug bg;
 
 	FbxModelRender kidFbxModel;
-	FbxModelRender kidObjModel;
+	ObjModelRender kidObjModel;
 };
 

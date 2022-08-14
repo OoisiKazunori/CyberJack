@@ -7,19 +7,19 @@ SplineMisileForBattleShip::SplineMisileForBattleShip()
 	maxTime = 60 * 5;
 	splineBox.data.color = { 255,0,0,255 };
 
-	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "missile_Model.obj");
+	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + +"BattleShipMisile/" + "BattleshipMissile_Model.obj");
 }
 
 void SplineMisileForBattleShip::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
 {
 	iEnemy_ModelRender->data.transform.pos = POS;
-	iEnemy_ModelRender->data.transform.scale = { 1.3f,1.3f,1.3f };
+	iEnemy_ModelRender->data.transform.scale = { 1.0f,1.0f,1.0f };
 	iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX;
 	iEnemy_ModelRender->data.removeMaterialFlag = false;
-	iEnemy_ModelRender->data.color.color.x = 255;
-	iEnemy_ModelRender->data.color.color.y = 255;
-	iEnemy_ModelRender->data.color.color.z = 255;
-	iEnemy_ModelRender->data.color.color.a = 255;
+	iEnemy_ModelRender->data.colorData.color.x = 255;
+	iEnemy_ModelRender->data.colorData.color.y = 255;
+	iEnemy_ModelRender->data.colorData.color.z = 255;
+	iEnemy_ModelRender->data.colorData.color.a = 255;
 
 	iEnemy_EnemyStatusData->timer = maxTime;
 	iEnemy_EnemyStatusData->hitBox.radius = 5.0f;
@@ -80,10 +80,10 @@ void SplineMisileForBattleShip::Update()
 	{
 		iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME_MULTITEX;
 		iEnemy_ModelRender->data.removeMaterialFlag = true;
-		iEnemy_ModelRender->data.color.color.x = 255;
-		iEnemy_ModelRender->data.color.color.y = 255;
-		iEnemy_ModelRender->data.color.color.z = 255;
-		DeadEffect(&iEnemy_ModelRender->data.transform.pos, &iEnemy_ModelRender->data.transform.rotation, &iEnemy_ModelRender->data.color.color.a);
+		iEnemy_ModelRender->data.colorData.color.x = 255;
+		iEnemy_ModelRender->data.colorData.color.y = 255;
+		iEnemy_ModelRender->data.colorData.color.z = 255;
+		DeadEffect(&iEnemy_ModelRender->data.transform.pos, &iEnemy_ModelRender->data.transform.rotation, &iEnemy_ModelRender->data.colorData.color.a);
 
 		if (!initDeadSoundFlag)
 		{
@@ -141,7 +141,7 @@ void SplineMisileForBattleShip::Update()
 	}
 
 	//Ž€–Sˆ—
-	if (iEnemy_ModelRender->data.color.color.a <= 0.0f)
+	if (iEnemy_ModelRender->data.colorData.color.a <= 0.0f)
 	{
 		iOperationData.initFlag = false;
 	}
