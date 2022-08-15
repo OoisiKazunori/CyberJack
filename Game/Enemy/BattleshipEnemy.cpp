@@ -9,29 +9,33 @@ BattleshipEnemy::BattleshipEnemy()
 		misileR[i].data.transform.pos.y = 88.0f;
 		misileR[i].data.transform.pos.z = 25.0f;
 	}
+
+	model = std::make_unique<FbxModelRender>();
 }
 
 void BattleshipEnemy::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
 {
-	iEnemy_ModelRender->data.transform.pos = POS;	//座標の初期化
-	iEnemy_ModelRender->data.transform.scale = { 0.5f,0.5f,0.5f };
-	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_Model.obj");	//モデル読み込み
+	model->data.transform.pos = POS;	//座標の初期化
+	model->data.transform.scale = { 0.5f,0.5f,0.5f };
+	model->data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_HachOpen_anim.fbx");	//モデル読み込み
 	iEnemy_EnemyStatusData->hitBox.radius = 15.0f;	//当たり判定の大きさ変更
 	iOperationData.Init(1);							//残りロックオン数等の初期化
 
-	iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX;
-	iEnemy_ModelRender->data.removeMaterialFlag = false;
-	iEnemy_ModelRender->data.colorData.color.x = 255;
-	iEnemy_ModelRender->data.colorData.color.y = 255;
-	iEnemy_ModelRender->data.colorData.color.z = 255;
-	iEnemy_ModelRender->data.colorData.color.a = 255;
-	iEnemy_ModelRender->data.transform.rotation.x = 0.0f;
-	iEnemy_ModelRender->data.transform.rotation.y = 0.0f;
-	iEnemy_ModelRender->data.transform.rotation.z = 0.0f;
+	model->data.pipelineName = PIPELINE_NAME_FBX_RENDERTARGET_TWO;
+	//model->data.removeMaterialFlag = false;
+	model->data.colorData.color.x = 255;
+	model->data.colorData.color.y = 255;
+	model->data.colorData.color.z = 255;
+	model->data.colorData.color.a = 255;
+	model->data.transform.rotation.x = 0.0f;
+	model->data.transform.rotation.y = 0.0f;
+	model->data.transform.rotation.z = 0.0f;
+	model->data.isPlayFlag = false;
+	model->data.isReverseFlag = false;
 	initDeadSoundFlag = false;
 	demoFlag = DEMO_FLAG;
 
-	iEnemy_ModelRender->data.transform.pos.z = -1000.0f;
+	model->data.transform.pos.z = -1000.0f;
 	basePos = POS;
 	vel = 0.0f;
 	appearTimer = 0;
@@ -47,7 +51,7 @@ void BattleshipEnemy::Update()
 	//一定時間止まったらそのまま画面外に向かう
 	if (KazMath::ConvertSecondToFlame(10) <= appearTimer && false)
 	{
-		iEnemy_ModelRender->data.transform.pos.z += vel;
+		model->data.transform.pos.z += vel;
 		vel += 0.1f;
 
 		if (2.0f <= vel)
@@ -58,9 +62,9 @@ void BattleshipEnemy::Update()
 	//ミサイル発射,目的地にたどり着く
 	else
 	{
-		KazMath::Larp(basePos.z, &iEnemy_ModelRender->data.transform.pos.z, 0.01f);
+		KazMath::Larp(basePos.z, &model->data.transform.pos.z, 0.01f);
 
-		int lBaseTimer = KazMath::ConvertSecondToFlame(7);
+		int lBaseTimer = KazMath::ConvertSecondToFlame(8);
 		int retuIndex = 0;
 		int countIndex = 0;
 		for (int i = 0; i < misileR.size(); ++i)
@@ -79,14 +83,23 @@ void BattleshipEnemy::Update()
 
 			if (minusFlag)
 			{
-				misileR[i].data.transform.pos = iEnemy_ModelRender->data.transform.pos + KazMath::Vec3<float>(-5.0f, 88.0f, 25.0f) + KazMath::Vec3<float>(0.0f, 0.0f, 10.0f * retuIndex);
+				misileR[i].data.transform.pos = model->data.transform.pos + KazMath::Vec3<float>(-5.0f, 88.0f, 25.0f) + KazMath::Vec3<float>(0.0f, 0.0f, 10.0f * retuIndex);
 			}
 			else
 			{
-				misileR[i].data.transform.pos = iEnemy_ModelRender->data.transform.pos + KazMath::Vec3<float>(5.0f, 88.0f, 25.0f) + KazMath::Vec3<float>(0.0f, 0.0f, 10.0f * retuIndex);
+				misileR[i].data.transform.pos = model->data.transform.pos + KazMath::Vec3<float>(5.0f, 88.0f, 25.0f) + KazMath::Vec3<float>(0.0f, 0.0f, 10.0f * retuIndex);
 			}
 			//ミサイル発射地点の設定--------------------------------------
 
+			if (!model->data.isPlayFlag && !model->data.isReverseFlag && lBaseTimer - KazMath::ConvertSecondToFlame(3) <= appearTimer)
+			{
+				model->data.isPlayFlag = true;
+			}
+			if (!model->data.isReverseFlag && KazMath::ConvertSecondToFlame(11) <= appearTimer)
+			{
+				model->data.isReverseFlag = true;
+				model->data.isPlayFlag = false;
+			}
 
 			//ミサイル発射
 			if (appearTimer == lBaseTimer + i)
@@ -123,5 +136,5 @@ void BattleshipEnemy::Draw()
 	{
 		misileR[i].Draw();
 	}
-	iEnemy_ModelRender->Draw();
+	model->Draw();
 }

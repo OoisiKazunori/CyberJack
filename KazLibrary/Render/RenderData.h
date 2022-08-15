@@ -253,13 +253,14 @@ struct FbxModelData
 	KazMath::Transform3D transform;
 	ResourceHandle handle;
 	MatMotherData motherMat;
-	bool isPlay;
+	bool isPlayFlag;
+	bool isReverseFlag;
 	int animationNumber;
 	PipeLineNames pipelineName;
 	CameraIndexData cameraIndex;
 	KazMath::Color colorData;
 
-	FbxModelData() :pipelineName(PIPELINE_NAME_FBX), animationNumber(0), isPlay(false), colorData({ 255,255,255,255 })
+	FbxModelData() :pipelineName(PIPELINE_NAME_FBX), animationNumber(0), isPlayFlag(false), isReverseFlag(false), colorData({ 255,255,255,255 })
 	{
 	}
 

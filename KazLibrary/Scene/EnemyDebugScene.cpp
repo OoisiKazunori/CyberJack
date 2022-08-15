@@ -226,7 +226,7 @@ void EnemyDebugScene::Update()
 		}
 	}
 
-	kidFbxModel.data.isPlay = false;
+	kidFbxModel.data.isPlayFlag = false;
 }
 
 void EnemyDebugScene::Draw()

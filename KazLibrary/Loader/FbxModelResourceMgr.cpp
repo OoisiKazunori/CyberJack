@@ -378,11 +378,33 @@ void FbxModelResourceMgr::LoadTexture(Model *MODEL, const std::string &FULL_PATH
 	std::string rename = file_name;
 	std::string rename2 = MODEL->name;
 
-	rename.erase(0, 3);
-	rename.insert(0, rename2);
+	//階層がどれくらい深いか見る
+	int countPath = 0;
+	for (int i = 0; i < rename2.size(); ++i)
+	{
+		if (rename2[i] == '/')
+		{
+			++countPath;
+		}
+	}
+	//モデルがある場所のファイルパスを検索する
+	std::string filePass;
+	int nowCountPass = 0;
+	for (int i = 0; i < rename2.size(); ++i)
+	{
+		if (rename2[i] == '/')
+		{
+			++nowCountPass;
+		}
+		if (countPath <= nowCountPass)
+		{
+			filePass = rename2.substr(0, i + 1);
+			break;
+		}
+	}
 
-	//名前の変更
-	RESOURCE_HANDLE lHandle = TextureResourceMgr::Instance()->LoadGraph(rename);
+	//画像読み込み
+	RESOURCE_HANDLE lHandle = TextureResourceMgr::Instance()->LoadGraph(filePass + FULL_PATH);
 	MODEL->textureHandle.push_back(lHandle);
 }
 

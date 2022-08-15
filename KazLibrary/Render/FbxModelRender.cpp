@@ -22,10 +22,18 @@ void FbxModelRender::Draw()
 
 	if (data.handle.handle != -1)
 	{
-		if (data.isPlay)
+		if (data.isPlayFlag)
 		{
 			currentTime += frameTime;
 			if (currentTime > resourceData->endTime[data.animationNumber])
+			{
+				currentTime = resourceData->endTime[data.animationNumber];
+			}
+		}
+		else if (data.isReverseFlag)
+		{
+			currentTime -= frameTime;
+			if (currentTime <= resourceData->startTime[data.animationNumber])
 			{
 				currentTime = resourceData->startTime[data.animationNumber];
 			}

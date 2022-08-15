@@ -18,5 +18,6 @@ private:
 	float vel;
 	int misileShotIndex;
 	std::array<BoxPolygonRender, 8>misileR;
+	FbxModelRenderPtr model;
 };
 
