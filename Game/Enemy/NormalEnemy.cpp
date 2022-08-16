@@ -27,6 +27,8 @@ void NormalEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 	initDeadSoundFlag = false;
 	demoFlag = DEMO_FLAG;
 
+	speed = GENERATE_DATA.speed;
+
 	rocketEffect.Init(&iEnemy_ModelRender->data.transform.pos, KazMath::Vec3<float>(0.0f, 0.0f, 20.0f), KazMath::Vec3<float>(0.0f, 0.0f, 45.0f));
 }
 
@@ -40,8 +42,7 @@ void NormalEnemy::Update()
 	//ˆÚ“®
 	if (!demoFlag)
 	{
-		float speed = 0.5f;
-		iEnemy_ModelRender->data.transform.pos.z += -speed;
+		iEnemy_ModelRender->data.transform.pos.z += speed;
 	}
 
 	//Ž€–S‰‰oˆ—
@@ -62,7 +63,7 @@ void NormalEnemy::Update()
 		}
 	}
 	//Ž€–S‰‰o’†‚É“oê‰‰o‚Ís‚í‚È‚¢
-	else
+	else 
 	{
 		//“oêˆ—
 		if (iEnemy_ModelRender->data.colorData.color.a < 255)

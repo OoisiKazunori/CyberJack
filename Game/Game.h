@@ -78,6 +78,7 @@ private:
 	bool gameStartFlag;						//ゲーム開始を知らせるフラグ
 	int sceneNum;							//次何処のシーンに飛ぶか
 	int gameFlame;							//1ステージの経過時間
+	int gameSpeed;							//1ステージで進む時間のスピード
 	int gameStageLevel;						//現在のステージのレベル
 	int gameLeyerLevel;						//現在のステージのレベル
 	array<int, 10>changeLayerLevelMaxTime;	//次のレイヤーレベルに切り替わるフレーム数を保管する
@@ -157,6 +158,8 @@ private:
 	array<int, 10> addEnemiesHandle;					//0から順番に追加で初期化する際に必要
 	array<array<ResponeData, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> responeData;		//敵を生成する際に必要な設定
 	array<ResponeData, 50>addResponeData;				//敵を追加で生成する際に必要な設定をスタックしたもの
+	bool isEnemyNotMoveFlag;
+	int notMoveTimer;
 	//敵----------------------------------------------------------------
 
 	//線演出----------------------------------------------------------------

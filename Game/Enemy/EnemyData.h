@@ -45,8 +45,13 @@ struct BattleShipData
 struct EnemyGenerateData
 {
 	KazMath::Vec3<float> initPos;	//‰ŠúÀ•W
+	float speed;
 	BattleShipMisileData battleShipEnemyData;
 	BattleShipData battleShipData;
+
+	EnemyGenerateData() :speed(-0.5f)
+	{
+	};
 };
 
 struct ResponeData

@@ -20,23 +20,27 @@ GameScene::GameScene()
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 3;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -80.0f,10.0f,z };
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.speed = -3.0f;
 	++respoineIndex;
 
 
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 3;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -40.0f,10.0f,z };
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.speed = -3.0f;
 	++respoineIndex;
 
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 3;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 40.0f,10.0f,z };
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.speed = -3.0f;
 	++respoineIndex;
 
 
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 3;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 80.0f,10.0f,z };
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.speed = -3.0f;
 	++respoineIndex;
 	//正面から通常敵四体-----------------------------------------------------------------
 
@@ -73,23 +77,27 @@ GameScene::GameScene()
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 25;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -40.0f,20.0f,z };
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.speed = -3.0f;
 	++respoineIndex;
 
 
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 25;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -80.0f,20.0f,z };
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.speed = -3.0f;
 	++respoineIndex;
 
 
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 25;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 40.0f,20.0f,z };
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.speed = -3.0f;
 	++respoineIndex;
 
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 25;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 80.0f,20.0f,z };
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.speed = -3.0f;
 	++respoineIndex;
 
 

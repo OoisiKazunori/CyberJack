@@ -115,7 +115,7 @@ void BattleshipEnemy::Update()
 			}
 
 			//ƒ~ƒTƒCƒ‹”­ŽË
-			if (appearTimer == lBaseTimer + i)
+			if (appearTimer == lBaseTimer + i * 30)
 			{
 				iEnemy_EnemyStatusData->genarateData.enemyGenerateData.initPos = misileR[misileShotIndex].data.transform.pos;
 				iEnemy_EnemyStatusData->genarateData.enemyType = ENEMY_TYPE_BATTLESHIP_MISILE;

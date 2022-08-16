@@ -404,7 +404,7 @@ void Game::Input()
 		forceCameraDirVel.x = FORCE_CAMERA_RIGHT;
 	}
 
-	
+
 
 	KazMath::Vec3<float> verticalVel = {};
 	KazMath::Vec3<float> besideVel = {};
@@ -596,7 +596,7 @@ void Game::Update()
 
 	//敵が一通り生成終わった際に登場させる----------------------------------------------------------------
 	if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame && !initAppearFlag)
-	//if (100 <= gameFlame && !initAppearFlag)
+		//if (100 <= gameFlame && !initAppearFlag)
 	{
 		goalBox.Appear(appearGoalBoxPos);
 		initAppearFlag = true;
@@ -611,7 +611,7 @@ void Game::Update()
 	portal.Update();
 
 	//全部隠れたら次ステージの描画をする
-	if (portal.AllHidden()&&false)
+	if (portal.AllHidden() && false)
 	{
 		//ゲームループの初期化----------------------------------------------
 		++gameStageLevel;
@@ -665,8 +665,10 @@ void Game::Update()
 		for (int enemyCount = 0; enemyCount < responeData[enemyType].size(); ++enemyCount)
 		{
 			bool enableToUseThisDataFlag = responeData[enemyType][enemyCount].layerLevel != -1;
-			bool readyToInitDataFlag = responeData[enemyType][enemyCount].flame == gameFlame &&
-				responeData[enemyType][enemyCount].layerLevel == gameStageLevel;
+			bool readyToInitDataFlag = responeData[enemyType][enemyCount].flame <= gameFlame &&
+				responeData[enemyType][enemyCount].layerLevel == gameStageLevel &&
+				!enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
+
 
 			if (enableToUseThisDataFlag && readyToInitDataFlag && enemies[enemyType][enemyCount] != nullptr)
 			{
@@ -1106,15 +1108,21 @@ void Game::Update()
 			lineLevel[i].Update();
 		}
 
+
+		isEnemyNotMoveFlag = true;
 		//敵の更新処理
 		for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
 		{
 			for (int enemyCount = 0; enemyCount < enemies[enemyType].size(); ++enemyCount)
 			{
 				//生成されている、初期化している敵のみ更新処理を通す
-				bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
+				bool enableToUseDataFlag =
+					enemies[enemyType][enemyCount] != nullptr &&
+					enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag &&
+					!enemies[enemyType][enemyCount]->GetData()->outOfStageFlag;
 				if (enableToUseDataFlag)
 				{
+					isEnemyNotMoveFlag = false;
 					enemies[enemyType][enemyCount]->Update();
 				}
 			}
@@ -1126,7 +1134,7 @@ void Game::Update()
 		{
 			rocketEffect[i].Update();
 		}
-		
+
 #pragma endregion
 
 
@@ -1182,9 +1190,28 @@ void Game::Update()
 		stages[0]->startFlag = true;
 	}
 
+
 	if (gameStartFlag)
 	{
-		++gameFlame;
+		if (isEnemyNotMoveFlag)
+		{
+			++notMoveTimer;
+		}
+		else
+		{
+			notMoveTimer = 0;
+		}
+
+		if (KazMath::ConvertSecondToFlame(2) <= notMoveTimer)
+		{
+			gameSpeed = 10;
+		}
+		else
+		{
+			gameSpeed = 1;
+		}
+
+		gameFlame += gameSpeed;
 	}
 
 	if (60 * 4 <= gameFlame)
@@ -1247,7 +1274,9 @@ void Game::Draw()
 			for (int enemyCount = 0; enemyCount < enemies[enemyType].size(); ++enemyCount)
 			{
 				//生成されている敵のみ描画処理を通す
-				bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr && enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
+				bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr &&
+					enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag &&
+					!enemies[enemyType][enemyCount]->GetData()->outOfStageFlag;
 				if (enableToUseDataFlag)
 				{
 					enemies[enemyType][enemyCount]->Draw();

@@ -15,7 +15,7 @@ private:
 	KazMath::Vec3<float> *pos;
 
 	KazMath::Vec3<float>fireTexPos;
-	Sprite3DRender fireEffectRender;
+	Sprite3DRenderPtr fireEffectRender;
 	RocketLightEffect rocketLight;
 
 	int flashTimer;

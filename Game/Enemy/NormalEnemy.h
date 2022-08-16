@@ -18,5 +18,6 @@ public:
 
 private:
 	RocketEffect rocketEffect;
+	float speed;
 };
 
