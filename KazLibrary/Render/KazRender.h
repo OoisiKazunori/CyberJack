@@ -19,3 +19,4 @@ typedef unique_ptr<FbxModelRender> FbxModelRenderPtr;
 typedef unique_ptr<BoxPolygonRender> BoxPolygonRenderPtr;
 typedef unique_ptr<LineRender> LineRenderPtr;
 typedef unique_ptr<PolygonRender> PolygonRenderPtr;
+typedef unique_ptr<CircleRender> CircleRenderPtr;

@@ -485,6 +485,38 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	}
 
 
+	{
+		//パイプラインの設定
+		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
+		//サンプルマスク
+		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+		//ラスタライザ
+		//背面カリング、塗りつぶし、深度クリッピング有効
+		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
+		rasterrize.CullMode = D3D12_CULL_MODE_NONE;
+		gPipeline.RasterizerState = rasterrize;
+		//ブレンドモード
+		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
+		gPipeline.BlendState.RenderTarget[1] = alphaBlendDesc;
+		//gPipeline.BlendState.IndependentBlendEnable = true;
+
+		//図形の形状
+		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+
+		//その他設定
+		gPipeline.NumRenderTargets = 2;
+		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		gPipeline.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		gPipeline.SampleDesc.Count = 1;
+
+		//デプスステンシルステートの設定
+		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_ALPHABLEND_RNEDERTARGET_SECOND);
+	}
+
 #pragma region PIPELINE_DATA_BACKCARING_ALPHABLEND_WIREFLAME
 	{
 		//パイプラインの設定
@@ -1909,7 +1941,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		LAYOUT_POS,
 		SHADER_VERTEX_COLOR,
 		SHADER_PIXCEL_COLOR_MULTITEX,
-		PIPELINE_DATA_BACKCARING_ALPHABLEND_RNEDERTARGET_SECOND,
+		PIPELINE_DATA_NOCARING_ALPHABLEND_RNEDERTARGET_SECOND,
 		ROOTSIGNATURE_DATA_DRAW_DATA1,
 		PIPELINE_NAME_COLOR_MULTITEX
 	);

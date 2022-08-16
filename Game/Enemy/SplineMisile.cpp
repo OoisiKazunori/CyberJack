@@ -10,9 +10,9 @@ SplineMisile::SplineMisile()
 	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "Misile/" + "missile_Model.obj");
 }
 
-void SplineMisile::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
+void SplineMisile::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 {
-	iEnemy_ModelRender->data.transform.pos = POS;
+	iEnemy_ModelRender->data.transform.pos = GENERATE_DATA.initPos;
 	iEnemy_ModelRender->data.transform.scale = { 1.3f,1.3f,1.3f };
 	iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX;
 	iEnemy_ModelRender->data.removeMaterialFlag = false;
@@ -34,7 +34,7 @@ void SplineMisile::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
 	points.clear();
 	points.shrink_to_fit();
 
-	KazMath::Vec3<float> startPos = POS;
+	KazMath::Vec3<float> startPos = GENERATE_DATA.initPos;
 	KazMath::Vec3<float> endPos = { 0.0f,0.0f,0.0f };
 
 	KazMath::Vec3<float> distance = startPos - endPos;

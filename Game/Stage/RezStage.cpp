@@ -85,13 +85,13 @@ void RezStage::Update()
 	}
 
 
-	std::array<MatData, 400>lArrayData;
-	for (int i = 0; i < 400; ++i)
-	{
-		lArrayData[i].mat = DirectX::XMMatrixIdentity() * CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
-		lArrayData[i].color = { 1.0f,1.0f,1.0f,1.0f };
-	}
-	poly->TransData(lArrayData.data(), lineDrawHandle, "MatData");
+	//std::array<MatData, 400>lArrayData;
+	//for (int i = 0; i < 400; ++i)
+	//{
+	//	lArrayData[i].mat = DirectX::XMMatrixIdentity() * CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
+	//	lArrayData[i].color = { 1.0f,1.0f,1.0f,1.0f };
+	//}
+	//poly->TransData(lArrayData.data(), lineDrawHandle, "MatData");
 
 
 	ImGui::Begin("C");
@@ -133,7 +133,7 @@ void RezStage::Draw()
 	}
 
 
-	poly->Draw();
+	//poly->Draw();
 
 
 	selectingR.Draw();

@@ -12,10 +12,10 @@ NormalMisileEnemy::NormalMisileEnemy()
 	flashR.data.colorData.color = { 0,255,0,255 };
 }
 
-void NormalMisileEnemy::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
+void NormalMisileEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 {
-	iEnemy_ModelRender->data.transform.pos = POS;	//座標の初期化
-	lerpPos = POS;	//座標の初期化
+	iEnemy_ModelRender->data.transform.pos = GENERATE_DATA.initPos;	//座標の初期化
+	lerpPos = GENERATE_DATA.initPos;	//座標の初期化
 	iEnemy_ModelRender->data.transform.scale = { 1.0f,1.0f,1.0f };
 	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "Summon/" + "SummonEnemy_Model.obj");	//モデル読み込み
 	iEnemy_EnemyStatusData->hitBox.radius = 5.0f;	//当たり判定の大きさ変更
@@ -36,7 +36,7 @@ void NormalMisileEnemy::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
 
 	shotTimer = 0;
 
-	rocketEffect.Init(&iEnemy_ModelRender->data.transform.pos);
+	rocketEffect.Init(&iEnemy_ModelRender->data.transform.pos, KazMath::Vec3<float>(0.0f, 0.0f, 20.0f), KazMath::Vec3<float>(0.0f, 0.0f, 45.0f));
 }
 
 void NormalMisileEnemy::Finalize()
@@ -52,7 +52,7 @@ void NormalMisileEnemy::Update()
 
 	if (lGameShotFlag || lDebugShotFlag)
 	{
-		iEnemy_EnemyStatusData->genarateData.initPos = iEnemy_ModelRender->data.transform.pos;
+		iEnemy_EnemyStatusData->genarateData.enemyGenerateData.initPos = iEnemy_ModelRender->data.transform.pos;
 		iEnemy_EnemyStatusData->genarateData.enemyType = ENEMY_TYPE_MISILE_SPLINE;
 
 		//ノックバック

@@ -1,13 +1,15 @@
 #pragma once
 #include"../KazLibrary/Render/KazRender.h"
 #include"../Game/Interface/IEnemy.h"
+#include"../Game/Effect/RocketLightEffect.h"
+#include"../Game/Effect/MisileSmokeEmitter.h"
 
 class SplineMisileForBattleShip:public IEnemy
 {
 public:
 	SplineMisileForBattleShip();
 
-	void Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG = false);
+	void Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG = false);
 	void Finalize();
 	void Update();
 	void Draw();
@@ -27,5 +29,8 @@ private:
 	//ÉXÉvÉâÉCÉìã»ê¸----------------------------------------------
 
 	bool hitFlag;
+
+	RocketLightEffect rocketLight;
+	MisileSmokeEmitter smokeEmitter;
 };
 

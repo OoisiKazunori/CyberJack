@@ -151,7 +151,7 @@ Game::~Game()
 	SoundManager::Instance()->StopSoundMem(bgmSoundHandle);
 }
 
-void Game::Init(const array<array<KazEnemyHelper::ResponeData, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> &RESPONE_DATA)
+void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> &RESPONE_DATA)
 {
 	player.Init(KazMath::Transform3D().pos);
 	cursor.Init();
@@ -251,6 +251,13 @@ void Game::Init(const array<array<KazEnemyHelper::ResponeData, KazEnemyHelper::E
 	startFlag = false;
 
 	portal.Init(KazMath::Vec3<float>(0.0f, 3.0f, 50.0f));
+
+
+	cameraMoveArray[0][0].flame = KazMath::ConvertSecondToFlame(12);
+	cameraMoveArray[0][0].dir = CAMERA_LEFT;
+
+	cameraMoveArray[0][1].flame = KazMath::ConvertSecondToFlame(24);
+	cameraMoveArray[0][1].dir = CAMERA_FRONT;
 }
 
 void Game::Finalize()
@@ -380,62 +387,50 @@ void Game::Input()
 	//カメラの前後左右強制に向かせる処理
 	if (input->InputState(DIK_Z))
 	{
-		forceCameraDirVel.x = 0.0f;
+		forceCameraDirVel.x = FORCE_CAMERA_FRONT;
 	}
 	if (input->InputState(DIK_X))
 	{
-		forceCameraDirVel.x = -90.0f;
+		forceCameraDirVel.x = FORCE_CAMERA_BACK;
 	}
 	if (input->InputState(DIK_C))
 	{
-		forceCameraDirVel.x = -180.0f;
+		forceCameraDirVel.x = FORCE_CAMERA_LEFT;
 	}
 	if (input->InputState(DIK_V))
 	{
-		forceCameraDirVel.x = -270.0f;
+		forceCameraDirVel.x = FORCE_CAMERA_RIGHT;
 	}
 
+	
 
-	KazMath::Vec3<float> vel = {};
 	KazMath::Vec3<float> verticalVel = {};
 	KazMath::Vec3<float> besideVel = {};
 
 	float speed = 1.0f;
 	if (upFlag)
 	{
-		vel.y = -speed;
+		cameraVel.y = -speed;
 		verticalVel = { -speed,-speed,0.0f };
 	}
 	if (downFlag)
 	{
-		vel.y = speed;
+		cameraVel.y = speed;
 		verticalVel = { speed,speed,0.0f };
 	}
 	if (leftFlag)
 	{
-		vel.x = -speed;
+		cameraVel.x = -speed;
 		besideVel = { speed,speed,0.0f };
 	}
 	if (rightFlag)
 	{
-		vel.x = speed;
+		cameraVel.x = speed;
 		besideVel = { -speed,-speed,0.0f };
 	}
 
 
-	KazMath::Vec2<float> cursorValue = cursor.GetValue();
-	nowTargerPos += vel;
 
-	upDownAngleVel =
-	{
-		mulValue.x * -cursorValue.y,
-		mulValue.y * -cursorValue.y
-	};
-	leftRightAngleVel =
-	{
-		forceCameraDirVel.x + mulValue2.x * -cursorValue.x,
-		forceCameraDirVel.x + mulValue2.y * -cursorValue.x
-	};
 
 	//if (KeyBoradInputManager::Instance()->InputTrigger(DIK_R))
 	//{
@@ -476,6 +471,45 @@ void Game::Update()
 	}
 
 
+	for (int i = 0; i < cameraMoveArray[gameLeyerLevel].size(); ++i)
+	{
+		if (cameraMoveArray[gameLeyerLevel][i].flame <= gameFlame && cameraMoveArray[gameLeyerLevel][i].flame != -1)
+		{
+			switch (cameraMoveArray[gameLeyerLevel][i].dir)
+			{
+			case CAMERA_FRONT:
+				forceCameraDirVel.x = FORCE_CAMERA_FRONT;
+				break;
+			case CAMERA_BACK:
+				forceCameraDirVel.x = FORCE_CAMERA_BACK;
+				break;
+			case CAMERA_LEFT:
+				forceCameraDirVel.x = FORCE_CAMERA_LEFT;
+				break;
+			case CAMERA_RIGHT:
+				forceCameraDirVel.x = FORCE_CAMERA_RIGHT;
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	KazMath::Vec2<float> cursorValue = cursor.GetValue();
+	nowTargerPos += cameraVel;
+
+	upDownAngleVel =
+	{
+		mulValue.x * -cursorValue.y,
+		mulValue.y * -cursorValue.y
+	};
+	leftRightAngleVel =
+	{
+		forceCameraDirVel.x + mulValue2.x * -cursorValue.x,
+		forceCameraDirVel.x + mulValue2.y * -cursorValue.x
+	};
+
+
 #pragma region カメラ挙動
 
 	//左右の角度変更のイージング
@@ -502,17 +536,6 @@ void Game::Update()
 		trackUpDownAngleVel.x,
 		0.0f,
 	};
-
-
-	//注視点の自動
-	//baseTargetPos.z = 0.0f + 1.0f * -cursor.GetValue().y;
-	//if (baseTargetPos.z <= 0.0f)
-	//{
-	//	baseTargetPos.z = 0.0f;
-	//}
-
-	//centralPos.z = 0.0f + 3.0f * -cursor.GetValue().y;
-
 
 
 

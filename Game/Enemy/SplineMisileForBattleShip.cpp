@@ -10,10 +10,10 @@ SplineMisileForBattleShip::SplineMisileForBattleShip()
 	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + +"BattleShipMisile/" + "BattleshipMissile_Model.obj");
 }
 
-void SplineMisileForBattleShip::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
+void SplineMisileForBattleShip::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 {
-	iEnemy_ModelRender->data.transform.pos = POS;
-	iEnemy_ModelRender->data.transform.scale = { 1.0f,1.0f,1.0f };
+	iEnemy_ModelRender->data.transform.pos = GENERATE_DATA.initPos;
+	iEnemy_ModelRender->data.transform.scale = { 0.4f,0.4f,0.4f };
 	iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX;
 	iEnemy_ModelRender->data.removeMaterialFlag = false;
 	iEnemy_ModelRender->data.colorData.color.x = 255;
@@ -34,11 +34,30 @@ void SplineMisileForBattleShip::Init(const KazMath::Vec3<float> &POS, bool DEMO_
 	points.clear();
 	points.shrink_to_fit();
 
-	KazMath::Vec3<float> startPos = POS;
+	KazMath::Vec3<float> startPos = GENERATE_DATA.initPos;
 	KazMath::Vec3<float> endPos = { 0.0f,0.0f,0.0f };
 
-	KazMath::Vec3<float>upMaxPos = startPos + KazMath::Vec3<float>(10.0f, 100.0f, 0.0f);
-	KazMath::Vec3<float>downMaxPos = upMaxPos + KazMath::Vec3<float>(10.0f, -10.0f, 0.0f);
+
+	KazMath::Vec3<float>upMaxPos = {};
+	KazMath::Vec3<float>downMaxPos = {};
+	KazMath::Vec3<float> moveToPlayerPos = {};
+
+	switch (GENERATE_DATA.battleShipEnemyData.shotEnum)
+	{
+	case BATTLESHIP_MISILE_SHOT_RIGHT:
+		upMaxPos = startPos + KazMath::Vec3<float>(10.0f, 100.0f, 0.0f);
+		downMaxPos = upMaxPos + KazMath::Vec3<float>(10.0f, -20.0f, -30.0f);
+		moveToPlayerPos = downMaxPos + KazMath::Vec3<float>(0.0f, -5.0f, -30.0f);
+		break;
+	case BATTLESHIP_MISILE_SHOT_LEFT:
+		upMaxPos = startPos + KazMath::Vec3<float>(-10.0f, 100.0f, 0.0f);
+		downMaxPos = upMaxPos + KazMath::Vec3<float>(-10.0f, -20.0f, -30.0f);
+		moveToPlayerPos = downMaxPos + KazMath::Vec3<float>(0.0f, -5.0f, -30.0f);
+		break;
+	default:
+		break;
+	}
+
 
 	//スタート地点
 	points.push_back(startPos);
@@ -47,6 +66,7 @@ void SplineMisileForBattleShip::Init(const KazMath::Vec3<float> &POS, bool DEMO_
 	//中間
 	points.push_back(upMaxPos);
 	points.push_back(downMaxPos);
+	points.push_back(moveToPlayerPos);
 
 	//ゴール地点
 	points.push_back(endPos);
@@ -58,9 +78,14 @@ void SplineMisileForBattleShip::Init(const KazMath::Vec3<float> &POS, bool DEMO_
 	hitFlag = false;
 
 	demoFlag = DEMO_FLAG;
+
+	rocketLight.Fisnish();
+
+	smokeEmitter.Init(&iEnemy_ModelRender->data.transform.pos);
 }
 void SplineMisileForBattleShip::Finalize()
 {
+	smokeEmitter.Finalize();
 }
 
 void SplineMisileForBattleShip::Update()
@@ -134,9 +159,24 @@ void SplineMisileForBattleShip::Update()
 		float nextTimeRate = static_cast<float>(nowTime + 1) / static_cast<float>(pointTime);
 		KazMath::Vec3<float> nextpos = KazMath::SplinePosition(points, startIndex, nextTimeRate, true);
 
-		KazMath::Vec3<float> upVector = nextpos - position;
-		upVector.Normalize();
-		iEnemy_ModelRender->data.upVector = upVector;
+
+		if (startIndex != 2)
+		{
+			KazMath::Vec3<float> upVector = nextpos - position;
+			upVector.Normalize();
+			iEnemy_ModelRender->data.upVector = upVector;
+		}
+		//炎点火
+		if (startIndex == 2 && !rocketLight.IsStart())
+		{
+			rocketLight.Init(&iEnemy_ModelRender->data.transform.pos, KazMath::Vec3<float>(0.0f, 0.0f, -5.0f), false);
+			rocketLight.ChangeLightRadius(3.0f);
+		}
+		//炎縮小
+		if (3 <= startIndex)
+		{
+			rocketLight.ChangeLightRadius(0.1f);
+		}
 		//前ベクトルの設定----------------------------------------------
 	}
 
@@ -145,6 +185,9 @@ void SplineMisileForBattleShip::Update()
 	{
 		iOperationData.initFlag = false;
 	}
+
+	rocketLight.Update();
+	smokeEmitter.Update();
 }
 
 void SplineMisileForBattleShip::Draw()
@@ -156,6 +199,8 @@ void SplineMisileForBattleShip::Draw()
 			pointsRender[i].Draw();
 		}
 	}
+	rocketLight.Draw();
 	iEnemy_ModelRender->Draw();
+	smokeEmitter.Draw();
 	LockOnWindow(iEnemy_ModelRender->data.transform.pos);
 }

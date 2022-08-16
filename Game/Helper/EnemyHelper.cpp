@@ -72,7 +72,7 @@ void KazEnemyHelper::AddEnemy(const std::array<std::array<std::unique_ptr<IEnemy
 					RESPONE_DATA[enemyTypeData][nowHandle].layerLevel = GAME_STAGE_LEVEL;
 					//現在のフレーム数+インターバルフレーム*個数で設定する
 					RESPONE_DATA[enemyTypeData][nowHandle].flame = GAME_FLAME;
-					RESPONE_DATA[enemyTypeData][nowHandle].initPos = enemyData->genarateData.initPos;
+					RESPONE_DATA[enemyTypeData][nowHandle].generateData = enemyData->genarateData.enemyGenerateData;
 					//ハンドルを増やす
 					++ADD_ENEMISE_HANDLE[enemyTypeData];
 
@@ -96,7 +96,7 @@ void KazEnemyHelper::InitEnemy(std::array<std::array<std::unique_ptr<IEnemy>, EN
 
 			if (enableToUseThisDataFlag && readyToInitDataFlag && ENEMIES[enemyType][enemyCount] != nullptr)
 			{
-				ENEMIES[enemyType][enemyCount]->Init(RESPONE_DATA[enemyType][enemyCount].initPos, DEMO_FLAG);
+				ENEMIES[enemyType][enemyCount]->Init(RESPONE_DATA[enemyType][enemyCount].generateData, DEMO_FLAG);
 			}
 		}
 	}

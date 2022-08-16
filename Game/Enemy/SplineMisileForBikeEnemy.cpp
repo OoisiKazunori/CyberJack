@@ -9,9 +9,9 @@ SplineMisileForBikeEnemy::SplineMisileForBikeEnemy()
 	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "BattleShipMisile/" + "BattleshipMissile_Model.obj");
 }
 
-void SplineMisileForBikeEnemy::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
+void SplineMisileForBikeEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 {
-	iEnemy_ModelRender->data.transform.pos = POS;
+	iEnemy_ModelRender->data.transform.pos = GENERATE_DATA.initPos;
 	float lScale = 0.2f;
 	iEnemy_ModelRender->data.transform.scale = { lScale,lScale,lScale };
 	iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX;
@@ -34,7 +34,7 @@ void SplineMisileForBikeEnemy::Init(const KazMath::Vec3<float> &POS, bool DEMO_F
 	points.clear();
 	points.shrink_to_fit();
 
-	KazMath::Vec3<float> startPos = POS;
+	KazMath::Vec3<float> startPos = GENERATE_DATA.initPos;
 	KazMath::Vec3<float> endPos = { 0.0f,0.0f,0.0f };
 
 	KazMath::Vec3<float> distance = startPos - endPos;

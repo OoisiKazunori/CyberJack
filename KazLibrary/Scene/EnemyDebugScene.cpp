@@ -51,8 +51,8 @@ void EnemyDebugScene::Init()
 
 	player.data.color = { 0,255,0,255 };
 
-	//kidFbxModel.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "Gunner_Model.fbx");
-	kidFbxModel.data.transform.scale = { 10.0f,10.0f,10.0f };
+	kidFbxModel.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::RelativeResourcePath + "cube.fbx");
+	kidFbxModel.data.transform.scale = { 1.0f,1.0f,1.0f };
 	responePos = { -20.0f,0.0f,100.0f };
 }
 
@@ -166,7 +166,10 @@ void EnemyDebugScene::Update()
 		//“G‚ÆŽq“G‚ÌŽ€–S--------------------------------------
 
 		//‰Šú‰»--------------------------------------
-		enemies[specifiedEnemyType]->Init(responePos, true);
+		EnemyGenerateData lData;
+		lData.initPos = responePos;
+		lData.battleShipData.isShotFlag = true;
+		enemies[specifiedEnemyType]->Init(lData, true);
 		//‰Šú‰»--------------------------------------
 
 		//ŠÈˆÕƒc[ƒ‹‚Ì‰Šú‰»--------------------------------------
@@ -200,7 +203,7 @@ void EnemyDebugScene::Update()
 	if (enemies[specifiedEnemyType]->GetData()->genarateData.enemyType != -1)
 	{
 		//¶¬‚·‚é“G‚ÌŽí—Þ
-		misiles[specifiedEnemyType][kidEnemyHandles[specifiedEnemyType]]->Init(lEnemyData->genarateData.initPos, true);
+		misiles[specifiedEnemyType][kidEnemyHandles[specifiedEnemyType]]->Init(lEnemyData->genarateData.enemyGenerateData, true);
 
 		++kidEnemyHandles[specifiedEnemyType];
 		//’Ç‰Á‚µ‚½‚çI—¹ˆ—‚ð“ü‚ê‚é
@@ -249,6 +252,8 @@ void EnemyDebugScene::Draw()
 	}
 	enemies[specifiedEnemyType]->Draw();
 
+
+	//kidFbxModel.Draw();
 
 }
 

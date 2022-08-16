@@ -7,7 +7,7 @@ class SplineMisileForBikeEnemy:public IEnemy
 public:
 	SplineMisileForBikeEnemy();
 
-	void Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG = false);
+	void Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG = false);
 	void Finalize();
 	void Update();
 	void Draw();

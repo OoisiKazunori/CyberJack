@@ -119,6 +119,9 @@
     <ClCompile Include="Game\Effect\HitEffectPattern3Emitter.cpp" />
     <ClCompile Include="Game\Stage\DrawGrid.cpp" />
     <ClCompile Include="Game\Stage\MountainObject.cpp" />
+    <ClCompile Include="Game\Effect\RocketLightEffect.cpp" />
+    <ClCompile Include="Game\Effect\MisileSmokeEmitter.cpp" />
+    <ClCompile Include="Game\Effect\MisileSmokeParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -249,6 +252,10 @@
     <ClInclude Include="Game\Effect\HitEffectPattern3Emitter.h" />
     <ClInclude Include="Game\Stage\DrawGrid.h" />
     <ClInclude Include="Game\Stage\MountainObject.h" />
+    <ClInclude Include="Game\Enemy\EnemyData.h" />
+    <ClInclude Include="Game\Effect\RocketLightEffect.h" />
+    <ClInclude Include="Game\Effect\MisileSmokeEmitter.h" />
+    <ClInclude Include="Game\Effect\MisileSmokeParticle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

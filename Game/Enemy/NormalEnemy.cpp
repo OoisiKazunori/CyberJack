@@ -7,9 +7,9 @@ NormalEnemy::NormalEnemy()
 {
 }
 
-void NormalEnemy::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
+void NormalEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 {
-	iEnemy_ModelRender->data.transform.pos = POS;	//座標の初期化
+	iEnemy_ModelRender->data.transform.pos = GENERATE_DATA.initPos;	//座標の初期化
 	iEnemy_ModelRender->data.transform.scale = { 1.0f,1.0f,1.0f };
 	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath +"Move/"+ "MoveEnemy_Model.obj");	//モデル読み込み
 	iEnemy_EnemyStatusData->hitBox.radius = 15.0f;	//当たり判定の大きさ変更
@@ -27,7 +27,7 @@ void NormalEnemy::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
 	initDeadSoundFlag = false;
 	demoFlag = DEMO_FLAG;
 
-	rocketEffect.Init(&iEnemy_ModelRender->data.transform.pos);
+	rocketEffect.Init(&iEnemy_ModelRender->data.transform.pos, KazMath::Vec3<float>(0.0f, 0.0f, 20.0f), KazMath::Vec3<float>(0.0f, 0.0f, 45.0f));
 }
 
 void NormalEnemy::Finalize()

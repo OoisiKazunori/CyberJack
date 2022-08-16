@@ -7,7 +7,7 @@ class BikeEnemy:public IEnemy
 public:
 	BikeEnemy();
 
-	void Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG);
+	void Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG);
 	void Finalize();
 	void Update();
 	void Draw();

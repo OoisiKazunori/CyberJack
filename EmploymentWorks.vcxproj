@@ -176,7 +176,10 @@
   <ItemGroup>
     <ClCompile Include="Game\Debug\ParameterMgr.cpp" />
     <ClCompile Include="Game\Debug\WirteCpuLineData.cpp" />
+    <ClCompile Include="Game\Effect\MisileSmokeEmitter.cpp" />
+    <ClCompile Include="Game\Effect\MisileSmokeParticle.cpp" />
     <ClCompile Include="Game\Effect\RocketEffect.cpp" />
+    <ClCompile Include="Game\Effect\RocketLightEffect.cpp" />
     <ClCompile Include="Game\Enemy\BattleshipEnemy.cpp" />
     <ClCompile Include="Game\Enemy\BikeEnemy.cpp" />
     <ClCompile Include="Game\Effect\EaseScaleParticle.cpp" />
@@ -296,7 +299,10 @@
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
     <ClInclude Include="Game\Debug\WirteCpuLineData.h" />
+    <ClInclude Include="Game\Effect\MisileSmokeEmitter.h" />
+    <ClInclude Include="Game\Effect\MisileSmokeParticle.h" />
     <ClInclude Include="Game\Effect\RocketEffect.h" />
+    <ClInclude Include="Game\Effect\RocketLightEffect.h" />
     <ClInclude Include="Game\Enemy\BattleshipEnemy.h" />
     <ClInclude Include="Game\Enemy\BikeEnemy.h" />
     <ClInclude Include="Game\Effect\EaseScaleParticle.h" />
@@ -304,6 +310,7 @@
     <ClInclude Include="Game\Effect\HitEffectPattern2Emitter.h" />
     <ClInclude Include="Game\Effect\HitEffectPattern3Emitter.h" />
     <ClInclude Include="Game\Effect\IHitEffectEmitter.h" />
+    <ClInclude Include="Game\Enemy\EnemyData.h" />
     <ClInclude Include="Game\Enemy\HitEnemyEffect.h" />
     <ClInclude Include="Game\Enemy\KidEnemy.h" />
     <ClInclude Include="Game\Enemy\NormalMisileEnemy.h" />

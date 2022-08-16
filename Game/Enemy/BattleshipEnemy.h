@@ -7,7 +7,7 @@ class BattleshipEnemy:public IEnemy
 public:
 	BattleshipEnemy();
 
-	void Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG);
+	void Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG);
 	void Finalize();
 	void Update();
 	void Draw();
@@ -19,5 +19,7 @@ private:
 	int misileShotIndex;
 	std::array<BoxPolygonRender, 8>misileR;
 	FbxModelRenderPtr model;
+
+	bool isShotFlag;
 };
 

@@ -65,7 +65,7 @@ public:
 
 	Game();
 	~Game();
-	void Init(const array<array<KazEnemyHelper::ResponeData,KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> &RESPONE_DATA);
+	void Init(const std::array<std::array<ResponeData,KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> &RESPONE_DATA);
 	void Finalize();
 	void Input();
 	void Update();
@@ -110,6 +110,30 @@ private:
 	KazMath::Vec3<float> layerLevelTargetPos;
 	KazMath::Vec3<float> layerCameraMove;
 
+	KazMath::Vec3<float>cameraVel;
+
+	const float FORCE_CAMERA_FRONT = -90.0f;
+	const float FORCE_CAMERA_BACK = -270.0f;
+	const float FORCE_CAMERA_LEFT = 0.0f;
+	const float FORCE_CAMERA_RIGHT = -180.0f;
+
+	enum CameraDir
+	{
+		CAMERA_FRONT,
+		CAMERA_BACK,
+		CAMERA_LEFT,
+		CAMERA_RIGHT,
+	};
+	struct ForceCameraData
+	{
+		int flame;
+		CameraDir dir;
+		ForceCameraData() :flame(-1)
+		{
+		};
+	};
+	std::array<std::array<ForceCameraData, 10>, 3>cameraMoveArray;
+
 	//カメラ----------------------------------------------------------------
 
 	//カメラ挙動の確認
@@ -131,8 +155,8 @@ private:
 	array<array<unique_ptr<IEnemy>, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> enemies;	//1ステージに生成する敵の総数
 	array<int, 10> enemiesHandle;						//0から順番に初期化する際に必要
 	array<int, 10> addEnemiesHandle;					//0から順番に追加で初期化する際に必要
-	array<array<KazEnemyHelper::ResponeData, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> responeData;		//敵を生成する際に必要な設定
-	array<KazEnemyHelper::ResponeData, 50>addResponeData;				//敵を追加で生成する際に必要な設定をスタックしたもの
+	array<array<ResponeData, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> responeData;		//敵を生成する際に必要な設定
+	array<ResponeData, 50>addResponeData;				//敵を追加で生成する際に必要な設定をスタックしたもの
 	//敵----------------------------------------------------------------
 
 	//線演出----------------------------------------------------------------

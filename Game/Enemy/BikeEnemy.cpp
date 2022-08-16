@@ -7,9 +7,9 @@ BikeEnemy::BikeEnemy()
 {
 }
 
-void BikeEnemy::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
+void BikeEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 {
-	iEnemy_ModelRender->data.transform.pos = POS;	//座標の初期化
+	iEnemy_ModelRender->data.transform.pos = GENERATE_DATA.initPos;	//座標の初期化
 	float lScale = 0.7f;
 	iEnemy_ModelRender->data.transform.scale = { lScale,lScale,lScale };
 	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "Bike/" + "Bike_Model.obj");	//モデル読み込み
@@ -18,12 +18,12 @@ void BikeEnemy::Init(const KazMath::Vec3<float> &POS, bool DEMO_FLAG)
 	initDeadSoundFlag = false;
 	demoFlag = DEMO_FLAG;
 
-	basePos = POS;
+	basePos = GENERATE_DATA.initPos;
 
 	iEnemy_ModelRender->data.transform.pos.y += 7.0f;
 	iEnemy_ModelRender->data.transform.pos.z = -1000.0f;
-	line.data.startPos = POS;
-	line.data.endPos = POS;
+	line.data.startPos = GENERATE_DATA.initPos;
+	line.data.endPos = GENERATE_DATA.initPos;
 	line.data.startPos.z = -1000.0f;
 	line.data.endPos.z = line.data.startPos.z;
 
@@ -63,12 +63,12 @@ void BikeEnemy::Update()
 		//左右からミサイルを発射する--------------------------------------
 		if (appearTimer == 201)
 		{
-			iEnemy_EnemyStatusData->genarateData.initPos = misileR.data.transform.pos;
+			iEnemy_EnemyStatusData->genarateData.enemyGenerateData.initPos = misileR.data.transform.pos;
 			iEnemy_EnemyStatusData->genarateData.enemyType = ENEMY_TYPE_MISILE_SPLINE;
 		}
 		if (appearTimer == 202)
 		{
-			iEnemy_EnemyStatusData->genarateData.initPos = misileR2.data.transform.pos;
+			iEnemy_EnemyStatusData->genarateData.enemyGenerateData.initPos = misileR2.data.transform.pos;
 			iEnemy_EnemyStatusData->genarateData.enemyType = ENEMY_TYPE_MISILE_SPLINE;
 		}
 		//左右からミサイルを発射する--------------------------------------
