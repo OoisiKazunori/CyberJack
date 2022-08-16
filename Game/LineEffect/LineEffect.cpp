@@ -26,9 +26,6 @@ LineEffect::LineEffect()
 
 	finishFlag = false;
 	allFinishFlag = false;
-
-	lockOnSpeed = NORMAL_LOCKON_SPEED;
-	releaseSpeed = 10.0f;
 }
 
 LineEffect::~LineEffect()
@@ -38,7 +35,7 @@ LineEffect::~LineEffect()
 	allFinishFlag = false;
 }
 
-void LineEffect::RockOn(const KazMath::Vec3<float> &START_POS, const KazMath::Vec3<float> &END_POS, const KazMath::Vec3<float> &START_PLAYER_DISTANCE, const KazMath::Vec3<float> &END_PLAYER_DISTANCE)
+void LineEffect::RockOn(const KazMath::Vec3<float> &START_POS, const KazMath::Vec3<float> &END_POS, const KazMath::Vec3<float> &START_PLAYER_DISTANCE, const KazMath::Vec3<float> &END_PLAYER_DISTANCE,float SPEED)
 {
 	if (!rockOnFlag)
 	{
@@ -69,6 +66,11 @@ void LineEffect::RockOn(const KazMath::Vec3<float> &START_POS, const KazMath::Ve
 		finishRockOnFlag = false;
 		finishReleaseFlag = false;
 		allFinishFlag = false;
+
+		normalRockOnSpeed = SPEED;
+		rapidRockOnSpeed = SPEED * 2.0f;
+		releaseSpeed = normalRockOnSpeed;
+		lockOnSpeed = normalRockOnSpeed;
 	}
 }
 
@@ -97,7 +99,8 @@ void LineEffect::Update()
 
 	if (releaseFlag)
 	{
-		lockOnSpeed = RAPID_LOCKON_SPEED;
+		lockOnSpeed = rapidRockOnSpeed;
+		releaseSpeed = rapidRockOnSpeed;
 	}
 
 

@@ -244,4 +244,10 @@ private:
 	std::array<std::unique_ptr<IHitEffectEmitter>, 3>emitters;
 
 	std::array<std::array<std::unique_ptr<IHitEffectEmitter>, 10>, 3>deadEffectEmitter;
+
+
+	//エフェクト--------------------------------------
+	std::array<RocketEffect, 30>rocketEffect;
+	int rocketIndex;
+	//エフェクト--------------------------------------
 };

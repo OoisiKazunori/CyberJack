@@ -535,6 +535,10 @@ void LineLevel1::Attack2(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::
 		}
 
 		line.resize(limitPos.size() - 1);
+
+
+		float lDistance = PLAYER_POS.Distance(ENEMY_POS);
+		float lSpeed = lDistance / 10.0f;
 		for (int i = 0; i < line.size(); i++)
 		{
 			line[i] = std::make_unique<LineEffect>();
@@ -546,9 +550,8 @@ void LineLevel1::Attack2(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::
 			KazMath::Vec3<float> startPlayerdistance = lLimitPos - PLAYER_POS;
 			KazMath::Vec3<float> endPlayerdistance = lLimitPos2 - PLAYER_POS;
 			
-			line[i]->RockOn(lLimitPos, lLimitPos2, startPlayerdistance, endPlayerdistance);
+			line[i]->RockOn(lLimitPos, lLimitPos2, startPlayerdistance, endPlayerdistance, lSpeed);
 		}
-
 
 
 		for (int i = 0; i < limitPolygon.size(); i++)

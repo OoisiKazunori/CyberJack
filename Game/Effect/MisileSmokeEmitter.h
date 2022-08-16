@@ -16,7 +16,6 @@ private:
 	KazMath::Vec3<float>*pos;
 	int intervalNum;
 	int particleIndex;
-
 	bool initFlag;
 };
 

@@ -14,7 +14,10 @@ public:
 	LineEffect();
 	~LineEffect();
 
-	void RockOn(const KazMath::Vec3<float> &START_POS, const KazMath::Vec3<float> &END_POS, const KazMath::Vec3<float> &START_PLAYER_DISTANCE, const KazMath::Vec3<float> &END_PLAYER_DISTANCE);
+	void RockOn(
+		const KazMath::Vec3<float> &START_POS, const KazMath::Vec3<float> &END_POS, 
+		const KazMath::Vec3<float> &START_PLAYER_DISTANCE, const KazMath::Vec3<float> &END_PLAYER_DISTANCE,
+		float SPEED);
 	void StartEffect();
 	void ReleaseEffect();
 	void Finalize();
@@ -28,8 +31,8 @@ public:
 	bool finishReleaseFlag;
 	KazMath::Vec3<float> playerPos;
 private:
-	const float NORMAL_LOCKON_SPEED = 6.0f;
-	const float RAPID_LOCKON_SPEED = 12.0f;
+	float normalRockOnSpeed;
+	float rapidRockOnSpeed;
 
 	LineRenderPtr line;
 	Sprite3DRenderPtr circle;

@@ -258,6 +258,8 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 
 	cameraMoveArray[0][1].flame = KazMath::ConvertSecondToFlame(24);
 	cameraMoveArray[0][1].dir = CAMERA_FRONT;
+
+	rocketIndex = 0;
 }
 
 void Game::Finalize()
@@ -658,7 +660,34 @@ void Game::Update()
 
 
 	//敵をどのタイミングで初期化する処理----------------------------------------------------------------
-	KazEnemyHelper::InitEnemy(enemies, responeData, gameFlame, gameStageLevel);
+	for (int enemyType = 0; enemyType < responeData.size(); ++enemyType)
+	{
+		for (int enemyCount = 0; enemyCount < responeData[enemyType].size(); ++enemyCount)
+		{
+			bool enableToUseThisDataFlag = responeData[enemyType][enemyCount].layerLevel != -1;
+			bool readyToInitDataFlag = responeData[enemyType][enemyCount].flame == gameFlame &&
+				responeData[enemyType][enemyCount].layerLevel == gameStageLevel;
+
+			if (enableToUseThisDataFlag && readyToInitDataFlag && enemies[enemyType][enemyCount] != nullptr)
+			{
+				enemies[enemyType][enemyCount]->Init(responeData[enemyType][enemyCount].generateData, false);
+
+				switch (enemyType)
+				{
+				case ENEMY_TYPE_NORMAL:
+					rocketEffect[rocketIndex].Init(enemies[enemyType][enemyCount]->GetData()->hitBox.center, KazMath::Vec3<float>(0.0f, 0.0f, 20.0f), KazMath::Vec3<float>(0.0f, 0.0f, 45.0f));
+					++rocketIndex;
+					break;
+				case ENEMY_TYPE_MISILE:
+					rocketEffect[rocketIndex].Init(enemies[enemyType][enemyCount]->GetData()->hitBox.center, KazMath::Vec3<float>(0.0f, 0.0f, 20.0f), KazMath::Vec3<float>(0.0f, 0.0f, 45.0f));
+					++rocketIndex;
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
 	//敵をどのタイミングで初期化する処理----------------------------------------------------------------
 #pragma endregion
 
@@ -1091,6 +1120,13 @@ void Game::Update()
 			}
 		}
 		//更新処理----------------------------------------------------------------
+
+
+		for (int i = 0; i < rocketEffect.size(); ++i)
+		{
+			rocketEffect[i].Update();
+		}
+		
 #pragma endregion
 
 
@@ -1205,8 +1241,6 @@ void Game::Draw()
 		}
 		player.Draw();
 
-
-
 		//敵の描画処理----------------------------------------------------------------
 		for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
 		{
@@ -1220,6 +1254,13 @@ void Game::Draw()
 				}
 			}
 		}
+
+
+		for (int i = 0; i < rocketEffect.size(); ++i)
+		{
+			rocketEffect[i].Draw();
+		}
+
 
 		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
 			//if (100 <= gameFlame)

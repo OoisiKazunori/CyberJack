@@ -89,7 +89,7 @@ void NormalEnemy::Draw()
 	if (1.0f <= iEnemy_ModelRender->data.colorData.color.a)
 	{
 		iEnemy_ModelRender->Draw();
-		rocketEffect.Draw();
+		//rocketEffect.Draw();
 		LockOnWindow(iEnemy_ModelRender->data.transform.pos);
 	}
 }

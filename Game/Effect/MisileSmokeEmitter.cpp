@@ -15,10 +15,7 @@ void MisileSmokeEmitter::Init(KazMath::Vec3<float> *EMITT_POS)
 
 void MisileSmokeEmitter::Finalize()
 {
-	for (int i = 0; i < smokeParticle.size(); ++i)
-	{
-		smokeParticle[i].Finalize();
-	}
+	initFlag = false;
 }
 
 void MisileSmokeEmitter::Update()
@@ -33,28 +30,25 @@ void MisileSmokeEmitter::Update()
 		}
 		if (smokeParticle.size() <= particleIndex)
 		{
-			particleIndex = 0;
+			particleIndex = static_cast<int>(smokeParticle.size() - 1);
 		}
 
 		if (!smokeParticle[particleIndex].IsAlive())
 		{
 			smokeParticle[particleIndex].Init(*pos);
 		}
+	}
 
-		for (int i = 0; i < smokeParticle.size(); ++i)
-		{
-			smokeParticle[i].Update();
-		}
+	for (int i = 0; i < smokeParticle.size(); ++i)
+	{
+		smokeParticle[i].Update();
 	}
 }
 
 void MisileSmokeEmitter::Draw()
 {
-	if (initFlag)
+	for (int i = 0; i < smokeParticle.size(); ++i)
 	{
-		for (int i = 0; i < smokeParticle.size(); ++i)
-		{
-			smokeParticle[i].Draw();
-		}
+		smokeParticle[i].Draw();
 	}
 }

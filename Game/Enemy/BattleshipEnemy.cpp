@@ -177,5 +177,5 @@ void BattleshipEnemy::Draw()
 	{
 		misileR[i].Draw();
 	}
-	//model->Draw();
+	model->Draw();
 }
