@@ -33,7 +33,7 @@ cbuffer RootConstants : register(b0)
 };
 
 //出力
-AppendStructuredBuffer<OutputData> matrixData : register(u0);
+RWStructuredBuffer<OutputData> matrixData : register(u0);
 //更新
 RWStructuredBuffer<UpdateData> updateData : register(u1);
 
@@ -104,6 +104,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     indexData[11][1] = 2;
 
 
+    
     float4 outputPos[12][10];
     for(int indexArrayNum = 0;indexArrayNum < 12; ++indexArrayNum)
     {
@@ -141,10 +142,10 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
             outputMat.mat = mul(lView,    outputMat.mat);
             outputMat.mat = mul(lproj,    outputMat.mat);
             outputMat.color = float4(1.0f,0.0f,0.0f,1.0f); 
-            //出力用-------------------------
+
+            uint outPutIndex = indexArrayNum * 10 + i;
+            matrixData[outPutIndex] = outputMat;
+            //出力用-------------------------            
         }
     }
-    OutputData outputMat;
-    outputMat.color = float4(index + 1,0,0,1);
-    matrixData.Append(outputMat); 
 }
