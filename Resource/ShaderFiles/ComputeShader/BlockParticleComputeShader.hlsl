@@ -51,19 +51,21 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     float4 vertWorldPos[8];
 
     //頂点座標の行列計算-------------------------
-    matrix pMatTrans = Translate(updateData[index].pos.xyz);
-    matrix pMatRot = Rotate(float3(0.0f,0.0f,0.0f));
-    float scale = 1.0f;
-    matrix pMatScale = Scale(float3(scale, scale, scale));
+    {
+        matrix pMatTrans = Translate(float3(0.0f,0.0f,0.0f));
+        matrix pMatRot = Rotate(float3(0.0f,0.0f,0.0f));
+        float scale = 1.0f;
+        matrix pMatScale = Scale(float3(scale, scale, scale));
     
-    matrix pMatWorld = MatrixIdentity();
-    pMatWorld = mul(pMatScale, pMatWorld);
-    pMatWorld = mul(pMatRot, pMatWorld);
-    pMatWorld = mul(billBoard, pMatWorld);
-    pMatWorld = mul(pMatTrans, pMatWorld);
-    for(int i = 0;i < 8; ++i)
-    {        
-        vertWorldPos[i] = mul(pMatWorld,vertices[i]);
+        matrix pMatWorld = MatrixIdentity();
+        pMatWorld = mul(pMatScale, pMatWorld);
+        pMatWorld = mul(pMatRot, pMatWorld);
+        pMatWorld = mul(billBoard, pMatWorld);
+        pMatWorld = mul(pMatTrans, pMatWorld);
+        for(int i = 0;i < 8; ++i)
+        {        
+            vertWorldPos[i] = mul(pMatWorld,vertices[i]);
+        }
     }
     //頂点座標の行列計算-------------------------
 
@@ -110,11 +112,31 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     //現在のブロックのインデックス
     uint blockIndex = 0;
     //現在のパーティクルのインデックス
-    uint particleIndex = 0;
+    uint particleIndex = (groupThreadID.y * THREAD_MAX) + groupThreadID.x + ((THREAD_MAX * THREAD_MAX) * groupThreadID.z);
+
+    uint number[3]= {0, 0, 0};
+    int checkNum = particleIndex;
+    for(int i = 0; i < 3; ++i)
+    {
+        if(checkNum != 0)
+        {
+            number[i] = checkNum % 10;
+        }
+        else
+        {
+            break;
+        }
+        checkNum /= 10;
+    }
     //現在見ている辺
-    uint sideIndex = 0;
+    uint sideIndex = number[1] + number[2] * 10;
     //辺内の割合
     float sideRate = 0.0f;
+    if(number[0] != 0)
+    {
+        sideRate = number[0] / 10.0f;
+    }
+
     
     uint startIndex = indexData[sideIndex][0];
     uint endIndex = indexData[sideIndex][1];
@@ -147,6 +169,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     outputMat.mat = mul(lView,    outputMat.mat);
     outputMat.mat = mul(lproj,    outputMat.mat);
     outputMat.color = float4(1.0f,0.0f,0.0f,1.0f); 
-    matrixData[blockIndex * particleIndex] = outputMat;
+    uint resultIndex = blockIndex * (THREAD_MAX * THREAD_MAX * THREAD_MAX) + particleIndex;
+    matrixData[resultIndex] = outputMat;
     //出力用-------------------------
 }

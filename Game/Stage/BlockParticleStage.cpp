@@ -187,14 +187,14 @@ BlockParticleStage::BlockParticleStage()
 	particleDataHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(ParticleData) * PARTICLE_MAX_NUM));
 	outputBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer((sizeof(OutputData) * PER_USE_PARTICLE_MAX_NUM) * PARTICLE_MAX_NUM));
 	drawCommandHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(IndirectCommand) * DRAW_CALL));
-	counterBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(UINT)));
+	//counterBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(UINT)));
 	//バッファ生成-------------------------
 
 	//転送-------------------------
 	buffers->TransData(vertexBufferHandle, lVertices, vertBuffSize);
 	buffers->TransData(indexBufferHandle, lIndices, indexBuffSize);
 	UINT reset = 0;
-	buffers->TransData(counterBufferHandle, &reset, sizeof(UINT));
+	//buffers->TransData(counterBufferHandle, &reset, sizeof(UINT));
 
 
 	{
@@ -221,9 +221,10 @@ BlockParticleStage::BlockParticleStage()
 	computeMemSize = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_TEXTURE_COMPUTEBUFFER);
 	DescriptorHeapMgr::Instance()->CreateBufferView(
 		computeMemSize.startSize + 0,
-		KazBufferHelper::SetUnorderedAccessView(sizeof(OutputData), PARTICLE_MAX_NUM),
+		KazBufferHelper::SetUnorderedAccessView(sizeof(OutputData), PARTICLE_MAX_NUM * PER_USE_PARTICLE_MAX_NUM),
 		buffers->GetBufferData(outputBufferHandle).Get(),
-		buffers->GetBufferData(counterBufferHandle).Get()
+		//buffers->GetBufferData(counterBufferHandle).Get()
+		nullptr
 	);
 
 	DescriptorHeapMgr::Instance()->CreateBufferView(
@@ -250,15 +251,15 @@ void BlockParticleStage::Update()
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_BLOCKPARTICLE);
 
 	{
-		UINT reset = 0;
-		buffers->TransData(counterBufferHandle, &reset, sizeof(UINT));
+		//UINT reset = 0;
+		//buffers->TransData(counterBufferHandle, &reset, sizeof(UINT));
 	}
 
 	//共通用バッファのデータ送信
 	{
 		constBufferData.cameraMat = CameraMgr::Instance()->GetViewMatrix();
 		constBufferData.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
-		constBufferData.bollboardMat = CameraMgr::Instance()->GetMatBillBoard();
+		constBufferData.bollboardMat = DirectX::XMMatrixIdentity();
 		buffers->TransData(commonBufferHandle, &constBufferData, sizeof(CommonData));
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(commonBufferHandle));
 	}
@@ -290,7 +291,8 @@ void BlockParticleStage::Draw()
 		1,
 		buffers->GetBufferData(drawCommandHandle).Get(),
 		0,
-		buffers->GetBufferData(counterBufferHandle).Get(),
+		//buffers->GetBufferData(counterBufferHandle).Get(),
+		nullptr,
 		0
 	);
 

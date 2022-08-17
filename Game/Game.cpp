@@ -273,7 +273,7 @@ void Game::Input()
 
 #pragma region カメラ操作
 	debugCameraMove = { 0,0,0 };
-	float debugSpeed = 100.0f;
+	float debugSpeed = 1.0f;
 	float debugSideSpeed = 1.0f;
 	//�J�����ړ�
 	if (input->InputState(DIK_D))
