@@ -51,8 +51,6 @@ void EnemyDebugScene::Init()
 
 	player.data.color = { 0,255,0,255 };
 
-	kidFbxModel.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::RelativeResourcePath + "cube.fbx");
-	kidFbxModel.data.transform.scale = { 1.0f,1.0f,1.0f };
 	responePos = { -20.0f,0.0f,100.0f };
 }
 
@@ -179,7 +177,6 @@ void EnemyDebugScene::Update()
 		//ä»à’ÉcÅ[ÉãÇÃèâä˙âª--------------------------------------
 	}
 	//èâä˙âª--------------------------------------
-	kidFbxModel.data.transform.pos = KazMath::Vec3<float>(20.0f, 0.0f, 0.0f);
 
 	//éÄñS--------------------------------------
 	if (deadFlag)
@@ -221,15 +218,21 @@ void EnemyDebugScene::Update()
 
 	enemies[specifiedEnemyType]->Update();
 
+	hitBox.data.transform.pos = *enemies[specifiedEnemyType]->GetData()->hitBox.center;
+	float lScale = enemies[specifiedEnemyType]->GetData()->hitBox.radius;
+	hitBox.data.transform.scale = { lScale ,lScale,lScale };
+	hitBox.data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
+
 	for (int i = 0; i < misiles[specifiedEnemyType].size(); ++i)
 	{
 		if (misiles[specifiedEnemyType][i] != nullptr)
 		{
 			misiles[specifiedEnemyType][i]->Update();
+
+		
 		}
 	}
 
-	kidFbxModel.data.isPlayFlag = false;
 }
 
 void EnemyDebugScene::Draw()
@@ -252,6 +255,7 @@ void EnemyDebugScene::Draw()
 	}
 	enemies[specifiedEnemyType]->Draw();
 
+	hitBox.Draw();
 
 	//kidFbxModel.Draw();
 

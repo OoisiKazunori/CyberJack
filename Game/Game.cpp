@@ -109,9 +109,9 @@ Game::Game()
 
 	CameraMgr::Instance()->CameraSetting(60.0f, 10000.0f);
 
-	stages[0] = std::make_unique<RezStage>();
+	stages[0] = std::make_unique<BlockParticleStage>();
 	//stages[0] = std::make_unique<FirstStage>();
-	stages[1] = std::make_unique<GpuParticleStage>();
+	stages[1] = std::make_unique<RezStage>();
 	stages[2] = std::make_unique<ThridStage>();
 
 
@@ -179,7 +179,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 
 
 	//ゲームループの初期化----------------------------------------------------------------
-	gameStartFlag = true;
+	gameStartFlag = false;
 	gameFlame = 0;
 	//ゴールに触れ無かった場合に次のステージに移動する際の最大フレーム数
 	for (int i = 0; i < changeLayerLevelMaxTime.size(); ++i)
@@ -253,10 +253,10 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	portal.Init(KazMath::Vec3<float>(0.0f, 3.0f, 50.0f));
 
 
-	cameraMoveArray[0][0].flame = KazMath::ConvertSecondToFlame(12);
+	cameraMoveArray[0][0].flame = KazMath::ConvertSecondToFlame(15);
 	cameraMoveArray[0][0].dir = CAMERA_LEFT;
 
-	cameraMoveArray[0][1].flame = KazMath::ConvertSecondToFlame(24);
+	cameraMoveArray[0][1].flame = KazMath::ConvertSecondToFlame(32);
 	cameraMoveArray[0][1].dir = CAMERA_FRONT;
 
 	rocketIndex = 0;
@@ -274,7 +274,7 @@ void Game::Input()
 #pragma region カメラ操作
 	debugCameraMove = { 0,0,0 };
 	float debugSpeed = 100.0f;
-	float debugSideSpeed = 5.0f;
+	float debugSideSpeed = 1.0f;
 	//�J�����ړ�
 	if (input->InputState(DIK_D))
 	{
@@ -584,7 +584,7 @@ void Game::Update()
 	else
 	{
 		//デバック用
-		eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle, 40.0f);
+		eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle, 0.1f);
 		targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
 	}
 
@@ -1122,9 +1122,15 @@ void Game::Update()
 					!enemies[enemyType][enemyCount]->GetData()->outOfStageFlag;
 				if (enableToUseDataFlag)
 				{
-					isEnemyNotMoveFlag = false;
 					enemies[enemyType][enemyCount]->Update();
 				}
+
+				//一体でも敵が動いていたらそれを知らせるフラグを上げる
+				if (enableToUseDataFlag && enemies[enemyType][enemyCount]->GetData()->oprationObjData->enableToHitFlag)
+				{
+					isEnemyNotMoveFlag = false;
+				}
+
 			}
 		}
 		//更新処理----------------------------------------------------------------
@@ -1202,9 +1208,10 @@ void Game::Update()
 			notMoveTimer = 0;
 		}
 
-		if (KazMath::ConvertSecondToFlame(2) <= notMoveTimer)
+		//敵が何もしていない時間が一定時間を超えたらゲーム内時間を早める
+		if (KazMath::ConvertSecondToFlame(CHANGE_GMAE_FLAME_SPEED_MAX_TIME) <= notMoveTimer)
 		{
-			gameSpeed = 10;
+			gameSpeed = 60;
 		}
 		else
 		{
@@ -1266,7 +1273,10 @@ void Game::Draw()
 		{
 			bg.Draw();
 		}
-		player.Draw();
+		//player.Draw();
+		box.data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
+		box.Draw();
+
 
 		//敵の描画処理----------------------------------------------------------------
 		for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
@@ -1280,6 +1290,12 @@ void Game::Draw()
 				if (enableToUseDataFlag)
 				{
 					enemies[enemyType][enemyCount]->Draw();
+
+					enemyHitBox[enemyType][enemyCount].data.transform.pos = *enemies[enemyType][enemyCount]->GetData()->hitBox.center;
+					float lScale = enemies[enemyType][enemyCount]->GetData()->hitBox.radius;
+					enemyHitBox[enemyType][enemyCount].data.transform.scale = { lScale ,lScale ,lScale };
+					enemyHitBox[enemyType][enemyCount].data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
+					enemyHitBox[enemyType][enemyCount].Draw();
 				}
 			}
 		}

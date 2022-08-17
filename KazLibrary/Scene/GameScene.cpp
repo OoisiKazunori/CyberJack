@@ -12,7 +12,7 @@ GameScene::GameScene()
 	int respoineIndex = 0;
 	int layerLevel = 0;
 	int time = 60;
-	float z = 300.0f;
+	float z = 800.0f;
 
 
 #pragma region RezStage
@@ -47,13 +47,13 @@ GameScene::GameScene()
 
 	//左から戦艦-----------------------------------------------------------------
 	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 10;
+	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 15;
 	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].generateData.initPos = { -1000.0f,-150.0f,400.0f };
 	++respoineIndex;
 
 
 	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 10;
+	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 15;
 	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].generateData.initPos = { -100.0f,-150.0f,200.0f };
 	++respoineIndex;
 	//左から戦艦-----------------------------------------------------------------
@@ -61,13 +61,13 @@ GameScene::GameScene()
 
 	//もう一度左から戦艦二体-----------------------------------------------------------------
 	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 15;
+	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 20;
 	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].generateData.initPos = { -1000.0f,-150.0f,100.0f };
 	++respoineIndex;
 
 
 	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 15;
+	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 20;
 	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].generateData.initPos = { -100.0f,-150.0f,0.0f };
 	++respoineIndex;
 	//もう一度左から戦艦二体-----------------------------------------------------------------
@@ -75,41 +75,41 @@ GameScene::GameScene()
 
 	//正面から戦艦と通常敵-----------------------------------------------------------------
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 25;
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 35;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -40.0f,20.0f,z };
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.speed = -3.0f;
 	++respoineIndex;
 
 
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 25;
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 35;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -80.0f,20.0f,z };
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.speed = -3.0f;
 	++respoineIndex;
 
 
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 25;
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 35;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 40.0f,20.0f,z };
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.speed = -3.0f;
 	++respoineIndex;
 
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 25;
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 35;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 80.0f,20.0f,z };
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.speed = -3.0f;
 	++respoineIndex;
 
 
 	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 25;
+	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 35;
 	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].generateData.initPos = { 40.0f,-150.0f,100.0f };
 	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].generateData.battleShipData.isShotFlag = true;
 	++respoineIndex;
 
 
 	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 25;
+	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 35;
 	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].generateData.initPos = { -40.0f,-150.0f,100.0f };
 	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].generateData.battleShipData.isShotFlag = true;
 	++respoineIndex;

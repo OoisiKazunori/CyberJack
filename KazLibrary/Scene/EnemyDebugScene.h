@@ -30,6 +30,7 @@ private:
 	std::array<int, 10>kidEnemyHandles;
 	//“G----------------------------------------------------------------
 
+	BoxPolygonRender hitBox;
 
 	BoxPolygonRender player;
 	int gameFlame;
@@ -38,8 +39,5 @@ private:
 	KazMath::Vec3<float>responePos;
 
 	BackGroundForDebug bg;
-
-	FbxModelRender kidFbxModel;
-	ObjModelRender kidObjModel;
 };
 

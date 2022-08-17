@@ -14,7 +14,10 @@ public:
 
 private:
 	KazMath::Vec3<float>basePos;
+	KazMath::Vec3<float>adjHitBoxPos;
+	KazMath::Vec3<float>hitBoxPos;
 	int appearTimer;
+	int disappearTime;
 	float vel;
 	int misileShotIndex;
 	std::array<BoxPolygonRender, 8>misileR;

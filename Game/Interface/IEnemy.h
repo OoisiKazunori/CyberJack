@@ -64,6 +64,7 @@ public:
 	ObjModelRenderPtr iEnemy_ModelRender;				//“G‚Ì•`‰æ
 	KazMath::Vec3<float> lerpPos;
 
+
 protected:
 	bool initDeadSoundFlag;
 	bool demoFlag;

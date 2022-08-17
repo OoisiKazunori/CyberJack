@@ -94,7 +94,6 @@ void SplineMisileForBattleShip::Update()
 	if (iEnemy_EnemyStatusData->timer <= 0)
 	{
 		iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag = false;
-		iOperationData.initFlag = false;
 		hitFlag = true;
 	}
 
@@ -183,7 +182,7 @@ void SplineMisileForBattleShip::Update()
 	//Ž€–Sˆ—
 	if (iEnemy_ModelRender->data.colorData.color.a <= 0.0f)
 	{
-		iOperationData.initFlag = false;
+		iOperationData.enableToHitFlag = false;
 	}
 
 	rocketLight.Update();
@@ -192,15 +191,18 @@ void SplineMisileForBattleShip::Update()
 
 void SplineMisileForBattleShip::Draw()
 {
-	if (demoFlag)
+	if (iOperationData.enableToHitFlag)
 	{
-		for (int i = 0; i < pointsRender.size(); ++i)
+		if (demoFlag)
 		{
-			pointsRender[i].Draw();
+			for (int i = 0; i < pointsRender.size(); ++i)
+			{
+				pointsRender[i].Draw();
+			}
 		}
+		rocketLight.Draw();
+		iEnemy_ModelRender->Draw();
+		smokeEmitter.Draw();
+		LockOnWindow(iEnemy_ModelRender->data.transform.pos);
 	}
-	rocketLight.Draw();
-	iEnemy_ModelRender->Draw();
-	smokeEmitter.Draw();
-	LockOnWindow(iEnemy_ModelRender->data.transform.pos);
 }

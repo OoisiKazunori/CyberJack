@@ -16,6 +16,7 @@
 #include"../Game/Stage/ThridStage.h"
 #include"../Game/Stage/GpuParticleStage.h"
 #include"../Game/Stage/RezStage.h"
+#include"../Game/Stage/BlockParticleStage.h"
 
 #include"../Game/Event/MoiveEffect.h"
 #include"../Game/UI/AnnounceStageUI.h"
@@ -154,12 +155,14 @@ private:
 	//敵----------------------------------------------------------------
 	array<unique_ptr<IEnemy>, 2>enemy;					//敵(サンプル)
 	array<array<unique_ptr<IEnemy>, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> enemies;	//1ステージに生成する敵の総数
+	array<array<BoxPolygonRender, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> enemyHitBox;
 	array<int, 10> enemiesHandle;						//0から順番に初期化する際に必要
 	array<int, 10> addEnemiesHandle;					//0から順番に追加で初期化する際に必要
 	array<array<ResponeData, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> responeData;		//敵を生成する際に必要な設定
 	array<ResponeData, 50>addResponeData;				//敵を追加で生成する際に必要な設定をスタックしたもの
 	bool isEnemyNotMoveFlag;
 	int notMoveTimer;
+	const int CHANGE_GMAE_FLAME_SPEED_MAX_TIME = 2;	//敵が居なくなってからゲーム内時間の進むスピードが速まるまでの間隔
 	//敵----------------------------------------------------------------
 
 	//線演出----------------------------------------------------------------
@@ -253,4 +256,6 @@ private:
 	std::array<RocketEffect, 30>rocketEffect;
 	int rocketIndex;
 	//エフェクト--------------------------------------
+
+	BoxPolygonRender box;
 };

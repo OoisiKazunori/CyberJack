@@ -44,6 +44,16 @@ void BattleshipEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLA
 	misileShotIndex = 0;
 
 	isShotFlag = GENERATE_DATA.battleShipData.isShotFlag;
+	if (isShotFlag)
+	{
+		disappearTime = 15;
+	}
+	else
+	{
+		disappearTime = 10;
+	}
+
+	adjHitBoxPos = { 0.0f,95.0f,-15.0f };
 }
 
 void BattleshipEnemy::Finalize()
@@ -52,8 +62,12 @@ void BattleshipEnemy::Finalize()
 
 void BattleshipEnemy::Update()
 {
+	hitBoxPos = {};
+	hitBoxPos = model->data.transform.pos + adjHitBoxPos;
+	iEnemy_EnemyStatusData->hitBox.center = &hitBoxPos;
+
 	//一定時間止まったらそのまま画面外に向かう
-	if (KazMath::ConvertSecondToFlame(10) <= appearTimer)
+	if (KazMath::ConvertSecondToFlame(disappearTime) <= appearTimer&&false)
 	{
 		model->data.transform.pos.z += vel;
 		vel += 0.1f;
@@ -70,11 +84,12 @@ void BattleshipEnemy::Update()
 			else
 			{
 				model->data.colorData.color.a = 0;
+				iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag = false;
 			}
 		}
 	}
 	//ミサイル発射,目的地にたどり着く
-	else if(isShotFlag)
+	else if (isShotFlag && iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
 	{
 
 		int lBaseTimer = KazMath::ConvertSecondToFlame(8);
@@ -115,7 +130,7 @@ void BattleshipEnemy::Update()
 			}
 
 			//ミサイル発射
-			if (appearTimer == lBaseTimer + i * 30)
+			if (appearTimer == lBaseTimer + i * 10)
 			{
 				iEnemy_EnemyStatusData->genarateData.enemyGenerateData.initPos = misileR[misileShotIndex].data.transform.pos;
 				iEnemy_EnemyStatusData->genarateData.enemyType = ENEMY_TYPE_BATTLESHIP_MISILE;
@@ -133,11 +148,9 @@ void BattleshipEnemy::Update()
 		}
 
 	}
-	else
-	{
-	}
 
-	if (appearTimer < KazMath::ConvertSecondToFlame(10))
+
+	if (appearTimer < KazMath::ConvertSecondToFlame(disappearTime))
 	{
 		KazMath::Larp(basePos.z, &model->data.transform.pos.z, 0.01f);
 
@@ -153,6 +166,22 @@ void BattleshipEnemy::Update()
 	}
 
 
+	if (EnableToHit(iEnemy_ModelRender->data.transform.pos.z) && !iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
+	{
+		//iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME_MULTITEX;
+		//iEnemy_ModelRender->data.removeMaterialFlag = true;
+		iEnemy_ModelRender->data.colorData.color.x = 255;
+		iEnemy_ModelRender->data.colorData.color.y = 255;
+		iEnemy_ModelRender->data.colorData.color.z = 255;
+		DeadEffect(&iEnemy_ModelRender->data.transform.pos, &iEnemy_ModelRender->data.transform.rotation, &iEnemy_ModelRender->data.colorData.color.a);
+
+		if (!initDeadSoundFlag)
+		{
+			DeadSound();
+			initDeadSoundFlag = true;
+		}
+	}
+
 	ImGui::Begin("Misile");
 	for (int i = 0; i < misileR.size(); ++i)
 	{
@@ -166,7 +195,6 @@ void BattleshipEnemy::Update()
 		ImGui::DragFloat(tag.c_str(), &misileR[i].data.transform.pos.z);
 	}
 	ImGui::End();
-
 
 	++appearTimer;
 }
