@@ -22,5 +22,7 @@ private:
 	static const float DISAPPEAR_Z_POS;
 
 	BoxPolygonRender misileR, misileR2;
+
+	FbxModelRenderPtr model;
 };
 

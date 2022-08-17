@@ -21,8 +21,8 @@ private:
 	BufferMemorySize computeMemSize;
 	//バッファ
 
-	static const int PARTICLE_MAX_NUM = 2;
-	static const int PER_USE_PARTICLE_MAX_NUM = 120;
+	static const int PARTICLE_MAX_NUM = 10000;
+	static const int PER_USE_PARTICLE_MAX_NUM = 125;
 	static const int DRAW_CALL = 1;
 
 	struct IndirectCommand

@@ -33,11 +33,11 @@ cbuffer RootConstants : register(b0)
 };
 
 //出力
-AppendStructuredBuffer<OutputData> matrixData : register(u0);
+RWStructuredBuffer<OutputData> matrixData : register(u0);
 //更新
 RWStructuredBuffer<UpdateData> updateData : register(u1);
 
-static const int THREAD_MAX = 1;
+static const int THREAD_MAX = 5;
 static const float BLOCK_SIZE = 1.0f;
 
 [numthreads(THREAD_MAX, THREAD_MAX, THREAD_MAX)]
@@ -45,6 +45,8 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
 {
     uint index = (groupThreadID.y * THREAD_MAX) + groupThreadID.x + ((THREAD_MAX * THREAD_MAX) * groupThreadID.z);
     index += (THREAD_MAX * THREAD_MAX * THREAD_MAX) * groupId.x;
+
+    
 
     float4 vertWorldPos[8];
 
@@ -104,47 +106,47 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     indexData[11][1] = 2;
 
 
-    float4 outputPos[12][10];
-    for(int indexArrayNum = 0;indexArrayNum < 12; ++indexArrayNum)
-    {
-        uint startIndex = indexData[indexArrayNum][0];
-        uint endIndex = indexData[indexArrayNum][1];
-        float4 distance = vertWorldPos[endIndex] - vertWorldPos[startIndex];
 
-        float4 perParticlePos = distance / 10.0f;
-        for(int i = 0; i < 10; ++i)
-        {
-            //パーティクル単位の座標の書き込み
-            outputPos[indexArrayNum][i] = vertWorldPos[startIndex] + perParticlePos * i;
-            
-            //行列計算-------------------------
-            matrix pMatTrans = Translate(outputPos[indexArrayNum][i].xyz);
-            matrix pMatRot = Rotate(float3(0.0f,0.0f,0.0f));
-            float scale = 0.1f;
-            matrix pMatScale = Scale(float3(scale, scale, scale));
+    //現在のブロックのインデックス
+    uint blockIndex = 0;
+    //現在のパーティクルのインデックス
+    uint particleIndex = 0;
+    //現在見ている辺
+    uint sideIndex = 0;
+    //辺内の割合
+    float sideRate = 0.0f;
     
-            matrix pMatWorld = MatrixIdentity();
-            pMatWorld = mul(pMatScale, pMatWorld);
-            pMatWorld = mul(pMatRot, pMatWorld);
-            pMatWorld = mul(billBoard, pMatWorld);
-            pMatWorld = mul(pMatTrans, pMatWorld);
-            //行列計算-------------------------
+    uint startIndex = indexData[sideIndex][0];
+    uint endIndex = indexData[sideIndex][1];
+    float4 distance = vertWorldPos[endIndex] - vertWorldPos[startIndex];
+    float4 perParticlePos = distance / 10.0f;
+    float4 particlePos = vertWorldPos[startIndex] + perParticlePos * sideRate;
+
+
+    //行列計算-------------------------
+    matrix pMatTrans = Translate(particlePos.xyz);
+    matrix pMatRot = Rotate(float3(0.0f,0.0f,0.0f));
+    float scale = 0.1f;
+    matrix pMatScale = Scale(float3(scale, scale, scale));
+    
+    matrix pMatWorld = MatrixIdentity();
+    pMatWorld = mul(pMatScale, pMatWorld);
+    pMatWorld = mul(pMatRot, pMatWorld);
+    pMatWorld = mul(billBoard, pMatWorld);
+    pMatWorld = mul(pMatTrans, pMatWorld);
+    //行列計算-------------------------
     
         
-            //出力用-------------------------
-            OutputData outputMat;
-            matrix lView = view;
-            matrix lproj = projection;
-
-            outputMat.mat = MatrixIdentity();
-            outputMat.mat = mul(pMatWorld,outputMat.mat);
-            outputMat.mat = mul(lView,    outputMat.mat);
-            outputMat.mat = mul(lproj,    outputMat.mat);
-            outputMat.color = float4(1.0f,0.0f,0.0f,1.0f); 
-            //出力用-------------------------
-        }
-    }
+    //出力用-------------------------
     OutputData outputMat;
-    outputMat.color = float4(index + 1,0,0,1);
-    matrixData.Append(outputMat); 
+    matrix lView = view;
+    matrix lproj = projection;
+
+    outputMat.mat = MatrixIdentity();
+    outputMat.mat = mul(pMatWorld,outputMat.mat);
+    outputMat.mat = mul(lView,    outputMat.mat);
+    outputMat.mat = mul(lproj,    outputMat.mat);
+    outputMat.color = float4(1.0f,0.0f,0.0f,1.0f); 
+    matrixData[blockIndex * particleIndex] = outputMat;
+    //出力用-------------------------
 }

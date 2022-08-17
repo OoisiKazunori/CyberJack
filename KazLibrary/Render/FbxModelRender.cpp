@@ -22,27 +22,29 @@ void FbxModelRender::Draw()
 
 	if (data.handle.handle != -1)
 	{
-		if (data.isPlayFlag)
+		if (resourceData->startTime.size() != 0)
 		{
-			currentTime += frameTime;
-			if (currentTime > resourceData->endTime[data.animationNumber])
+			if (data.isPlayFlag)
 			{
-				currentTime = resourceData->endTime[data.animationNumber];
+				currentTime += frameTime;
+				if (currentTime > resourceData->endTime[data.animationNumber])
+				{
+					currentTime = resourceData->endTime[data.animationNumber];
+				}
 			}
-		}
-		else if (data.isReverseFlag)
-		{
-			currentTime -= frameTime;
-			if (currentTime <= resourceData->startTime[data.animationNumber])
+			else if (data.isReverseFlag)
+			{
+				currentTime -= frameTime;
+				if (currentTime <= resourceData->startTime[data.animationNumber])
+				{
+					currentTime = resourceData->startTime[data.animationNumber];
+				}
+			}
+			else
 			{
 				currentTime = resourceData->startTime[data.animationNumber];
 			}
 		}
-		else
-		{
-			currentTime = resourceData->startTime[data.animationNumber];
-		}
-
 
 		//パイプライン設定-----------------------------------------------------------------------------------------------------
 		renderData.pipelineMgr->SetPipeLineAndRootSignature(data.pipelineName);

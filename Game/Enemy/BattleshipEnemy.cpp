@@ -11,7 +11,7 @@ BattleshipEnemy::BattleshipEnemy()
 	}
 
 	model = std::make_unique<FbxModelRender>();
-	model->data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_HachOpen_anim.fbx");	//ƒ‚ƒfƒ‹“Ç‚İ‚İ
+	model->data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "BattleShip/" + "BlenderBattleShip.fbx");	//ƒ‚ƒfƒ‹“Ç‚İ‚İ
 }
 
 void BattleshipEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
