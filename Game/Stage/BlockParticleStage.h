@@ -21,7 +21,7 @@ private:
 	BufferMemorySize computeMemSize;
 	//バッファ
 
-	static const int PARTICLE_MAX_NUM = 1500;
+	static const int PARTICLE_MAX_NUM = 2500;
 	static const int PER_USE_PARTICLE_MAX_NUM = 120;
 	static const int DRAW_CALL = 1;
 
