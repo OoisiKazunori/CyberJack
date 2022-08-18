@@ -7,6 +7,7 @@
 #include"../KazLibrary/RenderTarget/RenderTargetStatus.h"
 #include"../KazLibrary/Buffer/DescriptorHeapMgr.h"
 #include"../KazLibrary/Helper/ResourceFilePass.h"
+#include"../KazLibrary/Imgui/MyImgui.h"
 
 BlockParticleStage::BlockParticleStage()
 {
@@ -109,75 +110,28 @@ BlockParticleStage::BlockParticleStage()
 	//正面左下
 	constBufferData.vertices[FRONT_LEFT_DOWN] = { lVertices[0].pos.x, lVertices[0].pos.y, lVertices[0].pos.z,0.0f };
 	//正面右上
-	constBufferData.vertices[FRONT_RIGHT_UP] = { lVertices[2].pos.x, lVertices[2].pos.y, lVertices[2].pos.z,0.0f };
+	constBufferData.vertices[FRONT_RIGHT_UP] = { lVertices[3].pos.x, lVertices[3].pos.y, lVertices[3].pos.z,0.0f };
 	//正面右下
-	constBufferData.vertices[FRONT_RIGHT_DOWN] = { lVertices[3].pos.x, lVertices[3].pos.y, lVertices[3].pos.z,0.0f };
+	constBufferData.vertices[FRONT_RIGHT_DOWN] = { lVertices[2].pos.x, lVertices[2].pos.y, lVertices[2].pos.z,0.0f };
 
 	//後面左上
-	constBufferData.vertices[BACK_LEFT_UP] = { lVertices[1].pos.x, lVertices[1].pos.y, lVertices[1].pos.z,0.0f };
+	constBufferData.vertices[BACK_LEFT_UP] = { lVertices[5].pos.x, lVertices[5].pos.y, lVertices[5].pos.z,0.0f };
 	//後面左下
-	constBufferData.vertices[BACK_LEFT_DOWN] = { lVertices[0].pos.x, lVertices[0].pos.y, lVertices[0].pos.z,0.0f };
+	constBufferData.vertices[BACK_LEFT_DOWN] = { lVertices[4].pos.x, lVertices[4].pos.y, lVertices[4].pos.z,0.0f };
 	//後面右上
-	constBufferData.vertices[BACK_RIGHT_UP] = { lVertices[2].pos.x, lVertices[2].pos.y, lVertices[2].pos.z,0.0f };
+	constBufferData.vertices[BACK_RIGHT_UP] = { lVertices[7].pos.x, lVertices[7].pos.y, lVertices[7].pos.z,0.0f };
 	//後面右下
-	constBufferData.vertices[BACK_RIGHT_DOWN] = { lVertices[3].pos.x, lVertices[3].pos.y, lVertices[3].pos.z,0.0f };
+	constBufferData.vertices[BACK_RIGHT_DOWN] = { lVertices[6].pos.x, lVertices[6].pos.y, lVertices[6].pos.z, 0.0f };
 
 
+	std::array<Vertex, 4>vertices;
+	std::array<USHORT, 6> indices;
+	indices = KazRenderHelper::InitIndciesForPlanePolygon();
+	KazRenderHelper::InitVerticesPos(&vertices[0].pos, &vertices[1].pos, &vertices[2].pos, &vertices[3].pos, { 0.5f,0.5f });
+	KazRenderHelper::InitUvPos(&vertices[0].uv, &vertices[1].uv, &vertices[2].uv, &vertices[3].uv);
 
-	int indexDataNum = 0;
-	//正面左上から伸びる辺
-	constBufferData.index0[0] = FRONT_LEFT_UP;
-	constBufferData.index0[1] = FRONT_LEFT_DOWN;
-	++indexDataNum;		 
-	constBufferData.index1[0] = FRONT_LEFT_UP;
-	constBufferData.index1[1] = FRONT_RIGHT_UP;
-	++indexDataNum;		 
-	constBufferData.index2[0] = FRONT_LEFT_UP;
-	constBufferData.index2[1] = BACK_LEFT_UP;
-
-	//正面右下から伸びる辺  
-	++indexDataNum;
-	constBufferData.index3[0] = FRONT_RIGHT_DOWN;
-	constBufferData.index3[1] = FRONT_RIGHT_UP;
-	++indexDataNum;		 
-	constBufferData.index4[0] = FRONT_RIGHT_DOWN;
-	constBufferData.index4[1] = FRONT_LEFT_DOWN;
-	++indexDataNum;		 
-	constBufferData.index5[0] = FRONT_RIGHT_DOWN;
-	constBufferData.index5[1] = BACK_RIGHT_DOWN;
-
-	//後面左上から伸びる辺
-	++indexDataNum;
-	constBufferData.index6[0] = BACK_LEFT_UP;
-	constBufferData.index6[1] = BACK_LEFT_DOWN;
-	++indexDataNum;		 
-	constBufferData.index7[0] = BACK_LEFT_UP;
-	constBufferData.index7[1] = BACK_RIGHT_UP;
-
-	//後面右下から伸びる辺
-	++indexDataNum;
-	constBufferData.index8[0] = BACK_RIGHT_DOWN;
-	constBufferData.index8[1] = BACK_LEFT_DOWN;
-	++indexDataNum;
-	constBufferData.index9[0] = BACK_RIGHT_DOWN;
-	constBufferData.index9[1] = BACK_RIGHT_UP;
-
-	//正面左下から伸びる辺
-	++indexDataNum;
-	constBufferData.index10[0] = FRONT_LEFT_UP;
-	constBufferData.index10[1] = BACK_LEFT_DOWN;
-
-	//後面右上から伸びる辺
-	++indexDataNum;
-	constBufferData.index11[0] = BACK_RIGHT_UP;
-	constBufferData.index11[1] = FRONT_RIGHT_UP;
-
-
-	size_t vertArraySize = sizeof(lVertices) / sizeof(lVertices[0]);
-	size_t indexArraySize = sizeof(lIndices) / sizeof(lIndices[0]);
-
-	BUFFER_SIZE vertBuffSize = KazBufferHelper::GetBufferSize<BUFFER_SIZE>(vertArraySize, sizeof(Vertex));
-	BUFFER_SIZE indexBuffSize = KazBufferHelper::GetBufferSize<BUFFER_SIZE>(indexArraySize, sizeof(unsigned int));
+	BUFFER_SIZE vertBuffSize = KazBufferHelper::GetBufferSize<BUFFER_SIZE>(vertices.size(), sizeof(Vertex));
+	BUFFER_SIZE indexBuffSize = KazBufferHelper::GetBufferSize<BUFFER_SIZE>(indices.size(), sizeof(unsigned int));
 
 	//バッファ生成-------------------------
 	vertexBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetVertexBufferData(vertBuffSize));
@@ -191,9 +145,9 @@ BlockParticleStage::BlockParticleStage()
 	//バッファ生成-------------------------
 
 	//転送-------------------------
-	buffers->TransData(vertexBufferHandle, lVertices, vertBuffSize);
-	buffers->TransData(indexBufferHandle, lIndices, indexBuffSize);
-	UINT reset = 0;
+	buffers->TransData(vertexBufferHandle, vertices.data(), vertBuffSize);
+	buffers->TransData(indexBufferHandle, indices.data(), indexBuffSize);
+	//UINT reset = 0;
 	//buffers->TransData(counterBufferHandle, &reset, sizeof(UINT));
 
 
@@ -201,14 +155,14 @@ BlockParticleStage::BlockParticleStage()
 		std::array<ParticleData, PARTICLE_MAX_NUM>lData;
 		for (int i = 0; i < lData.size(); ++i)
 		{
-			lData[i].pos = { 0.0f,0.0f,0.0f,0.0f };
+			lData[i].pos = { static_cast<float>(i) * 2.0f,0.0f,0.0f,0.0f };
 		}
-		buffers->TransData(particleDataHandle, &reset, sizeof(ParticleData) * PARTICLE_MAX_NUM);
+		buffers->TransData(particleDataHandle, lData.data(), sizeof(ParticleData) * PARTICLE_MAX_NUM);
 	}
 
 
 	IndirectCommand command;
-	command.drawArguments.IndexCountPerInstance = static_cast<UINT>(indexArraySize);
+	command.drawArguments.IndexCountPerInstance = static_cast<UINT>(indices.size());
 	command.drawArguments.InstanceCount = PER_USE_PARTICLE_MAX_NUM * PARTICLE_MAX_NUM;
 	command.drawArguments.StartIndexLocation = 0;
 	command.drawArguments.StartInstanceLocation = 0;
@@ -235,7 +189,7 @@ BlockParticleStage::BlockParticleStage()
 	);
 
 
-	vertexBufferView = KazBufferHelper::SetVertexBufferView(buffers->GetGpuAddress(vertexBufferHandle), vertBuffSize, sizeof(lVertices[0]));
+	vertexBufferView = KazBufferHelper::SetVertexBufferView(buffers->GetGpuAddress(vertexBufferHandle), vertBuffSize, sizeof(vertices[0]));
 	indexBufferView = KazBufferHelper::SetIndexBufferView(buffers->GetGpuAddress(indexBufferHandle), indexBuffSize);
 
 }
@@ -259,7 +213,7 @@ void BlockParticleStage::Update()
 	{
 		constBufferData.cameraMat = CameraMgr::Instance()->GetViewMatrix();
 		constBufferData.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
-		constBufferData.bollboardMat = DirectX::XMMatrixIdentity();
+		constBufferData.bollboardMat = CameraMgr::Instance()->GetMatBillBoard();
 		buffers->TransData(commonBufferHandle, &constBufferData, sizeof(CommonData));
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(commonBufferHandle));
 	}
