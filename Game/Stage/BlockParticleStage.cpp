@@ -153,10 +153,33 @@ BlockParticleStage::BlockParticleStage()
 
 	{
 		std::array<ParticleData, PARTICLE_MAX_NUM>lData;
-		for (int i = 0; i < lData.size(); ++i)
+		int arrayIndex = 0;
+		const int xMax = 100;
+
+		for (int y = 0; y < 10; ++y)
 		{
-			lData[i].pos = { static_cast<float>(i) * 2.0f,0.0f,0.0f,0.0f };
+			for (int z = 0; z < xMax; ++z)
+			{
+				float side = 2.0f;
+				int adjNum = 0;
+				if (xMax / 2 <= z)
+				{
+					side *= -1.0f;
+					adjNum = xMax / 2;
+				}
+
+
+				lData[arrayIndex].pos =
+				{
+					2.0f * side,
+					static_cast<float>(y) * 2.0f,
+					0.0f + z - adjNum,
+					0.0f
+				};
+				++arrayIndex;
+			}
 		}
+
 		buffers->TransData(particleDataHandle, lData.data(), sizeof(ParticleData) * PARTICLE_MAX_NUM);
 	}
 
