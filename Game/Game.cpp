@@ -109,9 +109,9 @@ Game::Game()
 
 	CameraMgr::Instance()->CameraSetting(60.0f, 10000.0f);
 
-	stages[0] = std::make_unique<BlockParticleStage>();
 	//stages[0] = std::make_unique<FirstStage>();
-	stages[1] = std::make_unique<RezStage>();
+	stages[0] = std::make_unique<RezStage>();
+	stages[1] = std::make_unique<BlockParticleStage>();
 	stages[2] = std::make_unique<ThridStage>();
 
 
