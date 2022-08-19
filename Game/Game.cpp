@@ -109,9 +109,9 @@ Game::Game()
 
 	CameraMgr::Instance()->CameraSetting(60.0f, 10000.0f);
 
-	stages[0] = std::make_unique<BlockParticleStage>();
-	//stages[0] = std::make_unique<FirstStage>();
-	stages[1] = std::make_unique<RezStage>();
+	stages[0] = std::make_unique<RezStage>();
+	stages[1] = std::make_unique<BlockParticleStage>();
+	//stages[0] = std::make_unique<FirstStage>()
 	stages[2] = std::make_unique<ThridStage>();
 
 
@@ -1130,7 +1130,6 @@ void Game::Update()
 				{
 					isEnemyNotMoveFlag = false;
 				}
-
 			}
 		}
 		//更新処理----------------------------------------------------------------
@@ -1258,7 +1257,7 @@ void Game::Draw()
 		CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 1);
 		player.Draw();
 		stages[lStageNum]->SetCamera(1);
-		stages[lStageNum]->Draw();
+		//stages[lStageNum]->Draw();
 		RenderTargetStatus::Instance()->PrepareToCloseBarrier(potalTexHandle);
 		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 	}

@@ -37,8 +37,6 @@ void BikeEnemy::Finalize()
 
 void BikeEnemy::Update()
 {
-	model->data.isPlayFlag = true;
-
 	++appearTimer;
 	float lPos = 0.0f;
 	float lMul = 0.019f;
@@ -95,7 +93,7 @@ void BikeEnemy::Update()
 	*/
 	else
 	{
-		lPos = DISAPPEAR_Z_POS;
+		lPos = basePos.z;
 		KazMath::Larp(DISAPPEAR_Z_POS, &line.data.startPos.z, 0.02f);
 	}
 
@@ -110,6 +108,7 @@ void BikeEnemy::Update()
 	ImGui::DragFloat("POS_X2", &misileR2.data.transform.pos.x);
 	ImGui::DragFloat("POS_Y2", &misileR2.data.transform.pos.y);
 	ImGui::DragFloat("POS_Z2", &misileR2.data.transform.pos.z);
+	ImGui::Checkbox("Anim", &model->data.isPlayFlag);
 	ImGui::End();
 	misileR.data.color.color = { 255,0,0,255 };
 	misileR2.data.color.color = { 255,0,0,255 };
