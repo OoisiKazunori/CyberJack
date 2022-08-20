@@ -49,7 +49,7 @@ struct EnemyGenerateData
 	BattleShipMisileData battleShipEnemyData;
 	BattleShipData battleShipData;
 
-	EnemyGenerateData() :speed(-0.5f)
+	EnemyGenerateData() :speed(-1.5f)
 	{
 	};
 };
@@ -97,7 +97,9 @@ struct EnemyData
 		hitBox({ HITBOX_POS_ADRESS ,RADIUS }),
 		oprationObjData(OPERATION_DATA),
 		timer(1),
-		outOfStageFlag(false)
+		outOfStageFlag(false),
+		radius(0.0f),
+		startFlag(false)
 	{
 	};
 
@@ -106,4 +108,6 @@ struct EnemyData
 	GenarateOtherObjData genarateData;		//追加で敵を生成する際に必要な情報
 	int timer;								//プレイヤーに当たるまでの時間
 	bool outOfStageFlag;					//ステージの範囲外に出てしまった
+	float radius;
+	bool startFlag;
 };

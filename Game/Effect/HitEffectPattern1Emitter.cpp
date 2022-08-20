@@ -15,10 +15,10 @@ HitEffectPattern1Emitter::HitEffectPattern1Emitter()
 	baseScale[2] = { 0.1f,0.1f };
 	baseScale[3] = { 0.1f,0.1f };
 
-	easeScale[0] = { 2.0f,5.3f };
-	easeScale[1] = { 1.5f,2.0f };
-	easeScale[2] = { 1.5f,1.5f };
-	easeScale[3] = { 1.0f,1.0f };
+	easeScale[0] = { 1.5f,2.0f };
+	easeScale[1] = { 1.0f,1.5f };
+	easeScale[2] = { 1.0f,1.0f };
+	easeScale[3] = { 0.5f,0.5f };
 
 	timer[0] = { 60,30 };
 	timer[1] = { 60,60 };

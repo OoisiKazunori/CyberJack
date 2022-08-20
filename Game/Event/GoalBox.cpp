@@ -122,9 +122,7 @@ void GoalBox::Update()
 		lightEffect.Disappear();
 		lerpPos = goCenterPos;
 
-		if (static_cast<int>(model->data.transform.pos.x) == static_cast<int>(goCenterPos.x) &&
-			static_cast<int>(model->data.transform.pos.y) == static_cast<int>(goCenterPos.y) &&
-			static_cast<int>(model->data.transform.pos.z) == static_cast<int>(goCenterPos.z))
+		if (120 <= intervalTimer)
 		{
 			addRota += addVel;
 			addVel += 0.1f;

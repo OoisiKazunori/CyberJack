@@ -67,7 +67,7 @@ public:
 	IOperationObjectData iOperationData;//操作可能OBJ全員が持つ基本データ
 
 protected:
-	const float limitLinePosZ = -10.0f;//当たり判定を有効にするライン
+	const float limitLinePosZ = -50.0f;//当たり判定を有効にするライン
 	int timer;							//連続ヒットしてHpを減らす際に間隔をあける為に使用
 	int reduceHpNum;
 	bool startToReduceHpFlag;
@@ -76,9 +76,16 @@ protected:
 	/// 指定のZ座標より小さい場所より行こうとしたらfalseを返す
 	/// </summary>
 	/// <param name="POS_Z">対象のZ座標</param>
-	bool EnableToHit(float POS_Z)
+	bool EnableToHit(float POS_Z, float LIMIT_POS = 0.0f)
 	{
-		return limitLinePosZ <= POS_Z;
+		if (LIMIT_POS == 0.0f)
+		{
+			return limitLinePosZ <= POS_Z;
+		}
+		else
+		{
+			return LIMIT_POS <= POS_Z;
+		}
 	};
 
 	void LockOnWindow(const KazMath::Vec3<float> &POS);

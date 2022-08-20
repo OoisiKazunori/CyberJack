@@ -15,7 +15,7 @@ RocketLightEffect::RocketLightEffect()
 	lightEffectRender.TransData(&lColor, lHandle, typeid(DirectX::XMFLOAT4).name());
 }
 
-void RocketLightEffect::Init(KazMath::Vec3<float> *BASE_POS_PTR, const KazMath::Vec3<float> &TEX_POS, bool APPEAR_FLAG)
+void RocketLightEffect::Init(KazMath::Vec3<float> *BASE_POS_PTR, const KazMath::Vec3<float> &TEX_POS, bool APPEAR_FLAG, bool *IS_DEAD_FLAG, float *RADIUS, bool *START_FLAG)
 {
 	pos = BASE_POS_PTR;
 	bloomTexPos = TEX_POS;
@@ -28,13 +28,14 @@ void RocketLightEffect::Init(KazMath::Vec3<float> *BASE_POS_PTR, const KazMath::
 	{
 		lightEffectRender.data.colorData.color.a = 255;
 	}
-	radius = 8.0f;
-	initFlag = true;
+	radius = RADIUS;
+	initFlag = START_FLAG;
+	deadFlag = IS_DEAD_FLAG;
 }
 
 void RocketLightEffect::Update()
 {
-	if (initFlag)
+	if (initFlag != nullptr && *initFlag)
 	{
 		if (lightEffectRender.data.colorData.color.a < 255)
 		{
@@ -48,22 +49,28 @@ void RocketLightEffect::Update()
 		if (3 <= flashTimer)
 		{
 			flashTimer = 0;
-			lightEffectRender.data.radius = radius;
+			lightEffectRender.data.radius = *radius;
 		}
 		else
 		{
-			lightEffectRender.data.radius = radius + 2.0f;
+			lightEffectRender.data.radius = *radius + 2.0f;
 			++flashTimer;
 		}
 
 		lightEffectRender.data.transform.pos = {};
 		lightEffectRender.data.transform.pos = *pos + bloomTexPos;
+
+
+		if (!*deadFlag)
+		{
+			*initFlag = false;
+		}
 	}
 }
 
 void RocketLightEffect::Draw()
 {
-	if (initFlag)
+	if (initFlag != nullptr && *initFlag)
 	{
 		lightEffectRender.Draw();
 	}
@@ -71,15 +78,17 @@ void RocketLightEffect::Draw()
 
 bool RocketLightEffect::IsStart()
 {
-	return initFlag;
+	if (initFlag != nullptr)
+	{
+		return *initFlag;
+	}
+	return false;
 }
 
 void RocketLightEffect::Fisnish()
 {
-	initFlag = false;
-}
-
-void RocketLightEffect::ChangeLightRadius(float RADIUS)
-{
-	radius = RADIUS;
+	if (initFlag != nullptr)
+	{
+		*initFlag = false;
+	}
 }

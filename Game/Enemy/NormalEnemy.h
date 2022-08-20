@@ -17,7 +17,6 @@ public:
 	void Draw();
 
 private:
-	RocketEffect rocketEffect;
 	float speed;
 };
 

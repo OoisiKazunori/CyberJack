@@ -16,7 +16,7 @@ RocketEffect::RocketEffect()
 
 void RocketEffect::Init(KazMath::Vec3<float> *BASE_POS_PTR, const KazMath::Vec3<float> &LIGHT_POS, const KazMath::Vec3<float> &FIRE_POS)
 {
-	rocketLight.Init(BASE_POS_PTR, LIGHT_POS, true);
+	rocketLight.Init(BASE_POS_PTR, LIGHT_POS, true, nullptr, nullptr, nullptr);
 	fireTexPos = FIRE_POS;
 	pos = BASE_POS_PTR;
 	flashTimer = 0;

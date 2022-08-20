@@ -109,9 +109,9 @@ Game::Game()
 
 	CameraMgr::Instance()->CameraSetting(60.0f, 10000.0f);
 
-	//stages[0] = std::make_unique<FirstStage>();
-	stages[0] = std::make_unique<RezStage>();
-	stages[1] = std::make_unique<BlockParticleStage>();
+	stages[0] = std::make_unique<FirstStage>();
+	stages[1] = std::make_unique<RezStage>();
+	//stages[1] = std::make_unique<BlockParticleStage>();
 	stages[2] = std::make_unique<ThridStage>();
 
 
@@ -131,7 +131,7 @@ Game::Game()
 	gameOverTex.data.transform.scale = { 1.2f,1.2f };
 
 
-	potalTexHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
+	potalTexHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, BG_COLOR, DXGI_FORMAT_R8G8B8A8_UNORM);
 
 
 	bgmSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Bgm.wav");
@@ -179,7 +179,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 
 
 	//ゲームループの初期化----------------------------------------------------------------
-	gameStartFlag = false;
+	gameStartFlag = true;
 	gameFlame = 0;
 	//ゴールに触れ無かった場合に次のステージに移動する際の最大フレーム数
 	for (int i = 0; i < changeLayerLevelMaxTime.size(); ++i)
@@ -222,7 +222,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 
 	forceCameraDirVel.x = -90.0f;
 
-	appearGoalBoxPos = { -10.0f,5.0f,40.0f };
+	appearGoalBoxPos = { -10.0f,-15.0f,40.0f };
 	responeGoalBoxPos = { -10.0f,-100.0f,40.0f };
 	goalBox.Init(responeGoalBoxPos);
 	initAppearFlag = false;
@@ -253,13 +253,14 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	portal.Init(KazMath::Vec3<float>(0.0f, 3.0f, 50.0f));
 
 
-	cameraMoveArray[0][0].flame = KazMath::ConvertSecondToFlame(15);
-	cameraMoveArray[0][0].dir = CAMERA_LEFT;
+	cameraMoveArray[1][0].flame = KazMath::ConvertSecondToFlame(15);
+	cameraMoveArray[1][0].dir = CAMERA_LEFT;
 
-	cameraMoveArray[0][1].flame = KazMath::ConvertSecondToFlame(32);
-	cameraMoveArray[0][1].dir = CAMERA_FRONT;
+	cameraMoveArray[1][1].flame = KazMath::ConvertSecondToFlame(32);
+	cameraMoveArray[1][1].dir = CAMERA_FRONT;
 
 	rocketIndex = 0;
+	fireIndex = 0;
 }
 
 void Game::Finalize()
@@ -473,11 +474,11 @@ void Game::Update()
 	}
 
 
-	for (int i = 0; i < cameraMoveArray[gameLeyerLevel].size(); ++i)
+	for (int i = 0; i < cameraMoveArray[stageNum].size(); ++i)
 	{
-		if (cameraMoveArray[gameLeyerLevel][i].flame <= gameFlame && cameraMoveArray[gameLeyerLevel][i].flame != -1)
+		if (cameraMoveArray[stageNum][i].flame <= gameFlame && cameraMoveArray[stageNum][i].flame != -1)
 		{
-			switch (cameraMoveArray[gameLeyerLevel][i].dir)
+			switch (cameraMoveArray[stageNum][i].dir)
 			{
 			case CAMERA_FRONT:
 				forceCameraDirVel.x = FORCE_CAMERA_FRONT;
@@ -611,7 +612,7 @@ void Game::Update()
 	portal.Update();
 
 	//全部隠れたら次ステージの描画をする
-	if (portal.AllHidden() && false)
+	if (portal.AllHidden())
 	{
 		//ゲームループの初期化----------------------------------------------
 		++gameStageLevel;
@@ -634,6 +635,9 @@ void Game::Update()
 		//upDownAngleVel = { 0.0f,0.0f };
 		//trackUpDownAngleVel = upDownAngleVel;
 		//movieEffect.startFlag = false;
+
+		rocketIndex = 0;
+		fireIndex = 0;
 
 		stageUI.Init();
 		stageUI.AnnounceStage(stageNum + 1);
@@ -677,11 +681,18 @@ void Game::Update()
 				switch (enemyType)
 				{
 				case ENEMY_TYPE_NORMAL:
-					rocketEffect[rocketIndex].Init(enemies[enemyType][enemyCount]->GetData()->hitBox.center, KazMath::Vec3<float>(0.0f, 0.0f, 20.0f), KazMath::Vec3<float>(0.0f, 0.0f, 45.0f));
+					lightEffect[rocketIndex].Init(enemies[enemyType][enemyCount]->GetData()->hitBox.center, KazMath::Vec3<float>(0.0f, 0.0f, 20.0f), true, &enemies[enemyType][enemyCount]->GetData()->oprationObjData->enableToHitFlag, &enemies[enemyType][enemyCount]->GetData()->radius, &enemies[enemyType][enemyCount]->GetData()->startFlag);
+					fireEffect[fireIndex].Init(enemies[enemyType][enemyCount]->GetData()->hitBox.center, KazMath::Vec3<float>(0.0f, 0.0f, 45.0f), true, &enemies[enemyType][enemyCount]->GetData()->oprationObjData->enableToHitFlag);
 					++rocketIndex;
+					++fireIndex;
 					break;
 				case ENEMY_TYPE_MISILE:
-					rocketEffect[rocketIndex].Init(enemies[enemyType][enemyCount]->GetData()->hitBox.center, KazMath::Vec3<float>(0.0f, 0.0f, 20.0f), KazMath::Vec3<float>(0.0f, 0.0f, 45.0f));
+					lightEffect[rocketIndex].Init(enemies[enemyType][enemyCount]->GetData()->hitBox.center, KazMath::Vec3<float>(0.0f, 0.0f, 0.0f), false, &enemies[enemyType][enemyCount]->GetData()->oprationObjData->enableToHitFlag, &enemies[enemyType][enemyCount]->GetData()->radius, &enemies[enemyType][enemyCount]->GetData()->startFlag);
+					++rocketIndex;
+					break;
+
+				case ENEMY_TYPE_BATTLESHIP_MISILE:
+					lightEffect[rocketIndex].Init(enemies[enemyType][enemyCount]->GetData()->hitBox.center, KazMath::Vec3<float>(0.0f, 0.0f, 0.0f), false, &enemies[enemyType][enemyCount]->GetData()->oprationObjData->enableToHitFlag, &enemies[enemyType][enemyCount]->GetData()->radius ,&enemies[enemyType][enemyCount]->GetData()->startFlag);
 					++rocketIndex;
 					break;
 				default:
@@ -1136,11 +1147,14 @@ void Game::Update()
 		//更新処理----------------------------------------------------------------
 
 
-		for (int i = 0; i < rocketEffect.size(); ++i)
+		for (int i = 0; i < fireEffect.size(); ++i)
 		{
-			rocketEffect[i].Update();
+			fireEffect[i].Update();
 		}
-
+		for (int i = 0; i < lightEffect.size(); ++i)
+		{
+			lightEffect[i].Update();
+		}
 #pragma endregion
 
 
@@ -1250,15 +1264,18 @@ void Game::Draw()
 		}
 		else
 		{
-			lStageNum = stageNum + 1;
+			if (stages.size() <= lStageNum)
+			{
+				lStageNum = stageNum + 1;
+			}
 		}
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(potalTexHandle);
 		RenderTargetStatus::Instance()->ClearRenderTarget(potalTexHandle);
 
 		CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 1);
 		player.Draw();
-		//stages[lStageNum]->SetCamera(1);
-		//stages[lStageNum]->Draw();
+		stages[lStageNum]->SetCamera(1);
+		stages[lStageNum]->Draw();
 		RenderTargetStatus::Instance()->PrepareToCloseBarrier(potalTexHandle);
 		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 	}
@@ -1273,11 +1290,27 @@ void Game::Draw()
 		{
 			bg.Draw();
 		}
-		//player.Draw();
+		player.Draw();
 		box.data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
-		box.Draw();
+		//box.Draw();
 
 
+
+		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
+			if (100 <= gameFlame)
+		{
+			goalBox.Draw();
+		}
+
+
+		stages[stageNum]->SetCamera(0);
+		stages[stageNum]->Draw();
+
+		portal.DrawPortal();
+		portal.DrawFlame();
+
+
+		PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "Enemy");
 		//敵の描画処理----------------------------------------------------------------
 		for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
 		{
@@ -1295,32 +1328,34 @@ void Game::Draw()
 					float lScale = enemies[enemyType][enemyCount]->GetData()->hitBox.radius;
 					enemyHitBox[enemyType][enemyCount].data.transform.scale = { lScale ,lScale ,lScale };
 					enemyHitBox[enemyType][enemyCount].data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
-					enemyHitBox[enemyType][enemyCount].Draw();
+					//enemyHitBox[enemyType][enemyCount].Draw();
 				}
 			}
 		}
+		PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
 
-		for (int i = 0; i < rocketEffect.size(); ++i)
+		for (int i = 0; i < fireEffect.size(); ++i)
 		{
-			rocketEffect[i].Draw();
+			fireEffect[i].Draw();
 		}
+
+		for (int i = 0; i < lightEffect.size(); ++i)
+		{
+			lightEffect[i].Draw();
+		}
+
+
+		stages[stageNum]->vaporWaveSunRender.Draw();
 
 
 		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
-			//if (100 <= gameFlame)
 		{
-			goalBox.Draw();
+			goalBox.lightEffect.Draw();
 		}
 
 
-		stages[stageNum]->SetCamera(0);
-		stages[stageNum]->Draw();
-		portal.DrawPortal();
-		portal.DrawFlame();
-
-
-
+		
 		for (int i = 0; i < hitEffect.size(); ++i)
 		{
 			hitEffect[i].Draw();
@@ -1331,10 +1366,6 @@ void Game::Draw()
 			lineLevel[i].Draw();
 		}
 
-		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
-		{
-			goalBox.lightEffect.Draw();
-		}
 		//doneSprite.Draw();
 		//titleLogoTex.Draw();
 		//tutorialWindow.Draw();

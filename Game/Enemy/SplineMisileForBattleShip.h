@@ -31,6 +31,6 @@ private:
 	bool hitFlag;
 
 	RocketLightEffect rocketLight;
-	MisileSmokeEmitter smokeEmitter;
+	//MisileSmokeEmitter smokeEmitter;
 };
 

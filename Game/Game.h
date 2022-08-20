@@ -30,6 +30,9 @@
 #include"../Game/Effect/HitEffectPattern3Emitter.h"
 #include"../Game/Helper/EnemyHelper.h"
 
+#include"../Game/Effect/FireEffect.h"
+#include"../Game/Effect/RocketLightEffect.h"
+
 
 struct LineEffectData
 {
@@ -253,8 +256,10 @@ private:
 
 
 	//エフェクト--------------------------------------
-	std::array<RocketEffect, 30>rocketEffect;
+	std::array<FireEffect, 30>fireEffect;
+	std::array<RocketLightEffect, 30>lightEffect;
 	int rocketIndex;
+	int fireIndex;
 	//エフェクト--------------------------------------
 
 	BoxPolygonRender box;

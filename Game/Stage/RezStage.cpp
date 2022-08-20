@@ -138,8 +138,5 @@ void RezStage::Draw()
 
 	selectingR.Draw();
 
-	vaporWaveSunRender.Draw();
-
-
 
 }

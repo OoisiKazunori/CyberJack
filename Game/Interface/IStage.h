@@ -25,6 +25,7 @@ public:
 	};
 
 	bool startFlag = false;
+	Sprite3DRender vaporWaveSunRender;
 protected:
 	int cameraIndex = 0;
 

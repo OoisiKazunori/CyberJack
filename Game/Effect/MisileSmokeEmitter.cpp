@@ -23,7 +23,7 @@ void MisileSmokeEmitter::Update()
 	if (initFlag)
 	{
 		++intervalNum;
-		if (5 <= intervalNum)
+		if (10 <= intervalNum)
 		{
 			intervalNum = 0;
 			++particleIndex;

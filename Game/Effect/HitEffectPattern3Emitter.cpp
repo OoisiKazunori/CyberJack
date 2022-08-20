@@ -35,7 +35,8 @@ void HitEffectPattern3Emitter::Init(const KazMath::Vec2<float> &POS)
 	{
 		particle[i]->Init(POS + KazMath::Vec2<float>(0.0f, static_cast<float>(i) * 100.0f), baseScale[i], easeScale[i], timer[i], true);
 	}
-	particle[PARTICLE_MAX - 1]->Init(POS + KazMath::Vec2<float>(-10.0f, 300.0f), KazMath::Vec2<float>(0.4f, 0.1f), KazMath::Vec2<float>(0.1f, 5.0f), KazMath::Vec2<int>(60, 20), false);
+
+	particle[PARTICLE_MAX - 1]->Init(POS + KazMath::Vec2<float>(-10.0f, 200.0f), KazMath::Vec2<float>(0.4f, 0.1f), KazMath::Vec2<float>(1.3f, 1.3f), KazMath::Vec2<int>(60, 20), false);
 
 	particleDrawIndex = 0;
 	flame = 0;

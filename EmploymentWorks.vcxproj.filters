@@ -123,6 +123,7 @@
     <ClCompile Include="Game\Effect\MisileSmokeEmitter.cpp" />
     <ClCompile Include="Game\Effect\MisileSmokeParticle.cpp" />
     <ClCompile Include="Game\Stage\BlockParticleStage.cpp" />
+    <ClCompile Include="Game\Effect\FireEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -258,6 +259,7 @@
     <ClInclude Include="Game\Effect\MisileSmokeEmitter.h" />
     <ClInclude Include="Game\Effect\MisileSmokeParticle.h" />
     <ClInclude Include="Game\Stage\BlockParticleStage.h" />
+    <ClInclude Include="Game\Effect\FireEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

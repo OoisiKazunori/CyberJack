@@ -31,8 +31,6 @@ private:
 	float scaleRate;
 	bool reversValueFlag;
 
-	Sprite3DRender vaporWaveSunRender;
-
 
 	std::array<int, 50>filePassNum;
 	ParameterMgr stageParamLoader;

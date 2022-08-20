@@ -81,11 +81,14 @@ void SplineMisileForBattleShip::Init(const EnemyGenerateData &GENERATE_DATA, boo
 
 	rocketLight.Fisnish();
 
-	smokeEmitter.Init(&iEnemy_ModelRender->data.transform.pos);
+	//smokeEmitter.Init(&iEnemy_ModelRender->data.transform.pos);
+	iEnemy_EnemyStatusData->radius = 0.0f;
+	iEnemy_EnemyStatusData->startFlag = false;
+	
 }
 void SplineMisileForBattleShip::Finalize()
 {
-	smokeEmitter.Finalize();
+	//smokeEmitter.Finalize();
 }
 
 void SplineMisileForBattleShip::Update()
@@ -100,13 +103,14 @@ void SplineMisileForBattleShip::Update()
 
 	//死亡演出処理
 	//デバックキーor当たり判定内&&死亡時
-	if (EnableToHit(iEnemy_ModelRender->data.transform.pos.z) && !iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag && !hitFlag)
+	if (!EnableToHit(iEnemy_ModelRender->data.transform.pos.z) || !iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag && !hitFlag)
 	{
 		iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME_MULTITEX;
 		iEnemy_ModelRender->data.removeMaterialFlag = true;
 		iEnemy_ModelRender->data.colorData.color.x = 255;
 		iEnemy_ModelRender->data.colorData.color.y = 255;
 		iEnemy_ModelRender->data.colorData.color.z = 255;
+
 		DeadEffect(&iEnemy_ModelRender->data.transform.pos, &iEnemy_ModelRender->data.transform.rotation, &iEnemy_ModelRender->data.colorData.color.a);
 
 		if (!initDeadSoundFlag)
@@ -166,15 +170,18 @@ void SplineMisileForBattleShip::Update()
 			iEnemy_ModelRender->data.upVector = upVector;
 		}
 		//炎点火
-		if (startIndex == 2 && !rocketLight.IsStart())
+		if (startIndex == 2)
 		{
-			rocketLight.Init(&iEnemy_ModelRender->data.transform.pos, KazMath::Vec3<float>(0.0f, 0.0f, -5.0f), false);
-			rocketLight.ChangeLightRadius(3.0f);
+			//rocketLight.Init(&iEnemy_ModelRender->data.transform.pos, KazMath::Vec3<float>(0.0f, 0.0f, -5.0f), false);
+			//rocketLight.ChangeLightRadius(3.0f);
+			iEnemy_EnemyStatusData->radius = 3.0f;
+			iEnemy_EnemyStatusData->startFlag = true;
 		}
 		//炎縮小
 		if (3 <= startIndex)
 		{
-			rocketLight.ChangeLightRadius(0.1f);
+			//rocketLight.ChangeLightRadius(0.1f);
+			iEnemy_EnemyStatusData->radius = 0.5f;
 		}
 		//前ベクトルの設定----------------------------------------------
 	}
@@ -185,8 +192,8 @@ void SplineMisileForBattleShip::Update()
 		iOperationData.enableToHitFlag = false;
 	}
 
-	rocketLight.Update();
-	smokeEmitter.Update();
+	//rocketLight.Update();
+	//smokeEmitter.Update();
 }
 
 void SplineMisileForBattleShip::Draw()
@@ -200,9 +207,9 @@ void SplineMisileForBattleShip::Draw()
 				pointsRender[i].Draw();
 			}
 		}
-		rocketLight.Draw();
+		//rocketLight.Draw();
 		iEnemy_ModelRender->Draw();
-		smokeEmitter.Draw();
+		//smokeEmitter.Draw();
 		LockOnWindow(iEnemy_ModelRender->data.transform.pos);
 	}
 }

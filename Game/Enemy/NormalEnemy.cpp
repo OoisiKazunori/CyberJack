@@ -28,8 +28,8 @@ void NormalEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 	demoFlag = DEMO_FLAG;
 
 	speed = GENERATE_DATA.speed;
-
-	rocketEffect.Init(&iEnemy_ModelRender->data.transform.pos, KazMath::Vec3<float>(0.0f, 0.0f, 20.0f), KazMath::Vec3<float>(0.0f, 0.0f, 45.0f));
+	iEnemy_EnemyStatusData->radius = 8.0f;
+	iEnemy_EnemyStatusData->startFlag = true;
 }
 
 void NormalEnemy::Finalize()
@@ -76,8 +76,6 @@ void NormalEnemy::Update()
 		}
 	}
 
-	rocketEffect.Update();
-
 	if (!EnableToHit(iEnemy_ModelRender->data.transform.pos.z))
 	{
 		iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag = false;
@@ -90,7 +88,6 @@ void NormalEnemy::Draw()
 	if (1.0f <= iEnemy_ModelRender->data.colorData.color.a)
 	{
 		iEnemy_ModelRender->Draw();
-		//rocketEffect.Draw();
 		LockOnWindow(iEnemy_ModelRender->data.transform.pos);
 	}
 }

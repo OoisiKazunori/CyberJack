@@ -15,6 +15,6 @@ float4 PSmain(VSOutput input) : SV_TARGET
 
 	float4 texColor = tex.Sample(smp, input.uv);
 
-	//return float4(texColor.rgb * shade_color, texColor.a * m_alpha);
+	//return float4(texColor.rgb * shade_color, color.a);
     return float4(texColor.rgb, m_alpha);
 }

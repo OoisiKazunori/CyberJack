@@ -176,6 +176,7 @@
   <ItemGroup>
     <ClCompile Include="Game\Debug\ParameterMgr.cpp" />
     <ClCompile Include="Game\Debug\WirteCpuLineData.cpp" />
+    <ClCompile Include="Game\Effect\FireEffect.cpp" />
     <ClCompile Include="Game\Effect\MisileSmokeEmitter.cpp" />
     <ClCompile Include="Game\Effect\MisileSmokeParticle.cpp" />
     <ClCompile Include="Game\Effect\RocketEffect.cpp" />
@@ -300,6 +301,7 @@
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
     <ClInclude Include="Game\Debug\WirteCpuLineData.h" />
+    <ClInclude Include="Game\Effect\FireEffect.h" />
     <ClInclude Include="Game\Effect\MisileSmokeEmitter.h" />
     <ClInclude Include="Game\Effect\MisileSmokeParticle.h" />
     <ClInclude Include="Game\Effect\RocketEffect.h" />

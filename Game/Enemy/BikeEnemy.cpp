@@ -17,7 +17,6 @@ void BikeEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 	iOperationData.Init(1);							//残りロックオン数等の初期化
 	initDeadSoundFlag = false;
 	demoFlag = DEMO_FLAG;
-
 	basePos = GENERATE_DATA.initPos;
 
 	iEnemy_ModelRender->data.transform.pos.y += 7.0f;
@@ -36,86 +35,116 @@ void BikeEnemy::Finalize()
 
 void BikeEnemy::Update()
 {
-	++appearTimer;
 	float lPos = 0.0f;
 	float lMul = 0.019f;
-	/*
-	登場
-	線の登場後、敵を登場させる
-	*/
-	if (appearTimer <= 200)
+
+
+	if (!EnableToHit(iEnemy_ModelRender->data.transform.pos.z, -5000.0f) && !iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
 	{
-		lPos = basePos.z;
-		kockBackPos.z = iEnemy_ModelRender->data.transform.pos.z - 20.0f;
+		iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME_MULTITEX;
+		iEnemy_ModelRender->data.removeMaterialFlag = true;
+		iEnemy_ModelRender->data.colorData.color.x = 255;
+		iEnemy_ModelRender->data.colorData.color.y = 255;
+		iEnemy_ModelRender->data.colorData.color.z = 255;
+
+		iEnemy_ModelRender->data.transform.pos.y -= 0.5f;
+		iEnemy_ModelRender->data.colorData.color.a -= 5;
+
+		if (iEnemy_ModelRender->data.colorData.color.a < 0)
+		{
+			iEnemy_ModelRender->data.colorData.color.a = 0;
+		}
+
+		if (!initDeadSoundFlag)
+		{
+			DeadSound();
+			initDeadSoundFlag = true;
+		}
 	}
-	/*
-	発射
-	*/
-	else if (200 <= appearTimer && appearTimer <= 320)
+	else
 	{
-		//ミサイルの発射口を設定
+		++appearTimer;
+
+		/*
+		登場
+		線の登場後、敵を登場させる
+		*/
+		if (appearTimer <= 200)
+		{
+			lPos = basePos.z;
+			kockBackPos.z = iEnemy_ModelRender->data.transform.pos.z - 20.0f;
+		}
+		/*
+		発射
+		*/
+		else if (200 <= appearTimer && appearTimer <= 320)
+		{
+			//ミサイルの発射口を設定
+			misileR.data.transform.pos.x = iEnemy_ModelRender->data.transform.pos.x + 5.0f;
+			misileR.data.transform.pos.y = iEnemy_ModelRender->data.transform.pos.y + 5.0f;
+			misileR.data.transform.pos.z = iEnemy_ModelRender->data.transform.pos.z + 14.0f;
+			misileR2.data.transform.pos = misileR.data.transform.pos;
+			misileR2.data.transform.pos.x -= 10.0f;
+
+			//左右からミサイルを発射する--------------------------------------
+			if (appearTimer == 201)
+			{
+				iEnemy_EnemyStatusData->genarateData.enemyGenerateData.initPos = misileR.data.transform.pos;
+				iEnemy_EnemyStatusData->genarateData.enemyType = ENEMY_TYPE_MISILE_SPLINE;
+			}
+			if (appearTimer == 202)
+			{
+				iEnemy_EnemyStatusData->genarateData.enemyGenerateData.initPos = misileR2.data.transform.pos;
+				iEnemy_EnemyStatusData->genarateData.enemyType = ENEMY_TYPE_MISILE_SPLINE;
+			}
+			//左右からミサイルを発射する--------------------------------------
+
+
+			lPos = basePos.z;
+			kockBackPos.z = iEnemy_ModelRender->data.transform.pos.z - 20.0f;
+		}
+		/*
+		退出準備
+		敵を後ろに少しだけノックバックする
+		*/
+		else if (320 <= appearTimer && appearTimer <= 380)
+		{
+			lPos = kockBackPos.z;
+			lMul = 0.1f;
+		}
+		/*
+		退出
+		線と敵を退出させる
+		*/
+		else
+		{
+			lPos = DISAPPEAR_Z_POS;
+			KazMath::Larp(DISAPPEAR_Z_POS, &line.data.startPos.z, 0.02f);
+		}
+
+		KazMath::Larp(lPos, &iEnemy_ModelRender->data.transform.pos.z, lMul);
+		//線を登場させる
+		KazMath::Larp(DISAPPEAR_Z_POS, &line.data.endPos.z, 0.02f);
+
+		ImGui::Begin("Misile");
+		ImGui::DragFloat("POS_X", &misileR.data.transform.pos.x);
+		ImGui::DragFloat("POS_Y", &misileR.data.transform.pos.y);
+		ImGui::DragFloat("POS_Z", &misileR.data.transform.pos.z);
+		ImGui::DragFloat("POS_X2", &misileR2.data.transform.pos.x);
+		ImGui::DragFloat("POS_Y2", &misileR2.data.transform.pos.y);
+		ImGui::DragFloat("POS_Z2", &misileR2.data.transform.pos.z);
+		ImGui::End();
+		misileR.data.color.color = { 255,0,0,255 };
+		misileR2.data.color.color = { 255,0,0,255 };
+
 		misileR.data.transform.pos.x = iEnemy_ModelRender->data.transform.pos.x + 5.0f;
 		misileR.data.transform.pos.y = iEnemy_ModelRender->data.transform.pos.y + 5.0f;
 		misileR.data.transform.pos.z = iEnemy_ModelRender->data.transform.pos.z + 14.0f;
 		misileR2.data.transform.pos = misileR.data.transform.pos;
 		misileR2.data.transform.pos.x -= 10.0f;
 
-		//左右からミサイルを発射する--------------------------------------
-		if (appearTimer == 201)
-		{
-			iEnemy_EnemyStatusData->genarateData.enemyGenerateData.initPos = misileR.data.transform.pos;
-			iEnemy_EnemyStatusData->genarateData.enemyType = ENEMY_TYPE_MISILE_SPLINE;
-		}
-		if (appearTimer == 202)
-		{
-			iEnemy_EnemyStatusData->genarateData.enemyGenerateData.initPos = misileR2.data.transform.pos;
-			iEnemy_EnemyStatusData->genarateData.enemyType = ENEMY_TYPE_MISILE_SPLINE;
-		}
-		//左右からミサイルを発射する--------------------------------------
-
-
-		lPos = basePos.z;
-		kockBackPos.z = iEnemy_ModelRender->data.transform.pos.z - 20.0f;
-	}
-	/*
-	退出準備
-	敵を後ろに少しだけノックバックする
-	*/
-	else if (320 <= appearTimer && appearTimer <= 380)
-	{
-		lPos = kockBackPos.z;
-		lMul = 0.1f;
-	}
-	/*
-	退出
-	線と敵を退出させる
-	*/
-	else
-	{
-		lPos = DISAPPEAR_Z_POS;
-		KazMath::Larp(DISAPPEAR_Z_POS, &line.data.startPos.z, 0.02f);
 	}
 
-	KazMath::Larp(lPos, &iEnemy_ModelRender->data.transform.pos.z, lMul);
-	//線を登場させる
-	KazMath::Larp(DISAPPEAR_Z_POS, &line.data.endPos.z, 0.02f);
-
-	ImGui::Begin("Misile");
-	ImGui::DragFloat("POS_X", &misileR.data.transform.pos.x);
-	ImGui::DragFloat("POS_Y", &misileR.data.transform.pos.y);
-	ImGui::DragFloat("POS_Z", &misileR.data.transform.pos.z);
-	ImGui::DragFloat("POS_X2", &misileR2.data.transform.pos.x);
-	ImGui::DragFloat("POS_Y2", &misileR2.data.transform.pos.y);
-	ImGui::DragFloat("POS_Z2", &misileR2.data.transform.pos.z);
-	ImGui::End();
-	misileR.data.color.color = { 255,0,0,255 };
-	misileR2.data.color.color = { 255,0,0,255 };
-
-	misileR.data.transform.pos.x = iEnemy_ModelRender->data.transform.pos.x + 5.0f;
-	misileR.data.transform.pos.y = iEnemy_ModelRender->data.transform.pos.y + 5.0f;
-	misileR.data.transform.pos.z = iEnemy_ModelRender->data.transform.pos.z + 14.0f;
-	misileR2.data.transform.pos = misileR.data.transform.pos;
-	misileR2.data.transform.pos.x -= 10.0f;
 }
 
 void BikeEnemy::Draw()
