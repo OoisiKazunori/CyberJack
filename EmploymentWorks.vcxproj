@@ -181,6 +181,8 @@
     <ClCompile Include="Game\Effect\MisileSmokeParticle.cpp" />
     <ClCompile Include="Game\Effect\RocketEffect.cpp" />
     <ClCompile Include="Game\Effect\RocketLightEffect.cpp" />
+    <ClCompile Include="Game\Effect\SparkEmitter.cpp" />
+    <ClCompile Include="Game\Effect\SparkParticle.cpp" />
     <ClCompile Include="Game\Enemy\BattleshipEnemy.cpp" />
     <ClCompile Include="Game\Enemy\BikeEnemy.cpp" />
     <ClCompile Include="Game\Effect\EaseScaleParticle.cpp" />
@@ -307,6 +309,8 @@
     <ClInclude Include="Game\Effect\MisileSmokeParticle.h" />
     <ClInclude Include="Game\Effect\RocketEffect.h" />
     <ClInclude Include="Game\Effect\RocketLightEffect.h" />
+    <ClInclude Include="Game\Effect\SparkEmitter.h" />
+    <ClInclude Include="Game\Effect\SparkParticle.h" />
     <ClInclude Include="Game\Enemy\BattleshipEnemy.h" />
     <ClInclude Include="Game\Enemy\BikeEnemy.h" />
     <ClInclude Include="Game\Effect\EaseScaleParticle.h" />

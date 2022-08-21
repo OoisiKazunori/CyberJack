@@ -27,6 +27,7 @@ void BikeEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 	line.data.endPos.z = line.data.startPos.z;
 
 	appearTimer = 0;
+	emitt.Init(&sparkPos);
 }
 
 void BikeEnemy::Finalize()
@@ -38,6 +39,9 @@ void BikeEnemy::Update()
 	float lPos = 0.0f;
 	float lMul = 0.019f;
 
+	sparkPos = iEnemy_ModelRender->data.transform.pos;
+	sparkPos.y = line.data.startPos.y;
+	sparkPos.z += -11.5f;
 
 	if (!EnableToHit(iEnemy_ModelRender->data.transform.pos.z, -5000.0f) && !iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
 	{
@@ -118,8 +122,8 @@ void BikeEnemy::Update()
 		*/
 		else
 		{
-			lPos = DISAPPEAR_Z_POS;
-			KazMath::Larp(DISAPPEAR_Z_POS, &line.data.startPos.z, 0.02f);
+			//lPos = DISAPPEAR_Z_POS;
+			//KazMath::Larp(DISAPPEAR_Z_POS, &line.data.startPos.z, 0.02f);
 		}
 
 		KazMath::Larp(lPos, &iEnemy_ModelRender->data.transform.pos.z, lMul);
@@ -144,7 +148,7 @@ void BikeEnemy::Update()
 		misileR2.data.transform.pos.x -= 10.0f;
 
 	}
-
+	emitt.Update();
 }
 
 void BikeEnemy::Draw()
@@ -154,4 +158,6 @@ void BikeEnemy::Draw()
 	misileR.Draw();
 	misileR2.Draw();
 	iEnemy_ModelRender->Draw();
+
+	emitt.Draw();
 }

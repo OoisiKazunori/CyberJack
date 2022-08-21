@@ -125,6 +125,8 @@
     <ClCompile Include="Game\Stage\BlockParticleStage.cpp" />
     <ClCompile Include="Game\Effect\FireEffect.cpp" />
     <ClCompile Include="Game\Enemy\SummonEnemy.cpp" />
+    <ClCompile Include="Game\Effect\SparkEmitter.cpp" />
+    <ClCompile Include="Game\Effect\SparkParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -262,6 +264,8 @@
     <ClInclude Include="Game\Stage\BlockParticleStage.h" />
     <ClInclude Include="Game\Effect\FireEffect.h" />
     <ClInclude Include="Game\Enemy\SummonEnemy.h" />
+    <ClInclude Include="Game\Effect\SparkEmitter.h" />
+    <ClInclude Include="Game\Effect\SparkParticle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
