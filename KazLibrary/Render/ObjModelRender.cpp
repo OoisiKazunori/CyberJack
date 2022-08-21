@@ -36,98 +36,102 @@ void ObjModelRender::Draw()
 		drawIndexInstanceCommandData = KazRenderHelper::SetDrawIndexInstanceCommandData(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, modelData.vertexBufferView, modelData.indexBufferView, modelData.indexNum, instanceNum);
 	}
 
-	//パイプライン設定-----------------------------------------------------------------------------------------------------
-	renderData.pipelineMgr->SetPipeLineAndRootSignature(data.pipelineName);
-	//パイプライン設定-----------------------------------------------------------------------------------------------------
-
-
-	//行列計算-----------------------------------------------------------------------------------------------------
-	//インスタンシング描画を行うならこの処理は転送しない
-	if (!instanceFlag)
+	if (data.handle.handle != -1)
 	{
-		if (data.transform.Dirty() || data.frontVecDirtyFlag.Dirty() || data.upVecDirtyFlag.Dirty() || data.motherMat.dirty.Dirty())
-		{
-			baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
-			baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
-			baseMatWorldData.matTrans = KazMath::CaluTransMatrix(data.transform.pos);
-			baseMatWorldData.matRota = KazMath::CaluRotaMatrix(data.transform.rotation);
-			//ワールド行列の計算
-			baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
-			baseMatWorldData.matWorld *= baseMatWorldData.matScale;
-			baseMatWorldData.matWorld *= baseMatWorldData.matRota;
-			if (data.upVector.x != 0.0f ||
-				data.upVector.y != 1.0f ||
-				data.upVector.z != 0.0f)
-			{
-				baseMatWorldData.matWorld *= KazMath::CaluSlopeMatrix(data.upVector, { 0.0f,0.0f,1.0f });
-			}
-			if (data.frontVector.x != 0.0f ||
-				data.frontVector.y != 0.0f ||
-				data.frontVector.z != 1.0f)
-			{
-				baseMatWorldData.matWorld *= KazMath::CaluFrontMatrix(KazMath::Vec3<float>(0.0f,1.0f,0.0f), data.frontVector);
-			}
-			baseMatWorldData.matWorld *= baseMatWorldData.matTrans;
-			//親行列を掛ける
-			baseMatWorldData.matWorld *= data.motherMat.mat;
-		}
+
+		//パイプライン設定-----------------------------------------------------------------------------------------------------
+		renderData.pipelineMgr->SetPipeLineAndRootSignature(data.pipelineName);
+		//パイプライン設定-----------------------------------------------------------------------------------------------------
+
+
 		//行列計算-----------------------------------------------------------------------------------------------------
-		motherMat = baseMatWorldData.matWorld;
-		
-
-		//バッファの転送-----------------------------------------------------------------------------------------------------
-		//行列
-		if (renderData.cameraMgrInstance->ViewAndProjDirty(data.cameraIndex.id) || data.transform.Dirty() || data.colorData.Dirty() || data.motherMat.dirty.Dirty() || data.cameraIndex.dirty.Dirty())
+		//インスタンシング描画を行うならこの処理は転送しない
+		if (!instanceFlag)
 		{
-			ConstBufferData constMap;
-			constMap.world = baseMatWorldData.matWorld;
-			constMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex.id);
-			constMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
-			constMap.color = data.colorData.ConvertColorRateToXMFLOAT4();
-			constMap.mat = constMap.world * constMap.view * constMap.viewproj;
+			if (data.transform.Dirty() || data.frontVecDirtyFlag.Dirty() || data.upVecDirtyFlag.Dirty() || data.motherMat.dirty.Dirty())
+			{
+				baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
+				baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
+				baseMatWorldData.matTrans = KazMath::CaluTransMatrix(data.transform.pos);
+				baseMatWorldData.matRota = KazMath::CaluRotaMatrix(data.transform.rotation);
+				//ワールド行列の計算
+				baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
+				baseMatWorldData.matWorld *= baseMatWorldData.matScale;
+				baseMatWorldData.matWorld *= baseMatWorldData.matRota;
+				if (data.upVector.x != 0.0f ||
+					data.upVector.y != 1.0f ||
+					data.upVector.z != 0.0f)
+				{
+					baseMatWorldData.matWorld *= KazMath::CaluSlopeMatrix(data.upVector, { 0.0f,0.0f,1.0f });
+				}
+				if (data.frontVector.x != 0.0f ||
+					data.frontVector.y != 0.0f ||
+					data.frontVector.z != 1.0f)
+				{
+					baseMatWorldData.matWorld *= KazMath::CaluFrontMatrix(KazMath::Vec3<float>(0.0f, 1.0f, 0.0f), data.frontVector);
+				}
+				baseMatWorldData.matWorld *= baseMatWorldData.matTrans;
+				//親行列を掛ける
+				baseMatWorldData.matWorld *= data.motherMat.mat;
+			}
+			//行列計算-----------------------------------------------------------------------------------------------------
+			motherMat = baseMatWorldData.matWorld;
 
-			TransData(&constMap, constBufferHandle[0], typeid(constMap).name());
+
+			//バッファの転送-----------------------------------------------------------------------------------------------------
+			//行列
+			if (renderData.cameraMgrInstance->ViewAndProjDirty(data.cameraIndex.id) || data.transform.Dirty() || data.colorData.Dirty() || data.motherMat.dirty.Dirty() || data.cameraIndex.dirty.Dirty())
+			{
+				ConstBufferData constMap;
+				constMap.world = baseMatWorldData.matWorld;
+				constMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex.id);
+				constMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
+				constMap.color = data.colorData.ConvertColorRateToXMFLOAT4();
+				constMap.mat = constMap.world * constMap.view * constMap.viewproj;
+
+				TransData(&constMap, constBufferHandle[0], typeid(constMap).name());
+			}
 		}
-	}
 
 
-	if (!data.removeMaterialFlag)
-	{
-		//マテリアルデータ
-		if (data.handle.flag.Dirty() || data.colorData.Dirty())
+		if (!data.removeMaterialFlag)
 		{
-			ConstBufferDataB1 constMap;
-			constMap.alpha = data.colorData.color.a / 255.0f;
-			constMap.ambient = modelData.material.ambient;
-			constMap.diffuse = modelData.material.diffuse;
-			constMap.specular = modelData.material.specular;
-			TransData(&constMap, constBufferHandle[1], typeid(constMap).name());
+			//マテリアルデータ
+			if (data.handle.flag.Dirty() || data.colorData.Dirty())
+			{
+				ConstBufferDataB1 constMap;
+				constMap.alpha = data.colorData.color.a / 255.0f;
+				constMap.ambient = modelData.material.ambient;
+				constMap.diffuse = modelData.material.diffuse;
+				constMap.specular = modelData.material.specular;
+				TransData(&constMap, constBufferHandle[1], typeid(constMap).name());
+			}
+			//バッファの転送-----------------------------------------------------------------------------------------------------
+
+
+			//バッファをコマンドリストに積む-----------------------------------------------------------------------------------------------------
+			renderData.shaderResourceMgrInstance->SetSRV(modelData.mtlHanlde, GraphicsRootSignature::Instance()->GetRootParam(renderData.pipelineMgr->GetRootSignatureName(data.pipelineName)), GRAPHICS_PRAMTYPE_TEX);
+			//バッファをコマンドリストに積む-----------------------------------------------------------------------------------------------------
 		}
-		//バッファの転送-----------------------------------------------------------------------------------------------------
+
+		SetConstBufferOnCmdList(data.pipelineName, data.removeMaterialFlag);
 
 
-		//バッファをコマンドリストに積む-----------------------------------------------------------------------------------------------------
-		renderData.shaderResourceMgrInstance->SetSRV(modelData.mtlHanlde, GraphicsRootSignature::Instance()->GetRootParam(renderData.pipelineMgr->GetRootSignatureName(data.pipelineName)), GRAPHICS_PRAMTYPE_TEX);
-		//バッファをコマンドリストに積む-----------------------------------------------------------------------------------------------------
+		//追加のテクスチャを送る---------------------------------------------------------------
+		for (int i = 0; i < data.addHandle.handle.size(); ++i)
+		{
+			renderData.shaderResourceMgrInstance->SetSRV(data.addHandle.handle[i], GraphicsRootSignature::Instance()->GetRootParam(renderData.pipelineMgr->GetRootSignatureName(data.pipelineName)), data.addHandle.paramType[i]);
+		}
+		//追加のテクスチャを送る---------------------------------------------------------------
+
+
+		//描画命令-----------------------------------------------------------------------------------------------------
+		DrawIndexInstanceCommand(drawIndexInstanceCommandData);
+		//描画命令-----------------------------------------------------------------------------------------------------
+
+
+		//DirtyFlagの更新-----------------------------------------------------------------------------------------------------
+		data.Record();
+		//DirtyFlagの更新-----------------------------------------------------------------------------------------------------
 	}
-
-	SetConstBufferOnCmdList(data.pipelineName, data.removeMaterialFlag);
-
-
-	//追加のテクスチャを送る---------------------------------------------------------------
-	for (int i = 0; i < data.addHandle.handle.size(); ++i)
-	{
-		renderData.shaderResourceMgrInstance->SetSRV(data.addHandle.handle[i], GraphicsRootSignature::Instance()->GetRootParam(renderData.pipelineMgr->GetRootSignatureName(data.pipelineName)), data.addHandle.paramType[i]);
-	}
-	//追加のテクスチャを送る---------------------------------------------------------------
-
-
-	//描画命令-----------------------------------------------------------------------------------------------------
-	DrawIndexInstanceCommand(drawIndexInstanceCommandData);
-	//描画命令-----------------------------------------------------------------------------------------------------
-
-
-	//DirtyFlagの更新-----------------------------------------------------------------------------------------------------
-	data.Record();
-	//DirtyFlagの更新-----------------------------------------------------------------------------------------------------
 }

@@ -14,6 +14,7 @@ enum eEnemyType
 	ENEMY_TYPE_MISILE_SPLINE,
 	ENEMY_TYPE_MOTHER,
 	ENEMY_TYPE_KID,
+	ENEMY_TYPE_POP,
 	ENEMY_TYPE_BATTLESHIP,
 	ENEMY_TYPE_BATTLESHIP_MISILE
 };
@@ -39,6 +40,15 @@ struct BattleShipData
 	{};
 };
 
+struct PopEnemyData
+{
+	//ミサイルを撃つかどうか
+	bool leftRightFlag;
+
+	PopEnemyData() :leftRightFlag(false)
+	{};
+};
+
 /// <summary>
 /// 敵を生成する際に必要な情報を詰め込む
 /// </summary>
@@ -48,6 +58,7 @@ struct EnemyGenerateData
 	float speed;
 	BattleShipMisileData battleShipEnemyData;
 	BattleShipData battleShipData;
+	PopEnemyData popEnemyData;
 
 	EnemyGenerateData() :speed(-1.5f)
 	{

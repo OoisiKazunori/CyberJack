@@ -24,6 +24,31 @@ void PopEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 	iEnemy_ModelRender->data.transform.rotation.z = 0.0f;
 	initDeadSoundFlag = false;
 	demoFlag = DEMO_FLAG;
+
+	basePos = GENERATE_DATA.initPos;
+	bottomPos = basePos + KazMath::Vec3<float>(0.0f, -100.0f, 0.0f);
+
+	reverseFlag = false;
+	vel.y = 0.0f;
+	
+	if (demoFlag)
+	{
+		vel.z = 0.0f;
+		vel.x = 0.0f;
+	}
+	else
+	{
+		if (GENERATE_DATA.popEnemyData.leftRightFlag)
+		{
+			vel.x = -0.2f;
+		}
+		else
+		{
+			vel.x = 0.2f;
+		}
+		vel.z = -0.1f;
+	}
+	
 }
 
 void PopEnemy::Finalize()
@@ -32,6 +57,34 @@ void PopEnemy::Finalize()
 
 void PopEnemy::Update()
 {
+	if (reverseFlag && vel.y <= 0.0f)
+	{
+		reverseFlag = false;
+	}
+	if (iEnemy_ModelRender->data.transform.pos.y <= bottomPos.y)
+	{
+		reverseFlag = true;
+	}
+
+
+	if (reverseFlag)
+	{
+		vel.y += -0.1f;
+	}
+	else
+	{
+		vel.y += -0.1f;
+	}
+
+
+	if (reverseFlag != oldReverseFlag)
+	{
+		vel.y *= -1.0f;
+	}
+	oldReverseFlag = reverseFlag;
+
+
+	iEnemy_ModelRender->data.transform.pos += vel;
 }
 
 void PopEnemy::Draw()

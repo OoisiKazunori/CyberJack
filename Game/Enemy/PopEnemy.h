@@ -13,5 +13,9 @@ public:
 	void Draw();
 
 private:
-
+	KazMath::Vec3<float> basePos;
+	KazMath::Vec3<float> bottomPos;
+	KazMath::Vec3<float> vel;
+	bool reverseFlag;
+	bool oldReverseFlag;
 };

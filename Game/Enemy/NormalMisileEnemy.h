@@ -17,12 +17,5 @@ private:
 	bool initShotFlag;
 	FbxModelRender model;
 	int shotSoundHandle;
-
-	RocketEffect rocketEffect;
-
-	CircleRender circleFlashR;
-	CircleRender flashR;
-	int flashTimer, disappearTimer;
-	int circleFlashTimer;
 	bool startFlag;
 };

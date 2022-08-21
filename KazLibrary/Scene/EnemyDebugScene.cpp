@@ -10,6 +10,7 @@
 #include"../Game/Enemy/BikeEnemy.h"
 #include"../Game/Enemy/SplineMisileForBikeEnemy.h"
 #include"../Game/Enemy/SplineMisileForBattleShip.h"
+#include"../Game/Enemy/SummonEnemy.h"
 
 EnemyDebugScene::EnemyDebugScene()
 {
@@ -34,6 +35,13 @@ EnemyDebugScene::EnemyDebugScene()
 	enemies[lIndex] = std::make_unique<BikeEnemy>();
 	misiles[lIndex][0] = std::make_unique<SplineMisileForBikeEnemy>();
 	misiles[lIndex][1] = std::make_unique<SplineMisileForBikeEnemy>();
+	++lIndex;
+	enemies[lIndex] = std::make_unique<SummonEnemy>();
+	for (int i = 0; i < 20; ++i)
+	{
+		misiles[lIndex][i] = std::make_unique<PopEnemy>();
+	}
+
 }
 
 EnemyDebugScene::~EnemyDebugScene()
@@ -200,7 +208,7 @@ void EnemyDebugScene::Update()
 	if (enemies[specifiedEnemyType]->GetData()->genarateData.enemyType != -1)
 	{
 		//¶¬‚·‚é“G‚Ìí—Ş
-		misiles[specifiedEnemyType][kidEnemyHandles[specifiedEnemyType]]->Init(lEnemyData->genarateData.enemyGenerateData, true);
+		misiles[specifiedEnemyType][kidEnemyHandles[specifiedEnemyType]]->Init(lEnemyData->genarateData.enemyGenerateData);
 
 		++kidEnemyHandles[specifiedEnemyType];
 		//’Ç‰Á‚µ‚½‚çI—¹ˆ—‚ğ“ü‚ê‚é
@@ -225,11 +233,9 @@ void EnemyDebugScene::Update()
 
 	for (int i = 0; i < misiles[specifiedEnemyType].size(); ++i)
 	{
-		if (misiles[specifiedEnemyType][i] != nullptr)
+		if (misiles[specifiedEnemyType][i] != nullptr && misiles[specifiedEnemyType][i]->GetData()->oprationObjData->initFlag)
 		{
 			misiles[specifiedEnemyType][i]->Update();
-
-		
 		}
 	}
 

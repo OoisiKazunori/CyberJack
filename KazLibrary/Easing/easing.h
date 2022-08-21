@@ -46,4 +46,4 @@ float Max(float a, float b);
 /// <param name="rate">1Flame‚É‚Ç‚ê‚­‚ç‚¢‘‰Á‚³‚¹‚é‚©</param>
 /// <param name="maxRate">Å‘å</param>
 /// <returns></returns>
-void Rate(float *T,float RATE, float MAX_RATE);
+void Rate(float *T, float RATE, float MAX_RATE);

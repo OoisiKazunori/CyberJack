@@ -22,7 +22,6 @@ void BattleshipEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLA
 	iOperationData.Init(1);							//残りロックオン数等の初期化
 	iEnemy_EnemyStatusData->hitBox.center = &iEnemy_ModelRender->data.transform.pos;
 
-
 	iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_OBJ;
 	iEnemy_ModelRender->data.removeMaterialFlag = false;
 	iEnemy_ModelRender->data.colorData.color.x = 255;
@@ -36,6 +35,7 @@ void BattleshipEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLA
 	//iEnemy_ModelRender->data.isReverseFlag = false;
 	initDeadSoundFlag = false;
 	demoFlag = DEMO_FLAG;
+
 
 	iEnemy_ModelRender->data.transform.pos.z = -1000.0f;
 	basePos = GENERATE_DATA.initPos;
