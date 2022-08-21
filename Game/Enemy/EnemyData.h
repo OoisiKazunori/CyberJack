@@ -40,6 +40,15 @@ struct BattleShipData
 	{};
 };
 
+struct MisileEnemy
+{
+	//ミサイルを撃つかどうか
+	bool isShotFlag;
+
+	MisileEnemy() :isShotFlag(false)
+	{};
+};
+
 struct PopEnemyData
 {
 	//ミサイルを撃つかどうか
@@ -59,6 +68,7 @@ struct EnemyGenerateData
 	BattleShipMisileData battleShipEnemyData;
 	BattleShipData battleShipData;
 	PopEnemyData popEnemyData;
+	MisileEnemy misileEnemy;
 
 	EnemyGenerateData() :speed(-1.5f)
 	{
