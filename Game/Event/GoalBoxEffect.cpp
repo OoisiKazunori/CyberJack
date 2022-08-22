@@ -121,7 +121,10 @@ void GoalBoxEffect::Draw()
 {
 	for (int i = 0; i < lightRender.size(); ++i)
 	{
-		lightRender[i]->Draw();
+		if (!disappearFlag || 0 < lightRender[i]->data.colorData.color.a)
+		{
+			lightRender[i]->Draw();
+		}
 	}
 }
 

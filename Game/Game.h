@@ -182,7 +182,7 @@ private:
 	ObjModelRenderPtr model;
 
 	GoalBox goalBox;
-	KazMath::Vec3<float> appearGoalBoxPos;
+	std::array<KazMath::Vec3<float>, 2> appearGoalBoxPos;
 	KazMath::Vec3<float> responeGoalBoxPos;
 	bool initAppearFlag;
 	bool changeStageFlag;

@@ -41,12 +41,12 @@ void SplineMisileForBikeEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool
 	KazMath::Vec3<float> curvePoint = startPos;
 	curvePoint.z += 60.0f;
 
-
 	//スタート地点
 	points.push_back(startPos);
 	points.push_back(startPos);
 
 	//中間
+	points.push_back(curvePoint);
 	points.push_back(curvePoint);
 	if (0.0f <= distance.x)
 	{
@@ -75,13 +75,12 @@ void SplineMisileForBikeEnemy::Finalize()
 }
 
 void SplineMisileForBikeEnemy::Update()
-
 {
 	//当たったら描画しなくなる
 	if (iEnemy_EnemyStatusData->timer <= 0)
 	{
 		iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag = false;
-		iOperationData.initFlag = false;
+		//iOperationData.initFlag = false;
 		hitFlag = true;
 	}
 
@@ -151,12 +150,6 @@ void SplineMisileForBikeEnemy::Update()
 		iEnemy_ModelRender->data.upVector = upVector;
 		//前ベクトルの設定----------------------------------------------
 	}
-
-	//死亡処理
-	if (iEnemy_ModelRender->data.colorData.color.a <= 0.0f)
-	{
-		iOperationData.initFlag = false;
-	}
 }
 
 void SplineMisileForBikeEnemy::Draw()
@@ -168,6 +161,9 @@ void SplineMisileForBikeEnemy::Draw()
 			pointsRender[i].Draw();
 		}
 	}
-	iEnemy_ModelRender->Draw();
+	if (iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
+	{
+		iEnemy_ModelRender->Draw();
+	}
 	LockOnWindow(iEnemy_ModelRender->data.transform.pos);
 }

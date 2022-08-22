@@ -55,12 +55,6 @@ float4 CaluDistanceFog(float4 POS, float4 Color, float3 FogColor)
     return fog;
 }
 
-struct FogOutPut
-{
-    float4 svpos : SV_POSITION; //?V?X?e???p???_???W
-    float3 fogFactor : FOG;
-};
-
 float4 CaluFog(float4 POS, float4 Color, float3 FogColor, float Density)
 {
     //?w???t?H?O    
@@ -88,3 +82,17 @@ float4 CaluFog(float4 POS, float4 Color, float3 FogColor, float Density)
     
     return fog;
 }
+
+struct FogOutPut
+{
+    float4 svpos : SV_POSITION; //?V?X?e???p???_???W
+    float3 fogFactor : FOG;
+};
+
+struct FogObjOutput
+{
+    float4 svpos : SV_POSITION; //システム用頂点座標
+    float3 normal : NORMAL; //法線ベクトル
+    float2 uv : TEXCOORD; //uv値
+    float3 fogFactor : FOG;
+};

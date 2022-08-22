@@ -42,7 +42,7 @@ void IEnemy::DeadEffect(KazMath::Vec3<float> *POS, KazMath::Vec3<float> *ROTATIO
 	{
 		KazMath::Vec3<float> rota{ 5.0f,5.0f,5.0f };
 		*ROTATION += rota;
-		POS->y -= 1.0f;
+		POS->y -= 0.5f;
 		*ALPHA -= 5;
 	}
 }

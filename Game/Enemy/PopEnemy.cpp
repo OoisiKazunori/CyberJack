@@ -46,9 +46,8 @@ void PopEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 		{
 			vel.x = 0.2f;
 		}
-		vel.z = -0.1f;
+		vel.z = -0.3f;
 	}
-	
 }
 
 void PopEnemy::Finalize()
@@ -64,6 +63,8 @@ void PopEnemy::Update()
 	if (iEnemy_ModelRender->data.transform.pos.y <= bottomPos.y)
 	{
 		reverseFlag = true;
+		vel.x += 0.1f;
+		vel.x *= -1.0f;
 	}
 
 
@@ -85,9 +86,30 @@ void PopEnemy::Update()
 
 
 	iEnemy_ModelRender->data.transform.pos += vel;
+
+
+	if (!EnableToHit(iEnemy_ModelRender->data.transform.pos.z) || !iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
+	{
+		iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME_MULTITEX;
+		iEnemy_ModelRender->data.removeMaterialFlag = true;
+		iEnemy_ModelRender->data.colorData.color.x = 255;
+		iEnemy_ModelRender->data.colorData.color.y = 255;
+		iEnemy_ModelRender->data.colorData.color.z = 255;
+
+		DeadEffect(&iEnemy_ModelRender->data.transform.pos, &iEnemy_ModelRender->data.transform.rotation, &iEnemy_ModelRender->data.colorData.color.a);
+
+		if (!initDeadSoundFlag)
+		{
+			DeadSound();
+			initDeadSoundFlag = true;
+		}
+	}
 }
 
 void PopEnemy::Draw()
 {
-	iEnemy_ModelRender->Draw();
+	if (0 < iEnemy_ModelRender->data.colorData.color.a)
+	{
+		iEnemy_ModelRender->Draw();
+	}
 }

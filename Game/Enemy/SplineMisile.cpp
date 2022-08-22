@@ -73,7 +73,6 @@ void SplineMisile::Update()
 	if (iEnemy_EnemyStatusData->timer <= 0)
 	{
 		iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag = false;
-		iOperationData.initFlag = false;
 		hitFlag = true;
 	}
 
@@ -143,12 +142,6 @@ void SplineMisile::Update()
 		iEnemy_ModelRender->data.upVector = upVector;
 		//前ベクトルの設定----------------------------------------------
 	}
-
-	//死亡処理
-	if (iEnemy_ModelRender->data.colorData.color.a <= 0.0f)
-	{
-		iOperationData.initFlag = false;
-	}
 }
 
 void SplineMisile::Draw()
@@ -160,6 +153,10 @@ void SplineMisile::Draw()
 			pointsRender[i].Draw();
 		}
 	}
-	iEnemy_ModelRender->Draw();
-	LockOnWindow(iEnemy_ModelRender->data.transform.pos);
+
+	if (iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
+	{
+		iEnemy_ModelRender->Draw();
+		LockOnWindow(iEnemy_ModelRender->data.transform.pos);
+	}
 }

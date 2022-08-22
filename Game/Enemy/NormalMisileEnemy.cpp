@@ -15,6 +15,7 @@ NormalMisileEnemy::NormalMisileEnemy()
 	circleFlashR.data.radius = 10.0f;
 	flashR.data.change3DFlag = true;
 	circleFlashR.data.change3DFlag = true;
+	iEnemy_EnemyStatusData->radius = 3.0f;
 }
 
 void NormalMisileEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
@@ -34,13 +35,15 @@ void NormalMisileEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_F
 	iEnemy_ModelRender->data.transform.rotation.x = 0.0f;
 	iEnemy_ModelRender->data.transform.rotation.y = 180.0f;
 	iEnemy_ModelRender->data.transform.rotation.z = 0.0f;
+
+
 	initShotFlag = false;
 
 	initDeadSoundFlag = false;
 	demoFlag = DEMO_FLAG;
 
 	shotTimer = 0;
-	iEnemy_EnemyStatusData->radius = 8.0f;
+
 	iEnemy_EnemyStatusData->startFlag = true;
 
 	disappearTimer = 0;
@@ -91,6 +94,8 @@ void NormalMisileEnemy::Update()
 	{
 		iEnemy_ModelRender->data.transform.rotation.z += 5.0f;
 	}
+
+
 	//死亡演出処理
 	//デバックキーor当たり判定内&&死亡時
 	if (EnableToHit(iEnemy_ModelRender->data.transform.pos.z) && !iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
@@ -99,6 +104,7 @@ void NormalMisileEnemy::Update()
 		iEnemy_ModelRender->data.colorData.color.x = 255;
 		iEnemy_ModelRender->data.colorData.color.y = 255;
 		iEnemy_ModelRender->data.colorData.color.z = 255;
+		iEnemy_ModelRender->data.removeMaterialFlag = true;
 		DeadEffect(&iEnemy_ModelRender->data.transform.pos, &iEnemy_ModelRender->data.transform.rotation, &iEnemy_ModelRender->data.colorData.color.a);
 
 		if (!initDeadSoundFlag)
@@ -199,9 +205,12 @@ void NormalMisileEnemy::Update()
 
 void NormalMisileEnemy::Draw()
 {
-	iEnemy_ModelRender->Draw();
 	LockOnWindow(iEnemy_ModelRender->data.transform.pos);
 
-	flashR.Draw();
-	circleFlashR.Draw();
+	if (iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
+	{
+		iEnemy_ModelRender->Draw();
+		flashR.Draw();
+		circleFlashR.Draw();
+	}
 }

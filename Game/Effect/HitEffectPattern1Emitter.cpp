@@ -43,7 +43,7 @@ void HitEffectPattern1Emitter::Init(const KazMath::Vec2<float> &POS)
 
 void HitEffectPattern1Emitter::Update()
 {
-	ImGui::Begin("Smoke");
+	/*ImGui::Begin("Smoke");
 	for (int i = 0; i < PARTICLE_MAX; ++i)
 	{
 		std::string motherName = "Particle" + std::to_string(i);
@@ -69,7 +69,7 @@ void HitEffectPattern1Emitter::Update()
 			ImGui::TreePop();
 		}
 	}
-	ImGui::End();
+	ImGui::End();*/
 	for (int i = 0; i < particle.size(); ++i)
 	{
 		particle[i]->Update();

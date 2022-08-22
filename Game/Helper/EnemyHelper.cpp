@@ -15,13 +15,13 @@ void KazEnemyHelper::GenerateEnemy(std::array<std::array<std::unique_ptr<IEnemy>
 					break;
 
 				case ENEMY_TYPE_MOTHER:
-					ENEMIES[enemyType][enemyCount] = std::make_unique<NormalEnemy>();
+					ENEMIES[enemyType][enemyCount] = std::make_unique<SummonEnemy>();
 					//子敵の生成(テスト用)
-					for (int i = 0; i < 8; ++i)
+					for (int i = 0; i < 20; ++i)
 					{
-						int index = ENEMISE_HANDLE[ENEMY_TYPE_KID];
-						ENEMIES[ENEMY_TYPE_KID][index] = std::make_unique<KidEnemy>();
-						++ENEMISE_HANDLE[ENEMY_TYPE_KID];
+						int index = ENEMISE_HANDLE[ENEMY_TYPE_POP];
+						ENEMIES[ENEMY_TYPE_POP][index] = std::make_unique<PopEnemy>();
+						++ENEMISE_HANDLE[ENEMY_TYPE_POP];
 					}
 					break;
 
@@ -38,6 +38,16 @@ void KazEnemyHelper::GenerateEnemy(std::array<std::array<std::unique_ptr<IEnemy>
 						int index = ENEMISE_HANDLE[ENEMY_TYPE_BATTLESHIP_MISILE];
 						ENEMIES[ENEMY_TYPE_BATTLESHIP_MISILE][index] = std::make_unique<SplineMisileForBattleShip>();
 						++ENEMISE_HANDLE[ENEMY_TYPE_BATTLESHIP_MISILE];
+					}
+					break;
+
+				case ENEMY_TYPE_BIKE:
+					ENEMIES[enemyType][enemyCount] = std::make_unique<BikeEnemy>();
+					for (int i = 0; i < 2; ++i)
+					{
+						int index = ENEMISE_HANDLE[ENEMY_TYPE_BIKE_MISILE];
+						ENEMIES[ENEMY_TYPE_BIKE_MISILE][index] = std::make_unique<SplineMisileForBikeEnemy>();
+						++ENEMISE_HANDLE[ENEMY_TYPE_BIKE_MISILE];
 					}
 					break;
 

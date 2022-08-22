@@ -5,6 +5,46 @@
 
 FirstStage::FirstStage()
 {
+	for (int i = 0; i < floorStage.size(); ++i)
+	{
+		floorStage[i].data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "road.obj");
+		floorStage[i].data.transform.pos = { 0.0f,-23.0f,52.0f + static_cast<float>(i) * 200.0f };
+		floorStage[i].data.transform.scale = { 1.2f,1.0f,1.0f };
+		floorStage[i].data.pipelineName = PIPELINE_NAME_OBJ_FOG_GRADATION;
+		RESOURCE_HANDLE lHandle = floorStage[i].CreateConstBuffer(sizeof(FogD), typeid(FogD).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA2);
+
+
+		FogD lD;
+		lD.rateAndFogLine.z = 100.0f;
+		lD.rateAndFogLine.w = 300.0f;
+
+		lD.rateAndFogLine.x = -401.0f;
+		lD.rateAndFogLine.y = 407.0f;
+
+		lD.depthX = depthX;
+
+		lD.depthX.z = 0;
+		if (i == 2 || i == 4)
+		{
+			lD.depthX.z = 1;
+		}
+		if (16 <= i && i <= 24)
+		{
+			lD.depthX.z = 1;
+		}
+
+		DirectX::XMFLOAT3 first(0.93f, 0.65f, 0.53f);
+		DirectX::XMFLOAT3 end(0.24f, 0.09f, 0.62f);
+		DirectX::XMFLOAT3 result;
+		result.x = first.x - end.x;
+		result.y = first.y - end.y;
+		result.z = first.z - end.z;
+		lD.endColor = end;
+		lD.subValue = result;
+
+		floorStage[i].TransData(&lD, lHandle, typeid(lD).name());
+	}
+
 	for (int i = 0; i < stageDebugBox.size(); ++i)
 	{
 		stageDebugBox[i].data.pipelineName = PIPELINE_NAME_FOG_COLOR_MULTITEX;
@@ -313,14 +353,28 @@ void FirstStage::Update()
 		stageDebugBox[i].TransData(&fogData[i], constHandle[i], typeid(fogData[i]).name());
 	}
 
+
+	for (int i = 0; i < floorStage.size(); ++i)
+	{
+		floorStage[i].data.transform.pos.y = -30.0f;
+		floorStage[i].data.transform.pos.z -= 1.0f;
+
+		if (floorStage[i].data.transform.pos.z <= -200.0f)
+		{
+			floorStage[i].data.transform.pos.z = 1000.0f;
+		}
+	}
 }
 
 void FirstStage::Draw()
 {
-	for (int i = 0; i < 24; ++i)
+	for (int i = 1; i < 24; ++i)
 	{
 		stageDebugBox[i].Draw();
 	}
-
+	for (int i = 0; i < floorStage.size(); ++i)
+	{
+		floorStage[i].Draw();
+	}
 	DrawBackGround();
 }

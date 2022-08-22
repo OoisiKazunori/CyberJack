@@ -70,6 +70,8 @@ RezStage::RezStage()
 		initTrans.pos.z -= 9000.0f;
 		floorObjectRender2[40 + i].Init(initTrans, stageModelhandle[lNum]);
 	}
+
+	vaporWaveSunRender.data.colorData.color.a = 0;
 }
 
 void RezStage::Update()
@@ -131,12 +133,4 @@ void RezStage::Draw()
 	{
 		gridRender[i].Draw();
 	}
-
-
-	//poly->Draw();
-
-
-	selectingR.Draw();
-
-
 }

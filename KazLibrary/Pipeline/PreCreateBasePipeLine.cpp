@@ -348,13 +348,15 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "MultiPassLuminancePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LUMINANCE_MULTI);
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineUvMultiTexPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_UV_MULTITEX);
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GradationPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_GRADATION);
 
 
 	
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineFlashEffectPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_FLASHEFFECT);
 
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GradationPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_GRADATION);
+
+	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "ObjFogVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_FOG_OBJ);
+	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GradationObjPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ_GRADATION);
 
 	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "GpuParticleVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_GPUPARTICLE);
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GPUParticlePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_GPUPARTICLE);
@@ -1571,6 +1573,15 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_DATA_NOCARING_ALPHABLEND_WIREFLAME,
 		ROOTSIGNATURE_DATA_DRAW_DATA1,
 		PIPELINE_NAME_OBJ_WIREFLAME_FOG
+	);
+
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS_NORMAL_TEX,
+		SHADER_VERTEX_FOG_OBJ,
+		SHADER_PIXCEL_OBJ_GRADATION,
+		PIPELINE_DATA_NOCARING_BLENDALPHA,
+		ROOTSIGNATURE_DATA_DRAW_TEX_DATA1_DATA2,
+		PIPELINE_NAME_OBJ_FOG_GRADATION
 	);
 
 

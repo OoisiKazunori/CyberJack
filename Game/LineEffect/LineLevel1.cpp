@@ -292,6 +292,10 @@ void LineLevel1::Attack2(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::
 						continue;
 					}
 
+					if (5 <= moveVector)
+					{
+						moveVector = 4;
+					}
 					//L‚Î‚µ‚½•ûŒü‚ðƒJƒEƒ“ƒg‚·‚é
 					++limitCount[moveVector];
 

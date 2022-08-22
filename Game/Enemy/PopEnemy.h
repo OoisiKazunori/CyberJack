@@ -18,4 +18,6 @@ private:
 	KazMath::Vec3<float> vel;
 	bool reverseFlag;
 	bool oldReverseFlag;
+
+	bool reverseXFlag;
 };

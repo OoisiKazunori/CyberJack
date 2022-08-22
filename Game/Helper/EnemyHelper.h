@@ -7,6 +7,11 @@
 #include"../Game/Enemy/NormalMisileEnemy.h"
 #include"../Game/Enemy/BattleshipEnemy.h"
 #include"../Game/Enemy/SplineMisileForBattleShip.h"
+#include"../Game/Enemy/BikeEnemy.h"
+#include"../Game/Enemy/SplineMisileForBikeEnemy.h"
+#include"../Game/Enemy/SummonEnemy.h"
+#include"../Game/Enemy/PopEnemy.h"
+
 
 namespace KazEnemyHelper
 {

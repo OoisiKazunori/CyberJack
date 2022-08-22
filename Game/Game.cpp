@@ -109,8 +109,8 @@ Game::Game()
 
 	CameraMgr::Instance()->CameraSetting(60.0f, 10000.0f);
 
-	stages[0] = std::make_unique<RezStage>();
-	stages[1] = std::make_unique<FirstStage>();	
+	stages[0] = std::make_unique<FirstStage>();
+	stages[1] = std::make_unique<RezStage>();
 	//stages[1] = std::make_unique<BlockParticleStage>();
 	stages[2] = std::make_unique<ThridStage>();
 
@@ -179,15 +179,14 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 
 
 	//ゲームループの初期化----------------------------------------------------------------
-	gameStartFlag = true;
+	gameStartFlag = false;
+	cameraChangeFlag = true;
 	gameFlame = 0;
 	//ゴールに触れ無かった場合に次のステージに移動する際の最大フレーム数
 	for (int i = 0; i < changeLayerLevelMaxTime.size(); ++i)
 	{
-		changeLayerLevelMaxTime[i] = 1800;
+		changeLayerLevelMaxTime[i] = KazMath::ConvertSecondToFlame(70);
 	}
-	changeLayerLevelMaxTime[0] = 60 * 28;
-	changeLayerLevelMaxTime[1] = 60 * 39;
 	gameStageLevel = 0;
 	stageNum = gameStageLevel;
 	//ゲームループの初期化----------------------------------------------------------------
@@ -222,7 +221,8 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 
 	forceCameraDirVel.x = -90.0f;
 
-	appearGoalBoxPos = { -10.0f,-15.0f,40.0f };
+	appearGoalBoxPos[0] = { -10.0f,-10.0f,40.0f };
+	appearGoalBoxPos[1] = { 20.0f,-15.0f,40.0f };
 	responeGoalBoxPos = { -10.0f,-100.0f,40.0f };
 	goalBox.Init(responeGoalBoxPos);
 	initAppearFlag = false;
@@ -252,11 +252,10 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 
 	portal.Init(KazMath::Vec3<float>(0.0f, 3.0f, 50.0f));
 
-
-	cameraMoveArray[1][0].flame = KazMath::ConvertSecondToFlame(15);
+	cameraMoveArray[1][0].flame = KazMath::ConvertSecondToFlame(30);
 	cameraMoveArray[1][0].dir = CAMERA_LEFT;
 
-	cameraMoveArray[1][1].flame = KazMath::ConvertSecondToFlame(32);
+	cameraMoveArray[1][1].flame = KazMath::ConvertSecondToFlame(50);
 	cameraMoveArray[1][1].dir = CAMERA_FRONT;
 
 	rocketIndex = 0;
@@ -571,9 +570,9 @@ void Game::Update()
 
 
 
-	ImGui::Begin("cameraChangeFlag");
-	ImGui::Checkbox("GameCamera", &cameraChangeFlag);
-	ImGui::End();
+	//ImGui::Begin("cameraChangeFlag");
+	//ImGui::Checkbox("GameCamera", &cameraChangeFlag);
+	//ImGui::End();
 
 
 
@@ -599,7 +598,7 @@ void Game::Update()
 	if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame && !initAppearFlag)
 		//if (100 <= gameFlame && !initAppearFlag)
 	{
-		goalBox.Appear(appearGoalBoxPos);
+		goalBox.Appear(appearGoalBoxPos[stageNum]);
 		initAppearFlag = true;
 	}
 	//敵が一通り生成終わった際に登場させる----------------------------------------------------------------
@@ -669,12 +668,10 @@ void Game::Update()
 		for (int enemyCount = 0; enemyCount < responeData[enemyType].size(); ++enemyCount)
 		{
 			bool enableToUseThisDataFlag = responeData[enemyType][enemyCount].layerLevel != -1;
-			bool readyToInitDataFlag = responeData[enemyType][enemyCount].flame <= gameFlame &&
-				responeData[enemyType][enemyCount].layerLevel == gameStageLevel &&
-				!enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag;
+			bool readyToStartFlag = responeData[enemyType][enemyCount].flame <= gameFlame &&
+				responeData[enemyType][enemyCount].layerLevel == gameStageLevel;
 
-
-			if (enableToUseThisDataFlag && readyToInitDataFlag && enemies[enemyType][enemyCount] != nullptr)
+			if (enableToUseThisDataFlag && readyToStartFlag && enemies[enemyType][enemyCount] != nullptr && !enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag)
 			{
 				enemies[enemyType][enemyCount]->Init(responeData[enemyType][enemyCount].generateData, false);
 
@@ -686,9 +683,12 @@ void Game::Update()
 					++rocketIndex;
 					++fireIndex;
 					break;
+
 				case ENEMY_TYPE_MISILE:
-					lightEffect[rocketIndex].Init(enemies[enemyType][enemyCount]->GetData()->hitBox.center, KazMath::Vec3<float>(0.0f, 0.0f, 0.0f), false, &enemies[enemyType][enemyCount]->GetData()->oprationObjData->enableToHitFlag, &enemies[enemyType][enemyCount]->GetData()->radius, &enemies[enemyType][enemyCount]->GetData()->startFlag);
+					lightEffect[rocketIndex].Init(enemies[enemyType][enemyCount]->GetData()->hitBox.center, KazMath::Vec3<float>(0.0f, 0.0f, 10.0f), true, &enemies[enemyType][enemyCount]->GetData()->oprationObjData->enableToHitFlag, &enemies[enemyType][enemyCount]->GetData()->radius, &enemies[enemyType][enemyCount]->GetData()->startFlag);
+					fireEffect[rocketIndex].Init(enemies[enemyType][enemyCount]->GetData()->hitBox.center, KazMath::Vec3<float>(0.0f, 0.0f, 35.0f), true, &enemies[enemyType][enemyCount]->GetData()->oprationObjData->enableToHitFlag);
 					++rocketIndex;
+					++fireIndex;
 					break;
 
 				case ENEMY_TYPE_BATTLESHIP_MISILE:
@@ -727,7 +727,6 @@ void Game::Update()
 					!cursor.releaseFlag)
 				{
 					SoundManager::Instance()->PlaySoundMem(lockSoundHandle, 1);
-
 
 					//カーソルのカウント数を増やす
 					cursor.Hit(enemyData->hitBox.center);
@@ -1057,6 +1056,11 @@ void Game::Update()
 		doneSprite.Update();
 		tutorialWindow.Update();
 
+		if (stageNum == 1)
+		{
+			stages[1]->vaporWaveSunRender.data.colorData.color.a = 255;
+		}
+
 		for (int i = 0; i < hitEffect.size(); ++i)
 		{
 			hitEffect[i].Update();
@@ -1253,7 +1257,7 @@ void Game::Draw()
 	//ポータル演出
 	//if (goalBox.startPortalEffectFlag)
 	{
-		int lStageNum = -1;
+		int lStageNum = stageNum + 1;
 		if (portal.DrawPrevStageFlag())
 		{
 			lStageNum = stageNum - 1;
@@ -1262,12 +1266,13 @@ void Game::Draw()
 				lStageNum = 0;
 			}
 		}
-		else
+		if (lStageNum < 0)
 		{
-			if (stages.size() <= lStageNum)
-			{
-				lStageNum = stageNum + 1;
-			}
+			lStageNum = 1;
+		}
+		else if (stages.size() <= lStageNum)
+		{
+			lStageNum = static_cast<int>(stages.size() - 1);
 		}
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(potalTexHandle);
 		RenderTargetStatus::Instance()->ClearRenderTarget(potalTexHandle);
@@ -1297,7 +1302,6 @@ void Game::Draw()
 
 
 		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
-			if (100 <= gameFlame)
 		{
 			goalBox.Draw();
 		}
@@ -1348,13 +1352,6 @@ void Game::Draw()
 
 		stages[stageNum]->vaporWaveSunRender.Draw();
 
-
-		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
-		{
-			goalBox.lightEffect.Draw();
-		}
-
-
 		
 		for (int i = 0; i < hitEffect.size(); ++i)
 		{
@@ -1366,10 +1363,20 @@ void Game::Draw()
 			lineLevel[i].Draw();
 		}
 
-		//doneSprite.Draw();
-		//titleLogoTex.Draw();
-		//tutorialWindow.Draw();
-		//stageUI.Draw();
+
+		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
+		{
+			goalBox.lightEffect.Draw();
+		}
+
+
+
+		if (0 < titleLogoTex.data.colorData.color.a)
+		{
+			doneSprite.Draw();
+			titleLogoTex.Draw();
+			tutorialWindow.Draw();
+		}
 
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, handles[0]);
 		RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
@@ -1414,6 +1421,8 @@ void Game::Draw()
 			pressAButtonTex.Draw();
 		}
 	}
+
+	stageUI.Draw();
 
 	blackTex.Draw();
 

@@ -181,6 +181,9 @@ void BattleshipEnemy::Update()
 		iEnemy_ModelRender->data.transform.pos.y -= 0.5f;
 		iEnemy_ModelRender->data.colorData.color.a -= 5;
 
+		iEnemy_ModelRender->data.transform.rotation.x += 0.5f;
+		iEnemy_ModelRender->data.transform.rotation.y += 0.5f;
+
 		if (iEnemy_ModelRender->data.colorData.color.a < 0)
 		{
 			iEnemy_ModelRender->data.colorData.color.a = 0;
@@ -197,7 +200,7 @@ void BattleshipEnemy::Update()
 		++appearTimer;
 	}
 
-	ImGui::Begin("Misile");
+	/*ImGui::Begin("Misile");
 	for (int i = 0; i < misileR.size(); ++i)
 	{
 		misileR[i].data.color.color = { 255,0,0,255 };
@@ -209,15 +212,15 @@ void BattleshipEnemy::Update()
 		tag = name + "Z" + std::to_string(i);
 		ImGui::DragFloat(tag.c_str(), &misileR[i].data.transform.pos.z);
 	}
-	ImGui::End();
+	ImGui::End();*/
 
 }
 
 void BattleshipEnemy::Draw()
 {
-	for (int i = 0; i < misileR.size(); ++i)
-	{
-		misileR[i].Draw();
-	}
+	//for (int i = 0; i < misileR.size(); ++i)
+	//{
+	//	misileR[i].Draw();
+	//}
 	iEnemy_ModelRender->Draw();
 }

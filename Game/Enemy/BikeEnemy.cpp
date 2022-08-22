@@ -43,7 +43,7 @@ void BikeEnemy::Update()
 	sparkPos.y = line.data.startPos.y;
 	sparkPos.z += -11.5f;
 
-	if (!EnableToHit(iEnemy_ModelRender->data.transform.pos.z, -5000.0f) && !iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
+	if (EnableToHit(iEnemy_ModelRender->data.transform.pos.z, -5000.0f) && !iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
 	{
 		iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME_MULTITEX;
 		iEnemy_ModelRender->data.removeMaterialFlag = true;
@@ -52,6 +52,7 @@ void BikeEnemy::Update()
 		iEnemy_ModelRender->data.colorData.color.z = 255;
 
 		iEnemy_ModelRender->data.transform.pos.y -= 0.5f;
+		iEnemy_ModelRender->data.transform.rotation.x += 0.5f;
 		iEnemy_ModelRender->data.colorData.color.a -= 5;
 
 		if (iEnemy_ModelRender->data.colorData.color.a < 0)
@@ -77,6 +78,7 @@ void BikeEnemy::Update()
 		{
 			lPos = basePos.z;
 			kockBackPos.z = iEnemy_ModelRender->data.transform.pos.z - 20.0f;
+			lMul = 0.05f;
 		}
 		/*
 		発射
@@ -94,15 +96,14 @@ void BikeEnemy::Update()
 			if (appearTimer == 201)
 			{
 				iEnemy_EnemyStatusData->genarateData.enemyGenerateData.initPos = misileR.data.transform.pos;
-				iEnemy_EnemyStatusData->genarateData.enemyType = ENEMY_TYPE_MISILE_SPLINE;
+				iEnemy_EnemyStatusData->genarateData.enemyType = ENEMY_TYPE_BIKE_MISILE;
 			}
 			if (appearTimer == 202)
 			{
 				iEnemy_EnemyStatusData->genarateData.enemyGenerateData.initPos = misileR2.data.transform.pos;
-				iEnemy_EnemyStatusData->genarateData.enemyType = ENEMY_TYPE_MISILE_SPLINE;
+				iEnemy_EnemyStatusData->genarateData.enemyType = ENEMY_TYPE_BIKE_MISILE;
 			}
 			//左右からミサイルを発射する--------------------------------------
-
 
 			lPos = basePos.z;
 			kockBackPos.z = iEnemy_ModelRender->data.transform.pos.z - 20.0f;
@@ -122,8 +123,18 @@ void BikeEnemy::Update()
 		*/
 		else
 		{
-			//lPos = DISAPPEAR_Z_POS;
-			//KazMath::Larp(DISAPPEAR_Z_POS, &line.data.startPos.z, 0.02f);
+			lPos = DISAPPEAR_Z_POS;
+			KazMath::Larp(DISAPPEAR_Z_POS, &line.data.startPos.z, 0.02f);
+
+			if (0 < iEnemy_ModelRender->data.colorData.color.a)
+			{
+				iEnemy_ModelRender->data.colorData.color.a += -5;
+			}
+			else
+			{
+				iEnemy_ModelRender->data.colorData.color.a = 0;
+				iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag = false;
+			}
 		}
 
 		KazMath::Larp(lPos, &iEnemy_ModelRender->data.transform.pos.z, lMul);
@@ -153,11 +164,13 @@ void BikeEnemy::Update()
 
 void BikeEnemy::Draw()
 {
-	line.Draw();
+	if (iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
+	{
+		line.Draw();
+		emitt.Draw();
+	}
 
-	misileR.Draw();
-	misileR2.Draw();
+	//misileR.Draw();
+	//misileR2.Draw();
 	iEnemy_ModelRender->Draw();
-
-	emitt.Draw();
 }
