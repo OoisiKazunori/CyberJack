@@ -30,6 +30,7 @@
 #include"../Game/Effect/HitEffectPattern3Emitter.h"
 #include"../Game/Helper/EnemyHelper.h"
 
+#include"../Game/Effect/MeshParticleEmitter.h"
 
 struct LineEffectData
 {
@@ -258,4 +259,6 @@ private:
 	//エフェクト--------------------------------------
 
 	BoxPolygonRender box;
+
+	MeshParticleEmitter meshEmitter;
 };

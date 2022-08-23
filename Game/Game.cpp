@@ -109,8 +109,8 @@ Game::Game()
 
 	CameraMgr::Instance()->CameraSetting(60.0f, 10000.0f);
 
-	stages[0] = std::make_unique<RezStage>();
-	stages[1] = std::make_unique<BlockParticleStage>();
+	stages[0] = std::make_unique<BlockParticleStage>();
+	stages[1] = std::make_unique<RezStage>();
 	//stages[0] = std::make_unique<FirstStage>()
 	stages[2] = std::make_unique<ThridStage>();
 
@@ -584,7 +584,7 @@ void Game::Update()
 	else
 	{
 		//デバック用
-		eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle, 0.1f);
+		eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle, 10.0f);
 		targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
 	}
 
@@ -874,7 +874,7 @@ void Game::Update()
 
 
 
-#pragma region 線のロックオン解放
+#pragma region 線のロックオン解放<
 
 	//線がたどり着いたら敵を死亡させる
 	for (int i = 0; i < lineEffectArrayData.size(); ++i)
@@ -1042,7 +1042,7 @@ void Game::Update()
 		goalBox.Update();
 		movieEffect.Update();
 		stageUI.Update();
-		stages[stageNum]->Update();
+		//stages[stageNum]->Update();
 		doneSprite.Update();
 		tutorialWindow.Update();
 
@@ -1055,7 +1055,7 @@ void Game::Update()
 		//配列外を超えない処理
 		if (stageNum + 1 < stages.size())
 		{
-			stages[stageNum + 1]->Update();
+		//	stages[stageNum + 1]->Update();
 		}
 		//ロックオンのリリース処理
 		if (cursor.releaseFlag)
@@ -1227,7 +1227,7 @@ void Game::Update()
 	}
 
 	//ゲームループの経過時間----------------------------------------------------------------
-
+	meshEmitter.Update();
 }
 
 void Game::Draw()
@@ -1314,7 +1314,7 @@ void Game::Draw()
 
 
 		stages[stageNum]->SetCamera(0);
-		stages[stageNum]->Draw();
+		//stages[stageNum]->Draw();
 		portal.DrawPortal();
 		portal.DrawFlame();
 
@@ -1338,6 +1338,8 @@ void Game::Draw()
 		//titleLogoTex.Draw();
 		//tutorialWindow.Draw();
 		//stageUI.Draw();
+
+		meshEmitter.Draw();
 
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, handles[0]);
 		RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);

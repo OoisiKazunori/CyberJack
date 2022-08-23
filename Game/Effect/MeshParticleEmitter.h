@@ -1,16 +1,18 @@
 #pragma once
+#include"../KazLibrary/Math/KazMath.h"
 #include"../KazLibrary/Buffer/CreateGpuBuffer.h"
-#include"../Game/Interface/IStage.h"
 #include<array>
 #include<vector>
+#include"../KazLibrary/Render/KazRender.h"
 
-class BlockParticleStage :public IStage
+class MeshParticleEmitter
 {
 public:
-	BlockParticleStage();
-	~BlockParticleStage();
-	void Update()override;
-	void Draw()override;
+	MeshParticleEmitter();
+	~MeshParticleEmitter();
+	void Init(const KazMath::Vec3<float> &POS);
+	void Update();
+	void Draw();
 
 private:
 	//バッファ
@@ -22,7 +24,7 @@ private:
 	//バッファ
 
 	static const int PARTICLE_MAX_NUM = 1;
-	static const int PER_USE_PARTICLE_MAX_NUM = 120;
+	static const int PER_USE_PARTICLE_MAX_NUM = 1000;
 	static const int DRAW_CALL = 1;
 
 	struct IndirectCommand
@@ -34,6 +36,8 @@ private:
 	struct ParticleData
 	{
 		DirectX::XMFLOAT4 pos;
+		DirectX::XMFLOAT4 vertices;
+		float verticesMaxNum;
 	};
 
 	struct OutputData
@@ -47,12 +51,13 @@ private:
 		DirectX::XMMATRIX cameraMat;
 		DirectX::XMMATRIX projectionMat;
 		DirectX::XMMATRIX bollboardMat;
-		DirectX::XMFLOAT4 vertices[8];
 	};
 
 	Microsoft::WRL::ComPtr<ID3D12CommandSignature> commandSig;
 
 	CommonData constBufferData;
-	int num;
-};
+	
+	KazMath::Vec3<float>pos;
 
+	ObjModelRender model;
+};
