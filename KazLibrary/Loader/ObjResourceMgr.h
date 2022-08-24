@@ -51,6 +51,7 @@ struct ObjResourceData
 	UINT indexNum;
 
 	std::vector<DirectX::XMFLOAT4>vertices;
+	std::vector<UINT>index;
 };
 
 

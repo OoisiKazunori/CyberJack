@@ -34,7 +34,6 @@ MeshParticleEmitter::MeshParticleEmitter()
 		assert(0);
 	}
 
-
 	std::array<Vertex, 4>vertices;
 	std::array<USHORT, 6> indices;
 	indices = KazRenderHelper::InitIndciesForPlanePolygon();
@@ -65,20 +64,33 @@ MeshParticleEmitter::MeshParticleEmitter()
 	{
 		RESOURCE_HANDLE lHandle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_Model.obj");
 		model.data.handle = lHandle;
-		std::array<ParticleData, 1000> lData;
-		for (int i = 0; i < ObjResourceMgr::Instance()->GetResourceData(lHandle).vertices.size(); ++i)
-		{
-			lData[i].pos = {};
-			lData[i].vertices = ObjResourceMgr::Instance()->GetResourceData(lHandle).vertices[i];
-			lData[i].verticesMaxNum = static_cast<float>(ObjResourceMgr::Instance()->GetResourceData(lHandle).vertices.size());
-		}
+		std::array<ParticleData, 1> lData;
+		lData[0].pos = {};
+
+		//頂点情報
+		memcpy
+		(
+			constBufferData.vertices,
+			ObjResourceMgr::Instance()->GetResourceData(lHandle).vertices.data(),
+			ObjResourceMgr::Instance()->GetResourceData(lHandle).vertices.size() * sizeof(DirectX::XMFLOAT4)
+		);
+		//インデックス情報
+		memcpy
+		(
+			constBufferData.index,
+			ObjResourceMgr::Instance()->GetResourceData(lHandle).index.data(),
+			ObjResourceMgr::Instance()->GetResourceData(lHandle).index.size() * sizeof(UINT)
+		);
 		//頂点データの転送
-		buffers->TransData(particleDataHandle, lData.data(), (sizeof(ParticleData) * PER_USE_PARTICLE_MAX_NUM) * PARTICLE_MAX_NUM);
+		buffers->TransData(particleDataHandle, lData.data(), (sizeof(ParticleData) * PARTICLE_MAX_NUM));
+
+
+		constBufferData.indexMaxNum = static_cast<UINT>(ObjResourceMgr::Instance()->GetResourceData(lHandle).index.size());
 	}
+
 
 	model.data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
 	model.data.removeMaterialFlag = true;
-
 
 	IndirectCommand command;
 	command.drawArguments.IndexCountPerInstance = static_cast<UINT>(indices.size());
@@ -102,7 +114,7 @@ MeshParticleEmitter::MeshParticleEmitter()
 
 	DescriptorHeapMgr::Instance()->CreateBufferView(
 		computeMemSize.startSize + 3,
-		KazBufferHelper::SetUnorderedAccessView(sizeof(ParticleData), PARTICLE_MAX_NUM * PER_USE_PARTICLE_MAX_NUM),
+		KazBufferHelper::SetUnorderedAccessView(sizeof(ParticleData), PARTICLE_MAX_NUM),
 		buffers->GetBufferData(particleDataHandle).Get(),
 		nullptr
 	);
@@ -112,7 +124,6 @@ MeshParticleEmitter::MeshParticleEmitter()
 	indexBufferView = KazBufferHelper::SetIndexBufferView(buffers->GetGpuAddress(indexBufferHandle), indexBuffSize);
 
 
-	
 }
 
 MeshParticleEmitter::~MeshParticleEmitter()
@@ -149,7 +160,7 @@ void MeshParticleEmitter::Update()
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(computeMemSize.startSize + 3));
 	}
 
-	DirectX12CmdList::Instance()->cmdList->Dispatch(PARTICLE_MAX_NUM, 1, 1);
+	DirectX12CmdList::Instance()->cmdList->Dispatch(2, 1, 1);
 }
 
 void MeshParticleEmitter::Draw()

@@ -42,6 +42,7 @@ RESOURCE_HANDLE ObjResourceMgr::LoadModel(std::string RESOURCE)
 
 	vector<Vertex> vert;
 	vector<USHORT> indi;
+	vector<UINT> indiKeepData;
 	vector<DirectX::XMFLOAT4>positions;
 	vector<DirectX::XMFLOAT3>normals;
 	vector<DirectX::XMFLOAT2>texcoords;
@@ -116,10 +117,15 @@ RESOURCE_HANDLE ObjResourceMgr::LoadModel(std::string RESOURCE)
 					indi.emplace_back(static_cast<USHORT>(indexCountNum - 1));
 					indi.emplace_back(static_cast<USHORT>(indexCountNum));
 					indi.emplace_back(static_cast<USHORT>(indexCountNum - 3));
+
+					indiKeepData.emplace_back(static_cast<UINT>(indexCountNum - 1));
+					indiKeepData.emplace_back(static_cast<UINT>(indexCountNum));
+					indiKeepData.emplace_back(static_cast<UINT>(indexCountNum - 3));
 				}
 				else
 				{
 					indi.emplace_back(static_cast<USHORT>(indexCountNum));
+					indiKeepData.emplace_back(static_cast<UINT>(indexCountNum));
 				}
 
 
@@ -220,8 +226,10 @@ RESOURCE_HANDLE ObjResourceMgr::LoadModel(std::string RESOURCE)
 	resource[setHandle].indexBufferView = KazBufferHelper::SetIndexBufferView(modelDataBuffers->GetGpuAddress(indexHandle), indexByte);
 	//頂点バッファビューとインデックスバッファビューの設定---------------------------------------
 
+
 	resource[setHandle].indexNum = static_cast<UINT>(indi.size());
 	resource[setHandle].vertices = positions;
+	resource[setHandle].index = indiKeepData;
 
 	return setHandle;
 }

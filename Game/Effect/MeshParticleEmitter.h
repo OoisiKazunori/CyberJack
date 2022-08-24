@@ -24,7 +24,7 @@ private:
 	//バッファ
 
 	static const int PARTICLE_MAX_NUM = 1;
-	static const int PER_USE_PARTICLE_MAX_NUM = 1000;
+	static const int PER_USE_PARTICLE_MAX_NUM = 5000;
 	static const int DRAW_CALL = 1;
 
 	struct IndirectCommand
@@ -51,6 +51,10 @@ private:
 		DirectX::XMMATRIX cameraMat;
 		DirectX::XMMATRIX projectionMat;
 		DirectX::XMMATRIX bollboardMat;
+		DirectX::XMFLOAT4 vertices[5000];
+		UINT indexMaxNum;
+		DirectX::XMFLOAT3 pad;
+		UINT index[5000];
 	};
 
 	Microsoft::WRL::ComPtr<ID3D12CommandSignature> commandSig;

@@ -1263,129 +1263,129 @@ void Game::Draw()
 	}
 
 
-	if (!gameOverFlag)
-	{
-		RenderTargetStatus::Instance()->PrepareToChangeBarrier(handles[0]);
-		RenderTargetStatus::Instance()->ClearRenderTarget(handles[0]);
+	//if (!gameOverFlag)
+	//{
+	//	RenderTargetStatus::Instance()->PrepareToChangeBarrier(handles[0]);
+	//	RenderTargetStatus::Instance()->ClearRenderTarget(handles[0]);
 
-		if (lineDebugFlag)
-		{
-			bg.Draw();
-		}
-		//player.Draw();
-		box.data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
-		box.Draw();
-
-
-		//敵の描画処理----------------------------------------------------------------
-		for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
-		{
-			for (int enemyCount = 0; enemyCount < enemies[enemyType].size(); ++enemyCount)
-			{
-				//生成されている敵のみ描画処理を通す
-				bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr &&
-					enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag &&
-					!enemies[enemyType][enemyCount]->GetData()->outOfStageFlag;
-				if (enableToUseDataFlag)
-				{
-					enemies[enemyType][enemyCount]->Draw();
-
-					enemyHitBox[enemyType][enemyCount].data.transform.pos = *enemies[enemyType][enemyCount]->GetData()->hitBox.center;
-					float lScale = enemies[enemyType][enemyCount]->GetData()->hitBox.radius;
-					enemyHitBox[enemyType][enemyCount].data.transform.scale = { lScale ,lScale ,lScale };
-					enemyHitBox[enemyType][enemyCount].data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
-					enemyHitBox[enemyType][enemyCount].Draw();
-				}
-			}
-		}
+	//	if (lineDebugFlag)
+	//	{
+	//		bg.Draw();
+	//	}
+	//	//player.Draw();
+	//	box.data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
+	//	box.Draw();
 
 
-		for (int i = 0; i < rocketEffect.size(); ++i)
-		{
-			rocketEffect[i].Draw();
-		}
+	//	//敵の描画処理----------------------------------------------------------------
+	//	for (int enemyType = 0; enemyType < enemies.size(); ++enemyType)
+	//	{
+	//		for (int enemyCount = 0; enemyCount < enemies[enemyType].size(); ++enemyCount)
+	//		{
+	//			//生成されている敵のみ描画処理を通す
+	//			bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr &&
+	//				enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag &&
+	//				!enemies[enemyType][enemyCount]->GetData()->outOfStageFlag;
+	//			if (enableToUseDataFlag)
+	//			{
+	//				enemies[enemyType][enemyCount]->Draw();
+
+	//				enemyHitBox[enemyType][enemyCount].data.transform.pos = *enemies[enemyType][enemyCount]->GetData()->hitBox.center;
+	//				float lScale = enemies[enemyType][enemyCount]->GetData()->hitBox.radius;
+	//				enemyHitBox[enemyType][enemyCount].data.transform.scale = { lScale ,lScale ,lScale };
+	//				enemyHitBox[enemyType][enemyCount].data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
+	//				enemyHitBox[enemyType][enemyCount].Draw();
+	//			}
+	//		}
+	//	}
 
 
-		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
-			//if (100 <= gameFlame)
-		{
-			goalBox.Draw();
-		}
+	//	for (int i = 0; i < rocketEffect.size(); ++i)
+	//	{
+	//		rocketEffect[i].Draw();
+	//	}
 
 
-		stages[stageNum]->SetCamera(0);
-		//stages[stageNum]->Draw();
-		portal.DrawPortal();
-		portal.DrawFlame();
+	//	if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
+	//		//if (100 <= gameFlame)
+	//	{
+	//		goalBox.Draw();
+	//	}
+
+
+	//	stages[stageNum]->SetCamera(0);
+	//	//stages[stageNum]->Draw();
+	//	portal.DrawPortal();
+	//	portal.DrawFlame();
 
 
 
-		for (int i = 0; i < hitEffect.size(); ++i)
-		{
-			hitEffect[i].Draw();
-		}
+	//	for (int i = 0; i < hitEffect.size(); ++i)
+	//	{
+	//		hitEffect[i].Draw();
+	//	}
 
-		for (int i = 0; i < lineLevel.size(); ++i)
-		{
-			lineLevel[i].Draw();
-		}
+	//	for (int i = 0; i < lineLevel.size(); ++i)
+	//	{
+	//		lineLevel[i].Draw();
+	//	}
 
-		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
-		{
-			goalBox.lightEffect.Draw();
-		}
-		//doneSprite.Draw();
-		//titleLogoTex.Draw();
-		//tutorialWindow.Draw();
-		//stageUI.Draw();
+	//	if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
+	//	{
+	//		goalBox.lightEffect.Draw();
+	//	}
+	//	//doneSprite.Draw();
+	//	//titleLogoTex.Draw();
+	//	//tutorialWindow.Draw();
+	//	//stageUI.Draw();
 
-		meshEmitter.Draw();
+	//	meshEmitter.Draw();
 
-		RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, handles[0]);
-		RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
-		//輝度抽出
-		luminaceTex.Draw();
-		RenderTargetStatus::Instance()->PrepareToCloseBarrier(addHandle);
-		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
-		//ゲーム画面描画
+	//	RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, handles[0]);
+	//	RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
+	//	//輝度抽出
+	//	luminaceTex.Draw();
+	//	RenderTargetStatus::Instance()->PrepareToCloseBarrier(addHandle);
+	//	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
+	//	//ゲーム画面描画
 
-		mainRenderTarget.Draw();
+	//	mainRenderTarget.Draw();
 
-		addRenderTarget.data.handleData = addHandle;
-		addRenderTarget.data.addHandle.handle[0] = buler[0]->BlurImage(addHandle);
-		addRenderTarget.data.addHandle.handle[1] = buler[1]->BlurImage(addRenderTarget.data.addHandle.handle[0]);
-		addRenderTarget.data.addHandle.handle[2] = buler[2]->BlurImage(addRenderTarget.data.addHandle.handle[1]);
-		addRenderTarget.data.addHandle.handle[3] = buler[3]->BlurImage(addRenderTarget.data.addHandle.handle[2]);
+	//	addRenderTarget.data.handleData = addHandle;
+	//	addRenderTarget.data.addHandle.handle[0] = buler[0]->BlurImage(addHandle);
+	//	addRenderTarget.data.addHandle.handle[1] = buler[1]->BlurImage(addRenderTarget.data.addHandle.handle[0]);
+	//	addRenderTarget.data.addHandle.handle[2] = buler[2]->BlurImage(addRenderTarget.data.addHandle.handle[1]);
+	//	addRenderTarget.data.addHandle.handle[3] = buler[3]->BlurImage(addRenderTarget.data.addHandle.handle[2]);
 
-		PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "AddRenderTarget");
-		addRenderTarget.Draw();
-		PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
+	//	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "AddRenderTarget");
+	//	addRenderTarget.Draw();
+	//	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
 
-		cursor.Draw();
+	//	//cursor.Draw();
 
-		emitters[emittNum]->Draw();
-		for (int emitterTypeIndex = 0; emitterTypeIndex < deadEffectEmitter.size(); ++emitterTypeIndex)
-		{
-			for (int stackIndex = 0; stackIndex < deadEffectEmitter[emitterTypeIndex].size(); ++stackIndex)
-			{
-				deadEffectEmitter[emitterTypeIndex][stackIndex]->Draw();
-			}
-		}
+	//	emitters[emittNum]->Draw();
+	//	for (int emitterTypeIndex = 0; emitterTypeIndex < deadEffectEmitter.size(); ++emitterTypeIndex)
+	//	{
+	//		for (int stackIndex = 0; stackIndex < deadEffectEmitter[emitterTypeIndex].size(); ++stackIndex)
+	//		{
+	//			deadEffectEmitter[emitterTypeIndex][stackIndex]->Draw();
+	//		}
+	//	}
 
-		movieEffect.Draw();
+	//	movieEffect.Draw();
 
-	}
-	else
-	{
-		gameOverTex.Draw();
-		if (flashFlag)
-		{
-			pressAButtonTex.Draw();
-		}
-	}
+	//}
+	//else
+	//{
+	//	gameOverTex.Draw();
+	//	if (flashFlag)
+	//	{
+	//		pressAButtonTex.Draw();
+	//	}
+	//}
 
-	blackTex.Draw();
+	//blackTex.Draw();
 
 
 }

@@ -2,6 +2,7 @@
 #include"../DirectXCommon/DirectX12Device.h"
 #include"../DirectXCommon/DirectX12CmdList.h"
 #include"../Helper/KazHelper.h"
+#include"../KazLibrary/Buffer/DescriptorHeapMgr.h"
 
 GraphicsPipeLineMgr::GraphicsPipeLineMgr()
 {
@@ -179,6 +180,7 @@ bool GraphicsPipeLineMgr::SetPipeLineAndRootSignature(PipeLineNames PIPELINE_NAM
 	{
 		GraphicsRootSignature::Instance()->SetRootSignature(RootSignatureName[PIPELINE_NAME]);
 		DirectX12CmdList::Instance()->cmdList->SetPipelineState(PipeLineRegisterData[PIPELINE_NAME].Get());
+		DescriptorHeapMgr::Instance()->SetDescriptorHeap();
 		return true;
 	}
 	else
