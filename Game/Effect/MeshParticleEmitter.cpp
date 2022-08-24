@@ -68,19 +68,19 @@ MeshParticleEmitter::MeshParticleEmitter()
 		lData[0].pos = {};
 
 		//頂点情報
-		memcpy
-		(
-			constBufferData.vertices,
-			ObjResourceMgr::Instance()->GetResourceData(lHandle).vertices.data(),
-			ObjResourceMgr::Instance()->GetResourceData(lHandle).vertices.size() * sizeof(DirectX::XMFLOAT4)
-		);
-		//インデックス情報
-		memcpy
-		(
-			constBufferData.index,
-			ObjResourceMgr::Instance()->GetResourceData(lHandle).index.data(),
-			ObjResourceMgr::Instance()->GetResourceData(lHandle).index.size() * sizeof(UINT)
-		);
+		//memcpy
+		//(
+		//	constBufferData.vertices,
+		//	ObjResourceMgr::Instance()->GetResourceData(lHandle).vertices.data(),
+		//	ObjResourceMgr::Instance()->GetResourceData(lHandle).vertices.size() * sizeof(DirectX::XMFLOAT4)
+		//);
+		////インデックス情報
+		//memcpy
+		//(
+		//	constBufferData.index,
+		//	ObjResourceMgr::Instance()->GetResourceData(lHandle).index.data(),
+		//	ObjResourceMgr::Instance()->GetResourceData(lHandle).index.size() * sizeof(UINT)
+		//);
 		//頂点データの転送
 		buffers->TransData(particleDataHandle, lData.data(), (sizeof(ParticleData) * PARTICLE_MAX_NUM));
 
@@ -160,7 +160,7 @@ void MeshParticleEmitter::Update()
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(computeMemSize.startSize + 3));
 	}
 
-	DirectX12CmdList::Instance()->cmdList->Dispatch(2, 1, 1);
+	DirectX12CmdList::Instance()->cmdList->Dispatch(1, 1, 1);
 }
 
 void MeshParticleEmitter::Draw()
@@ -170,7 +170,7 @@ void MeshParticleEmitter::Draw()
 	DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
 	DirectX12CmdList::Instance()->cmdList->IASetIndexBuffer(&indexBufferView);
 
-	RenderTargetStatus::Instance()->ChangeBarrier(
+	/*RenderTargetStatus::Instance()->ChangeBarrier(
 		buffers->GetBufferData(drawCommandHandle).Get(),
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
 		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT
@@ -190,7 +190,7 @@ void MeshParticleEmitter::Draw()
 		buffers->GetBufferData(drawCommandHandle).Get(),
 		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
-	);
+	);*/
 
 	model.Draw();
 

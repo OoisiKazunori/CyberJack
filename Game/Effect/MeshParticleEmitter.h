@@ -51,10 +51,10 @@ private:
 		DirectX::XMMATRIX cameraMat;
 		DirectX::XMMATRIX projectionMat;
 		DirectX::XMMATRIX bollboardMat;
-		DirectX::XMFLOAT4 vertices[5000];
+		DirectX::XMFLOAT4 vertices[1];
 		UINT indexMaxNum;
 		DirectX::XMFLOAT3 pad;
-		UINT index[5000];
+		UINT index[1];
 	};
 
 	Microsoft::WRL::ComPtr<ID3D12CommandSignature> commandSig;

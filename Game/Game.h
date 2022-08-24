@@ -18,7 +18,6 @@
 #include"../Game/Stage/RezStage.h"
 #include"../Game/Stage/BlockParticleStage.h"
 
-#include"../Game/Event/MoiveEffect.h"
 #include"../Game/UI/AnnounceStageUI.h"
 #include"../Game/Event/EventSprite.h"
 #include"../Game/Event/TutorialWindow.h"
@@ -203,9 +202,6 @@ private:
 
 
 	std::array<BoxPolygonRender, 8> lineStartPoly;
-
-
-	MoiveEffect movieEffect;//カメラが固定になって演出を描画する
 
 
 	//ゲームオーバー画面----------------------------------------------

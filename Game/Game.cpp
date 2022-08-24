@@ -227,8 +227,6 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	goalBox.Init(responeGoalBoxPos);
 	initAppearFlag = false;
 
-	movieEffect.Init();
-
 
 	gameOverFlag = false;
 	readyToBlackOutFlag = false;
@@ -586,6 +584,8 @@ void Game::Update()
 		//デバック用
 		eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle, 10.0f);
 		targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
+		eyePos = { 495.3f,0.0f,-294.4f };
+		targetPos = { 491.0f,0.0f,-292.0f };
 	}
 
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 0);
@@ -1040,7 +1040,6 @@ void Game::Update()
 		player.Update();
 		cursor.Update();
 		goalBox.Update();
-		movieEffect.Update();
 		stageUI.Update();
 		//stages[stageNum]->Update();
 		doneSprite.Update();
@@ -1235,33 +1234,33 @@ void Game::Draw()
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 	RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
 
-	//ポータル演出
-	//if (goalBox.startPortalEffectFlag)
-	{
-		int lStageNum = -1;
-		if (portal.DrawPrevStageFlag())
-		{
-			lStageNum = stageNum - 1;
-			if (lStageNum < 0)
-			{
-				lStageNum = 0;
-			}
-		}
-		else
-		{
-			lStageNum = stageNum + 1;
-		}
-		RenderTargetStatus::Instance()->PrepareToChangeBarrier(potalTexHandle);
-		RenderTargetStatus::Instance()->ClearRenderTarget(potalTexHandle);
+	////ポータル演出
+	////if (goalBox.startPortalEffectFlag)
+	//{
+	//	int lStageNum = -1;
+	//	if (portal.DrawPrevStageFlag())
+	//	{
+	//		lStageNum = stageNum - 1;
+	//		if (lStageNum < 0)
+	//		{
+	//			lStageNum = 0;
+	//		}
+	//	}
+	//	else
+	//	{
+	//		lStageNum = stageNum + 1;
+	//	}
+	//	RenderTargetStatus::Instance()->PrepareToChangeBarrier(potalTexHandle);
+	//	RenderTargetStatus::Instance()->ClearRenderTarget(potalTexHandle);
 
-		CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 1);
-		player.Draw();
-		stages[lStageNum]->SetCamera(1);
-		//stages[lStageNum]->Draw();
-		RenderTargetStatus::Instance()->PrepareToCloseBarrier(potalTexHandle);
-		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
-	}
-
+	//	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 1);
+	//	player.Draw();
+	//	stages[lStageNum]->SetCamera(1);
+	//	//stages[lStageNum]->Draw();
+	//	RenderTargetStatus::Instance()->PrepareToCloseBarrier(potalTexHandle);
+	//	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
+	//}
+	////ここまでは大丈夫----------------------------------------------------------------------------
 
 	//if (!gameOverFlag)
 	//{
@@ -1339,8 +1338,6 @@ void Game::Draw()
 	//	//tutorialWindow.Draw();
 	//	//stageUI.Draw();
 
-	//	meshEmitter.Draw();
-
 	//	RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, handles[0]);
 	//	RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
 	//	//輝度抽出
@@ -1362,9 +1359,9 @@ void Game::Draw()
 	//	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
 
-	//	//cursor.Draw();
+		//cursor.Draw();
 
-	//	emitters[emittNum]->Draw();
+		//emitters[emittNum]->Draw();
 	//	for (int emitterTypeIndex = 0; emitterTypeIndex < deadEffectEmitter.size(); ++emitterTypeIndex)
 	//	{
 	//		for (int stackIndex = 0; stackIndex < deadEffectEmitter[emitterTypeIndex].size(); ++stackIndex)
@@ -1372,8 +1369,6 @@ void Game::Draw()
 	//			deadEffectEmitter[emitterTypeIndex][stackIndex]->Draw();
 	//		}
 	//	}
-
-	//	movieEffect.Draw();
 
 	//}
 	//else
@@ -1387,6 +1382,7 @@ void Game::Draw()
 
 	//blackTex.Draw();
 
+	meshEmitter.Draw();
 
 }
 

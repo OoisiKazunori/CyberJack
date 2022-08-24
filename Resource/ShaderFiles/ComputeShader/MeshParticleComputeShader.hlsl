@@ -19,9 +19,9 @@ cbuffer RootConstants : register(b0)
     matrix view;
     matrix projection;
     matrix billBoard;
-    float4 vertices[5000];
+    float4 vertices[1];
     uint indexMaxNum;
-	uint indexData[5000];
+	uint indexData[1];
 };
 
 //o—Í
@@ -39,7 +39,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
 
 
     //’¸“_”ˆÈ“à‚È‚çˆ—‚·‚é
-    if(index < 3054 && index + 1 < 3054)
+    if(index < 1 && index + 1 < 1)
     {
     uint nowVertIndex = indexData[index];
     uint nextVertIndex = indexData[index + 1];
