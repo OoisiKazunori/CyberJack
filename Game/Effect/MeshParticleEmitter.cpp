@@ -170,7 +170,7 @@ void MeshParticleEmitter::Draw()
 	DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
 	DirectX12CmdList::Instance()->cmdList->IASetIndexBuffer(&indexBufferView);
 
-	/*RenderTargetStatus::Instance()->ChangeBarrier(
+	RenderTargetStatus::Instance()->ChangeBarrier(
 		buffers->GetBufferData(drawCommandHandle).Get(),
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
 		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT
@@ -190,7 +190,7 @@ void MeshParticleEmitter::Draw()
 		buffers->GetBufferData(drawCommandHandle).Get(),
 		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
-	);*/
+	);
 
 	model.Draw();
 

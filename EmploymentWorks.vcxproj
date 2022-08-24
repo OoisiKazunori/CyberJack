@@ -203,7 +203,6 @@
     <ClCompile Include="Game\Event\GoalBoxPortalStringEffect.cpp" />
     <ClCompile Include="Game\Event\LineCpuEffect.cpp" />
     <ClCompile Include="Game\Event\LineFlashLight.cpp" />
-    <ClCompile Include="Game\Event\LineLight.cpp" />
     <ClCompile Include="Game\Event\LineLightEffect.cpp" />
     <ClCompile Include="Game\Event\MoiveEffect.cpp" />
     <ClCompile Include="Game\Event\PortalEffect.cpp" />
