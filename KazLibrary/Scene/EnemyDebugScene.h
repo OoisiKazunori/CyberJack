@@ -39,5 +39,11 @@ private:
 	KazMath::Vec3<float>responePos;
 
 	BackGroundForDebug bg;
+
+
+	ObjModelRender battleShipObjModel;
+	FbxModelRender battleShipFbxModel;
+	FbxModelRender boxModel;
+	FbxModelRender uvCheckModel;
 };
 

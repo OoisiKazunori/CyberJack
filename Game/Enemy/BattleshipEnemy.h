@@ -21,7 +21,7 @@ private:
 	float vel;
 	int misileShotIndex;
 	std::array<BoxPolygonRender, 8>misileR;
-	//FbxModelRenderPtr model;
+	FbxModelRenderPtr model;
 
 	bool isShotFlag;
 };

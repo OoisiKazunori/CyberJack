@@ -9,6 +9,16 @@ FbxModelRender::FbxModelRender()
 	constBufferHandle[1] = CreateConstBuffer(sizeof(ConstBufferDataSkin), typeid(ConstBufferDataSkin).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_SKINING);
 
 	frameTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
+
+
+
+	ConstBufferDataSkin *constMap = nullptr;
+	gpuBuffer->GetBufferData(constBufferHandle[1])->Map(0, nullptr, (void **)&constMap);
+	for (int i = 0; i < MAX_BONES; i++)
+	{
+		constMap->bones[i] = DirectX::XMMatrixIdentity();
+	}
+	gpuBuffer->GetBufferData(constBufferHandle[1])->Unmap(0, nullptr);
 }
 
 void FbxModelRender::Draw()
@@ -84,6 +94,7 @@ void FbxModelRender::Draw()
 		}
 
 
+		if(data.isPlayFlag)
 		{
 			ConstBufferDataSkin *constMap = nullptr;
 			gpuBuffer->GetBufferData(constBufferHandle[1])->Map(0, nullptr, (void **)&constMap);
