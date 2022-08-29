@@ -4,7 +4,7 @@
 
 #include<atlstr.h>
 
-#include <dxcapi.h>
+#include"dxcapi.h"
 #pragma comment(lib, "dxcompiler.lib")
 
 enum ShaderType

@@ -140,6 +140,7 @@
       <AdditionalDependencies>libfbxsdk-md.lib;libxml2-md.lib;zlib-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <TreatLinkerWarningAsErrors>false</TreatLinkerWarningAsErrors>
       <AdditionalOptions>/IGNORE:4099 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalLibraryDirectories>$(ProjectDir)\KazLibrary;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -370,6 +371,7 @@
     <ClInclude Include="KazLibrary\DirectXCommon\DirectX12.h" />
     <ClInclude Include="KazLibrary\DirectXCommon\DirectX12CmdList.h" />
     <ClInclude Include="KazLibrary\DirectXCommon\DirectX12Device.h" />
+    <ClInclude Include="KazLibrary\dxcapi.h" />
     <ClInclude Include="KazLibrary\Easing\easing.h" />
     <ClInclude Include="KazLibrary\Fps\FPSManager.h" />
     <ClInclude Include="KazLibrary\Helper\DebugColor.h" />

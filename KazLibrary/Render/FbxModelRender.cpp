@@ -32,7 +32,7 @@ void FbxModelRender::Draw()
 
 	if (data.handle.handle != -1)
 	{
-		if (data.isPlayFlag)
+		/*if (data.isPlayFlag)
 		{
 			currentTime += frameTime;
 			if (currentTime > resourceData->endTime[data.animationNumber])
@@ -51,7 +51,7 @@ void FbxModelRender::Draw()
 		else
 		{
 			currentTime = resourceData->startTime[data.animationNumber];
-		}
+		}*/
 
 
 		//パイプライン設定-----------------------------------------------------------------------------------------------------

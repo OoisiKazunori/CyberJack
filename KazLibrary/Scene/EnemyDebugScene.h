@@ -42,7 +42,7 @@ private:
 
 
 	ObjModelRender battleShipObjModel;
-	FbxModelRender battleShipFbxModel;
+	FbxModelRenderPtr battleShipFbxModel;
 	FbxModelRender boxModel;
 	FbxModelRender uvCheckModel;
 };

@@ -44,23 +44,22 @@ EnemyDebugScene::EnemyDebugScene()
 
 
 
-
-
+	battleShipFbxModel = std::make_unique<FbxModelRender>();
 	//モデルの読み込み処理
 	battleShipObjModel.data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_Model.obj");	//モデル読み込み
-	battleShipFbxModel.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_HachOpen_anim.fbx");	//モデル読み込み
+	battleShipFbxModel->data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_HachOpen_anim.fbx");	//モデル読み込み
 	boxModel.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::RelativeResourcePath + "cube.fbx");	//モデル読み込み
 	uvCheckModel.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::RelativeResourcePath + "testCube.fbx");	//モデル読み込み
 
 
 	battleShipObjModel.data.transform.pos = { -350.0f,0.0f,0.0f };
-	battleShipFbxModel.data.transform.pos = { 200.0f,0.0f,0.0f };
+	battleShipFbxModel->data.transform.pos = { 200.0f,0.0f,0.0f };
 	boxModel.data.transform.pos = { -200.0f,-50.0f,0.0f };
 	boxModel.data.transform.scale = { 1.0f,1.0f,1.0f };
 	uvCheckModel.data.transform.pos = { 0.0f,0.0f,0.0f };
 	uvCheckModel.data.transform.scale = { 100.0f,100.0f,100.0f };
 
-
+	//battleShipFbxModel->data.isPlayFlag = true;
 	CameraMgr::Instance()->CameraSetting(60.0f, 10000.0f);
 }
 
@@ -146,6 +145,7 @@ void EnemyDebugScene::Update()
 	eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle);
 	targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 0);
+
 
 	//ImGui::Begin("EnemyList");
 	//ImGui::InputInt("enemyIndex", &specifiedEnemyType);
@@ -290,7 +290,7 @@ void EnemyDebugScene::Draw()
 	battleShipObjModel.Draw();
 	boxModel.Draw();
 	uvCheckModel.Draw();
-	battleShipFbxModel.Draw();
+	battleShipFbxModel->Draw();
 
 
 }

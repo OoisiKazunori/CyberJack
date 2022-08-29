@@ -265,6 +265,7 @@
     <ClInclude Include="Game\Enemy\SummonEnemy.h" />
     <ClInclude Include="Game\Effect\SparkEmitter.h" />
     <ClInclude Include="Game\Effect\SparkParticle.h" />
+    <ClInclude Include="KazLibrary\dxcapi.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
