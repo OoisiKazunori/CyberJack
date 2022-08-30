@@ -3,9 +3,7 @@
 #include"../Helper/OutPutDebugStringAndCheckResult.h"
 
 #include<atlstr.h>
-
 #include"dxcapi.h"
-#pragma comment(lib, "dxcompiler.lib")
 
 enum ShaderType
 {

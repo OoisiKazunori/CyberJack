@@ -165,6 +165,7 @@ private:
 	//スキニング情報の読み取り
 	void ParseSkin(Model *MODEL, FbxMesh *FBX_MESH);
 
+	void ParseFaces(Model *MODEL, FbxMesh *FBX_MESH);
 
 	DirectX::XMVECTOR FbxDoubleToXMVECTOR(const FbxDouble3 &DOUBLE_3);
 
