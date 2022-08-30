@@ -227,8 +227,6 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	goalBox.Init(responeGoalBoxPos);
 	initAppearFlag = false;
 
-	movieEffect.Init();
-
 
 	gameOverFlag = false;
 	readyToBlackOutFlag = false;
@@ -1050,7 +1048,6 @@ void Game::Update()
 		player.Update();
 		cursor.Update();
 		goalBox.Update();
-		movieEffect.Update();
 		stageUI.Update();
 		stages[stageNum]->Update();
 		doneSprite.Update();
@@ -1280,7 +1277,7 @@ void Game::Draw()
 		CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 1);
 		player.Draw();
 		stages[lStageNum]->SetCamera(1);
-		stages[lStageNum]->Draw();
+		//stages[lStageNum]->Draw();
 		RenderTargetStatus::Instance()->PrepareToCloseBarrier(potalTexHandle);
 		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 	}
@@ -1388,18 +1385,16 @@ void Game::Draw()
 
 		mainRenderTarget.Draw();
 
-		addRenderTarget.data.handleData = addHandle;
-		addRenderTarget.data.addHandle.handle[0] = buler[0]->BlurImage(addHandle);
-		addRenderTarget.data.addHandle.handle[1] = buler[1]->BlurImage(addRenderTarget.data.addHandle.handle[0]);
-		addRenderTarget.data.addHandle.handle[2] = buler[2]->BlurImage(addRenderTarget.data.addHandle.handle[1]);
-		addRenderTarget.data.addHandle.handle[3] = buler[3]->BlurImage(addRenderTarget.data.addHandle.handle[2]);
+		//addRenderTarget.data.handleData = addHandle;
+		//addRenderTarget.data.addHandle.handle[0] = buler[0]->BlurImage(addHandle);
+		//addRenderTarget.data.addHandle.handle[1] = buler[1]->BlurImage(addRenderTarget.data.addHandle.handle[0]);
+		//addRenderTarget.data.addHandle.handle[2] = buler[2]->BlurImage(addRenderTarget.data.addHandle.handle[1]);
+		//addRenderTarget.data.addHandle.handle[3] = buler[3]->BlurImage(addRenderTarget.data.addHandle.handle[2]);
 
 		PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "AddRenderTarget");
-		addRenderTarget.Draw();
+		//addRenderTarget.Draw();
 		PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
-
-		cursor.Draw();
 
 		emitters[emittNum]->Draw();
 		for (int emitterTypeIndex = 0; emitterTypeIndex < deadEffectEmitter.size(); ++emitterTypeIndex)
@@ -1410,8 +1405,8 @@ void Game::Draw()
 			}
 		}
 
-		movieEffect.Draw();
 
+		cursor.Draw();
 	}
 	else
 	{

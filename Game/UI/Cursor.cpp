@@ -18,12 +18,6 @@ Cursor::Cursor()
 	baseSpeed = 10.0f;
 	flameHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::CursorPath + "CursorBase.png");
 	cursorFlameTex->data.handleData = flameHandle;
-	//cursorFlameTex->data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
-	//cursorFlameTex->data.pipelineName = PIPELINE_NAME_SPRITE_MULTITEX;
-
-
-	//numberTex->data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
-	numberTex->data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
 
 	//”Žšƒnƒ“ƒhƒ‹‚Ì•Û‘¶
 	numberHandle[0] = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::CursorPath + "CursorBase2.png");
@@ -56,6 +50,10 @@ Cursor::Cursor()
 	clickSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Push.wav", false);
 	initClickSoundFlag = false;
 
+
+
+	cursorFlameTex->data.pipelineName = PIPELINE_NAME_SPRITE_Z_ALWAYS;
+	numberTex->data.pipelineName = PIPELINE_NAME_SPRITE_Z_ALWAYS;
 }
 
 void Cursor::Init()
@@ -418,7 +416,7 @@ void Cursor::Update()
 	{
 		cursorAlpha = 255;
 		dontMoveFlag = false;
-		cursorFlameTex->data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
+		cursorFlameTex->data.pipelineName = PIPELINE_NAME_SPRITE_Z_ALWAYS;
 	}
 
 	numberTex->data.colorData.color.a = cursorAlpha;

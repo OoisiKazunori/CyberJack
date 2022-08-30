@@ -110,7 +110,6 @@
     <ClCompile Include="Game\Enemy\SplineMisileForBattleShip.cpp" />
     <ClCompile Include="Game\Stage\RezStage.cpp" />
     <ClCompile Include="KazLibrary\Helper\KazImGuiHelper.cpp" />
-    <ClCompile Include="Game\Event\LineLight.cpp" />
     <ClCompile Include="Game\Event\LineFlashLight.cpp" />
     <ClCompile Include="Game\Effect\HitEffectPattern1Emitter.cpp" />
     <ClCompile Include="Game\Effect\EaseScaleParticle.cpp" />

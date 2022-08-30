@@ -12,6 +12,11 @@ Player::Player()
 
 	damageSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "PlayerDamage.wav");
 
+	RESOURCE_HANDLE lHandle = render->CreateConstBuffer(sizeof(DirectX::XMFLOAT4), typeid(DirectX::XMFLOAT4).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+
+	DirectX::XMFLOAT4 lColor = { 0.0f,0.0f,0.0f,0.0f };
+	render->TransData(&lColor, lHandle, typeid(DirectX::XMFLOAT4).name());
+
 }
 
 void Player::Init(const KazMath::Vec3<float> &POS, bool DRAW_UI_FLAG)
@@ -28,6 +33,8 @@ void Player::Init(const KazMath::Vec3<float> &POS, bool DRAW_UI_FLAG)
 	redTimer = 0;
 
 	drawHpFlag = DRAW_UI_FLAG;
+
+
 }
 
 void Player::Finalize()
