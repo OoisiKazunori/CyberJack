@@ -126,6 +126,8 @@
     <ClCompile Include="Game\Enemy\SummonEnemy.cpp" />
     <ClCompile Include="Game\Effect\SparkEmitter.cpp" />
     <ClCompile Include="Game\Effect\SparkParticle.cpp" />
+    <ClCompile Include="Game\Effect\PlayerDamageEmitter.cpp" />
+    <ClCompile Include="Game\Effect\PlayerDamegePartice.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -265,6 +267,8 @@
     <ClInclude Include="Game\Enemy\SummonEnemy.h" />
     <ClInclude Include="Game\Effect\SparkEmitter.h" />
     <ClInclude Include="Game\Effect\SparkParticle.h" />
+    <ClInclude Include="Game\Effect\PlayerDamageEmitter.h" />
+    <ClInclude Include="Game\Effect\PlayerDamegePartice.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

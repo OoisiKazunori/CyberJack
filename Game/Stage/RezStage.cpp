@@ -42,9 +42,6 @@ RezStage::RezStage()
 	selectingR.data.color = { 255,0,0,255 };
 
 
-	ray = std::make_unique<LineRender>();
-
-
 
 	stageParamLoader.LoadFile(KazFilePathName::StageParamPath + "RezStageParamData.json");
 	//ÉpÉâÉÅÅ[É^Ç©ÇÁîªíf
@@ -85,41 +82,6 @@ void RezStage::Update()
 	{
 		floorObjectRender2[i].Update();
 	}
-
-
-	//std::array<MatData, 400>lArrayData;
-	//for (int i = 0; i < 400; ++i)
-	//{
-	//	lArrayData[i].mat = DirectX::XMMatrixIdentity() * CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
-	//	lArrayData[i].color = { 1.0f,1.0f,1.0f,1.0f };
-	//}
-	//poly->TransData(lArrayData.data(), lineDrawHandle, "MatData");
-
-
-	ImGui::Begin("C");
-	ImGui::DragFloat("CirclePosX", &pos.x);
-	ImGui::DragFloat("CircleposY", &pos.y);
-	ImGui::DragFloat("CircleposZ", &pos.z);
-	ImGui::DragFloat("radius", &sphere.radius);
-	ImGui::DragFloat("RayPosX1", &ray->data.startPos.x);
-	ImGui::DragFloat("RayposY1", &ray->data.startPos.y);
-	ImGui::DragFloat("RayposZ1", &ray->data.startPos.z);
-	ImGui::DragFloat("RayPosX2", &ray->data.endPos.x);
-	ImGui::DragFloat("RayposY2", &ray->data.endPos.y);
-	ImGui::DragFloat("RayposZ2", &ray->data.endPos.z);
-	ImGui::End();
-
-
-	sphere.center = &pos;
-	std::array<KazMath::Vec2<float>, 2>lTmp =
-		CollisionManager::Instance()->CheckCircleAndRay(sphere, ray->data.startPos.ConvertVec2(), ray->data.endPos.ConvertVec2());
-
-	c1.data.transform.pos.x = lTmp[0].x;
-	c1.data.transform.pos.y = lTmp[0].y;
-	c2.data.transform.pos.x = lTmp[1].x;
-	c2.data.transform.pos.y = lTmp[1].y;
-
-
 }
 
 void RezStage::Draw()

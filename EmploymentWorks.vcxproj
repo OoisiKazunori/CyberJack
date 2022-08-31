@@ -179,6 +179,8 @@
     <ClCompile Include="Game\Effect\FireEffect.cpp" />
     <ClCompile Include="Game\Effect\MisileSmokeEmitter.cpp" />
     <ClCompile Include="Game\Effect\MisileSmokeParticle.cpp" />
+    <ClCompile Include="Game\Effect\PlayerDamageEmitter.cpp" />
+    <ClCompile Include="Game\Effect\PlayerDamegePartice.cpp" />
     <ClCompile Include="Game\Effect\RocketEffect.cpp" />
     <ClCompile Include="Game\Effect\RocketLightEffect.cpp" />
     <ClCompile Include="Game\Effect\SparkEmitter.cpp" />
@@ -306,6 +308,8 @@
     <ClInclude Include="Game\Effect\FireEffect.h" />
     <ClInclude Include="Game\Effect\MisileSmokeEmitter.h" />
     <ClInclude Include="Game\Effect\MisileSmokeParticle.h" />
+    <ClInclude Include="Game\Effect\PlayerDamageEmitter.h" />
+    <ClInclude Include="Game\Effect\PlayerDamegePartice.h" />
     <ClInclude Include="Game\Effect\RocketEffect.h" />
     <ClInclude Include="Game\Effect\RocketLightEffect.h" />
     <ClInclude Include="Game\Effect\SparkEmitter.h" />

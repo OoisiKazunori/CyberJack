@@ -6,7 +6,6 @@
 #include"../KazLibrary/Render/KazRender.h"
 #include"../Game/Event/LineFlashLight.h"
 #include"../Game/Debug/ParameterMgr.h"
-#include"../KazLibrary/Collision/CollisionManager.h"
 #include"../Game/Stage/DrawGrid.h"
 #include"../Game/Stage/MountainObject.h"
 
@@ -37,13 +36,6 @@ private:
 
 	int selectNum;
 	BoxPolygonRender selectingR;
-
-
-	Sphere sphere;
-	KazMath::Vec3<float>pos;
-	LineRenderPtr ray;
-
-	BoxPolygonRender c1, c2;
 
 
 	std::array<DrawGrid, 4> gridRender;

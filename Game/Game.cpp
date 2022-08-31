@@ -451,6 +451,12 @@ void Game::Input()
 		emittNum = KazMath::Rand<int>(3, 0);
 		emitters[emittNum]->Init(KazMath::Vec2<float>(WIN_X / 2.0f, WIN_Y / 2.0f));
 	}
+
+	if (input->InputTrigger(DIK_SPACE))
+	{
+		damageEffect.Init(player.pos);
+	}
+
 }
 
 void Game::Update()
@@ -1156,6 +1162,8 @@ void Game::Update()
 		{
 			lightEffect[i].Update();
 		}
+
+		damageEffect.Update();
 #pragma endregion
 
 
@@ -1296,6 +1304,7 @@ void Game::Draw()
 		box.data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
 		//box.Draw();
 
+		damageEffect.Draw();
 
 
 		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
