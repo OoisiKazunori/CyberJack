@@ -157,7 +157,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 {
 	player.Init(KazMath::Transform3D().pos);
 	cursor.Init();
-
+	
 
 	stageUI.Init();
 
@@ -182,7 +182,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 
 	//ゲームループの初期化----------------------------------------------------------------
 	gameStartFlag = false;
-	cameraChangeFlag = true;
+	cameraChangeFlag = false;
 	gameFlame = 0;
 	//ゴールに触れ無かった場合に次のステージに移動する際の最大フレーム数
 	for (int i = 0; i < changeLayerLevelMaxTime.size(); ++i)
@@ -1423,7 +1423,6 @@ void Game::Draw()
 				deadEffectEmitter[emitterTypeIndex][stackIndex]->Draw();
 			}
 		}
-
 
 		cursor.Draw();
 	}

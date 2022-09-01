@@ -5,6 +5,8 @@
 
 FirstStage::FirstStage()
 {
+	hasiraObj[0].data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "house/" + "house.obj");
+
 	for (int i = 0; i < floorStage.size(); ++i)
 	{
 		floorStage[i].data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "road.obj");
@@ -364,10 +366,24 @@ void FirstStage::Update()
 			floorStage[i].data.transform.pos.z = 1000.0f;
 		}
 	}
+
+	ImGui::Begin("Obj");
+	ImGui::DragFloat("POS_X", &hasiraObj[0].data.transform.pos.x);
+	ImGui::DragFloat("POS_Y", &hasiraObj[0].data.transform.pos.y);
+	ImGui::DragFloat("POS_Z", &hasiraObj[0].data.transform.pos.z);
+	ImGui::DragFloat("SCALE_X", &hasiraObj[0].data.transform.scale.x);
+	ImGui::DragFloat("SCALE_Y", &hasiraObj[0].data.transform.scale.y);
+	ImGui::DragFloat("SCALE_Z", &hasiraObj[0].data.transform.scale.z);
+	ImGui::DragFloat("ROTA_X", &hasiraObj[0].data.transform.rotation.x);
+	ImGui::DragFloat("ROTA_Y", &hasiraObj[0].data.transform.rotation.y);
+	ImGui::DragFloat("ROTA_Z", &hasiraObj[0].data.transform.rotation.z);
+	ImGui::End();
 }
 
 void FirstStage::Draw()
 {
+	hasiraObj[0].Draw();
+
 	for (int i = 1; i < 24; ++i)
 	{
 		stageDebugBox[i].Draw();

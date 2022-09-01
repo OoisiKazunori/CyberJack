@@ -41,5 +41,7 @@ private:
 	float t;
 
 	std::array<ObjModelRender, 6> floorStage;
+
+	std::array<ObjModelRender, 1> hasiraObj;
 };
 
