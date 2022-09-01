@@ -37,6 +37,7 @@ void Player::Init(const KazMath::Vec3<float> &POS, bool DRAW_UI_FLAG)
 
 void Player::Finalize()
 {
+	damageWindow.Finalize();
 }
 
 void Player::Input()
@@ -63,10 +64,11 @@ void Player::Update()
 	{
 		SoundManager::Instance()->PlaySoundMem(damageSoundHandle, 1);
 		damageEffect.Init(pos);
+		damageWindow.Init(pos + KazMath::Vec3<float>(WIN_X / 2.0f, WIN_Y / 2.0f + 200.0f, 0.0f));
+		++hp;
 		redFlag = true;
 	}
 	prevHp = hp;
-
 
 	if (redFlag)
 	{
@@ -93,13 +95,14 @@ void Player::Update()
 	//----------HP‚ªŒ¸‚Á‚½‚çƒvƒŒƒCƒ„[‚ðÔ‚­‚·‚é----------
 
 	damageEffect.Update();
+	damageWindow.Update();
 }
 
 void Player::Draw()
 {
 	render->Draw();
-
 	damageEffect.Draw();
+	damageWindow.Draw();
 
 	if (drawHpFlag)
 	{

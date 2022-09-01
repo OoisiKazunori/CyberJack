@@ -12,7 +12,6 @@ AnnounceStageUI::AnnounceStageUI()
 	areaTex[2].data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "E.png");
 	areaTex[3].data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "A.png");
 
-
 	numberHandle[0] = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "CursorNum0.png");
 	numberHandle[1] = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "CursorNum1.png");
 	numberHandle[2] = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StageUIPath + "CursorNum2.png");

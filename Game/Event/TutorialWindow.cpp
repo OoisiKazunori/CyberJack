@@ -33,7 +33,7 @@ void TutorialWindow::Init()
 	transform.pos = { 15.0f,0.0f,15.0f };
 	transform.scale = { 0.0f,0.0f,0.0f };
 	transform.rotation = { 0.0f,20.0f,0.0f };
-	windowFlame.Init(transform, { 0.3f,0.35f }, false);
+	windowFlame.Init(transform, { 0.3f,0.35f }, false, WINDOW_3D);
 	windowFlame.Start();
 	endFlag = false;
 }
@@ -48,7 +48,6 @@ void TutorialWindow::Update()
 
 void TutorialWindow::Draw()
 {
-
 	line.Draw();
 	if (!endFlag)
 	{

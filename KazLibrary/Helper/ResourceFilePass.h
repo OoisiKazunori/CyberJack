@@ -26,6 +26,7 @@ namespace KazFilePathName
 	static std::string GoalPath = RelativeResourcePath + "Goal/";
 	static std::string GameOverPath = RelativeResourcePath + "GameOver/";
 	static std::string StageUIPath = RelativeResourcePath + "StageUI/";
+	static std::string UIPath = RelativeResourcePath + "UI/";
 	static std::string TitlePath = RelativeResourcePath + "Title/";
 	static std::string SceneChangePath = RelativeResourcePath + "SceneChange/";
 	static std::string TutorialPath = RelativeResourcePath + "Tutorial/";

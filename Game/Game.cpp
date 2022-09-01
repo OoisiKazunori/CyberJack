@@ -454,6 +454,11 @@ void Game::Input()
 		emitters[emittNum]->Init(KazMath::Vec2<float>(WIN_X / 2.0f, WIN_Y / 2.0f));
 	}
 
+	if (input->InputTrigger(DIK_SPACE))
+	{
+		player.Hit();
+	}
+
 }
 
 void Game::Update()
@@ -1047,6 +1052,7 @@ void Game::Update()
 
 		goalBox.releaseFlag = cursor.releaseFlag;
 
+
 		switch (stageNum)
 		{
 		case 1:
@@ -1300,12 +1306,11 @@ void Game::Draw()
 	{
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(handles[0]);
 		RenderTargetStatus::Instance()->ClearRenderTarget(handles[0]);
-
 		if (lineDebugFlag)
 		{
 			bg.Draw();
 		}
-		player.Draw();
+	
 		box.data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
 		//box.Draw();
 
@@ -1318,6 +1323,8 @@ void Game::Draw()
 
 		stages[stageNum]->SetCamera(0);
 		stages[stageNum]->Draw();
+
+		player.Draw();
 
 		portal.DrawPortal();
 		portal.DrawFlame();

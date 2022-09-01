@@ -3,6 +3,7 @@
 #include"../KazLibrary/Render/KazRender.h"
 #include"../Game/UI/PlayerHpUi.h"
 #include"../Game/Effect/PlayerDamageEmitter.h"
+#include"../Game/UI/DamageTextWindow.h"
 
 class Player
 {
@@ -27,9 +28,8 @@ private:
 
 	PlayerHpUi hpUi;
 
-
 	int damageSoundHandle;
 	PlayerDamageEmitter damageEffect;
-
+	DamageTextWindow damageWindow;
 };
 
