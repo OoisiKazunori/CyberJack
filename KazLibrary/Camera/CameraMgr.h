@@ -40,7 +40,7 @@ public:
 	/// </summary>
 	/// <param name="VIEWING_ANGLE">視野角</param>
 	/// <param name="FAR_SIDE">描画距離</param>
-	void CameraSetting(float VIEWING_ANGLE = 60.0f, float FAR_SIDE = 700.0f);
+	void CameraSetting(float VIEWING_ANGLE = 60.0f, float FAR_SIDE = 700.0f, int CAMERA_INDEX = 0);
 
 	/// <summary>
 	///  座標を受け取り、ビュー行列を計算します
@@ -73,8 +73,8 @@ public:
 	/// 透視投影変換行列を受け取ります
 	/// </summary>
 	/// <returns>透視投影変換行列</returns>
-	DirectX::XMMATRIX GetPerspectiveMatProjection();
-	DirectX::XMMATRIX *GetPerspectiveMatProjectionPointer();
+	DirectX::XMMATRIX GetPerspectiveMatProjection(int CAMERA_INDEX = 0);
+	DirectX::XMMATRIX *GetPerspectiveMatProjectionPointer(int CAMERA_INDEX = 0);
 
 	DirectX::XMMATRIX GetOrthographicMatProjection();
 
@@ -94,16 +94,15 @@ private:
 
 	DirectX::XMMATRIX view;
 	DirectX::XMMATRIX billBoard;
-	DirectX::XMMATRIX perspectiveMat;
 	DirectX::XMMATRIX orthographicMatProjection;
 
 
 	std::array<DirectX::XMMATRIX, CAMERA_ARRAY_NUM> billBoardArray;
+	std::array<DirectX::XMMATRIX, CAMERA_ARRAY_NUM> perspectiveMatArray;
 
 	std::array<std::unique_ptr<DirtySet>, CAMERA_ARRAY_NUM> viewDirtyFlagArray;
 	std::array<std::unique_ptr<DirtySet>, CAMERA_ARRAY_NUM> billBoardDirtyFlagArray;
-
-	DirtySet perspectiveProjDirtyFlag;
+	std::array<std::unique_ptr<DirtySet>, CAMERA_ARRAY_NUM> perspectiveProjDirtyFlag;
 	DirtySet orthographicMatProjectionDirtyFlag;
 };
 

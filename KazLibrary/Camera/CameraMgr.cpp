@@ -1,16 +1,8 @@
 #include "CameraMgr.h"
 #include"../Math/KazMath.h"
 
-CameraMgr::CameraMgr() :perspectiveProjDirtyFlag(perspectiveMat), orthographicMatProjectionDirtyFlag(orthographicMatProjection)
+CameraMgr::CameraMgr() : orthographicMatProjectionDirtyFlag(orthographicMatProjection)
 {
-	perspectiveMat =
-		DirectX::XMMatrixPerspectiveFovLH(
-			DirectX::XMConvertToRadians(60.0f),
-			(float)WIN_X / WIN_Y,
-			0.1f,
-			700.0f
-		);
-
 
 	//2Dç¿ïWïœä∑
 	orthographicMatProjection = DirectX::XMMatrixOrthographicOffCenterLH(
@@ -28,15 +20,23 @@ CameraMgr::CameraMgr() :perspectiveProjDirtyFlag(perspectiveMat), orthographicMa
 		viewDirtyFlagArray[i] = std::make_unique<DirtySet>(viewArray[i]);
 		billBoardArray[i] = DirectX::XMMatrixIdentity();
 		billBoardDirtyFlagArray[i] = std::make_unique<DirtySet>(billBoardArray[i]);
+		perspectiveMatArray[i] =
+			DirectX::XMMatrixPerspectiveFovLH(
+				DirectX::XMConvertToRadians(60.0f),
+				static_cast<float>(WIN_X) / static_cast<float>(WIN_Y),
+				0.1f,
+				700.0f
+			);
+		perspectiveProjDirtyFlag[i] = std::make_unique<DirtySet>(perspectiveMatArray[i]);
 	}
 }
 
-void CameraMgr::CameraSetting(float VIEWING_ANGLE, float FAR_SIDE)
+void CameraMgr::CameraSetting(float VIEWING_ANGLE, float FAR_SIDE, int CAMERA_INDEX)
 {
-	perspectiveMat =
+	perspectiveMatArray[CAMERA_INDEX] =
 		DirectX::XMMatrixPerspectiveFovLH(
 			DirectX::XMConvertToRadians(VIEWING_ANGLE),
-			(float)WIN_X / WIN_Y,
+			static_cast<float>(WIN_X) / static_cast<float>(WIN_Y),
 			0.1f,
 			FAR_SIDE
 		);
@@ -248,14 +248,14 @@ DirectX::XMMATRIX *CameraMgr::GetMatBillBoardPointer(int CAMERA_INDEX)
 	return &billBoardArray[CAMERA_INDEX];
 }
 
-DirectX::XMMATRIX CameraMgr::GetPerspectiveMatProjection()
+DirectX::XMMATRIX CameraMgr::GetPerspectiveMatProjection(int CAMERA_INDEX)
 {
-	return perspectiveMat;
+	return perspectiveMatArray[CAMERA_INDEX];
 }
 
-DirectX::XMMATRIX *CameraMgr::GetPerspectiveMatProjectionPointer()
+DirectX::XMMATRIX *CameraMgr::GetPerspectiveMatProjectionPointer(int CAMERA_INDEX)
 {
-	return &perspectiveMat;
+	return &perspectiveMatArray[CAMERA_INDEX];
 }
 
 DirectX::XMMATRIX CameraMgr::GetOrthographicMatProjection()
@@ -266,16 +266,16 @@ DirectX::XMMATRIX CameraMgr::GetOrthographicMatProjection()
 DirectX::XMMATRIX CameraMgr::GetPerspectiveMatProjectionAngle(float angle)
 {
 	return DirectX::XMMatrixPerspectiveFovLH(
-			DirectX::XMConvertToRadians(angle),
-			static_cast<float>(WIN_X) / static_cast<float>(WIN_Y),
-			0.1f,
-			100000
+		DirectX::XMConvertToRadians(angle),
+		static_cast<float>(WIN_X) / static_cast<float>(WIN_Y),
+		0.1f,
+		100000
 	);;
 }
 
 bool CameraMgr::ViewAndProjDirty(int CAMERA_INDEX)
 {
-	return viewDirtyFlagArray[CAMERA_INDEX]->Dirty() || perspectiveProjDirtyFlag.Dirty();
+	return viewDirtyFlagArray[CAMERA_INDEX]->Dirty() || perspectiveProjDirtyFlag[CAMERA_INDEX]->Dirty();
 }
 
 bool CameraMgr::BillboardDirty(int CAMERA_INDEX)
@@ -289,6 +289,6 @@ void CameraMgr::Record()
 	{
 		viewDirtyFlagArray[i]->Record();
 		billBoardDirtyFlagArray[i]->Record();
+		perspectiveProjDirtyFlag[i]->Record();
 	}
-	perspectiveProjDirtyFlag.Record();
 }

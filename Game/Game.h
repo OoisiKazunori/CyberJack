@@ -31,7 +31,6 @@
 
 #include"../Game/Effect/FireEffect.h"
 #include"../Game/Effect/RocketLightEffect.h"
-#include"../Game/Effect/PlayerDamageEmitter.h"
 
 
 struct LineEffectData
@@ -258,7 +257,6 @@ private:
 	int rocketIndex;
 	int fireIndex;
 
-	PlayerDamageEmitter damageEffect;
 	//エフェクト--------------------------------------
 
 	BoxPolygonRender box;

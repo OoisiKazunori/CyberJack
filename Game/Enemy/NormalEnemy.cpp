@@ -49,7 +49,7 @@ void NormalEnemy::Update()
 	//デバックキーor当たり判定内&&死亡時
 	if (EnableToHit(iEnemy_ModelRender->data.transform.pos.z) && !iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
 	{
-		iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME_MULTITEX;
+		iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
 		iEnemy_ModelRender->data.removeMaterialFlag = true;
 		iEnemy_ModelRender->data.colorData.color.x = 255;
 		iEnemy_ModelRender->data.colorData.color.y = 255;

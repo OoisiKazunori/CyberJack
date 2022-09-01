@@ -191,7 +191,7 @@ void Sprite3DRender::Draw()
 		ConstBufferData lConstMap;
 		lConstMap.world = baseMatWorldData.matWorld;
 		lConstMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex.id);
-		lConstMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection();
+		lConstMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection(data.cameraIndex.id);
 		lConstMap.color = data.colorData.ConvertColorRateToXMFLOAT4();
 		lConstMap.mat = lConstMap.world * lConstMap.view * lConstMap.viewproj;
 

@@ -5,7 +5,7 @@ MountainObject::MountainObject()
 {
 }
 
-void MountainObject::Init(const KazMath::Transform3D &TRANSFORM, RESOURCE_HANDLE HANDLE)
+void MountainObject::Init(const KazMath::Transform3D &TRANSFORM, RESOURCE_HANDLE HANDLE, const int *CAMERA_ID_PTR)
 {
 	for (int objectIndex = 0; objectIndex < floorObjectRender.objRender.size(); ++objectIndex)
 	{
@@ -30,7 +30,7 @@ void MountainObject::Init(const KazMath::Transform3D &TRANSFORM, RESOURCE_HANDLE
 
 	scaleRate = 0.0f;
 	reversValueFlag = false;
-
+	cameraId = CAMERA_ID_PTR;
 }
 
 void MountainObject::Update()
@@ -77,7 +77,8 @@ void MountainObject::Update()
 		floorObjectRender.objRender[0].data.transform.pos.z = 9000.0f;
 		floorObjectRender.objRender[1].data.transform.pos = floorObjectRender.objRender[0].data.transform.pos + KazMath::Vec3<float>(0.0f, -(floorObjectRender.objRender[0].data.transform.scale.y * 2), 0.0f);
 	}
-
+	floorObjectRender.objRender[0].data.cameraIndex.id = *cameraId;
+	floorObjectRender.objRender[1].data.cameraIndex.id = *cameraId;
 }
 
 void MountainObject::Draw()

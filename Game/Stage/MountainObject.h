@@ -7,7 +7,7 @@ class MountainObject
 {
 public:
 	MountainObject();
-	void Init(const KazMath::Transform3D &TRANSFORM, RESOURCE_HANDLE HANDLE);
+	void Init(const KazMath::Transform3D &TRANSFORM, RESOURCE_HANDLE HANDLE, const int *CAMERA_ID_PTR);
 	void Update();
 	void Draw();
 
@@ -21,5 +21,6 @@ private:
 
 	float scaleRate;
 	bool reversValueFlag;
+	const int *cameraId;
 };
 

@@ -16,7 +16,7 @@ DrawGrid::DrawGrid()
 	}
 }
 
-void DrawGrid::Init(bool USE_FOR_FLOOR_FLAG, float SPACE, float BASE_POS)
+void DrawGrid::Init(bool USE_FOR_FLOOR_FLAG, float SPACE, float BASE_POS, const int *CAMERA_ID_PTR)
 {
 	if (USE_FOR_FLOOR_FLAG)
 	{
@@ -40,6 +40,8 @@ void DrawGrid::Init(bool USE_FOR_FLOOR_FLAG, float SPACE, float BASE_POS)
 		gridLineRender[lLineRIndex].data.endPos = gridFloorXLinePos[i][1].pos;
 		++lLineRIndex;
 	}
+
+	cameraIndex = CAMERA_ID_PTR;
 }
 
 void DrawGrid::Update()
@@ -199,6 +201,8 @@ void DrawGrid::Draw()
 		nowColor.color = (flashColor.color - baseColor.color);
 		KazMath::Vec4<float> tmpFloatColor = baseColor.color.Float() + nowColor.color.Float() * scaleRate;
 		gridLineRender[i].data.color.color = tmpFloatColor.Int();
+
+		gridLineRender[i].data.cameraIndex.id = *cameraIndex;
 
 		gridLineRender[i].Draw();
 	}

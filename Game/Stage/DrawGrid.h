@@ -10,7 +10,7 @@ class DrawGrid
 {
 public:
 	DrawGrid();
-	void Init(bool USE_FOR_FLOOR_FLAG, float SPACE, float BASE_POS);
+	void Init(bool USE_FOR_FLOOR_FLAG, float SPACE, float BASE_POS, const int *CAMERA_ID_PTR);
 	void Update();
 	void Draw();
 
@@ -40,5 +40,6 @@ private:
 	void InitFloor(float SPACE, float BASE_POS);
 	void InitWall(float SPACE, float BASE_POS);
 
+	const int *cameraIndex;
 };
 

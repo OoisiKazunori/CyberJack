@@ -25,7 +25,7 @@ private:
 
 
 	//è∞Ç…OBJîzíu
-	std::array<MountainObject, 80>floorObjectRender2;
+	std::array<MountainObject, 80>floorObjectRender;
 
 	float scaleRate;
 	bool reversValueFlag;

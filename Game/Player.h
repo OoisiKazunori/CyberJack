@@ -2,6 +2,7 @@
 #include"../KazLibrary/DirectXCommon/Base.h"
 #include"../KazLibrary/Render/KazRender.h"
 #include"../Game/UI/PlayerHpUi.h"
+#include"../Game/Effect/PlayerDamageEmitter.h"
 
 class Player
 {
@@ -28,6 +29,7 @@ private:
 
 
 	int damageSoundHandle;
+	PlayerDamageEmitter damageEffect;
 
 };
 

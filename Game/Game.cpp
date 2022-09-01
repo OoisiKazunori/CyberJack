@@ -107,8 +107,6 @@ Game::Game()
 	lineStartPoly[6].data.transform.pos = { 0.5f,0.3f,-0.3f };
 	lineStartPoly[7].data.transform.pos = { 0.0f,-0.3f,-1.0f };
 
-	CameraMgr::Instance()->CameraSetting(60.0f, 10000.0f);
-
 	stages[0] = std::make_unique<FirstStage>();
 	stages[1] = std::make_unique<RezStage>();
 	//stages[1] = std::make_unique<BlockParticleStage>();
@@ -140,6 +138,10 @@ Game::Game()
 	SoundManager::Instance()->StopSoundMem(bgmSoundHandle);
 	//SoundManager::Instance()->PlaySoundMem(bgmSoundHandle, 1, true);
 
+
+
+	CameraMgr::Instance()->CameraSetting(60.0f, 1200.0f, 0);
+	CameraMgr::Instance()->CameraSetting(60.0f, 100000.0f, 1);
 }
 
 Game::~Game()
@@ -452,11 +454,6 @@ void Game::Input()
 		emitters[emittNum]->Init(KazMath::Vec2<float>(WIN_X / 2.0f, WIN_Y / 2.0f));
 	}
 
-	if (input->InputTrigger(DIK_SPACE))
-	{
-		damageEffect.Init(player.pos);
-	}
-
 }
 
 void Game::Update()
@@ -599,8 +596,8 @@ void Game::Update()
 
 
 	//敵が一通り生成終わった際に登場させる----------------------------------------------------------------
-	if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame && !initAppearFlag)
-		//if (100 <= gameFlame && !initAppearFlag)
+	//if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame && !initAppearFlag)
+	if (100 <= gameFlame && !initAppearFlag)
 	{
 		goalBox.Appear(appearGoalBoxPos[stageNum]);
 		initAppearFlag = true;
@@ -696,7 +693,7 @@ void Game::Update()
 					break;
 
 				case ENEMY_TYPE_BATTLESHIP_MISILE:
-					lightEffect[rocketIndex].Init(enemies[enemyType][enemyCount]->GetData()->hitBox.center, KazMath::Vec3<float>(0.0f, 0.0f, 0.0f), false, &enemies[enemyType][enemyCount]->GetData()->oprationObjData->enableToHitFlag, &enemies[enemyType][enemyCount]->GetData()->radius ,&enemies[enemyType][enemyCount]->GetData()->startFlag);
+					lightEffect[rocketIndex].Init(enemies[enemyType][enemyCount]->GetData()->hitBox.center, KazMath::Vec3<float>(0.0f, 0.0f, 0.0f), false, &enemies[enemyType][enemyCount]->GetData()->oprationObjData->enableToHitFlag, &enemies[enemyType][enemyCount]->GetData()->radius, &enemies[enemyType][enemyCount]->GetData()->startFlag);
 					++rocketIndex;
 					break;
 				default:
@@ -989,7 +986,7 @@ void Game::Update()
 				//時間が0秒以下ならプレイヤーに当たったと判断する
 				if (enemies[enemyType][enemyCount]->GetData()->timer <= 0)
 				{
-					//player.Hit();
+					player.Hit();
 					//enemies[enemyType][enemyCount]->Dead();
 				}
 			}
@@ -1049,6 +1046,16 @@ void Game::Update()
 #pragma region 更新処理
 
 		goalBox.releaseFlag = cursor.releaseFlag;
+
+		switch (stageNum)
+		{
+		case 1:
+			CameraMgr::Instance()->CameraSetting(60.0f, 1000000.0f, 0);
+			break;
+		default:
+			break;
+		}
+
 
 		//更新処理----------------------------------------------------------------
 		player.Update();
@@ -1162,8 +1169,6 @@ void Game::Update()
 		{
 			lightEffect[i].Update();
 		}
-
-		damageEffect.Update();
 #pragma endregion
 
 
@@ -1260,7 +1265,7 @@ void Game::Draw()
 	RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
 
 	//ポータル演出
-	//if (goalBox.startPortalEffectFlag)
+	if (goalBox.startPortalEffectFlag)
 	{
 		int lStageNum = stageNum + 1;
 		if (portal.DrawPrevStageFlag())
@@ -1285,7 +1290,7 @@ void Game::Draw()
 		CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 1);
 		player.Draw();
 		stages[lStageNum]->SetCamera(1);
-		//stages[lStageNum]->Draw();
+		stages[lStageNum]->Draw();
 		RenderTargetStatus::Instance()->PrepareToCloseBarrier(potalTexHandle);
 		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 	}
@@ -1304,10 +1309,8 @@ void Game::Draw()
 		box.data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
 		//box.Draw();
 
-		damageEffect.Draw();
 
-
-		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
+		//if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
 		{
 			goalBox.Draw();
 		}
@@ -1358,7 +1361,7 @@ void Game::Draw()
 
 		stages[stageNum]->vaporWaveSunRender.Draw();
 
-		
+
 		for (int i = 0; i < hitEffect.size(); ++i)
 		{
 			hitEffect[i].Draw();
@@ -1370,7 +1373,7 @@ void Game::Draw()
 		}
 
 
-		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
+		//if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
 		{
 			goalBox.lightEffect.Draw();
 		}

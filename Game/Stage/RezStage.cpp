@@ -11,10 +11,10 @@ RezStage::RezStage()
 	lineDrawHandle = poly->CreateConstBuffer(sizeof(MatData) * 500, "MatData", GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DRAW);
 
 
-	gridRender[0].Init(true, 300.0f, -150.0f);
-	gridRender[1].Init(true, 300.0f, 3000.0f);
-	gridRender[2].Init(false, 300.0f, -3000.0f);
-	gridRender[3].Init(false, 300.0f, 3000.0f);
+	gridRender[0].Init(true, 300.0f, -150.0f, &cameraIndex);
+	gridRender[1].Init(true, 300.0f, 3000.0f, &cameraIndex);
+	gridRender[2].Init(false, 300.0f, -3000.0f, &cameraIndex);
+	gridRender[3].Init(false, 300.0f, 3000.0f, &cameraIndex);
 
 
 	for (int i = 0; i < filePassNum.size(); ++i)
@@ -52,7 +52,7 @@ RezStage::RezStage()
 		initTrans.pos.x = stageParamLoader.doc[name.c_str()]["Pos"][0].GetFloat();
 		initTrans.pos.y = stageParamLoader.doc[name.c_str()]["Pos"][1].GetFloat();
 		initTrans.pos.z = stageParamLoader.doc[name.c_str()]["Pos"][2].GetFloat();
-		
+
 		initTrans.scale.x = stageParamLoader.doc[name.c_str()]["Scale"][0].GetFloat();
 		initTrans.scale.y = stageParamLoader.doc[name.c_str()]["Scale"][1].GetFloat();
 		initTrans.scale.z = stageParamLoader.doc[name.c_str()]["Scale"][2].GetFloat();
@@ -62,10 +62,10 @@ RezStage::RezStage()
 		initTrans.rotation.z = stageParamLoader.doc[name.c_str()]["Rota"][2].GetFloat();
 
 		int lNum = stageParamLoader.doc[name.c_str()]["FilePass"].GetInt();
-		floorObjectRender2[i].Init(initTrans, stageModelhandle[lNum]);
+		floorObjectRender[i].Init(initTrans, stageModelhandle[lNum], &cameraIndex);
 
 		initTrans.pos.z -= 9000.0f;
-		floorObjectRender2[40 + i].Init(initTrans, stageModelhandle[lNum]);
+		floorObjectRender[40 + i].Init(initTrans, stageModelhandle[lNum], &cameraIndex);
 	}
 
 	vaporWaveSunRender.data.colorData.color.a = 0;
@@ -78,17 +78,17 @@ void RezStage::Update()
 		gridRender[i].Update();
 	}
 
-	for (int i = 0; i < floorObjectRender2.size(); ++i)
+	for (int i = 0; i < floorObjectRender.size(); ++i)
 	{
-		floorObjectRender2[i].Update();
+		floorObjectRender[i].Update();
 	}
 }
 
 void RezStage::Draw()
 {
-	for (int i = 0; i < floorObjectRender2.size(); ++i)
+	for (int i = 0; i < floorObjectRender.size(); ++i)
 	{
-		floorObjectRender2[i].Draw();
+		floorObjectRender[i].Draw();
 	}
 
 	for (int i = 0; i < gridRender.size(); ++i)
