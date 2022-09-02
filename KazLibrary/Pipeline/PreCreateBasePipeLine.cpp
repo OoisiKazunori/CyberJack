@@ -907,6 +907,42 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	}
 #pragma endregion
 
+	//LineDepth用
+#pragma region PIPELINE_DATA_NOCARING_NOBLEND_LINE_Z_ALWAYS
+	{
+		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
+		D3D12_RENDER_TARGET_BLEND_DESC blendDesc{};
+		//サンプルマスク
+		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+
+		//ラスタライザ
+		//背面カリング、塗りつぶし、深度クリッピング有効
+		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
+		gPipeline.RasterizerState = rasterrize;
+		gPipeline.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
+		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+
+		//ブレンドモード
+		blendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
+
+
+		//図形の形状
+		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
+
+		//その他設定
+		gPipeline.NumRenderTargets = 1;
+		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		gPipeline.SampleDesc.Count = 1;
+
+		//デプスステンシルステートの設定
+		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;		//小さければOK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_ALPHABLEND_LINE_Z_ALWAYS);
+	}
+#pragma endregion
 
 #pragma region PIPELINE_DATA_NOCARING_ALPHABLEND_LINELIST_MULTITEX
 	{
@@ -1146,7 +1182,6 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
 		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
-		gPipeline.BlendState.AlphaToCoverageEnable = false;
 
 		//図形の形状
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
@@ -1396,6 +1431,15 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_DATA_BACKCARING_ALPHABLEND,
 		ROOTSIGNATURE_DATA_DRAW,
 		PIPELINE_NAME_COLOR
+	);
+
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS,
+		SHADER_VERTEX_COLOR,
+		SHADER_PIXCEL_COLOR,
+		PIPELINE_DATA_NOCARING_ALPHABLEND_LINE_Z_ALWAYS,
+		ROOTSIGNATURE_DATA_DRAW,
+		PIPELINE_NAME_COLOR_LINE_Z_ALWAYS
 	);
 
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(

@@ -7,6 +7,7 @@ LockOnBoxEffect::LockOnBoxEffect()
 {
 	boxDisappearTimer = 0;
 	aliveFlag = false;
+	box.data.pipelineName = PIPELINE_NAME_COLOR_LINE_Z_ALWAYS;
 }
 
 void LockOnBoxEffect::Start(KazMath::Vec3<float> *POS)
