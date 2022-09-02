@@ -27,21 +27,41 @@ public:
 	void Update()override;
 	void Draw()override;
 
-private:
-	std::array<BoxPolygonRender, 30> stageDebugBox;
-	std::array<KazMath::Vec3<float>, 30> stageYPos;
-	std::array<FogD, 30> fogData;
-	std::array<RESOURCE_HANDLE, 30> constHandle;
-
-	ParameterMgr stageParamLoader;
-	DirectX::XMFLOAT3 depthX;
-
 
 	float easeY;
 	float t;
 
 	std::array<ObjModelRender, 6> floorStage;
+	std::array<ObjModelRender, 12> pillarObj;
+	std::array<ObjModelRender, 12> farSidePillarObj;
+	std::array<std::array<ObjModelRender, 12>, 3> topPillarObj;
+	std::array<ObjModelRender, 2> testPillarOj;
 
-	std::array<ObjModelRender, 1> hasiraObj;
+
+	void InitPillar(ObjModelRender *MODEL)
+	{
+		MODEL->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "house/" + "house.obj");
+		MODEL->data.pipelineName = PIPELINE_NAME_OBJ_FOG_GRADATION;
+		RESOURCE_HANDLE lHandle = MODEL->CreateConstBuffer(sizeof(FogD), typeid(FogD).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA2);
+
+		FogD lD;
+		lD.rateAndFogLine.z = 100.0f;
+		lD.rateAndFogLine.w = 300.0f;
+
+		lD.rateAndFogLine.x = -401.0f;
+		lD.rateAndFogLine.y = 407.0f;
+		lD.depthX.z = 0;
+
+		DirectX::XMFLOAT3 first(0.93f, 0.65f, 0.53f);
+		DirectX::XMFLOAT3 end(0.24f, 0.09f, 0.62f);
+		DirectX::XMFLOAT3 result;
+		result.x = first.x - end.x;
+		result.y = first.y - end.y;
+		result.z = first.z - end.z;
+		lD.endColor = end;
+		lD.subValue = result;
+
+		MODEL->TransData(&lD, lHandle, typeid(lD).name());
+	};
 };
 

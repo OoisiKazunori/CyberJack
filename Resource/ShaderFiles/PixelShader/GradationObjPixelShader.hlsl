@@ -20,5 +20,5 @@ float4 PSmain(FogObjOutput input) : SV_TARGET
     float4 texColor = tex.Sample(smp, input.uv);
 
     float3 fog = CalucurateFogValue(input.fogFactor, endColor, subValue, texColor.xyz, rateAndFogLine.x, rateAndFogLine.y, rateAndFogLine.z, rateAndFogLine.w, depthX.x, depthX.y, depthX.z);
-    return float4(fog.xyz, 1.0f);
+    return float4(fog.xyz, color.a);
 }

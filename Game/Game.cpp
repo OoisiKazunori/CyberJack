@@ -182,7 +182,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 
 	//ゲームループの初期化----------------------------------------------------------------
 	gameStartFlag = false;
-	cameraChangeFlag = false;
+	cameraChangeFlag = true;
 	gameFlame = 0;
 	//ゴールに触れ無かった場合に次のステージに移動する際の最大フレーム数
 	for (int i = 0; i < changeLayerLevelMaxTime.size(); ++i)
@@ -260,6 +260,8 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 
 	rocketIndex = 0;
 	fireIndex = 0;
+
+
 }
 
 void Game::Finalize()
@@ -1055,6 +1057,8 @@ void Game::Update()
 
 		switch (stageNum)
 		{
+		case 0:
+			CameraMgr::Instance()->CameraSetting(60.0f, 1000.0f, 0);
 		case 1:
 			CameraMgr::Instance()->CameraSetting(60.0f, 1000000.0f, 0);
 			break;
