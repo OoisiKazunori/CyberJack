@@ -92,8 +92,17 @@ FirstStage::FirstStage()
 	{
 		for (int x = 0; x < topPillarObj[y].size(); ++x)
 		{
-			topPillarObj[y][x].data.transform.pos = { -1500.0f + static_cast<float>(x) * 550.0f,250.0f,-100.0f + static_cast<float>(y) * 268.0f };
+			if (y % 2 == 0)
+			{
+				topPillarObj[y][x].data.transform.pos = { -10000.0f + static_cast<float>(x) * 550.0f,250.0f,-100.0f + static_cast<float>(y) * 268.0f };
+			}
+			else
+			{
+				topPillarObj[y][x].data.transform.pos = { 4500.0f + static_cast<float>(x) * 550.0f,250.0f,-100.0f + static_cast<float>(y) * 268.0f };
+			}
 			topPillarObj[y][x].data.transform.rotation = { 0.0f,90.0f,90.0f };
+
+			initTopPillarPosX[y][x] = topPillarObj[y][x].data.transform.pos.x;
 		}
 	}
 
@@ -157,32 +166,50 @@ void FirstStage::Update()
 		}
 	}
 
-
-	for (int y = 0; y < topPillarObj.size(); ++y)
+	if (startFlag && easeY < 1.0f)
 	{
-		for (int x = 0; x < topPillarObj[y].size(); ++x)
+		for (int y = 0; y < topPillarObj.size(); ++y)
 		{
-			if (y % 2 == 0)
+			for (int x = 0; x < topPillarObj[y].size(); ++x)
 			{
-				topPillarObj[y][x].data.transform.pos.x += lVel;
-			}
-			else
-			{
-				topPillarObj[y][x].data.transform.pos.x += -lVel;
-			}
-
-
-			if (topPillarObj[y][x].data.transform.pos.x <= -1500.0f - 950.0f)
-			{
-				topPillarObj[y][x].data.transform.pos.x = 4550;
-			}
-			if (4550.0f + 550.0f <= topPillarObj[y][x].data.transform.pos.x)
-			{
-				topPillarObj[y][x].data.transform.pos.x = -1500.0f;
+				if (y % 2 == 0)
+				{
+					topPillarObj[y][x].data.transform.pos.x = initTopPillarPosX[y][x] + easeY * 8500.0f;
+				}
+				else
+				{
+					topPillarObj[y][x].data.transform.pos.x = initTopPillarPosX[y][x] + -easeY * 6500.0f;
+				}
 			}
 		}
 	}
+	else
+	{
+		for (int y = 0; y < topPillarObj.size(); ++y)
+		{
+			for (int x = 0; x < topPillarObj[y].size(); ++x)
+			{
+				if (y % 2 == 0)
+				{
+					topPillarObj[y][x].data.transform.pos.x += -lVel;
+				}
+				else
+				{
+					topPillarObj[y][x].data.transform.pos.x += lVel;
+				}
 
+
+				if (topPillarObj[y][x].data.transform.pos.x <= -1500.0f - 950.0f)
+				{
+					topPillarObj[y][x].data.transform.pos.x = 4550;
+				}
+				if (4550.0f + 550.0f <= topPillarObj[y][x].data.transform.pos.x)
+				{
+					topPillarObj[y][x].data.transform.pos.x = -1500.0f;
+				}
+			}
+		}
+	}
 
 
 	ImGui::Begin("Obj");
