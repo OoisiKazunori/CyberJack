@@ -51,23 +51,7 @@ void SummonEnemy::Finalize()
 void SummonEnemy::Update()
 {
 
-	if (!EnableToHit(iEnemy_ModelRender->data.transform.pos.z) || !iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
-	{
-		iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME_MULTITEX;
-		iEnemy_ModelRender->data.removeMaterialFlag = true;
-		iEnemy_ModelRender->data.colorData.color.x = 255;
-		iEnemy_ModelRender->data.colorData.color.y = 255;
-		iEnemy_ModelRender->data.colorData.color.z = 255;
-
-		DeadEffect(&iEnemy_ModelRender->data.transform.pos, &iEnemy_ModelRender->data.transform.rotation, &iEnemy_ModelRender->data.colorData.color.a);
-
-		if (!initDeadSoundFlag)
-		{
-			DeadSound();
-			initDeadSoundFlag = true;
-		}
-	}
-	else
+	if(!ProcessingOfDeath(DEATH_SINK))
 	{
 		++appearTimer;
 		if (appearTimer < KazMath::ConvertSecondToFlame(2))
@@ -149,24 +133,11 @@ void SummonEnemy::Update()
 		default:
 			break;
 		}
-
-	//	ImGui::Begin("Summon");
-	//	ImGui::DragFloat("PosX1", &summonR[0].data.transform.pos.x);
-	//	ImGui::DragFloat("PosY1", &summonR[0].data.transform.pos.y);
-	//	ImGui::DragFloat("PosZ1", &summonR[0].data.transform.pos.z);
-	//	ImGui::DragFloat("PosX2", &summonR[1].data.transform.pos.x);
-	//	ImGui::DragFloat("PosY2", &summonR[1].data.transform.pos.y);
-	//	ImGui::DragFloat("PosZ2", &summonR[1].data.transform.pos.z);
-	//	ImGui::End();
 	}
 }
 
 void SummonEnemy::Draw()
 {
 	iEnemy_ModelRender->Draw();
-
-	//for (int i = 0; i < summonR.size(); ++i)
-	//{
-	//	summonR[i].Draw();
-	//}
+	LockOnWindow(iEnemy_ModelRender->data.transform.pos);
 }

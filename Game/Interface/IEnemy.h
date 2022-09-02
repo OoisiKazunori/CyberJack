@@ -50,6 +50,9 @@ public:
 	/// </summary>
 	void DeadEffect(KazMath::Vec3<float> *POS, KazMath::Vec3<float> *ROTATION, int *ALPHA);
 
+	//€–S”»’è‚Æˆ—
+	bool ProcessingOfDeath(EnemyDeathType TYPE);
+
 
 	/// <returns>“G‚Ìî•ñ</returns>
 	const std::unique_ptr<EnemyData> &GetData();
@@ -63,7 +66,6 @@ public:
 	std::unique_ptr<EnemyData> iEnemy_EnemyStatusData;		//“G‚Ìó‘Ô‚ğ•Û‘¶‚·‚éƒf[ƒ^
 	ObjModelRenderPtr iEnemy_ModelRender;				//“G‚Ì•`‰æ
 	KazMath::Vec3<float> lerpPos;
-
 
 protected:
 	bool initDeadSoundFlag;

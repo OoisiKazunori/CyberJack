@@ -45,25 +45,8 @@ void NormalEnemy::Update()
 		iEnemy_ModelRender->data.transform.pos.z += speed;
 	}
 
-	//Ž€–S‰‰oˆ—
-	//ƒfƒoƒbƒNƒL[or“–‚½‚è”»’è“à&&Ž€–SŽž
-	if (EnableToHit(iEnemy_ModelRender->data.transform.pos.z) && !iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
-	{
-		iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
-		iEnemy_ModelRender->data.removeMaterialFlag = true;
-		iEnemy_ModelRender->data.colorData.color.x = 255;
-		iEnemy_ModelRender->data.colorData.color.y = 255;
-		iEnemy_ModelRender->data.colorData.color.z = 255;
-		DeadEffect(&iEnemy_ModelRender->data.transform.pos, &iEnemy_ModelRender->data.transform.rotation, &iEnemy_ModelRender->data.colorData.color.a);
-
-		if (!initDeadSoundFlag)
-		{
-			DeadSound();
-			initDeadSoundFlag = true;
-		}
-	}
 	//Ž€–S‰‰o’†‚É“oê‰‰o‚Ís‚í‚È‚¢
-	else 
+	if (!ProcessingOfDeath(DEATH_ROLL))
 	{
 		//“oêˆ—
 		if (iEnemy_ModelRender->data.colorData.color.a < 255)
@@ -76,11 +59,12 @@ void NormalEnemy::Update()
 		}
 	}
 
-	if (!EnableToHit(iEnemy_ModelRender->data.transform.pos.z))
+	if (iEnemy_ModelRender->data.transform.pos.z <= -50.0f)
 	{
 		iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag = false;
 		iEnemy_EnemyStatusData->outOfStageFlag = true;
 	}
+
 }
 
 void NormalEnemy::Draw()

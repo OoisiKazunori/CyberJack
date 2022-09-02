@@ -252,11 +252,11 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 
 	portal.Init(KazMath::Vec3<float>(0.0f, 3.0f, 50.0f));
 
-	cameraMoveArray[1][0].flame = KazMath::ConvertSecondToFlame(30);
-	cameraMoveArray[1][0].dir = CAMERA_LEFT;
+	cameraMoveArray[0][0].flame = KazMath::ConvertSecondToFlame(30);
+	cameraMoveArray[0][0].dir = CAMERA_LEFT;
 
-	cameraMoveArray[1][1].flame = KazMath::ConvertSecondToFlame(50);
-	cameraMoveArray[1][1].dir = CAMERA_FRONT;
+	cameraMoveArray[0][1].flame = KazMath::ConvertSecondToFlame(50);
+	cameraMoveArray[0][1].dir = CAMERA_FRONT;
 
 	rocketIndex = 0;
 	fireIndex = 0;
@@ -433,17 +433,6 @@ void Game::Input()
 		besideVel = { -speed,-speed,0.0f };
 	}
 
-
-
-
-	//if (KeyBoradInputManager::Instance()->InputTrigger(DIK_R))
-	//{
-	//	gameFlame = 0;
-	//	for (int i = 0; i < addEnemiesHandle.size(); ++i)
-	//	{
-	//		addEnemiesHandle[i] = 0;;
-	//	}
-	//}
 
 	if (input->InputTrigger(DIK_G))
 	{
@@ -637,18 +626,11 @@ void Game::Update()
 		//ゴールボックスの初期化----------------------------------------------
 
 
-		//leftRightAngleVel = { -90.0f,-90.0f };
-		//trackLeftRightAngleVel = leftRightAngleVel;
-		//upDownAngleVel = { 0.0f,0.0f };
-		//trackUpDownAngleVel = upDownAngleVel;
-		//movieEffect.startFlag = false;
-
 		rocketIndex = 0;
 		fireIndex = 0;
 
 		stageUI.Init();
 		stageUI.AnnounceStage(stageNum + 1);
-		//cursor.Appear();
 	}
 
 
@@ -746,7 +728,7 @@ void Game::Update()
 					{
 						if (!lineEffectArrayData[i].usedFlag)
 						{
-							lineLevel[i].Attack2(lineEffectArrayData[i].startPos, *enemyData->hitBox.center);
+							lineLevel[i].Attack(lineEffectArrayData[i].startPos, *enemyData->hitBox.center);
 							lineEffectArrayData[i].usedFlag = true;
 							lineEffectArrayData[i].lineIndex = i;
 							lineEffectArrayData[i].enemyTypeIndex = enemyType;
@@ -781,7 +763,7 @@ void Game::Update()
 			{
 				if (!lineEffectArrayData[i].usedFlag)
 				{
-					lineLevel[i].Attack2(lineEffectArrayData[i].startPos, *goalBox.hitBox.center);
+					lineLevel[i].Attack(lineEffectArrayData[i].startPos, *goalBox.hitBox.center);
 					lineEffectArrayData[i].usedFlag = true;
 					lineEffectArrayData[i].lineIndex = i;
 					lineEffectArrayData[i].eventType = 0;
@@ -947,18 +929,6 @@ void Game::Update()
 					}
 				}
 			}
-			else
-			{
-				//演出を合わせて死亡
-				if (lineLevel[lineIndex].lineReachObjFlag && goalBox.IsAlive())
-				{
-					//lineEffectArrayData[i].Reset();
-				}
-				else if (lineLevel[lineIndex].lineReachObjFlag && !goalBox.IsAlive())
-				{
-					//lineEffectArrayData[i].Reset();
-				}
-			}
 		}
 	}
 
@@ -1051,9 +1021,7 @@ void Game::Update()
 	if (!gameOverFlag)
 	{
 #pragma region 更新処理
-
 		goalBox.releaseFlag = cursor.releaseFlag;
-
 
 		switch (stageNum)
 		{
@@ -1300,7 +1268,7 @@ void Game::Draw()
 		CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 1);
 		player.Draw();
 		stages[lStageNum]->SetCamera(1);
-		stages[lStageNum]->Draw();
+		//stages[lStageNum]->Draw();
 		RenderTargetStatus::Instance()->PrepareToCloseBarrier(potalTexHandle);
 		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 	}
@@ -1326,7 +1294,7 @@ void Game::Draw()
 
 
 		stages[stageNum]->SetCamera(0);
-		stages[stageNum]->Draw();
+		//stages[stageNum]->Draw();
 
 		player.Draw();
 

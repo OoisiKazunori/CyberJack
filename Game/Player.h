@@ -21,8 +21,10 @@ public:
 	KazMath::Vec3<float> pos;
 private:
 	short hp,prevHp;
+	int coolTimer;
+	static const int COOL_MAX_TIME;
+	bool coolTimeFlag;
 	bool redFlag;
-	int redTimer;
 	BoxPolygonRenderPtr render;
 	bool drawHpFlag;
 

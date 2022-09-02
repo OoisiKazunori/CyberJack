@@ -47,6 +47,47 @@ void IEnemy::DeadEffect(KazMath::Vec3<float> *POS, KazMath::Vec3<float> *ROTATIO
 	}
 }
 
+bool IEnemy::ProcessingOfDeath(EnemyDeathType TYPE)
+{
+	if (!iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
+	{
+		iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
+		iEnemy_ModelRender->data.removeMaterialFlag = true;
+		iEnemy_ModelRender->data.colorData.color.x = 255;
+		iEnemy_ModelRender->data.colorData.color.y = 255;
+		iEnemy_ModelRender->data.colorData.color.z = 255;
+
+		if (!initDeadSoundFlag)
+		{
+			DeadSound();
+			initDeadSoundFlag = true;
+		}
+
+		switch (TYPE)
+		{
+		case DEATH_ROLL:
+			DeadEffect(&iEnemy_ModelRender->data.transform.pos, &iEnemy_ModelRender->data.transform.rotation, &iEnemy_ModelRender->data.colorData.color.a);
+			break;
+		case DEATH_SINK:
+			iEnemy_ModelRender->data.transform.pos.y -= 0.5f;
+			iEnemy_ModelRender->data.transform.rotation.x += 0.5f;
+			iEnemy_ModelRender->data.colorData.color.a -= 5;
+			break;
+		default:
+			break;
+		}
+	}
+
+	if (iEnemy_ModelRender->data.colorData.color.a <= 0)
+	{
+		iEnemy_ModelRender->data.colorData.color.a = 0;
+		iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag = false;
+		iEnemy_EnemyStatusData->outOfStageFlag = true;
+	}
+
+	return !iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag;
+}
+
 const unique_ptr<EnemyData> &IEnemy::GetData()
 {
 	return iEnemy_EnemyStatusData;

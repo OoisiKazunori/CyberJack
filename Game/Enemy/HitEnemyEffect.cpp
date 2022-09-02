@@ -15,7 +15,7 @@ HitEnemyEffect::HitEnemyEffect() :startFlag(false)
 	baseRadius[BIG_CIRCLE] = 3.0f;
 	baseRadius[SMALL_CIRCLE] = 0.5f;
 
-	maxRadius = 5.0f;
+	maxRadius = 10.0f;
 	addRadius[BIG_CIRCLE] = maxRadius;
 	addRadius[SMALL_CIRCLE] = (addRadius[BIG_CIRCLE] + baseRadius[BIG_CIRCLE]) - baseRadius[SMALL_CIRCLE];
 	maxTimer = 60;

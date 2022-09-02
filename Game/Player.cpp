@@ -3,6 +3,8 @@
 #include"../KazLibrary/Sound/SoundManager.h"
 #include"../KazLibrary/Helper/ResourceFilePass.h"
 
+const int Player::COOL_MAX_TIME = 120;
+
 Player::Player()
 {
 	render = std::make_unique<BoxPolygonRender>();
@@ -30,7 +32,8 @@ void Player::Init(const KazMath::Vec3<float> &POS, bool DRAW_UI_FLAG)
 	hpUi.Init(hp);
 	prevHp = hp;
 	redFlag = false;
-	redTimer = 0;
+	coolTimer = 0;
+	coolTimeFlag = false;
 
 	drawHpFlag = DRAW_UI_FLAG;
 }
@@ -47,15 +50,6 @@ void Player::Input()
 void Player::Update()
 {
 	render->data.transform.pos = pos;
-	/*ImGui::Begin("Player");
-	ImGui::InputFloat("ScaleX", &render->data.transform.scale.x);
-	ImGui::InputFloat("ScaleY", &render->data.transform.scale.y);
-	ImGui::InputFloat("ScaleZ", &render->data.transform.scale.z);
-	ImGui::InputFloat("RotaX", &render->data.transform.rotation.x);
-	ImGui::InputFloat("RotaY", &render->data.transform.rotation.y);
-	ImGui::InputFloat("RotaZ", &render->data.transform.rotation.z);
-	ImGui::End();*/
-
 	hpUi.Update();
 
 
@@ -72,16 +66,17 @@ void Player::Update()
 
 	if (redFlag)
 	{
-		++redTimer;
+		++coolTimer;
 
-		if (60 <= redTimer)
+		if (COOL_MAX_TIME <= coolTimer)
 		{
 			redFlag = false;
+			coolTimeFlag = false;
 		}
 	}
 	else
 	{
-		redTimer = 0;
+		coolTimer = 0;
 	}
 
 	if (redFlag)
@@ -112,8 +107,12 @@ void Player::Draw()
 
 void Player::Hit()
 {
-	--hp;
-	hpUi.Sub();
+	if (!coolTimeFlag)
+	{
+		--hp;
+		hpUi.Sub();
+	}
+	coolTimeFlag = true;
 }
 
 bool Player::isAlive()

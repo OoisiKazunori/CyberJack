@@ -76,16 +76,14 @@ protected:
 	/// 指定のZ座標より小さい場所より行こうとしたらfalseを返す
 	/// </summary>
 	/// <param name="POS_Z">対象のZ座標</param>
-	bool EnableToHit(float POS_Z, float LIMIT_POS = 0.0f)
+	bool EnableToHit(const KazMath::Vec3<float> &POS, const KazMath::Vec3<float> &LIMIT_MIN_POS, const KazMath::Vec3<float> &LIMIT_MAX_POS)
 	{
-		if (LIMIT_POS == 0.0f)
-		{
-			return limitLinePosZ <= POS_Z;
-		}
-		else
-		{
-			return LIMIT_POS <= POS_Z;
-		}
+		//有効な当たり判定の最小値
+		bool lEnableToHitMinFlag = LIMIT_MIN_POS.x <= POS.x && LIMIT_MIN_POS.y <= POS.y && LIMIT_MIN_POS.z <= POS.z;
+		//有効な当たり判定の最大値
+		bool lEnableToHitMaxFlag = POS.x <= LIMIT_MAX_POS.x && POS.y <= LIMIT_MAX_POS.y && POS.z <= LIMIT_MAX_POS.z;
+
+		return lEnableToHitMinFlag && lEnableToHitMaxFlag;
 	};
 
 	void LockOnWindow(const KazMath::Vec3<float> &POS);

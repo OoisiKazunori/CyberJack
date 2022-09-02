@@ -57,9 +57,12 @@ void IOperationObject::LockOnWindow(const KazMath::Vec3<float> &POS)
 	if (iOperationData.lockOnFlag && iOperationData.enableToHitFlag)
 	{
 		KazMath::Vec3<float>screenPos =
-			KazMath::ConvertWorldPosToScreenPos(POS, CameraMgr::Instance()->GetViewMatrix(0), CameraMgr::Instance()->GetPerspectiveMatProjection());
-
-		lockOnWindowRender.data.transform.pos = KazMath::Vec2<float>(screenPos.x, screenPos.y);
-		lockOnWindowRender.Draw();
+			KazMath::ConvertWorldPosToScreenPos(POS, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection());
+		//敵が画面外に出た際に画面横からウィンドウが出ないように変換後のz値が1.0以上は描画しない
+		if (screenPos.z <= 1.0f)
+		{
+			lockOnWindowRender.data.transform.pos = KazMath::Vec2<float>(screenPos.x, screenPos.y);
+			lockOnWindowRender.Draw();
+		}
 	}
 }

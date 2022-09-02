@@ -87,23 +87,7 @@ void PopEnemy::Update()
 
 	iEnemy_ModelRender->data.transform.pos += vel;
 
-
-	if (!EnableToHit(iEnemy_ModelRender->data.transform.pos.z) || !iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
-	{
-		iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME_MULTITEX;
-		iEnemy_ModelRender->data.removeMaterialFlag = true;
-		iEnemy_ModelRender->data.colorData.color.x = 255;
-		iEnemy_ModelRender->data.colorData.color.y = 255;
-		iEnemy_ModelRender->data.colorData.color.z = 255;
-
-		DeadEffect(&iEnemy_ModelRender->data.transform.pos, &iEnemy_ModelRender->data.transform.rotation, &iEnemy_ModelRender->data.colorData.color.a);
-
-		if (!initDeadSoundFlag)
-		{
-			DeadSound();
-			initDeadSoundFlag = true;
-		}
-	}
+	ProcessingOfDeath(DEATH_ROLL);
 }
 
 void PopEnemy::Draw()
@@ -111,5 +95,6 @@ void PopEnemy::Draw()
 	if (0 < iEnemy_ModelRender->data.colorData.color.a)
 	{
 		iEnemy_ModelRender->Draw();
+		LockOnWindow(iEnemy_ModelRender->data.transform.pos);
 	}
 }

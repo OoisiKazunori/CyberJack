@@ -87,25 +87,8 @@ void SplineMisileForBikeEnemy::Update()
 
 	//死亡演出処理
 	//デバックキーor当たり判定内&&死亡時
-	if (EnableToHit(iEnemy_ModelRender->data.transform.pos.z) && !iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag && !hitFlag)
+	if (!ProcessingOfDeath(DEATH_ROLL) && !hitFlag)
 	{
-		iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME_MULTITEX;
-		iEnemy_ModelRender->data.removeMaterialFlag = true;
-		iEnemy_ModelRender->data.colorData.color.x = 255;
-		iEnemy_ModelRender->data.colorData.color.y = 255;
-		iEnemy_ModelRender->data.colorData.color.z = 255;
-		DeadEffect(&iEnemy_ModelRender->data.transform.pos, &iEnemy_ModelRender->data.transform.rotation, &iEnemy_ModelRender->data.colorData.color.a);
-
-		if (!initDeadSoundFlag)
-		{
-			DeadSound();
-			initDeadSoundFlag = true;
-		}
-	}
-	else
-	{
-
-
 		if (iOperationData.enableToHitFlag)
 		{
 			--iEnemy_EnemyStatusData->timer;

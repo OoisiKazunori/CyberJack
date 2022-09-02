@@ -43,30 +43,7 @@ void BikeEnemy::Update()
 	sparkPos.y = line.data.startPos.y;
 	sparkPos.z += -11.5f;
 
-	if (EnableToHit(iEnemy_ModelRender->data.transform.pos.z, -5000.0f) && !iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
-	{
-		iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME_MULTITEX;
-		iEnemy_ModelRender->data.removeMaterialFlag = true;
-		iEnemy_ModelRender->data.colorData.color.x = 255;
-		iEnemy_ModelRender->data.colorData.color.y = 255;
-		iEnemy_ModelRender->data.colorData.color.z = 255;
-
-		iEnemy_ModelRender->data.transform.pos.y -= 0.5f;
-		iEnemy_ModelRender->data.transform.rotation.x += 0.5f;
-		iEnemy_ModelRender->data.colorData.color.a -= 5;
-
-		if (iEnemy_ModelRender->data.colorData.color.a < 0)
-		{
-			iEnemy_ModelRender->data.colorData.color.a = 0;
-		}
-
-		if (!initDeadSoundFlag)
-		{
-			DeadSound();
-			initDeadSoundFlag = true;
-		}
-	}
-	else
+	if (!ProcessingOfDeath(DEATH_SINK))
 	{
 		++appearTimer;
 
@@ -173,4 +150,5 @@ void BikeEnemy::Draw()
 	//misileR.Draw();
 	//misileR2.Draw();
 	iEnemy_ModelRender->Draw();
+	LockOnWindow(*iEnemy_EnemyStatusData->hitBox.center);
 }

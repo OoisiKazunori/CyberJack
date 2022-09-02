@@ -94,11 +94,11 @@ FirstStage::FirstStage()
 		{
 			if (y % 2 == 0)
 			{
-				topPillarObj[y][x].data.transform.pos = { -10000.0f + static_cast<float>(x) * 550.0f,250.0f,-100.0f + static_cast<float>(y) * 268.0f };
+				topPillarObj[y][x].data.transform.pos = { -10000.0f + static_cast<float>(x) * 550.0f,250.0f,-100.0f + static_cast<float>(y) * 320.0f };
 			}
 			else
 			{
-				topPillarObj[y][x].data.transform.pos = { 4500.0f + static_cast<float>(x) * 550.0f,250.0f,-100.0f + static_cast<float>(y) * 268.0f };
+				topPillarObj[y][x].data.transform.pos = { 4500.0f + static_cast<float>(x) * 550.0f,250.0f,-100.0f + static_cast<float>(y) * 320.0f };
 			}
 			topPillarObj[y][x].data.transform.rotation = { 0.0f,90.0f,90.0f };
 

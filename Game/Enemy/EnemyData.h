@@ -134,3 +134,32 @@ struct EnemyData
 	float radius;
 	bool startFlag;
 };
+
+enum EnemyDeathType
+{
+	DEATH_ROLL,
+	DEATH_SINK
+};
+
+struct DeadLineData
+{
+	KazMath::Vec3<float>enableToHitMaxLine;
+	KazMath::Vec3<float>enableToHitMinLine;
+
+	DeadLineData(int LINE_TYPE)
+	{
+		switch (LINE_TYPE)
+		{
+		case 0:
+			enableToHitMinLine = { -100.0f,-100.0f,-100.0f };
+			enableToHitMaxLine = { 100.0f,100.0f,700.0f };
+			break;
+		case 1:
+			enableToHitMinLine = { -3000.0f,-100.0f,-10000.0f };
+			enableToHitMaxLine = { 3000.0f,100.0f,1000.0f };
+			break;
+		default:
+			break;
+		}
+	}
+};
