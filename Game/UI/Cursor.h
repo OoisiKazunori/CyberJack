@@ -92,7 +92,7 @@ private:
 
 	//画像----------------------------------------------------------------
 	Sprite2DRenderPtr cursorFlameTex, numberTex;	//スクリーン座標の描画
-	array<RESOURCE_HANDLE, LOCKON_MAX_NUM + 1> numberHandle;			//数字用の画像ハンドル
+	std::array<RESOURCE_HANDLE, LOCKON_MAX_NUM + 1> numberHandle;			//数字用の画像ハンドル
 	RESOURCE_HANDLE flameHandle;
 	KazMath::Vec2<float> baseScale;
 

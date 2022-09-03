@@ -58,7 +58,7 @@ struct SceneConstantBuffer
 	DirectX::XMFLOAT4 color;
 	DirectX::XMFLOAT4X4 projection;
 	// Constant buffers are 256-byte aligned. Add padding in the struct to allow multiple buffers
-	// to be array-indexed.
+	// to be std::array-indexed.
 	float padding[36];
 };
 

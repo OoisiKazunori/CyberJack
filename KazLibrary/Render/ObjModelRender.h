@@ -28,7 +28,7 @@ private:
 	short indexBufferHandle;
 
 	ObjResourceData modelData;
-	array<RESOURCE_HANDLE, 2> constBufferHandle;
+	std::array<RESOURCE_HANDLE, 2> constBufferHandle;
 
 	DirectX::XMMATRIX motherMat;
 	bool instanceFlag;

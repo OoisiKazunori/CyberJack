@@ -11,13 +11,13 @@
 class PolygonRender:public IRender
 {
 public:
-	PolygonRender(const array<SpriteVertex, 4> &DATA);
+	PolygonRender(const std::array<SpriteVertex, 4> &DATA);
 	void Draw();
 
 	Pera3DData data;
 private:
-	array<SpriteVertex, 4> vertices;
-	array<USHORT, 6> indices;
+	std::array<SpriteVertex, 4> vertices;
+	std::array<USHORT, 6> indices;
 	DirectX::XMFLOAT2 anchorPoint;
 	DirectX::XMFLOAT2 texSize;
 

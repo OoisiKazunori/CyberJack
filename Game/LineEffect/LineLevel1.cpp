@@ -59,7 +59,7 @@ void LineLevel1::Attack(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::V
 		bool frontFlag = ENEMY_POS.x == PLAYER_POS.x;
 
 		//どれがマイナスかでどの面が見えているかどうか分かる
-		array<eSurface, 3> canLook;
+		std::array<eSurface, 3> canLook;
 		if (xMinusFlag)
 		{
 			canLook[0] = SURFACE_RIGHT;
@@ -167,7 +167,7 @@ void LineLevel1::Attack(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::V
 				//条件に沿って線を伸ばしていく
 				int moveVector = oldMoveVector;
 				//伸びた方向の回数の初期化
-				array<int, 5>limitCount;
+				std::array<int, 5>limitCount;
 				for (int i = 0; i < limitCount.size(); ++i)
 				{
 					limitCount[i] = 0;
@@ -334,7 +334,7 @@ void LineLevel1::Attack(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::V
 		//通常処理開始----------------------------------------------------------------
 		//1.プレイヤーと敵の距離を算出する
 		DirectX::XMVECTOR distance = DirectX::XMVectorSubtract(goalPos.ConvertXMVECTOR(), PLAYER_POS.ConvertXMVECTOR());
-		array<bool, 3> minusFlags;
+		std::array<bool, 3> minusFlags;
 
 		for (int i = 0; i < minusFlags.size(); ++i)
 		{

@@ -20,13 +20,13 @@ namespace KazEnemyHelper
 
 	void GenerateEnemy(
 		std::array<std::array<std::unique_ptr<IEnemy>, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> &ENEMIES,
-		array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> RESPONE_DATA,
+		std::array<std::array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> RESPONE_DATA,
 		std::array<int, 10> &ENEMISE_HANDLE
 	);
 
 	void AddEnemy(
 		const std::array<std::array<std::unique_ptr<IEnemy>, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> &ENEMIES,
-		array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> &RESPONE_DATA,
+		std::array<std::array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> &RESPONE_DATA,
 		std::array<int, 10> &ADD_ENEMISE_HANDLE,
 		int GAME_FLAME,
 		int GAME_STAGE_LEVEL
@@ -34,7 +34,7 @@ namespace KazEnemyHelper
 
 	void InitEnemy(
 		std::array<std::array<std::unique_ptr<IEnemy>, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> &ENEMIES,
-		array<array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> RESPONE_DATA,
+		std::array<std::array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> RESPONE_DATA,
 		int GAME_FLAME,
 		int GAME_STAGE_LEVEL,
 		bool DEMO_FLAG = false

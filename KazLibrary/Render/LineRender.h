@@ -15,7 +15,7 @@ public:
 
 	LineDrawData data;
 private:
-	array<LineVertex, 2>vertices;
+	std::array<LineVertex, 2>vertices;
 	UINT vertByte;
 
 	RESOURCE_HANDLE vertexBufferHandle;
@@ -32,12 +32,12 @@ public:
 	LineDrawData data;
 private:
 	PipeLineNames pipeline;
-	array<LineVertex, 2>vertices;
+	std::array<LineVertex, 2>vertices;
 	UINT vertByte;
 
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 
-	array<unique_ptr<DirtySet>, 2> positionDirtyFlag;
+	std::array<unique_ptr<DirtySet>, 2> positionDirtyFlag;
 
 	short vertexBufferHandle;
 	short indexBufferHandle;

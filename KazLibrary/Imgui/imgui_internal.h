@@ -1485,7 +1485,7 @@ struct IMGUI_API ImGuiDockNode
     ImGuiDockNodeFlags      MergedFlags;                // (Read)  Effective flags (== SharedFlags | LocalFlagsInNode | LocalFlagsInWindows)
     ImGuiDockNodeState      State;
     ImGuiDockNode*          ParentNode;
-    ImGuiDockNode*          ChildNodes[2];              // [Split node only] Child nodes (left/right or top/bottom). Consider switching to an array.
+    ImGuiDockNode*          ChildNodes[2];              // [Split node only] Child nodes (left/right or top/bottom). Consider switching to an std::array.
     ImVector<ImGuiWindow*>  Windows;                    // Note: unordered list! Iterate TabBar->Tabs for user-order.
     ImGuiTabBar*            TabBar;
     ImVec2                  Pos;                        // Current position
@@ -1539,7 +1539,7 @@ struct IMGUI_API ImGuiDockNode
 };
 
 // List of colors that are stored at the time of Begin() into Docked Windows.
-// We currently store the packed colors in a simple array window->DockStyle.Colors[].
+// We currently store the packed colors in a simple std::array window->DockStyle.Colors[].
 // A better solution may involve appending into a log of colors in ImGuiContext + store offsets into those arrays in ImGuiWindow,
 // but it would be more complex as we'd need to double-buffer both as e.g. drop target may refer to window from last frame.
 enum ImGuiWindowDockStyleCol
@@ -1807,7 +1807,7 @@ struct ImGuiContext
     bool                    ActiveIdUsingMouseWheel;            // Active widget will want to read mouse wheel. Blocks scrolling the underlying window.
     ImU32                   ActiveIdUsingNavDirMask;            // Active widget will want to read those nav move requests (e.g. can activate a button and move away from it)
     ImU32                   ActiveIdUsingNavInputMask;          // Active widget will want to read those nav inputs.
-    ImBitArrayForNamedKeys  ActiveIdUsingKeyInputMask;          // Active widget will want to read those key inputs. When we grow the ImGuiKey enum we'll need to either to order the enum to make useful keys come first, either redesign this into e.g. a small array.
+    ImBitArrayForNamedKeys  ActiveIdUsingKeyInputMask;          // Active widget will want to read those key inputs. When we grow the ImGuiKey enum we'll need to either to order the enum to make useful keys come first, either redesign this into e.g. a small std::array.
 
     // Next window/item data
     ImGuiItemFlags          CurrentItemFlags;                      // == g.ItemFlagsStack.back()
@@ -1962,7 +1962,7 @@ struct ImGuiContext
     char                    PlatformLocaleDecimalPoint;         // '.' or *localeconv()->decimal_point
 
     // Extensions
-    // FIXME: We could provide an API to register one slot in an array held in ImGuiContext?
+    // FIXME: We could provide an API to register one slot in an std::array held in ImGuiContext?
     ImGuiDockContext        DockContext;
 
     // Settings
@@ -2305,7 +2305,7 @@ struct IMGUI_API ImGuiWindow
     ImVector<ImGuiOldColumns> ColumnsStorage;
     float                   FontWindowScale;                    // User scale multiplier per-window, via SetWindowFontScale()
     float                   FontDpiScale;
-    int                     SettingsOffset;                     // Offset into SettingsWindows[] (offsets are always valid as we only grow the array from the back)
+    int                     SettingsOffset;                     // Offset into SettingsWindows[] (offsets are always valid as we only grow the std::array from the back)
 
     ImDrawList*             DrawList;                           // == &DrawListInst (for backward compatibility reason with code using imgui_internal.h we keep this a pointer)
     ImDrawList              DrawListInst;

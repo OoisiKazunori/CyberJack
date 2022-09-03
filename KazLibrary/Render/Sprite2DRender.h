@@ -14,8 +14,8 @@ public:
 
 	Sprite2DData data;
 private:
-	array<SpriteVertex, 4> vertices;
-	array<USHORT, 6> indices;
+	std::array<SpriteVertex, 4> vertices;
+	std::array<USHORT, 6> indices;
 	KazMath::Vec2<float> anchorPoint;
 	KazMath::Vec2<int> texSize;
 

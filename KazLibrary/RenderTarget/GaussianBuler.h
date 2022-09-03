@@ -35,7 +35,7 @@ private:
 	KazMath::Vec2<UINT> graphSize;
 
 	//ガウシアンブラーした結果
-	array<Sprite2DRender, 2> tex;
+	std::array<Sprite2DRender, 2> tex;
 	KazRenderHelper::RenderInstancesData renderData;
 	RESOURCE_HANDLE cbvHandle;
 

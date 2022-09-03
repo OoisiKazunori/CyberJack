@@ -84,7 +84,7 @@ private:
 	int gameSpeed;							//1ステージで進む時間のスピード
 	int gameStageLevel;						//現在のステージのレベル
 	int gameLeyerLevel;						//現在のステージのレベル
-	array<int, 10>changeLayerLevelMaxTime;	//次のレイヤーレベルに切り替わるフレーム数を保管する
+	std::array<int, 10>changeLayerLevelMaxTime;	//次のレイヤーレベルに切り替わるフレーム数を保管する
 	//ゲームループ----------------------------------------------------------------
 
 	//デバック用-------------------------------------------------------------
@@ -155,13 +155,13 @@ private:
 	//プレイヤーが操作するもの----------------------------------------------------------------
 
 	//敵----------------------------------------------------------------
-	array<unique_ptr<IEnemy>, 2>enemy;					//敵(サンプル)
-	array<array<unique_ptr<IEnemy>, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> enemies;	//1ステージに生成する敵の総数
-	array<array<BoxPolygonRender, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> enemyHitBox;
-	array<int, 10> enemiesHandle;						//0から順番に初期化する際に必要
-	array<int, 10> addEnemiesHandle;					//0から順番に追加で初期化する際に必要
-	array<array<ResponeData, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> responeData;		//敵を生成する際に必要な設定
-	array<ResponeData, 50>addResponeData;				//敵を追加で生成する際に必要な設定をスタックしたもの
+	std::array<unique_ptr<IEnemy>, 2>enemy;					//敵(サンプル)
+	std::array<std::array<unique_ptr<IEnemy>, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> enemies;	//1ステージに生成する敵の総数
+	std::array<std::array<BoxPolygonRender, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> enemyHitBox;
+	std::array<int, 10> enemiesHandle;						//0から順番に初期化する際に必要
+	std::array<int, 10> addEnemiesHandle;					//0から順番に追加で初期化する際に必要
+	std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> responeData;		//敵を生成する際に必要な設定
+	std::array<ResponeData, 50>addResponeData;				//敵を追加で生成する際に必要な設定をスタックしたもの
 	bool isEnemyNotMoveFlag;
 	int notMoveTimer;
 	const int CHANGE_GMAE_FLAME_SPEED_MAX_TIME = 2;	//敵が居なくなってからゲーム内時間の進むスピードが速まるまでの間隔
@@ -169,8 +169,8 @@ private:
 
 	//線演出----------------------------------------------------------------
 	static const int LINE_MAX_ARRAY_NUM = 16;
-	array<LineLevel1, LINE_MAX_ARRAY_NUM> lineLevel;			//直角に敵に線を伸ばしていく演出
-	array<LineEffectData, LINE_MAX_ARRAY_NUM>lineEffectArrayData;
+	std::array<LineLevel1, LINE_MAX_ARRAY_NUM> lineLevel;			//直角に敵に線を伸ばしていく演出
+	std::array<LineEffectData, LINE_MAX_ARRAY_NUM>lineEffectArrayData;
 	KazMath::Vec3<float> testEnemyPos;			//ロックオンする対象座標(テスト)
 	//線演出----------------------------------------------------------------
 

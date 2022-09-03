@@ -1,7 +1,7 @@
 #include "PolygonRender.h"
 #include"../KazLibrary/Helper/KazHelper.h"
 
-PolygonRender::PolygonRender(const array<SpriteVertex, 4> &DATA)
+PolygonRender::PolygonRender(const std::array<SpriteVertex, 4> &DATA)
 {
 	anchorPoint = { 0.5f,0.5f };
 

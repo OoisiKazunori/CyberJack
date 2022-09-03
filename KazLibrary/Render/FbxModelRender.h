@@ -21,7 +21,7 @@ private:
 	short vertexBufferHandle;
 	short indexBufferHandle;
 
-	array<RESOURCE_HANDLE, 2> constBufferHandle;
+	std::array<RESOURCE_HANDLE, 2> constBufferHandle;
 	std::shared_ptr<FbxResourceData> resourceData;
 
 	FbxTime frameTime;

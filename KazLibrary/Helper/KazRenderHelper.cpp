@@ -30,7 +30,7 @@ KazRenderHelper::DrawInstanceCommandData KazRenderHelper::SetDrawInstanceCommand
 	return result;
 }
 
-array<KazMath::Vec2<float>, 4> KazRenderHelper::ChangePlaneScale(const KazMath::Vec2<float> &LEFTUP_POS, const KazMath::Vec2<float> &RIGHTDOWN_POS, const KazMath::Vec2<float> &SCALE, const KazMath::Vec2<float> &ANCHOR_POINT, const KazMath::Vec2<int> &TEX_SIZE)
+std::array<KazMath::Vec2<float>, 4> KazRenderHelper::ChangePlaneScale(const KazMath::Vec2<float> &LEFTUP_POS, const KazMath::Vec2<float> &RIGHTDOWN_POS, const KazMath::Vec2<float> &SCALE, const KazMath::Vec2<float> &ANCHOR_POINT, const KazMath::Vec2<int> &TEX_SIZE)
 {
 	//ì«Ç›çûÇ›
 	float width = static_cast<float>(TEX_SIZE.x);
@@ -43,7 +43,7 @@ array<KazMath::Vec2<float>, 4> KazRenderHelper::ChangePlaneScale(const KazMath::
 	float down = (RIGHTDOWN_POS.y - ANCHOR_POINT.y) * height * SCALE.y;
 
 
-	array<KazMath::Vec2<float>, 4>pos;
+	std::array<KazMath::Vec2<float>, 4>pos;
 	pos[0] = { left, down };
 	pos[1] = { left, up };
 	pos[2] = { right, down };
@@ -51,7 +51,7 @@ array<KazMath::Vec2<float>, 4> KazRenderHelper::ChangePlaneScale(const KazMath::
 	return pos;
 }
 
-array<KazMath::Vec2<float>, 4> KazRenderHelper::ChangeModiPlaneScale(const KazMath::Vec2<float> &LEFTUP_POS, const KazMath::Vec2<float> &RIGHTDOWN_POS, const DirectX::XMFLOAT4 &SCALE, const DirectX::XMFLOAT2 &ANCHOR_POINT, const DirectX::XMFLOAT2 &TEX_SIZE)
+std::array<KazMath::Vec2<float>, 4> KazRenderHelper::ChangeModiPlaneScale(const KazMath::Vec2<float> &LEFTUP_POS, const KazMath::Vec2<float> &RIGHTDOWN_POS, const DirectX::XMFLOAT4 &SCALE, const DirectX::XMFLOAT2 &ANCHOR_POINT, const DirectX::XMFLOAT2 &TEX_SIZE)
 {
 	//ì«Ç›çûÇ›
 	float width = TEX_SIZE.x;
@@ -64,7 +64,7 @@ array<KazMath::Vec2<float>, 4> KazRenderHelper::ChangeModiPlaneScale(const KazMa
 	float down = (RIGHTDOWN_POS.y - ANCHOR_POINT.y) * height * SCALE.w;
 
 
-	array<KazMath::Vec2<float>, 4>pos;
+	std::array<KazMath::Vec2<float>, 4>pos;
 	pos[0] = { left, down };
 	pos[1] = { left, up };
 	pos[2] = { right, down };
@@ -108,7 +108,7 @@ void KazRenderHelper::VerticesCut(const KazMath::Vec2<int> &DIV_SIZE, const KazM
 	KazMath::Vec2<float> leftUp, rightDown;
 	leftUp = { 0.0f,0.0f };
 	rightDown = { 1.0f,1.0f };
-	array<KazMath::Vec2<float>, 4>tmp = ChangePlaneScale(leftUp, rightDown, SCALE, ANCHOR_POINT, DIV_SIZE);
+	std::array<KazMath::Vec2<float>, 4>tmp = ChangePlaneScale(leftUp, rightDown, SCALE, ANCHOR_POINT, DIV_SIZE);
 
 
 
@@ -155,9 +155,9 @@ void KazRenderHelper::InitVerticesPos(DirectX::XMFLOAT3 *LEFTUP_POS, DirectX::XM
 	*RIGHTDOWN_POS = { (1.0f - ANCHOR_POINT.x), (1.0f - ANCHOR_POINT.y) ,0.0f };
 }
 
-array<unsigned short, 6> KazRenderHelper::InitIndciesForPlanePolygon()
+std::array<unsigned short, 6> KazRenderHelper::InitIndciesForPlanePolygon()
 {
-	array<unsigned short, 6>result;
+	std::array<unsigned short, 6>result;
 	result[0] = 0;
 	result[1] = 1;
 	result[2] = 2;

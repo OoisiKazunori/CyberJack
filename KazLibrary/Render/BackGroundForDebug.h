@@ -20,12 +20,12 @@ public:
 
 private:
 	//LineRender verticalLine[100], horizontalLine[100], rayDir;
-	DirectX::XMFLOAT3 verticalLinePos[2][100], horizontalLinePos[2][100];
+	std::array<std::array<DirectX::XMFLOAT3, 100>, 2> verticalLinePos, horizontalLinePos;
 
 	DirectX::XMFLOAT3 xLinePos, yLinePos, zLinePos;
 	//LineRender xLine, yLine, zLine;
 
-	array<LineRender,100> verticalLine, horizontalLine;
+	std::array<LineRender,100> verticalLine, horizontalLine;
 	LineRender xLine, yLine, zLine, rayDir;
 
 	KazMath::Color color;

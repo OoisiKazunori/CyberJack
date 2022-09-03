@@ -4,8 +4,8 @@
 
 struct AddTextureData
 {
-	array<RESOURCE_HANDLE, 10> handle;
-	array<GraphicsRootParamType, 10> paramType;
+	std::array<RESOURCE_HANDLE, 10> handle;
+	std::array<GraphicsRootParamType, 10> paramType;
 
 	AddTextureData()
 	{

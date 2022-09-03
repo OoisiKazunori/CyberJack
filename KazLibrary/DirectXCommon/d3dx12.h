@@ -3200,13 +3200,13 @@ public:
         m_RepointedAssociations.clear();
         m_SubobjectArray.clear();
         m_SubobjectArray.reserve(m_Desc.NumSubobjects);
-        // Flatten subobjects into an array (each flattened subobject still has a
+        // Flatten subobjects into an std::array (each flattened subobject still has a
         // member that's a pointer to it's desc that's not flattened)
         for (auto Iter = m_SubobjectList.begin();
             Iter != m_SubobjectList.end(); Iter++)
         {
             m_SubobjectArray.push_back(*Iter);
-            // Store new location in array so we can redirect pointers contained in subobjects
+            // Store new location in std::array so we can redirect pointers contained in subobjects
             Iter->pSubobjectArrayLocation = &m_SubobjectArray.back();
         }
         // For subobjects with pointer fields, create a new copy of those subobject definitions
@@ -3290,7 +3290,7 @@ private:
     }
     typedef struct SUBOBJECT_WRAPPER : public D3D12_STATE_SUBOBJECT
     {
-        D3D12_STATE_SUBOBJECT* pSubobjectArrayLocation; // new location when flattened into array
+        D3D12_STATE_SUBOBJECT* pSubobjectArrayLocation; // new location when flattened into std::array
                                                         // for repointing pointers in subobjects
     } SUBOBJECT_WRAPPER;
     D3D12_STATE_OBJECT_DESC m_Desc;
@@ -3300,7 +3300,7 @@ private:
 
     std::list<D3D12_SUBOBJECT_TO_EXPORTS_ASSOCIATION>
             m_RepointedAssociations; // subobject type that contains pointers to other subobjects,
-                                     // repointed to flattened array
+                                     // repointed to flattened std::array
 
     class StringContainer
     {

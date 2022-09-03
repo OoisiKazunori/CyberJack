@@ -97,7 +97,7 @@ void Sprite2DRender::Draw()
 			lRightDown = { 1.0f,1.0f };
 
 			//サイズ変更
-			array<KazMath::Vec2<float>, 4>lVert;
+			std::array<KazMath::Vec2<float>, 4>lVert;
 			lVert = KazRenderHelper::ChangePlaneScale(lLeftUp, lRightDown, lTmpSize, anchorPoint, texSize);
 
 			for (int i = 0; i < lVert.size(); i++)
@@ -120,7 +120,7 @@ void Sprite2DRender::Draw()
 			lRightDown = { 1.0f,1.0f };
 
 			//サイズ変更
-			array<KazMath::Vec2<float>, 4>tmp = KazRenderHelper::ChangePlaneScale(lLeftUp, lRightDown, lTmpSize, anchorPoint, texSize);
+			std::array<KazMath::Vec2<float>, 4>tmp = KazRenderHelper::ChangePlaneScale(lLeftUp, lRightDown, lTmpSize, anchorPoint, texSize);
 			for (int i = 0; i < tmp.size(); i++)
 			{
 				vertices[i].pos = { tmp[i].x,-tmp[i].y,0.0f };

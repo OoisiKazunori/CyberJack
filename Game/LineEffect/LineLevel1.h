@@ -66,7 +66,7 @@ private:
 	vector<BoxPolygonRenderPtr> limitPolygon;
 	vector<unique_ptr<LineEffect>> line;
 
-	array<int, 3> countVec;
+	std::array<int, 3> countVec;
 
 	KazMath::Vec3<float> rockOnDistance;//ロックオンした際の敵の座標
 	KazMath::Vec3<float> distanceValue;//ロックオン時の距離と現在のプレイヤーと敵の距離の割合
