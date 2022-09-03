@@ -41,16 +41,16 @@ void SplineMisileForBattleShip::Init(const EnemyGenerateData &GENERATE_DATA, boo
 	KazMath::Vec3<float>upMaxPos = {};
 	KazMath::Vec3<float>downMaxPos = {};
 	KazMath::Vec3<float> moveToPlayerPos = {};
-
+	
 	switch (GENERATE_DATA.battleShipEnemyData.shotEnum)
 	{
 	case BATTLESHIP_MISILE_SHOT_RIGHT:
-		upMaxPos = startPos + KazMath::Vec3<float>(10.0f, 100.0f, 0.0f);
+		upMaxPos = startPos + KazMath::Vec3<float>(20.0f, 100.0f, 0.0f);
 		downMaxPos = upMaxPos + KazMath::Vec3<float>(10.0f, -20.0f, -30.0f);
 		moveToPlayerPos = downMaxPos + KazMath::Vec3<float>(0.0f, -5.0f, -30.0f);
 		break;
 	case BATTLESHIP_MISILE_SHOT_LEFT:
-		upMaxPos = startPos + KazMath::Vec3<float>(-10.0f, 100.0f, 0.0f);
+		upMaxPos = startPos + KazMath::Vec3<float>(-20.0f, 100.0f, 0.0f);
 		downMaxPos = upMaxPos + KazMath::Vec3<float>(-10.0f, -20.0f, -30.0f);
 		moveToPlayerPos = downMaxPos + KazMath::Vec3<float>(0.0f, -5.0f, -30.0f);
 		break;

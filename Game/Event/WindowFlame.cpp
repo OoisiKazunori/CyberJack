@@ -34,6 +34,7 @@ void WindowFlame::Init(const KazMath::Transform3D &TRANSFORM, const  KazMath::Ve
 	larpScale = { 0.0f,0.1f,1.0f };
 	startFlag = false;
 	endFlag = false;
+	drawFlag = false;
 	windowType = TYPE;
 }
 
@@ -54,27 +55,36 @@ void WindowFlame::Update()
 
 void WindowFlame::Draw()
 {
-	switch (windowType)
+	if (drawFlag)
 	{
-	case WINDOW_2D:
-		flame2DTex.Draw();
-		break;
-	case WINDOW_3D:
-		flameTex.Draw();
-		break;
-	default:
-		break;
+		switch (windowType)
+		{
+		case WINDOW_2D:
+			flame2DTex.Draw();
+			break;
+		case WINDOW_3D:
+			flameTex.Draw();
+			break;
+		default:
+			break;
+		}
 	}
 }
 
 void WindowFlame::Start()
 {
 	startFlag = true;
+	drawFlag = true;
 }
 
 void WindowFlame::End()
 {
 	endFlag = true;
+}
+
+bool WindowFlame::IsEnd()
+{
+	return !drawFlag;
 }
 
 void WindowFlame::Update2D()
@@ -122,14 +132,14 @@ void WindowFlame::Update2D()
 
 		if (flame2DTex.data.transform.scale.y <= 0.11f)
 		{
-			//flame2DTex.data.transform.scale.y = 0.1f;
 			larpScale.x = 0.0f;
 		}
 		//ウィンドウの横を無くす
-		if (flame2DTex.data.transform.scale.x <= 0.0f)
+		if (flame2DTex.data.transform.scale.x <= 0.02f)
 		{
 			larpScale.y = 0.0f;
 			endFlag = false;
+			drawFlag = false;
 		}
 		KazMath::Larp(larpScale.x, &flame2DTex.data.transform.scale.x, mul);
 	}
@@ -187,6 +197,7 @@ void WindowFlame::Update3D()
 		{
 			larpScale.y = 0.0f;
 			endFlag = false;
+			drawFlag = false;
 		}
 		KazMath::Larp(larpScale.x, &flameTex.data.transform.scale.x, mul);
 	}

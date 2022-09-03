@@ -20,4 +20,5 @@ private:
 	bool oldReverseFlag;
 
 	bool reverseXFlag;
+	bool firstTimeToJumpFlag;
 };

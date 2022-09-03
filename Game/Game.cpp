@@ -136,7 +136,7 @@ Game::Game()
 	lockSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Lock.wav", false);
 	doneSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Done.wav");
 	SoundManager::Instance()->StopSoundMem(bgmSoundHandle);
-	//SoundManager::Instance()->PlaySoundMem(bgmSoundHandle, 1, true);
+	SoundManager::Instance()->PlaySoundMem(bgmSoundHandle, 1, true);
 
 
 
@@ -252,11 +252,11 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 
 	portal.Init(KazMath::Vec3<float>(0.0f, 3.0f, 50.0f));
 
-	cameraMoveArray[0][0].flame = KazMath::ConvertSecondToFlame(30);
-	cameraMoveArray[0][0].dir = CAMERA_LEFT;
+	cameraMoveArray[1][0].flame = KazMath::ConvertSecondToFlame(30);
+	cameraMoveArray[1][0].dir = CAMERA_LEFT;
 
-	cameraMoveArray[0][1].flame = KazMath::ConvertSecondToFlame(50);
-	cameraMoveArray[0][1].dir = CAMERA_FRONT;
+	cameraMoveArray[1][1].flame = KazMath::ConvertSecondToFlame(50);
+	cameraMoveArray[1][1].dir = CAMERA_FRONT;
 
 	rocketIndex = 0;
 	fireIndex = 0;
@@ -682,6 +682,11 @@ void Game::Update()
 					break;
 
 				case ENEMY_TYPE_BATTLESHIP_MISILE:
+					lightEffect[rocketIndex].Init(enemies[enemyType][enemyCount]->GetData()->hitBox.center, KazMath::Vec3<float>(0.0f, 0.0f, 0.0f), false, &enemies[enemyType][enemyCount]->GetData()->oprationObjData->enableToHitFlag, &enemies[enemyType][enemyCount]->GetData()->radius, &enemies[enemyType][enemyCount]->GetData()->startFlag);
+					++rocketIndex;
+					break;
+
+				case ENEMY_TYPE_BIKE_MISILE:
 					lightEffect[rocketIndex].Init(enemies[enemyType][enemyCount]->GetData()->hitBox.center, KazMath::Vec3<float>(0.0f, 0.0f, 0.0f), false, &enemies[enemyType][enemyCount]->GetData()->oprationObjData->enableToHitFlag, &enemies[enemyType][enemyCount]->GetData()->radius, &enemies[enemyType][enemyCount]->GetData()->startFlag);
 					++rocketIndex;
 					break;
@@ -1376,7 +1381,7 @@ void Game::Draw()
 
 		mainRenderTarget.Draw();
 
-		//addRenderTarget.data.handleData = addHandle;
+		addRenderTarget.data.handleData = addHandle;
 		//addRenderTarget.data.addHandle.handle[0] = buler[0]->BlurImage(addHandle);
 		//addRenderTarget.data.addHandle.handle[1] = buler[1]->BlurImage(addRenderTarget.data.addHandle.handle[0]);
 		//addRenderTarget.data.addHandle.handle[2] = buler[2]->BlurImage(addRenderTarget.data.addHandle.handle[1]);

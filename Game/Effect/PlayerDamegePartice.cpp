@@ -38,5 +38,8 @@ void PlayerDamegePartice::Update()
 
 void PlayerDamegePartice::Draw()
 {
-	line.Draw();
+	if (0 < line.data.color.color.a)
+	{
+		line.Draw();
+	}
 }

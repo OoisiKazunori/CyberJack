@@ -12,7 +12,7 @@ void SummonEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 	iEnemy_ModelRender->data.transform.pos = GENERATE_DATA.initPos + KazMath::Vec3<float>(0.0f, 0.0f, 30.0f);	//座標の初期化
 	iEnemy_ModelRender->data.transform.scale = { 0.5f,0.5f,0.5f };
 	iEnemy_EnemyStatusData->hitBox.radius = 15.0f;	//当たり判定の大きさ変更
-	iOperationData.Init(1);							//残りロックオン数等の初期化
+	iOperationData.Init(24);							//残りロックオン数等の初期化
 	iEnemy_EnemyStatusData->hitBox.center = &iEnemy_ModelRender->data.transform.pos;
 
 	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "Summon/" + "SummonEnemy_Model.obj");	//モデル読み込み
@@ -22,7 +22,7 @@ void SummonEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 	iEnemy_ModelRender->data.colorData.color.x = 255;
 	iEnemy_ModelRender->data.colorData.color.y = 255;
 	iEnemy_ModelRender->data.colorData.color.z = 255;
-	iEnemy_ModelRender->data.colorData.color.a = 0;
+	iEnemy_ModelRender->data.colorData.color.a = 1;
 	iEnemy_ModelRender->data.transform.rotation.x = 0.0f;
 	iEnemy_ModelRender->data.transform.rotation.y = 180.0f;
 	iEnemy_ModelRender->data.transform.rotation.z = 0.0f;
@@ -50,7 +50,6 @@ void SummonEnemy::Finalize()
 
 void SummonEnemy::Update()
 {
-
 	if(!ProcessingOfDeath(DEATH_SINK))
 	{
 		++appearTimer;

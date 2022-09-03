@@ -20,7 +20,7 @@ void NormalEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 	iEnemy_ModelRender->data.colorData.color.x = 255;
 	iEnemy_ModelRender->data.colorData.color.y = 255;
 	iEnemy_ModelRender->data.colorData.color.z = 255;
-	iEnemy_ModelRender->data.colorData.color.a = 0;
+	iEnemy_ModelRender->data.colorData.color.a = 1;
 	iEnemy_ModelRender->data.transform.rotation.x = 0.0f;
 	iEnemy_ModelRender->data.transform.rotation.y = 180.0f;
 	iEnemy_ModelRender->data.transform.rotation.z = 0.0f;

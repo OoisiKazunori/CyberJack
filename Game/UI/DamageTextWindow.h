@@ -12,6 +12,8 @@ public:
 	void Update();
 	void Draw();
 
+	bool IsEnd();
+
 private:
 	std::unique_ptr<WindowFlame> flame;
 	int appearTimer;
@@ -21,4 +23,5 @@ private:
 	KazMath::Vec3<float> pos;
 
 	Sprite2DRenderPtr damageTextR;
+	bool initFlag;
 };

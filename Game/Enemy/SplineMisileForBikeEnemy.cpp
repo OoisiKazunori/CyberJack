@@ -68,6 +68,9 @@ void SplineMisileForBikeEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool
 	hitFlag = false;
 
 	demoFlag = DEMO_FLAG;
+
+	iEnemy_EnemyStatusData->radius = 1.0f;
+	iEnemy_EnemyStatusData->startFlag = true;
 }
 
 void SplineMisileForBikeEnemy::Finalize()

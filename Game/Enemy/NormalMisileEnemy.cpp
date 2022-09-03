@@ -31,7 +31,7 @@ void NormalMisileEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_F
 	iEnemy_ModelRender->data.colorData.color.x = 255;
 	iEnemy_ModelRender->data.colorData.color.y = 255;
 	iEnemy_ModelRender->data.colorData.color.z = 255;
-	iEnemy_ModelRender->data.colorData.color.a = 0;
+	iEnemy_ModelRender->data.colorData.color.a = 1;
 	iEnemy_ModelRender->data.transform.rotation.x = 0.0f;
 	iEnemy_ModelRender->data.transform.rotation.y = 180.0f;
 	iEnemy_ModelRender->data.transform.rotation.z = 0.0f;
@@ -98,7 +98,7 @@ void NormalMisileEnemy::Update()
 
 	//死亡演出処理
 	//デバックキーor当たり判定内&&死亡時
-	if(!ProcessingOfDeath(DEATH_ROLL))
+	if (!ProcessingOfDeath(DEATH_ROLL))
 	{
 		//登場処理
 		if (iEnemy_ModelRender->data.colorData.color.a < 255)
@@ -155,7 +155,7 @@ void NormalMisileEnemy::Update()
 
 
 
-	float scale = 0.0f;
+	float lScale = 0.0f;
 	if (flashTimer <= 1)
 	{
 		circleFlashR.data.transform.scale.x = 0.1f;
@@ -167,16 +167,16 @@ void NormalMisileEnemy::Update()
 		circleFlashR.data.transform.scale.x = 1.5f;
 		circleFlashR.data.transform.scale.y = 1.0f;
 		circleFlashR.data.transform.scale.z = 1.0f;
-		scale = 0.15f;
+		lScale = 0.15f;
 	}
 	else
 	{
 		circleFlashR.data.transform.scale.x = 1.0f + -EasingMaker(Out, Cubic, KazMath::ConvertTimerToRate(circleFlashTimer, 40)) * 1.0f;
 		circleFlashR.data.transform.scale.y = 1.0f + -EasingMaker(Out, Cubic, KazMath::ConvertTimerToRate(circleFlashTimer, 40)) * 1.0f;
 		circleFlashR.data.transform.scale.z = 1.0f + -EasingMaker(Out, Cubic, KazMath::ConvertTimerToRate(circleFlashTimer, 40)) * 1.0f;
-		scale = 0.15f;
+		lScale = 0.15f;
 	}
-	flashR.data.transform.scale.y = scale + -EasingMaker(Out, Cubic, KazMath::ConvertTimerToRate(disappearTimer, 10)) * scale;
+	flashR.data.transform.scale.y = lScale + (-EasingMaker(Out, Cubic, KazMath::ConvertTimerToRate(disappearTimer, 10)) * lScale);
 
 	if (iEnemy_ModelRender->data.transform.pos.z <= -50.0f)
 	{

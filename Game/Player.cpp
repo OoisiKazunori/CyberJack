@@ -59,7 +59,6 @@ void Player::Update()
 		SoundManager::Instance()->PlaySoundMem(damageSoundHandle, 1);
 		damageEffect.Init(pos);
 		damageWindow.Init(pos + KazMath::Vec3<float>(WIN_X / 2.0f, WIN_Y / 2.0f + 200.0f, 0.0f));
-		++hp;
 		redFlag = true;
 	}
 	prevHp = hp;

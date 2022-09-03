@@ -36,7 +36,6 @@ public:
 	std::array<ObjModelRender, 12> farSidePillarObj;
 	std::array<std::array<ObjModelRender, 12>, 3> topPillarObj;
 	std::array<std::array<float, 12>, 3> initTopPillarPosX;
-	std::array<ObjModelRender, 2> testPillarOj;
 
 
 	void InitPillar(ObjModelRender *MODEL)

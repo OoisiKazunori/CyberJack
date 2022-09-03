@@ -58,10 +58,6 @@ FirstStage::FirstStage()
 		}
 	}
 
-	InitPillar(&testPillarOj[0]);
-	InitPillar(&testPillarOj[1]);
-
-
 	for (int i = 0; i < pillarObj.size(); ++i)
 	{
 		const int L_HALF_SIZE = static_cast<int>(pillarObj.size() / 2);
@@ -210,29 +206,6 @@ void FirstStage::Update()
 			}
 		}
 	}
-
-
-	ImGui::Begin("Obj");
-	ImGui::DragFloat("POS_X", &testPillarOj[0].data.transform.pos.x);
-	ImGui::DragFloat("POS_Y", &testPillarOj[0].data.transform.pos.y);
-	ImGui::DragFloat("POS_Z", &testPillarOj[0].data.transform.pos.z);
-	ImGui::DragFloat("SCALE_X", &testPillarOj[0].data.transform.scale.x);
-	ImGui::DragFloat("SCALE_Y", &testPillarOj[0].data.transform.scale.y);
-	ImGui::DragFloat("SCALE_Z", &testPillarOj[0].data.transform.scale.z);
-	ImGui::DragFloat("ROTA_X", &testPillarOj[0].data.transform.rotation.x);
-	ImGui::DragFloat("ROTA_Y", &testPillarOj[0].data.transform.rotation.y);
-	ImGui::DragFloat("ROTA_Z", &testPillarOj[0].data.transform.rotation.z);
-
-	ImGui::DragFloat("POS_X1", &testPillarOj[1].data.transform.pos.x);
-	ImGui::DragFloat("POS_Y1", &testPillarOj[1].data.transform.pos.y);
-	ImGui::DragFloat("POS_Z1", &testPillarOj[1].data.transform.pos.z);
-	ImGui::DragFloat("SCALE_X1", &testPillarOj[1].data.transform.scale.x);
-	ImGui::DragFloat("SCALE_Y1", &testPillarOj[1].data.transform.scale.y);
-	ImGui::DragFloat("SCALE_Z1", &testPillarOj[1].data.transform.scale.z);
-	ImGui::DragFloat("ROTA_X1", &testPillarOj[1].data.transform.rotation.x);
-	ImGui::DragFloat("ROTA_Y1", &testPillarOj[1].data.transform.rotation.y);
-	ImGui::DragFloat("ROTA_Z1", &testPillarOj[1].data.transform.rotation.z);
-	ImGui::End();
 }
 
 void FirstStage::Draw()
@@ -241,11 +214,6 @@ void FirstStage::Draw()
 	{
 		pillarObj[i].Draw();
 		farSidePillarObj[i].Draw();
-	}
-	for (int i = 0; i < testPillarOj.size(); ++i)
-	{
-		testPillarOj[i].data.colorData.color.a = 255;
-		//testPillarOj[i].Draw();
 	}
 
 	for (int y = 0; y < topPillarObj.size(); ++y)
