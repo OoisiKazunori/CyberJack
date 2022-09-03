@@ -68,7 +68,7 @@ RezStage::RezStage()
 		floorObjectRender[40 + i].Init(initTrans, stageModelhandle[lNum], &cameraIndex);
 	}
 
-	vaporWaveSunRender.data.colorData.color.a = 0;
+	vaporWaveSunRender.data.colorData.color.a = 255;
 }
 
 void RezStage::Update()

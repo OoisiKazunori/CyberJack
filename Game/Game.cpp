@@ -107,8 +107,8 @@ Game::Game()
 	lineStartPoly[6].data.transform.pos = { 0.5f,0.3f,-0.3f };
 	lineStartPoly[7].data.transform.pos = { 0.0f,-0.3f,-1.0f };
 
-	stages[0] = std::make_unique<FirstStage>();
-	stages[1] = std::make_unique<RezStage>();
+	stages[0] = std::make_unique<RezStage>();
+	stages[1] = std::make_unique<FirstStage>();
 	//stages[1] = std::make_unique<BlockParticleStage>();
 	stages[2] = std::make_unique<ThridStage>();
 
@@ -1299,7 +1299,7 @@ void Game::Draw()
 
 
 		stages[stageNum]->SetCamera(0);
-		//stages[stageNum]->Draw();
+		stages[stageNum]->Draw();
 
 		player.Draw();
 
@@ -1321,10 +1321,10 @@ void Game::Draw()
 				{
 					enemies[enemyType][enemyCount]->Draw();
 
-					enemyHitBox[enemyType][enemyCount].data.transform.pos = *enemies[enemyType][enemyCount]->GetData()->hitBox.center;
+					/*enemyHitBox[enemyType][enemyCount].data.transform.pos = *enemies[enemyType][enemyCount]->GetData()->hitBox.center;
 					float lScale = enemies[enemyType][enemyCount]->GetData()->hitBox.radius;
 					enemyHitBox[enemyType][enemyCount].data.transform.scale = { lScale ,lScale ,lScale };
-					enemyHitBox[enemyType][enemyCount].data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
+					enemyHitBox[enemyType][enemyCount].data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;*/
 					//enemyHitBox[enemyType][enemyCount].Draw();
 				}
 			}
