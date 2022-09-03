@@ -179,7 +179,7 @@ void FirstStage::Update()
 			}
 		}
 	}
-	else
+	else if(startFlag)
 	{
 		for (int y = 0; y < topPillarObj.size(); ++y)
 		{

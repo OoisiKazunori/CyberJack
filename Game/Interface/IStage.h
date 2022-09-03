@@ -32,6 +32,7 @@ protected:
 private:
 	std::array<std::unique_ptr<PolygonRender>, 4>backGround;
 	std::unique_ptr<PolygonRender> topPolygon;
+	std::unique_ptr<PolygonRender> buttomPolygon;
 
 };
 
