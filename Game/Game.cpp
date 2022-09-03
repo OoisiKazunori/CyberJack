@@ -157,7 +157,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 {
 	player.Init(KazMath::Transform3D().pos);
 	cursor.Init();
-	
+
 
 	stageUI.Init();
 
@@ -241,7 +241,9 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 
 
 	titleLogoTex.data.colorData.color.a = 255;
-	titleLogoTex.data.transform.pos = { 0.0f,50.0f,500.0f };
+	baseTitlePosY = 150.0f;
+	titleLogoTex.data.transform.pos = { 0.0f,baseTitlePosY,500.0f };
+	titleLogoTex.data.transform.scale = { 0.8f,0.8f,1.0f };
 	titleLogoTex.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TitlePath + "TitleName.png");
 	doneSprite.Init({ 0.0f,0.0f,500.0f }, TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TitlePath + "Start.png"));
 
@@ -261,7 +263,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	rocketIndex = 0;
 	fireIndex = 0;
 
-
+	rateIntervalTimer = 0;
 }
 
 void Game::Finalize()
@@ -1168,29 +1170,19 @@ void Game::Update()
 
 
 
-	if (1.0f <= titleT)
-	{
-		titleTReversFlag = false;
-	}
-	else if (titleT <= 0.0f)
-	{
-		titleTReversFlag = true;
-	}
+	titleT += 1.0f;
+	titleLogoTex.data.transform.pos.y = baseTitlePosY + sinf(KazMath::PI_2F / 120 * titleT) * 25.0f;
 
-	float rate = 1.0f / 30.0f;
-	if (titleTReversFlag)
-	{
-		titleT += rate;
-	}
-	else
-	{
-		titleT += -rate;
-	}
 
-	titleLogoTex.data.transform.pos = { 0.0f,100.0f,500.0f };
-	titleLogoTex.data.transform.scale = { 0.8f,0.8f,1.0f };
-	baseTitlePosY = 100.0f;
-	titleLogoTex.data.transform.pos.y = baseTitlePosY + EasingMaker(Out, Cubic, titleT) * 50.0f;
+	++rateIntervalTimer;
+	const int lIntervalTimer = KazMath::ConvertSecondToFlame(3);
+	if (lIntervalTimer <= rateIntervalTimer)
+	{
+		inOutRotaRateT = 0.0f;
+		rateIntervalTimer = 0;
+	}
+	Rate(&inOutRotaRateT, 0.01f, 1.0f);
+	titleLogoTex.data.transform.rotation.x = EasingMaker(InOut, Circ, inOutRotaRateT) * 360.0f;
 
 
 
@@ -1287,7 +1279,7 @@ void Game::Draw()
 		{
 			bg.Draw();
 		}
-	
+
 		box.data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
 		//box.Draw();
 

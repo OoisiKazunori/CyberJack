@@ -226,6 +226,9 @@ private:
 
 	float titleT;
 	bool titleTReversFlag;
+
+	float inOutRotaRateT;
+	int rateIntervalTimer;
 	//ƒ^ƒCƒgƒ‹‰æ–Ê----------------------------------------------
 
 	//UI--------------------------------------
