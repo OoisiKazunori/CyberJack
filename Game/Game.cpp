@@ -185,8 +185,10 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	gameStartFlag = false;
 	cameraChangeFlag = true;
 	gameFlame = 0;
+	changeLayerLevelMaxTime[0] = KazMath::ConvertSecondToFlame(70);
+	changeLayerLevelMaxTime[1] = KazMath::ConvertSecondToFlame(85);
 	//ゴールに触れ無かった場合に次のステージに移動する際の最大フレーム数
-	for (int i = 0; i < changeLayerLevelMaxTime.size(); ++i)
+	for (int i = 2; i < changeLayerLevelMaxTime.size(); ++i)
 	{
 		changeLayerLevelMaxTime[i] = KazMath::ConvertSecondToFlame(70);
 	}
