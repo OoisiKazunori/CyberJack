@@ -481,6 +481,7 @@ void LineLevel1::Attack(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::V
 
 
 	lineReachObjFlag = false;
+	alreadyReachedFlag = false;
 	line[0]->StartEffect();
 
 }

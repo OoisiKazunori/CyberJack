@@ -57,8 +57,8 @@ public:
 	/// <returns>“G‚Ìî•ñ</returns>
 	const std::unique_ptr<EnemyData> &GetData();
 
-	void HitSound();
 	void DeadSound();
+	void ShotSound();
 
 	//UŒ‚‚ğŠm”F‚·‚é—p‚ÌŠÖ”
 	virtual void DebugShot() { debugShotFlag = true; };
@@ -73,7 +73,9 @@ protected:
 	bool debugShotFlag;
 private:
 	int deadSoundHandle;
-	int damageSoundHandle;
+	int shotSoundHandle;
 
+	DirtyFlag<short>hpDirtyFlag;
+	bool hitFlag;
 
 };

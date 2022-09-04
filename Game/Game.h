@@ -235,8 +235,9 @@ private:
 	AnnounceStageUI stageUI;
 
 
-	int bgmSoundHandle, lockSoundHandle;
-	int doneSoundHandle;
+	RESOURCE_HANDLE bgmSoundHandle, lockSoundHandle;
+	RESOURCE_HANDLE doneSoundHandle;
+	RESOURCE_HANDLE damageSoundHandle;
 
 	TutorialWindow tutorialWindow;
 

@@ -16,7 +16,6 @@ private:
 	int shotTimer;//ƒ~ƒTƒCƒ‹”­ŽË‚Ü‚Å‚ÌŽžŠÔ
 	bool initShotFlag;
 	FbxModelRender model;
-	int shotSoundHandle;
 
 	int flashTimer, disappearTimer;
 	int circleFlashTimer;

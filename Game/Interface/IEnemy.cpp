@@ -1,7 +1,7 @@
 #include "IEnemy.h"
 #include"../KazLibrary/Helper/ResourceFilePass.h"
 
-IEnemy::IEnemy()
+IEnemy::IEnemy() :hpDirtyFlag(&iOperationData.rockOnNum)
 {
 	//ï`âÊÇÃèâä˙âª----------------------------------------------------------------
 	iEnemy_ModelRender = std::make_unique<ObjModelRender>();
@@ -18,11 +18,10 @@ IEnemy::IEnemy()
 
 	lockOnWindowRender.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::LinePath + "LockOn.png");
 	lockOnWindowRender.data.transform.scale = { 0.3f,0.3f };
-	//lockOnWindowRender.data.billBoardFlag = true;
 	lockOnWindowRender.data.pipelineName = PIPELINE_NAME_SPRITE_Z_ALWAYS;
 
 	deadSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "EnemyDead.wav", false);
-	//damageSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "EnemyDamage.wav");
+	shotSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Shot.wav", false);
 
 	debugShotFlag = false;
 }
@@ -93,12 +92,12 @@ const unique_ptr<EnemyData> &IEnemy::GetData()
 	return iEnemy_EnemyStatusData;
 }
 
-void IEnemy::HitSound()
-{
-	SoundManager::Instance()->PlaySoundMem(damageSoundHandle, 1);
-}
-
 void IEnemy::DeadSound()
 {
 	SoundManager::Instance()->PlaySoundMem(deadSoundHandle, 1);
+}
+
+void IEnemy::ShotSound()
+{
+	SoundManager::Instance()->PlaySoundMem(shotSoundHandle, 1);
 }

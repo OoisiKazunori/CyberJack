@@ -134,6 +134,8 @@ Game::Game()
 	bgmSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Bgm.wav");
 	lockSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Lock.wav", false);
 	doneSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Done.wav");
+	damageSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "EenemyDamage.wav");
+
 	SoundManager::Instance()->StopSoundMem(bgmSoundHandle);
 	SoundManager::Instance()->PlaySoundMem(bgmSoundHandle, 1, true);
 
@@ -893,14 +895,10 @@ void Game::Update()
 			if (eventIndex == -1)
 			{
 				//演出を合わせてダメージと死亡をやる
-				if (lineLevel[lineIndex].lineReachObjFlag && enemies[enemyTypeIndex][enemyIndex]->IsAlive())
+				if (lineLevel[lineIndex].lineReachObjFlag && !lineLevel[lineIndex].alreadyReachedFlag && enemies[enemyTypeIndex][enemyIndex]->IsAlive())
 				{
-					//lineEffectArrayData[i].Reset();
-					//lineLevel[lineIndex].lineReachObjFlag = false;
-
-					//死亡演出候補
-					bool debug = false;
-					debug = true;
+					SoundManager::Instance()->PlaySoundMem(damageSoundHandle, 1);
+					lineLevel[lineIndex].alreadyReachedFlag = true;
 				}
 				else if (lineLevel[lineIndex].lineReachObjFlag && !enemies[enemyTypeIndex][enemyIndex]->IsAlive() && !lineEffectArrayData[i].hitFlag)
 				{

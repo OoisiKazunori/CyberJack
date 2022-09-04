@@ -59,6 +59,7 @@ public:
 
 	bool allFinishFlag;
 	bool lineReachObjFlag;
+	bool alreadyReachedFlag;
 	bool initFlag;
 	KazMath::Vec3<float> playerPos;
 private:

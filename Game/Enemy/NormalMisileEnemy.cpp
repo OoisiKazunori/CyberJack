@@ -6,8 +6,6 @@
 
 NormalMisileEnemy::NormalMisileEnemy()
 {
-	shotSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Shot.wav", false);
-
 	flashR.data.colorData.color = { 0,255,0,255 };
 	circleFlashR.data.colorData.color = { 0,255,0,255 };
 
@@ -79,7 +77,7 @@ void NormalMisileEnemy::Update()
 			//ノックバック
 			KazMath::Vec3<float> kockBackVel = { 0.0f,0.0f,60.0f };
 			lerpPos = iEnemy_ModelRender->data.transform.pos + kockBackVel;
-			SoundManager::Instance()->PlaySoundMem(shotSoundHandle, 1);
+			ShotSound();
 			initShotFlag = true;
 			debugShotFlag = false;
 			startFlag = true;
