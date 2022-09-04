@@ -261,6 +261,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	fireIndex = 0;
 
 	rateIntervalTimer = 0;
+
 }
 
 void Game::Finalize()
@@ -592,7 +593,7 @@ void Game::Update()
 
 	//敵が一通り生成終わった際に登場させる----------------------------------------------------------------
 	if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame && !initAppearFlag)
-	//if (100 <= gameFlame && !initAppearFlag)
+		//if (100 <= gameFlame && !initAppearFlag)
 	{
 		goalBox.Appear(appearGoalBoxPos[stageNum]);
 		initAppearFlag = true;
@@ -692,6 +693,12 @@ void Game::Update()
 				default:
 					break;
 				}
+
+#ifdef _DEBUG
+				const float lScale = enemies[enemyType][enemyCount]->GetData()->hitBox.radius;
+				enemyHitBox[enemyType][enemyCount].data.transform.scale = { lScale ,lScale ,lScale };
+				enemyHitBox[enemyType][enemyCount].data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
+#endif
 			}
 		}
 	}
@@ -1126,6 +1133,7 @@ void Game::Update()
 				if (enableToUseDataFlag)
 				{
 					enemies[enemyType][enemyCount]->Update();
+					enemyHitBox[enemyType][enemyCount].data.transform.pos = *enemies[enemyType][enemyCount]->GetData()->hitBox.center;
 				}
 
 				//一体でも敵が動いていたらそれを知らせるフラグを上げる
@@ -1305,13 +1313,14 @@ void Game::Draw()
 				if (enableToUseDataFlag)
 				{
 					enemies[enemyType][enemyCount]->Draw();
-
-					/*enemyHitBox[enemyType][enemyCount].data.transform.pos = *enemies[enemyType][enemyCount]->GetData()->hitBox.center;
-					float lScale = enemies[enemyType][enemyCount]->GetData()->hitBox.radius;
-					enemyHitBox[enemyType][enemyCount].data.transform.scale = { lScale ,lScale ,lScale };
-					enemyHitBox[enemyType][enemyCount].data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;*/
-					//enemyHitBox[enemyType][enemyCount].Draw();
 				}
+#ifdef _DEBUG
+				if (enableToUseDataFlag && enemies[enemyType][enemyCount]->iOperationData.enableToHitFlag)
+				{
+					//デバック時のみ当たり判定を描画
+					enemyHitBox[enemyType][enemyCount].Draw();
+				}
+#endif
 			}
 		}
 		PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
