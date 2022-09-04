@@ -14,7 +14,7 @@ void BikeEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 	iEnemy_ModelRender->data.transform.scale = { lScale,lScale,lScale };
 	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "Bike/" + "Bike_Model.obj");	//モデル読み込み
 	iEnemy_EnemyStatusData->hitBox.radius = 15.0f;	//当たり判定の大きさ変更
-	iOperationData.Init(1);							//残りロックオン数等の初期化
+	iOperationData.Init(2);							//残りロックオン数等の初期化
 	initDeadSoundFlag = false;
 	demoFlag = DEMO_FLAG;
 	basePos = GENERATE_DATA.initPos;

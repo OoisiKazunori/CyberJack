@@ -125,7 +125,7 @@ void Cursor::Update()
 		++enableLockOnTimer;
 
 		//指定のフレームまでタイマーが到達したら初期化
-		if (10 <= enableLockOnTimer)
+		if (5 <= enableLockOnTimer)
 		{
 			enableLockOnTimer = 0;
 			notEnableLockOnFlag = false;

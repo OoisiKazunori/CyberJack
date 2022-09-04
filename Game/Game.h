@@ -14,9 +14,9 @@
 #include"../Game/Stage/FirstStage.h"
 #include"../Game/Stage/SecondStage.h"
 #include"../Game/Stage/ThridStage.h"
-#include"../Game/Stage/GpuParticleStage.h"
 #include"../Game/Stage/RezStage.h"
 #include"../Game/Stage/BlockParticleStage.h"
+#include"../Game/Stage/GpuParticleStage.h"
 
 #include"../Game/UI/AnnounceStageUI.h"
 #include"../Game/Event/EventSprite.h"
@@ -68,7 +68,11 @@ public:
 
 	Game();
 	~Game();
-	void Init(const std::array<std::array<ResponeData,KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> &RESPONE_DATA);
+	void Init(
+		const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> &RESPONE_DATA,
+		const std::array<std::shared_ptr<IStage>, 3> &STAGE_ARRAY,
+		const std::array<std::array<KazEnemyHelper::ForceCameraData, 10>, 3> &CAMERA_ARRAY
+	);
 	void Finalize();
 	void Input();
 	void Update();
@@ -121,22 +125,7 @@ private:
 	const float FORCE_CAMERA_LEFT = 0.0f;
 	const float FORCE_CAMERA_RIGHT = -180.0f;
 
-	enum CameraDir
-	{
-		CAMERA_FRONT,
-		CAMERA_BACK,
-		CAMERA_LEFT,
-		CAMERA_RIGHT,
-	};
-	struct ForceCameraData
-	{
-		int flame;
-		CameraDir dir;
-		ForceCameraData() :flame(-1)
-		{
-		};
-	};
-	std::array<std::array<ForceCameraData, 10>, 3>cameraMoveArray;
+	std::array<std::array<KazEnemyHelper::ForceCameraData, 10>, 3>cameraMoveArray;
 
 	//ÉJÉÅÉâ----------------------------------------------------------------
 
@@ -195,7 +184,7 @@ private:
 	std::array<std::unique_ptr<GaussianBuler>, 4> buler;
 
 	int stageNum;
-	std::array<std::unique_ptr<IStage>, 3>stages;
+	std::array<std::shared_ptr<IStage>, 3>stages;
 	bool cameraChangeFlag;
 	bool lineDebugFlag;
 

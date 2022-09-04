@@ -39,4 +39,20 @@ namespace KazEnemyHelper
 		int GAME_STAGE_LEVEL,
 		bool DEMO_FLAG = false
 	);
+
+	enum CameraDir
+	{
+		CAMERA_FRONT,
+		CAMERA_BACK,
+		CAMERA_LEFT,
+		CAMERA_RIGHT,
+	};
+	struct ForceCameraData
+	{
+		int flame;
+		CameraDir dir;
+		ForceCameraData() :flame(-1)
+		{
+		};
+	};
 }

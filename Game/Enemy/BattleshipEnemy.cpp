@@ -19,7 +19,7 @@ void BattleshipEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLA
 	iEnemy_ModelRender->data.transform.pos = GENERATE_DATA.initPos;	//座標の初期化
 	iEnemy_ModelRender->data.transform.scale = { 0.5f,0.5f,0.5f };
 	iEnemy_EnemyStatusData->hitBox.radius = 15.0f;	//当たり判定の大きさ変更
-	iOperationData.Init(1);							//残りロックオン数等の初期化
+	iOperationData.Init(3);							//残りロックオン数等の初期化
 	iEnemy_EnemyStatusData->hitBox.center = &iEnemy_ModelRender->data.transform.pos;
 
 	iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_OBJ;

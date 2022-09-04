@@ -107,10 +107,6 @@ Game::Game()
 	lineStartPoly[6].data.transform.pos = { 0.5f,0.3f,-0.3f };
 	lineStartPoly[7].data.transform.pos = { 0.0f,-0.3f,-1.0f };
 
-	stages[0] = std::make_unique<FirstStage>();
-	stages[1] = std::make_unique<RezStage>();
-	stages[2] = std::make_unique<ThridStage>();
-
 
 	blackTex.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "Black.png");
 	blackTex.data.pipelineName = PIPELINE_NAME_SPRITE_Z_ALWAYS;
@@ -152,7 +148,9 @@ Game::~Game()
 	SoundManager::Instance()->StopSoundMem(bgmSoundHandle);
 }
 
-void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> &RESPONE_DATA)
+void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> &RESPONE_DATA,
+	const std::array<std::shared_ptr<IStage>, 3> &STAGE_ARRAY,
+	const std::array<std::array<KazEnemyHelper::ForceCameraData, 10>, 3> &CAMERA_ARRAY)
 {
 	player.Init(KazMath::Transform3D().pos);
 	cursor.Init();
@@ -172,6 +170,10 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	enemySize.endSize = KazEnemyHelper::ENEMY_NUM_MAX + 50;
 
 	responeData = RESPONE_DATA;
+	cameraMoveArray = CAMERA_ARRAY;
+	stages = STAGE_ARRAY;
+
+
 
 	//操作可能OBJを纏めて生成する処理----------------------------------------------------------------
 	KazEnemyHelper::GenerateEnemy(enemies, responeData, enemiesHandle);
@@ -222,7 +224,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 
 	forceCameraDirVel.x = -90.0f;
 
-	appearGoalBoxPos[0] = { -10.0f,-10.0f,40.0f };
+	appearGoalBoxPos[0] = { 0.0f,10.0f,40.0f };
 	appearGoalBoxPos[1] = { 20.0f,-15.0f,40.0f };
 	responeGoalBoxPos = { -10.0f,-100.0f,40.0f };
 	goalBox.Init(responeGoalBoxPos);
@@ -253,11 +255,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 
 	portal.Init(KazMath::Vec3<float>(0.0f, 3.0f, 50.0f));
 
-	cameraMoveArray[1][0].flame = KazMath::ConvertSecondToFlame(30);
-	cameraMoveArray[1][0].dir = CAMERA_LEFT;
 
-	cameraMoveArray[1][1].flame = KazMath::ConvertSecondToFlame(50);
-	cameraMoveArray[1][1].dir = CAMERA_FRONT;
 
 	rocketIndex = 0;
 	fireIndex = 0;
@@ -477,16 +475,16 @@ void Game::Update()
 		{
 			switch (cameraMoveArray[stageNum][i].dir)
 			{
-			case CAMERA_FRONT:
+			case KazEnemyHelper::CAMERA_FRONT:
 				forceCameraDirVel.x = FORCE_CAMERA_FRONT;
 				break;
-			case CAMERA_BACK:
+			case KazEnemyHelper::CAMERA_BACK:
 				forceCameraDirVel.x = FORCE_CAMERA_BACK;
 				break;
-			case CAMERA_LEFT:
+			case KazEnemyHelper::CAMERA_LEFT:
 				forceCameraDirVel.x = FORCE_CAMERA_LEFT;
 				break;
-			case CAMERA_RIGHT:
+			case KazEnemyHelper::CAMERA_RIGHT:
 				forceCameraDirVel.x = FORCE_CAMERA_RIGHT;
 				break;
 			default:
@@ -593,8 +591,8 @@ void Game::Update()
 
 
 	//敵が一通り生成終わった際に登場させる----------------------------------------------------------------
-	//if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame && !initAppearFlag)
-	if (100 <= gameFlame && !initAppearFlag)
+	if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame && !initAppearFlag)
+	//if (100 <= gameFlame && !initAppearFlag)
 	{
 		goalBox.Appear(appearGoalBoxPos[stageNum]);
 		initAppearFlag = true;
@@ -1279,7 +1277,7 @@ void Game::Draw()
 		//box.Draw();
 
 
-		//if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
+		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
 		{
 			goalBox.Draw();
 		}
@@ -1344,7 +1342,7 @@ void Game::Draw()
 		}
 
 
-		//if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
+		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
 		{
 			goalBox.lightEffect.Draw();
 		}
