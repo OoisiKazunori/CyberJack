@@ -7,6 +7,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#pragma comment(lib, "dxcompiler.lib")
 
 Shader::Shader()
 {

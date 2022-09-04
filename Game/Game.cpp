@@ -625,6 +625,7 @@ void Game::Update()
 		goalBox.Init(responeGoalBoxPos);
 		//ゴールボックスの初期化----------------------------------------------
 
+		stages[stageNum]->startFlag = true;
 
 		rocketIndex = 0;
 		fireIndex = 0;
@@ -1051,11 +1052,6 @@ void Game::Update()
 		doneSprite.Update();
 		tutorialWindow.Update();
 
-		if (stageNum == 1)
-		{
-			stages[1]->vaporWaveSunRender.data.colorData.color.a = 255;
-		}
-
 		for (int i = 0; i < hitEffect.size(); ++i)
 		{
 			hitEffect[i].Update();
@@ -1133,7 +1129,9 @@ void Game::Update()
 				if (enableToUseDataFlag)
 				{
 					enemies[enemyType][enemyCount]->Update();
+#ifdef _DEBUG
 					enemyHitBox[enemyType][enemyCount].data.transform.pos = *enemies[enemyType][enemyCount]->GetData()->hitBox.center;
+#endif
 				}
 
 				//一体でも敵が動いていたらそれを知らせるフラグを上げる
@@ -1266,7 +1264,7 @@ void Game::Draw()
 		CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 1);
 		player.Draw();
 		stages[lStageNum]->SetCamera(1);
-		//stages[lStageNum]->Draw();
+		stages[lStageNum]->Draw();
 		RenderTargetStatus::Instance()->PrepareToCloseBarrier(potalTexHandle);
 		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 	}
@@ -1376,13 +1374,13 @@ void Game::Draw()
 		mainRenderTarget.Draw();
 
 		addRenderTarget.data.handleData = addHandle;
-		//addRenderTarget.data.addHandle.handle[0] = buler[0]->BlurImage(addHandle);
-		//addRenderTarget.data.addHandle.handle[1] = buler[1]->BlurImage(addRenderTarget.data.addHandle.handle[0]);
-		//addRenderTarget.data.addHandle.handle[2] = buler[2]->BlurImage(addRenderTarget.data.addHandle.handle[1]);
-		//addRenderTarget.data.addHandle.handle[3] = buler[3]->BlurImage(addRenderTarget.data.addHandle.handle[2]);
+		addRenderTarget.data.addHandle.handle[0] = buler[0]->BlurImage(addHandle);
+		addRenderTarget.data.addHandle.handle[1] = buler[1]->BlurImage(addRenderTarget.data.addHandle.handle[0]);
+		addRenderTarget.data.addHandle.handle[2] = buler[2]->BlurImage(addRenderTarget.data.addHandle.handle[1]);
+		addRenderTarget.data.addHandle.handle[3] = buler[3]->BlurImage(addRenderTarget.data.addHandle.handle[2]);
 
 		PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "AddRenderTarget");
-		//addRenderTarget.Draw();
+		addRenderTarget.Draw();
 		PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
 

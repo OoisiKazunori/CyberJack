@@ -296,6 +296,7 @@ void GameScene::Init()
 
 #pragma endregion
 	++layerLevel;
+
 	stages[layerLevel] = std::make_shared<ThridStage>();
 
 
