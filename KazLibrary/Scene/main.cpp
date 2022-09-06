@@ -13,11 +13,6 @@
 #include"../Input/ControllerInputManager.h"
 #include<time.h>
 
-/*
-以下の言葉を、ソリューションの全体で検索すると特定の場所まで飛びます
-「メモ帳」...そのファイルに関係する内容で分かった事、疑問点まで飛びます
-「問題」.....解決しなければならない問題点まで飛びます
-*/
 
 //ターゲットがデバックの時のみコンソール用のmain文を参照する
 #ifdef _DEBUG
@@ -94,16 +89,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	winApi.UnregisterWindowClass();
 
 
-
-#ifdef _DEBUG
-	ID3D12DebugDevice *debugInterface;
-	HRESULT result = DirectX12Device::Instance()->dev.Get()->QueryInterface(&debugInterface);
-	if (SUCCEEDED(result))
-	{
-		//debugInterface->ReportLiveDeviceObjects(D3D12_RLDO_DETAIL | D3D12_RLDO_IGNORE_INTERNAL);
-		debugInterface->Release();
-	}
-#endif
 
 	return 0;
 }

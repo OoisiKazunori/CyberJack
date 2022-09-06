@@ -477,7 +477,7 @@ void FbxModelResourceMgr::ParseSkin(Model *MODEL, FbxMesh *FBX_MESH)
 		//ボーン自体の名前を取得
 		const char *boneName = fbxCluster->GetLink()->GetName();
 
-		//新しくボーンを追加し、追加したボーンの参照を得る....問題
+		//新しくボーンを追加し、追加したボーンの参照を得る
 		bones.emplace_back(Model::Bone(boneName));
 		Model::Bone &bone = bones.back();
 
@@ -502,7 +502,6 @@ void FbxModelResourceMgr::ParseSkin(Model *MODEL, FbxMesh *FBX_MESH)
 	//二次元配列(ジャグ配列)
 	//list、頂点が影響を受けるボーンの全リスト
 	//vector、それを全頂点分
-	//問題
 	vector<list<WeightSet>> weightLists(MODEL->vertices.size());
 
 	//全てのボーンについて

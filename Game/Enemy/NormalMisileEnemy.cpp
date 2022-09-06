@@ -77,7 +77,7 @@ void NormalMisileEnemy::Update()
 			//ノックバック
 			KazMath::Vec3<float> kockBackVel = { 0.0f,0.0f,60.0f };
 			lerpPos = iEnemy_ModelRender->data.transform.pos + kockBackVel;
-			ShotSound();
+			//ShotSound();
 			initShotFlag = true;
 			debugShotFlag = false;
 			startFlag = true;
