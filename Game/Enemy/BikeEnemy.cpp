@@ -118,14 +118,6 @@ void BikeEnemy::Update()
 		//ê¸ÇìoèÍÇ≥ÇπÇÈ
 		KazMath::Larp(DISAPPEAR_Z_POS, &line.data.endPos.z, 0.02f);
 
-		ImGui::Begin("Misile");
-		ImGui::DragFloat("POS_X", &misileR.data.transform.pos.x);
-		ImGui::DragFloat("POS_Y", &misileR.data.transform.pos.y);
-		ImGui::DragFloat("POS_Z", &misileR.data.transform.pos.z);
-		ImGui::DragFloat("POS_X2", &misileR2.data.transform.pos.x);
-		ImGui::DragFloat("POS_Y2", &misileR2.data.transform.pos.y);
-		ImGui::DragFloat("POS_Z2", &misileR2.data.transform.pos.z);
-		ImGui::End();
 		misileR.data.color.color = { 255,0,0,255 };
 		misileR2.data.color.color = { 255,0,0,255 };
 

@@ -23,6 +23,9 @@ private:
 	std::array<BoxPolygonRender, 8>misileR;
 	//FbxModelRenderPtr model;
 
+	KazMath::Vec3<float>topPos;
+	KazMath::Vec3<float>topRota;
+	ObjModelRenderPtr topModel;
 	bool isShotFlag;
 };
 

@@ -10,8 +10,12 @@ BattleshipEnemy::BattleshipEnemy()
 		misileR[i].data.transform.pos.z = 25.0f;
 	}
 
+	topModel = std::make_unique<ObjModelRender>();
+
 	//iEnemy_ModelRender = std::make_unique<FbxModelRender>();
-	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_Model.obj");	//モデル読み込み
+	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_Model_Body.obj");	//モデル読み込み
+	topModel->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_Model_Radar.obj");	//モデル読み込み
+
 }
 
 void BattleshipEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
@@ -54,6 +58,22 @@ void BattleshipEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLA
 	}
 
 	adjHitBoxPos = { 0.0f,95.0f,-15.0f };
+
+
+	if (signbit(iEnemy_ModelRender->data.transform.pos.x))
+	{
+		topRota.y = 90.0f;
+	}
+	else if(!signbit(iEnemy_ModelRender->data.transform.pos.x))
+	{
+		topRota.y = -90.0f;
+	}
+	if (iEnemy_ModelRender->data.transform.pos.x == 0.0f)
+	{
+		topRota.y = 180.0f;
+	}
+
+	topPos = { 0.0f,82.0f,-16.0f };
 }
 
 void BattleshipEnemy::Finalize()
@@ -69,7 +89,7 @@ void BattleshipEnemy::Update()
 	if (iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
 	{
 		//一定時間止まったらそのまま画面外に向かう
-		if (KazMath::ConvertSecondToFlame(disappearTime) <= appearTimer)
+		if (KazMath::ConvertSecondToFlame(disappearTime) <= appearTimer && !demoFlag)
 		{
 			iEnemy_ModelRender->data.transform.pos.z += vel;
 			vel += 0.1f;
@@ -169,15 +189,28 @@ void BattleshipEnemy::Update()
 		}
 	}
 
-
 	if (!ProcessingOfDeath(DEATH_SINK))
 	{
 		++appearTimer;
 	}
+	else
+	{
+		topModel->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
+		topModel->data.removeMaterialFlag = true;
+		topModel->data.colorData.color.x = 255;
+		topModel->data.colorData.color.y = 255;
+		topModel->data.colorData.color.z = 255;
+	}
+
+	topModel->data.transform = iEnemy_ModelRender->data.transform;
+	topModel->data.colorData = iEnemy_ModelRender->data.colorData;
+	topModel->data.transform.pos = iEnemy_ModelRender->data.transform.pos + topPos;
+	topModel->data.transform.rotation = iEnemy_ModelRender->data.transform.rotation + topRota;
 }
 
 void BattleshipEnemy::Draw()
 {
 	iEnemy_ModelRender->Draw();
+	topModel->Draw();
 	LockOnWindow(*iEnemy_EnemyStatusData->hitBox.center);
 }
