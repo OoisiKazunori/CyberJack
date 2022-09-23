@@ -137,6 +137,9 @@ Game::Game()
 
 	CameraMgr::Instance()->CameraSetting(60.0f, 1200.0f, 0);
 	CameraMgr::Instance()->CameraSetting(60.0f, 100000.0f, 1);
+
+
+	stringName.Init("AbcD", 1.0f);
 }
 
 Game::~Game()
@@ -449,7 +452,7 @@ void Game::Input()
 
 	if (input->InputTrigger(DIK_SPACE))
 	{
-		player.Hit();
+		stringName.Init("AbcD", 1.0f);
 	}
 
 }
@@ -1171,6 +1174,8 @@ void Game::Update()
 				deadEffectEmitter[emitterTypeIndex][stackIndex]->Update();
 			}
 		}
+
+		stringName.Update();
 	}
 
 
@@ -1400,6 +1405,8 @@ void Game::Draw()
 		}
 
 		cursor.Draw();
+
+		stringName.Draw();
 	}
 	else
 	{

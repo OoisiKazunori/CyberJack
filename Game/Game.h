@@ -32,6 +32,7 @@
 #include"../Game/Effect/FireEffect.h"
 #include"../Game/Effect/RocketLightEffect.h"
 
+#include"../Game/UI/Letter.h"
 
 struct LineEffectData
 {
@@ -81,6 +82,10 @@ public:
 	int SceneChange();
 
 private:
+
+	String stringName;
+
+
 	//ゲームループ----------------------------------------------------------------
 	bool gameStartFlag;						//ゲーム開始を知らせるフラグ
 	int sceneNum;							//次何処のシーンに飛ぶか

@@ -129,6 +129,7 @@
     <ClCompile Include="Game\Effect\PlayerDamageEmitter.cpp" />
     <ClCompile Include="Game\Effect\PlayerDamegePartice.cpp" />
     <ClCompile Include="Game\UI\DamageTextWindow.cpp" />
+    <ClCompile Include="Game\UI\Letter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -271,6 +272,7 @@
     <ClInclude Include="Game\Effect\PlayerDamageEmitter.h" />
     <ClInclude Include="Game\Effect\PlayerDamegePartice.h" />
     <ClInclude Include="Game\UI\DamageTextWindow.h" />
+    <ClInclude Include="Game\UI\Letter.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
