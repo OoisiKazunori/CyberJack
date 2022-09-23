@@ -933,7 +933,11 @@ void Game::Update()
 						{
 							KazMath::Vec3<float>screenPos =
 								KazMath::ConvertWorldPosToScreenPos(*enemies[enemyTypeIndex][enemyIndex]->GetData()->hitBox.center, CameraMgr::Instance()->GetViewMatrix(0), CameraMgr::Instance()->GetPerspectiveMatProjection());
-							deadEffectEmitter[lEmitterType][stackIndex]->Init(KazMath::Vec2<float>(screenPos.x, screenPos.y));
+							//敵が画面外に出た際に画面横からウィンドウが出ないように変換後のz値が1.0以上は描画しない
+							if (screenPos.z <= 1.0f)
+							{
+								deadEffectEmitter[lEmitterType][stackIndex]->Init(KazMath::Vec2<float>(screenPos.x, screenPos.y));
+							}
 							break;
 						}
 					}

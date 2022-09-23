@@ -249,7 +249,6 @@ std::vector<RESOURCE_HANDLE> RenderTargetStatus::CreateMultiRenderTarget(const s
 	srvDesc.Texture2D.MipLevels = 1;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 
-	const int ARRAY_SIZE = static_cast<int>(MULTIRENDER_TARGET_DATA.size());
 	std::vector<RESOURCE_HANDLE> handles;
 
 	RESOURCE_HANDLE buffNum = -1;

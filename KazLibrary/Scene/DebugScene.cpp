@@ -105,9 +105,7 @@ DebugScene::DebugScene() :bulr({ WIN_X,WIN_Y })
 
 	//VertexBuffer------------------------
 	{
-		const float TriangleHalfWidth = 0.08f;
 		const float TriangleDepth = 0.0f;
-		const float CullingCutoff = 0.5f;
 		struct Vert
 		{
 			DirectX::XMFLOAT3 pos;
