@@ -8,7 +8,7 @@ class Letter
 {
 public:
 	Letter();
-	void Init(const KazMath::Vec2<float> &POS, const char &CHARACTER, float FONT_SIZE);
+	void Init(const KazMath::Vec2<float> &POS, const char &CHARACTER, float FONT_SIZE, int STRING_INDEX);
 	void Finalize();
 	void Update(float Y_POS, int INDEX);
 	void Draw();

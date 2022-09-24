@@ -11,7 +11,7 @@ Letter::Letter()
 	initFlag = false;
 }
 
-void Letter::Init(const KazMath::Vec2<float> &POS, const char &CHARACTER, float FONT_SIZE)
+void Letter::Init(const KazMath::Vec2<float> &POS, const char &CHARACTER, float FONT_SIZE, int STRING_INDEX)
 {
 	basePos = POS;
 	baseSize = { FONT_SIZE ,FONT_SIZE };
@@ -59,7 +59,7 @@ void Letter::Init(const KazMath::Vec2<float> &POS, const char &CHARACTER, float 
 	initFlag = true;
 
 	timer = 0;
-	prevStringIndex = 0;
+	prevStringIndex = STRING_INDEX;
 }
 
 void Letter::Finalize()
@@ -134,12 +134,10 @@ void String::Init(const KazMath::Vec2<float>POS, const std::string &STRING, floa
 {
 	logString = STRING;
 	fontSize = FONT_SIZE;
-	timer = 0;
+	timer = 4;
 	charaArrayNum = 0;
 
 	basePos = POS;
-	KazMath::Vec2<float>lPos = { basePos.x + static_cast<float>(charaArrayNum) * (16.0f * fontSize), basePos.y };
-	letters[0].Init(lPos, logString[charaArrayNum], fontSize);
 }
 
 void String::Finalize()
@@ -154,19 +152,20 @@ void String::Update(int STRING_INDEX)
 {
 	//時間経過で文字を一文字ずつ出す処理ーーー
 	++timer;
-	if (4 <= timer && charaArrayNum < logString.size() - 1 && logString.size() != 0 && charaArrayNum < letters.size())
+	bool lIsStringInArraySizeFlag = charaArrayNum < logString.size() - 1 && logString.size() != 0;
+	if (4 <= timer && lIsStringInArraySizeFlag && charaArrayNum < letters.size())
 	{
 		timer = 0;
-		++charaArrayNum;
 		KazMath::Vec2<float>lPos = { basePos.x + static_cast<float>(charaArrayNum) * (16.0f * fontSize), basePos.y + 20.0f * static_cast<float>(STRING_INDEX) };
-		letters[charaArrayNum].Init(lPos, logString[charaArrayNum], fontSize);
+		letters[charaArrayNum].Init(lPos, logString[charaArrayNum], fontSize, STRING_INDEX);
+		++charaArrayNum;
 	}
 	//時間経過で文字を一文字ずつ出す処理ーーー
 
 
 	for (int i = 0; i < letters.size(); ++i)
 	{
-		letters[i].Update(basePos.y + 20.0f * static_cast<float>(STRING_INDEX), STRING_INDEX);
+ 		letters[i].Update(basePos.y + 20.0f * static_cast<float>(STRING_INDEX), STRING_INDEX);
 	}
 }
 
