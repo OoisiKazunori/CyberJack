@@ -14,6 +14,9 @@
 
 EnemyDebugScene::EnemyDebugScene()
 {
+	uvCheckModel.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::RelativeResourcePath + "testCube.fbx");	//モデル読み込み
+
+
 	int lIndex = 0;
 	enemies[lIndex] = std::make_unique<BattleshipEnemy>();
 	misiles[lIndex][0] = std::make_unique<SplineMisileForBattleShip>();
@@ -49,7 +52,6 @@ EnemyDebugScene::EnemyDebugScene()
 	battleShipObjModel.data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_Model.obj");	//モデル読み込み
 	battleShipFbxModel->data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_HachOpen_anim.fbx");	//モデル読み込み
 	boxModel.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::RelativeResourcePath + "cube.fbx");	//モデル読み込み
-	uvCheckModel.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::RelativeResourcePath + "testCube.fbx");	//モデル読み込み
 
 
 	battleShipObjModel.data.transform.pos = { -350.0f,0.0f,0.0f };

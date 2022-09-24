@@ -16,7 +16,6 @@ FbxModelResourceMgr::FbxModelResourceMgr()
 	handle = std::make_unique<HandleMaker>();
 
 	errorResource = std::make_unique<FbxResourceData>();
-
 }
 
 FbxModelResourceMgr::~FbxModelResourceMgr()
@@ -584,7 +583,7 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 	MODEL->vertices.resize(controlPointsCount, vert);
 
 	//FBXメッシュの頂点座標配列を取得
-	FbxVector4 *pCoord = FBX_MESH->GetControlPoints();
+	//FbxVector4 *pCoord = FBX_MESH->GetControlPoints();
 
 	auto &vertices = MODEL->vertices;
 	auto &indices = MODEL->indices;
@@ -596,72 +595,24 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 	//UVデータの数
 	const int textureUVCount = FBX_MESH->GetTextureUVCount();
 
+	//もし重複なしの頂点数なら何かに使えるかも
+	int polygonVertexNum = FBX_MESH->GetPolygonVertexCount();
+	polygonVertexNum = FBX_MESH->GetPolygonVertexIndex(0);
+	polygonVertexNum = FBX_MESH->GetElementVertexCreaseCount();
+
 	//UV名リスト
 	FbxStringList uvNames;
 	FBX_MESH->GetUVSetNames(uvNames);
 
 	//面ごとの情報読み取り
-	for (int i = 0; i < polygonCount; i++)
+	for (int i = 0; i < controlPointsCount; i++)
 	{
-		//面を構成する頂点の数を取得(3なら三角形ポリゴン)
-		const int polygonSize = FBX_MESH->GetPolygonSize(i);
-		assert(polygonSize <= 4);
-
-		//1頂点ずつ処理
-		for (int j = 0; j < polygonSize; j++)
-		{
-			int index = FBX_MESH->GetPolygonVertex(i, j);
-			assert(index >= 0);
-
-			Model::VertexPosNormalUvSkin &vertex = vertices[index];
-
-			//座標のコピー
-			vertex.pos.x = (float)pCoord[index][0];
-			vertex.pos.y = (float)pCoord[index][1];
-			vertex.pos.z = (float)pCoord[index][2];
-
-
-			//頂点法線読み込み
-			FbxVector4 normal;
-			if (FBX_MESH->GetPolygonVertexNormal(i, j, normal))
-			{
-				vertex.normal.x = (float)normal[0];
-				vertex.normal.y = (float)normal[1];
-				vertex.normal.z = (float)normal[2];
-			}
-
-			//テクスチャUV読み込み
-			if (textureUVCount > 0)
-			{
-				FbxVector2 uvs;
-				bool lUnmappedUV;
-				//0番決め打ちで読み込み
-				if (FBX_MESH->GetPolygonVertexUV(i, j, uvNames[0], uvs, lUnmappedUV))
-				{
-					vertex.uv.x = (float)uvs[0];
-					vertex.uv.y = (float)uvs[1];
-				}
-			}
-
-			//インデックス配列に頂点インデックス追加
-			//3頂点目までなら
-			if (j < 3)
-			{
-				//1点追加し、他の2点と三角形を構築する
-				indices.push_back(static_cast<USHORT>(index));
-			}
-			//4頂点目
-			else
-			{
-				//3点追加し、
-				//四角形の0,1,2,3の内,2,3,0で三角形を構築する
-				USHORT index2 = indices[indices.size() - 1];
-				USHORT index3 = static_cast<USHORT>(index);
-				USHORT index0 = indices[indices.size() - 3];
-				indices.push_back(index2);
-				indices.push_back(index3);
-				indices.push_back(index0);
-			}
-		}
+		Model::VertexPosNormalUvSkin &vertex = vertices[i];
+		FbxVector4 outVertex = FBX_MESH->GetControlPointAt(i);
+		vertex.pos.x = static_cast<float>(outVertex[0]);
+		vertex.pos.y = static_cast<float>(outVertex[1]);
+		vertex.pos.z = static_cast<float>(outVertex[2]);
 	}
+	bool debug = false;
+	debug = true;
 }
