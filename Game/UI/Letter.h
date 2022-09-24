@@ -48,6 +48,10 @@ public:
 	void Update(int STRING_INDEX);
 	void Draw();
 
+	bool TimeOver()
+	{
+		return KazMath::ConvertSecondToFlame(10) <= timer;
+	}
 private:
 	static const int LETTER_MAX_NUM = 20;
 	std::array<Letter, LETTER_MAX_NUM>letters;

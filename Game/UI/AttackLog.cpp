@@ -16,19 +16,35 @@ void AttackLog::Init()
 
 void AttackLog::Update()
 {
-	//ログの廃棄
+	//時間経過でログを消す
 	for (int i = 0; i < logStringArray.size(); ++i)
 	{
-		if (logStringArray[i].logIndex == -1)
+		if (logStringArray[i].log.TimeOver() && 0 <= logStringArray[i].logIndex)
 		{
-			logStringArray[i].log.Finalize();
 			logStringArray[i].logIndex = -1;
+			for (int logIndex = 0; logIndex < logStringArray.size(); ++logIndex)
+			{
+				--logStringArray[logIndex].logIndex;
+			}
+			--logDataIndex;
 		}
 	}
 
+	//ログの廃棄
 	for (int i = 0; i < logStringArray.size(); ++i)
 	{
-		if (logStringArray[i].logIndex != -1)
+		if (logStringArray[i].logIndex <= -1)
+		{
+			logStringArray[i].log.Finalize();
+		}
+	}
+
+
+
+
+	for (int i = 0; i < logStringArray.size(); ++i)
+	{
+		if (0 <= logStringArray[i].logIndex)
 		{
 			logStringArray[i].log.Update(logStringArray[i].logIndex);
 		}

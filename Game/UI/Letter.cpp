@@ -162,7 +162,6 @@ void String::Update(int STRING_INDEX)
 	}
 	//時間経過で文字を一文字ずつ出す処理ーーー
 
-
 	for (int i = 0; i < letters.size(); ++i)
 	{
  		letters[i].Update(basePos.y + 20.0f * static_cast<float>(STRING_INDEX), STRING_INDEX);
