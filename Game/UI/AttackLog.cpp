@@ -61,7 +61,7 @@ void AttackLog::Draw()
 
 void AttackLog::WriteLog(const std::string &STRING, float FONT_SIZE)
 {
-	logStringArray[logArrayIndex].log.Init(KazMath::Vec2<float>(10.0f, 300.0f), STRING, FONT_SIZE);
+	logStringArray[logArrayIndex].log.Init(KazMath::Vec2<float>(50.0f, 50.0f), STRING, FONT_SIZE);
 	logStringArray[logArrayIndex].logIndex = logDataIndex;
 
 	//ログの順番が最大値まで到達したらその最大値のままにする
