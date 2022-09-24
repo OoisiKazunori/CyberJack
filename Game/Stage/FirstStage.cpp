@@ -3,8 +3,10 @@
 #include"../KazLibrary/Easing/easing.h"
 #include"../KazLibrary//Helper/KazHelper.h"
 
-FirstStage::FirstStage()
+FirstStage::FirstStage() :firstColor(162, 38, 179, 255), endColor(73, 39, 158, 255)
 {
+	//DirectX::XMFLOAT3 first(0.93f, 0.65f, 0.53f);
+	//DirectX::XMFLOAT3 end(0.24f, 0.09f, 0.62f);
 
 	for (int i = 0; i < floorStage.size(); ++i)
 	{
@@ -31,9 +33,9 @@ FirstStage::FirstStage()
 		{
 			lD.depthX.z = 1;
 		}
-
-		DirectX::XMFLOAT3 first(0.93f, 0.65f, 0.53f);
-		DirectX::XMFLOAT3 end(0.24f, 0.09f, 0.62f);
+		;
+		DirectX::XMFLOAT3 first(firstColor.ConvertColorRateToXMFLOAT3());
+		DirectX::XMFLOAT3 end(endColor.ConvertColorRateToXMFLOAT3());
 		DirectX::XMFLOAT3 result;
 		result.x = first.x - end.x;
 		result.y = first.y - end.y;
@@ -104,7 +106,7 @@ FirstStage::FirstStage()
 
 
 
-	InitBackGround(KazMath::Color(237, 165, 135, 255), KazMath::Color(61, 23, 158, 255), 650.0f, 400.0f);
+	InitBackGround(firstColor, endColor, 650.0f, 400.0f);
 	t = 0.0f;
 
 }

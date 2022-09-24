@@ -27,6 +27,8 @@ public:
 	void Update()override;
 	void Draw()override;
 
+	KazMath::Color firstColor;
+	KazMath::Color endColor;
 
 	float easeY;
 	float t;
@@ -52,8 +54,8 @@ public:
 		lD.rateAndFogLine.y = 407.0f;
 		lD.depthX.z = 0;
 
-		DirectX::XMFLOAT3 first(0.93f, 0.65f, 0.53f);
-		DirectX::XMFLOAT3 end(0.24f, 0.09f, 0.62f);
+		DirectX::XMFLOAT3 first(firstColor.ConvertColorRateToXMFLOAT3());
+		DirectX::XMFLOAT3 end(endColor.ConvertColorRateToXMFLOAT3());
 		DirectX::XMFLOAT3 result;
 		result.x = first.x - end.x;
 		result.y = first.y - end.y;
