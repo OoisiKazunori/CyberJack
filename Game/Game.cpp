@@ -139,7 +139,7 @@ Game::Game()
 	CameraMgr::Instance()->CameraSetting(60.0f, 100000.0f, 1);
 
 
-	stringName.Init("AbcD", 1.0f);
+	stringName.Init("AbcD ga", 1.0f);
 }
 
 Game::~Game()
@@ -452,7 +452,7 @@ void Game::Input()
 
 	if (input->InputTrigger(DIK_SPACE))
 	{
-		stringName.Init("AbcD", 1.0f);
+		stringName.Init("AbcD g", 1.0f);
 	}
 
 }

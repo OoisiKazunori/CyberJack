@@ -15,7 +15,7 @@ public:
 
 private:
 	KazMath::Vec2<float>basePos, baseSize;
-	Sprite2DRender render;
+	Sprite2DRender render, inputRender;
 
 	enum FontType
 	{
@@ -29,8 +29,12 @@ private:
 	FontType fontType;
 	int fontNum;
 	std::array<RESOURCE_HANDLE, 3> graphHandle;
-
+	RESOURCE_HANDLE inputLogHandle,testHandle;
 	bool initFlag;
+	bool spaceFlag;
+
+	int timer;
+	bool changeHandleFlag;
 };
 
 class String
@@ -45,4 +49,10 @@ public:
 private:
 	static const int LETTER_MAX_NUM = 20;
 	std::array<Letter, LETTER_MAX_NUM>letters;
+
+	int timer;
+	int charaArrayNum;
+	std::string logString;
+	float fontSize;
+	KazMath::Vec2<float>basePos;
 };
