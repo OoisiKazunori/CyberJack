@@ -139,7 +139,7 @@ Game::Game()
 	CameraMgr::Instance()->CameraSetting(60.0f, 100000.0f, 1);
 
 
-	stringName.Init("AbcD ga", 1.0f);
+	stringLog.Init();
 }
 
 Game::~Game()
@@ -452,7 +452,26 @@ void Game::Input()
 
 	if (input->InputTrigger(DIK_SPACE))
 	{
-		stringName.Init("AbcD g", 1.0f);
+		switch (KazMath::Rand(0, 4))
+		{
+		case 0:
+			stringLog.WriteLog("Abc Def", 1.0f);
+			break;
+		case 1:
+			stringLog.WriteLog("AbcDe f", 1.0f);
+			break;
+		case 2:
+			stringLog.WriteLog("A bcDef", 1.0f);
+			break;
+		case 3:
+			stringLog.WriteLog("AbcD ef", 1.0f);
+			break;
+		case 4:
+			stringLog.WriteLog("Ab cD ef", 1.0f);
+			break;
+		default:
+			break;
+		}
 	}
 
 }
@@ -1175,7 +1194,7 @@ void Game::Update()
 			}
 		}
 
-		stringName.Update();
+		stringLog.Update();
 	}
 
 
@@ -1406,7 +1425,7 @@ void Game::Draw()
 
 		cursor.Draw();
 
-		stringName.Draw();
+		stringLog.Draw();
 	}
 	else
 	{

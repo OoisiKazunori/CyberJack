@@ -59,6 +59,7 @@ void Letter::Init(const KazMath::Vec2<float> &POS, const char &CHARACTER, float 
 	initFlag = true;
 
 	timer = 0;
+	prevStringIndex = 0;
 }
 
 void Letter::Finalize()
@@ -66,9 +67,27 @@ void Letter::Finalize()
 	initFlag = false;
 }
 
-void Letter::Update()
+void Letter::Update(float Y_POS, int INDEX)
 {
 	if (!initFlag)return;
+
+	//文のインデックスが変わったら文字の座標を変える
+	if (INDEX != prevStringIndex)
+	{
+		/*
+		基本座標と補間座標の差分を出す
+		↓
+		基本座標と補間座標を変更後の同じ場所に
+		↓
+		差分を補間座標に足す
+		*/
+		KazMath::Vec2<float>sub = basePos - render.data.transform.pos;
+		basePos.y = Y_POS;
+		render.data.transform.pos = basePos + sub;
+
+		prevStringIndex = INDEX;
+	}
+
 	//補間をかける
 	KazMath::Larp(basePos, &render.data.transform.pos, 0.3f);
 	KazMath::Larp(baseSize, &render.data.transform.scale, 0.3f);
@@ -111,14 +130,14 @@ String::String()
 {
 }
 
-void String::Init(const std::string &STRING, float FONT_SIZE)
+void String::Init(const KazMath::Vec2<float>POS, const std::string &STRING, float FONT_SIZE)
 {
 	logString = STRING;
 	fontSize = FONT_SIZE;
 	timer = 0;
 	charaArrayNum = 0;
 
-	basePos = { 10.0f, 300.0f };
+	basePos = POS;
 	KazMath::Vec2<float>lPos = { basePos.x + static_cast<float>(charaArrayNum) * (16.0f * fontSize), basePos.y };
 	letters[0].Init(lPos, logString[charaArrayNum], fontSize);
 }
@@ -131,15 +150,15 @@ void String::Finalize()
 	}
 }
 
-void String::Update()
+void String::Update(int STRING_INDEX)
 {
 	//時間経過で文字を一文字ずつ出す処理ーーー
 	++timer;
-	if (4 <= timer && charaArrayNum < logString.size() - 1 && charaArrayNum < letters.size())
+	if (4 <= timer && charaArrayNum < logString.size() - 1 && logString.size() != 0 && charaArrayNum < letters.size())
 	{
 		timer = 0;
 		++charaArrayNum;
-		KazMath::Vec2<float>lPos = { basePos.x + static_cast<float>(charaArrayNum) * (16.0f * fontSize), basePos.y };
+		KazMath::Vec2<float>lPos = { basePos.x + static_cast<float>(charaArrayNum) * (16.0f * fontSize), basePos.y + 20.0f * static_cast<float>(STRING_INDEX) };
 		letters[charaArrayNum].Init(lPos, logString[charaArrayNum], fontSize);
 	}
 	//時間経過で文字を一文字ずつ出す処理ーーー
@@ -147,7 +166,7 @@ void String::Update()
 
 	for (int i = 0; i < letters.size(); ++i)
 	{
-		letters[i].Update();
+		letters[i].Update(basePos.y + 20.0f * static_cast<float>(STRING_INDEX), STRING_INDEX);
 	}
 }
 

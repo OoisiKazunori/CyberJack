@@ -12,7 +12,13 @@ public:
 
 	void WriteLog(const std::string &STRING, float FONT_SIZE);
 private:
-	std::array<String, 15>logString;
-	int logIndex;
+	struct StringData
+	{
+		String log;
+		int logIndex;
+	};
+	std::array<StringData, 15>logStringArray;
+	int logArrayIndex;
+	int logDataIndex;
 };
 

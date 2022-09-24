@@ -32,7 +32,7 @@
 #include"../Game/Effect/FireEffect.h"
 #include"../Game/Effect/RocketLightEffect.h"
 
-#include"../Game/UI/Letter.h"
+#include"../Game/UI/AttackLog.h"
 
 struct LineEffectData
 {
@@ -83,7 +83,7 @@ public:
 
 private:
 
-	String stringName;
+	AttackLog stringLog;
 
 
 	//ÉQÅ[ÉÄÉãÅ[Év----------------------------------------------------------------

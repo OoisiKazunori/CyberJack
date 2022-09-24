@@ -10,7 +10,7 @@ public:
 	Letter();
 	void Init(const KazMath::Vec2<float> &POS, const char &CHARACTER, float FONT_SIZE);
 	void Finalize();
-	void Update();
+	void Update(float Y_POS, int INDEX);
 	void Draw();
 
 private:
@@ -35,15 +35,17 @@ private:
 
 	int timer;
 	bool changeHandleFlag;
+
+	int prevStringIndex;
 };
 
 class String
 {
 public:
 	String();
-	void Init(const std::string &STRING, float FONT_SIZE);
+	void Init(const KazMath::Vec2<float>POS, const std::string &STRING, float FONT_SIZE);
 	void Finalize();
-	void Update();
+	void Update(int STRING_INDEX);
 	void Draw();
 
 private:
