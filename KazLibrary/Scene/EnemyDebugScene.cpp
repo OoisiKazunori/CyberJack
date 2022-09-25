@@ -58,6 +58,7 @@ EnemyDebugScene::EnemyDebugScene()
 	battleShipFbxModel->data.transform.pos = { 200.0f,0.0f,0.0f };
 	boxModel.data.transform.pos = { -200.0f,-50.0f,0.0f };
 	boxModel.data.transform.scale = { 1.0f,1.0f,1.0f };
+
 	uvCheckModel.data.transform.pos = { 0.0f,0.0f,0.0f };
 	uvCheckModel.data.transform.scale = { 100.0f,100.0f,100.0f };
 

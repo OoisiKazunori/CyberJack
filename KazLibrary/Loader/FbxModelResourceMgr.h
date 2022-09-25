@@ -115,7 +115,9 @@ public:
 	std::vector<FbxTime> startTime;
 	std::vector<FbxTime> endTime;
 
-	FbxResourceData() :indicisNum(0), ambient({ -1.0f,-1.0f,-1.0f }), diffuse({ -1.0f,-1.0f,-1.0f })
+	UINT vertNum;
+
+	FbxResourceData() :indicisNum(0), ambient({ -1.0f,-1.0f,-1.0f }), diffuse({ -1.0f,-1.0f,-1.0f }), vertNum(0)
 	{
 	}
 };
