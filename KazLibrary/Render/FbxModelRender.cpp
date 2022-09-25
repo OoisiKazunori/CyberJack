@@ -26,13 +26,14 @@ void FbxModelRender::Draw()
 	if (data.handle.flag.Dirty())
 	{
 		resourceData = FbxModelResourceMgr::Instance()->GetResourceData(data.handle.handle);
-		drawIndexInstanceCommandData = KazRenderHelper::SetDrawIndexInstanceCommandData(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, resourceData->vertexBufferView, resourceData->indexBufferView, resourceData->indicisNum, 1);
+		//drawIndexInstanceCommandData = KazRenderHelper::SetDrawIndexInstanceCommandData(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, resourceData->vertexBufferView, resourceData->indexBufferView, resourceData->indicisNum, 1);
+		drawInstanceCommandData = KazRenderHelper::SetDrawInstanceCommandData(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, resourceData->vertexBufferView, resourceData->vertNum, 1);
 	}
 
 
 	if (data.handle.handle != -1)
 	{
-		/*if (data.isPlayFlag)
+		if (data.isPlayFlag)
 		{
 			currentTime += frameTime;
 			if (currentTime > resourceData->endTime[data.animationNumber])
@@ -51,7 +52,7 @@ void FbxModelRender::Draw()
 		else
 		{
 			currentTime = resourceData->startTime[data.animationNumber];
-		}*/
+		}
 
 
 		//パイプライン設定-----------------------------------------------------------------------------------------------------
@@ -142,7 +143,8 @@ void FbxModelRender::Draw()
 		}
 	
 
-		DrawIndexInstanceCommand(drawIndexInstanceCommandData);
+		//DrawIndexInstanceCommand(drawIndexInstanceCommandData);
+		DrawInstanceCommand(drawInstanceCommandData);
 	}
 
 	data.Record();
