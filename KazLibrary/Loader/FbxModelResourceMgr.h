@@ -168,7 +168,7 @@ private:
 	//テクスチャ読み取り
 	void LoadTexture(Model *MODEL, const std::string &FULL_PATH);
 	//スキニング情報の読み取り
-	void ParseSkin(Model *MODEL, FbxMesh *FBX_MESH);
+	void ParseBone(Model *MODEL, FbxMesh *FBX_MESH);
 
 	void ParseFaces(Model *MODEL, FbxMesh *FBX_MESH);
 
