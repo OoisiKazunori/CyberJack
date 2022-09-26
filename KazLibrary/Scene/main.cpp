@@ -67,13 +67,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	PreCreateBaseRootSignature prepareR;
 	PreCreateBasePipeLine prepareP;
 
-	SceneManager sm;	
 	KeyBoradInputManager::Instance()->CreateDevice(&winApi.hwnd, &winApi.window.hInstance);
 
 
-	OutputDebugStringA("ゲームのメインループを開始します\n");
 	srand(static_cast<UINT>(time(NULL)));
+	SceneManager sm;
 
+	OutputDebugStringA("ゲームのメインループを開始します\n");
 	while (CheckMessageFlag)
 	{
 		CheckMessageFlag = msg.CheckMessage();
