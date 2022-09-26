@@ -83,7 +83,7 @@ void BattleshipEnemy::Finalize()
 void BattleshipEnemy::Update()
 {
 	hitBoxPos = {};
-	hitBoxPos = iEnemy_ModelRender->data.transform.pos + adjHitBoxPos;
+	hitBoxPos = model->data.transform.pos + adjHitBoxPos;
 	iEnemy_EnemyStatusData->hitBox.center = &hitBoxPos;
 
 	if (iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
@@ -91,7 +91,7 @@ void BattleshipEnemy::Update()
 		//一定時間止まったらそのまま画面外に向かう
 		if (KazMath::ConvertSecondToFlame(disappearTime) <= appearTimer && !demoFlag)
 		{
-			iEnemy_ModelRender->data.transform.pos.z += vel;
+			model->data.transform.pos.z += vel;
 			vel += 0.1f;
 
 			const float MAX_SPEED = 10.0f;
@@ -99,14 +99,14 @@ void BattleshipEnemy::Update()
 			{
 				vel = MAX_SPEED;
 
-				if (0 < iEnemy_ModelRender->data.colorData.color.a)
+				if (0 < model->data.colorData.color.a)
 				{
-					iEnemy_ModelRender->data.colorData.color.a -= 5;
+					model->data.colorData.color.a -= 5;
 				}
 				else
 				{
 					//死亡扱い
-					iEnemy_ModelRender->data.colorData.color.a = 0;
+					model->data.colorData.color.a = 0;
 					iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag = false;
 					initDeadSoundFlag = true;
 				}
@@ -135,22 +135,22 @@ void BattleshipEnemy::Update()
 
 				if (minusFlag)
 				{
-					misileR[i].data.transform.pos = iEnemy_ModelRender->data.transform.pos + KazMath::Vec3<float>(-5.0f, 88.0f, 25.0f) + KazMath::Vec3<float>(0.0f, 0.0f, 10.0f * retuIndex);
+					misileR[i].data.transform.pos = model->data.transform.pos + KazMath::Vec3<float>(-5.0f, 88.0f, 25.0f) + KazMath::Vec3<float>(0.0f, 0.0f, 10.0f * retuIndex);
 				}
 				else
 				{
-					misileR[i].data.transform.pos = iEnemy_ModelRender->data.transform.pos + KazMath::Vec3<float>(5.0f, 88.0f, 25.0f) + KazMath::Vec3<float>(0.0f, 0.0f, 10.0f * retuIndex);
+					misileR[i].data.transform.pos = model->data.transform.pos + KazMath::Vec3<float>(5.0f, 88.0f, 25.0f) + KazMath::Vec3<float>(0.0f, 0.0f, 10.0f * retuIndex);
 				}
 				//ミサイル発射地点の設定--------------------------------------
 
-				/*if (!iEnemy_ModelRender->data.isPlayFlag && !iEnemy_ModelRender->data.isReverseFlag && lBaseTimer - KazMath::ConvertSecondToFlame(3) <= appearTimer)
+				/*if (!model->data.isPlayFlag && !model->data.isReverseFlag && lBaseTimer - KazMath::ConvertSecondToFlame(3) <= appearTimer)
 				{
-					iEnemy_ModelRender->data.isPlayFlag = true;
+					model->data.isPlayFlag = true;
 				}
-				if (!iEnemy_ModelRender->data.isReverseFlag && KazMath::ConvertSecondToFlame(11) <= appearTimer)
+				if (!model->data.isReverseFlag && KazMath::ConvertSecondToFlame(11) <= appearTimer)
 				{
-					iEnemy_ModelRender->data.isReverseFlag = true;
-					iEnemy_ModelRender->data.isPlayFlag = false;
+					model->data.isReverseFlag = true;
+					model->data.isPlayFlag = false;
 				}*/
 
 				//ミサイル発射
@@ -175,16 +175,16 @@ void BattleshipEnemy::Update()
 
 		if (appearTimer < KazMath::ConvertSecondToFlame(disappearTime))
 		{
-			KazMath::Larp(basePos.z, &iEnemy_ModelRender->data.transform.pos.z, 0.01f);
+			KazMath::Larp(basePos.z, &model->data.transform.pos.z, 0.01f);
 
 			//登場処理
-			if (iEnemy_ModelRender->data.colorData.color.a < 255)
+			if (model->data.colorData.color.a < 255)
 			{
-				iEnemy_ModelRender->data.colorData.color.a += 5;
+				model->data.colorData.color.a += 5;
 			}
 			else
 			{
-				iEnemy_ModelRender->data.colorData.color.a = 255;
+				model->data.colorData.color.a = 255;
 			}
 		}
 	}

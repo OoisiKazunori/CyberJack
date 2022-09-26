@@ -20,6 +20,9 @@ public:
 	int SceneChange();
 
 private:
+
+	bool initFlagDataFlag;
+
 	KazMath::Vec3<float> debugCameraMove;
 	KazMath::Vec3<float> eyePos, targetPos;
 	KazMath::Vec2<float> angle;
@@ -39,5 +42,11 @@ private:
 	KazMath::Vec3<float>responePos;
 
 	BackGroundForDebug bg;
+
+
+	ObjModelRender battleShipObjModel;
+	FbxModelRenderPtr battleShipFbxModel;
+	FbxModelRender boxModel;
+	FbxModelRender uvCheckModel;
 };
 

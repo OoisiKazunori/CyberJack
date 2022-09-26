@@ -16,7 +16,6 @@ FbxModelResourceMgr::FbxModelResourceMgr()
 	handle = std::make_unique<HandleMaker>();
 
 	errorResource = std::make_unique<FbxResourceData>();
-
 }
 
 FbxModelResourceMgr::~FbxModelResourceMgr()
@@ -41,9 +40,15 @@ RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME)
 
 	fbxImporter->Initialize(MODEL_NAME.c_str());
 	fbxImporter->Import(fbxScene);
+
+	FbxGeometryConverter converter(fbxManager);
+	// ポリゴンを三角形にする
+	converter.Triangulate(fbxScene, true);
+
 	//モデルの生成
 	Model *model = new Model;
 	model->name = MODEL_NAME;
+
 
 	//Fbxノードの数を取得
 	int nodeCount = fbxScene->GetNodeCount();
@@ -62,25 +67,26 @@ RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME)
 	}
 
 	//リソースに保管
-	unsigned short vertByte = KazBufferHelper::GetBufferSize<unsigned short>(model->vertices.size(), sizeof(Model::VertexPosNormalUvSkin));
-	unsigned short indexByte = KazBufferHelper::GetBufferSize<unsigned short>(model->indices.size(), sizeof(unsigned short));
+	//unsigned int vertByte = KazBufferHelper::GetBufferSize<unsigned short>(model->vertices.size(), sizeof(Model::VertexPosNormalUvSkin));
+	int vertByte = static_cast<int>(model->vertices.size()) * static_cast<int>(sizeof(Model::VertexPosNormalUvSkin));
+	//unsigned short indexByte = KazBufferHelper::GetBufferSize<unsigned short>(model->indices.size(), sizeof(unsigned short));
 
 
 	RESOURCE_HANDLE lHandle = handle->GetHandle();
 
-	modelResource.push_back(std::make_unique<FbxResourceData>());
+	modelResource.push_back(std::make_shared<FbxResourceData>());
 	modelResource[lHandle]->buffers = std::make_unique<CreateGpuBuffer>();
 	RESOURCE_HANDLE vertBuffetHandle = modelResource[lHandle]->buffers->CreateBuffer(KazBufferHelper::SetVertexBufferData(vertByte));
-	RESOURCE_HANDLE indexBufferHandle = modelResource[lHandle]->buffers->CreateBuffer(KazBufferHelper::SetIndexBufferData(indexByte));
+	//RESOURCE_HANDLE indexBufferHandle = modelResource[lHandle]->buffers->CreateBuffer(KazBufferHelper::SetIndexBufferData(indexByte));
 
 	//バッファ転送-----------------------------------------------------------------------------------------------------
 	modelResource[lHandle]->buffers->TransData(vertBuffetHandle, model->vertices.data(), vertByte);
-	modelResource[lHandle]->buffers->TransData(indexBufferHandle, model->indices.data(), indexByte);
+	//modelResource[lHandle]->buffers->TransData(indexBufferHandle, model->indices.data(), indexByte);
 	//バッファ転送-----------------------------------------------------------------------------------------------------
 
 	//バッファビュー設定-----------------------------------------------------------------------------------------------------
 	modelResource[lHandle]->vertexBufferView = KazBufferHelper::SetVertexBufferView(modelResource[lHandle]->buffers->GetGpuAddress(vertBuffetHandle), vertByte, sizeof(model->vertices[0]));
-	modelResource[lHandle]->indexBufferView = KazBufferHelper::SetIndexBufferView(modelResource[lHandle]->buffers->GetGpuAddress(indexBufferHandle), indexByte);
+	//modelResource[lHandle]->indexBufferView = KazBufferHelper::SetIndexBufferView(modelResource[lHandle]->buffers->GetGpuAddress(indexBufferHandle), indexByte);
 	//バッファビュー設定-----------------------------------------------------------------------------------------------------
 
 	modelResource[lHandle]->textureHandle = model->textureHandle;
@@ -92,12 +98,12 @@ RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME)
 
 	modelResource[lHandle]->bone = model->bones;
 
+	modelResource[lHandle]->vertNum = static_cast<UINT>(model->vertices.size());
+	modelResource[lHandle]->mesh = model->mesh;
 
 
 	//アニメーションの数を取得
 	int animaStackCount = fbxImporter->GetAnimStackCount();
-
-
 	for (int i = 0; i < animaStackCount; i++)
 	{
 		FbxAnimStack *animStack = nullptr;
@@ -194,15 +200,17 @@ void FbxModelResourceMgr::ParseMesh(Model *MODEL, FbxNode *FBX_NODE)
 {
 	//ノードのメッシュを取得
 	FbxMesh *fbxMesh = FBX_NODE->GetMesh();
+	MODEL->mesh = fbxMesh;
 
 	//頂点座標読み取り
-	ParseMeshVertices(MODEL, fbxMesh);
+	//ParseMeshVertices(MODEL, fbxMesh);
 	//面を構成するデータの読み取り
-	ParseMeshFaces(MODEL, fbxMesh);
+	//ParseMeshFaces(MODEL, fbxMesh);
+	ParseFaces(MODEL, fbxMesh);
 	//マテリアルの読み取り
 	ParseMaterial(MODEL, FBX_NODE);
 	//ボーンの読み取り
-	ParseSkin(MODEL, fbxMesh);
+	ParseBone(MODEL, fbxMesh);
 }
 
 void FbxModelResourceMgr::ParseMeshVertices(Model *MODEL, FbxMesh *FBX_MESH)
@@ -241,6 +249,7 @@ void FbxModelResourceMgr::ParseMeshFaces(Model *MODEL, FbxMesh *FBX_MESH)
 	const int polygonCount = FBX_MESH->GetPolygonCount();
 	//UVデータの数
 	const int textureUVCount = FBX_MESH->GetTextureUVCount();
+
 	//UV名リスト
 	FbxStringList uvNames;
 	FBX_MESH->GetUVSetNames(uvNames);
@@ -363,7 +372,6 @@ void FbxModelResourceMgr::ParseMaterial(Model *MODEL, FbxNode *FBX_NODE)
 	}
 }
 
-
 void FbxModelResourceMgr::LoadTexture(Model *MODEL, const std::string &FULL_PATH)
 {
 	// ファイル名を取得
@@ -445,8 +453,7 @@ std::string FbxModelResourceMgr::ExtractFileName(const std::string &PATH)
 	return PATH;
 }
 
-void FbxModelResourceMgr::ParseSkin(Model *MODEL, FbxMesh *FBX_MESH)
-
+void FbxModelResourceMgr::ParseBone(Model *MODEL, FbxMesh *FBX_MESH)
 {
 	//スキニング情報読み込み
 	FbxSkin *fbxSkin = static_cast<FbxSkin *>(FBX_MESH->GetDeformer(0, FbxDeformer::eSkin));
@@ -482,7 +489,7 @@ void FbxModelResourceMgr::ParseSkin(Model *MODEL, FbxMesh *FBX_MESH)
 		Model::Bone &bone = bones.back();
 
 		//自作ボーンとfbxのボーンを紐付ける
-		bone.fbxCluster = fbxCluster;
+		bone.fbxSkin = static_cast<FbxSkin *>(FBX_MESH->GetDeformer(0, FbxDeformer::eSkin));
 
 		//Fbxから初期姿勢行列を取得する
 		FbxAMatrix fbxMat;
@@ -496,14 +503,97 @@ void FbxModelResourceMgr::ParseSkin(Model *MODEL, FbxMesh *FBX_MESH)
 		bone.invInitialPose = XMMatrixInverse(nullptr, initialPose);
 	}
 
+	for (int i = 0; i < MODEL->bones.size(); ++i)
+	{
+		MODEL->bones[i].fbxSkin = static_cast<FbxSkin *>(FBX_MESH->GetDeformer(0, FbxDeformer::eSkin));
+	}
+}
+
+void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
+{
+	//FBXメッシュの頂点座標配列を取得
+	FbxVector4 *pCoord = FBX_MESH->GetControlPoints();
+
+	auto &indices = MODEL->indices;
+
+	//1ファイルに複数メッシュのモデルは非対応
+	assert(indices.size() == 0);
+	//面の数
+	const int polygonCount = FBX_MESH->GetPolygonCount();
+	//UVデータの数
+	const int textureUVCount = FBX_MESH->GetTextureUVCount();
+
+	//もし重複なしの頂点数なら何かに使えるかも
+	int polygonVertexNum = FBX_MESH->GetPolygonVertexCount();
+
+	//UV名リスト
+	FbxStringList uvNames;
+	FBX_MESH->GetUVSetNames(uvNames);
+
+	std::vector<KazMath::Vec3<float>>vertPos(polygonVertexNum);
+	for (int i = 0; i < polygonVertexNum; ++i)
+	{
+		vertPos[i].x = (float)pCoord[i][0];
+		vertPos[i].y = (float)pCoord[i][1];
+		vertPos[i].z = (float)pCoord[i][2];
+	}
+
+
+	//重複あり頂点情報
+	std::vector<Model::VertexPosNormalUvSkin> vertices;
+	std::vector<int> indexData;
+	for (int i = 0; i < polygonCount; i++)
+	{
+		//面を構成する頂点の数を取得(3なら三角形ポリゴン)
+		const int polygonSize = FBX_MESH->GetPolygonSize(i);
+		for (int j = 0; j < polygonSize; j++)
+		{
+			int index = FBX_MESH->GetPolygonVertex(i, j);
+			vertices.push_back({});
+			Model::VertexPosNormalUvSkin &vertex = vertices[vertices.size() - 1];
+			//座標のコピー
+			vertex.pos.x = vertPos[index].x;
+			vertex.pos.y = vertPos[index].y;
+			vertex.pos.z = vertPos[index].z;
+
+			//UV
+			if (textureUVCount > 0)
+			{
+				FbxVector2 uvs;
+				bool lUnmappedUV;
+				//0番決め打ちで読み込み
+				if (FBX_MESH->GetPolygonVertexUV(i, j, uvNames[0], uvs, lUnmappedUV))
+				{
+					vertex.uv.x = (float)uvs[0];
+					vertex.uv.y = 1.0f - (float)uvs[1];
+				}
+			}
+
+			//Normal
+			FbxVector4 normal;
+			if (FBX_MESH->GetPolygonVertexNormal(i, j, normal))
+			{
+				vertex.normal.x = (float)normal[0];
+				vertex.normal.y = (float)normal[1];
+				vertex.normal.z = (float)normal[2];
+			}
+
+			indexData.push_back(index);
+		}
+	}
+	MODEL->vertices = vertices;
+
+
+	FbxSkin *fbxSkin = static_cast<FbxSkin *>(FBX_MESH->GetDeformer(0, FbxDeformer::eSkin));
+	if (fbxSkin == nullptr)return;
 
 	//スキンウェイト読み取り--------------------------------------------------
-
 	//二次元配列(ジャグ配列)
 	//list、頂点が影響を受けるボーンの全リスト
 	//vector、それを全頂点分
 	vector<list<WeightSet>> weightLists(MODEL->vertices.size());
-
+	//ボーンの数
+	int clusterCount = fbxSkin->GetClusterCount();
 	//全てのボーンについて
 	for (int i = 0; i < clusterCount; i++)
 	{
@@ -528,46 +618,51 @@ void FbxModelResourceMgr::ParseSkin(Model *MODEL, FbxMesh *FBX_MESH)
 			weightLists[vertIndex].emplace_back(WeightSet{ (UINT)i,weight });
 		}
 	}
-
+	//ボーン単位にどの頂点に影響を与えるか、そのweightはどれくらいかを一つの配列に組み込む
 
 	//スキンウェイトの整理--------------------------------------------------
-
 	//頂点配列書き換え用の参照
-	auto &vertices = MODEL->vertices;
-
+	auto &vertData = MODEL->vertices;
 	//各頂点についての処理
-	for (int i = 0; i < vertices.size(); i++)
+	for (int weightIndex = 0; weightIndex < weightLists.size(); ++weightIndex)
 	{
-		//頂点のウェイトから最も大きい4つを選択
-		auto &weightList = weightLists[i];
-		//大小比較用のラムダ式を指定して降順にソート
-		weightList.sort([](auto const &lhs, auto const &rhs)
-			{
-				return lhs.weight > rhs.weight;
-			}
-		);
-
-		int weightArrayIndex = 0;
-		//降順ソート済みのウェイトリストから
-		for (auto &weightSet : weightList)
+		for (int i = 0; i < indexData.size(); ++i)
 		{
-			//頂点データに書き込み
-			vertices[i].boneIndex[weightArrayIndex] = weightSet.index;
-			vertices[i].boneWeight[weightArrayIndex] = weightSet.weight;
+			//インデックスとウェイトのインデックスが合っていない場合書き込まない
+			if (indexData[i] != weightIndex)continue;
 
-			if (++weightArrayIndex >= Model::MAX_BONE_INDICES)
-			{
-				float weight = 0.0f;
-				//二個目以降のウェイトを合計
-				for (int j = 0; j < Model::MAX_BONE_INDICES; j++)
+			//頂点のウェイトから最も大きい4つを選択
+			auto &weightList = weightLists[weightIndex];
+			//大小比較用のラムダ式を指定して降順にソート
+			weightList.sort([](auto const &lhs, auto const &rhs)
 				{
-					weight += vertices[i].boneWeight[j];
+					return lhs.weight > rhs.weight;
 				}
+			);
 
-				//合計で1.0f(100％)になるように調整
-				vertices[i].boneWeight[0] = 1.0f - weight;
-				break;
+			int weightArrayIndex = 0;
+			//降順ソート済みのウェイトリストから
+			for (auto &weightSet : weightList)
+			{
+				//頂点データに書き込み
+				vertData[i].boneIndex[weightArrayIndex] = weightSet.index;
+				vertData[i].boneWeight[weightArrayIndex] = weightSet.weight;
+
+				if (++weightArrayIndex >= Model::MAX_BONE_INDICES)
+				{
+					float weight = 0.0f;
+					//二個目以降のウェイトを合計
+					for (int j = 0; j < Model::MAX_BONE_INDICES; j++)
+					{
+						weight += vertData[i].boneWeight[j];
+					}
+
+					//合計で1.0f(100％)になるように調整
+					vertData[i].boneWeight[0] = 1.0f - weight;
+					break;
+				}
 			}
 		}
 	}
+
 }

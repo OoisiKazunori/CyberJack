@@ -271,6 +271,7 @@
     <ClInclude Include="Game\Effect\PlayerDamageEmitter.h" />
     <ClInclude Include="Game\Effect\PlayerDamegePartice.h" />
     <ClInclude Include="Game\UI\DamageTextWindow.h" />
+    <ClInclude Include="KazLibrary\dxcapi.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

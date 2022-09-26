@@ -141,6 +141,7 @@
       <TreatLinkerWarningAsErrors>false</TreatLinkerWarningAsErrors>
       <AdditionalOptions>/IGNORE:4099 %(AdditionalOptions)</AdditionalOptions>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)\KazLibrary;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -377,6 +378,7 @@
     <ClInclude Include="KazLibrary\DirectXCommon\DirectX12.h" />
     <ClInclude Include="KazLibrary\DirectXCommon\DirectX12CmdList.h" />
     <ClInclude Include="KazLibrary\DirectXCommon\DirectX12Device.h" />
+    <ClInclude Include="KazLibrary\dxcapi.h" />
     <ClInclude Include="KazLibrary\Easing\easing.h" />
     <ClInclude Include="KazLibrary\Fps\FPSManager.h" />
     <ClInclude Include="KazLibrary\Helper\DebugColor.h" />
@@ -453,7 +455,7 @@
     <ResourceCompile Include="KazLib.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="DirectXTex\DirectXTex_Desktop_2019.vcxproj">
+    <ProjectReference Include="DirectXTex\DirectXTex_Desktop_2019_Win10.vcxproj">
       <Project>{371b9fa9-4c90-4ac6-a123-aced756d6c77}</Project>
     </ProjectReference>
   </ItemGroup>

@@ -60,13 +60,14 @@ public:
 		//初期姿勢の逆行列
 		DirectX::XMMATRIX invInitialPose;
 		//クラスター(FBXのボーン情報)
-		FbxCluster *fbxCluster;
+		FbxSkin *fbxSkin;
 
 		Bone(const std::string &NAME)
 		{
 			this->name = NAME;
 		}
 	};
+	FbxMesh *mesh;
 private:
 	struct VertexPosNormalUvSkin
 	{
@@ -115,7 +116,11 @@ public:
 	std::vector<FbxTime> startTime;
 	std::vector<FbxTime> endTime;
 
-	FbxResourceData() :indicisNum(0), ambient({ -1.0f,-1.0f,-1.0f }), diffuse({ -1.0f,-1.0f,-1.0f })
+	UINT vertNum;
+
+	FbxMesh *mesh;
+
+	FbxResourceData() :indicisNum(0), ambient({ -1.0f,-1.0f,-1.0f }), diffuse({ -1.0f,-1.0f,-1.0f }), vertNum(0)
 	{
 	}
 };
@@ -163,8 +168,9 @@ private:
 	//テクスチャ読み取り
 	void LoadTexture(Model *MODEL, const std::string &FULL_PATH);
 	//スキニング情報の読み取り
-	void ParseSkin(Model *MODEL, FbxMesh *FBX_MESH);
+	void ParseBone(Model *MODEL, FbxMesh *FBX_MESH);
 
+	void ParseFaces(Model *MODEL, FbxMesh *FBX_MESH);
 
 	DirectX::XMVECTOR FbxDoubleToXMVECTOR(const FbxDouble3 &DOUBLE_3);
 

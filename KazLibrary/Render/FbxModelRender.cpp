@@ -9,6 +9,15 @@ FbxModelRender::FbxModelRender()
 	constBufferHandle[1] = CreateConstBuffer(sizeof(ConstBufferDataSkin), typeid(ConstBufferDataSkin).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_SKINING);
 
 	frameTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
+
+
+	ConstBufferDataSkin *constMap = nullptr;
+	gpuBuffer->GetBufferData(constBufferHandle[1])->Map(0, nullptr, (void **)&constMap);
+	for (int i = 0; i < MAX_BONES; i++)
+	{
+		constMap->bones[i] = DirectX::XMMatrixIdentity();
+	}
+	gpuBuffer->GetBufferData(constBufferHandle[1])->Unmap(0, nullptr);
 }
 
 void FbxModelRender::Draw()
@@ -16,7 +25,8 @@ void FbxModelRender::Draw()
 	if (data.handle.flag.Dirty())
 	{
 		resourceData = FbxModelResourceMgr::Instance()->GetResourceData(data.handle.handle);
-		drawIndexInstanceCommandData = KazRenderHelper::SetDrawIndexInstanceCommandData(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, resourceData->vertexBufferView, resourceData->indexBufferView, resourceData->indicisNum, 1);
+		//drawIndexInstanceCommandData = KazRenderHelper::SetDrawIndexInstanceCommandData(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, resourceData->vertexBufferView, resourceData->indexBufferView, resourceData->indicisNum, 1);
+		drawInstanceCommandData = KazRenderHelper::SetDrawInstanceCommandData(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST, resourceData->vertexBufferView, resourceData->vertNum, 1);
 	}
 
 
@@ -27,7 +37,7 @@ void FbxModelRender::Draw()
 			currentTime += frameTime;
 			if (currentTime > resourceData->endTime[data.animationNumber])
 			{
-				currentTime = resourceData->endTime[data.animationNumber];
+				currentTime = resourceData->startTime[data.animationNumber];
 			}
 		}
 		else if (data.isReverseFlag)
@@ -84,26 +94,27 @@ void FbxModelRender::Draw()
 		}
 
 
+		if(data.isPlayFlag)
 		{
-			ConstBufferDataSkin *constMap = nullptr;
-			gpuBuffer->GetBufferData(constBufferHandle[1])->Map(0, nullptr, (void **)&constMap);
+			ConstBufferDataSkin *lConstMap = nullptr;
+			gpuBuffer->GetBufferData(constBufferHandle[1])->Map(0, nullptr, (void **)&lConstMap);
 
 			if (resourceData->bone.size() != 0)
 			{
 				for (int i = 0; i < resourceData->bone.size(); i++)
 				{
-					DirectX::XMMATRIX matCurrentPose;
-					FbxAMatrix fbxCurrentPose = resourceData->bone[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime);
-					KazMath::ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
+					DirectX::XMMATRIX lMatCurrentPose;
+					FbxAMatrix lFbxCurrentPose = resourceData->bone[i].fbxSkin->GetCluster(i)->GetLink()->EvaluateGlobalTransform(currentTime);
+					KazMath::ConvertMatrixFromFbx(&lMatCurrentPose, lFbxCurrentPose);
 
 
 					if (resourceData->startTime.size() == 0)
 					{
-						constMap->bones[i] = DirectX::XMMatrixIdentity();
+						lConstMap->bones[i] = DirectX::XMMatrixIdentity();
 					}
 					else
 					{
-						constMap->bones[i] = resourceData->bone[i].invInitialPose * matCurrentPose;
+						lConstMap->bones[i] = resourceData->bone[i].invInitialPose * lMatCurrentPose;
 					}
 				}
 			}
@@ -111,7 +122,7 @@ void FbxModelRender::Draw()
 			{
 				for (int i = 0; i < MAX_BONES; i++)
 				{
-					constMap->bones[i] = DirectX::XMMatrixIdentity();
+					lConstMap->bones[i] = DirectX::XMMatrixIdentity();
 				}
 			}
 			gpuBuffer->GetBufferData(constBufferHandle[1])->Unmap(0, nullptr);
@@ -124,14 +135,15 @@ void FbxModelRender::Draw()
 		{
 			if (resourceData->textureHandle[i] != -1)
 			{
-				D3D12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV = DescriptorHeapMgr::Instance()->GetGpuDescriptorView(resourceData->textureHandle[i]);
-				int param = KazRenderHelper::SetBufferOnCmdList(GraphicsRootSignature::Instance()->GetRootParam(renderData.pipelineMgr->GetRootSignatureName(data.pipelineName)), GRAPHICS_RANGE_TYPE_SRV, GRAPHICS_PRAMTYPE_TEX);
-				renderData.cmdListInstance->cmdList->SetGraphicsRootDescriptorTable(param, gpuDescHandleSRV);
+				D3D12_GPU_DESCRIPTOR_HANDLE lGpuDescHandleSRV = DescriptorHeapMgr::Instance()->GetGpuDescriptorView(resourceData->textureHandle[i]);
+				int lParam = KazRenderHelper::SetBufferOnCmdList(GraphicsRootSignature::Instance()->GetRootParam(renderData.pipelineMgr->GetRootSignatureName(data.pipelineName)), GRAPHICS_RANGE_TYPE_SRV, GRAPHICS_PRAMTYPE_TEX);
+				renderData.cmdListInstance->cmdList->SetGraphicsRootDescriptorTable(lParam, lGpuDescHandleSRV);
 			}
 		}
 	
 
-		DrawIndexInstanceCommand(drawIndexInstanceCommandData);
+		//DrawIndexInstanceCommand(drawIndexInstanceCommandData);
+		DrawInstanceCommand(drawInstanceCommandData);
 	}
 
 	data.Record();
