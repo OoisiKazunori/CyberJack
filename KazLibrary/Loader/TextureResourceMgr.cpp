@@ -120,8 +120,6 @@ RESOURCE_HANDLE TextureResourceMgr::LoadDivGraph(string RESOURCE, int DIV_WIDTH_
 			return static_cast<RESOURCE_HANDLE>(i);
 		}
 	}
-	//テクスチャの名前登録
-	handleName.push_back(RESOURCE);
 
 	//string型からwchar_t型に変換
 	wchar_t wfilepat[128];
@@ -145,7 +143,8 @@ RESOURCE_HANDLE TextureResourceMgr::LoadDivGraph(string RESOURCE, int DIV_WIDTH_
 	{
 		return -1;
 	}
-
+	//テクスチャの名前登録
+	handleName.push_back(RESOURCE);
 
 	CD3DX12_RESOURCE_DESC textureDesc = CD3DX12_RESOURCE_DESC::Tex2D(
 		metadata.format,

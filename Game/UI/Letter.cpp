@@ -4,9 +4,9 @@
 
 Letter::Letter()
 {
-	//graphHandle[CHARA_LARGE] = TextureResourceMgr::Instance()->LoadDivGraph("");
-	//graphHandle[CHARA_SMALL] = TextureResourceMgr::Instance()->LoadDivGraph("");
-	//graphHandle[CHARA_NUM] = TextureResourceMgr::Instance()->LoadDivGraph("");
+	graphHandle[CHARA_LARGE] = TextureResourceMgr::Instance()->LoadDivGraph(KazFilePathName::UIPath + "UppercaseAlphabet.png", 26, 1, 16, 16);
+	graphHandle[CHARA_SMALL] =  TextureResourceMgr::Instance()->LoadDivGraph(KazFilePathName::UIPath + "LowercaseAlphabet.png", 26, 1, 16, 16);
+	graphHandle[CHARA_NUM] = TextureResourceMgr::Instance()->LoadDivGraph(KazFilePathName::UIPath + "Number.png", 10, 1, 16, 16);
 	inputLogHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::UIPath + "inputLog.png");
 	initFlag = false;
 }
@@ -20,7 +20,6 @@ void Letter::Init(const KazMath::Vec2<float> &POS, const char &CHARACTER, float 
 	render.data.transform.pos = basePos + KazMath::Vec2<float>(25.0f, 25.0f);
 	render.data.transform.scale = baseSize + L_ADD_SCALE;
 	render.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::UIPath + "FontTest.png");
-	//render.data.handleData = graphHandle[fontType];
 
 	inputRender.data.transform.pos = basePos;
 	inputRender.data.handleData = inputLogHandle;
@@ -39,10 +38,10 @@ void Letter::Init(const KazMath::Vec2<float> &POS, const char &CHARACTER, float 
 		fontType = CHARA_SMALL;
 		fontNum = CHARACTER - 97;
 	}
-	else if (CheckFontType(CHARACTER, 49, 57))
+	else if (CheckFontType(CHARACTER, 48, 58))
 	{
 		fontType = CHARA_NUM;
-		fontNum = CHARACTER - 49;
+		fontNum = CHARACTER - 48;
 	}
 	else if (CHARACTER == 32)
 	{
@@ -53,8 +52,8 @@ void Letter::Init(const KazMath::Vec2<float> &POS, const char &CHARACTER, float 
 		//使えない文字が入力されました
 		assert(0);
 	}
-	//render.data.animationHandle = fontNum;
-
+	render.data.handleData = graphHandle[fontType];
+	render.data.animationHandle = fontNum;
 	changeHandleFlag = false;
 	initFlag = true;
 
@@ -152,7 +151,7 @@ void String::Update(int STRING_INDEX)
 {
 	//時間経過で文字を一文字ずつ出す処理ーーー
 	++timer;
-	bool lIsStringInArraySizeFlag = charaArrayNum < logString.size() - 1 && logString.size() != 0;
+	bool lIsStringInArraySizeFlag = charaArrayNum <= logString.size()-1 && logString.size() != 0;
 	if (4 <= timer && lIsStringInArraySizeFlag && charaArrayNum < letters.size())
 	{
 		timer = 0;

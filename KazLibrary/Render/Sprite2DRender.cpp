@@ -130,7 +130,7 @@ void Sprite2DRender::Draw()
 
 
 	//UVØ‚èæ‚è
-	if (data.handleData.flag.Dirty() || data.animationHandle.flag.Dirty())
+	if (data.handleData.flag.Dirty() || data.animationHandle.flag.Dirty() || data.transform.scaleDirtyFlag.Dirty())
 	{
 		KazMath::Vec2<int> lDivSize = renderData.shaderResourceMgrInstance->GetDivData(data.handleData.handle).divSize;
 		KazMath::Vec2<float> lTmpSize = { data.transform.scale.x, data.transform.scale.y };

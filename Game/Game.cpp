@@ -458,16 +458,16 @@ void Game::Input()
 			stringLog.WriteLog("Abc Def", 1.0f);
 			break;
 		case 1:
-			stringLog.WriteLog("AbcDe f", 1.0f);
+			stringLog.WriteLog("Gh f56", 1.0f);
 			break;
 		case 2:
-			stringLog.WriteLog("A bcDef", 1.0f);
+			stringLog.WriteLog("A bc1234Def", 1.0f);
 			break;
 		case 3:
-			stringLog.WriteLog("AbcD ef", 1.0f);
+			stringLog.WriteLog("Abc0789D ef", 1.0f);
 			break;
 		case 4:
-			stringLog.WriteLog("Ab cD ef", 1.0f);
+			stringLog.WriteLog("Ab cD 5904ef", 1.0f);
 			break;
 		default:
 			break;
