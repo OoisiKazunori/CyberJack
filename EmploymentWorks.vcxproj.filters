@@ -129,6 +129,8 @@
     <ClCompile Include="Game\Effect\PlayerDamageEmitter.cpp" />
     <ClCompile Include="Game\Effect\PlayerDamegePartice.cpp" />
     <ClCompile Include="Game\UI\DamageTextWindow.cpp" />
+    <ClCompile Include="Game\UI\Letter.cpp" />
+    <ClCompile Include="Game\UI\AttackLog.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -272,6 +274,8 @@
     <ClInclude Include="Game\Effect\PlayerDamegePartice.h" />
     <ClInclude Include="Game\UI\DamageTextWindow.h" />
     <ClInclude Include="KazLibrary\dxcapi.h" />
+    <ClInclude Include="Game\UI\Letter.h" />
+    <ClInclude Include="Game\UI\AttackLog.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

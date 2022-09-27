@@ -234,8 +234,10 @@
     <ClCompile Include="Game\Stage\StageMgr.cpp" />
     <ClCompile Include="Game\Stage\ThridStage.cpp" />
     <ClCompile Include="Game\UI\AnnounceStageUI.cpp" />
+    <ClCompile Include="Game\UI\AttackLog.cpp" />
     <ClCompile Include="Game\UI\Cursor.cpp" />
     <ClCompile Include="Game\UI\DamageTextWindow.cpp" />
+    <ClCompile Include="Game\UI\Letter.cpp" />
     <ClCompile Include="Game\UI\LockOnBoxEffect.cpp" />
     <ClCompile Include="Game\UI\PlayerHpUi.cpp" />
     <ClCompile Include="KazLibrary\Buffer\CreateGpuBuffer.cpp" />
@@ -365,8 +367,10 @@
     <ClInclude Include="Game\Stage\StageMgr.h" />
     <ClInclude Include="Game\Stage\ThridStage.h" />
     <ClInclude Include="Game\UI\AnnounceStageUI.h" />
+    <ClInclude Include="Game\UI\AttackLog.h" />
     <ClInclude Include="Game\UI\Cursor.h" />
     <ClInclude Include="Game\UI\DamageTextWindow.h" />
+    <ClInclude Include="Game\UI\Letter.h" />
     <ClInclude Include="Game\UI\LockOnBoxEffect.h" />
     <ClInclude Include="Game\UI\PlayerHpUi.h" />
     <ClInclude Include="KazLibrary\Buffer\CreateGpuBuffer.h" />

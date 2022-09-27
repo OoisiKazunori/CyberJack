@@ -82,6 +82,10 @@ namespace KazMath
 		{
 			return Vec2(x + rhs.x, y + rhs.y);
 		};
+		Vec2 operator+(const float &rhs) const
+		{
+			return Vec2(x + rhs, y + rhs);
+		};
 		Vec2 operator-(const Vec2 &rhs)const
 		{
 			return Vec2(x - rhs.x, y - rhs.y);
@@ -857,6 +861,7 @@ namespace KazMath
 
 
 	void Larp(float BASE_TRANSFORM, float *TRANSFORM, float MUL);
+	void Larp(const Vec2<float> BASE_TRANSFORM, Vec2<float> *TRANSFORM, float MUL);
 
 	template<typename T>
 	float GetSinFloat(T VALUE)

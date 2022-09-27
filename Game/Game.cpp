@@ -137,6 +137,9 @@ Game::Game()
 
 	CameraMgr::Instance()->CameraSetting(60.0f, 1200.0f, 0);
 	CameraMgr::Instance()->CameraSetting(60.0f, 100000.0f, 1);
+
+
+	stringLog.Init();
 }
 
 Game::~Game()
@@ -449,7 +452,26 @@ void Game::Input()
 
 	if (input->InputTrigger(DIK_SPACE))
 	{
-		player.Hit();
+		switch (KazMath::Rand(0, 4))
+		{
+		case 0:
+			stringLog.WriteLog("Abc Def", 1.0f);
+			break;
+		case 1:
+			stringLog.WriteLog("Gh f56", 1.0f);
+			break;
+		case 2:
+			stringLog.WriteLog("A bc1234Def", 1.0f);
+			break;
+		case 3:
+			stringLog.WriteLog("Abc0789D ef", 1.0f);
+			break;
+		case 4:
+			stringLog.WriteLog("Ab cD 5904ef", 1.0f);
+			break;
+		default:
+			break;
+		}
 	}
 
 }
@@ -1171,6 +1193,8 @@ void Game::Update()
 				deadEffectEmitter[emitterTypeIndex][stackIndex]->Update();
 			}
 		}
+
+		stringLog.Update();
 	}
 
 
@@ -1400,6 +1424,8 @@ void Game::Draw()
 		}
 
 		cursor.Draw();
+
+		stringLog.Draw();
 	}
 	else
 	{
