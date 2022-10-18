@@ -49,7 +49,7 @@ void DebugStageScene::Finalize()
 
 void DebugStageScene::Input()
 {
-	//KeyBoradInputManager *input = KeyBoradInputManager::Instance();
+	KeyBoradInputManager *input = KeyBoradInputManager::Instance();
 	ControllerInputManager *inputController = ControllerInputManager::Instance();
 
 	bool upFlag = false;
@@ -100,7 +100,7 @@ void DebugStageScene::Input()
 		joyStick
 	);
 
-	//mapchipTool.Input(input->MouseInputTrigger(MOUSE_INPUT_LEFT), input->MouseInputTrigger(MOUSE_INPUT_RIGHT), input->GetMousePoint());
+	mapchipTool.Input(input->MouseInputTrigger(MOUSE_INPUT_LEFT), input->MouseInputTrigger(MOUSE_INPUT_RIGHT), input->GetMousePoint());
 
 
 	ImGui::Begin("Stage");
@@ -126,10 +126,10 @@ void DebugStageScene::Update()
 
 	player.Update();
 	cursor.Update();
-	cameraWork.Update(cursor.GetValue(), &player.pos, false);
-	stages[stageNum]->Update();
+	cameraWork.Update(cursor.GetValue(), &player.pos, true);
+	//stages[stageNum]->Update();
 
-	//mapchipTool.Update();
+	mapchipTool.Update();
 
 
 	mainRenderTarget.data.handleData = renderTarget[stageNum]->GetGameRenderTargetHandle();
@@ -141,8 +141,8 @@ void DebugStageScene::Draw()
 	RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
 	renderTarget[stageNum]->SetRenderTarget();
 	player.Draw();
-	stages[stageNum]->Draw();
-	//mapchipTool.Draw();
+	//stages[stageNum]->Draw();
+	mapchipTool.Draw();
 	renderTarget[stageNum]->Draw();
 	mainRenderTarget.Draw();
 

@@ -26,7 +26,6 @@ public:
 	};
 
 private:
-	//ブロックの座標管理 X100 Y30 Z100 の固定長配列
 	POS_ARRAY blockPosArray;
 
 	static const int xSize = 100;
@@ -105,4 +104,6 @@ private:
 	Sprite2DRender cursorR;
 
 	const float REV_VALUE = -10000.0f;
+	const float CONTINE_VALUE = -5000.0f;
+
 };

@@ -41,9 +41,22 @@ MapChipPlacementTool::MapChipPlacementTool() :BLOCK_SIZE(10.0f)
 
 
 	instanceBoxRender = std::make_unique<BoxPolygonRender>(true, BLOCK_MAX_NUM);
-	instanceBoxRender->data.pipelineName = PIPELINE_NAME_INSTANCE_COLOR;
+	instanceBoxRender->data.pipelineName = PIPELINE_NAME_INSTANCE_COLOR_WIREFLAME;
 	instanceBoxHandle = instanceBoxRender->CreateConstBuffer(sizeof(MatData) * BLOCK_MAX_NUM, typeid(MatData).name(), GRAPHICS_RANGE_TYPE_UAV, GRAPHICS_PRAMTYPE_DATA);
 
+
+	for (int x = 0; x < blockPosArray.size(); ++x)
+	{
+		for (int y = 0; y < blockPosArray[x].size(); ++y)
+		{
+			for (int z = 0; z < blockPosArray[x][y].size(); ++z)
+			{
+				blockPosArray[x][y][z].x = REV_VALUE;
+			}
+		}
+	}
+
+	blockPosArray[0][0][0] = { 0.0f,0.0f,0.0f };
 }
 
 void MapChipPlacementTool::Input(bool PUT_FLAG, bool RELEASE_FLAG, const DirectX::XMFLOAT2 &MOUSE_POS)
@@ -63,16 +76,6 @@ void MapChipPlacementTool::Input(bool PUT_FLAG, bool RELEASE_FLAG, const DirectX
 
 	cursorR.data.transform.pos = { MOUSE_POS.x,MOUSE_POS.y };
 
-	for (int x = 0; x < blockPosArray.size(); ++x)
-	{
-		for (int y = 0; y < blockPosArray[x].size(); ++y)
-		{
-			for (int z = 0; z < blockPosArray[x][y].size(); ++z)
-			{
-				blockPosArray[x][y][z].x = REV_VALUE;
-			}
-		}
-	}
 }
 
 void MapChipPlacementTool::Init()
@@ -83,11 +86,13 @@ void MapChipPlacementTool::Update()
 {
 	if (inputFlag)
 	{
-		bool debug = false;
-		debug = true;
+		int u = 0;
+		u = 0;
 	}
-
 	int lBlockNum = 0;
+
+	putIndex = { 0,0,0 };
+	selectingIndex = { 0,0,0 };
 	//ブロックとレイとの判定
 	for (int x = 0; x < blockPosArray.size(); ++x)
 	{
@@ -98,7 +103,7 @@ void MapChipPlacementTool::Update()
 				if (blockPosArray[x][y][z].x != REV_VALUE)
 				{
 					blockMatData[lBlockNum].mat = KazMath::CaluMat(
-						defaultBlockPosArray[y][x],
+						KazMath::Transform3D(blockPosArray[x][y][z], { BLOCK_SIZE,BLOCK_SIZE ,BLOCK_SIZE }, {}),
 						CameraMgr::Instance()->GetViewMatrix(),
 						CameraMgr::Instance()->GetPerspectiveMatProjection(),
 						{ 0,1,0 },
@@ -108,6 +113,10 @@ void MapChipPlacementTool::Update()
 					blockMatData[lBlockNum].color = { 0.0f,1.0f,0.0f,1.0f };
 					++lBlockNum;
 				}
+				else
+				{
+					continue;
+				}
 
 				MESH_DIR lDir;
 				if ((lDir = CheckBlock(blockPosArray[x][y][z])) != NONE)
@@ -115,9 +124,7 @@ void MapChipPlacementTool::Update()
 					selectR.data.transform.pos = blockPosArray[x][y][z];
 					selectingIndex = KazMath::Vec3<int>(x, y, z);
 					putIndex = selectingIndex + AdjIndex(lDir);
-					break;
 				}
-
 			}
 		}
 	}
@@ -125,10 +132,11 @@ void MapChipPlacementTool::Update()
 
 	ImGui::Begin("MapChipPlacementTool");
 	//現在指定しているブロックの座標
-	KazImGuiHelper::DrawVec3("SelectingBlockPos", selectR.data.transform.pos);
+	ImGui::Text("selectingIndex,X:%d,Y:%d,Z:%d", selectingIndex.x, selectingIndex.y, selectingIndex.z);
 	//一括配置
 	KazImGuiHelper::InputVec3("PutBlockInOnce", &blockPutInOnceSize);
 	bool lPutFlag = ImGui::Button("Put");
+	ImGui::Text("PutPos,X:%d,Y:%d,Z:%d", putIndex.x, putIndex.y, putIndex.z);
 	ImGui::End();
 
 	//一括配置の処理
@@ -137,65 +145,159 @@ void MapChipPlacementTool::Update()
 
 	}
 
+	if (putIndex.x <= -1)
+	{
+		putIndex.x = 0;
+	}
+	if (putIndex.y <= -1)
+	{
+		putIndex.y = 0;
+	}
+	if (putIndex.z <= -1)
+	{
+		putIndex.z = 0;
+	}
+	if (selectingIndex.x <= -1)
+	{
+		selectingIndex.x = 0;
+	}
+	if (selectingIndex.y <= -1)
+	{
+		selectingIndex.y = 0;
+	}
+	if (selectingIndex.z <= -1)
+	{
+		selectingIndex.z = 0;
+	}
+
+
+
 	//配置
 	if (inputFlag)
 	{
-		//blockPosArray[putIndex.x][putIndex.y][putIndex.z] = putIndex.Float() * BLOCK_SIZE;
+		blockPosArray[putIndex.x][putIndex.y][putIndex.z] = putIndex.Float() * (BLOCK_SIZE * 2.0f);
 	}
 
 	//削除,別の所に置く
 	if (releaseFlag)
 	{
-		//blockPosArray[selectingIndex.x][selectingIndex.y][selectingIndex.z] = { REV_VALUE,0.0f,0.0f };
+		blockPosArray[selectingIndex.x][selectingIndex.y][selectingIndex.z] = { CONTINE_VALUE,0.0f,0.0f };
 	}
 
 	matIndex = 0;
-	for (int y = 0; y < defaultBlockPosArray.size(); ++y)
-	{
-		for (int x = 0; x < defaultBlockPosArray[y].size(); ++x)
-		{
-			lMatData[matIndex].mat = KazMath::CaluMat(
-				defaultBlockPosArray[y][x],
-				CameraMgr::Instance()->GetViewMatrix(),
-				CameraMgr::Instance()->GetPerspectiveMatProjection(),
-				{ 0,1,0 },
-				{ 0,0,1 }
-			);
-			++matIndex;
-		}
-	}
-	instanceFlameRender->TransData(lMatData.data(), instanceHandle, typeid(MatData).name());
+	//for (int y = 0; y < defaultBlockPosArray.size(); ++y)
+	//{
+	//	for (int x = 0; x < defaultBlockPosArray[y].size(); ++x)
+	//	{
+	//		lMatData[matIndex].mat = KazMath::CaluMat(
+	//			defaultBlockPosArray[y][x],
+	//			CameraMgr::Instance()->GetViewMatrix(),
+	//			CameraMgr::Instance()->GetPerspectiveMatProjection(),
+	//			{ 0,1,0 },
+	//			{ 0,0,1 }
+	//		);
+	//		++matIndex;
+	//	}
+	//}
+	//instanceFlameRender->TransData(lMatData.data(), instanceHandle, typeid(MatData).name());
 	instanceBoxRender->TransData(blockMatData.data(), instanceBoxHandle, typeid(MatData).name());
+
 }
 
 void MapChipPlacementTool::Draw()
 {
-	instanceFlameRender->Draw();
+	//instanceFlameRender->Draw();
 	instanceBoxRender->Draw();
 	selectR.Draw();
 
-	cursorR.Draw();
+	//cursorR.Draw();
+	//b.Draw();
 }
 
 MapChipPlacementTool::MESH_DIR MapChipPlacementTool::CheckBlock(const KazMath::Vec3<float> &POS)
 {
 	KazMath::Vec3<float>lCentralPos = POS;
 
-	std::array<Plane, 6>lPlane;
+	struct HitData
+	{
+		HitData(MESH_DIR DIR, float DISTANCE) :dir(DIR), distance(DISTANCE)
+		{};
+		MESH_DIR dir;
+		float distance;
+	};
+
+	std::vector<float>lDistanceArray;
+	std::vector<HitData>lHitDataArray;
+
+	std::array<ModiRectangle, 6>lPlane;
 	for (int planeIndex = 0; planeIndex < lPlane.size(); ++planeIndex)
 	{
 		MESH_DIR lDir = static_cast<MESH_DIR>(planeIndex);
 
+		const float HALF_SCALE = BLOCK_SIZE;
 		//どの方向に向くかで板の位置と向きを決める
-		lCentralPos += AdjIndex(lDir).Float() * (BLOCK_SIZE / 2.0f);
-		lPlane[planeIndex].distance = lCentralPos.Length();
-		lPlane[planeIndex].normal = AdjIndex(lDir).Float();
+		lCentralPos += AdjIndex(lDir).Float() * HALF_SCALE;
 
-		//判定が取れたら座標を入手できたことを示す
-		if (CollisionManager::Instance()->CheckRayAndPlane(ray, lPlane[planeIndex], nullptr, nullptr))
+		//左上、左下、右上、右下の順で並べる
+		switch (lDir)
 		{
-			return lDir;
+		case MapChipPlacementTool::NONE:
+			break;
+		case MapChipPlacementTool::TOP:
+		case MapChipPlacementTool::BUTTOM:
+			lPlane[planeIndex].p0 = lCentralPos + KazMath::Vec3<float>(-HALF_SCALE, 0.0f, HALF_SCALE);
+			lPlane[planeIndex].p1 = lCentralPos + KazMath::Vec3<float>(-HALF_SCALE, 0.0f, -HALF_SCALE);
+			lPlane[planeIndex].p2 = lCentralPos + KazMath::Vec3<float>(HALF_SCALE, 0.0f, HALF_SCALE);
+			lPlane[planeIndex].p3 = lCentralPos + KazMath::Vec3<float>(HALF_SCALE, 0.0f, -HALF_SCALE);
+			break;
+		case MapChipPlacementTool::FRONT:
+		case MapChipPlacementTool::BACK:
+			lPlane[planeIndex].p0 = lCentralPos + KazMath::Vec3<float>(-HALF_SCALE, HALF_SCALE, 0.0f);
+			lPlane[planeIndex].p1 = lCentralPos + KazMath::Vec3<float>(-HALF_SCALE, -HALF_SCALE, 0.0f);
+			lPlane[planeIndex].p2 = lCentralPos + KazMath::Vec3<float>(HALF_SCALE, HALF_SCALE, 0.0f);
+			lPlane[planeIndex].p3 = lCentralPos + KazMath::Vec3<float>(HALF_SCALE, -HALF_SCALE, 0.0f);
+			break;
+		case MapChipPlacementTool::LEFT:
+		case MapChipPlacementTool::RIGHT:
+			lPlane[planeIndex].p0 = lCentralPos + KazMath::Vec3<float>(0.0f, HALF_SCALE, HALF_SCALE);
+			lPlane[planeIndex].p1 = lCentralPos + KazMath::Vec3<float>(0.0f, -HALF_SCALE, HALF_SCALE);
+			lPlane[planeIndex].p2 = lCentralPos + KazMath::Vec3<float>(0.0f, HALF_SCALE, -HALF_SCALE);
+			lPlane[planeIndex].p3 = lCentralPos + KazMath::Vec3<float>(0.0f, -HALF_SCALE, -HALF_SCALE);
+			break;
+		default:
+			break;
+		}
+
+		float lDistance;
+		//判定が取れたら座標を入手できたことを示す
+		if (CollisionManager::Instance()->CheckRayAndPlane3D(ray, lPlane[planeIndex], &lDistance))
+		{
+			lDistanceArray.push_back(lDistance);
+			lHitDataArray.push_back(HitData(lDir, lDistance));
 		}
 	}
-	return static_cast<MESH_DIR>(-1);
+	std::sort(lDistanceArray.begin(), lDistanceArray.end());
+
+	std::vector<HitData>lResultArray;
+
+	//ソートをかける
+	for (int i = 0; i < lDistanceArray.size(); ++i)
+	{
+		for (int dataIndex = 0; dataIndex < lHitDataArray.size(); ++dataIndex)
+		{
+			if (lDistanceArray[i] == lHitDataArray[dataIndex].distance)
+			{
+				lResultArray.push_back(lHitDataArray[dataIndex]);
+			}
+		}
+	}
+
+	if (lResultArray.size() != 0)
+	{
+		return static_cast<MESH_DIR>(lResultArray[0].dir);
+	}
+	else
+	{
+		return static_cast<MESH_DIR>(-1);
+	}
 }
