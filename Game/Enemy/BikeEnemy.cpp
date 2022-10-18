@@ -9,22 +9,24 @@ BikeEnemy::BikeEnemy()
 
 void BikeEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 {
-	iEnemy_ModelRender->data.transform.pos = GENERATE_DATA.initPos;	//座標の初期化
 	float lScale = 0.7f;
-	iEnemy_ModelRender->data.transform.scale = { lScale,lScale,lScale };
-	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "Bike/" + "Bike_Model.obj");	//モデル読み込み
-	iEnemy_EnemyStatusData->hitBox.radius = 15.0f;	//当たり判定の大きさ変更
-	iOperationData.Init(2);							//残りロックオン数等の初期化
+	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { lScale,lScale,lScale }, { 0.0f,0.0f,0.0f }), KazFilePathName::EnemyPath + "Bike/" + "BikeEnemy_anim.fbx", 15.0f, true);
+	iEnemy_FbxModelRender->data.colorData.color.a = 255;
+
+
+	iOperationData.Init(2,"bt-V");							//残りロックオン数等の初期化
 	initDeadSoundFlag = false;
 	demoFlag = DEMO_FLAG;
 	basePos = GENERATE_DATA.initPos;
 
-	iEnemy_ModelRender->data.transform.pos.y += 7.0f;
-	iEnemy_ModelRender->data.transform.pos.z = -1000.0f;
+	iEnemy_FbxModelRender->data.transform.pos.y += 7.0f;
+	iEnemy_FbxModelRender->data.transform.pos.z = -1000.0f;
 	line.data.startPos = GENERATE_DATA.initPos;
 	line.data.endPos = GENERATE_DATA.initPos;
 	line.data.startPos.z = -1000.0f;
 	line.data.endPos.z = line.data.startPos.z;
+
+
 
 	appearTimer = 0;
 	emitt.Init(&sparkPos);
@@ -39,11 +41,11 @@ void BikeEnemy::Update()
 	float lPos = 0.0f;
 	float lMul = 0.019f;
 
-	sparkPos = iEnemy_ModelRender->data.transform.pos;
+	sparkPos = iEnemy_FbxModelRender->data.transform.pos;
 	sparkPos.y = line.data.startPos.y;
 	sparkPos.z += -11.5f;
 
-	if (!ProcessingOfDeath(DEATH_SINK))
+	if (!ProcessingOfDeathFbx(DEATH_SINK))
 	{
 		++appearTimer;
 
@@ -54,28 +56,33 @@ void BikeEnemy::Update()
 		if (appearTimer <= 200)
 		{
 			lPos = basePos.z;
-			kockBackPos.z = iEnemy_ModelRender->data.transform.pos.z - 20.0f;
+			kockBackPos.z = iEnemy_FbxModelRender->data.transform.pos.z - 20.0f;
 			lMul = 0.05f;
+
+			if (200 <= appearTimer)
+			{
+				iEnemy_FbxModelRender->data.isPlayFlag = true;
+			}
 		}
 		/*
 		発射
 		*/
-		else if (200 <= appearTimer && appearTimer <= 320)
+		else if (200 <= appearTimer && appearTimer <= 400)
 		{
 			//ミサイルの発射口を設定
-			misileR.data.transform.pos.x = iEnemy_ModelRender->data.transform.pos.x + 5.0f;
-			misileR.data.transform.pos.y = iEnemy_ModelRender->data.transform.pos.y + 5.0f;
-			misileR.data.transform.pos.z = iEnemy_ModelRender->data.transform.pos.z + 14.0f;
+			misileR.data.transform.pos.x = iEnemy_FbxModelRender->data.transform.pos.x + 5.0f;
+			misileR.data.transform.pos.y = iEnemy_FbxModelRender->data.transform.pos.y + 5.0f;
+			misileR.data.transform.pos.z = iEnemy_FbxModelRender->data.transform.pos.z + 14.0f;
 			misileR2.data.transform.pos = misileR.data.transform.pos;
 			misileR2.data.transform.pos.x -= 10.0f;
 
 			//左右からミサイルを発射する--------------------------------------
-			if (appearTimer == 201)
+			if (appearTimer == 210)
 			{
 				iEnemy_EnemyStatusData->genarateData.enemyGenerateData.initPos = misileR.data.transform.pos;
 				iEnemy_EnemyStatusData->genarateData.enemyType = ENEMY_TYPE_BIKE_MISILE;
 			}
-			if (appearTimer == 202)
+			if (appearTimer == 211)
 			{
 				iEnemy_EnemyStatusData->genarateData.enemyGenerateData.initPos = misileR2.data.transform.pos;
 				iEnemy_EnemyStatusData->genarateData.enemyType = ENEMY_TYPE_BIKE_MISILE;
@@ -83,13 +90,13 @@ void BikeEnemy::Update()
 			//左右からミサイルを発射する--------------------------------------
 
 			lPos = basePos.z;
-			kockBackPos.z = iEnemy_ModelRender->data.transform.pos.z - 20.0f;
+			kockBackPos.z = iEnemy_FbxModelRender->data.transform.pos.z - 20.0f;
 		}
 		/*
 		退出準備
 		敵を後ろに少しだけノックバックする
 		*/
-		else if (320 <= appearTimer && appearTimer <= 380)
+		else if (400 <= appearTimer && appearTimer <= 440)
 		{
 			lPos = kockBackPos.z;
 			lMul = 0.1f;
@@ -103,27 +110,27 @@ void BikeEnemy::Update()
 			lPos = DISAPPEAR_Z_POS;
 			KazMath::Larp(DISAPPEAR_Z_POS, &line.data.startPos.z, 0.02f);
 
-			if (0 < iEnemy_ModelRender->data.colorData.color.a)
+			if (0 < iEnemy_FbxModelRender->data.colorData.color.a)
 			{
-				iEnemy_ModelRender->data.colorData.color.a += -5;
+				iEnemy_FbxModelRender->data.colorData.color.a += -5;
 			}
 			else
 			{
-				iEnemy_ModelRender->data.colorData.color.a = 0;
+				iEnemy_FbxModelRender->data.colorData.color.a = 0;
 				iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag = false;
 			}
 		}
 
-		KazMath::Larp(lPos, &iEnemy_ModelRender->data.transform.pos.z, lMul);
+		KazMath::Larp(lPos, &iEnemy_FbxModelRender->data.transform.pos.z, lMul);
 		//線を登場させる
 		KazMath::Larp(DISAPPEAR_Z_POS, &line.data.endPos.z, 0.02f);
 
 		misileR.data.color.color = { 255,0,0,255 };
 		misileR2.data.color.color = { 255,0,0,255 };
 
-		misileR.data.transform.pos.x = iEnemy_ModelRender->data.transform.pos.x + 5.0f;
-		misileR.data.transform.pos.y = iEnemy_ModelRender->data.transform.pos.y + 5.0f;
-		misileR.data.transform.pos.z = iEnemy_ModelRender->data.transform.pos.z + 14.0f;
+		misileR.data.transform.pos.x = iEnemy_FbxModelRender->data.transform.pos.x + 5.0f;
+		misileR.data.transform.pos.y = iEnemy_FbxModelRender->data.transform.pos.y + 5.0f;
+		misileR.data.transform.pos.z = iEnemy_FbxModelRender->data.transform.pos.z + 14.0f;
 		misileR2.data.transform.pos = misileR.data.transform.pos;
 		misileR2.data.transform.pos.x -= 10.0f;
 
@@ -141,6 +148,6 @@ void BikeEnemy::Draw()
 
 	//misileR.Draw();
 	//misileR2.Draw();
-	iEnemy_ModelRender->Draw();
+	iEnemy_FbxModelRender->Draw();
 	LockOnWindow(*iEnemy_EnemyStatusData->hitBox.center);
 }

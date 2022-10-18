@@ -38,7 +38,7 @@ private:
 	BoxPolygonRender selectingR;
 
 
-	std::array<DrawGrid, 4> gridRender;
+	std::array<std::unique_ptr<DrawGrid>, 4> gridRender;
 
 	std::unique_ptr<BoxPolygonRender> poly;
 	RESOURCE_HANDLE lineDrawHandle;

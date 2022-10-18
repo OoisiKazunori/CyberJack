@@ -4,13 +4,16 @@
 IEnemy::IEnemy() :hpDirtyFlag(&iOperationData.rockOnNum)
 {
 	//描画の初期化----------------------------------------------------------------
-	iEnemy_ModelRender = std::make_unique<ObjModelRender>();
-	iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX;
+	iEnemy_ObjModelRender = std::make_unique<ObjModelRender>();
+	iEnemy_ObjModelRender->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX;
+
+	iEnemy_FbxModelRender = std::make_unique<FbxModelRender>();
+	iEnemy_FbxModelRender->data.pipelineName = PIPELINE_NAME_FBX_RENDERTARGET_TWO;
 	//描画の初期化----------------------------------------------------------------
 
 	//敵情報の初期化----------------------------------------------------------------
 	iEnemy_EnemyStatusData = std::make_unique<EnemyData>(
-		&iEnemy_ModelRender->data.transform.pos,
+		&iEnemy_ObjModelRender->data.transform.pos,
 		-1.0f,
 		&iOperationData
 		);
@@ -50,11 +53,11 @@ bool IEnemy::ProcessingOfDeath(EnemyDeathType TYPE)
 {
 	if (!iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
 	{
-		iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
-		iEnemy_ModelRender->data.removeMaterialFlag = true;
-		iEnemy_ModelRender->data.colorData.color.x = 255;
-		iEnemy_ModelRender->data.colorData.color.y = 255;
-		iEnemy_ModelRender->data.colorData.color.z = 255;
+		iEnemy_ObjModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
+		iEnemy_ObjModelRender->data.removeMaterialFlag = true;
+		iEnemy_ObjModelRender->data.colorData.color.x = 255;
+		iEnemy_ObjModelRender->data.colorData.color.y = 255;
+		iEnemy_ObjModelRender->data.colorData.color.z = 255;
 
 		if (!initDeadSoundFlag)
 		{
@@ -65,21 +68,62 @@ bool IEnemy::ProcessingOfDeath(EnemyDeathType TYPE)
 		switch (TYPE)
 		{
 		case DEATH_ROLL:
-			DeadEffect(&iEnemy_ModelRender->data.transform.pos, &iEnemy_ModelRender->data.transform.rotation, &iEnemy_ModelRender->data.colorData.color.a);
+			DeadEffect(&iEnemy_ObjModelRender->data.transform.pos, &iEnemy_ObjModelRender->data.transform.rotation, &iEnemy_ObjModelRender->data.colorData.color.a);
 			break;
 		case DEATH_SINK:
-			iEnemy_ModelRender->data.transform.pos.y -= 0.5f;
-			iEnemy_ModelRender->data.transform.rotation.x += 0.5f;
-			iEnemy_ModelRender->data.colorData.color.a -= 5;
+			iEnemy_ObjModelRender->data.transform.pos.y -= 0.5f;
+			iEnemy_ObjModelRender->data.transform.rotation.x += 0.5f;
+			iEnemy_ObjModelRender->data.colorData.color.a -= 5;
 			break;
 		default:
 			break;
 		}
 	}
 
-	if (iEnemy_ModelRender->data.colorData.color.a <= 0)
+	if (iEnemy_ObjModelRender->data.colorData.color.a <= 0)
 	{
-		iEnemy_ModelRender->data.colorData.color.a = 0;
+		iEnemy_ObjModelRender->data.colorData.color.a = 0;
+		iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag = false;
+		iEnemy_EnemyStatusData->outOfStageFlag = true;
+	}
+
+	return !iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag;
+}
+
+bool IEnemy::ProcessingOfDeathFbx(EnemyDeathType TYPE)
+{
+	if (!iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
+	{
+		iEnemy_FbxModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
+		iEnemy_FbxModelRender->data.removeMaterialFlag = true;
+		iEnemy_FbxModelRender->data.colorData.color.x = 255;
+		iEnemy_FbxModelRender->data.colorData.color.y = 255;
+		iEnemy_FbxModelRender->data.colorData.color.z = 255;
+
+		if (!initDeadSoundFlag)
+		{
+			DeadSound();
+			initDeadSoundFlag = true;
+		}
+
+		switch (TYPE)
+		{
+		case DEATH_ROLL:
+			DeadEffect(&iEnemy_FbxModelRender->data.transform.pos, &iEnemy_FbxModelRender->data.transform.rotation, &iEnemy_FbxModelRender->data.colorData.color.a);
+			break;
+		case DEATH_SINK:
+			iEnemy_FbxModelRender->data.transform.pos.y -= 0.5f;
+			iEnemy_FbxModelRender->data.transform.rotation.x += 0.5f;
+			iEnemy_FbxModelRender->data.colorData.color.a -= 5;
+			break;
+		default:
+			break;
+		}
+	}
+
+	if (iEnemy_FbxModelRender->data.colorData.color.a <= 0)
+	{
+		iEnemy_FbxModelRender->data.colorData.color.a = 0;
 		iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag = false;
 		iEnemy_EnemyStatusData->outOfStageFlag = true;
 	}
@@ -100,4 +144,38 @@ void IEnemy::DeadSound()
 void IEnemy::ShotSound()
 {
 	SoundManager::Instance()->PlaySoundMem(shotSoundHandle, 1);
+}
+
+void IEnemy::InitModel(const KazMath::Transform3D &TRANSFORM, const std::string &MODEL_FILEPASS, float HITBOX_RADIUS, bool FBX_OR_OBJ_FLAG, bool REV_UV_FLAG)
+{
+	if (FBX_OR_OBJ_FLAG)
+	{
+		iEnemy_FbxModelRender->data.handle = FbxModelResourceMgr::Instance()->LoadModel(MODEL_FILEPASS, REV_UV_FLAG);	//モデル読み込み
+		iEnemy_FbxModelRender->data.transform = TRANSFORM;
+		iEnemy_EnemyStatusData->hitBox.radius = HITBOX_RADIUS;	//当たり判定の大きさ変更
+		iEnemy_EnemyStatusData->hitBox.center = &iEnemy_FbxModelRender->data.transform.pos;
+		iEnemy_FbxModelRender->data.pipelineName = PIPELINE_NAME_FBX_RENDERTARGET_TWO;
+
+		iEnemy_FbxModelRender->data.removeMaterialFlag = false;
+		iEnemy_FbxModelRender->data.colorData.color.x = 255;
+		iEnemy_FbxModelRender->data.colorData.color.y = 255;
+		iEnemy_FbxModelRender->data.colorData.color.z = 255;
+		iEnemy_FbxModelRender->data.colorData.color.a = 1;
+
+		iEnemy_FbxModelRender->data.isPlayFlag = false;
+	}
+	else
+	{
+		iEnemy_ObjModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(MODEL_FILEPASS);	//モデル読み込み
+		iEnemy_ObjModelRender->data.transform = TRANSFORM;
+		iEnemy_EnemyStatusData->hitBox.radius = HITBOX_RADIUS;	//当たり判定の大きさ変更
+		iEnemy_EnemyStatusData->hitBox.center = &iEnemy_ObjModelRender->data.transform.pos;
+		iEnemy_ObjModelRender->data.pipelineName = PIPELINE_NAME_FBX_RENDERTARGET_TWO;
+
+		iEnemy_ObjModelRender->data.removeMaterialFlag = false;
+		iEnemy_ObjModelRender->data.colorData.color.x = 255;
+		iEnemy_ObjModelRender->data.colorData.color.y = 255;
+		iEnemy_ObjModelRender->data.colorData.color.z = 255;
+		iEnemy_ObjModelRender->data.colorData.color.a = 1;
+	}
 }

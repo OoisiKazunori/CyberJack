@@ -1,6 +1,6 @@
 #include "IStage.h"
 
-IStage::IStage()
+IStage::IStage() :objectSpeed(5.0f)
 {
 }
 
@@ -80,7 +80,7 @@ void IStage::InitBackGround(const KazMath::Color &START_COLOR, const KazMath::Co
 
 void IStage::DrawBackGround()
 {
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < backGround.size(); ++i)
 	{
 		backGround[i]->Draw();
 	}

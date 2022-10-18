@@ -26,6 +26,5 @@ private:
 
 	std::array<BoxPolygonRender, 2> summonR;
 	std::array<KazMath::Vec3<float>, 2> summonPos;
-	float summonRate, disappearRate;
 	float rotaMaxAngle;
 };

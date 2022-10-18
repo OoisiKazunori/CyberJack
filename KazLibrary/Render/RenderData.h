@@ -205,7 +205,7 @@ struct LineDrawData
 {
 	KazMath::Vec3<float> startPos;
 	KazMath::Vec3<float> endPos;
-	KazMath::Color color;
+	KazMath::Color colorData;
 	MatMotherData motherMat;
 	PipeLineNames pipelineName;
 	CameraIndexData cameraIndex;
@@ -213,14 +213,14 @@ struct LineDrawData
 	DirtyFlag<KazMath::Vec3<float>> startPosDirtyFlag;
 	DirtyFlag<KazMath::Vec3<float>> endPosDirtyFlag;
 
-	LineDrawData() :pipelineName(PIPELINE_NAME_LINE), color(255, 255, 255, 255), startPosDirtyFlag(&startPos), endPosDirtyFlag(&endPos)
+	LineDrawData() :pipelineName(PIPELINE_NAME_LINE), colorData(255, 255, 255, 255), startPosDirtyFlag(&startPos), endPosDirtyFlag(&endPos)
 	{
 	}
 	void Record()
 	{
 		startPosDirtyFlag.Record();
 		endPosDirtyFlag.Record();
-		color.Record();
+		colorData.Record();
 		motherMat.dirty.Record();
 		cameraIndex.dirty.Record();
 	}
@@ -255,6 +255,7 @@ struct FbxModelData
 	MatMotherData motherMat;
 	bool isPlayFlag;
 	bool isReverseFlag;
+	bool removeMaterialFlag;
 	int animationNumber;
 	PipeLineNames pipelineName;
 	CameraIndexData cameraIndex;

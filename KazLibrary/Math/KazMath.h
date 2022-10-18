@@ -862,6 +862,7 @@ namespace KazMath
 
 	void Larp(float BASE_TRANSFORM, float *TRANSFORM, float MUL);
 	void Larp(const Vec2<float> BASE_TRANSFORM, Vec2<float> *TRANSFORM, float MUL);
+	void Larp(const Vec3<float> BASE_TRANSFORM, Vec3<float> *TRANSFORM, float MUL);
 
 	template<typename T>
 	float GetSinFloat(T VALUE)

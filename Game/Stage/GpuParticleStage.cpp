@@ -70,9 +70,9 @@ GpuParticleStage::GpuParticleStage()
 	vertexBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetVertexBufferData(vertBuffSize));
 	indexBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetIndexBufferData(indexBuffSize));
 
-	commonBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(CommonData)));
+	commonInitBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(CommonData)));
 	particleDataHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(ParticleData) * PARTICLE_MAX_NUM));
-	outputBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(OutputData) * PARTICLE_MAX_NUM));
+	outputInitBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(OutputInitData) * PARTICLE_MAX_NUM));
 	drawCommandHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(IndirectCommand) * DRAW_CALL));
 	counterBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(UINT)));
 	//バッファ生成-------------------------
@@ -90,15 +90,15 @@ GpuParticleStage::GpuParticleStage()
 	command.drawArguments.StartInstanceLocation = 0;
 	command.drawArguments.BaseVertexLocation = 0;
 
-	command.uav = buffers->GetGpuAddress(outputBufferHandle);
+	command.uav = buffers->GetGpuAddress(outputInitBufferHandle);
 	buffers->TransData(drawCommandHandle, &command, sizeof(IndirectCommand) * DRAW_CALL);
 	//転送-------------------------
 
 	computeMemSize = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_TEXTURE_COMPUTEBUFFER);
 	DescriptorHeapMgr::Instance()->CreateBufferView(
 		computeMemSize.startSize + 0,
-		KazBufferHelper::SetUnorderedAccessView(sizeof(OutputData),PARTICLE_MAX_NUM),
-		buffers->GetBufferData(outputBufferHandle).Get(),
+		KazBufferHelper::SetUnorderedAccessView(sizeof(OutputInitData),PARTICLE_MAX_NUM),
+		buffers->GetBufferData(outputInitBufferHandle).Get(),
 		buffers->GetBufferData(counterBufferHandle).Get()
 	);
 
@@ -138,11 +138,11 @@ void GpuParticleStage::Update()
 		lData.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
 		lData.bollboardMat = CameraMgr::Instance()->GetMatBillBoard();
 		lData.increSize = sizeof(ParticleData);
-		lData.gpuAddress = buffers->GetGpuAddress(outputBufferHandle);
+		lData.gpuAddress = buffers->GetGpuAddress(outputInitBufferHandle);
 		lData.emittPos = { 0.0f,0.0f,0.0f,30.0f };
 		lData.seed = KazMath::Rand<int>(100, 0);
-		buffers->TransData(commonBufferHandle, &lData, sizeof(CommonData));
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(commonBufferHandle));
+		buffers->TransData(commonInitBufferHandle, &lData, sizeof(CommonData));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(commonInitBufferHandle));
 	}
 
 	{
@@ -160,7 +160,6 @@ void GpuParticleStage::Draw()
 	DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
 	DirectX12CmdList::Instance()->cmdList->IASetIndexBuffer(&indexBufferView);
 	DirectX12CmdList::Instance()->cmdList->SetGraphicsRootShaderResourceView(0, TextureResourceMgr::Instance()->buffers->GetBufferData(texHandle)->GetGPUVirtualAddress());
-
 
 	RenderTargetStatus::Instance()->ChangeBarrier(
 		buffers->GetBufferData(drawCommandHandle).Get(),
@@ -183,5 +182,4 @@ void GpuParticleStage::Draw()
 		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
 	);
-
 }

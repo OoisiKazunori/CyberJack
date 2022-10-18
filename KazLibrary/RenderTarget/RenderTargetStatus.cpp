@@ -195,7 +195,7 @@ RESOURCE_HANDLE RenderTargetStatus::CreateRenderTarget(const KazMath::Vec2<UINT>
 	resource.Height = GRAPH_SIZE.y;
 	resource.Width = static_cast<UINT64>(GRAPH_SIZE.x);
 	resource.Format = FORMAT;
-	float clearValue[] = { CLEAR_COLOR.x / 255.0f,CLEAR_COLOR.y / 255.0f ,CLEAR_COLOR.z / 255.0f,1.0f };
+	float clearValue[] = { CLEAR_COLOR.x,CLEAR_COLOR.y ,CLEAR_COLOR.z,1.0f };
 	D3D12_CLEAR_VALUE clearColor = CD3DX12_CLEAR_VALUE(FORMAT, clearValue);
 
 
@@ -258,7 +258,7 @@ std::vector<RESOURCE_HANDLE> RenderTargetStatus::CreateMultiRenderTarget(const s
 		resource.Height = MULTIRENDER_TARGET_DATA[i].graphSize.y;
 		resource.Width = static_cast<UINT64>(MULTIRENDER_TARGET_DATA[i].graphSize.x);
 		resource.Format = FORMAT;
-		float clearValue[] = { MULTIRENDER_TARGET_DATA[i].backGroundColor.x / 255.0f,MULTIRENDER_TARGET_DATA[i].backGroundColor.y / 255.0f ,MULTIRENDER_TARGET_DATA[i].backGroundColor.z / 255.0f,1.0f };
+		float clearValue[] = { MULTIRENDER_TARGET_DATA[i].backGroundColor.x,MULTIRENDER_TARGET_DATA[i].backGroundColor.y ,MULTIRENDER_TARGET_DATA[i].backGroundColor.z,1.0f };
 		D3D12_CLEAR_VALUE clearColor = CD3DX12_CLEAR_VALUE(FORMAT, clearValue);
 
 
@@ -333,7 +333,7 @@ void RenderTargetStatus::DeleteRenderTarget(RESOURCE_HANDLE HANDLE)
 			}
 		}
 	}
-	
+
 }
 
 void RenderTargetStatus::DeleteMultiRenderTarget(const std::vector<RESOURCE_HANDLE> &HANDLE)

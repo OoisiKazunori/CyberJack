@@ -19,7 +19,7 @@ void EventSprite::Init(const KazMath::Vec3<float> &POS, int HANDLE)
 	hitFlag = false;
 	deadFlag = false;
 	timer = 0;
-	iOperationData.Init(1);
+	iOperationData.Init(1, "EventSprite");
 
 	selectingFlag = false;
 

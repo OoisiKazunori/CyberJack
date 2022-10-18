@@ -10,38 +10,22 @@ BattleshipEnemy::BattleshipEnemy()
 		misileR[i].data.transform.pos.z = 25.0f;
 	}
 
-	topModel = std::make_unique<ObjModelRender>();
+	topModel = std::make_unique<FbxModelRender>();
 
 	//iEnemy_ModelRender = std::make_unique<FbxModelRender>();
-	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_Model_Body.obj");	//モデル読み込み
-	topModel->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_Model_Radar.obj");	//モデル読み込み
-
 }
 
 void BattleshipEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 {
-	iEnemy_ModelRender->data.transform.pos = GENERATE_DATA.initPos;	//座標の初期化
-	iEnemy_ModelRender->data.transform.scale = { 0.5f,0.5f,0.5f };
-	iEnemy_EnemyStatusData->hitBox.radius = 15.0f;	//当たり判定の大きさ変更
-	iOperationData.Init(3);							//残りロックオン数等の初期化
-	iEnemy_EnemyStatusData->hitBox.center = &iEnemy_ModelRender->data.transform.pos;
+	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { 0.5f,0.5f,0.5f }, { 0.0f,0.0f,0.0f }), KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_HachOpen_anim.fbx", 15.0f, true);
 
-	iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_OBJ;
-	iEnemy_ModelRender->data.removeMaterialFlag = false;
-	iEnemy_ModelRender->data.colorData.color.x = 255;
-	iEnemy_ModelRender->data.colorData.color.y = 255;
-	iEnemy_ModelRender->data.colorData.color.z = 255;
-	iEnemy_ModelRender->data.colorData.color.a = 0;
-	iEnemy_ModelRender->data.transform.rotation.x = 0.0f;
-	iEnemy_ModelRender->data.transform.rotation.y = 0.0f;
-	iEnemy_ModelRender->data.transform.rotation.z = 0.0f;
-	//iEnemy_ModelRender->data.isPlayFlag = false;
-	//iEnemy_ModelRender->data.isReverseFlag = false;
+	topModel->data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_Head_anim.fbx");	//モデル読み込み
+	iOperationData.Init(3, "Kaz-BS");							//残りロックオン数等の初期化
 	initDeadSoundFlag = false;
 	demoFlag = DEMO_FLAG;
 
 
-	iEnemy_ModelRender->data.transform.pos.z = -1000.0f;
+	iEnemy_FbxModelRender->data.transform.pos.z = -1000.0f;
 	basePos = GENERATE_DATA.initPos;
 	vel = 0.0f;
 	appearTimer = 0;
@@ -60,15 +44,15 @@ void BattleshipEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLA
 	adjHitBoxPos = { 0.0f,95.0f,-15.0f };
 
 
-	if (signbit(iEnemy_ModelRender->data.transform.pos.x))
+	if (signbit(iEnemy_FbxModelRender->data.transform.pos.x))
 	{
 		topRota.y = 90.0f;
 	}
-	else if(!signbit(iEnemy_ModelRender->data.transform.pos.x))
+	else if (!signbit(iEnemy_FbxModelRender->data.transform.pos.x))
 	{
 		topRota.y = -90.0f;
 	}
-	if (iEnemy_ModelRender->data.transform.pos.x == 0.0f)
+	if (iEnemy_FbxModelRender->data.transform.pos.x == 0.0f)
 	{
 		topRota.y = 180.0f;
 	}
@@ -83,7 +67,7 @@ void BattleshipEnemy::Finalize()
 void BattleshipEnemy::Update()
 {
 	hitBoxPos = {};
-	hitBoxPos = model->data.transform.pos + adjHitBoxPos;
+	hitBoxPos = iEnemy_FbxModelRender->data.transform.pos + adjHitBoxPos;
 	iEnemy_EnemyStatusData->hitBox.center = &hitBoxPos;
 
 	if (iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
@@ -91,7 +75,7 @@ void BattleshipEnemy::Update()
 		//一定時間止まったらそのまま画面外に向かう
 		if (KazMath::ConvertSecondToFlame(disappearTime) <= appearTimer && !demoFlag)
 		{
-			model->data.transform.pos.z += vel;
+			iEnemy_FbxModelRender->data.transform.pos.z += vel;
 			vel += 0.1f;
 
 			const float MAX_SPEED = 10.0f;
@@ -99,14 +83,14 @@ void BattleshipEnemy::Update()
 			{
 				vel = MAX_SPEED;
 
-				if (0 < model->data.colorData.color.a)
+				if (0 < iEnemy_FbxModelRender->data.colorData.color.a)
 				{
-					model->data.colorData.color.a -= 5;
+					iEnemy_FbxModelRender->data.colorData.color.a -= 5;
 				}
 				else
 				{
 					//死亡扱い
-					model->data.colorData.color.a = 0;
+					iEnemy_FbxModelRender->data.colorData.color.a = 0;
 					iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag = false;
 					initDeadSoundFlag = true;
 				}
@@ -135,23 +119,23 @@ void BattleshipEnemy::Update()
 
 				if (minusFlag)
 				{
-					misileR[i].data.transform.pos = model->data.transform.pos + KazMath::Vec3<float>(-5.0f, 88.0f, 25.0f) + KazMath::Vec3<float>(0.0f, 0.0f, 10.0f * retuIndex);
+					misileR[i].data.transform.pos = iEnemy_FbxModelRender->data.transform.pos + KazMath::Vec3<float>(-5.0f, 88.0f, 25.0f) + KazMath::Vec3<float>(0.0f, 0.0f, 10.0f * retuIndex);
 				}
 				else
 				{
-					misileR[i].data.transform.pos = model->data.transform.pos + KazMath::Vec3<float>(5.0f, 88.0f, 25.0f) + KazMath::Vec3<float>(0.0f, 0.0f, 10.0f * retuIndex);
+					misileR[i].data.transform.pos = iEnemy_FbxModelRender->data.transform.pos + KazMath::Vec3<float>(5.0f, 88.0f, 25.0f) + KazMath::Vec3<float>(0.0f, 0.0f, 10.0f * retuIndex);
 				}
 				//ミサイル発射地点の設定--------------------------------------
 
-				/*if (!model->data.isPlayFlag && !model->data.isReverseFlag && lBaseTimer - KazMath::ConvertSecondToFlame(3) <= appearTimer)
+				if (isShotFlag && !iEnemy_FbxModelRender->data.isPlayFlag && !iEnemy_FbxModelRender->data.isReverseFlag && lBaseTimer - KazMath::ConvertSecondToFlame(3) <= appearTimer)
 				{
-					model->data.isPlayFlag = true;
+					iEnemy_FbxModelRender->data.isPlayFlag = true;
 				}
-				if (!model->data.isReverseFlag && KazMath::ConvertSecondToFlame(11) <= appearTimer)
+				if (isShotFlag && !iEnemy_FbxModelRender->data.isReverseFlag && KazMath::ConvertSecondToFlame(11) <= appearTimer)
 				{
-					model->data.isReverseFlag = true;
-					model->data.isPlayFlag = false;
-				}*/
+					iEnemy_FbxModelRender->data.isReverseFlag = true;
+					iEnemy_FbxModelRender->data.isPlayFlag = false;
+				}
 
 				//ミサイル発射
 				if (appearTimer == lBaseTimer + i * 10)
@@ -175,21 +159,21 @@ void BattleshipEnemy::Update()
 
 		if (appearTimer < KazMath::ConvertSecondToFlame(disappearTime))
 		{
-			KazMath::Larp(basePos.z, &model->data.transform.pos.z, 0.01f);
+			KazMath::Larp(basePos.z, &iEnemy_FbxModelRender->data.transform.pos.z, 0.01f);
 
 			//登場処理
-			if (model->data.colorData.color.a < 255)
+			if (iEnemy_FbxModelRender->data.colorData.color.a < 255)
 			{
-				model->data.colorData.color.a += 5;
+				iEnemy_FbxModelRender->data.colorData.color.a += 5;
 			}
 			else
 			{
-				model->data.colorData.color.a = 255;
+				iEnemy_FbxModelRender->data.colorData.color.a = 255;
 			}
 		}
 	}
 
-	if (!ProcessingOfDeath(DEATH_SINK))
+	if (!ProcessingOfDeathFbx(DEATH_SINK))
 	{
 		++appearTimer;
 	}
@@ -202,15 +186,16 @@ void BattleshipEnemy::Update()
 		topModel->data.colorData.color.z = 255;
 	}
 
-	topModel->data.transform = iEnemy_ModelRender->data.transform;
-	topModel->data.colorData = iEnemy_ModelRender->data.colorData;
-	topModel->data.transform.pos = iEnemy_ModelRender->data.transform.pos + topPos;
-	topModel->data.transform.rotation = iEnemy_ModelRender->data.transform.rotation + topRota;
+	topModel->data.transform = iEnemy_FbxModelRender->data.transform;
+	topModel->data.colorData = iEnemy_FbxModelRender->data.colorData;
+	topModel->data.transform.pos = iEnemy_FbxModelRender->data.transform.pos + topPos;
+	topModel->data.transform.rotation = iEnemy_FbxModelRender->data.transform.rotation + topRota;
+	//topModel->data.transform.scale += KazMath::Vec3<float>(0.15f, 0.15f, 0.15f);
 }
 
 void BattleshipEnemy::Draw()
 {
-	iEnemy_ModelRender->Draw();
+	iEnemy_FbxModelRender->Draw();
 	topModel->Draw();
 	LockOnWindow(*iEnemy_EnemyStatusData->hitBox.center);
 }

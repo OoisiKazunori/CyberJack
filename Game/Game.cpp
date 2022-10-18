@@ -11,12 +11,11 @@
 #include<iostream>
 #include"../KazLibrary/Sound/SoundManager.h"
 
-Game::Game()
+Game::Game() :LOG_FONT_SIZE(1.0f)
 {
 	emitters[0] = std::make_unique<HitEffectPattern1Emitter>();
 	emitters[1] = std::make_unique<HitEffectPattern2Emitter>();
 	emitters[2] = std::make_unique<HitEffectPattern3Emitter>();
-
 
 	for (int emitterTypeIndex = 0; emitterTypeIndex < deadEffectEmitter.size(); ++emitterTypeIndex)
 	{
@@ -49,53 +48,12 @@ Game::Game()
 		smokeR[i].data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	}
 
-	besidePoly = std::make_unique<BoxPolygonRender>();
-	verticlaPoly = std::make_unique<BoxPolygonRender>();
-	cameraPoly = std::make_unique<BoxPolygonRender>();
-
 	model = std::make_unique<ObjModelRender>();
 	model->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
 	model->data.transform.pos = { 0.0f,0.0f,20.0f };
 	model->data.transform.scale = { 5.0f,5.0f,5.0f };
 	model->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "hamster.obj");
 	model->data.colorData = { 255,0,0,255 };
-
-	//mainRenderTarget.data.handle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, BG_COLOR, DXGI_FORMAT_R8G8B8A8_UNORM);
-	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
-	mainRenderTarget.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
-
-	std::vector<MultiRenderTargetData> data;
-	data.push_back(MultiRenderTargetData());
-	data.push_back(MultiRenderTargetData());
-	data[0].graphSize = { WIN_X,WIN_Y };
-	data[0].backGroundColor = BG_COLOR;
-	data[1].graphSize = { WIN_X,WIN_Y };
-	data[1].backGroundColor = { 0.0f,0.0f,0.0f };
-
-	handles =
-		RenderTargetStatus::Instance()->CreateMultiRenderTarget(data, DXGI_FORMAT_R8G8B8A8_UNORM);
-	mainRenderTarget.data.handleData = handles[0];
-
-	addHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
-	addRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
-	addRenderTarget.data.pipelineName = PIPELINE_NAME_BLOOM;
-	addRenderTarget.data.addHandle.paramType[0] = GRAPHICS_PRAMTYPE_TEX;
-	addRenderTarget.data.addHandle.paramType[1] = GRAPHICS_PRAMTYPE_TEX2;
-	addRenderTarget.data.addHandle.paramType[2] = GRAPHICS_PRAMTYPE_TEX3;
-	addRenderTarget.data.addHandle.paramType[3] = GRAPHICS_PRAMTYPE_TEX4;
-
-
-	buler[0] = std::make_unique<GaussianBuler>(KazMath::Vec2<UINT>(WIN_X, WIN_Y));
-	buler[1] = std::make_unique<GaussianBuler>(KazMath::Vec2<UINT>(WIN_X / 2, WIN_Y / 2));
-	buler[2] = std::make_unique<GaussianBuler>(KazMath::Vec2<UINT>(WIN_X / 3, WIN_Y / 3));
-	buler[3] = std::make_unique<GaussianBuler>(KazMath::Vec2<UINT>(WIN_X / 4, WIN_Y / 4));
-
-
-	luminaceTex.data.pipelineName = PIPELINE_NAME_SPRITE_LUMI;
-	luminaceTex.data.handleData = handles[0];
-	luminaceTex.data.addHandle.handle[0] = handles[1];
-	luminaceTex.data.addHandle.paramType[0] = GRAPHICS_PRAMTYPE_TEX2;
-	luminaceTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 
 
 	lineStartPoly[0].data.transform.pos = { 0.5f,0.15f,0.0f };
@@ -124,9 +82,6 @@ Game::Game()
 	gameOverTex.data.transform.scale = { 1.2f,1.2f };
 
 
-	potalTexHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, BG_COLOR, DXGI_FORMAT_R8G8B8A8_UNORM);
-
-
 	bgmSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Bgm.wav");
 	lockSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Lock.wav", false);
 	doneSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Done.wav");
@@ -135,19 +90,21 @@ Game::Game()
 	SoundManager::Instance()->StopSoundMem(bgmSoundHandle);
 	SoundManager::Instance()->PlaySoundMem(bgmSoundHandle, 1, true);
 
-	CameraMgr::Instance()->CameraSetting(60.0f, 1200.0f, 0);
+	CameraMgr::Instance()->CameraSetting(60.0f, 100000.0f, 0);
 	CameraMgr::Instance()->CameraSetting(60.0f, 100000.0f, 1);
 
 
-	stringLog.Init();
+	stringLog.Init({ 50.0f,50.0f });
+	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+
+	renderTarget = std::make_unique<GameRenderTarget>(KazMath::Color(29, 19, 72, 255));
+	nextRenderTarget = std::make_unique<GameRenderTarget>(KazMath::Color(29, 19, 72, 255));
+	meshEmitter = std::make_unique<MeshParticleEmitter>(0);
 }
 
 Game::~Game()
 {
 	//レンダーターゲットの破棄
-	RenderTargetStatus::Instance()->DeleteRenderTarget(addHandle);
-	RenderTargetStatus::Instance()->DeleteMultiRenderTarget(handles);
-	RenderTargetStatus::Instance()->DeleteRenderTarget(potalTexHandle);
 	SoundManager::Instance()->StopSoundMem(bgmSoundHandle);
 }
 
@@ -186,7 +143,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 
 	//ゲームループの初期化----------------------------------------------------------------
 	gameStartFlag = false;
-	cameraChangeFlag = true;
+	cameraModeChangeFlag = false;
 	gameFlame = 0;
 	changeLayerLevelMaxTime[0] = KazMath::ConvertSecondToFlame(70);
 	changeLayerLevelMaxTime[1] = KazMath::ConvertSecondToFlame(85);
@@ -200,34 +157,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	//ゲームループの初期化----------------------------------------------------------------
 
 
-	eyePos = { 0.0f,5.0f,-10.0f };
-	trackingTargetPos = { 0.0f,0.0f,0.0f };
-	nowTargerPos = { 0.0f,0.0f,0.0f };
-	leftRightAngleVel = { -90.0f,-90.0f };
-	upDownAngleVel = { 0.0f,0.0f };
-
-	trackLeftRightAngleVel = leftRightAngleVel;
-	trackUpDownAngleVel = upDownAngleVel;
-
-	baseEyePos = { 0.0f,5.0f,-10.0f };
-	baseTargetPos = { 0.0f,3.0f,0.0f };
-
-	centralPos = { 0.0f,3.0f,0.0f };
-	centralPos2 = centralPos;
-
-
-	besidePoly->data.color = { 255,255,255,255 };
-	verticlaPoly->data.color = { 255,255,0,255 };
-	cameraPoly->data.color = { 255,0,0,255 };
-	r = 8.0f;
-	r2 = 8.0f;
-
-
 	testEnemyPos = { 0.0f,0.0f,100.0f };
-	mulValue = { 10.0f,30.0f };
-	mulValue2 = { 60.0f,60.0f };
-
-	forceCameraDirVel.x = -90.0f;
 
 	appearGoalBoxPos[0] = { 0.0f,10.0f,40.0f };
 	appearGoalBoxPos[1] = { 20.0f,-15.0f,40.0f };
@@ -242,87 +172,34 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	flashFlag = false;
 	flashTimer = 0;
 
-	layerLevelEyePos = { -4.15f,3.0f,40.0f };
-	layerLevelTargetPos = { -4.15f,3.0f,45.0f };
-
-
-	titleLogoTex.data.colorData.color.a = 255;
-	baseTitlePosY = 150.0f;
-	titleLogoTex.data.transform.pos = { 0.0f,baseTitlePosY,500.0f };
-	titleLogoTex.data.transform.scale = { 0.8f,0.8f,1.0f };
-	titleLogoTex.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TitlePath + "TitleName.png");
-	doneSprite.Init({ 0.0f,0.0f,500.0f }, TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TitlePath + "Start.png"));
-
 
 	tutorialWindow.Init();
 
-	startFlag = false;
-
-	portal.Init(KazMath::Vec3<float>(0.0f, 3.0f, 50.0f));
-
-
-
 	rocketIndex = 0;
 	fireIndex = 0;
+	cameraWork.Init();
 
-	rateIntervalTimer = 0;
-
+	tutorial.Init(false);
+	portalEffect.Init();
 }
 
 void Game::Finalize()
 {
+	tutorial.Finalize();
 }
 
 void Game::Input()
 {
+
+	if (tutorial.tutorialFlag)
+	{
+		tutorial.Input();
+		//return;
+	}
+
+
 	KeyBoradInputManager *input = KeyBoradInputManager::Instance();
 	ControllerInputManager *inputController = ControllerInputManager::Instance();
-
-#pragma region カメラ操作
-	debugCameraMove = { 0,0,0 };
-	float debugSpeed = 100.0f;
-	float debugSideSpeed = 1.0f;
-	//�J�����ړ�
-	if (input->InputState(DIK_D))
-	{
-		debugCameraMove.x = -debugSpeed;
-	}
-	if (input->InputState(DIK_A))
-	{
-		debugCameraMove.x = debugSpeed;
-	}
-	if (input->InputState(DIK_W))
-	{
-		//y�Ȃ̂ɑO�ɐi��....
-		debugCameraMove.y = debugSpeed;
-	}
-	if (input->InputState(DIK_S))
-	{
-		debugCameraMove.y = -debugSpeed;
-	}
-
-
-	//�J�����p�x
-	if (input->InputState(DIK_RIGHTARROW))
-	{
-		angle.x += debugSideSpeed;
-	}
-	if (input->InputState(DIK_LEFTARROW))
-	{
-		angle.x += -debugSideSpeed;
-	}
-
-	if (input->InputState(DIK_UPARROW))
-	{
-		angle.y += debugSideSpeed;
-	}
-	if (input->InputState(DIK_DOWNARROW))
-	{
-		angle.y += -debugSideSpeed;
-	}
-
-#pragma endregion
-
 
 	bool upFlag = false;
 	bool downFlag = false;
@@ -393,52 +270,6 @@ void Game::Input()
 	);
 
 
-	//カメラの前後左右強制に向かせる処理
-	if (input->InputState(DIK_Z))
-	{
-		forceCameraDirVel.x = FORCE_CAMERA_FRONT;
-	}
-	if (input->InputState(DIK_X))
-	{
-		forceCameraDirVel.x = FORCE_CAMERA_BACK;
-	}
-	if (input->InputState(DIK_C))
-	{
-		forceCameraDirVel.x = FORCE_CAMERA_LEFT;
-	}
-	if (input->InputState(DIK_V))
-	{
-		forceCameraDirVel.x = FORCE_CAMERA_RIGHT;
-	}
-
-
-
-	KazMath::Vec3<float> verticalVel = {};
-	KazMath::Vec3<float> besideVel = {};
-
-	float speed = 1.0f;
-	if (upFlag)
-	{
-		cameraVel.y = -speed;
-		verticalVel = { -speed,-speed,0.0f };
-	}
-	if (downFlag)
-	{
-		cameraVel.y = speed;
-		verticalVel = { speed,speed,0.0f };
-	}
-	if (leftFlag)
-	{
-		cameraVel.x = -speed;
-		besideVel = { speed,speed,0.0f };
-	}
-	if (rightFlag)
-	{
-		cameraVel.x = speed;
-		besideVel = { -speed,-speed,0.0f };
-	}
-
-
 	if (input->InputTrigger(DIK_G))
 	{
 		emittNum = 2;
@@ -478,6 +309,18 @@ void Game::Input()
 
 void Game::Update()
 {
+	tutorial.handle = renderTarget->GetGameRenderTargetHandle();
+	if (tutorial.tutorialFlag)
+	{
+		tutorial.Update();
+		stages[0]->Update();
+		cursor.Update();
+		cameraWork.Update(cursor.GetValue(), &player.pos, cameraModeChangeFlag);
+		player.Update();
+		return;
+	}
+	stages[0]->startFlag = true;
+
 	for (int i = 0; i < lineStartPoly.size(); ++i)
 	{
 		lineStartPoly[i].data.pipelineName = PIPELINE_NAME_COLOR_MULTITEX;
@@ -498,120 +341,15 @@ void Game::Update()
 	{
 		if (cameraMoveArray[stageNum][i].flame <= gameFlame && cameraMoveArray[stageNum][i].flame != -1)
 		{
-			switch (cameraMoveArray[stageNum][i].dir)
-			{
-			case KazEnemyHelper::CAMERA_FRONT:
-				forceCameraDirVel.x = FORCE_CAMERA_FRONT;
-				break;
-			case KazEnemyHelper::CAMERA_BACK:
-				forceCameraDirVel.x = FORCE_CAMERA_BACK;
-				break;
-			case KazEnemyHelper::CAMERA_LEFT:
-				forceCameraDirVel.x = FORCE_CAMERA_LEFT;
-				break;
-			case KazEnemyHelper::CAMERA_RIGHT:
-				forceCameraDirVel.x = FORCE_CAMERA_RIGHT;
-				break;
-			default:
-				break;
-			}
+			cameraWork.ForceCamera(cameraMoveArray[stageNum][i].dir);
 		}
 	}
 
-	KazMath::Vec2<float> cursorValue = cursor.GetValue();
-	nowTargerPos += cameraVel;
-
-	upDownAngleVel =
-	{
-		mulValue.x * -cursorValue.y,
-		mulValue.y * -cursorValue.y
-	};
-	leftRightAngleVel =
-	{
-		forceCameraDirVel.x + mulValue2.x * -cursorValue.x,
-		forceCameraDirVel.x + mulValue2.y * -cursorValue.x
-	};
-
-
-#pragma region カメラ挙動
-
-	//左右の角度変更のイージング
-	{
-		KazMath::Vec2<float> distance = leftRightAngleVel - trackLeftRightAngleVel;
-		trackLeftRightAngleVel += distance * 0.1f;
-	}
-	//上下の角度変更のイージング
-	{
-		KazMath::Vec2<float> distance = upDownAngleVel - trackUpDownAngleVel;
-		trackUpDownAngleVel += distance * 0.1f;
-	}
-	//左右の回転
-	besidePoly->data.transform.pos =
-	{
-		cosf(KazMath::AngleToRadian(trackLeftRightAngleVel.x)) * r,
-		0.0f,
-		sinf(KazMath::AngleToRadian(trackLeftRightAngleVel.y)) * r
-	};
-	//上下の回転
-	verticlaPoly->data.transform.pos =
-	{
-		0.0f,
-		trackUpDownAngleVel.x,
-		0.0f,
-	};
-
-
-
-	{
-		float mul = 1.0f;
-		float limitValue = 3.0f;
-		//上下でプレイヤーのいる位置を変える
-		if (0.1f <= cursor.GetValue().y)
-		{
-			mul *= -1.0f;
-			limitValue = 2.5f;
-		}
-
-		//ポータル演出開始したらプレイヤーの動きを固定する
-		DirectX::XMFLOAT3 rate = { cursor.GetValue().x ,cursor.GetValue().y,0.0f };
-		honraiPlayerCameraPos.x = 0.0f + (2.0f * -rate.x);
-		honraiPlayerCameraPos.z = 0.0f + (limitValue * rate.y) * mul;
-
-		if (0.0f <= honraiPlayerCameraPos.z)
-		{
-			honraiPlayerCameraPos.z = 0.0f;
-		}
-		KazMath::Vec3<float> distance = honraiPlayerCameraPos - player.pos;
-		player.pos += distance * 0.1f;
-	}
-
-
-	//上下左右の回転
-	cameraPoly->data.transform.pos = centralPos + (besidePoly->data.transform.pos + verticlaPoly->data.transform.pos);
-
-
-
-	//ImGui::Begin("cameraChangeFlag");
-	//ImGui::Checkbox("GameCamera", &cameraChangeFlag);
-	//ImGui::End();
-
-
-
-	if (cameraChangeFlag)
-	{
-		eyePos = cameraPoly->data.transform.pos;
-		targetPos = baseTargetPos;
-	}
-	else
-	{
-		//デバック用
-		eyePos = KazMath::CaluEyePosForDebug(eyePos, debugCameraMove, angle, 0.1f);
-		targetPos = KazMath::CaluTargetPosForDebug(eyePos, angle.x);
-	}
-
+	cameraWork.Update(cursor.GetValue(), &player.pos, cameraModeChangeFlag);
+	eyePos = cameraWork.GetEyePos();
+	targetPos = cameraWork.GetTargetPos();
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 0);
-
-#pragma endregion
+	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 1);
 
 
 
@@ -626,13 +364,9 @@ void Game::Update()
 
 	changeStageFlag = false;
 
-
-	portal.CheckCameraPos(eyePos.z);
-	portal.portalTexHandle = potalTexHandle;
-	portal.Update();
-
+	portalEffect.Update(player.pos);
 	//全部隠れたら次ステージの描画をする
-	if (portal.AllHidden())
+	if (portalEffect.IsFinish())
 	{
 		//ゲームループの初期化----------------------------------------------
 		++gameStageLevel;
@@ -656,19 +390,25 @@ void Game::Update()
 
 		stageUI.Init();
 		stageUI.AnnounceStage(stageNum + 1);
+
+		portalEffect.Finalize();
 	}
 
 
-	if (goalBox.startPortalEffectFlag)
+	//ポータル演出開始
+	if (goalBox.startPortalEffectFlag && !portalEffect.IsStart())
 	{
-		portal.Start();
+		portalEffect.Init();
+		portalEffect.Start();
 	}
 
-	if (portal.Reset())
+	//入った後の初期化
+	if (portalEffect.disappearFlag)
 	{
-		portal.Init(KazMath::Vec3<float>(0.0f, 3.0f, 50.0f));
+		//portal.Init(KazMath::Vec3<float>(0.0f, 3.0f, 50.0f));
 		goalBox.startPortalEffectFlag = false;
 	}
+
 
 
 #pragma region 生成処理
@@ -759,6 +499,8 @@ void Game::Update()
 					//敵が当たった情報を書く
 					enemies[enemyType][enemyCount]->Hit();
 
+					stringLog.WriteLog(enemies[enemyType][enemyCount]->GetData()->oprationObjData->name, LOG_FONT_SIZE);
+
 					//線演出をかける際にどの配列を使用するか決める
 					for (int i = 0; i < lineEffectArrayData.size(); ++i)
 					{
@@ -809,28 +551,6 @@ void Game::Update()
 		}
 	}
 
-	{
-		//ロックオン判定
-		bool enableToLockOnNumFlag = cursor.LockOn();
-		bool enableToLockOnEnemyFlag = doneSprite.IsAlive() && !doneSprite.LockedOrNot();
-		bool hitFlag = CollisionManager::Instance()->CheckRayAndSphere(cursor.hitBox, doneSprite.hitBox);
-		if (hitFlag &&
-			enableToLockOnEnemyFlag &&
-			enableToLockOnNumFlag && !startFlag)
-		{
-			doneSprite.Hit();
-			SoundManager::Instance()->PlaySoundMem(doneSoundHandle, 1);
-			startFlag = true;
-		}
-		else if (hitFlag)
-		{
-			doneSprite.selectingFlag = true;
-		}
-		else
-		{
-			doneSprite.selectingFlag = false;
-		}
-	}
 #pragma endregion
 
 
@@ -910,7 +630,7 @@ void Game::Update()
 
 
 
-#pragma region 線のロックオン解放
+#pragma region 線のロックオン解放<
 
 	//線がたどり着いたら敵を死亡させる
 	for (int i = 0; i < lineEffectArrayData.size(); ++i)
@@ -922,48 +642,51 @@ void Game::Update()
 			int enemyIndex = lineEffectArrayData[i].enemyIndex;
 			int eventIndex = lineEffectArrayData[i].eventType;
 
-			if (eventIndex == -1)
+			if (eventIndex != -1)
 			{
-				//演出を合わせてダメージと死亡をやる
-				if (lineLevel[lineIndex].lineReachObjFlag && !lineLevel[lineIndex].alreadyReachedFlag && enemies[enemyTypeIndex][enemyIndex]->IsAlive())
-				{
-					SoundManager::Instance()->PlaySoundMem(damageSoundHandle, 1);
-					lineLevel[lineIndex].alreadyReachedFlag = true;
-				}
-				else if (lineLevel[lineIndex].lineReachObjFlag && !enemies[enemyTypeIndex][enemyIndex]->IsAlive() && !lineEffectArrayData[i].hitFlag)
-				{
-					enemies[enemyTypeIndex][enemyIndex]->Dead();
-					lineEffectArrayData[i].hitFlag = true;
-					//lineEffectArrayData[i].Reset();
-					//lineLevel[lineIndex].lineReachObjFlag = false;
+				break;
+			}
 
-					//ヒット時の円演出
-					for (int hitEffectIndex = 0; hitEffectIndex < hitEffect.size(); ++hitEffectIndex)
-					{
-						if (!hitEffect[hitEffectIndex].IsAlive())
-						{
-							hitEffect[hitEffectIndex].Start(*enemies[enemyTypeIndex][enemyIndex]->GetData()->hitBox.center);
-							break;
-						}
-					}
+			//演出を合わせてダメージと死亡をやる
+			if (lineLevel[lineIndex].lineReachObjFlag && !lineLevel[lineIndex].alreadyReachedFlag && enemies[enemyTypeIndex][enemyIndex]->IsAlive())
+			{
+				SoundManager::Instance()->PlaySoundMem(damageSoundHandle, 1);
+				lineLevel[lineIndex].alreadyReachedFlag = true;
+			}
+			else if (lineLevel[lineIndex].lineReachObjFlag && !enemies[enemyTypeIndex][enemyIndex]->IsAlive() && !lineEffectArrayData[i].hitFlag)
+			{
+				enemies[enemyTypeIndex][enemyIndex]->Dead();
+				lineEffectArrayData[i].hitFlag = true;
+				//lineEffectArrayData[i].Reset();
+				//lineLevel[lineIndex].lineReachObjFlag = false;
 
-					//死亡時の煙演出
-					int lEmitterType = KazMath::Rand<int>(3, 0);
-					for (int stackIndex = 0; stackIndex < deadEffectEmitter[lEmitterType].size(); ++stackIndex)
+				//ヒット時の円演出
+				for (int hitEffectIndex = 0; hitEffectIndex < hitEffect.size(); ++hitEffectIndex)
+				{
+					if (!hitEffect[hitEffectIndex].IsAlive())
 					{
-						if (!deadEffectEmitter[lEmitterType][stackIndex]->IsActive())
-						{
-							KazMath::Vec3<float>screenPos =
-								KazMath::ConvertWorldPosToScreenPos(*enemies[enemyTypeIndex][enemyIndex]->GetData()->hitBox.center, CameraMgr::Instance()->GetViewMatrix(0), CameraMgr::Instance()->GetPerspectiveMatProjection());
-							//敵が画面外に出た際に画面横からウィンドウが出ないように変換後のz値が1.0以上は描画しない
-							if (screenPos.z <= 1.0f)
-							{
-								deadEffectEmitter[lEmitterType][stackIndex]->Init(KazMath::Vec2<float>(screenPos.x, screenPos.y));
-							}
-							break;
-						}
+						hitEffect[hitEffectIndex].Start(*enemies[enemyTypeIndex][enemyIndex]->GetData()->hitBox.center);
+						break;
 					}
 				}
+
+				//死亡時の煙演出
+				int lEmitterType = KazMath::Rand<int>(3, 0);
+				for (int stackIndex = 0; stackIndex < deadEffectEmitter[lEmitterType].size(); ++stackIndex)
+				{
+					if (!deadEffectEmitter[lEmitterType][stackIndex]->IsActive())
+					{
+						KazMath::Vec3<float>screenPos =
+							KazMath::ConvertWorldPosToScreenPos(*enemies[enemyTypeIndex][enemyIndex]->GetData()->hitBox.center, CameraMgr::Instance()->GetViewMatrix(0), CameraMgr::Instance()->GetPerspectiveMatProjection());
+						//敵が画面外に出た際に画面横からウィンドウが出ないように変換後のz値が1.0以上は描画しない
+						if (screenPos.z <= 1.0f)
+						{
+							deadEffectEmitter[lEmitterType][stackIndex]->Init(KazMath::Vec2<float>(screenPos.x, screenPos.y));
+						}
+						break;
+					}
+				}
+
 			}
 		}
 	}
@@ -979,6 +702,12 @@ void Game::Update()
 				lineEffectArrayData[i].Reset();
 			}
 		}
+	}
+
+	if (cursor.Release() && cursor.GetCount() != 0)
+	{
+		const std::string lLog("Fire_[" + std::to_string(cursor.GetCount()) + "x]");
+		stringLog.WriteLog(lLog, LOG_FONT_SIZE);
 	}
 
 #pragma endregion
@@ -1077,7 +806,6 @@ void Game::Update()
 		goalBox.Update();
 		stageUI.Update();
 		stages[stageNum]->Update();
-		doneSprite.Update();
 		tutorialWindow.Update();
 
 		for (int i = 0; i < hitEffect.size(); ++i)
@@ -1089,7 +817,7 @@ void Game::Update()
 		//配列外を超えない処理
 		if (stageNum + 1 < stages.size())
 		{
-			stages[stageNum + 1]->Update();
+			//	stages[stageNum + 1]->Update();
 		}
 		//ロックオンのリリース処理
 		if (cursor.releaseFlag)
@@ -1167,7 +895,6 @@ void Game::Update()
 				{
 					isEnemyNotMoveFlag = false;
 				}
-
 			}
 		}
 		//更新処理----------------------------------------------------------------
@@ -1198,34 +925,15 @@ void Game::Update()
 	}
 
 
-
-	titleT += 1.0f;
-	titleLogoTex.data.transform.pos.y = baseTitlePosY + sinf(KazMath::PI_2F / 120 * titleT) * 25.0f;
-
-
-	++rateIntervalTimer;
-	const int lIntervalTimer = KazMath::ConvertSecondToFlame(3);
-	if (lIntervalTimer <= rateIntervalTimer)
-	{
-		inOutRotaRateT = 0.0f;
-		rateIntervalTimer = 0;
-	}
-	Rate(&inOutRotaRateT, 0.01f, 1.0f);
-	titleLogoTex.data.transform.rotation.x = EasingMaker(InOut, Circ, inOutRotaRateT) * 360.0f;
-
-
-
 	//ゲームループの経過時間----------------------------------------------------------------
-	titleLogoTex.data.colorData = doneSprite.spriteRender.data.colorData;
-	if (titleLogoTex.data.colorData.color.a <= 0 && !stages[0]->startFlag)
+
+	//ゲーム開始
+	if (!tutorial.tutorialFlag && !gameStartFlag)
 	{
-		//ゲーム開始
-		gameStartFlag = true;
 		//ステージ番号知らせる
 		stageUI.Init();
 		stageUI.AnnounceStage(stageNum + 1);
-		//ゲーム開始
-		stages[0]->startFlag = true;
+		gameStartFlag = true;
 	}
 
 
@@ -1260,26 +968,34 @@ void Game::Update()
 	}
 
 	//ゲームループの経過時間----------------------------------------------------------------
+	if (meshEmitter->resetSceneFlag)
+	{
+		int lNum = meshEmitter->enemyIndex;
+		meshEmitter.reset();
+		meshEmitter = std::make_unique<MeshParticleEmitter>(lNum);
+	}
 
+	meshEmitter->Update();
 }
 
 void Game::Draw()
 {
-	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
-	RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
+	if (tutorial.tutorialFlag)
+	{
+		tutorial.Draw();
+	}
+	else
+	{
+		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
+		RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
+	}
+	//中間演出の描画
+	portalEffect.Draw();
 
-	//ポータル演出
-	if (goalBox.startPortalEffectFlag)
+	//次のポータルの描画
+	if (portalEffect.DrawNextPortal())
 	{
 		int lStageNum = stageNum + 1;
-		if (portal.DrawPrevStageFlag())
-		{
-			lStageNum = stageNum - 1;
-			if (lStageNum < 0)
-			{
-				lStageNum = 0;
-			}
-		}
 		if (lStageNum < 0)
 		{
 			lStageNum = 1;
@@ -1288,29 +1004,22 @@ void Game::Draw()
 		{
 			lStageNum = static_cast<int>(stages.size() - 1);
 		}
-		RenderTargetStatus::Instance()->PrepareToChangeBarrier(potalTexHandle);
-		RenderTargetStatus::Instance()->ClearRenderTarget(potalTexHandle);
 
+		nextRenderTarget->SetRenderTarget();
 		CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 1);
 		player.Draw();
 		stages[lStageNum]->SetCamera(1);
 		stages[lStageNum]->Draw();
-		RenderTargetStatus::Instance()->PrepareToCloseBarrier(potalTexHandle);
-		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
+		nextRenderTarget->Draw();
 	}
-
 
 	if (!gameOverFlag)
 	{
-		RenderTargetStatus::Instance()->PrepareToChangeBarrier(handles[0]);
-		RenderTargetStatus::Instance()->ClearRenderTarget(handles[0]);
+		renderTarget->SetRenderTarget();
 		if (lineDebugFlag)
 		{
 			bg.Draw();
 		}
-
-		box.data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
-		//box.Draw();
 
 
 		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
@@ -1323,9 +1032,6 @@ void Game::Draw()
 		stages[stageNum]->Draw();
 
 		player.Draw();
-
-		portal.DrawPortal();
-		portal.DrawFlame();
 
 
 		PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "Enemy");
@@ -1385,47 +1091,46 @@ void Game::Draw()
 		}
 
 
-
-		if (0 < titleLogoTex.data.colorData.color.a)
+		//次ポータルの描画
+		if (portalEffect.DrawNextPortal())
 		{
-			doneSprite.Draw();
-			titleLogoTex.Draw();
-			tutorialWindow.Draw();
+			portalEffect.nextPortalRender.data.handleData = nextRenderTarget->GetGameRenderTargetHandle();
+			portalEffect.nextPortalRender.Draw();
+		}
+		//中間演出までのポータル
+		if (portalEffect.IsStart() && !portalEffect.IsFinish())
+		{
+			portalEffect.portalRender.Draw();
 		}
 
-		RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, handles[0]);
-		RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
-		//輝度抽出
-		luminaceTex.Draw();
-		RenderTargetStatus::Instance()->PrepareToCloseBarrier(addHandle);
-		RenderTargetStatus::Instance()->SetDoubleBufferFlame();
-		//ゲーム画面描画
 
-		mainRenderTarget.Draw();
-
-		addRenderTarget.data.handleData = addHandle;
-		addRenderTarget.data.addHandle.handle[0] = buler[0]->BlurImage(addHandle);
-		addRenderTarget.data.addHandle.handle[1] = buler[1]->BlurImage(addRenderTarget.data.addHandle.handle[0]);
-		addRenderTarget.data.addHandle.handle[2] = buler[2]->BlurImage(addRenderTarget.data.addHandle.handle[1]);
-		addRenderTarget.data.addHandle.handle[3] = buler[3]->BlurImage(addRenderTarget.data.addHandle.handle[2]);
-
-		PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "AddRenderTarget");
-		addRenderTarget.Draw();
-		PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
+		renderTarget->Draw();
 
 
-		emitters[emittNum]->Draw();
-		for (int emitterTypeIndex = 0; emitterTypeIndex < deadEffectEmitter.size(); ++emitterTypeIndex)
+		//現在の描画
+		mainRenderTarget.data.handleData = renderTarget->GetGameRenderTargetHandle();
+
+		//チュートリアル用の描画
+		if (tutorial.tutorialFlag)
 		{
-			for (int stackIndex = 0; stackIndex < deadEffectEmitter[emitterTypeIndex].size(); ++stackIndex)
-			{
-				deadEffectEmitter[emitterTypeIndex][stackIndex]->Draw();
-			}
+			mainRenderTarget.data.handleData = tutorial.mainRenderTarget.data.handleData;
+		}
+		//中間演出の描画
+		if (portalEffect.disappearFlag || portalEffect.DrawNextPortal())
+		{
+			mainRenderTarget.data.handleData = portalEffect.renderTarget->GetGameRenderTargetHandle();
 		}
 
-		cursor.Draw();
+
 
 		stringLog.Draw();
+		stageUI.Draw();
+		mainRenderTarget.Draw();
+
+		if (!tutorial.tutorialFlag)
+		{
+			cursor.Draw();
+		}
 	}
 	else
 	{
@@ -1436,10 +1141,7 @@ void Game::Draw()
 		}
 	}
 
-	stageUI.Draw();
-
-	blackTex.Draw();
-
+	//blackTex.Draw();
 
 }
 

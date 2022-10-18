@@ -4,8 +4,6 @@ BoxPolygonRender::BoxPolygonRender(bool INSTANCE_FLAG, int INSTANCE_NUM)
 {
 	gpuBuffer = std::make_unique<CreateGpuBuffer>();
 
-	int a = INSTANCE_NUM;
-	a = 0;
 	const float lSize = 1.0f;
 
 	Vertex lVertices[] =
@@ -57,11 +55,11 @@ BoxPolygonRender::BoxPolygonRender(bool INSTANCE_FLAG, int INSTANCE_NUM)
 		4,6,5,		//三角形3つ目
 		6,7,5,		//三角形4つ目
 		//左
-		8,9,10,	//三角形1つ目
+		8,9,10,		//三角形1つ目
 		10,9,11,	//三角形2つ目
 		//右
 		12,14,13,	//三角形1つ目
-		13,14,15,//三角形2つ目
+		13,14,15,	//三角形2つ目
 		//下
 		16,18,17,	//三角形1つ目
 		17,18,19,	//三角形2つ目

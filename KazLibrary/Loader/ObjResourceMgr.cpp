@@ -42,7 +42,8 @@ RESOURCE_HANDLE ObjResourceMgr::LoadModel(std::string RESOURCE)
 
 	vector<Vertex> vert;
 	vector<USHORT> indi;
-	vector<DirectX::XMFLOAT3>positions;
+	vector<UINT> indiKeepData;
+	vector<DirectX::XMFLOAT4>positions;
 	vector<DirectX::XMFLOAT3>normals;
 	vector<DirectX::XMFLOAT2>texcoords;
 
@@ -75,7 +76,7 @@ RESOURCE_HANDLE ObjResourceMgr::LoadModel(std::string RESOURCE)
 
 		if (key == "v") {
 			//XYZ読み込み
-			DirectX::XMFLOAT3 position{};
+			DirectX::XMFLOAT4 position{};
 			line_stream >> position.x;
 			line_stream >> position.y;
 			line_stream >> position.z;
@@ -103,10 +104,11 @@ RESOURCE_HANDLE ObjResourceMgr::LoadModel(std::string RESOURCE)
 				一点につき頂点座標/テクスチャ座標/法線ベクトル
 				*/
 				vert.push_back({});
-				vert[vert.size() - 1].pos = positions[indexPos - 1];
+				vert[vert.size() - 1].pos = { positions[indexPos - 1].x,positions[indexPos - 1].y,positions[indexPos - 1].z };
 				vert[vert.size() - 1].uv = texcoords[indexTexcoord - 1];
 				vert[vert.size() - 1].normal = normals[indexNormal - 1];
 
+				vert[vert.size() - 1].uv.y = 1.0f - vert[vert.size() - 1].uv.y;
 
 
 				// インデックスデータの追加
@@ -116,10 +118,15 @@ RESOURCE_HANDLE ObjResourceMgr::LoadModel(std::string RESOURCE)
 					indi.emplace_back(static_cast<USHORT>(indexCountNum - 1));
 					indi.emplace_back(static_cast<USHORT>(indexCountNum));
 					indi.emplace_back(static_cast<USHORT>(indexCountNum - 3));
+
+					indiKeepData.emplace_back(static_cast<UINT>(indexCountNum - 1));
+					indiKeepData.emplace_back(static_cast<UINT>(indexCountNum));
+					indiKeepData.emplace_back(static_cast<UINT>(indexCountNum - 3));
 				}
 				else
 				{
 					indi.emplace_back(static_cast<USHORT>(indexCountNum));
+					indiKeepData.emplace_back(static_cast<UINT>(indexCountNum));
 				}
 
 
@@ -220,9 +227,10 @@ RESOURCE_HANDLE ObjResourceMgr::LoadModel(std::string RESOURCE)
 	resource[setHandle].indexBufferView = KazBufferHelper::SetIndexBufferView(modelDataBuffers->GetGpuAddress(indexHandle), indexByte);
 	//頂点バッファビューとインデックスバッファビューの設定---------------------------------------
 
+
 	resource[setHandle].indexNum = static_cast<UINT>(indi.size());
-
-
+	resource[setHandle].vertices = positions;
+	resource[setHandle].index = indiKeepData;
 
 	return setHandle;
 }

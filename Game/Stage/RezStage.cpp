@@ -11,10 +11,20 @@ RezStage::RezStage()
 	lineDrawHandle = poly->CreateConstBuffer(sizeof(MatData) * 500, "MatData", GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DRAW);
 
 
-	gridRender[0].Init(true, 300.0f, -150.0f, &cameraIndex);
-	gridRender[1].Init(true, 300.0f, 3000.0f, &cameraIndex);
-	gridRender[2].Init(false, 300.0f, -3000.0f, &cameraIndex);
-	gridRender[3].Init(false, 300.0f, 3000.0f, &cameraIndex);
+	for (int i = 0; i < gridRender.size(); ++i)
+	{
+		gridRender[i] = std::make_unique<DrawGrid>(KazMath::Color(29, 19, 72, 255));
+	}
+
+	KazMath::Color lBaseColor(115, 85, 140, 255);
+	KazMath::Color lFlashColor(213, 5, 228, 255);
+	std::array<KazMath::Color, 2>lFlashColorArray = { lBaseColor,lFlashColor };
+
+
+	gridRender[0]->Init(true, 300.0f, -150.0f, &cameraIndex, true, false, lFlashColorArray);
+	gridRender[1]->Init(true, 300.0f, 3000.0f, &cameraIndex, true, false, lFlashColorArray);
+	gridRender[2]->Init(false, 300.0f, -3000.0f, &cameraIndex, true, false, lFlashColorArray);
+	gridRender[3]->Init(false, 300.0f, 3000.0f, &cameraIndex, true, false, lFlashColorArray);
 
 
 	for (int i = 0; i < filePassNum.size(); ++i)
@@ -72,7 +82,7 @@ void RezStage::Update()
 {
 	for (int i = 0; i < gridRender.size(); ++i)
 	{
-		gridRender[i].Update();
+		gridRender[i]->Update(-1.0f, false);
 	}
 
 	for (int i = 0; i < floorObjectRender.size(); ++i)
@@ -99,6 +109,6 @@ void RezStage::Draw()
 
 	for (int i = 0; i < gridRender.size(); ++i)
 	{
-		gridRender[i].Draw();
+		gridRender[i]->Draw();
 	}
 }

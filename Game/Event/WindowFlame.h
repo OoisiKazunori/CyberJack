@@ -25,12 +25,14 @@ public:
 	void End();
 
 	bool IsEnd();
+	bool ReadyToWrite();
 
 	KazMath::Vec3<float> basePos;
 private:
 	bool startFlag;				//アナウンスを開始します
 	bool endFlag;
 	bool drawFlag;
+	bool readyToWriteFlag;
 	int stageNum;				//現在のステージ番号を表示します
 
 	KazMath::Vec3<float> larpScale;

@@ -131,6 +131,16 @@
     <ClCompile Include="Game\UI\DamageTextWindow.cpp" />
     <ClCompile Include="Game\UI\Letter.cpp" />
     <ClCompile Include="Game\UI\AttackLog.cpp" />
+    <ClCompile Include="Game\UI\DrawMenu.cpp" />
+    <ClCompile Include="KazLibrary\Scene\TutorialScene.cpp" />
+    <ClCompile Include="Game\Helper\CameraWork.cpp" />
+    <ClCompile Include="Game\Enemy\TutorialBlock.cpp" />
+    <ClCompile Include="Game\Event\TutorialGame.cpp" />
+    <ClCompile Include="Game\Effect\PortalIntermediateDirection.cpp" />
+    <ClCompile Include="Game\GameRenderTarget.cpp" />
+    <ClCompile Include="Game\Tutorial.cpp" />
+    <ClCompile Include="Game\Effect\MeshParticleEmitter.cpp" />
+    <ClCompile Include="KazLibrary\Buffer\UavViewHandleMgr.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -276,6 +286,16 @@
     <ClInclude Include="KazLibrary\dxcapi.h" />
     <ClInclude Include="Game\UI\Letter.h" />
     <ClInclude Include="Game\UI\AttackLog.h" />
+    <ClInclude Include="Game\UI\DrawMenu.h" />
+    <ClInclude Include="KazLibrary\Scene\TutorialScene.h" />
+    <ClInclude Include="Game\Helper\CameraWork.h" />
+    <ClInclude Include="Game\Event\TutorialGame.h" />
+    <ClInclude Include="Game\Enemy\TutorialBlock.h" />
+    <ClInclude Include="Game\Effect\PortalIntermediateDirection.h" />
+    <ClInclude Include="Game\GameRenderTarget.h" />
+    <ClInclude Include="Game\Tutorial.h" />
+    <ClInclude Include="Game\Effect\MeshParticleEmitter.h" />
+    <ClInclude Include="KazLibrary\Buffer\UavViewHandleMgr.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

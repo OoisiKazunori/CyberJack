@@ -4,7 +4,7 @@ const float PlayerDamegePartice::SPEED = 0.8f;
 
 PlayerDamegePartice::PlayerDamegePartice()
 {
-	line.data.color = { 255,255,255,255 };
+	line.data.colorData = { 255,255,255,255 };
 }
 
 void PlayerDamegePartice::Init(const KazMath::Vec3<float> &POS, int ANGLE)
@@ -18,7 +18,7 @@ void PlayerDamegePartice::Init(const KazMath::Vec3<float> &POS, int ANGLE)
 
 	line.data.startPos += { KazMath::Rand<float>(lLength,-lLength),KazMath::Rand<float>(lLength,-lLength),KazMath::Rand<float>(lLength,-lLength) };
 	line.data.endPos += { KazMath::Rand<float>(lLength,-lLength),KazMath::Rand<float>(lLength,-lLength),KazMath::Rand<float>(lLength,-lLength) };
-	line.data.color.color.a = 255;
+	line.data.colorData.color.a = 255;
 }
 
 void PlayerDamegePartice::Update()
@@ -26,10 +26,10 @@ void PlayerDamegePartice::Update()
 	line.data.startPos += vel;
 	line.data.endPos += vel;
 
-	line.data.color.color.a -= 5;
-	if (line.data.color.color.a <= 0)
+	line.data.colorData.color.a -= 5;
+	if (line.data.colorData.color.a <= 0)
 	{
-		line.data.color.color.a = 0;
+		line.data.colorData.color.a = 0;
 	}
 
 	KazMath::Larp(0.0f, &vel.x, 0.1f);
@@ -38,7 +38,7 @@ void PlayerDamegePartice::Update()
 
 void PlayerDamegePartice::Draw()
 {
-	if (0 < line.data.color.color.a)
+	if (0 < line.data.colorData.color.a)
 	{
 		line.Draw();
 	}

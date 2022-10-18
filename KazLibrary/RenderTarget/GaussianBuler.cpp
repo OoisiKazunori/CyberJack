@@ -87,7 +87,6 @@ RESOURCE_HANDLE GaussianBuler::BlurImage(RESOURCE_HANDLE TEXTURE_HANDLE, RESOURC
 	else
 	{
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(CURRENT_RENDERTARGET_HANDLE, renderTargetBlurSideHandle);
-		RenderTargetStatus::Instance()->ClearRenderTarget(CURRENT_RENDERTARGET_HANDLE);
 	}
 
 	CD3DX12_RECT Rect(0, 0, static_cast<long>(WIN_X), static_cast<long>(WIN_Y));

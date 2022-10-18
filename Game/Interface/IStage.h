@@ -28,6 +28,7 @@ public:
 	Sprite3DRender vaporWaveSunRender;
 protected:
 	int cameraIndex = 0;
+	float objectSpeed;
 
 private:
 	std::array<std::unique_ptr<PolygonRender>, 4>backGround;

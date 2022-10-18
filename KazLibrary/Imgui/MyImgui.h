@@ -6,7 +6,12 @@
 #include"imgui_impl_win32.h"
 #include"imgui_impl_dx12.h"
 #include"imgui_internal.h"
+#include"imstb_rectpack.h"
+#include"imstb_textedit.h"
+#include"imstb_truetype.h"
+#include"imconfig.h"
 #pragma warning(pop)
+#include"../KazLibrary/Math/KazMath.h"
 
 /// <summary>
 /// ImGuiの為のデスクリプタヒープの生成とImGUiの初期化を行います
@@ -44,3 +49,81 @@ private:
 
 };
 
+
+namespace KazImGuiHelper
+{
+	inline void InputTransform3D(const std::string &NAME, KazMath::Transform3D *TRANSFORM)
+	{
+		static std::string lLabel = "";
+		lLabel = NAME + "_PosX";
+		ImGui::DragFloat(lLabel.c_str(), &TRANSFORM->pos.x);
+		lLabel = NAME + "_PosY";
+		ImGui::DragFloat(lLabel.c_str(), &TRANSFORM->pos.y);
+		lLabel = NAME + "_PosZ";
+		ImGui::DragFloat(lLabel.c_str(), &TRANSFORM->pos.z);
+
+		lLabel = NAME + "_ScaleX";
+		ImGui::DragFloat(lLabel.c_str(), &TRANSFORM->scale.x);
+		lLabel = NAME + "_ScaleY";
+		ImGui::DragFloat(lLabel.c_str(), &TRANSFORM->scale.y);
+		lLabel = NAME + "_ScaleZ";
+		ImGui::DragFloat(lLabel.c_str(), &TRANSFORM->scale.z);
+
+		lLabel = NAME + "_RotationX";
+		ImGui::DragFloat(lLabel.c_str(), &TRANSFORM->rotation.x);
+		lLabel = NAME + "_RotationY";
+		ImGui::DragFloat(lLabel.c_str(), &TRANSFORM->rotation.y);
+		lLabel = NAME + "_RotationZ";
+		ImGui::DragFloat(lLabel.c_str(), &TRANSFORM->rotation.z);
+	};
+
+	inline void InputTransform2D(const std::string &NAME, KazMath::Transform2D *TRANSFORM)
+	{
+		static std::string lLabel = "";
+		lLabel = NAME + "_PosX";
+		ImGui::DragFloat(lLabel.c_str(), &TRANSFORM->pos.x);
+		lLabel = NAME + "_PosY";
+		ImGui::DragFloat(lLabel.c_str(), &TRANSFORM->pos.y);
+
+		lLabel = NAME + "_ScaleX";
+		ImGui::DragFloat(lLabel.c_str(), &TRANSFORM->scale.x);
+		lLabel = NAME + "_ScaleY";
+		ImGui::DragFloat(lLabel.c_str(), &TRANSFORM->scale.y);
+
+		lLabel = NAME + "_Rotation";
+		ImGui::DragFloat(lLabel.c_str(), &TRANSFORM->rotation);
+	};
+
+	inline void InputVec4(const std::string &LABEL, KazMath::Vec4<int> *VEC_4)
+	{
+		static std::string label = "";
+		label = LABEL + "X";
+		ImGui::InputInt(label.c_str(), &VEC_4->x);
+		label = LABEL + "Y";
+		ImGui::InputInt(label.c_str(), &VEC_4->y);
+		label = LABEL + "Z";
+		ImGui::InputInt(label.c_str(), &VEC_4->z);
+		label = LABEL + "W";
+		ImGui::InputInt(label.c_str(), &VEC_4->a);
+	};
+
+	inline void InputVec3(const std::string &LABEL, KazMath::Vec3<float> *VEC_3)
+	{
+		static std::string lLabel = "";
+		lLabel = LABEL + "X";
+		ImGui::DragFloat(lLabel.c_str(), &VEC_3->x);
+		lLabel = LABEL + "Y";
+		ImGui::DragFloat(lLabel.c_str(), &VEC_3->y);
+		lLabel = LABEL + "Z";
+		ImGui::DragFloat(lLabel.c_str(), &VEC_3->z);
+	};
+
+	inline void InputVec2(const std::string &LABEL, KazMath::Vec2<float> *VEC_2)
+	{
+		static std::string lLabel = "";
+		lLabel = LABEL + "X";
+		ImGui::DragFloat(lLabel.c_str(), &VEC_2->x);
+		lLabel = LABEL + "Y";
+		ImGui::DragFloat(lLabel.c_str(), &VEC_2->y);
+	};
+};

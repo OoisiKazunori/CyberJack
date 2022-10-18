@@ -32,27 +32,29 @@ void FbxModelRender::Draw()
 
 	if (data.handle.handle != -1)
 	{
-		if (data.isPlayFlag)
+		if (resourceData->startTime.size() != 0)
 		{
-			currentTime += frameTime;
-			if (currentTime > resourceData->endTime[data.animationNumber])
+			if (data.isPlayFlag)
+			{
+				currentTime += frameTime;
+				if (currentTime > resourceData->endTime[data.animationNumber])
+				{
+					currentTime = resourceData->endTime[data.animationNumber];
+				}
+			}
+			else if (data.isReverseFlag)
+			{
+				currentTime -= frameTime;
+				if (currentTime <= resourceData->startTime[data.animationNumber])
+				{
+					currentTime = resourceData->startTime[data.animationNumber];
+				}
+			}
+			else
 			{
 				currentTime = resourceData->startTime[data.animationNumber];
 			}
 		}
-		else if (data.isReverseFlag)
-		{
-			currentTime -= frameTime;
-			if (currentTime <= resourceData->startTime[data.animationNumber])
-			{
-				currentTime = resourceData->startTime[data.animationNumber];
-			}
-		}
-		else
-		{
-			currentTime = resourceData->startTime[data.animationNumber];
-		}
-
 
 		//パイプライン設定-----------------------------------------------------------------------------------------------------
 		renderData.pipelineMgr->SetPipeLineAndRootSignature(data.pipelineName);
@@ -94,7 +96,7 @@ void FbxModelRender::Draw()
 		}
 
 
-		if(data.isPlayFlag)
+		if (data.isPlayFlag || data.isReverseFlag)
 		{
 			ConstBufferDataSkin *lConstMap = nullptr;
 			gpuBuffer->GetBufferData(constBufferHandle[1])->Map(0, nullptr, (void **)&lConstMap);
@@ -127,20 +129,47 @@ void FbxModelRender::Draw()
 			}
 			gpuBuffer->GetBufferData(constBufferHandle[1])->Unmap(0, nullptr);
 		}
-
-
-		SetConstBufferOnCmdList(data.pipelineName);
-
-		for (int i = 0; i < resourceData->textureHandle.size(); i++)
+		else if(resourceData->bone.size() != 0)
 		{
-			if (resourceData->textureHandle[i] != -1)
+			ConstBufferDataSkin *lConstMap = nullptr;
+			gpuBuffer->GetBufferData(constBufferHandle[1])->Map(0, nullptr, (void **)&lConstMap);
+			/*
+			for (int i = 0; i < resourceData->bone.size(); i++)
 			{
-				D3D12_GPU_DESCRIPTOR_HANDLE lGpuDescHandleSRV = DescriptorHeapMgr::Instance()->GetGpuDescriptorView(resourceData->textureHandle[i]);
-				int lParam = KazRenderHelper::SetBufferOnCmdList(GraphicsRootSignature::Instance()->GetRootParam(renderData.pipelineMgr->GetRootSignatureName(data.pipelineName)), GRAPHICS_RANGE_TYPE_SRV, GRAPHICS_PRAMTYPE_TEX);
-				renderData.cmdListInstance->cmdList->SetGraphicsRootDescriptorTable(lParam, lGpuDescHandleSRV);
+				DirectX::XMMATRIX lMatCurrentPose;
+				FbxAMatrix lFbxCurrentPose = resourceData->bone[i].fbxSkin->GetCluster(i)->GetLink()->EvaluateGlobalTransform(currentTime);
+				KazMath::ConvertMatrixFromFbx(&lMatCurrentPose, lFbxCurrentPose);
+				if (resourceData->startTime.size() == 0)
+				{
+					lConstMap->bones[i] = DirectX::XMMatrixIdentity();
+				}
+				else
+				{
+					lConstMap->bones[i] = resourceData->bone[i].invInitialPose * lMatCurrentPose;
+				}
+			}*/
+			for (int i = 0; i < MAX_BONES; i++)
+			{
+				lConstMap->bones[i] = DirectX::XMMatrixIdentity();
+			}
+			gpuBuffer->GetBufferData(constBufferHandle[1])->Unmap(0, nullptr);
+		}
+
+
+		SetConstBufferOnCmdList(data.pipelineName, data.removeMaterialFlag);
+
+		if (!data.removeMaterialFlag)
+		{
+			for (int i = 0; i < resourceData->textureHandle.size(); i++)
+			{
+				if (resourceData->textureHandle[i] != -1)
+				{
+					D3D12_GPU_DESCRIPTOR_HANDLE lGpuDescHandleSRV = DescriptorHeapMgr::Instance()->GetGpuDescriptorView(resourceData->textureHandle[i]);
+					int lParam = KazRenderHelper::SetBufferOnCmdList(GraphicsRootSignature::Instance()->GetRootParam(renderData.pipelineMgr->GetRootSignatureName(data.pipelineName)), GRAPHICS_RANGE_TYPE_SRV, GRAPHICS_PRAMTYPE_TEX);
+					renderData.cmdListInstance->cmdList->SetGraphicsRootDescriptorTable(lParam, lGpuDescHandleSRV);
+				}
 			}
 		}
-	
 
 		//DrawIndexInstanceCommand(drawIndexInstanceCommandData);
 		DrawInstanceCommand(drawInstanceCommandData);

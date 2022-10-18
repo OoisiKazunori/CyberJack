@@ -11,6 +11,8 @@
 #include"../Game/Enemy/SplineMisileForBikeEnemy.h"
 #include"../Game/Enemy/SummonEnemy.h"
 #include"../Game/Enemy/PopEnemy.h"
+#include"../Game/UI/Cursor.h"
+#include"../Game/UI/AttackLog.h"
 
 
 namespace KazEnemyHelper
@@ -39,6 +41,8 @@ namespace KazEnemyHelper
 		int GAME_STAGE_LEVEL,
 		bool DEMO_FLAG = false
 	);
+
+	bool LockOn(Cursor *CURSOR, const std::unique_ptr<IEnemy> &ENEMY, AttackLog *LOG, float FONT_SIZE, RESOURCE_HANDLE LOCKON_SOUND);
 
 	enum CameraDir
 	{

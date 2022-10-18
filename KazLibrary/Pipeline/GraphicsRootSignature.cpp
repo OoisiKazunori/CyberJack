@@ -139,6 +139,22 @@ void GraphicsRootSignature::CreateRootSignature(RootSignatureMode ROOTSIGNATURE,
 	
 		CreateMyRootSignature(ROOTSIGNATURE_DATA.sample, computeRootParameters.data(), computeRootParameters.size(), ROOTSIGNATURE);
 	}
+	else if (ROOTSIGNATURE == ROOTSIGNATURE_DATA_UAB_UAB_UAB_CB)
+	{
+		std::array<CD3DX12_ROOT_PARAMETER, 5> computeRootParameters;
+		std::array <CD3DX12_DESCRIPTOR_RANGE, 4> ranges{};
+		ranges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0);
+		ranges[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 1);
+		ranges[2].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 2);
+		ranges[3].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 3);
+		computeRootParameters[0].InitAsDescriptorTable(1, &ranges[0]);
+		computeRootParameters[1].InitAsDescriptorTable(1, &ranges[1]);
+		computeRootParameters[2].InitAsDescriptorTable(1, &ranges[2]);
+		computeRootParameters[3].InitAsDescriptorTable(1, &ranges[3]);
+		computeRootParameters[4].InitAsConstantBufferView(0, 0);
+	
+		CreateMyRootSignature(ROOTSIGNATURE_DATA.sample, computeRootParameters.data(), computeRootParameters.size(), ROOTSIGNATURE);
+	}
 	else
 	{
 		CreateMyRootSignature(ROOTSIGNATURE_DATA.sample, rootparam.data(), rootparam.size(), ROOTSIGNATURE);

@@ -111,3 +111,33 @@ void KazEnemyHelper::InitEnemy(std::array<std::array<std::unique_ptr<IEnemy>, EN
 		}
 	}
 }
+
+bool KazEnemyHelper::LockOn(Cursor *CURSOR, const std::unique_ptr<IEnemy> &ENEMY, AttackLog *LOG, float FONT_SIZE, RESOURCE_HANDLE LOCKON_SOUND)
+{
+	if (ENEMY == nullptr)
+	{
+		return false;
+	}
+
+	//ロックオン判定
+	bool enableToLockOnNumFlag = CURSOR->LockOn();
+	bool enableToLockOnEnemyFlag = ENEMY->IsAlive() && !ENEMY->LockedOrNot();
+	bool hitFlag = CollisionManager::Instance()->CheckRayAndSphere(CURSOR->hitBox, ENEMY->GetData()->hitBox);
+	if (!hitFlag ||
+		!enableToLockOnNumFlag ||
+		!enableToLockOnEnemyFlag ||
+		CURSOR->releaseFlag)
+	{
+		return false;
+	}
+
+	SoundManager::Instance()->PlaySoundMem(LOCKON_SOUND, 1);
+
+	//カーソルのカウント数を増やす
+	CURSOR->Hit(ENEMY->GetData()->hitBox.center);
+	//敵が当たった情報を書く
+	ENEMY->Hit();
+	LOG->WriteLog(ENEMY->GetData()->oprationObjData->name, FONT_SIZE);
+
+	return true;
+}

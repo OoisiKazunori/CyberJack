@@ -329,9 +329,13 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineUvPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_UV);
 
 	//コンピュートシェーダーのコンパイル
-	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "TestComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_TEST);
+	//pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "TestComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_TEST);
 	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "FloorParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_FLOORPARTICLE);
 	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "BlockParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_BLOCKPARTICLE);
+	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "PortalLineComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_PORTALLINE);
+	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "PortalLineMoveComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_PORTALLINE_MOVE);
+	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "MeshParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_MESHPARTICLE);
+	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "BlockParticleMoveComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_BLOCKPARTICLE_MOVE);
 
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "VHSPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_WIHITENOISE);
 
@@ -366,6 +370,9 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "PortalVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_PORTAL);
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "PortalPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_PORTAL);
+
+
+	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "SpriteColorPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_SPRITE_COLOR);
 
 	OutputDebugStringA("シェーダーのコンパイルを終了します\n");
 #pragma endregion
@@ -722,7 +729,6 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	}
 #pragma endregion
 
-
 	//スプライト用
 #pragma region PIPELINE_DATA_NOCARING_BLENDALPHA
 	{
@@ -759,7 +765,6 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_BLENDALPHA);
 	}
 #pragma endregion
-
 
 	//Obj用
 #pragma region PIPELINE_DATA_NOCARING_NOBLEND
@@ -798,7 +803,6 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 #pragma endregion
 
-
 	//Obj用
 #pragma region PIPELINE_DATA_NOCARING_NOBLEND_R32
 	//Obj用のパイプラインの設定
@@ -835,7 +839,6 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	}
 
 #pragma endregion
-
 
 	//Line用
 #pragma region PIPELINE_DATA_NOCARING_ALPHABLEND_LINELIST
@@ -1168,8 +1171,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 #pragma endregion
 
 
-	//スプライト用
-#pragma region PIPELINE_DATA_NOCARING_BLENDALPHA
+#pragma region PIPELINE_DATA_NOCARING_BLENDALPHA_DEPTH_ALWAYS
 	{
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
 		//スプライト用
@@ -1202,6 +1204,43 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_BLENDALPHA_DEPTH_ALWAYS);
 	}
 #pragma endregion
+
+	//スプライト用
+#pragma region PIPELINE_DATA_NOCARING_CUTALPHA_DEPTH_ALWAYS
+	{
+		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
+		//スプライト用
+		//サンプルマスク
+		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+
+		//ラスタライザ
+		//背面カリング、塗りつぶし、深度クリッピング有効
+		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
+		gPipeline.RasterizerState = rasterrize;
+		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+
+		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
+		gPipeline.BlendState.AlphaToCoverageEnable = true;
+
+		//図形の形状
+		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+
+
+		//その他設定
+		gPipeline.NumRenderTargets = 1;
+		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		gPipeline.SampleDesc.Count = 1;
+
+
+		//デプスステンシルステートの設定
+		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_CUTALPHA_DEPTH_ALWAYS);
+	}
+#pragma endregion
+
 
 #pragma region PIPELINE_DATA_NOCARING_BLENDALPHA
 	{
@@ -1391,12 +1430,12 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 #pragma region パイプラインの生成と登録
 
 	//コンピュートパイプラインの作成
-	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+	/*GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 		SHADER_COMPUTE_TEST,
 		PIPELINE_COMPUTE_DATA_TEST,
 		ROOTSIGNATURE_DATA_SRV_UAV,
 		PIPELINE_COMPUTE_NAME_TEST
-	);
+	);*/
 
 	//床に散らばらっているパーティクル
 	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
@@ -1406,6 +1445,22 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_COMPUTE_NAME_FLOORPARTICLE
 	);
 
+	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+		SHADER_COMPUTE_PORTALLINE,
+		PIPELINE_COMPUTE_DATA_TEST,
+		ROOTSIGNATURE_DATA_DRAW_UAB_CB,
+		PIPELINE_COMPUTE_NAME_PORTALLINE
+	);
+
+	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+		SHADER_COMPUTE_PORTALLINE_MOVE,
+		PIPELINE_COMPUTE_DATA_TEST,
+		ROOTSIGNATURE_DATA_DRAW_UAB_CB,
+		PIPELINE_COMPUTE_NAME_PORTALLINE_MOVE
+	);
+
+	
+
 	//ブロックにちりばめられるパーティクル
 	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 		SHADER_COMPUTE_BLOCKPARTICLE,
@@ -1414,15 +1469,44 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_COMPUTE_NAME_BLOCKPARTICLE
 	);
 
+	//エミッターの場所を決める
+	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+		SHADER_COMPUTE_MESHPARTICLE,
+		PIPELINE_COMPUTE_DATA_TEST,
+		ROOTSIGNATURE_DATA_UAB_UAB_UAB_CB,
+		PIPELINE_COMPUTE_NAME_MESHPARTICLE
+	);
+
+	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+		SHADER_COMPUTE_BLOCKPARTICLE_MOVE,
+		PIPELINE_COMPUTE_DATA_TEST,
+		ROOTSIGNATURE_DATA_DRAW_UAB_CB,
+		PIPELINE_COMPUTE_NAME_BLOCKPARTICLE_MOVE
+	);
+
+
 	//GPUパーティクル用のパイプライン
+	//GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+	//	LAYOUT_POS_TEX,
+	//	SHADER_VERTEX_GPUPARTICLE,
+	//	SHADER_PIXEL_GPUPARTICLE,
+	//	PIPELINE_DATA_NOCARING_BLENDALPHA_MULTIPASS_TWO,
+	//	ROOTSIGNATURE_DATA_DRAW_UAB_TEX,
+	//	PIPELINE_NAME_GPUPARTICLE
+	//);
+
+	//ポータルのGPUパーティクル用のパイプライン
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_GPUPARTICLE,
 		SHADER_PIXEL_GPUPARTICLE,
 		PIPELINE_DATA_NOCARING_BLENDALPHA_MULTIPASS_TWO,
-		ROOTSIGNATURE_DATA_DRAW_UAB_TEX,
-		PIPELINE_NAME_GPUPARTICLE
+		ROOTSIGNATURE_DATA_DRAW_UAV,
+		PIPELINE_NAME_GPUPARTICLE_PORTAL
 	);
+
+
+
 
 	//色パイプライン
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
@@ -1504,7 +1588,6 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_COLOR_WIREFLAME
 	);
 
-
 	//スプライトパイプライン
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
@@ -1513,6 +1596,16 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_DATA_NOCARING_BLENDALPHA,
 		ROOTSIGNATURE_DATA_DRAW_TEX,
 		PIPELINE_NAME_SPRITE
+	);
+
+	//スプライトパイプライン
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS_TEX,
+		SHADER_VERTEX_SPRITE,
+		SHADER_PIXEL_SPRITE_COLOR,
+		PIPELINE_DATA_NOCARING_BLENDALPHA_CUT,
+		ROOTSIGNATURE_DATA_DRAW_TEX,
+		PIPELINE_NAME_SPRITE_COLOR
 	);
 
 	//スプライトパイプライン+常に深度負ける
@@ -1547,6 +1640,24 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_SPRITE_Z_ALWAYS
 	);
 
+	//スプライトパイプライン
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS_TEX,
+		SHADER_VERTEX_SPRITE,
+		SHADER_PIXCEL_SPRITE,
+		PIPELINE_DATA_NOCARING_BLENDALPHA_DEPTH_ALWAYS,
+		ROOTSIGNATURE_DATA_DRAW_TEX,
+		PIPELINE_NAME_SPRITE_Z_ALWAYS
+	);
+
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS_TEX,
+		SHADER_VERTEX_SPRITE,
+		SHADER_PIXCEL_SPRITE,
+		PIPELINE_DATA_NOCARING_CUTALPHA_DEPTH_ALWAYS,
+		ROOTSIGNATURE_DATA_DRAW_TEX,
+		PIPELINE_NAME_SPRITE_Z_ALWAYS_CUTALPHA
+	);
 
 	//スプライトパイプライン
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(

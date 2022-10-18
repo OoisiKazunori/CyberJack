@@ -15,6 +15,5 @@ VSOutput VSmain(VSInput input)
 
     op.normal = wnormal.xyz;
 	op.uv = input.uv;
-	
 	return op;
 }

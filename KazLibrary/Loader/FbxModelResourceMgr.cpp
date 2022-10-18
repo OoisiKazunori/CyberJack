@@ -28,7 +28,7 @@ FbxModelResourceMgr::~FbxModelResourceMgr()
 	modelResource.clear();
 }
 
-RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME)
+RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME, bool REV_UV_FLAG)
 {
 	for (int i = 0; i < handleName.size(); i++)
 	{
@@ -37,6 +37,8 @@ RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME)
 			return i;
 		}
 	}
+	revUvFlag = REV_UV_FLAG;
+
 
 	fbxImporter->Initialize(MODEL_NAME.c_str());
 	fbxImporter->Import(fbxScene);
@@ -48,7 +50,6 @@ RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME)
 	//モデルの生成
 	Model *model = new Model;
 	model->name = MODEL_NAME;
-
 
 	//Fbxノードの数を取得
 	int nodeCount = fbxScene->GetNodeCount();
@@ -99,8 +100,8 @@ RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME)
 	modelResource[lHandle]->bone = model->bones;
 
 	modelResource[lHandle]->vertNum = static_cast<UINT>(model->vertices.size());
-	modelResource[lHandle]->mesh = model->mesh;
 
+	modelResource[modelResource.size() - 1]->mesh = mesh;
 
 	//アニメーションの数を取得
 	int animaStackCount = fbxImporter->GetAnimStackCount();
@@ -184,6 +185,7 @@ void FbxModelResourceMgr::ParseNodeRecursive(Model *MODEL, FbxNode *FBX_NODE, No
 		if (fbxNodeAttribute->GetAttributeType() == FbxNodeAttribute::eMesh)
 		{
 			MODEL->meshNode = &node;
+			mesh = FBX_NODE->GetMesh();
 			ParseMesh(MODEL, FBX_NODE);
 		}
 	}
@@ -200,7 +202,6 @@ void FbxModelResourceMgr::ParseMesh(Model *MODEL, FbxNode *FBX_NODE)
 {
 	//ノードのメッシュを取得
 	FbxMesh *fbxMesh = FBX_NODE->GetMesh();
-	MODEL->mesh = fbxMesh;
 
 	//頂点座標読み取り
 	//ParseMeshVertices(MODEL, fbxMesh);
@@ -285,8 +286,8 @@ void FbxModelResourceMgr::ParseMeshFaces(Model *MODEL, FbxMesh *FBX_MESH)
 				//0番決め打ちで読み込み
 				if (FBX_MESH->GetPolygonVertexUV(i, j, uvNames[0], uvs, lUnmappedUV))
 				{
-					vertex.uv.x = (float)uvs[0];
-					vertex.uv.y = (float)uvs[1];
+					vertex.uv.x = static_cast<float>(uvs[0]);
+					vertex.uv.y = static_cast<float>(uvs[1]);
 				}
 			}
 
@@ -502,11 +503,6 @@ void FbxModelResourceMgr::ParseBone(Model *MODEL, FbxMesh *FBX_MESH)
 		//初期姿勢行列の逆行列を得る
 		bone.invInitialPose = XMMatrixInverse(nullptr, initialPose);
 	}
-
-	for (int i = 0; i < MODEL->bones.size(); ++i)
-	{
-		MODEL->bones[i].fbxSkin = static_cast<FbxSkin *>(FBX_MESH->GetDeformer(0, FbxDeformer::eSkin));
-	}
 }
 
 void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
@@ -565,7 +561,15 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 				if (FBX_MESH->GetPolygonVertexUV(i, j, uvNames[0], uvs, lUnmappedUV))
 				{
 					vertex.uv.x = (float)uvs[0];
-					vertex.uv.y = 1.0f - (float)uvs[1];
+
+					if (revUvFlag)
+					{
+						vertex.uv.y = 1.0f - (float)uvs[1];
+					}
+					else
+					{
+						vertex.uv.y = (float)uvs[1];
+					}
 				}
 			}
 

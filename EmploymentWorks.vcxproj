@@ -178,11 +178,13 @@
   <ItemGroup>
     <ClCompile Include="Game\Debug\ParameterMgr.cpp" />
     <ClCompile Include="Game\Debug\WirteCpuLineData.cpp" />
+    <ClCompile Include="Game\Effect\MeshParticleEmitter.cpp" />
     <ClCompile Include="Game\Effect\FireEffect.cpp" />
     <ClCompile Include="Game\Effect\MisileSmokeEmitter.cpp" />
     <ClCompile Include="Game\Effect\MisileSmokeParticle.cpp" />
     <ClCompile Include="Game\Effect\PlayerDamageEmitter.cpp" />
     <ClCompile Include="Game\Effect\PlayerDamegePartice.cpp" />
+    <ClCompile Include="Game\Effect\PortalIntermediateDirection.cpp" />
     <ClCompile Include="Game\Effect\RocketEffect.cpp" />
     <ClCompile Include="Game\Effect\RocketLightEffect.cpp" />
     <ClCompile Include="Game\Effect\SparkEmitter.cpp" />
@@ -203,6 +205,7 @@
     <ClCompile Include="Game\Enemy\SplineMisileForBattleShip.cpp" />
     <ClCompile Include="Game\Enemy\SplineMisileForBikeEnemy.cpp" />
     <ClCompile Include="Game\Enemy\SummonEnemy.cpp" />
+    <ClCompile Include="Game\Enemy\TutorialBlock.cpp" />
     <ClCompile Include="Game\Event\EventSprite.cpp" />
     <ClCompile Include="Game\Event\GoalBox.cpp" />
     <ClCompile Include="Game\Event\GoalBoxEffect.cpp" />
@@ -214,9 +217,12 @@
     <ClCompile Include="Game\Event\MoiveEffect.cpp" />
     <ClCompile Include="Game\Event\PortalEffect.cpp" />
     <ClCompile Include="Game\Event\PortalFlame.cpp" />
+    <ClCompile Include="Game\Event\TutorialGame.cpp" />
     <ClCompile Include="Game\Event\TutorialWindow.cpp" />
     <ClCompile Include="Game\Event\WindowFlame.cpp" />
     <ClCompile Include="Game\Game.cpp" />
+    <ClCompile Include="Game\GameRenderTarget.cpp" />
+    <ClCompile Include="Game\Helper\CameraWork.cpp" />
     <ClCompile Include="Game\Helper\EnemyHelper.cpp" />
     <ClCompile Include="Game\Interface\IEnemy.cpp" />
     <ClCompile Include="Game\Interface\IOperationObject.cpp" />
@@ -233,15 +239,18 @@
     <ClCompile Include="Game\Stage\SecondStage.cpp" />
     <ClCompile Include="Game\Stage\StageMgr.cpp" />
     <ClCompile Include="Game\Stage\ThridStage.cpp" />
+    <ClCompile Include="Game\Tutorial.cpp" />
     <ClCompile Include="Game\UI\AnnounceStageUI.cpp" />
     <ClCompile Include="Game\UI\AttackLog.cpp" />
     <ClCompile Include="Game\UI\Cursor.cpp" />
     <ClCompile Include="Game\UI\DamageTextWindow.cpp" />
+    <ClCompile Include="Game\UI\DrawMenu.cpp" />
     <ClCompile Include="Game\UI\Letter.cpp" />
     <ClCompile Include="Game\UI\LockOnBoxEffect.cpp" />
     <ClCompile Include="Game\UI\PlayerHpUi.cpp" />
     <ClCompile Include="KazLibrary\Buffer\CreateGpuBuffer.cpp" />
     <ClCompile Include="KazLibrary\Buffer\DescriptorHeapMgr.cpp" />
+    <ClCompile Include="KazLibrary\Buffer\UavViewHandleMgr.cpp" />
     <ClCompile Include="KazLibrary\Camera\CameraMgr.cpp" />
     <ClCompile Include="KazLibrary\Collision\CollisionManager.cpp" />
     <ClCompile Include="KazLibrary\DirectXCommon\DirectX12.cpp" />
@@ -302,6 +311,7 @@
     <ClCompile Include="KazLibrary\Scene\SceneManager.cpp" />
     <ClCompile Include="KazLibrary\Scene\StageSelectScene.cpp" />
     <ClCompile Include="KazLibrary\Scene\TitleScene.cpp" />
+    <ClCompile Include="KazLibrary\Scene\TutorialScene.cpp" />
     <ClCompile Include="KazLibrary\Sound\IAXAudio2VoiceCallback.cpp" />
     <ClCompile Include="KazLibrary\Sound\SoundManager.cpp" />
     <ClCompile Include="KazLibrary\WinApi\Msg.cpp" />
@@ -310,11 +320,13 @@
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
     <ClInclude Include="Game\Debug\WirteCpuLineData.h" />
+    <ClInclude Include="Game\Effect\MeshParticleEmitter.h" />
     <ClInclude Include="Game\Effect\FireEffect.h" />
     <ClInclude Include="Game\Effect\MisileSmokeEmitter.h" />
     <ClInclude Include="Game\Effect\MisileSmokeParticle.h" />
     <ClInclude Include="Game\Effect\PlayerDamageEmitter.h" />
     <ClInclude Include="Game\Effect\PlayerDamegePartice.h" />
+    <ClInclude Include="Game\Effect\PortalIntermediateDirection.h" />
     <ClInclude Include="Game\Effect\RocketEffect.h" />
     <ClInclude Include="Game\Effect\RocketLightEffect.h" />
     <ClInclude Include="Game\Effect\SparkEmitter.h" />
@@ -336,6 +348,7 @@
     <ClInclude Include="Game\Enemy\SplineMisileForBattleShip.h" />
     <ClInclude Include="Game\Enemy\SplineMisileForBikeEnemy.h" />
     <ClInclude Include="Game\Enemy\SummonEnemy.h" />
+    <ClInclude Include="Game\Enemy\TutorialBlock.h" />
     <ClInclude Include="Game\Event\EventSprite.h" />
     <ClInclude Include="Game\Event\GoalBox.h" />
     <ClInclude Include="Game\Event\GoalBoxEffect.h" />
@@ -347,9 +360,12 @@
     <ClInclude Include="Game\Event\PortalEffect.h" />
     <ClInclude Include="Game\Event\PortalFlame.h" />
     <ClInclude Include="Game\Event\MoiveEffect.h" />
+    <ClInclude Include="Game\Event\TutorialGame.h" />
     <ClInclude Include="Game\Event\TutorialWindow.h" />
     <ClInclude Include="Game\Event\WindowFlame.h" />
     <ClInclude Include="Game\Game.h" />
+    <ClInclude Include="Game\GameRenderTarget.h" />
+    <ClInclude Include="Game\Helper\CameraWork.h" />
     <ClInclude Include="Game\Helper\EnemyHelper.h" />
     <ClInclude Include="Game\Interface\IEnemy.h" />
     <ClInclude Include="Game\Interface\IOperationObject.h" />
@@ -366,15 +382,18 @@
     <ClInclude Include="Game\Stage\SecondStage.h" />
     <ClInclude Include="Game\Stage\StageMgr.h" />
     <ClInclude Include="Game\Stage\ThridStage.h" />
+    <ClInclude Include="Game\Tutorial.h" />
     <ClInclude Include="Game\UI\AnnounceStageUI.h" />
     <ClInclude Include="Game\UI\AttackLog.h" />
     <ClInclude Include="Game\UI\Cursor.h" />
     <ClInclude Include="Game\UI\DamageTextWindow.h" />
+    <ClInclude Include="Game\UI\DrawMenu.h" />
     <ClInclude Include="Game\UI\Letter.h" />
     <ClInclude Include="Game\UI\LockOnBoxEffect.h" />
     <ClInclude Include="Game\UI\PlayerHpUi.h" />
     <ClInclude Include="KazLibrary\Buffer\CreateGpuBuffer.h" />
     <ClInclude Include="KazLibrary\Buffer\DescriptorHeapMgr.h" />
+    <ClInclude Include="KazLibrary\Buffer\UavViewHandleMgr.h" />
     <ClInclude Include="KazLibrary\Camera\CameraMgr.h" />
     <ClInclude Include="KazLibrary\Collision\CollisionManager.h" />
     <ClInclude Include="KazLibrary\DirectXCommon\Base.h" />
@@ -446,6 +465,7 @@
     <ClInclude Include="KazLibrary\Scene\SceneManager.h" />
     <ClInclude Include="KazLibrary\Scene\StageSelectScene.h" />
     <ClInclude Include="KazLibrary\Scene\TitleScene.h" />
+    <ClInclude Include="KazLibrary\Scene\TutorialScene.h" />
     <ClInclude Include="KazLibrary\Sound\IAXAudio2VoiceCallback.h" />
     <ClInclude Include="KazLibrary\Sound\SoundManager.h" />
     <ClInclude Include="KazLibrary\WinApi\Msg.h" />

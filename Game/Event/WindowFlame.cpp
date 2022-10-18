@@ -35,6 +35,7 @@ void WindowFlame::Init(const KazMath::Transform3D &TRANSFORM, const  KazMath::Ve
 	startFlag = false;
 	endFlag = false;
 	drawFlag = false;
+	readyToWriteFlag = false;
 	windowType = TYPE;
 }
 
@@ -87,6 +88,11 @@ bool WindowFlame::IsEnd()
 	return !drawFlag;
 }
 
+bool WindowFlame::ReadyToWrite()
+{
+	return readyToWriteFlag;
+}
+
 void WindowFlame::Update2D()
 {
 	KazMath::Vec2<float>lBasePos = { basePos.x,basePos.y };
@@ -99,7 +105,6 @@ void WindowFlame::Update2D()
 		float mul = 0.3f;
 		//ウィンドウを横に広げる
 		KazMath::Larp(larpScale.x, &flame2DTex.data.transform.scale.x, mul);
-
 
 		if (lerpMaxScale.x - 0.1f <= flame2DTex.data.transform.scale.x)
 		{
@@ -116,6 +121,7 @@ void WindowFlame::Update2D()
 		if (lerpMaxScale.y - 0.09f <= flame2DTex.data.transform.scale.y)
 		{
 			startFlag = false;
+			readyToWriteFlag = true;
 		}
 	}
 

@@ -21,12 +21,21 @@ Player::Player()
 
 }
 
-void Player::Init(const KazMath::Vec3<float> &POS, bool DRAW_UI_FLAG)
+void Player::Init(const KazMath::Vec3<float> &POS, bool DRAW_UI_FLAG, bool APPEAR_FLAG)
 {
 	pos = POS;
 	render->data.transform.pos = pos;
 	render->data.transform.scale = { 0.5f,1.3f,0.5f };
 	render->data.transform.rotation = { 35.0f,0.0f,1.0f };
+	render->data.color.color = { 255,255,255,0 };
+	if (APPEAR_FLAG)
+	{
+		render->data.color.color.a = 0;
+	}
+	else
+	{
+		render->data.color.color.a = 255;
+	}
 	hp = 3;
 
 	hpUi.Init(hp);
@@ -36,6 +45,8 @@ void Player::Init(const KazMath::Vec3<float> &POS, bool DRAW_UI_FLAG)
 	coolTimeFlag = false;
 
 	drawHpFlag = DRAW_UI_FLAG;
+
+
 }
 
 void Player::Finalize()
@@ -80,16 +91,26 @@ void Player::Update()
 
 	if (redFlag)
 	{
-		render->data.color = { 255,0,0,255 };
+		render->data.color.color.x = 255;
+		render->data.color.color.y = 0;
+		render->data.color.color.z = 0;
 	}
 	else
 	{
-		render->data.color = { 255,255,255,255 };
+		render->data.color.color.x = 255;
+		render->data.color.color.y = 255;
+		render->data.color.color.z = 255;
 	}
 	//----------HP‚ªŒ¸‚Á‚½‚çƒvƒŒƒCƒ„[‚ðÔ‚­‚·‚é----------
 
 	damageEffect.Update();
 	damageWindow.Update();
+
+	render->data.color.color.a += 255 / 120;
+	if (255 <= render->data.color.color.a)
+	{
+		render->data.color.color.a = 255;
+	}
 }
 
 void Player::Draw()

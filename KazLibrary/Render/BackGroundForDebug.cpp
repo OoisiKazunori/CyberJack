@@ -34,7 +34,7 @@ void BackGroundForDebug::Draw()
 	{
 		horizontalLine[yoko].data.startPos = { horizontalLinePos[0][yoko].x, horizontalLinePos[0][yoko].y, horizontalLinePos[0][yoko].z };
 		horizontalLine[yoko].data.endPos = { horizontalLinePos[1][yoko].x, horizontalLinePos[1][yoko].y, horizontalLinePos[1][yoko].z };
-		horizontalLine[yoko].data.color = color;
+		horizontalLine[yoko].data.colorData = color;
 		horizontalLine[yoko].data.pipelineName = pipeline;
 		horizontalLine[yoko].data.cameraIndex = cameraId;
 
@@ -45,7 +45,7 @@ void BackGroundForDebug::Draw()
 	{
 		verticalLine[tate].data.startPos = { verticalLinePos[0][tate].x,  verticalLinePos[0][tate].y,  verticalLinePos[0][tate].z };
 		verticalLine[tate].data.endPos = { verticalLinePos[1][tate].x,verticalLinePos[1][tate].y, verticalLinePos[1][tate].z };
-		verticalLine[tate].data.color = color;
+		verticalLine[tate].data.colorData = color;
 		verticalLine[tate].data.pipelineName = pipeline;
 		verticalLine[tate].data.cameraIndex = cameraId;
 
@@ -55,19 +55,19 @@ void BackGroundForDebug::Draw()
 	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 	xLine.data.startPos = { 0,0,0 };
 	xLine.data.endPos = { 30,0,0 };
-	xLine.data.color = { 255,0,0,255 };
+	xLine.data.colorData = { 255,0,0,255 };
 	xLine.data.pipelineName = pipeline;
 	//xLine.Draw();
 
 	yLine.data.startPos = { 0,0,0 };
 	yLine.data.endPos = { 0,30,0 };
-	yLine.data.color = { 0,255,0,255 };
+	yLine.data.colorData = { 0,255,0,255 };
 	yLine.data.pipelineName = pipeline;
 	//yLine.Draw();
 
 	zLine.data.startPos = { 0,0,0 };
 	zLine.data.endPos = { 0,0,30 };
-	zLine.data.color = { 0,0,255,255 };
+	zLine.data.colorData = { 0,0,255,255 };
 	zLine.data.pipelineName = pipeline;
 	//zLine.Draw();
 }

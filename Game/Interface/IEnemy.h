@@ -52,6 +52,7 @@ public:
 
 	//€–S”»’è‚Æˆ—
 	bool ProcessingOfDeath(EnemyDeathType TYPE);
+	bool ProcessingOfDeathFbx(EnemyDeathType TYPE);
 
 
 	/// <returns>“G‚Ìî•ñ</returns>
@@ -59,12 +60,14 @@ public:
 
 	void DeadSound();
 	void ShotSound();
+	void InitModel(const KazMath::Transform3D &TRANSFORM, const std::string &MODEL_FILEPASS, float HITBOX_RADIUS, bool FBX_OR_OBJ_FLAG, bool REV_UV_FLAG = false);
 
 	//UŒ‚‚ğŠm”F‚·‚é—p‚ÌŠÖ”
 	virtual void DebugShot() { debugShotFlag = true; };
 
 	std::unique_ptr<EnemyData> iEnemy_EnemyStatusData;		//“G‚Ìó‘Ô‚ğ•Û‘¶‚·‚éƒf[ƒ^
-	ObjModelRenderPtr iEnemy_ModelRender;				//“G‚Ì•`‰æ
+	ObjModelRenderPtr iEnemy_ObjModelRender;				//“G‚Ì•`‰æ
+	FbxModelRenderPtr iEnemy_FbxModelRender;				//“G‚Ì•`‰æ
 	KazMath::Vec3<float> lerpPos;
 
 protected:

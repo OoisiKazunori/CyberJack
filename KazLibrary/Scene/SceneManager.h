@@ -8,10 +8,10 @@
 #include"../RenderTarget/GaussianBuler.h"
 #include"../RenderTarget/RenderTargetStatus.h"
 #include<memory>
-/// <summary>
-/// ?V?[???????????s?????
-/// </summary>
-class SceneManager {
+
+
+class SceneManager
+{
 public:
 	SceneManager();
 	~SceneManager();

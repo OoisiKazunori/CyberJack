@@ -511,7 +511,7 @@ void LineLevel1::Release()
 	limitPos.clear();
 
 	initFlag = false;
-
+	lineReachObjFlag = false;
 
 	for (int i = 0; i < countVec.size(); ++i)
 	{

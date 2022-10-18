@@ -60,7 +60,7 @@ public:
 		//初期姿勢の逆行列
 		DirectX::XMMATRIX invInitialPose;
 		//クラスター(FBXのボーン情報)
-		FbxSkin *fbxSkin;
+		FbxSkin* fbxSkin;
 
 		Bone(const std::string &NAME)
 		{
@@ -131,7 +131,7 @@ public:
 	FbxModelResourceMgr();
 	~FbxModelResourceMgr();
 
-	RESOURCE_HANDLE LoadModel(const std::string &MODEL_NAME);
+	RESOURCE_HANDLE LoadModel(const std::string &MODEL_NAME, bool REV_UV_FLAG = false);
 
 	const std::shared_ptr<FbxResourceData> &GetResourceData(RESOURCE_HANDLE HANDLE);
 
@@ -177,6 +177,12 @@ private:
 	std::string ExtractFileName(const std::string &PATH);
 
 	std::vector<std::string> handleName;
+
+
+	bool revUvFlag;
+
+	FbxMesh *mesh;
+
 
 };
 

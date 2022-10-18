@@ -11,6 +11,7 @@
 #include"../Helper/OutPutDebugStringAndCheckResult.h"
 #include"../Input/KeyBoradInputManager.h"
 #include"../Input/ControllerInputManager.h"
+#include"../KazLibrary/Buffer/UavViewHandleMgr.h"
 #include<time.h>
 
 
@@ -23,35 +24,58 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
 #ifdef _DEBUG
 	//DebugLayer
-	CComPtr<ID3D12Debug> spDebugController0;
-	CComPtr<ID3D12Debug1> spDebugController1;
-	D3D12GetDebugInterface(IID_PPV_ARGS(&spDebugController0));
-	spDebugController0->QueryInterface(IID_PPV_ARGS(&spDebugController1));
-	spDebugController1->EnableDebugLayer();
-	spDebugController1->SetEnableGPUBasedValidation(true);
+	CComPtr<ID3D12Debug1> debug1;
+	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debug1))))
+	{
+		CComPtr<ID3D12Debug> spDebugController0;
+		CComPtr<ID3D12Debug1> spDebugController1;
+
+
+		D3D12GetDebugInterface(IID_PPV_ARGS(&spDebugController0));
+		spDebugController0->QueryInterface(IID_PPV_ARGS(&spDebugController1));
+		spDebugController1->EnableDebugLayer();
+		spDebugController1->SetEnableGPUBasedValidation(true);
+	}
+
 #endif
 	//CheckDirectXError
 	int CheckWinError = 0;
 	bool CheckMessageFlag = true;
 	HRESULT CheckDirectXError = 0;
-	
+
 
 	WinApi winApi;
 	Msg msg;
 	DirectX12 directX;
 	CheckWinError = winApi.CreateMyWindow(WIN_X, WIN_Y);
-	if (CheckResult("ウィンドウの生成", CheckWinError)) 
+	if (CheckResult("ウィンドウの生成", CheckWinError))
 	{
 		return 0;
 	}
 	CheckDirectXError = directX.Create(WIN_X, WIN_Y, winApi.hwnd);
 	//CheckDirectXError = S_FALSE;
-	if (CheckResult("DirextX12の生成", CheckDirectXError)) 
+	if (CheckResult("DirextX12の生成", CheckDirectXError))
 	{
 		return 0;
 	}
 
-	
+#ifdef _DEBUG
+	CComPtr<ID3D12InfoQueue> infoQueue;
+	DirectX12Device::Instance()->dev->QueryInterface(IID_PPV_ARGS(&infoQueue));
+
+	D3D12_MESSAGE_ID denyIds[] = {
+	  D3D12_MESSAGE_ID_GPU_BASED_VALIDATION_RESOURCE_STATE_IMPRECISE,
+	};
+	D3D12_MESSAGE_SEVERITY severities[] = {
+	  D3D12_MESSAGE_SEVERITY_INFO
+	};
+	D3D12_INFO_QUEUE_FILTER filter{};
+	filter.DenyList.NumIDs = _countof(denyIds);
+	filter.DenyList.pIDList = denyIds;
+	filter.DenyList.NumSeverities = _countof(severities);
+	filter.DenyList.pSeverityList = severities;
+	infoQueue->PushStorageFilter(&filter);
+#endif 
 
 	MyImgui imgui;
 	imgui.Create(winApi.hwnd);
@@ -63,7 +87,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	PreCreateBasePipeLine prepareP;
 
 	KeyBoradInputManager::Instance()->CreateDevice(&winApi.hwnd, &winApi.window.hInstance);
-
+	UavViewHandleMgr::Instance()->Init();
 
 	srand(static_cast<UINT>(time(NULL)));
 	SceneManager sm;

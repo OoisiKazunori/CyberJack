@@ -501,6 +501,13 @@ void KazMath::Larp(const Vec2<float> BASE_TRANSFORM, Vec2<float> *TRANSFORM, flo
 	*TRANSFORM += distance * MUL;
 }
 
+void KazMath::Larp(const Vec3<float> BASE_TRANSFORM, Vec3<float> *TRANSFORM, float MUL)
+{
+	Vec3<float> distance = BASE_TRANSFORM - *TRANSFORM;
+	distance *= MUL;
+	*TRANSFORM += distance;
+}
+
 KazMath::Vec3<float> KazMath::SplinePosition(const std::vector<Vec3<float>> &points, size_t startIndex, float t, bool Loop)
 {
 	if (startIndex < 1)
