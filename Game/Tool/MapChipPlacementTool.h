@@ -39,7 +39,8 @@ private:
 	BoxPolygonRender selectR;//‰½ˆ‚ğ‘I‘ğ‚µ‚Ä‚¢‚é‚©
 	KazMath::Vec3<int> selectingIndex;
 	KazMath::Vec3<int> putIndex;
-	KazMath::Vec3<float> blockPutInOnceSize;
+	KazMath::Vec3<int> startBlockPutInOnceSize;
+	KazMath::Vec3<int> endBlockPutInOnceSize;
 
 	//”»’è
 	enum MESH_DIR

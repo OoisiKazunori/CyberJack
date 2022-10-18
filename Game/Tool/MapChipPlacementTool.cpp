@@ -134,7 +134,8 @@ void MapChipPlacementTool::Update()
 	//現在指定しているブロックの座標
 	ImGui::Text("selectingIndex,X:%d,Y:%d,Z:%d", selectingIndex.x, selectingIndex.y, selectingIndex.z);
 	//一括配置
-	KazImGuiHelper::InputVec3("PutBlockInOnce", &blockPutInOnceSize);
+	KazImGuiHelper::InputVec3("StartPutBlockInOnce", &startBlockPutInOnceSize);
+	KazImGuiHelper::InputVec3("EndPutBlockInOnce", &endBlockPutInOnceSize);
 	bool lPutFlag = ImGui::Button("Put");
 	ImGui::Text("PutPos,X:%d,Y:%d,Z:%d", putIndex.x, putIndex.y, putIndex.z);
 	ImGui::End();
@@ -142,7 +143,16 @@ void MapChipPlacementTool::Update()
 	//一括配置の処理
 	if (lPutFlag)
 	{
-
+		for (int x = startBlockPutInOnceSize.x; x < endBlockPutInOnceSize.x; ++x)
+		{
+			for (int y = startBlockPutInOnceSize.y; y < endBlockPutInOnceSize.y; ++y)
+			{
+				for (int z = startBlockPutInOnceSize.z; z < endBlockPutInOnceSize.z; ++z)
+				{
+					blockPosArray[x][y][z] = { x * (BLOCK_SIZE * 2.0f),y * (BLOCK_SIZE * 2.0f),z * (BLOCK_SIZE * 2.0f) };
+				}
+			}
+		}
 	}
 
 	if (putIndex.x <= -1)
