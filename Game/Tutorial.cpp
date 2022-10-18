@@ -9,6 +9,7 @@ Tutorial::Tutorial() :LOG_FONT_SIZE(1.0f), FLAME_MAX_TIME(20)
 {
 	gridR[0] = std::make_unique<DrawGrid>(KazMath::Color(14, 12, 13, 255));
 	gridR[1] = std::make_unique<DrawGrid>(KazMath::Color(14, 12, 13, 255));
+	CameraMgr::Instance()->CameraSetting(60.0f, 10000.0f, 0);
 
 	eyePos = { 0.0f, 3.0f, -8.0f + 15.0f };
 	targetPos = { 0.0f, 3.0f, 15.0f };
@@ -118,10 +119,6 @@ void Tutorial::Init(bool SKIP_FLAG)
 		tutorialFlag = true;
 	}
 	initSceneFlag = false;
-
-	tutorialAllClearFlag = true;
-
-	angleC = 60.0f;
 }
 
 void Tutorial::Finalize()
@@ -195,13 +192,6 @@ void Tutorial::Input()
 
 void Tutorial::Update()
 {
-	ImGui::Begin("Angle");
-	ImGui::DragFloat("a", &angleC);
-	ImGui::End();
-
-	CameraMgr::Instance()->CameraSetting(angleC, 10000.0f, 0);
-	CameraMgr::Instance()->CameraSetting(angleC, 10000.0f, 1);
-
 	eyePos = cameraWork.GetEyePos();
 	targetPos = cameraWork.GetTargetPos();
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 0);

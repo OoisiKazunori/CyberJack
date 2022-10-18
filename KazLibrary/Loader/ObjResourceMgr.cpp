@@ -108,8 +108,6 @@ RESOURCE_HANDLE ObjResourceMgr::LoadModel(std::string RESOURCE)
 				vert[vert.size() - 1].uv = texcoords[indexTexcoord - 1];
 				vert[vert.size() - 1].normal = normals[indexNormal - 1];
 
-				vert[vert.size() - 1].uv.y = 1.0f - vert[vert.size() - 1].uv.y;
-
 
 				// インデックスデータの追加
 				if (faceIndexCount >= 3) {

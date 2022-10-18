@@ -241,8 +241,8 @@ BlockParticleStage::BlockParticleStage()
 	}
 
 	{
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(particleDataViewHandle));
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputInitViewHandle));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputInitViewHandle));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(particleDataViewHandle));
 	}
 
 	DirectX12CmdList::Instance()->cmdList->Dispatch(PARTICLE_MAX_NUM, 1, 1);
@@ -257,6 +257,7 @@ BlockParticleStage::~BlockParticleStage()
 
 void BlockParticleStage::Update()
 {
+
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_BLOCKPARTICLE_MOVE);
 
 	//共通用バッファのデータ送信
@@ -281,32 +282,32 @@ void BlockParticleStage::Update()
 
 void BlockParticleStage::Draw()
 {
-	//GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE);
-	//DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	//DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
-	//DirectX12CmdList::Instance()->cmdList->IASetIndexBuffer(&indexBufferView);
+	GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE);
+	DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
+	DirectX12CmdList::Instance()->cmdList->IASetIndexBuffer(&indexBufferView);
 
-	//RenderTargetStatus::Instance()->ChangeBarrier(
-	//	buffers->GetBufferData(drawCommandHandle).Get(),
-	//	D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-	//	D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT
-	//);
+	RenderTargetStatus::Instance()->ChangeBarrier(
+		buffers->GetBufferData(drawCommandHandle).Get(),
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT
+	);
 
-	//DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
-	//(
-	//	commandSig.Get(),
-	//	1,
-	//	buffers->GetBufferData(drawCommandHandle).Get(),
-	//	0,
-	//	//buffers->GetBufferData(counterBufferHandle).Get(),
-	//	nullptr,
-	//	0
-	//);
+	DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
+	(
+		commandSig.Get(),
+		1,
+		buffers->GetBufferData(drawCommandHandle).Get(),
+		0,
+		//buffers->GetBufferData(counterBufferHandle).Get(),
+		nullptr,
+		0
+	);
 
-	//RenderTargetStatus::Instance()->ChangeBarrier(
-	//	buffers->GetBufferData(drawCommandHandle).Get(),
-	//	D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
-	//	D3D12_RESOURCE_STATE_UNORDERED_ACCESS
-	//);
+	RenderTargetStatus::Instance()->ChangeBarrier(
+		buffers->GetBufferData(drawCommandHandle).Get(),
+		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+	);
 
 }

@@ -34,6 +34,12 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     index += (THREAD_MAX * THREAD_MAX * THREAD_MAX) * groupId.x;
 
     uint outPutIndex = index;
+    
+    updateData[outPutIndex].pos.z -= 1.0f;
+    if(updateData[outPutIndex].pos.z <= 0.0f)
+    {
+        updateData[outPutIndex].pos.z = 200.0f;
+    }
 
     //s—ñŒvŽZ-------------------------
     matrix pMatTrans = Translate(updateData[outPutIndex].pos.xyz);

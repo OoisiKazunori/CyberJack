@@ -3,5 +3,5 @@
 
 float4 PSmain(InstancePosOut input) : SV_TARGET
 {
-    return constData[input.id].color;
+    return uavMatrixData[input.id].color;
 }

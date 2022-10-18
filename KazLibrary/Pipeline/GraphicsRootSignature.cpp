@@ -91,6 +91,18 @@ void GraphicsRootSignature::CreateRootSignature(RootSignatureMode ROOTSIGNATURE,
 
 		case GRAPHICS_RANGE_TYPE_UAV:
 			//ルートパラムの設定
+			rootparam[i].InitAsUnorderedAccessView(param1, 0, D3D12_SHADER_VISIBILITY_ALL);
+
+			//受け渡し用
+			paramD[ROOTSIGNATURE].range[i] = GRAPHICS_RANGE_TYPE_UAV;
+			paramD[ROOTSIGNATURE].paramData[i].param = ROOTSIGNATURE_DATA.paramData[i].param;
+			paramD[ROOTSIGNATURE].paramData[i].type = ROOTSIGNATURE_DATA.paramData[i].type;
+			paramD[ROOTSIGNATURE].type[i] = GRAPHICS_ROOTSIGNATURE_TYPE_VIEW;
+			param1++;
+			break;
+
+		case GRAPHICS_RANGE_TYPE_UAV_DESC:
+			//ルートパラムの設定
 			descRangeSRV.push_back({});
 			descRangeSRV[descRangeSRV.size() - 1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, param2);
 			rootparam[i].InitAsDescriptorTable(1, &descRangeSRV[descRangeSRV.size() - 1], D3D12_SHADER_VISIBILITY_ALL);

@@ -9,12 +9,13 @@
 #include"../Scene/PortalScene.h"
 #include"../Scene/EnemyDebugScene.h"
 #include"../Scene/TutorialScene.h"
+#include"../Scene/DebugStageScene.h"
 
 SceneManager::SceneManager()
 {
 	//scene.emplace_back(std::make_unique<TitleScene>());
-	scene.emplace_back(std::make_unique<GameScene>());
-	//scene.emplace_back(std::make_unique<TutorialScene>());
+	//scene.emplace_back(std::make_unique<GameScene>());
+	scene.emplace_back(std::make_unique<DebugStageScene>());
 	//scene.emplace_back(std::make_unique<EnemyDebugScene>());
 
 	nowScene = 0;

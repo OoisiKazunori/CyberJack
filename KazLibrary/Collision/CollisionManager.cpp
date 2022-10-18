@@ -75,7 +75,7 @@ bool CollisionManager::CheckRayAndPlane(const Ray &RAY, const Plane &PLANE, floa
 
 	//始点と平面の距離(平面の法線方向)
 	//面法線とレイの始点座標(位置ベクトル)の内積
-	float d2 = PLANE.normal.Dot(RAY.dir);
+	float d2 = PLANE.normal.Dot(RAY.start);
 
 	//始点と平面の距離(平面の法線方向)
 	float dist = d2 - PLANE.distance;

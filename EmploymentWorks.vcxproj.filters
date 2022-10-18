@@ -141,6 +141,8 @@
     <ClCompile Include="Game\Tutorial.cpp" />
     <ClCompile Include="Game\Effect\MeshParticleEmitter.cpp" />
     <ClCompile Include="KazLibrary\Buffer\UavViewHandleMgr.cpp" />
+    <ClCompile Include="Game\Tool\MapChipPlacementTool.cpp" />
+    <ClCompile Include="KazLibrary\Scene\DebugStageScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -296,6 +298,8 @@
     <ClInclude Include="Game\Tutorial.h" />
     <ClInclude Include="Game\Effect\MeshParticleEmitter.h" />
     <ClInclude Include="KazLibrary\Buffer\UavViewHandleMgr.h" />
+    <ClInclude Include="Game\Tool\MapChipPlacementTool.h" />
+    <ClInclude Include="KazLibrary\Scene\DebugStageScene.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

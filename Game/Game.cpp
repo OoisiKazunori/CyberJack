@@ -349,7 +349,6 @@ void Game::Update()
 	eyePos = cameraWork.GetEyePos();
 	targetPos = cameraWork.GetTargetPos();
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 0);
-	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 1);
 
 
 

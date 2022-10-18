@@ -85,6 +85,4 @@ private:
 	std::unique_ptr<GameRenderTarget> renderTarget;
 	PortalIntermediateDirection portalEffect;
 	bool initSceneFlag;
-
-	float angleC;
 };

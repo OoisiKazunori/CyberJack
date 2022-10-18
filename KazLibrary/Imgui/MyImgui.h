@@ -126,4 +126,15 @@ namespace KazImGuiHelper
 		lLabel = LABEL + "Y";
 		ImGui::DragFloat(lLabel.c_str(), &VEC_2->y);
 	};
+
+	inline void DrawVec3(const std::string &LABEL, const KazMath::Vec3<float> VEC_3)
+	{
+		static std::string lLabel = "";
+		lLabel = LABEL + "X" + ":" + std::to_string(VEC_3.x);
+		ImGui::Text(lLabel.c_str());
+		lLabel = LABEL + "Y" + ":" + std::to_string(VEC_3.y);
+		ImGui::Text(lLabel.c_str());
+		lLabel = LABEL + "Z" + ":" + std::to_string(VEC_3.z);
+		ImGui::Text(lLabel.c_str());
+	};
 };

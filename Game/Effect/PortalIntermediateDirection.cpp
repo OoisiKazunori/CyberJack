@@ -277,7 +277,7 @@ void PortalIntermediateDirection::Update(const KazMath::Vec3<float> &POS)
 		else if (nextPortalRender.data.transform.pos.z <= POS.z + 5.0f && nextPortalFlag)
 		{
 			nextPortalFlag = false;
-			//finishFlag = true;
+			finishFlag = true;
 			return;
 		}
 
@@ -285,14 +285,14 @@ void PortalIntermediateDirection::Update(const KazMath::Vec3<float> &POS)
 		//ポータルが消えている時間
 		if (disappearFlag)
 		{
-			//++disappearTimer;
+			++disappearTimer;
 			nextPortalRender.data.transform.pos.z = 700.0f;
 		}
 		//ポータルが一定時間消えたら次ポータルを奥から出す
 		if (KazMath::ConvertSecondToFlame(5) <= disappearTimer)
 		{
 			disappearFlag = false;
-			//nextPortalFlag = true;
+			nextPortalFlag = true;
 			disappearTimer = 0;
 		}
 
@@ -306,7 +306,6 @@ void PortalIntermediateDirection::Update(const KazMath::Vec3<float> &POS)
 			portalRender.data.transform.pos.z += -1.0f;
 		}
 	}
-	//player.render->data.cameraIndex = 1;
 	player.pos = POS;
 	player.Update();
 }
@@ -351,6 +350,7 @@ void PortalIntermediateDirection::Draw()
 		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
 	);
+
 	player.Draw();
 
 

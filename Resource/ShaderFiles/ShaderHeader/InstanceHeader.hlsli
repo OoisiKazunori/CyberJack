@@ -46,6 +46,8 @@ cbuffer instanceConstBuff : register(b0)
     InstanceConstBufferData constData[INSTANCE_DATA_MAX];
 };
 
+RWStructuredBuffer<InstanceConstBufferData> uavMatrixData : register(u0);
+
 cbuffer instanceLineConstBuff : register(b0)
 {
     LineInstanceData instaceLineData[INSTANCE_DATA_MAX];
@@ -71,8 +73,6 @@ struct InstancePosOut
     uint id : SV_InstanceID;
 };
 
-
-
 struct lineData
 {
     float4 pos[2];
@@ -82,3 +82,4 @@ cbuffer lineVertexData : register(b1)
 {
     lineData VertexLine[INSTANCE_DATA_MAX];
 };
+
