@@ -25,8 +25,8 @@ private:
 	RESOURCE_HANDLE outputInitViewHandle, outputViewHandle, particleDataViewHandle;
 	//バッファ
 
-	static const int PARTICLE_MAX_NUM = 6000;
-	static const int PER_USE_PARTICLE_MAX_NUM = 120;
+	static const int PARTICLE_MAX_NUM = 7000;
+	static const int PER_USE_PARTICLE_MAX_NUM = 20;
 	static const int DRAW_CALL = 1;
 
 	struct IndirectCommand
@@ -56,7 +56,7 @@ private:
 	{
 		DirectX::XMMATRIX cameraMat;
 		DirectX::XMMATRIX projectionMat;
-		DirectX::XMMATRIX bollboardMat;
+		DirectX::XMMATRIX billboardMat;
 		DirectX::XMFLOAT4 vertices[8];
 	};
 
@@ -65,12 +65,12 @@ private:
 	{
 		DirectX::XMMATRIX cameraMat;
 		DirectX::XMMATRIX projectionMat;
-		DirectX::XMMATRIX bollboardMat;
+		DirectX::XMMATRIX billboardMat;
+		DirectX::XMFLOAT2 flash;
 	};
 
 	Microsoft::WRL::ComPtr<ID3D12CommandSignature> commandSig;
-
-	CommonData constBufferData;
+	CommonMoveData constBufferData;
 	int num;
 };
 

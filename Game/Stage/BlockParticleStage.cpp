@@ -106,23 +106,24 @@ BlockParticleStage::BlockParticleStage()
 	const int BACK_RIGHT_UP = 6;
 	const int BACK_RIGHT_DOWN = 7;
 
+	CommonData lConstBufferData;
 	//正面左上
-	constBufferData.vertices[FRONT_LEFT_UP] = { lVertices[1].pos.x, lVertices[1].pos.y, lVertices[1].pos.z,0.0f };
+	lConstBufferData.vertices[FRONT_LEFT_UP] = { lVertices[1].pos.x, lVertices[1].pos.y, lVertices[1].pos.z,0.0f };
 	//正面左下
-	constBufferData.vertices[FRONT_LEFT_DOWN] = { lVertices[0].pos.x, lVertices[0].pos.y, lVertices[0].pos.z,0.0f };
+	lConstBufferData.vertices[FRONT_LEFT_DOWN] = { lVertices[0].pos.x, lVertices[0].pos.y, lVertices[0].pos.z,0.0f };
 	//正面右上
-	constBufferData.vertices[FRONT_RIGHT_UP] = { lVertices[3].pos.x, lVertices[3].pos.y, lVertices[3].pos.z,0.0f };
+	lConstBufferData.vertices[FRONT_RIGHT_UP] = { lVertices[3].pos.x, lVertices[3].pos.y, lVertices[3].pos.z,0.0f };
 	//正面右下
-	constBufferData.vertices[FRONT_RIGHT_DOWN] = { lVertices[2].pos.x, lVertices[2].pos.y, lVertices[2].pos.z,0.0f };
+	lConstBufferData.vertices[FRONT_RIGHT_DOWN] = { lVertices[2].pos.x, lVertices[2].pos.y, lVertices[2].pos.z,0.0f };
 
 	//後面左上
-	constBufferData.vertices[BACK_LEFT_UP] = { lVertices[5].pos.x, lVertices[5].pos.y, lVertices[5].pos.z,0.0f };
+	lConstBufferData.vertices[BACK_LEFT_UP] = { lVertices[5].pos.x, lVertices[5].pos.y, lVertices[5].pos.z,0.0f };
 	//後面左下
-	constBufferData.vertices[BACK_LEFT_DOWN] = { lVertices[4].pos.x, lVertices[4].pos.y, lVertices[4].pos.z,0.0f };
+	lConstBufferData.vertices[BACK_LEFT_DOWN] = { lVertices[4].pos.x, lVertices[4].pos.y, lVertices[4].pos.z,0.0f };
 	//後面右上
-	constBufferData.vertices[BACK_RIGHT_UP] = { lVertices[7].pos.x, lVertices[7].pos.y, lVertices[7].pos.z,0.0f };
+	lConstBufferData.vertices[BACK_RIGHT_UP] = { lVertices[7].pos.x, lVertices[7].pos.y, lVertices[7].pos.z,0.0f };
 	//後面右下
-	constBufferData.vertices[BACK_RIGHT_DOWN] = { lVertices[6].pos.x, lVertices[6].pos.y, lVertices[6].pos.z, 0.0f };
+	lConstBufferData.vertices[BACK_RIGHT_DOWN] = { lVertices[6].pos.x, lVertices[6].pos.y, lVertices[6].pos.z, 0.0f };
 
 
 	std::array<Vertex, 4>vertices;
@@ -167,7 +168,12 @@ BlockParticleStage::BlockParticleStage()
 		{
 			for (int j = 0; j < xNum; ++j)
 			{
-				lData[index].pos = { -20.0f,static_cast<float>(i) * space,static_cast<float>(j) * space,0.0f };
+				lData[index].pos = {
+					-20.0f,
+					static_cast<float>(i) * space - 25.0f,
+					static_cast<float>(j) * space - 0.0f,
+					0.0f
+				};
 				++index;
 			}
 		}
@@ -176,9 +182,19 @@ BlockParticleStage::BlockParticleStage()
 		{
 			for (int j = 0; j < xNum; ++j)
 			{
-				lData[index].pos = { 20.0f,static_cast<float>(i) * space,static_cast<float>(j) * space,0.0f };
+				lData[index].pos = {
+					20.0f,
+					static_cast<float>(i) * space - 25.0f,
+					static_cast<float>(j) * space - 0.0f,
+					0.0f };
 				++index;
 			}
+		}
+
+
+		for (int i = 0; i < lData.size(); ++i)
+		{
+			lData[i].pos.z += -150.0f;
 		}
 		buffers->TransData(particleDataHandle, lData.data(), sizeof(ParticleData) * PARTICLE_MAX_NUM);
 	}
@@ -233,10 +249,10 @@ BlockParticleStage::BlockParticleStage()
 
 	//共通用バッファのデータ送信
 	{
-		constBufferData.cameraMat = CameraMgr::Instance()->GetViewMatrix();
-		constBufferData.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
-		constBufferData.bollboardMat = CameraMgr::Instance()->GetMatBillBoard();
-		buffers->TransData(commonInitBufferHandle, &constBufferData, sizeof(CommonData));
+		lConstBufferData.cameraMat = CameraMgr::Instance()->GetViewMatrix();
+		lConstBufferData.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
+		lConstBufferData.billboardMat = CameraMgr::Instance()->GetMatBillBoard();
+		buffers->TransData(commonInitBufferHandle, &lConstBufferData, sizeof(CommonData));
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(commonInitBufferHandle));
 	}
 
@@ -246,28 +262,35 @@ BlockParticleStage::BlockParticleStage()
 	}
 
 	DirectX12CmdList::Instance()->cmdList->Dispatch(PARTICLE_MAX_NUM, 1, 1);
+
+	constBufferData.flash.x = 0.0f;
 }
 
 BlockParticleStage::~BlockParticleStage()
 {
-	DescriptorHeapMgr::Instance()->Release(computeMemSize.startSize + 0);
-	DescriptorHeapMgr::Instance()->Release(computeMemSize.startSize + 1);
-
+	DescriptorHeapMgr::Instance()->Release(outputInitViewHandle);
+	DescriptorHeapMgr::Instance()->Release(outputViewHandle);
+	DescriptorHeapMgr::Instance()->Release(particleDataViewHandle);
 }
 
 void BlockParticleStage::Update()
 {
-
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_BLOCKPARTICLE_MOVE);
 
 	//共通用バッファのデータ送信
 	{
-		CommonMoveData lConstBufferData;
-		lConstBufferData.cameraMat = CameraMgr::Instance()->GetViewMatrix();
-		lConstBufferData.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
-		lConstBufferData.bollboardMat = CameraMgr::Instance()->GetMatBillBoard();
-		buffers->TransData(commonBufferHandle, &lConstBufferData, sizeof(CommonMoveData));
+		constBufferData.cameraMat = CameraMgr::Instance()->GetViewMatrix();
+		constBufferData.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
+		constBufferData.billboardMat = CameraMgr::Instance()->GetMatBillBoard();
+
+		ImGui::Begin("ParticleStage");
+		ImGui::DragFloat("Height", &constBufferData.flash.x);
+		ImGui::DragFloat("AllFlash", &constBufferData.flash.y);
+		ImGui::End();
+
+		buffers->TransData(commonBufferHandle, &constBufferData, sizeof(CommonMoveData));
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(commonBufferHandle));
+		constBufferData.flash.y = 0;
 	}
 
 	{
@@ -299,7 +322,6 @@ void BlockParticleStage::Draw()
 		1,
 		buffers->GetBufferData(drawCommandHandle).Get(),
 		0,
-		//buffers->GetBufferData(counterBufferHandle).Get(),
 		nullptr,
 		0
 	);
@@ -309,5 +331,4 @@ void BlockParticleStage::Draw()
 		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
 	);
-
 }

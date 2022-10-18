@@ -55,7 +55,7 @@ private:
 	{
 		DirectX::XMMATRIX cameraMat;
 		DirectX::XMMATRIX projectionMat;
-		DirectX::XMMATRIX bollboardMat;
+		DirectX::XMMATRIX billboardMat;
 		DirectX::XMFLOAT4 worldPos;
 		UINT vertMaxNum;
 		UINT indexMaxNum;

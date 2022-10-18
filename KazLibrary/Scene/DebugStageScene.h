@@ -37,7 +37,7 @@ private:
 	CameraWork cameraWork;
 	int stageNum;
 	std::array<std::shared_ptr<IStage>, 3>stages;
-	std::unique_ptr<GameRenderTarget> renderTarget;
+	std::array<std::unique_ptr<GameRenderTarget>, 3> renderTarget;
 
 	Sprite2DRender mainRenderTarget;
 

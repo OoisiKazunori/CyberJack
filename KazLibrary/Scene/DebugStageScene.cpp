@@ -19,12 +19,16 @@ DebugStageScene::DebugStageScene()
 	stages[1] = std::make_shared<RezStage>();
 	stages[2] = std::make_shared<BlockParticleStage>();
 
-	renderTarget = std::make_unique<GameRenderTarget>(KazMath::Color(29, 19, 72, 255));
-	mainRenderTarget.data.handleData = renderTarget->GetGameRenderTargetHandle();
+	renderTarget[0] = std::make_unique<GameRenderTarget>(KazMath::Color(29, 19, 72, 255));
+	renderTarget[1] = std::make_unique<GameRenderTarget>(KazMath::Color(29, 19, 72, 255));
+	renderTarget[2] = std::make_unique<GameRenderTarget>(KazMath::Color(0, 0, 0, 255));
+
+
 	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	stages[0]->startFlag = true;
 	stages[1]->startFlag = true;
-	CameraMgr::Instance()->CameraSetting(60.0f, 100000.0f, 0);
+
+	stageNum = 2;
 }
 
 DebugStageScene::~DebugStageScene()
@@ -102,12 +106,22 @@ void DebugStageScene::Input()
 	ImGui::Begin("Stage");
 	ImGui::InputInt("StageNum", &stageNum);
 	ImGui::End();
+
+	if (stageNum <= 0)
+	{
+		stageNum = 0;
+	}
+	if (stages.size() <= stageNum)
+	{
+		stageNum = static_cast<int>(stages.size() - 1);
+	}
 }
 
 void DebugStageScene::Update()
 {
 	eyePos = cameraWork.GetEyePos();
 	targetPos = cameraWork.GetTargetPos();
+	CameraMgr::Instance()->CameraSetting(60.0f, 100000.0f, 0);
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f });
 
 	player.Update();
@@ -116,19 +130,22 @@ void DebugStageScene::Update()
 	stages[stageNum]->Update();
 
 	//mapchipTool.Update();
+
+
+	mainRenderTarget.data.handleData = renderTarget[stageNum]->GetGameRenderTargetHandle();
 }
 
 void DebugStageScene::Draw()
 {
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 	RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
-	//renderTarget->SetRenderTarget();
+	renderTarget[stageNum]->SetRenderTarget();
 	player.Draw();
 	stages[stageNum]->Draw();
 	//mapchipTool.Draw();
-	//renderTarget->Draw();
+	renderTarget[stageNum]->Draw();
+	mainRenderTarget.Draw();
 
-	//mainRenderTarget.Draw();
 	cursor.Draw();
 }
 

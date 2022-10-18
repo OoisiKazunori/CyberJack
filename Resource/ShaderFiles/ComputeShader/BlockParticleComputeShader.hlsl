@@ -79,7 +79,10 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex, uint3 g
     //頂点座標の行列計算-------------------------
     }
 
-    float4 outputPos[12][10];
+    const int PERTICLE_MAX_NUM = 20;
+    const int PER_PERTICLE_NUM = PERTICLE_MAX_NUM / 12;
+
+    float4 outputPos[12][PER_PERTICLE_NUM];
     for (int indexArrayNum = 0; indexArrayNum < 12; ++indexArrayNum)
     {
         uint startIndex = indexData[indexArrayNum][0];
@@ -87,16 +90,16 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex, uint3 g
         float4 distance = vertWorldPos[endIndex] - vertWorldPos[startIndex];
 
         float4 perParticlePos = distance / 20.0f;
-        for (int i = 0; i < 10; ++i)
+        for (int i = 0; i < PER_PERTICLE_NUM; ++i)
         {
-            uint outPutIndex = (indexArrayNum * 10 + i) + index * 120;
+            uint outPutIndex = (indexArrayNum * PER_PERTICLE_NUM + i) + index * PERTICLE_MAX_NUM;
             //パーティクル単位の座標の書き込み
-            outputPos[indexArrayNum][i] = vertWorldPos[startIndex] + perParticlePos * RandVec3(outPutIndex + i, 20, 0).x;
+            outputPos[indexArrayNum][i] = vertWorldPos[startIndex] + perParticlePos * RandVec3(outPutIndex + i + groupThreadID.x, 20, 0).x;
         
             //出力用-------------------------
             OutputData outputMat;                       
             outputMat.pos.xyz = outputPos[indexArrayNum][i];
-            outputMat.color = float4(0.6, 0.6, 0.6, 1.0);
+            outputMat.color = float4(0.6, 0.6, 0.6, 0.6);
             matrixData[outPutIndex] = outputMat;
             //出力用-------------------------            
         }

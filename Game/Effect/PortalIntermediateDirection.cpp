@@ -190,7 +190,7 @@ PortalIntermediateDirection::PortalIntermediateDirection()
 	{
 		lData.cameraMat = CameraMgr::Instance()->GetViewMatrix();
 		lData.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
-		lData.bollboardMat = CameraMgr::Instance()->GetMatBillBoard();
+		lData.billboardMat = CameraMgr::Instance()->GetMatBillBoard();
 		lData.increSize = sizeof(ParticleData);
 		lData.gpuAddress = buffers->GetGpuAddress(outputBufferHandle);
 		lData.emittPos = { 0.0f,0.0f,0.0f,30.0f };
@@ -251,7 +251,7 @@ void PortalIntermediateDirection::Update(const KazMath::Vec3<float> &POS)
 	{
 		lData.cameraMat = CameraMgr::Instance()->GetViewMatrix();
 		lData.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
-		lData.bollboardMat = CameraMgr::Instance()->GetMatBillBoard();
+		lData.billboardMat = CameraMgr::Instance()->GetMatBillBoard();
 		lData.increSize = sizeof(ParticleData);
 		lData.gpuAddress = buffers->GetGpuAddress(outputBufferHandle);
 		lData.emittPos = { 0.0f,0.0f,0.0f,30.0f };
