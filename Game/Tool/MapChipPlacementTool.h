@@ -1,6 +1,8 @@
 #pragma once
 #include"../KazLibrary/Render/KazRender.h"
 #include"../KazLibrary/Collision/CollisionManager.h"
+#include"../Game/Debug/ParameterMgr.h"
+#include<string>
 
 /// <summary>
 /// 3D空間上のブロックを配置するツール
@@ -97,7 +99,7 @@ private:
 	RESOURCE_HANDLE instanceHandle;
 	RESOURCE_HANDLE instanceBoxHandle;
 
-	
+
 	std::array<MatData, matSize>lMatData;
 	std::array<MatData, BLOCK_MAX_NUM>blockMatData;
 	int matIndex = 0;
@@ -107,4 +109,31 @@ private:
 	const float REV_VALUE = -10000.0f;
 	const float CONTINE_VALUE = -5000.0f;
 
+
+	//ブロックの座標をファイルに書き込む処理---------------
+	ParameterMgr blockFileMgr;
+	std::string objectName;
+	std::string filePass;
+	//ブロックの座標をファイルに書き込む処理---------------
+
+	KazMath::Vec3<int>GetBlockIndex(const KazMath::Vec3<int> &INDEX)
+	{
+		KazMath::Vec3<float>basePos = blockPosArray[INDEX.x][INDEX.y][INDEX.z];
+		KazMath::Vec3<float>adjPos(basePos.x - BLOCK_SIZE * INDEX.x, basePos.y - BLOCK_SIZE * INDEX.y, basePos.z - BLOCK_SIZE * INDEX.z);
+
+		if (adjPos.x <= 0.0f)
+		{
+			adjPos.x = 0.0f;
+		}
+		if (adjPos.y <= 0.0f)
+		{
+			adjPos.y = 0.0f;
+		}
+		if (adjPos.z <= 0.0f)
+		{
+			adjPos.z = 0.0f;
+		}
+		KazMath::Vec3<int> lNum(static_cast<int>(adjPos.x / BLOCK_SIZE), static_cast<int>(adjPos.y / BLOCK_SIZE), static_cast<int>(adjPos.z / BLOCK_SIZE));
+		return lNum;
+	}
 };

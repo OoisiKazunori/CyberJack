@@ -2,8 +2,9 @@
 #include"../KazLibrary/Input/KeyBoradInputManager.h"
 #include"../KazLibrary/Imgui/MyImgui.h"
 #include"../KazLibrary/Helper/ResourceFilePass.h"
+#include"../KazLibrary/Helper/KazHelper.h"
 
-MapChipPlacementTool::MapChipPlacementTool() :BLOCK_SIZE(10.0f)
+MapChipPlacementTool::MapChipPlacementTool() :BLOCK_SIZE(10.0f), objectName("BlockIndex3"), filePass(KazFilePathName::StageParamPath + "blockPosData.json")
 {
 	instanceFlameRender = std::make_unique<BoxPolygonRender>(true, matSize);
 	instanceFlameRender->data.pipelineName = PIPELINE_NAME_INSTANCE_COLOR_WIREFLAME;
@@ -57,6 +58,23 @@ MapChipPlacementTool::MapChipPlacementTool() :BLOCK_SIZE(10.0f)
 	}
 
 	blockPosArray[0][0][0] = { 0.0f,0.0f,0.0f };
+
+	blockFileMgr.LoadFile(filePass);
+
+	//rapidjson::Document *lDoc = &blockFileMgr.doc;
+	//std::vector<std::vector<char>> lNameArray;
+	////パラメータから判断
+	//for (int blockNum = 0; blockNum < BLOCK_MAX_NUM; ++blockNum)
+	//{
+	//	rapidjson::Value lChild(rapidjson::kObjectType);
+	//	lChild.AddMember("X", 0, lDoc->GetAllocator());
+	//	lChild.AddMember("Y", 0, lDoc->GetAllocator());
+	//	lChild.AddMember("Z", 0, lDoc->GetAllocator());
+
+	//	lNameArray.push_back(KazHelper::CovertStringToChar(objectName + "_" + std::to_string(blockNum)));
+	//	blockFileMgr.doc.AddMember(rapidjson::GenericStringRef<char>(lNameArray[lNameArray.size() - 1].data()), lChild, lDoc->GetAllocator());
+	//}
+	//blockFileMgr.ExportFile(filePass);
 }
 
 void MapChipPlacementTool::Input(bool PUT_FLAG, bool RELEASE_FLAG, const DirectX::XMFLOAT2 &MOUSE_POS)
@@ -75,7 +93,6 @@ void MapChipPlacementTool::Input(bool PUT_FLAG, bool RELEASE_FLAG, const DirectX
 	ray.dir = dir;
 
 	cursorR.data.transform.pos = { MOUSE_POS.x,MOUSE_POS.y };
-
 }
 
 void MapChipPlacementTool::Init()
@@ -89,46 +106,46 @@ void MapChipPlacementTool::Update()
 		int u = 0;
 		u = 0;
 	}
-	int lBlockNum = 0;
-
-	putIndex = { 0,0,0 };
-	selectingIndex = { 0,0,0 };
-	//ブロックとレイとの判定
-	for (int x = 0; x < blockPosArray.size(); ++x)
 	{
-		for (int y = 0; y < blockPosArray[x].size(); ++y)
+		int lBlockNum = 0;
+		putIndex = { 0,0,0 };
+		selectingIndex = { 0,0,0 };
+		//ブロックとレイとの判定
+		for (int x = 0; x < blockPosArray.size(); ++x)
 		{
-			for (int z = 0; z < blockPosArray[x][y].size(); ++z)
+			for (int y = 0; y < blockPosArray[x].size(); ++y)
 			{
-				if (blockPosArray[x][y][z].x != REV_VALUE)
+				for (int z = 0; z < blockPosArray[x][y].size(); ++z)
 				{
-					blockMatData[lBlockNum].mat = KazMath::CaluMat(
-						KazMath::Transform3D(blockPosArray[x][y][z], { BLOCK_SIZE,BLOCK_SIZE ,BLOCK_SIZE }, {}),
-						CameraMgr::Instance()->GetViewMatrix(),
-						CameraMgr::Instance()->GetPerspectiveMatProjection(),
-						{ 0,1,0 },
-						{ 0,0,1 }
-					);
+					if (blockPosArray[x][y][z].x != REV_VALUE)
+					{
+						blockMatData[lBlockNum].mat = KazMath::CaluMat(
+							KazMath::Transform3D(blockPosArray[x][y][z], { BLOCK_SIZE,BLOCK_SIZE ,BLOCK_SIZE }, {}),
+							CameraMgr::Instance()->GetViewMatrix(),
+							CameraMgr::Instance()->GetPerspectiveMatProjection(),
+							{ 0,1,0 },
+							{ 0,0,1 }
+						);
 
-					blockMatData[lBlockNum].color = { 0.0f,1.0f,0.0f,1.0f };
-					++lBlockNum;
-				}
-				else
-				{
-					continue;
-				}
+						blockMatData[lBlockNum].color = { 0.0f,1.0f,0.0f,1.0f };
+						++lBlockNum;
+					}
+					else
+					{
+						continue;
+					}
 
-				MESH_DIR lDir;
-				if ((lDir = CheckBlock(blockPosArray[x][y][z])) != NONE)
-				{
-					selectR.data.transform.pos = blockPosArray[x][y][z];
-					selectingIndex = KazMath::Vec3<int>(x, y, z);
-					putIndex = selectingIndex + AdjIndex(lDir);
+					MESH_DIR lDir;
+					if ((lDir = CheckBlock(blockPosArray[x][y][z])) != NONE)
+					{
+						selectR.data.transform.pos = blockPosArray[x][y][z];
+						selectingIndex = KazMath::Vec3<int>(x, y, z);
+						putIndex = selectingIndex + AdjIndex(lDir);
+					}
 				}
 			}
 		}
 	}
-
 
 	ImGui::Begin("MapChipPlacementTool");
 	//現在指定しているブロックの座標
@@ -138,7 +155,50 @@ void MapChipPlacementTool::Update()
 	KazImGuiHelper::InputVec3("EndPutBlockInOnce", &endBlockPutInOnceSize);
 	bool lPutFlag = ImGui::Button("Put");
 	ImGui::Text("PutPos,X:%d,Y:%d,Z:%d", putIndex.x, putIndex.y, putIndex.z);
+	bool lExportFlag = ImGui::Button("Export");
+	bool lImportFlag = ImGui::Button("Import");
 	ImGui::End();
+
+	if (lExportFlag)
+	{
+		int lBlockNum = 0;
+		for (int x = 0; x < blockPosArray.size(); ++x)
+		{
+			for (int y = 0; y < blockPosArray[x].size(); ++y)
+			{
+				for (int z = 0; z < blockPosArray[x][y].size(); ++z)
+				{
+					if (blockPosArray[x][y][z].x == REV_VALUE)
+					{
+						continue;
+					}
+					std::string name = objectName + "_" + std::to_string(lBlockNum);
+
+					KazMath::Vec3<int> lNum(GetBlockIndex(KazMath::Vec3<int>(x, y, z)));
+
+					blockFileMgr.doc[name.c_str()]["X"].SetInt(lNum.x);
+					blockFileMgr.doc[name.c_str()]["Y"].SetInt(lNum.y);
+					blockFileMgr.doc[name.c_str()]["Z"].SetInt(lNum.z);
+					++lBlockNum;
+				}
+			}
+		}
+		blockFileMgr.ExportFile(filePass);
+	}
+	if (lImportFlag)
+	{
+		for (int i = 0; i < BLOCK_MAX_NUM; ++i)
+		{
+			std::string name = objectName + "_" + std::to_string(i);
+			KazMath::Vec3<int> lNum(
+				blockFileMgr.doc[name.c_str()]["X"].GetInt(),
+				blockFileMgr.doc[name.c_str()]["Y"].GetInt(),
+				blockFileMgr.doc[name.c_str()]["Z"].GetInt()
+			);
+			blockPosArray[lNum.x][lNum.y][lNum.z] = { lNum.x * (BLOCK_SIZE * 2.0f),lNum.y * (BLOCK_SIZE * 2.0f),lNum.z * (BLOCK_SIZE * 2.0f) };
+		}
+	}
+
 
 	//一括配置の処理
 	if (lPutFlag)
@@ -211,6 +271,9 @@ void MapChipPlacementTool::Update()
 	//}
 	//instanceFlameRender->TransData(lMatData.data(), instanceHandle, typeid(MatData).name());
 	instanceBoxRender->TransData(blockMatData.data(), instanceBoxHandle, typeid(MatData).name());
+
+
+
 
 }
 
