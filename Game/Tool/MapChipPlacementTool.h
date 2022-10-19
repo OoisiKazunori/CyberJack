@@ -11,7 +11,7 @@ class MapChipPlacementTool
 {
 	static const int BLOCK_MAX_NUM = 6000;
 	static const KazMath::Vec3<float> MAP_SIZE;
-	typedef std::array<KazMath::Vec3<float>, 100> Z_ARRAY;
+	typedef std::array<KazMath::Vec3<float>, 200> Z_ARRAY;
 	typedef std::array<Z_ARRAY, 30> Y_ARRAY;
 	typedef std::array<Y_ARRAY, 100> POS_ARRAY;
 

@@ -42,5 +42,6 @@ private:
 	Sprite2DRender mainRenderTarget;
 
 	MapChipPlacementTool mapchipTool;
+	bool toolModeFlag;
 };
 

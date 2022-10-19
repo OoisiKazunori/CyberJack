@@ -40,7 +40,7 @@ void DebugStageScene::Init()
 	player.Init({ 0.0f,0.0f,15.0f }, false, false);
 	cameraWork.Init();
 	cursor.Init();
-	//mapchipTool.Init();
+	mapchipTool.Init();
 }
 
 void DebugStageScene::Finalize()
@@ -100,11 +100,10 @@ void DebugStageScene::Input()
 		joyStick
 	);
 
-	mapchipTool.Input(input->MouseInputTrigger(MOUSE_INPUT_LEFT), input->MouseInputTrigger(MOUSE_INPUT_RIGHT), input->GetMousePoint());
-
 
 	ImGui::Begin("Stage");
 	ImGui::InputInt("StageNum", &stageNum);
+	ImGui::Checkbox("ToolMode", &toolModeFlag);
 	ImGui::End();
 
 	if (stageNum <= 0)
@@ -114,6 +113,11 @@ void DebugStageScene::Input()
 	if (stages.size() <= stageNum)
 	{
 		stageNum = static_cast<int>(stages.size() - 1);
+	}
+
+	if (toolModeFlag)
+	{
+		mapchipTool.Input(input->MouseInputTrigger(MOUSE_INPUT_LEFT), input->MouseInputTrigger(MOUSE_INPUT_RIGHT), input->GetMousePoint());
 	}
 }
 
@@ -127,10 +131,14 @@ void DebugStageScene::Update()
 	player.Update();
 	cursor.Update();
 	cameraWork.Update(cursor.GetValue(), &player.pos, true);
-	stages[stageNum]->Update();
-
-	//mapchipTool.Update();
-
+	if (toolModeFlag)
+	{
+		mapchipTool.Update();
+	}
+	else
+	{
+		stages[stageNum]->Update();
+	}
 
 	mainRenderTarget.data.handleData = renderTarget[stageNum]->GetGameRenderTargetHandle();
 }
@@ -141,12 +149,22 @@ void DebugStageScene::Draw()
 	RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
 	renderTarget[stageNum]->SetRenderTarget();
 	player.Draw();
-	stages[stageNum]->Draw();
-	//mapchipTool.Draw();
+	
+	if (toolModeFlag)
+	{
+		mapchipTool.Draw();
+	}
+	else
+	{
+		stages[stageNum]->Draw();
+	}
 	renderTarget[stageNum]->Draw();
 	mainRenderTarget.Draw();
 
-	cursor.Draw();
+	if (!toolModeFlag)
+	{
+		cursor.Draw();
+	}
 }
 
 int DebugStageScene::SceneChange()

@@ -108,6 +108,9 @@ void MapChipPlacementTool::Update()
 		int u = 0;
 		u = 0;
 	}
+	bool maxBlockFlag = false;
+
+	int lMaxCountNum = 0;
 	{
 		int lBlockNum = 0;
 		putIndex = { 0,0,0 };
@@ -119,21 +122,21 @@ void MapChipPlacementTool::Update()
 			{
 				for (int z = 0; z < blockPosArray[x][y].size(); ++z)
 				{
-					if (blockPosArray[x][y][z].x != REV_VALUE)
+					if (BLOCK_MAX_NUM <= lMaxCountNum)
 					{
-						blockMatData[lBlockNum].mat = KazMath::CaluMat(
-							KazMath::Transform3D(blockPosArray[x][y][z], { 5.0f,5.0f,5.0f }, {}),
-							CameraMgr::Instance()->GetViewMatrix(),
-							CameraMgr::Instance()->GetPerspectiveMatProjection(),
-							{ 0,1,0 },
-							{ 0,0,1 }
-						);
-						++lBlockNum;
+						maxBlockFlag = true;
+						break;
 					}
-					else
+					if (blockPosArray[x][y][z].x == REV_VALUE)
 					{
 						continue;
 					}
+
+					KazMath::Vec3<float>lYVec(0, 1, 0);
+					KazMath::Vec3<float>lZVec(0, 0, 1);
+					blockMatData[lBlockNum].mat = KazMath::CaluWorld(KazMath::Transform3D(blockPosArray[x][y][z], KazMath::Vec3<float>(5.0f, 5.0f, 5.0f), {}), lYVec, lZVec);
+					++lBlockNum;
+					++lMaxCountNum;
 
 					MESH_DIR lDir;
 					if ((lDir = CheckBlock(blockPosArray[x][y][z])) != NONE)
@@ -145,12 +148,23 @@ void MapChipPlacementTool::Update()
 				}
 			}
 		}
+
+		bool debug = false;
+		debug = true;
 	}
 
 	ImGui::Begin("MapChipPlacementTool");
 	//現在指定しているブロックの座標
 	ImGui::Text("selectingIndex,X:%d,Y:%d,Z:%d", selectingIndex.x, selectingIndex.y, selectingIndex.z);
 	ImGui::Text("PutPos,X:%d,Y:%d,Z:%d", putIndex.x, putIndex.y, putIndex.z);
+	if (maxBlockFlag)
+	{
+		ImGui::Text("Max!!");
+	}
+	else
+	{
+		ImGui::Text("Block:%d/%d", lMaxCountNum, BLOCK_MAX_NUM);
+	}
 	//一括配置
 	KazImGuiHelper::InputVec3("StartPutBlockInOnce", &startBlockPutInOnceSize);
 	KazImGuiHelper::InputVec3("EndPutBlockInOnce", &endBlockPutInOnceSize);
@@ -286,6 +300,13 @@ void MapChipPlacementTool::Update()
 	//	}
 	//}
 	//instanceFlameRender->TransData(lMatData.data(), instanceHandle, typeid(MatData).name());
+
+	for (int i = 0; i < blockMatData.size(); ++i)
+	{
+		blockMatData[i].mat *= CameraMgr::Instance()->GetViewMatrix();
+		blockMatData[i].mat *= CameraMgr::Instance()->GetPerspectiveMatProjection();
+	}
+
 	instanceObjRender->TransData(blockMatData.data(), instanceBoxHandle, typeid(MatData).name());
 
 }

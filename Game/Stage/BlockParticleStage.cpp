@@ -209,7 +209,7 @@ BlockParticleStage::BlockParticleStage()
 			);
 
 			lData[i].pos = {
-				static_cast<float>(lNum.x) * (lSize * 2.0f),
+				static_cast<float>(lNum.x) * (lSize * 2.0f) - 50.0f,
 				static_cast<float>(lNum.y) * (lSize * 2.0f),
 				static_cast<float>(lNum.z) * (lSize * 2.0f),
 				0.0f
