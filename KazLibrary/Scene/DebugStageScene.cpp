@@ -28,7 +28,7 @@ DebugStageScene::DebugStageScene()
 	stages[0]->startFlag = true;
 	stages[1]->startFlag = true;
 
-	stageNum = 2;
+	stageNum = 0;
 }
 
 DebugStageScene::~DebugStageScene()
@@ -127,9 +127,9 @@ void DebugStageScene::Update()
 	player.Update();
 	cursor.Update();
 	cameraWork.Update(cursor.GetValue(), &player.pos, true);
-	//stages[stageNum]->Update();
+	stages[stageNum]->Update();
 
-	mapchipTool.Update();
+	//mapchipTool.Update();
 
 
 	mainRenderTarget.data.handleData = renderTarget[stageNum]->GetGameRenderTargetHandle();
@@ -141,8 +141,8 @@ void DebugStageScene::Draw()
 	RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
 	renderTarget[stageNum]->SetRenderTarget();
 	player.Draw();
-	//stages[stageNum]->Draw();
-	mapchipTool.Draw();
+	stages[stageNum]->Draw();
+	//mapchipTool.Draw();
 	renderTarget[stageNum]->Draw();
 	mainRenderTarget.Draw();
 

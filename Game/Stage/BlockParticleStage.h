@@ -3,6 +3,7 @@
 #include"../Game/Interface/IStage.h"
 #include<array>
 #include<vector>
+#include"../Game/Debug/ParameterMgr.h"
 
 class BlockParticleStage :public IStage
 {
@@ -25,7 +26,7 @@ private:
 	RESOURCE_HANDLE outputInitViewHandle, outputViewHandle, particleDataViewHandle;
 	//バッファ
 
-	static const int PARTICLE_MAX_NUM = 7000;
+	static const int PARTICLE_MAX_NUM = 6000;
 	static const int PER_USE_PARTICLE_MAX_NUM = 20;
 	static const int DRAW_CALL = 1;
 
@@ -72,5 +73,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12CommandSignature> commandSig;
 	CommonMoveData constBufferData;
 	int num;
+
+	ParameterMgr blockFileMgr;
 };
 

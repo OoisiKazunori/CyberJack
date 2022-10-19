@@ -156,8 +156,8 @@ BlockParticleStage::BlockParticleStage()
 
 
 	{
-		float space = 2.1f;
 		std::array<ParticleData, PARTICLE_MAX_NUM>lData;
+		/*float space = 2.1f;
 		int index = 0;
 
 		int maxNum = PARTICLE_MAX_NUM / 2;
@@ -195,6 +195,25 @@ BlockParticleStage::BlockParticleStage()
 		for (int i = 0; i < lData.size(); ++i)
 		{
 			lData[i].pos.z += -150.0f;
+		}*/
+
+		std::string lObjectName = "BlockIndex3";
+		blockFileMgr.LoadFile(KazFilePathName::StageParamPath + "blockPosData.json");
+		for (int i = 0; i < PARTICLE_MAX_NUM; ++i)
+		{
+			std::string name = lObjectName + "_" + std::to_string(i);
+			KazMath::Vec3<int> lNum(
+				blockFileMgr.doc[name.c_str()]["X"].GetInt(),
+				blockFileMgr.doc[name.c_str()]["Y"].GetInt(),
+				blockFileMgr.doc[name.c_str()]["Z"].GetInt()
+			);
+
+			lData[i].pos = {
+				static_cast<float>(lNum.x) * (lSize * 2.0f),
+				static_cast<float>(lNum.y) * (lSize * 2.0f),
+				static_cast<float>(lNum.z) * (lSize * 2.0f),
+				0.0f
+			};
 		}
 		buffers->TransData(particleDataHandle, lData.data(), sizeof(ParticleData) * PARTICLE_MAX_NUM);
 	}
