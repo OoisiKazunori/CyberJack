@@ -314,7 +314,7 @@ PreCreateBaseRootSignature::PreCreateBaseRootSignature()
 
 		lineData.paramData[1].param = 1;
 		lineData.paramData[1].type = GRAPHICS_PRAMTYPE_DATA2;
-		lineData.range[1] = GRAPHICS_RANGE_TYPE_CBV;
+		lineData.range[1] = GRAPHICS_RANGE_TYPE_UAV;
 
 		lineData.paramData[2].param = 2;
 		lineData.paramData[2].type = GRAPHICS_PRAMTYPE_TEX;

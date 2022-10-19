@@ -3,6 +3,7 @@
 #include"../KazLibrary/Imgui/MyImgui.h"
 #include"../KazLibrary/Helper/ResourceFilePass.h"
 #include"../KazLibrary/Helper/KazHelper.h"
+#include"../KazLibrary/DirectXCommon/Base.h"
 
 MapChipPlacementTool::MapChipPlacementTool() :BLOCK_SIZE(10.0f), objectName("BlockIndex3"), filePass(KazFilePathName::StageParamPath + "blockPosData.json")
 {
@@ -24,15 +25,6 @@ MapChipPlacementTool::MapChipPlacementTool() :BLOCK_SIZE(10.0f), objectName("Blo
 				{ 0,1,0 },
 				{ 0,0,1 }
 			);
-
-			if (x % 10 == 0)
-			{
-				lMatData[matIndex].color = { 155,0,0,255 };
-			}
-			else
-			{
-				lMatData[matIndex].color = { 155,155,155,255 };
-			}
 			++matIndex;
 		}
 	}
@@ -40,10 +32,20 @@ MapChipPlacementTool::MapChipPlacementTool() :BLOCK_SIZE(10.0f), objectName("Blo
 	cursorR.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "tex.png");
 
 
-
-	instanceBoxRender = std::make_unique<BoxPolygonRender>(true, BLOCK_MAX_NUM);
-	instanceBoxRender->data.pipelineName = PIPELINE_NAME_INSTANCE_COLOR_WIREFLAME;
-	instanceBoxHandle = instanceBoxRender->CreateConstBuffer(sizeof(MatData) * BLOCK_MAX_NUM, typeid(MatData).name(), GRAPHICS_RANGE_TYPE_UAV, GRAPHICS_PRAMTYPE_DATA);
+	//配置したブロックがどれか分かる用の描画準備--------------------------------------------
+	instanceObjRender = std::make_unique<ObjModelRender>(true, BLOCK_MAX_NUM, true);
+	instanceObjRender->data.pipelineName = PIPELINE_NAME_INSTANCE_OBJ;
+	instanceObjRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "testPlacementBlock.obj");
+	{
+		RESOURCE_HANDLE lHandle = instanceObjRender->CreateConstBuffer(sizeof(ConstBufferDataB1), typeid(ConstBufferDataB1).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+		ConstBufferDataB1 lData;
+		lData.alpha = 1.0f;
+		lData.ambient = { 0.0f,0.0f,0.0f };
+		lData.diffuse = { 0.0f,0.0f,0.0f };
+		instanceObjRender->TransData(&lData, lHandle, typeid(ConstBufferDataB1).name());
+	}
+	instanceBoxHandle = instanceObjRender->CreateConstBuffer(sizeof(MatData) * BLOCK_MAX_NUM, typeid(MatData).name(), GRAPHICS_RANGE_TYPE_UAV, GRAPHICS_PRAMTYPE_DATA2);
+	//配置したブロックがどれか分かる用の描画準備--------------------------------------------
 
 
 	for (int x = 0; x < blockPosArray.size(); ++x)
@@ -120,14 +122,12 @@ void MapChipPlacementTool::Update()
 					if (blockPosArray[x][y][z].x != REV_VALUE)
 					{
 						blockMatData[lBlockNum].mat = KazMath::CaluMat(
-							KazMath::Transform3D(blockPosArray[x][y][z], { BLOCK_SIZE,BLOCK_SIZE ,BLOCK_SIZE }, {}),
+							KazMath::Transform3D(blockPosArray[x][y][z], { 5.0f,5.0f,5.0f }, {}),
 							CameraMgr::Instance()->GetViewMatrix(),
 							CameraMgr::Instance()->GetPerspectiveMatProjection(),
 							{ 0,1,0 },
 							{ 0,0,1 }
 						);
-
-						blockMatData[lBlockNum].color = { 0.0f,1.0f,0.0f,1.0f };
 						++lBlockNum;
 					}
 					else
@@ -150,12 +150,15 @@ void MapChipPlacementTool::Update()
 	ImGui::Begin("MapChipPlacementTool");
 	//現在指定しているブロックの座標
 	ImGui::Text("selectingIndex,X:%d,Y:%d,Z:%d", selectingIndex.x, selectingIndex.y, selectingIndex.z);
+	ImGui::Text("PutPos,X:%d,Y:%d,Z:%d", putIndex.x, putIndex.y, putIndex.z);
 	//一括配置
 	KazImGuiHelper::InputVec3("StartPutBlockInOnce", &startBlockPutInOnceSize);
 	KazImGuiHelper::InputVec3("EndPutBlockInOnce", &endBlockPutInOnceSize);
 	bool lPutFlag = ImGui::Button("Put");
-	ImGui::Text("PutPos,X:%d,Y:%d,Z:%d", putIndex.x, putIndex.y, putIndex.z);
+	ImGui::SameLine();
+	bool lDeleteFlag = ImGui::Button("Delete");
 	bool lExportFlag = ImGui::Button("Export");
+	ImGui::SameLine();
 	bool lImportFlag = ImGui::Button("Import");
 	ImGui::End();
 
@@ -210,6 +213,19 @@ void MapChipPlacementTool::Update()
 				for (int z = startBlockPutInOnceSize.z; z < endBlockPutInOnceSize.z; ++z)
 				{
 					blockPosArray[x][y][z] = { x * (BLOCK_SIZE * 2.0f),y * (BLOCK_SIZE * 2.0f),z * (BLOCK_SIZE * 2.0f) };
+				}
+			}
+		}
+	}
+	if (lDeleteFlag)
+	{
+		for (int x = startBlockPutInOnceSize.x; x < endBlockPutInOnceSize.x; ++x)
+		{
+			for (int y = startBlockPutInOnceSize.y; y < endBlockPutInOnceSize.y; ++y)
+			{
+				for (int z = startBlockPutInOnceSize.z; z < endBlockPutInOnceSize.z; ++z)
+				{
+					blockPosArray[x][y][z] = { CONTINE_VALUE,0.0f,0.0f };
 				}
 			}
 		}
@@ -270,17 +286,14 @@ void MapChipPlacementTool::Update()
 	//	}
 	//}
 	//instanceFlameRender->TransData(lMatData.data(), instanceHandle, typeid(MatData).name());
-	instanceBoxRender->TransData(blockMatData.data(), instanceBoxHandle, typeid(MatData).name());
-
-
-
+	instanceObjRender->TransData(blockMatData.data(), instanceBoxHandle, typeid(MatData).name());
 
 }
 
 void MapChipPlacementTool::Draw()
 {
 	//instanceFlameRender->Draw();
-	instanceBoxRender->Draw();
+	instanceObjRender->Draw();
 	selectR.Draw();
 
 	//cursorR.Draw();

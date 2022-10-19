@@ -91,11 +91,10 @@ private:
 
 	struct MatData
 	{
-		DirectX::XMFLOAT4 color;
 		DirectX::XMMATRIX mat;
 	};
 	BoxPolygonRenderPtr instanceFlameRender;
-	BoxPolygonRenderPtr instanceBoxRender;
+	ObjModelRenderPtr instanceObjRender;
 	RESOURCE_HANDLE instanceHandle;
 	RESOURCE_HANDLE instanceBoxHandle;
 

@@ -16,7 +16,7 @@ cbuffer cbuff2 : register(b2)
 VSOutput VSmain(float4 pos : POSITION, float3 normal : NORMAL, float2 uv : TEXCOORD, uint id : SV_InstanceID)
 {
     VSOutput op;
-    op.svpos = mul(mul(lightCameraViewProj[id].lightCameraViewProj, matrixData[id].matData), pos);
+    op.svpos = mul(mul(lightCameraViewProj[id].lightCameraViewProj, uavMatData[id].matData), pos);
     op.normal = normal;
     op.uv = uv;
     return op;
