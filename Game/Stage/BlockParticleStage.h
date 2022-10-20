@@ -75,5 +75,7 @@ private:
 	int num;
 
 	ParameterMgr blockFileMgr;
+
+	BoxPolygonRender box;
 };
 

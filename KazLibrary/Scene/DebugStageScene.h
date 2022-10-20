@@ -37,11 +37,16 @@ private:
 	CameraWork cameraWork;
 	int stageNum;
 	std::array<std::shared_ptr<IStage>, 3>stages;
+	std::shared_ptr<IStage> stage2;
 	std::array<std::unique_ptr<GameRenderTarget>, 3> renderTarget;
 
 	Sprite2DRender mainRenderTarget;
 
 	MapChipPlacementTool mapchipTool;
 	bool toolModeFlag;
+	bool isLoadFlag;
+
+	bool gameCameraFlag;
+	int dir;
 };
 

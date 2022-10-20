@@ -45,7 +45,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     updateData[outPutIndex].pos.z -= 1.0f;
     if(updateData[outPutIndex].pos.z <= -150.0f)
     {
-        updateData[outPutIndex].pos.z = 80.0f;
+        updateData[outPutIndex].pos.z = 1800.0f;
     }
     //ˆÚ“®--------------------------------------------
 
@@ -75,7 +75,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     //s—ñŒvŽZ-------------------------
     matrix pMatTrans = Translate(updateData[outPutIndex].pos.xyz);
     matrix pMatRot = Rotate(float3(0.0f,0.0f,0.0f));
-    float scale = 0.1f;
+    float scale = 1.0f;
     matrix pMatScale = Scale(float3(scale, scale, scale));
     
     matrix pMatWorld = MatrixIdentity();

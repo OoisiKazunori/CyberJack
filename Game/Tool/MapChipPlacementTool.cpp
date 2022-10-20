@@ -77,6 +77,7 @@ MapChipPlacementTool::MapChipPlacementTool() :BLOCK_SIZE(10.0f), objectName("Blo
 	//	blockFileMgr.doc.AddMember(rapidjson::GenericStringRef<char>(lNameArray[lNameArray.size() - 1].data()), lChild, lDoc->GetAllocator());
 	//}
 	//blockFileMgr.ExportFile(filePass);
+
 }
 
 void MapChipPlacementTool::Input(bool PUT_FLAG, bool RELEASE_FLAG, const DirectX::XMFLOAT2 &MOUSE_POS)
@@ -99,6 +100,7 @@ void MapChipPlacementTool::Input(bool PUT_FLAG, bool RELEASE_FLAG, const DirectX
 
 void MapChipPlacementTool::Init()
 {
+	isLoadFlag = false;
 }
 
 void MapChipPlacementTool::Update()
@@ -136,7 +138,11 @@ void MapChipPlacementTool::Update()
 					KazMath::Vec3<float>lZVec(0, 0, 1);
 					blockMatData[lBlockNum].mat = KazMath::CaluWorld(KazMath::Transform3D(blockPosArray[x][y][z], KazMath::Vec3<float>(5.0f, 5.0f, 5.0f), {}), lYVec, lZVec);
 					++lBlockNum;
-					++lMaxCountNum;
+					if (blockPosArray[x][y][z].x != CONTINE_VALUE)
+					{
+						++lMaxCountNum;
+					}
+
 
 					MESH_DIR lDir;
 					if ((lDir = CheckBlock(blockPosArray[x][y][z])) != NONE)
@@ -200,6 +206,8 @@ void MapChipPlacementTool::Update()
 				}
 			}
 		}
+
+		isLoadFlag = true;
 		blockFileMgr.ExportFile(filePass);
 	}
 	if (lImportFlag)

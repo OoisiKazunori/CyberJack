@@ -29,6 +29,8 @@ DebugStageScene::DebugStageScene()
 	stages[1]->startFlag = true;
 
 	stageNum = 0;
+
+	//stage2 = std::make_shared<BlockParticleStage>();
 }
 
 DebugStageScene::~DebugStageScene()
@@ -104,7 +106,11 @@ void DebugStageScene::Input()
 	ImGui::Begin("Stage");
 	ImGui::InputInt("StageNum", &stageNum);
 	ImGui::Checkbox("ToolMode", &toolModeFlag);
+	ImGui::Checkbox("CameraModeFlag", &gameCameraFlag);
+	ImGui::InputInt("CameraDir", &dir);
 	ImGui::End();
+
+	cameraWork.ForceCamera(static_cast<KazEnemyHelper::CameraDir>(dir));
 
 	if (stageNum <= 0)
 	{
@@ -130,14 +136,30 @@ void DebugStageScene::Update()
 
 	player.Update();
 	cursor.Update();
-	cameraWork.Update(cursor.GetValue(), &player.pos, true);
+
+	
+	cameraWork.Update(cursor.GetValue(), &player.pos, gameCameraFlag);
 	if (toolModeFlag)
 	{
 		mapchipTool.Update();
+		if (mapchipTool.isLoadFlag)
+		{
+			isLoadFlag = true;
+		}
 	}
 	else
 	{
+		if (isLoadFlag)
+		{
+			mapchipTool.Init();
+			stages[stageNum].reset();
+			stages[stageNum] = std::make_unique<BlockParticleStage>();
+			isLoadFlag = false;
+		}
 		stages[stageNum]->Update();
+
+
+		//stage2->Update();
 	}
 
 	mainRenderTarget.data.handleData = renderTarget[stageNum]->GetGameRenderTargetHandle();
@@ -163,6 +185,7 @@ void DebugStageScene::Draw()
 
 	if (!toolModeFlag)
 	{
+		//stage2->Draw();
 		cursor.Draw();
 	}
 }

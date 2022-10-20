@@ -27,6 +27,8 @@ public:
 		return blockPosArray;
 	};
 
+	bool isLoadFlag;
+
 private:
 	POS_ARRAY blockPosArray;
 

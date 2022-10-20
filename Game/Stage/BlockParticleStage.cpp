@@ -35,7 +35,7 @@ BlockParticleStage::BlockParticleStage()
 	}
 
 	//static const int VERT_MAX_NUM = 200;
-	const float lSize = 1.0f;
+	const float lSize = 10.0f;
 	Vertex lVertices[] =
 	{
 		//x,y,z	ñ@ê¸	u,v
@@ -209,8 +209,8 @@ BlockParticleStage::BlockParticleStage()
 			);
 
 			lData[i].pos = {
-				static_cast<float>(lNum.x) * (lSize * 2.0f) - 50.0f,
-				static_cast<float>(lNum.y) * (lSize * 2.0f),
+				static_cast<float>(lNum.x) * (lSize * 2.0f) - lSize * 30.0f,
+				static_cast<float>(lNum.y) * (lSize * 2.0f) - lSize * 30.0f,
 				static_cast<float>(lNum.z) * (lSize * 2.0f),
 				0.0f
 			};
@@ -283,6 +283,16 @@ BlockParticleStage::BlockParticleStage()
 	DirectX12CmdList::Instance()->cmdList->Dispatch(PARTICLE_MAX_NUM, 1, 1);
 
 	constBufferData.flash.x = 0.0f;
+
+
+	box.data.pipelineName = PIPELINE_NAME_COLOR_MULTITEX;
+	box.data.transform.pos = { 0.0f,0.0f,1800.0f };
+	box.data.color.color = { 155,155,155,255 };
+	box.data.transform.scale = { 100.0f,100.0f,1.0f };
+
+	RESOURCE_HANDLE lHandle = box.CreateConstBuffer(sizeof(DirectX::XMFLOAT4), typeid(DirectX::XMFLOAT4).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+	DirectX::XMFLOAT4 lColor = { 1.0f,0.0f,0.0f,1.0f };
+	box.TransData(&lColor, lHandle, typeid(DirectX::XMFLOAT4).name());
 }
 
 BlockParticleStage::~BlockParticleStage()
@@ -350,4 +360,7 @@ void BlockParticleStage::Draw()
 		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
 	);
+
+	
+	box.Draw();
 }
