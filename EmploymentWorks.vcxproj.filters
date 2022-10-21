@@ -143,6 +143,7 @@
     <ClCompile Include="KazLibrary\Buffer\UavViewHandleMgr.cpp" />
     <ClCompile Include="Game\Tool\MapChipPlacementTool.cpp" />
     <ClCompile Include="KazLibrary\Scene\DebugStageScene.cpp" />
+    <ClCompile Include="Game\Effect\GalacticParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -300,6 +301,7 @@
     <ClInclude Include="KazLibrary\Buffer\UavViewHandleMgr.h" />
     <ClInclude Include="Game\Tool\MapChipPlacementTool.h" />
     <ClInclude Include="KazLibrary\Scene\DebugStageScene.h" />
+    <ClInclude Include="Game\Effect\GalacticParticle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

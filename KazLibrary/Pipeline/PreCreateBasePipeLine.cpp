@@ -331,6 +331,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	//コンピュートシェーダーのコンパイル
 	//pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "TestComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_TEST);
 	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "FloorParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_FLOORPARTICLE);
+	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "FloorParticleMoveComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_FLOORPARTICLE_MOVE);
 	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "BlockParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_BLOCKPARTICLE);
 	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "PortalLineComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_PORTALLINE);
 	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "PortalLineMoveComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_PORTALLINE_MOVE);
@@ -1441,8 +1442,15 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 		SHADER_COMPUTE_FLOORPARTICLE,
 		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_DRAW_UAB_CB,
+		ROOTSIGNATURE_DATA_UAV,
 		PIPELINE_COMPUTE_NAME_FLOORPARTICLE
+	);
+
+	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+		SHADER_COMPUTE_FLOORPARTICLE_MOVE,
+		PIPELINE_COMPUTE_DATA_TEST,
+		ROOTSIGNATURE_DATA_DRAW_UAB_CB,
+		PIPELINE_COMPUTE_NAME_FLOORPARTICLE_MOVE
 	);
 
 	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
