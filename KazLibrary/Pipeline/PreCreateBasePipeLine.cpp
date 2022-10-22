@@ -345,6 +345,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ColorTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_COLOR_MULTITEX);
+	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorMultiPassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_COLOR_MULTITEX);
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "SpriteTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_MULTITEX);
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ObjTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ_MULTITEX);
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GoalLightTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_GOALLIGHT_MULTITEX);
@@ -2139,6 +2140,16 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		ROOTSIGNATURE_DATA_DRAW_DATA1,
 		PIPELINE_NAME_COLOR_MULTITEX
 	);
+
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS,
+		SHADER_VERTEX_INSTANCE_COLOR,
+		SHADER_PIXCEL_INSTANCE_COLOR_MULTITEX,
+		PIPELINE_DATA_NOCARING_ALPHABLEND_RNEDERTARGET_SECOND,
+		ROOTSIGNATURE_DATA_UAV_CB,
+		PIPELINE_NAME_INSTANCE_COLOR_MULTITEX
+	);
+
 	//ƒtƒHƒO
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
