@@ -99,44 +99,47 @@ GalacticParticle::GalacticParticle()
 
 
 
-	for (int i = 0; i < box.size(); ++i)
+	box = std::make_unique<BoxPolygonRender>(true, BOX_MAX_NUM);
+	box->data.pipelineName = PIPELINE_NAME_INSTANCE_COLOR;
+
+	/*RESOURCE_HANDLE lHandle = box->CreateConstBuffer(sizeof(DirectX::XMFLOAT4), typeid(DirectX::XMFLOAT4).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+	DirectX::XMFLOAT4 lColor = { 1.0f,0.0f,0.0f,1.0f };
+	box->TransData(&lColor, lHandle, typeid(DirectX::XMFLOAT4).name());*/
+
+	instanceBufferHandle = box->CreateConstBuffer(sizeof(MatData) * BOX_MAX_NUM, typeid(MatData).name(), GRAPHICS_RANGE_TYPE_UAV, GRAPHICS_PRAMTYPE_DATA);
+
+
+	//ãÛíÜÇ…éUÇÁÇŒÇÈãÈå`ÇÃèâä˙âªèàóù
+	for (int i = 0; i < boxDataArray.size(); ++i)
 	{
-		box[i].data.transform.pos = 
+		boxDataArray[i].transform.pos =
 		{
 			0.0f,
 			KazMath::Rand(5000.0f,-5000.0f),
 			KazMath::Rand(10000.0f,-100.0f)
 		};
 
-		if (1000.0f <= abs(box[i].data.transform.pos.y))
+		if (1000.0f <= abs(boxDataArray[i].transform.pos.y))
 		{
 			if (3 <= KazMath::Rand(6, 0))
 			{
-				box[i].data.transform.pos.x = -KazMath::Rand(700.0f, 10000.0f);
+				boxDataArray[i].transform.pos.x = -KazMath::Rand(700.0f, 10000.0f);
 			}
 			else
 			{
-				box[i].data.transform.pos.x = KazMath::Rand(700.0f, 10000.0f);
+				boxDataArray[i].transform.pos.x = KazMath::Rand(700.0f, 10000.0f);
 			}
 		}
 		else
 		{
-			box[i].data.transform.pos.x = KazMath::Rand(1000.0f, -1000.0f);
+			boxDataArray[i].transform.pos.x = KazMath::Rand(5000.0f, -5000.0f);
 		}
 
-		box[i].data.pipelineName = PIPELINE_NAME_COLOR_MULTITEX;
-		box[i].data.color.color = { KazMath::Rand(255,155),KazMath::Rand(255,155),KazMath::Rand(255,155),255 };
-		box[i].data.transform.scale = { KazMath::Rand(50.0f,10.0f),KazMath::Rand(50.0f,10.0f),KazMath::Rand(50.0f,10.0f) };
-
-		RESOURCE_HANDLE lHandle = box[i].CreateConstBuffer(sizeof(DirectX::XMFLOAT4), typeid(DirectX::XMFLOAT4).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
-		DirectX::XMFLOAT4 lColor = { 1.0f,0.0f,0.0f,1.0f };
-		box[i].TransData(&lColor, lHandle, typeid(DirectX::XMFLOAT4).name());
-
-
-		vel[i] = KazMath::Vec3<float>(KazMath::Rand(5, 1), KazMath::Rand(5, 1), KazMath::Rand(5, 1));
+		boxDataArray[i].transform.scale = { KazMath::Rand(50.0f,10.0f),KazMath::Rand(50.0f,10.0f),KazMath::Rand(50.0f,10.0f) };
+		boxDataArray[i].rotaVel = KazMath::Vec3<float>(KazMath::Rand(5.0f, 1.0f), KazMath::Rand(5.0f, 1.0f), KazMath::Rand(5.0f, 1.0f));
+		boxDataArray[i].color = { KazMath::Rand(255,155),KazMath::Rand(255,155),KazMath::Rand(255,155),255 };
 	}
 
-	
 }
 
 GalacticParticle::~GalacticParticle()
@@ -167,15 +170,27 @@ void GalacticParticle::Update()
 	DirectX12CmdList::Instance()->cmdList->Dispatch((PARTICLE_MAX_NUM) / 1000, 1, 1);
 
 
-	for (int i = 0; i < box.size(); ++i)
+	std::array<MatData, BOX_MAX_NUM> lData;
+	for (int i = 0; i < boxDataArray.size(); ++i)
 	{
-		box[i].data.transform.pos += -KazMath::Vec3<float>(0.0f, 0.0f, 5.0f);
-		if (box[i].data.transform.pos.z <= -100.0f)
+		boxDataArray[i].transform.pos += -KazMath::Vec3<float>(0.0f, 0.0f, 5.0f);
+		if (boxDataArray[i].transform.pos.z <= -100.0f)
 		{
-			box[i].data.transform.pos.z = 10000.0f;
+			boxDataArray[i].transform.pos.z = 10000.0f;
 		}
-		box[i].data.transform.rotation += vel[i];
+		boxDataArray[i].transform.rotation += boxDataArray[i].rotaVel;
+
+		lData[i].mat = KazMath::CaluMat(boxDataArray[i].transform, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection(), { 0,1,0 }, { 0,0,1 });
+		lData[i].color = boxDataArray[i].color.ConvertColorRateToXMFLOAT4();
 	}
+
+
+	box->TransData
+	(
+		lData.data(),
+		instanceBufferHandle,
+		typeid(MatData).name()
+	);
 }
 
 void GalacticParticle::Draw()
@@ -208,8 +223,5 @@ void GalacticParticle::Draw()
 	);
 
 
-	for (int i = 0; i < box.size(); ++i)
-	{
-		box[i].Draw();
-	}
+	box->Draw();
 }

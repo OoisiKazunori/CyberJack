@@ -60,7 +60,25 @@ private:
 
 	ParameterMgr blockFileMgr;
 
-	std::array<BoxPolygonRender, 50> box;
-	std::array<KazMath::Vec3<float>, 50> vel;
+	BoxPolygonRenderPtr box;
+	RESOURCE_HANDLE instanceBufferHandle;
+	struct BoxData
+	{
+		KazMath::Transform3D transform;
+		KazMath::Vec3<float> rotaVel;
+		KazMath::Color color;
+
+		BoxData() :color(255, 255, 255, 255)
+		{};
+	};
+
+	static const int BOX_MAX_NUM = 50;
+	std::array<BoxData, BOX_MAX_NUM> boxDataArray;
+
+	struct MatData
+	{
+		DirectX::XMFLOAT4 color;
+		DirectX::XMMATRIX mat;
+	};
 };
 
