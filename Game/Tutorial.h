@@ -15,6 +15,9 @@
 #include"../Game/Effect/PortalIntermediateDirection.h"
 #include"../Game/GameRenderTarget.h"
 
+/// <summary>
+/// ゲーム開始前のチュートリアル用のステージ
+/// </summary>
 class Tutorial
 {
 public:

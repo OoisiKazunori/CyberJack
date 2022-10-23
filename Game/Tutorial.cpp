@@ -119,8 +119,6 @@ void Tutorial::Init(bool SKIP_FLAG)
 	}
 	initSceneFlag = false;
 
-	tutorialAllClearFlag = true;
-
 	angleC = 60.0f;
 }
 

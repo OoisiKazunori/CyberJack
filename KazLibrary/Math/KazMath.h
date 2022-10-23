@@ -25,7 +25,7 @@ namespace KazMath
 
 		float Length()const
 		{
-			return sqrt(pow(x, 2) + pow(y, 2));
+			return sqrtf(powf(x, 2) + powf(y, 2));
 		};
 		float Distance(const Vec2 &To)const
 		{

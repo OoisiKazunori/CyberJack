@@ -2,7 +2,11 @@
 #include"../KazLibrary/Render/KazRender.h"
 #include"../Game/Interface/IEnemy.h"
 #include"../Game/Effect/RocketEffect.h"
+#include"../Game/Event/DirectionalMarker.h"
 
+/// <summary>
+/// チュートリアルで使用する説明用のブロック
+/// </summary>
 class TutorialBlock :public IEnemy
 {
 public:
@@ -16,5 +20,9 @@ public:
 private:
 	int timer;
 	KazMath::Vec3<float>larpScale;
-	BoxPolygonRender box;
+
+	DirectionalMarker marker;
+	RESOURCE_HANDLE redBlockResourceHandle, greenBlockResourceHandle;
+
+	float baseScale;
 };

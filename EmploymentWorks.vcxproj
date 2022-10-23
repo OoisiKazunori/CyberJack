@@ -206,6 +206,7 @@
     <ClCompile Include="Game\Enemy\SplineMisileForBikeEnemy.cpp" />
     <ClCompile Include="Game\Enemy\SummonEnemy.cpp" />
     <ClCompile Include="Game\Enemy\TutorialBlock.cpp" />
+    <ClCompile Include="Game\Event\DirectionalMarker.cpp" />
     <ClCompile Include="Game\Event\EventSprite.cpp" />
     <ClCompile Include="Game\Event\GoalBox.cpp" />
     <ClCompile Include="Game\Event\GoalBoxEffect.cpp" />
@@ -349,6 +350,7 @@
     <ClInclude Include="Game\Enemy\SplineMisileForBikeEnemy.h" />
     <ClInclude Include="Game\Enemy\SummonEnemy.h" />
     <ClInclude Include="Game\Enemy\TutorialBlock.h" />
+    <ClInclude Include="Game\Event\DirectionalMarker.h" />
     <ClInclude Include="Game\Event\EventSprite.h" />
     <ClInclude Include="Game\Event\GoalBox.h" />
     <ClInclude Include="Game\Event\GoalBoxEffect.h" />

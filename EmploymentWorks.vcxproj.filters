@@ -141,6 +141,7 @@
     <ClCompile Include="Game\Tutorial.cpp" />
     <ClCompile Include="Game\Effect\MeshParticleEmitter.cpp" />
     <ClCompile Include="KazLibrary\Buffer\UavViewHandleMgr.cpp" />
+    <ClCompile Include="Game\Event\DirectionalMarker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -296,6 +297,7 @@
     <ClInclude Include="Game\Tutorial.h" />
     <ClInclude Include="Game\Effect\MeshParticleEmitter.h" />
     <ClInclude Include="KazLibrary\Buffer\UavViewHandleMgr.h" />
+    <ClInclude Include="Game\Event\DirectionalMarker.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -3,13 +3,16 @@
 
 TutorialBlock::TutorialBlock()
 {
+	redBlockResourceHandle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::TutorialPath + "TutorialRedBlock.obj");
+	greenBlockResourceHandle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::TutorialPath + "TutorialGreenBlock.obj");
 }
 
 void TutorialBlock::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 {
 	iEnemy_ObjModelRender->data.transform.pos = GENERATE_DATA.initPos;	//座標の初期化
 	iEnemy_ObjModelRender->data.transform.scale = { 1.0f,1.0f,1.0f };
-	iEnemy_ObjModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "Move/" + "MoveEnemy_Model.obj");	//モデル読み込み
+	iEnemy_ObjModelRender->data.handle = redBlockResourceHandle;
+	iEnemy_EnemyStatusData->hitBox.center = &iEnemy_ObjModelRender->data.transform.pos;
 	iEnemy_EnemyStatusData->hitBox.radius = 5.0f;	//当たり判定の大きさ変更
 	iOperationData.Init(1, "KeyBlock");							//残りロックオン数等の初期化
 
@@ -27,11 +30,11 @@ void TutorialBlock::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 	iEnemy_EnemyStatusData->radius = 8.0f;
 	iEnemy_EnemyStatusData->startFlag = true;
 
-	box.data.transform.pos = GENERATE_DATA.initPos;
-	larpScale = { 1.5f,1.5f,1.5f };
-	box.data.color.color = { 255,255,255,255 };
 
-	iEnemy_EnemyStatusData->hitBox.center = &box.data.transform.pos;
+	larpScale = { 1.5f,1.5f,1.5f };
+	marker.Init(*iEnemy_EnemyStatusData->hitBox.center);
+
+	baseScale = 0.5f;
 }
 
 void TutorialBlock::Finalize()
@@ -42,26 +45,37 @@ void TutorialBlock::Update()
 {
 	++timer;
 
-	KazMath::Larp(larpScale, &box.data.transform.scale, 0.1f);
+	KazMath::Larp(larpScale, &iEnemy_ObjModelRender->data.transform.scale, 0.1f);
 	if (60 <= timer && iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
 	{
-		box.data.transform.scale = { 1.0f,1.0f,1.0f };
+		iEnemy_ObjModelRender->data.transform.scale = { baseScale,baseScale,baseScale };
 		timer = 0;
+		larpScale = { 1.5f,1.5f,1.5f };
+		baseScale = 0.5f;
+		iEnemy_ObjModelRender->data.handle = redBlockResourceHandle;
 	}
 	else if (30 <= timer && !iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
 	{
-		box.data.color.color = { 255,0,0,255 };
-		box.data.transform.scale = { 1.0f,1.0f,1.0f };
+		iEnemy_ObjModelRender->data.transform.scale = { baseScale,baseScale,baseScale };
 		timer = 0;
+		larpScale = { 2.0f,2.0f,2.0f };
+		baseScale = 1.0f;
+		iEnemy_ObjModelRender->data.handle = greenBlockResourceHandle;
 	}
+
+	marker.Update();
 }
 
 void TutorialBlock::Draw()
 {
 	if (1.0f <= iEnemy_ObjModelRender->data.colorData.color.a)
 	{
-		//iEnemy_ModelRender->Draw();
-		box.Draw();
+		iEnemy_ObjModelRender->Draw();
 		LockOnWindow(iEnemy_ObjModelRender->data.transform.pos);
+	}
+
+	if (iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
+	{
+		marker.Draw();
 	}
 }
