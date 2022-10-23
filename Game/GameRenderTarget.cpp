@@ -64,10 +64,14 @@ RESOURCE_HANDLE GameRenderTarget::GetGameRenderTargetHandle()
 
 void GameRenderTarget::Draw()
 {
+	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "Luminance");
 	RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, handles[0]);
 	RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
 	//‹P“x’Šo
 	luminaceTex.Draw();
+	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
+
+	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "DrawMain");
 	RenderTargetStatus::Instance()->PrepareToChangeBarrier(gameTexHandle, addHandle);
 	RenderTargetStatus::Instance()->ClearRenderTarget(gameTexHandle);
 	//ƒQ[ƒ€‰æ–Ê•`‰æ
@@ -79,6 +83,8 @@ void GameRenderTarget::Draw()
 	addRenderTarget.data.addHandle.handle[2] = buler[2]->BlurImage(addRenderTarget.data.addHandle.handle[1], gameTexHandle);
 	addRenderTarget.data.addHandle.handle[3] = buler[3]->BlurImage(addRenderTarget.data.addHandle.handle[2], gameTexHandle);
 	addRenderTarget.Draw();
+	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
+
 	RenderTargetStatus::Instance()->PrepareToCloseBarrier(gameTexHandle);
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 }

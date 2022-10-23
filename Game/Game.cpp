@@ -97,7 +97,7 @@ Game::Game() :LOG_FONT_SIZE(1.0f)
 	stringLog.Init({ 50.0f,50.0f });
 	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 
-	renderTarget = std::make_unique<GameRenderTarget>(KazMath::Color(29, 19, 72, 255));
+	renderTarget = std::make_unique<GameRenderTarget>(KazMath::Color(0, 0, 0, 255));
 	nextRenderTarget = std::make_unique<GameRenderTarget>(KazMath::Color(29, 19, 72, 255));
 	meshEmitter = std::make_unique<MeshParticleEmitter>(0);
 }
@@ -349,7 +349,6 @@ void Game::Update()
 	eyePos = cameraWork.GetEyePos();
 	targetPos = cameraWork.GetTargetPos();
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 0);
-	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 1);
 
 
 
@@ -1113,12 +1112,9 @@ void Game::Draw()
 
 		stringLog.Draw();
 		stageUI.Draw();
-		mainRenderTarget.Draw();
 
-		if (!tutorial.tutorialFlag)
-		{
-			cursor.Draw();
-		}
+		mainRenderTarget.Draw();
+		cursor.Draw();
 	}
 	else
 	{

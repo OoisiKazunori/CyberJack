@@ -75,7 +75,7 @@ bool CollisionManager::CheckRayAndPlane(const Ray &RAY, const Plane &PLANE, floa
 
 	//始点と平面の距離(平面の法線方向)
 	//面法線とレイの始点座標(位置ベクトル)の内積
-	float d2 = PLANE.normal.Dot(RAY.dir);
+	float d2 = PLANE.normal.Dot(RAY.start);
 
 	//始点と平面の距離(平面の法線方向)
 	float dist = d2 - PLANE.distance;
@@ -138,7 +138,7 @@ bool CollisionManager::CheckRayAndTriange(const Ray &RAY, const Triangle &TRIANG
 
 	//辺p1_p2について
 	KazMath::Vec3<float> pt_p1 = TRIANGLE.p1 - interPlane;
-	KazMath::Vec3<float> p1_p2 = TRIANGLE.p1 - TRIANGLE.p2;
+	KazMath::Vec3<float> p1_p2 = TRIANGLE.p2 - TRIANGLE.p1;
 	m = pt_p1.Cross(p1_p2);
 
 	//辺の外側であれば当たっていないので判定を打ち切る
@@ -150,7 +150,7 @@ bool CollisionManager::CheckRayAndTriange(const Ray &RAY, const Triangle &TRIANG
 
 	//辺p2_p0について
 	KazMath::Vec3<float> pt_p2 = TRIANGLE.p2 - interPlane;
-	KazMath::Vec3<float> p2_p0 = TRIANGLE.p2 - TRIANGLE.p0;
+	KazMath::Vec3<float> p2_p0 = TRIANGLE.p0 - TRIANGLE.p2;
 	m = pt_p2.Cross(p2_p0);
 
 	//辺の外側であれば当たっていないので判定を打ち切る
@@ -490,7 +490,7 @@ std::array<KazMath::Vec2<float>, 2> CollisionManager::CheckCircleAndRay(const Sp
 		beta = theta + phi;
 
 		//場合わけ
-		if (a *SPHERE.center->x + b * SPHERE.center->y + c > 0) {
+		if (a * SPHERE.center->x + b * SPHERE.center->y + c > 0) {
 			alpha += KazMath::PI_2F;
 			beta += KazMath::PI_2F;
 		}
@@ -510,6 +510,33 @@ std::array<KazMath::Vec2<float>, 2> CollisionManager::CheckCircleAndRay(const Sp
 		return resultArray;
 	}
 }
+
+bool CollisionManager::CheckRayAndPlane3D(const Ray &RAY, const ModiRectangle &MODI, float *DISTANCE)
+{
+	//三角形が載っている平面を算出
+	std::array<Triangle, 2> lTriangle;
+
+	lTriangle[0].p0 = MODI.p0;
+	lTriangle[0].p1 = MODI.p1;
+	lTriangle[0].p2 = MODI.p2;
+	lTriangle[0].ComputeNormal();
+
+	lTriangle[1].p0 = MODI.p2;
+	lTriangle[1].p1 = MODI.p3;
+	lTriangle[1].p2 = MODI.p1;
+	lTriangle[1].ComputeNormal();
+
+	//Rayと平面が当たっていなければ、当たっていない
+	if (CheckRayAndTriange(RAY, lTriangle[0], DISTANCE, nullptr) || CheckRayAndTriange(RAY, lTriangle[1], DISTANCE, nullptr))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 
 void CollisionManager::ClosestPtPoint2Triangle(const KazMath::Vec3<float> &point, const Triangle &triangle, KazMath::Vec3<float> *closest)
 {

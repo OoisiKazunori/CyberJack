@@ -118,6 +118,17 @@ namespace KazImGuiHelper
 		ImGui::DragFloat(lLabel.c_str(), &VEC_3->z);
 	};
 
+	inline void InputVec3(const std::string &LABEL, KazMath::Vec3<int> *VEC_3)
+	{
+		static std::string lLabel = "";
+		lLabel = LABEL + "X";
+		ImGui::DragInt(lLabel.c_str(), &VEC_3->x);
+		lLabel = LABEL + "Y";
+		ImGui::DragInt(lLabel.c_str(), &VEC_3->y);
+		lLabel = LABEL + "Z";
+		ImGui::DragInt(lLabel.c_str(), &VEC_3->z);
+	};
+
 	inline void InputVec2(const std::string &LABEL, KazMath::Vec2<float> *VEC_2)
 	{
 		static std::string lLabel = "";
@@ -125,5 +136,16 @@ namespace KazImGuiHelper
 		ImGui::DragFloat(lLabel.c_str(), &VEC_2->x);
 		lLabel = LABEL + "Y";
 		ImGui::DragFloat(lLabel.c_str(), &VEC_2->y);
+	};
+
+	inline void DrawVec3(const std::string &LABEL, const KazMath::Vec3<float> VEC_3)
+	{
+		static std::string lLabel = "";
+		lLabel = LABEL + "X" + ":" + std::to_string(VEC_3.x);
+		ImGui::Text(lLabel.c_str());
+		lLabel = LABEL + "Y" + ":" + std::to_string(VEC_3.y);
+		ImGui::Text(lLabel.c_str());
+		lLabel = LABEL + "Z" + ":" + std::to_string(VEC_3.z);
+		ImGui::Text(lLabel.c_str());
 	};
 };

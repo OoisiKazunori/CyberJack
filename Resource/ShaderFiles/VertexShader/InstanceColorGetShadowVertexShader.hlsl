@@ -15,6 +15,6 @@ cbuffer cbuff2 : register(b0)
 ColorOutPut VSmain(float4 pos : POSITION, uint id : SV_InstanceID)
 {
     ColorOutPut op;
-    op.svpos = mul(mul(lightCameraViewProj[id].lightCameraViewProj, matrixData[id].matData), pos);
+    op.svpos = mul(mul(lightCameraViewProj[id].lightCameraViewProj, uavMatData[id].matData), pos);
     return op;
 }

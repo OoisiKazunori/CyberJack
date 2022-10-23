@@ -190,7 +190,7 @@ void MeshParticleEmitter::Update()
 	{
 		constBufferData.cameraMat = CameraMgr::Instance()->GetViewMatrix();
 		constBufferData.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
-		constBufferData.bollboardMat = CameraMgr::Instance()->GetMatBillBoard();
+		constBufferData.billboardMat = CameraMgr::Instance()->GetMatBillBoard();
 		buffers->TransData(commonInitBufferHandle, &constBufferData, sizeof(CommonData));
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(4, buffers->GetGpuAddress(commonInitBufferHandle));
 	}

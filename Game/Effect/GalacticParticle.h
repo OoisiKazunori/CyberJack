@@ -4,31 +4,29 @@
 #include<array>
 #include<vector>
 #include"../Game/Debug/ParameterMgr.h"
-#include"../Game/Effect/GalacticParticle.h"
 
-class BlockParticleStage :public IStage
+class GalacticParticle
 {
 public:
-	BlockParticleStage();
-	~BlockParticleStage();
-	void Update()override;
-	void Draw()override;
+	GalacticParticle();
+	~GalacticParticle();
+	void Update();
+	void Draw();
 
 private:
 	//バッファ
 	std::unique_ptr<CreateGpuBuffer> buffers;
 	RESOURCE_HANDLE vertexBufferHandle, indexBufferHandle,
 		outputInitBufferHandle, outputBufferHandle,
-		particleDataHandle, drawCommandHandle, counterBufferHandle,
+		drawCommandHandle, counterBufferHandle,
 		commonInitBufferHandle, commonBufferHandle;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 	D3D12_INDEX_BUFFER_VIEW indexBufferView;
 	BufferMemorySize computeMemSize;
-	RESOURCE_HANDLE outputInitViewHandle, outputViewHandle, particleDataViewHandle;
+	RESOURCE_HANDLE outputInitViewHandle, outputViewHandle;
 	//バッファ
 
-	static const int PARTICLE_MAX_NUM = 6000;
-	static const int PER_USE_PARTICLE_MAX_NUM = 20;
+	static const int PARTICLE_MAX_NUM = 20000;
 	static const int DRAW_CALL = 1;
 
 	struct IndirectCommand
@@ -37,15 +35,10 @@ private:
 		D3D12_DRAW_INDEXED_ARGUMENTS drawArguments;
 	};
 
-	struct ParticleData
-	{
-		DirectX::XMFLOAT4 pos;
-	};
 
 	struct OutputInitData
 	{
 		DirectX::XMFLOAT4 pos;
-		DirectX::XMFLOAT4 color;
 	};
 
 	struct OutputData
@@ -54,21 +47,11 @@ private:
 		DirectX::XMFLOAT4 color;
 	};
 
-	struct CommonData
-	{
-		DirectX::XMMATRIX cameraMat;
-		DirectX::XMMATRIX projectionMat;
-		DirectX::XMMATRIX billboardMat;
-		DirectX::XMFLOAT4 vertices[8];
-	};
-
-
 	struct CommonMoveData
 	{
 		DirectX::XMMATRIX cameraMat;
 		DirectX::XMMATRIX projectionMat;
 		DirectX::XMMATRIX billboardMat;
-		DirectX::XMFLOAT2 flash;
 	};
 
 	Microsoft::WRL::ComPtr<ID3D12CommandSignature> commandSig;
@@ -77,7 +60,25 @@ private:
 
 	ParameterMgr blockFileMgr;
 
+	BoxPolygonRenderPtr box;
+	RESOURCE_HANDLE instanceBufferHandle;
+	struct BoxData
+	{
+		KazMath::Transform3D transform;
+		KazMath::Vec3<float> rotaVel;
+		KazMath::Color color;
 
-	GalacticParticle galacticParticle;
+		BoxData() :color(255, 255, 255, 255)
+		{};
+	};
+
+	static const int BOX_MAX_NUM = 50;
+	std::array<BoxData, BOX_MAX_NUM> boxDataArray;
+
+	struct MatData
+	{
+		DirectX::XMFLOAT4 color;
+		DirectX::XMMATRIX mat;
+	};
 };
 

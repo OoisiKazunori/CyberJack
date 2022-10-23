@@ -191,7 +191,7 @@ PortalIntermediateDirection::PortalIntermediateDirection()
 	{
 		lData.cameraMat = CameraMgr::Instance()->GetViewMatrix();
 		lData.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
-		lData.bollboardMat = CameraMgr::Instance()->GetMatBillBoard();
+		lData.billboardMat = CameraMgr::Instance()->GetMatBillBoard();
 		lData.increSize = sizeof(ParticleData);
 		lData.gpuAddress = buffers->GetGpuAddress(outputBufferHandle);
 		lData.emittPos = { 0.0f,0.0f,0.0f,30.0f };
@@ -254,7 +254,7 @@ void PortalIntermediateDirection::Update(const KazMath::Vec3<float> &POS)
 	{
 		lData.cameraMat = CameraMgr::Instance()->GetViewMatrix();
 		lData.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
-		lData.bollboardMat = CameraMgr::Instance()->GetMatBillBoard();
+		lData.billboardMat = CameraMgr::Instance()->GetMatBillBoard();
 		lData.increSize = sizeof(ParticleData);
 		lData.gpuAddress = buffers->GetGpuAddress(outputBufferHandle);
 		lData.emittPos = { 0.0f,0.0f,0.0f,30.0f };
@@ -314,9 +314,6 @@ void PortalIntermediateDirection::Update(const KazMath::Vec3<float> &POS)
 			disappearTimer = 0;
 		}
 	}
-	//player.render->data.cameraIndex = 1;
-
-
 	player.pos = POS;
 	player.Update();
 }
@@ -361,11 +358,12 @@ void PortalIntermediateDirection::Draw(Cursor *CURSOR)
 		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
 	);
+
 	player.Draw();
 
 	if (disappearFlag || nextPortalFlag)
 	{
-		CURSOR->Draw();
+		CURSOR->cursorPos;
 	}
 	renderTarget->Draw();
 }

@@ -136,7 +136,7 @@ void GpuParticleStage::Update()
 		CommonData lData;
 		lData.cameraMat = CameraMgr::Instance()->GetViewMatrix();
 		lData.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
-		lData.bollboardMat = CameraMgr::Instance()->GetMatBillBoard();
+		lData.billboardMat = CameraMgr::Instance()->GetMatBillBoard();
 		lData.increSize = sizeof(ParticleData);
 		lData.gpuAddress = buffers->GetGpuAddress(outputInitBufferHandle);
 		lData.emittPos = { 0.0f,0.0f,0.0f,30.0f };

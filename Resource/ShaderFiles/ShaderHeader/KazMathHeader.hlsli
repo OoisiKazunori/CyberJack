@@ -126,6 +126,15 @@ float3 RandVec3(uint SEED,int MAX,int MIN)
     return result;
 }
 
+float Rand1(uint SEED,int MAX,int MIN)
+{
+    uint rand = wang_hash(SEED * 1847483629);
+    float result;
+    result = (rand % 1024) / 1024.0f;
+    result = (MAX + abs(MIN)) * result - abs(MIN);
+    return result;
+}
+
 matrix CalucurateWorldMat(float3 POS,float3 SCALE,float3 ROTA)
 {
     matrix pMatTrans = Translate(POS);

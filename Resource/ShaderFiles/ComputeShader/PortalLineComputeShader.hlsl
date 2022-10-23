@@ -72,7 +72,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     outputMat.pos = float4(outputPos.xyz,0.0f);
      float scale = 0.1f;
     outputMat.scale = float4(float3(scale, scale, length),0.0f);
-    outputMat.color = float4(1,1,1,1);
+    outputMat.color = float4(0.6,0.6,0.6,0.6);
     matrixData[index] = outputMat;
     //èoóÕóp-------------------------
 

@@ -19,15 +19,13 @@ public:
 
 	bool isAlive();
 	KazMath::Vec3<float> pos;
-
-	BoxPolygonRenderPtr render;
 private:
 	short hp,prevHp;
 	int coolTimer;
 	static const int COOL_MAX_TIME;
 	bool coolTimeFlag;
 	bool redFlag;
-
+	BoxPolygonRenderPtr render;
 	bool drawHpFlag;
 
 	PlayerHpUi hpUi;

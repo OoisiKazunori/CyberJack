@@ -7,14 +7,28 @@ RESOURCE_HANDLE IRender::CreateConstBuffer(const unsigned int &TRANSMISSION_DATA
 	constBufferRootParam.push_back(unique_ptr<GraphicsRootParamType>(new GraphicsRootParamType(ROOTPARAM)));
 	constBufferRangeType.push_back(unique_ptr<GraphicsRangeType>(new GraphicsRangeType(RANGE)));
 
-	RESOURCE_HANDLE lConstBufferHandle = gpuBuffer->CreateBuffer
-	(
-		KazBufferHelper::SetConstBufferData(TRANSMISSION_DATA)
-	);
+	RESOURCE_HANDLE lBufferHandle = 0;
 
-	constBufferHandles.push_back(std::make_unique<RESOURCE_HANDLE>(lConstBufferHandle));
+	switch (RANGE)
+	{
+	case GRAPHICS_RANGE_TYPE_CBV:
+		lBufferHandle = gpuBuffer->CreateBuffer
+		(
+			KazBufferHelper::SetConstBufferData(TRANSMISSION_DATA)
+		);
+		break;
+	case GRAPHICS_RANGE_TYPE_UAV:
+		lBufferHandle = gpuBuffer->CreateBuffer
+		(
+			KazBufferHelper::SetRWStructuredBuffer(TRANSMISSION_DATA)
+		);
+		break;
+	}
 
-	return lConstBufferHandle;
+
+	constBufferHandles.push_back(std::make_unique<RESOURCE_HANDLE>(lBufferHandle));
+
+	return lBufferHandle;
 }
 
 void IRender::TransData(void *DATA, RESOURCE_HANDLE HANDLE, const string &ID)
@@ -40,8 +54,19 @@ void IRender::SetConstBufferOnCmdList(PipeLineNames pipeline, bool REMOVE_DATA_F
 	{
 		if (i != 1 || !REMOVE_DATA_FLAG)
 		{
-			UINT num = KazRenderHelper::SetBufferOnCmdList(GraphicsRootSignature::Instance()->GetRootParam(renderData.pipelineMgr->GetRootSignatureName(pipeline)), GRAPHICS_RANGE_TYPE_CBV, *constBufferRootParam[i]);
-			renderData.cmdListInstance->cmdList->SetGraphicsRootConstantBufferView(num, gpuBuffer->GetBufferData(*constBufferHandles[i]).Get()->GetGPUVirtualAddress());
+			UINT num = KazRenderHelper::SetBufferOnCmdList(GraphicsRootSignature::Instance()->GetRootParam(renderData.pipelineMgr->GetRootSignatureName(pipeline)), *constBufferRangeType[i], *constBufferRootParam[i]);
+
+			switch (*constBufferRangeType[i])
+			{
+			case GRAPHICS_RANGE_TYPE_CBV:
+				renderData.cmdListInstance->cmdList->SetGraphicsRootConstantBufferView(num, gpuBuffer->GetBufferData(*constBufferHandles[i]).Get()->GetGPUVirtualAddress());
+				break;
+			case GRAPHICS_RANGE_TYPE_UAV:
+				renderData.cmdListInstance->cmdList->SetGraphicsRootUnorderedAccessView(num, gpuBuffer->GetBufferData(*constBufferHandles[i]).Get()->GetGPUVirtualAddress());
+				break;
+			default:
+				break;
+			}
 		}
 	}
 }

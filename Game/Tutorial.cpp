@@ -9,6 +9,7 @@ Tutorial::Tutorial() :LOG_FONT_SIZE(1.0f), FLAME_MAX_TIME(20)
 {
 	gridR[0] = std::make_unique<DrawGrid>(KazMath::Color(14, 12, 13, 255));
 	gridR[1] = std::make_unique<DrawGrid>(KazMath::Color(14, 12, 13, 255));
+	CameraMgr::Instance()->CameraSetting(60.0f, 10000.0f, 0);
 
 	eyePos = { 0.0f, 3.0f, -8.0f + 15.0f };
 	targetPos = { 0.0f, 3.0f, 15.0f };
@@ -117,11 +118,8 @@ void Tutorial::Init(bool SKIP_FLAG)
 		tutorialAllClearFlag = false;
 		tutorialFlag = true;
 	}
-	initSceneFlag = false;
-
 	tutorialAllClearFlag = true;
-
-	angleC = 60.0f;
+	initSceneFlag = false;
 }
 
 void Tutorial::Finalize()
@@ -635,7 +633,7 @@ void Tutorial::Draw()
 		portalEffect.portalRender.Draw();
 	}
 
-	cursor.Draw();
+	//cursor.Draw();
 	//ブルーム系統のレンダーターゲット切り替え
 	renderTarget->Draw();
 
