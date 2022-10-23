@@ -275,14 +275,14 @@ void PortalIntermediateDirection::Update(const KazMath::Vec3<float> &POS)
 		//今ポータルと次ポータルのZ移動
 		if (nextPortalFlag)
 		{
-			Rate(&nextRate, 0.012f, 1.0f);
-			nextBackRate = EasingMaker(Out, Back, nextRate);
+			Rate(&nextRate, 0.01f, 1.0f);
+			nextBackRate = EasingMaker(InOut, Back, nextRate);
 			nextPortalRender.data.transform.pos.z += -10.0f;
 		}
 		else
 		{
 			Rate(&rate, 0.01f, 1.0f);
-			backRate = EasingMaker(In, Back, rate);
+			backRate = EasingMaker(InOut, Back, rate);
 			portalRender.data.transform.pos.z = baseZ + backRate * -200.0f;
 		}
 
@@ -316,12 +316,12 @@ void PortalIntermediateDirection::Update(const KazMath::Vec3<float> &POS)
 	}
 	//player.render->data.cameraIndex = 1;
 
-	
+
 	player.pos = POS;
 	player.Update();
 }
 
-void PortalIntermediateDirection::Draw()
+void PortalIntermediateDirection::Draw(Cursor *CURSOR)
 {
 	if (!startFlag)
 	{
@@ -363,7 +363,10 @@ void PortalIntermediateDirection::Draw()
 	);
 	player.Draw();
 
-
+	if (disappearFlag || nextPortalFlag)
+	{
+		CURSOR->Draw();
+	}
 	renderTarget->Draw();
 }
 

@@ -13,7 +13,6 @@ ObjResourceMgr::~ObjResourceMgr()
 
 RESOURCE_HANDLE ObjResourceMgr::LoadModel(std::string RESOURCE)
 {
-
 	//ファイル読み込み
 	ifstream file;
 	file.open(RESOURCE);
@@ -107,8 +106,6 @@ RESOURCE_HANDLE ObjResourceMgr::LoadModel(std::string RESOURCE)
 				vert[vert.size() - 1].pos = { positions[indexPos - 1].x,positions[indexPos - 1].y,positions[indexPos - 1].z };
 				vert[vert.size() - 1].uv = texcoords[indexTexcoord - 1];
 				vert[vert.size() - 1].normal = normals[indexNormal - 1];
-
-				vert[vert.size() - 1].uv.y = 1.0f - vert[vert.size() - 1].uv.y;
 
 
 				// インデックスデータの追加

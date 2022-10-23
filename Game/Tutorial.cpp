@@ -199,13 +199,15 @@ void Tutorial::Update()
 	ImGui::DragFloat("a", &angleC);
 	ImGui::End();
 
+	const float MAX_ANGLE = 120.0f;
+	const float DEFAULT_ANGLE = 60.0f;
 	if (portalEffect.DrawNextPortal())
 	{
-		angleC = 90.0f + portalEffect.GetNextRate() * -30.0f;
+		angleC = MAX_ANGLE + portalEffect.GetNextRate() * -(MAX_ANGLE - DEFAULT_ANGLE);
 	}
 	else
 	{
-		angleC = 60.0f + portalEffect.GetRate() * 30.0f;
+		angleC = DEFAULT_ANGLE + portalEffect.GetRate() * (MAX_ANGLE - DEFAULT_ANGLE);
 	}
 
 
@@ -566,7 +568,8 @@ void Tutorial::Draw()
 {
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 	RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
-	portalEffect.Draw();
+
+	portalEffect.Draw(&cursor);
 
 
 	//レンダーターゲットセット

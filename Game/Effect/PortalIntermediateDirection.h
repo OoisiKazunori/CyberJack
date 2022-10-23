@@ -4,6 +4,7 @@
 #include"../KazLibrary/RenderTarget/GaussianBuler.h"
 #include"../GameRenderTarget.h"
 #include"../Player.h"
+#include"../Game/UI/Cursor.h"
 
 class PortalIntermediateDirection
 {
@@ -13,7 +14,7 @@ public:
 	void Init();
 	void Finalize();
 	void Update(const KazMath::Vec3<float> &POS);
-	void Draw();
+	void Draw(Cursor *CURSOR);
 
 	void Start();
 	bool IsStart();

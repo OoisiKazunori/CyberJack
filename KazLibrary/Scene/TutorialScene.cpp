@@ -536,7 +536,7 @@ void TutorialScene::Draw()
 {
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 	RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
-	portalEffect.Draw();
+	portalEffect.Draw(&cursor);
 
 
 	//レンダーターゲットセット

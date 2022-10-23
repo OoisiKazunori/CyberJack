@@ -788,18 +788,6 @@ void Game::Update()
 #pragma region 更新処理
 		goalBox.releaseFlag = cursor.releaseFlag;
 
-		switch (stageNum)
-		{
-		case 0:
-			CameraMgr::Instance()->CameraSetting(60.0f, 1000.0f, 0);
-		case 1:
-			CameraMgr::Instance()->CameraSetting(60.0f, 1000000.0f, 0);
-			break;
-		default:
-			break;
-		}
-
-
 		//更新処理----------------------------------------------------------------
 		player.Update();
 		cursor.Update();
@@ -990,7 +978,7 @@ void Game::Draw()
 		RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
 	}
 	//中間演出の描画
-	portalEffect.Draw();
+	portalEffect.Draw(&cursor);
 
 	//次のポータルの描画
 	if (portalEffect.DrawNextPortal())
