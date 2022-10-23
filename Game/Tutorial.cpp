@@ -119,6 +119,8 @@ void Tutorial::Init(bool SKIP_FLAG)
 	}
 	initSceneFlag = false;
 
+	tutorialAllClearFlag = true;
+
 	angleC = 60.0f;
 }
 
@@ -196,6 +198,16 @@ void Tutorial::Update()
 	ImGui::Begin("Angle");
 	ImGui::DragFloat("a", &angleC);
 	ImGui::End();
+
+	if (portalEffect.DrawNextPortal())
+	{
+		angleC = 90.0f + portalEffect.GetNextRate() * -30.0f;
+	}
+	else
+	{
+		angleC = 60.0f + portalEffect.GetRate() * 30.0f;
+	}
+
 
 	CameraMgr::Instance()->CameraSetting(angleC, 10000.0f, 0);
 	CameraMgr::Instance()->CameraSetting(angleC, 10000.0f, 1);

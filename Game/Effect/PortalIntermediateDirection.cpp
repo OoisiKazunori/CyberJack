@@ -3,6 +3,7 @@
 #include"../KazLibrary/Helper/ResourceFilePass.h"
 #include"../KazLibrary/Buffer/DescriptorHeapMgr.h"
 #include"../KazLibrary/Buffer/UavViewHandleMgr.h"
+#include"../KazLibrary/Easing/easing.h"
 
 PortalIntermediateDirection::PortalIntermediateDirection()
 {
@@ -209,6 +210,8 @@ PortalIntermediateDirection::PortalIntermediateDirection()
 
 	finishFlag = true;
 	startFlag = false;
+
+	baseZ = 200.0f;
 }
 
 PortalIntermediateDirection::~PortalIntermediateDirection()
@@ -224,7 +227,7 @@ void PortalIntermediateDirection::Init()
 	finishFlag = false;
 	disappearTimer = 0;
 	startFlag = false;
-	portalRender.data.transform.pos.z = 200.0f;
+	portalRender.data.transform.pos.z = baseZ;
 }
 
 void PortalIntermediateDirection::Finalize()
@@ -233,7 +236,7 @@ void PortalIntermediateDirection::Finalize()
 	nextPortalFlag = false;
 	finishFlag = false;
 	disappearTimer = 0;
-	portalRender.data.transform.pos.z = 200.0f;
+	portalRender.data.transform.pos.z = baseZ;
 	startFlag = false;
 }
 
@@ -269,6 +272,21 @@ void PortalIntermediateDirection::Update(const KazMath::Vec3<float> &POS)
 	//パーティクルの更新--------------------------------------------
 	if (!finishFlag)
 	{
+		//今ポータルと次ポータルのZ移動
+		if (nextPortalFlag)
+		{
+			Rate(&nextRate, 0.012f, 1.0f);
+			nextBackRate = EasingMaker(Out, Back, nextRate);
+			nextPortalRender.data.transform.pos.z += -10.0f;
+		}
+		else
+		{
+			Rate(&rate, 0.01f, 1.0f);
+			backRate = EasingMaker(In, Back, rate);
+			portalRender.data.transform.pos.z = baseZ + backRate * -200.0f;
+		}
+
+
 		//今ポータルと次ポータルがプレイヤーより手前に来たらフラグを出す
 		if (portalRender.data.transform.pos.z <= POS.z && !nextPortalFlag)
 		{
@@ -277,7 +295,7 @@ void PortalIntermediateDirection::Update(const KazMath::Vec3<float> &POS)
 		else if (nextPortalRender.data.transform.pos.z <= POS.z + 5.0f && nextPortalFlag)
 		{
 			nextPortalFlag = false;
-			//finishFlag = true;
+			finishFlag = true;
 			return;
 		}
 
@@ -285,28 +303,20 @@ void PortalIntermediateDirection::Update(const KazMath::Vec3<float> &POS)
 		//ポータルが消えている時間
 		if (disappearFlag)
 		{
-			//++disappearTimer;
+			++disappearTimer;
 			nextPortalRender.data.transform.pos.z = 700.0f;
 		}
 		//ポータルが一定時間消えたら次ポータルを奥から出す
 		if (KazMath::ConvertSecondToFlame(5) <= disappearTimer)
 		{
 			disappearFlag = false;
-			//nextPortalFlag = true;
+			nextPortalFlag = true;
 			disappearTimer = 0;
-		}
-
-		//今ポータルと次ポータルのZ移動
-		if (nextPortalFlag)
-		{
-			nextPortalRender.data.transform.pos.z += -10.0f;
-		}
-		else
-		{
-			portalRender.data.transform.pos.z += -1.0f;
 		}
 	}
 	//player.render->data.cameraIndex = 1;
+
+	
 	player.pos = POS;
 	player.Update();
 }

@@ -20,6 +20,16 @@ public:
 	bool IsFinish();
 	bool DrawNextPortal();
 
+	float GetRate()
+	{
+		return backRate;
+	}
+
+	float GetNextRate()
+	{
+		return nextBackRate;
+	}
+
 	Sprite3DRender portalRender;
 	std::unique_ptr<GameRenderTarget> renderTarget;
 	bool disappearFlag;
@@ -91,4 +101,7 @@ private:
 		DirectX::XMFLOAT4 color;
 	};
 
+	float rate,nextRate;
+	float backRate,nextBackRate;
+	float baseZ;
 };
