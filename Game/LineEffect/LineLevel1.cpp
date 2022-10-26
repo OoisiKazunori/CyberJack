@@ -173,9 +173,13 @@ void LineLevel1::Attack(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::V
 					limitCount[i] = 0;
 				}
 
+				int countLoop = 0;
+
 				//‰ñ‚è“¹ü‚Ìˆ—ŠJn
-				while (1)
+				while (countLoop < 50)
 				{
+					++countLoop;
+
 					//‚Ç‚Ì•ûŒü‚Éü‚ğL‚Î‚·‚©w’è
 					moveVector = CalucurateDirection(moveVector, 5);
 

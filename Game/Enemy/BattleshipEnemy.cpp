@@ -24,7 +24,6 @@ void BattleshipEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLA
 	initDeadSoundFlag = false;
 	demoFlag = DEMO_FLAG;
 
-
 	iEnemy_FbxModelRender->data.transform.pos.z = -1000.0f;
 	basePos = GENERATE_DATA.initPos;
 	vel = 0.0f;
@@ -195,6 +194,10 @@ void BattleshipEnemy::Update()
 
 void BattleshipEnemy::Draw()
 {
+	if (!iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
+	{
+		iEnemy_FbxModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
+	}
 	iEnemy_FbxModelRender->Draw();
 	topModel->Draw();
 	LockOnWindow(*iEnemy_EnemyStatusData->hitBox.center);

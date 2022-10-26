@@ -251,6 +251,7 @@
     <ClCompile Include="Game\UI\Letter.cpp" />
     <ClCompile Include="Game\UI\LockOnBoxEffect.cpp" />
     <ClCompile Include="Game\UI\PlayerHpUi.cpp" />
+    <ClCompile Include="Game\UI\StringWindow.cpp" />
     <ClCompile Include="KazLibrary\Buffer\CreateGpuBuffer.cpp" />
     <ClCompile Include="KazLibrary\Buffer\DescriptorHeapMgr.cpp" />
     <ClCompile Include="KazLibrary\Buffer\UavViewHandleMgr.cpp" />
@@ -398,6 +399,7 @@
     <ClInclude Include="Game\UI\Letter.h" />
     <ClInclude Include="Game\UI\LockOnBoxEffect.h" />
     <ClInclude Include="Game\UI\PlayerHpUi.h" />
+    <ClInclude Include="Game\UI\StringWindow.h" />
     <ClInclude Include="KazLibrary\Buffer\CreateGpuBuffer.h" />
     <ClInclude Include="KazLibrary\Buffer\DescriptorHeapMgr.h" />
     <ClInclude Include="KazLibrary\Buffer\UavViewHandleMgr.h" />
@@ -487,7 +489,7 @@
     <ResourceCompile Include="KazLib.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="DirectXTex\DirectXTex_Desktop_2019_Win10.vcxproj">
+    <ProjectReference Include="DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
       <Project>{371b9fa9-4c90-4ac6-a123-aced756d6c77}</Project>
     </ProjectReference>
   </ItemGroup>

@@ -37,6 +37,8 @@
 #include"../Game/Helper/CameraWork.h"
 
 #include"Tutorial.h"
+#include"../Game/UI/StringWindow.h"
+
 
 class Game
 {
@@ -49,8 +51,9 @@ public:
 	~Game();
 	void Init(
 		const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> &RESPONE_DATA,
-		const std::array<std::shared_ptr<IStage>, 3> &STAGE_ARRAY,
-		const std::array<std::array<KazEnemyHelper::ForceCameraData, 10>, 3> &CAMERA_ARRAY
+		const std::array<std::shared_ptr<IStage>, KazEnemyHelper::STAGE_NUM_MAX> &STAGE_ARRAY,
+		const std::array<KazMath::Color, KazEnemyHelper::STAGE_NUM_MAX> &BACKGROUND_COLOR,
+		const std::array<std::array<KazEnemyHelper::ForceCameraData, 10>, KazEnemyHelper::STAGE_NUM_MAX> &CAMERA_ARRAY
 	);
 	void Finalize();
 	void Input();
@@ -68,6 +71,7 @@ private:
 	//ゲームループ----------------------------------------------------------------
 	bool gameStartFlag;						//ゲーム開始を知らせるフラグ
 	int sceneNum;							//次何処のシーンに飛ぶか
+	bool sceneChangeFlag;
 	int gameFlame;							//1ステージの経過時間
 	int gameSpeed;							//1ステージで進む時間のスピード
 	int gameStageLevel;						//現在のステージのレベル
@@ -83,7 +87,8 @@ private:
 	//カメラ----------------------------------------------------------------
 	KazMath::Vec3<float> eyePos;
 	KazMath::Vec3<float> targetPos;
-	std::array<std::array<KazEnemyHelper::ForceCameraData, 10>, 3>cameraMoveArray;
+	std::array<std::array<KazEnemyHelper::ForceCameraData, 10>, KazEnemyHelper::STAGE_NUM_MAX>cameraMoveArray;
+	float cameraAngle;
 	CameraWork cameraWork;
 	//カメラ----------------------------------------------------------------
 
@@ -122,7 +127,7 @@ private:
 	ObjModelRenderPtr model;
 
 	GoalBox goalBox;
-	std::array<KazMath::Vec3<float>, 2> appearGoalBoxPos;
+	std::array<KazMath::Vec3<float>, KazEnemyHelper::STAGE_NUM_MAX> appearGoalBoxPos;
 	KazMath::Vec3<float> responeGoalBoxPos;
 	bool initAppearFlag;
 	bool changeStageFlag;
@@ -130,11 +135,11 @@ private:
 	//画面効果準備-----------------------
 
 	Sprite2DRender mainRenderTarget;
-	std::unique_ptr<GameRenderTarget> renderTarget;
-	std::unique_ptr<GameRenderTarget> nextRenderTarget;
+	std::array<std::unique_ptr<GameRenderTarget>, KazEnemyHelper::STAGE_NUM_MAX> renderTarget;
+	std::array<std::unique_ptr<GameRenderTarget>, KazEnemyHelper::STAGE_NUM_MAX> nextRenderTarget;
 
 	int stageNum;
-	std::array<std::shared_ptr<IStage>, 3>stages;
+	std::array<std::shared_ptr<IStage>, KazEnemyHelper::STAGE_NUM_MAX>stages;
 	bool cameraModeChangeFlag;
 	bool lineDebugFlag;
 
@@ -152,8 +157,16 @@ private:
 	bool readyToBlackOutToGoTitleFlag;
 	int flashTimer;
 	bool flashFlag;
+	bool isGameOverFlag;
+
+	RESOURCE_HANDLE gameClearResourceHandle, gameOverResouceHandle;
 	//ゲームオーバー画面----------------------------------------------
 
+
+	//ゲームクリア画面--------------------------------------------
+	bool isGameClearFlag;
+	bool gameClearFlag;
+	//ゲームクリア画面--------------------------------------------
 
 	//UI--------------------------------------
 	AnnounceStageUI stageUI;
@@ -191,6 +204,15 @@ private:
 	Tutorial tutorial;
 
 	PortalIntermediateDirection portalEffect;
+	//std::unique_ptr<MeshParticleEmitter> meshEmitter;
 
-	std::unique_ptr<MeshParticleEmitter> meshEmitter;
+
+	BoxPolygonRender playerModel;
+
+
+	bool d;
+	StringWindow logoutWindow;
+	bool prepareToClearFlag;
+	bool initEndLogFlag;
+	int gameClearTimer;
 };

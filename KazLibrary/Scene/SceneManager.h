@@ -18,6 +18,7 @@ public:
 	void Update();
 	void Draw();
 
+	bool endGameFlag;
 private:
 	std::vector<std::unique_ptr<SceneBase>> scene;
 	ChangeScene::SceneChange change;

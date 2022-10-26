@@ -7,7 +7,7 @@ class GameRenderTarget
 {
 public:
 	GameRenderTarget(const KazMath::Color &COLOR);
-
+	~GameRenderTarget();
 	void Init();
 	void Finalize();
 	void Update();
@@ -24,7 +24,6 @@ private:
 
 	std::vector<RESOURCE_HANDLE> handles;
 	RESOURCE_HANDLE addHandle;
-	RESOURCE_HANDLE potalTexHandle;
 	RESOURCE_HANDLE gameTexHandle;
 	std::array<std::unique_ptr<GaussianBuler>, 4> buler;
 };

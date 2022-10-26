@@ -9,6 +9,7 @@
 #include"../Game/Player.h"
 #include"../Game/UI/AttackLog.h"
 #include"../Game/Event/WindowFlame.h"
+#include"../Game/GameRenderTarget.h"
 
 
 class TitleScene :public SceneBase {
@@ -33,16 +34,11 @@ private:
 	KazMath::Vec3<float> eyePos, targetPos;
 	KazMath::Vec2<float> angle;
 
-	std::vector<RESOURCE_HANDLE> handles;
 	std::array<std::unique_ptr<DrawGrid>, 2> gridR;
 
+	std::unique_ptr<GameRenderTarget>renderTarget;
 	Sprite2DRender mainRenderTarget;
-	Sprite2DRender addRenderTarget;
-	Sprite2DRender luminaceTex;
 
-	RESOURCE_HANDLE addHandle;
-	RESOURCE_HANDLE potalTexHandle;
-	std::array<std::unique_ptr<GaussianBuler>, 4> buler;
 
 
 	Sprite2DRender titleLogoR;

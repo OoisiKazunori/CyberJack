@@ -148,7 +148,7 @@ void FirstStage::Update()
 
 		if (floorStage[i].data.transform.pos.z <= -200.0f)
 		{
-			floorStage[i].data.transform.pos.z = 1000.0f;
+			floorStage[i].data.transform.pos.z = 980.0f;
 		}
 	}
 

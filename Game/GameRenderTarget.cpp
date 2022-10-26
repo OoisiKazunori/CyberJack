@@ -38,6 +38,13 @@ GameRenderTarget::GameRenderTarget(const KazMath::Color &COLOR)
 	gameTexHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, KazMath::Color(14, 12, 13, 255).ConvertColorRateToXMFLOAT3(), DXGI_FORMAT_R8G8B8A8_UNORM);
 }
 
+GameRenderTarget::~GameRenderTarget()
+{
+	RenderTargetStatus::Instance()->DeleteRenderTarget(addHandle);
+	RenderTargetStatus::Instance()->DeleteMultiRenderTarget(handles);
+	RenderTargetStatus::Instance()->DeleteRenderTarget(gameTexHandle);
+}
+
 void GameRenderTarget::Init()
 {
 }
@@ -47,7 +54,6 @@ void GameRenderTarget::Finalize()
 	//レンダーターゲットの破棄
 	RenderTargetStatus::Instance()->DeleteRenderTarget(addHandle);
 	RenderTargetStatus::Instance()->DeleteMultiRenderTarget(handles);
-	RenderTargetStatus::Instance()->DeleteRenderTarget(potalTexHandle);
 }
 
 void GameRenderTarget::SetRenderTarget()

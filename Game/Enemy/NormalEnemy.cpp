@@ -71,6 +71,11 @@ void NormalEnemy::Draw()
 {
 	if (1.0f <= iEnemy_ObjModelRender->data.colorData.color.a)
 	{
+		if (!iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
+		{
+			iEnemy_ObjModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
+		}
+
 		iEnemy_ObjModelRender->Draw();
 		LockOnWindow(iEnemy_ObjModelRender->data.transform.pos);
 	}

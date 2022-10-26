@@ -12,7 +12,6 @@ FbxModelResourceMgr::FbxModelResourceMgr()
 
 
 	fbxImporter = FbxImporter::Create(fbxManager, "");
-	fbxScene = FbxScene::Create(fbxManager, "fbxScene");
 	handle = std::make_unique<HandleMaker>();
 
 	errorResource = std::make_unique<FbxResourceData>();
@@ -21,7 +20,10 @@ FbxModelResourceMgr::FbxModelResourceMgr()
 FbxModelResourceMgr::~FbxModelResourceMgr()
 {
 	fbxImporter->Destroy();
-	fbxScene->Destroy();
+	for (int i = 0; i < fbxScene.size(); ++i)
+	{
+		fbxScene[i]->Destroy();
+	}
 	fbxManager->Destroy();
 
 	modelResource.shrink_to_fit();
@@ -39,25 +41,26 @@ RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME, bo
 	}
 	revUvFlag = REV_UV_FLAG;
 
+	fbxScene.push_back(FbxScene::Create(fbxManager, "fbxScene"));
 
 	fbxImporter->Initialize(MODEL_NAME.c_str());
-	fbxImporter->Import(fbxScene);
+	fbxImporter->Import(fbxScene[fbxScene.size() - 1]);
 
 	FbxGeometryConverter converter(fbxManager);
 	// ポリゴンを三角形にする
-	converter.Triangulate(fbxScene, true);
+	converter.Triangulate(fbxScene[fbxScene.size() - 1], true);
 
 	//モデルの生成
 	Model *model = new Model;
 	model->name = MODEL_NAME;
 
 	//Fbxノードの数を取得
-	int nodeCount = fbxScene->GetNodeCount();
+	int nodeCount = fbxScene[fbxScene.size() - 1]->GetNodeCount();
 
 	//あらかじめ必要数分のメモリを確保する事でアドレスがずれるのを予防する
 	model->nodes.reserve(nodeCount);
 	//ルートノードから順に解析してモデルに流し込む
-	ParseNodeRecursive(model, fbxScene->GetRootNode());
+	ParseNodeRecursive(model, fbxScene[fbxScene.size() - 1]->GetRootNode());
 
 
 	if (model->vertices.size() == 0)
@@ -108,11 +111,11 @@ RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME, bo
 	for (int i = 0; i < animaStackCount; i++)
 	{
 		FbxAnimStack *animStack = nullptr;
-		animStack = fbxScene->GetSrcObject<FbxAnimStack>(i);
+		animStack = fbxScene[fbxScene.size() - 1]->GetSrcObject<FbxAnimStack>(i);
 
 		const char *animStackName = animStack->GetName();
-		FbxTakeInfo *takeInfo = fbxScene->GetTakeInfo(animStackName);
-		fbxScene->SetCurrentAnimationStack(animStack);
+		FbxTakeInfo *takeInfo = fbxScene[fbxScene.size() - 1]->GetTakeInfo(animStackName);
+		fbxScene[fbxScene.size() - 1]->SetCurrentAnimationStack(animStack);
 
 		modelResource[lHandle]->startTime.push_back(takeInfo->mLocalTimeSpan.GetStart());
 		modelResource[lHandle]->endTime.push_back(takeInfo->mLocalTimeSpan.GetStop());
@@ -476,6 +479,7 @@ void FbxModelResourceMgr::ParseBone(Model *MODEL, FbxMesh *FBX_MESH)
 	bones.reserve(clusterCount);
 
 
+
 	//初期姿勢行列の読み込み--------------------------------------------------
 	for (int i = 0; i < clusterCount; i++)
 	{
@@ -589,6 +593,8 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 
 
 	FbxSkin *fbxSkin = static_cast<FbxSkin *>(FBX_MESH->GetDeformer(0, FbxDeformer::eSkin));
+	boneSkinArray.push_back(fbxSkin);
+
 	if (fbxSkin == nullptr)return;
 
 	//スキンウェイト読み取り--------------------------------------------------
@@ -598,6 +604,7 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 	vector<list<WeightSet>> weightLists(MODEL->vertices.size());
 	//ボーンの数
 	int clusterCount = fbxSkin->GetClusterCount();
+
 	//全てのボーンについて
 	for (int i = 0; i < clusterCount; i++)
 	{

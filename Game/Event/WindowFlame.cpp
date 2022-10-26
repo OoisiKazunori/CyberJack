@@ -85,7 +85,7 @@ void WindowFlame::End()
 
 bool WindowFlame::IsEnd()
 {
-	return !drawFlag;
+	return !drawFlag && endFlag;
 }
 
 bool WindowFlame::ReadyToWrite()
@@ -202,7 +202,6 @@ void WindowFlame::Update3D()
 		if (flameTex.data.transform.scale.x <= 0.0f)
 		{
 			larpScale.y = 0.0f;
-			endFlag = false;
 			drawFlag = false;
 		}
 		KazMath::Larp(larpScale.x, &flameTex.data.transform.scale.x, mul);

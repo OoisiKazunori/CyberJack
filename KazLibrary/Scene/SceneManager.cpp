@@ -13,7 +13,7 @@
 
 SceneManager::SceneManager()
 {
-	//scene.emplace_back(std::make_unique<TitleScene>());
+	scene.emplace_back(std::make_unique<TitleScene>());
 	scene.emplace_back(std::make_unique<GameScene>());
 	//scene.emplace_back(std::make_unique<DebugStageScene>());
 	//scene.emplace_back(std::make_unique<EnemyDebugScene>());
@@ -22,6 +22,7 @@ SceneManager::SceneManager()
 	nextScene = 0;
 	scene[nowScene]->Init();
 	itisInArrayFlag = true;
+	endGameFlag = false;
 }
 
 SceneManager::~SceneManager()
@@ -78,6 +79,11 @@ void SceneManager::Update()
 		if (sceneNum != SCENE_NONE)
 		{
 			nextScene = sceneNum;
+		}
+
+		if (scene[nowScene]->endGameFlag)
+		{
+			endGameFlag = true;
 		}
 	}
 

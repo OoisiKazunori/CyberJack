@@ -1,13 +1,13 @@
-#include"TutorialGame.h"
+#include"StringWindow.h"
 
-TutorialGame::TutorialGame()
+StringWindow::StringWindow()
 {
 	endFlag = false;
+	initFlag = false;
 }
 
-void TutorialGame::Init(const std::string &TEXT, const std::vector<KazMath::Vec3<float>> &POS_ARRAY)
+void StringWindow::Init(const std::string &TEXT)
 {
-	blockPosArray = POS_ARRAY;
 	KazMath::Transform3D lTrans;
 	lTrans.pos = { WIN_X / 2.0f,100.0f,0.0f };
 	KazMath::Vec2<float> lScale;
@@ -18,18 +18,25 @@ void TutorialGame::Init(const std::string &TEXT, const std::vector<KazMath::Vec3
 	endTimer = 0;
 	window.Start();
 	readyToWriteFlag = false;
+	initFlag = true;
 
 	text = TEXT;
 }
 
-void TutorialGame::Finalize()
+void StringWindow::Finalize()
 {
 	tutorialText.Finalize();
 	window.End();
+	initFlag = false;
 }
 
-void TutorialGame::Update()
+void StringWindow::Update()
 {
+	if (!initFlag)
+	{
+		return;
+	}
+
 	if (window.ReadyToWrite() && !readyToWriteFlag)
 	{
 		tutorialText.Init({ WIN_X / 2.0f - 158.0f,100.0f }, text, 1.4f);
@@ -39,11 +46,16 @@ void TutorialGame::Update()
 	tutorialText.Update(0);
 	window.Update();
 
+	++endTimer;
+	if (60 <= endTimer)
+	{
+		endFlag = true;
+	}
+
 	if (!endFlag)
 	{
 		return;
 	}
-	++endTimer;
 
 	if (KazMath::ConvertSecondToFlame(2) <= endTimer)
 	{
@@ -52,24 +64,17 @@ void TutorialGame::Update()
 	}
 }
 
-void TutorialGame::Draw()
+void StringWindow::Draw()
 {
+	if (!initFlag)
+	{
+		return;
+	}
 	tutorialText.Draw();
 	window.Draw();
 }
 
-void TutorialGame::Succeed()
+bool StringWindow::IsFinish()
 {
-	if (endFlag)
-	{
-		return;
-	}
-	tutorialText.Finalize();
-	tutorialText.Init({ WIN_X / 2.0f - 120.0f,100.0f }, "Succeed", 1.4f);
-	endFlag = true;
-}
-
-bool TutorialGame::NextTutorial()
-{
-	return endFlag && window.IsEnd();
+	return window.IsEnd();
 }

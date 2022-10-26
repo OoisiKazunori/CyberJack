@@ -27,8 +27,8 @@ private:
 
 	std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX>responeData;
 
-	std::array<std::shared_ptr<IStage>, 3> stages;
-	std::array<std::array<KazEnemyHelper::ForceCameraData, 10>, 3>cameraMoveArray;
-
+	std::array<std::shared_ptr<IStage>, KazEnemyHelper::STAGE_NUM_MAX> stages;
+	std::array<std::array<KazEnemyHelper::ForceCameraData, 10>, KazEnemyHelper::STAGE_NUM_MAX>cameraMoveArray;
+	std::array<KazMath::Color, KazEnemyHelper::STAGE_NUM_MAX> backGroundColorArray;
 
 };

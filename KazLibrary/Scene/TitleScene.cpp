@@ -10,38 +10,8 @@
 
 TitleScene::TitleScene()
 {
-	std::vector<MultiRenderTargetData> lData;
-	lData.push_back(MultiRenderTargetData());
-	lData.push_back(MultiRenderTargetData());
-	lData[0].graphSize = { WIN_X,WIN_Y };
-	lData[0].backGroundColor = KazMath::Color(14, 12, 13, 255).ConvertColorRateToXMFLOAT3();
-	lData[1].graphSize = { WIN_X,WIN_Y };
-	lData[1].backGroundColor = KazMath::Color(0, 0, 0, 255).ConvertColorRateToXMFLOAT3();
-
-	handles =
-		RenderTargetStatus::Instance()->CreateMultiRenderTarget(lData, DXGI_FORMAT_R8G8B8A8_UNORM);
 	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	mainRenderTarget.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
-	mainRenderTarget.data.handleData = handles[0];
-
-	luminaceTex.data.pipelineName = PIPELINE_NAME_SPRITE_LUMI;
-	luminaceTex.data.handleData = handles[0];
-	luminaceTex.data.addHandle.handle[0] = handles[1];
-	luminaceTex.data.addHandle.paramType[0] = GRAPHICS_PRAMTYPE_TEX2;
-	luminaceTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
-
-	addHandle = RenderTargetStatus::Instance()->CreateRenderTarget({ WIN_X,WIN_Y }, DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f), DXGI_FORMAT_R8G8B8A8_UNORM);
-	addRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
-	addRenderTarget.data.pipelineName = PIPELINE_NAME_BLOOM;
-	addRenderTarget.data.addHandle.paramType[0] = GRAPHICS_PRAMTYPE_TEX;
-	addRenderTarget.data.addHandle.paramType[1] = GRAPHICS_PRAMTYPE_TEX2;
-	addRenderTarget.data.addHandle.paramType[2] = GRAPHICS_PRAMTYPE_TEX3;
-	addRenderTarget.data.addHandle.paramType[3] = GRAPHICS_PRAMTYPE_TEX4;
-
-	buler[0] = std::make_unique<GaussianBuler>(KazMath::Vec2<UINT>(WIN_X, WIN_Y));
-	buler[1] = std::make_unique<GaussianBuler>(KazMath::Vec2<UINT>(WIN_X / 2, WIN_Y / 2));
-	buler[2] = std::make_unique<GaussianBuler>(KazMath::Vec2<UINT>(WIN_X / 3, WIN_Y / 3));
-	buler[3] = std::make_unique<GaussianBuler>(KazMath::Vec2<UINT>(WIN_X / 4, WIN_Y / 4));
 
 	gridR[0] = std::make_unique<DrawGrid>(KazMath::Color(14, 12, 13, 255));
 	gridR[1] = std::make_unique<DrawGrid>(KazMath::Color(14, 12, 13, 255));
@@ -57,14 +27,12 @@ TitleScene::TitleScene()
 	lineLogoR.data.transform.scale = { 1000.0f,0.5f };
 	startButtonR.data.transform.pos = { 270.0f,380.0f };
 	startButtonR.data.transform.scale = { 0.5f,0.5f };
+
+	endGameFlag = false;
 }
 
 TitleScene::~TitleScene()
 {
-	//ƒŒƒ“ƒ_[ƒ^[ƒQƒbƒg‚Ì”jŠü
-	RenderTargetStatus::Instance()->DeleteRenderTarget(addHandle);
-	RenderTargetStatus::Instance()->DeleteMultiRenderTarget(handles);
-	RenderTargetStatus::Instance()->DeleteRenderTarget(potalTexHandle);
 }
 
 void TitleScene::Init()
@@ -127,11 +95,23 @@ void TitleScene::Init()
 	logWindowIndex = 0;
 	appearTimer = 0;
 	gridTopRate = 0.0f;
+
+	eyePos =	{ 0.0f,0.0f,-8.0f  };
+	targetPos = { 0.0f,0.0f,15.0f  };
+
+
+	renderTarget = std::make_unique<GameRenderTarget>(KazMath::Color(14, 12, 13, 255));
+	mainRenderTarget.data.handleData = renderTarget->GetGameRenderTargetHandle();
+
 }
 
 void TitleScene::Finalize()
 {
-
+	for (int i = 0; i < gridR.size(); ++i)
+	{
+		gridR[i]->Finalize();
+	}
+	renderTarget.reset();
 }
 
 void TitleScene::Input()
@@ -199,6 +179,7 @@ void TitleScene::Input()
 
 		case 1:
 			//ƒQ[ƒ€I—¹
+			endGameFlag = true;
 			break;
 		default:
 			break;
@@ -340,8 +321,9 @@ void TitleScene::Draw()
 {
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 	RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
-	RenderTargetStatus::Instance()->PrepareToChangeBarrier(handles[0]);
-	RenderTargetStatus::Instance()->ClearRenderTarget(handles[0]);
+
+
+	renderTarget->SetRenderTarget();
 
 	if (startGameFlag)
 	{
@@ -366,21 +348,6 @@ void TitleScene::Draw()
 		gridR[i]->Draw();
 	}
 
-	RenderTargetStatus::Instance()->PrepareToChangeBarrier(addHandle, handles[0]);
-	RenderTargetStatus::Instance()->ClearRenderTarget(addHandle);
-	//‹P“x’Šo
-	luminaceTex.Draw();
-	RenderTargetStatus::Instance()->PrepareToCloseBarrier(addHandle);
-	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
-	//ƒQ[ƒ€‰æ–Ê•`‰æ
-	mainRenderTarget.Draw();
-
-	addRenderTarget.data.handleData = addHandle;
-	addRenderTarget.data.addHandle.handle[0] = buler[0]->BlurImage(addHandle);
-	addRenderTarget.data.addHandle.handle[1] = buler[1]->BlurImage(addRenderTarget.data.addHandle.handle[0]);
-	addRenderTarget.data.addHandle.handle[2] = buler[2]->BlurImage(addRenderTarget.data.addHandle.handle[1]);
-	addRenderTarget.data.addHandle.handle[3] = buler[3]->BlurImage(addRenderTarget.data.addHandle.handle[2]);
-	addRenderTarget.Draw();
 
 	if (!startGameFlag)
 	{
@@ -398,6 +365,9 @@ void TitleScene::Draw()
 			menuR[i].Draw();
 		}
 	}
+	renderTarget->Draw();
+
+	mainRenderTarget.Draw();
 }
 
 int TitleScene::SceneChange()

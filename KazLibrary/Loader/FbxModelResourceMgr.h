@@ -135,10 +135,11 @@ public:
 
 	const std::shared_ptr<FbxResourceData> &GetResourceData(RESOURCE_HANDLE HANDLE);
 
+	std::vector<FbxSkin *>boneSkinArray;
 private:
 	FbxManager *fbxManager;
 	FbxImporter *fbxImporter;
-	FbxScene *fbxScene;
+	std::vector<FbxScene *>fbxScene;
 
 	std::vector<std::shared_ptr<FbxResourceData>>modelResource;
 	std::shared_ptr<FbxResourceData> errorResource;

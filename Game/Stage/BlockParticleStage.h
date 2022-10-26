@@ -79,5 +79,10 @@ private:
 
 
 	GalacticParticle galacticParticle;
+
+	bool highFlag, prepareFlag;
+	int prepareTimer;
+
+	int flashTimer;
 };
 

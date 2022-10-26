@@ -99,12 +99,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		imgui.NewFlame();
 		KeyBoradInputManager::Instance()->InputLog();
 		ControllerInputManager::Instance()->InputLog();
-//#ifdef _DEBUG
+#ifdef _DEBUG
 		winApi.FPS();
-//#endif
+#endif
 
 		sm.Update();
 		sm.Draw();
+
+		if (sm.endGameFlag)
+		{
+			break;
+		}
+
 		imgui.Set();
 		CameraMgr::Instance()->Record();
 		RenderTargetStatus::Instance()->SwapResourceBarrier();

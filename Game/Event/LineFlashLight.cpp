@@ -36,6 +36,11 @@ void LineFlashLight::Init(const std::vector<KazMath::Vec3<float>*> &POS_ARRAY, i
 	boxR.data.pipelineName = PIPELINE_NAME_COLOR_MULTITEX;
 }
 
+void LineFlashLight::Finalize()
+{
+	finishFlag = true;
+}
+
 void LineFlashLight::Update()
 {
 	if (!finishFlag)

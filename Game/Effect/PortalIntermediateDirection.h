@@ -11,7 +11,7 @@ class PortalIntermediateDirection
 public:
 	PortalIntermediateDirection();
 	~PortalIntermediateDirection();
-	void Init();
+	void Init(bool SHOW_NEXT_STAGE_FLAG = true);
 	void Finalize();
 	void Update(const KazMath::Vec3<float> &POS);
 	void Draw(Cursor *CURSOR);
@@ -39,6 +39,7 @@ private:
 	int disappearTimer;
 	bool nextPortalFlag;
 	bool finishFlag;
+	bool showNextStageFlag;
 	Player player;
 
 	bool startFlag;

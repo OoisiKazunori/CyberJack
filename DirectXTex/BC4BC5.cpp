@@ -1,9 +1,9 @@
 //-------------------------------------------------------------------------------------
 // BC4BC5.cpp
-//  
+//
 // Block-compression (BC) functionality for BC4 and BC5 (DirectX 10 texture compression)
 //
-// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 //
 // http://go.microsoft.com/fwlink/?LinkId=248926
@@ -40,22 +40,22 @@ namespace
     {
         float R(size_t uOffset) const noexcept
         {
-            size_t uIndex = GetIndex(uOffset);
+            const size_t uIndex = GetIndex(uOffset);
             return DecodeFromIndex(uIndex);
         }
 
         float DecodeFromIndex(size_t uIndex) const noexcept
         {
             if (uIndex == 0)
-                return red_0 / 255.0f;
+                return float(red_0) / 255.0f;
             if (uIndex == 1)
-                return red_1 / 255.0f;
-            float fred_0 = red_0 / 255.0f;
-            float fred_1 = red_1 / 255.0f;
+                return float(red_1) / 255.0f;
+            const float fred_0 = float(red_0) / 255.0f;
+            const float fred_1 = float(red_1) / 255.0f;
             if (red_0 > red_1)
             {
                 uIndex -= 1;
-                return (fred_0 * (7 - uIndex) + fred_1 * uIndex) / 7.0f;
+                return (fred_0 * float(7u - uIndex) + fred_1 * float(uIndex)) / 7.0f;
             }
             else
             {
@@ -64,7 +64,7 @@ namespace
                 if (uIndex == 7)
                     return 1.0f;
                 uIndex -= 1;
-                return (fred_0 * (5 - uIndex) + fred_1 * uIndex) / 5.0f;
+                return (fred_0 * float(5u - uIndex) + fred_1 * float(uIndex)) / 5.0f;
             }
         }
 
@@ -96,25 +96,25 @@ namespace
     {
         float R(size_t uOffset) const noexcept
         {
-            size_t uIndex = GetIndex(uOffset);
+            const size_t uIndex = GetIndex(uOffset);
             return DecodeFromIndex(uIndex);
         }
 
         float DecodeFromIndex(size_t uIndex) const noexcept
         {
-            int8_t sred_0 = (red_0 == -128) ? -127 : red_0;
-            int8_t sred_1 = (red_1 == -128) ? -127 : red_1;
+            const int8_t sred_0 = (red_0 == -128) ? -127 : red_0;
+            const int8_t sred_1 = (red_1 == -128) ? -127 : red_1;
 
             if (uIndex == 0)
-                return sred_0 / 127.0f;
+                return float(sred_0) / 127.0f;
             if (uIndex == 1)
-                return sred_1 / 127.0f;
-            float fred_0 = sred_0 / 127.0f;
-            float fred_1 = sred_1 / 127.0f;
+                return float(sred_1) / 127.0f;
+            const float fred_0 = float(sred_0) / 127.0f;
+            const float fred_1 = float(sred_1) / 127.0f;
             if (red_0 > red_1)
             {
                 uIndex -= 1;
-                return (fred_0 * (7 - uIndex) + fred_1 * uIndex) / 7.0f;
+                return (fred_0 * float(7u - uIndex) + fred_1 * float(uIndex)) / 7.0f;
             }
             else
             {
@@ -123,7 +123,7 @@ namespace
                 if (uIndex == 7)
                     return 1.0f;
                 uIndex -= 1;
-                return (fred_0 * (5 - uIndex) + fred_1 * uIndex) / 5.0f;
+                return (fred_0 * float(5u - uIndex) + fred_1 * float(uIndex)) / 5.0f;
             }
         }
 
@@ -157,7 +157,7 @@ namespace
     //-------------------------------------------------------------------------------------
     void inline FloatToSNorm(_In_ float fVal, _Out_ int8_t *piSNorm) noexcept
     {
-        const uint32_t dwMostNeg = (1 << (8 * sizeof(int8_t) - 1));
+        constexpr uint32_t dwMostNeg = (1 << (8 * sizeof(int8_t) - 1));
 
         if (isnan(fVal))
             fVal = 0;
@@ -186,8 +186,8 @@ namespace
         _Out_ uint8_t &endpointU_1) noexcept
     {
         // The boundary of codec for signed/unsigned format
-        const float MIN_NORM = 0.f;
-        const float MAX_NORM = 1.f;
+        constexpr float MIN_NORM = 0.f;
+        constexpr float MAX_NORM = 1.f;
 
         // Find max/min of input texels
         float fBlockMax = theTexelsU[0];
@@ -206,7 +206,7 @@ namespace
 
         //  If there are boundary values in input texels, should use 4 interpolated color values to guarantee
         //  the exact code of the boundary values.
-        bool bUsing4BlockCodec = (MIN_NORM == fBlockMin || MAX_NORM == fBlockMax);
+        const bool bUsing4BlockCodec = (MIN_NORM == fBlockMin || MAX_NORM == fBlockMax);
 
         // Using Optimize
         float fStart, fEnd;
@@ -241,8 +241,8 @@ namespace
         _Out_ int8_t &endpointU_1) noexcept
     {
         //  The boundary of codec for signed/unsigned format
-        const float MIN_NORM = -1.f;
-        const float MAX_NORM = 1.f;
+        constexpr float MIN_NORM = -1.f;
+        constexpr float MAX_NORM = 1.f;
 
         // Find max/min of input texels
         float fBlockMax = theTexelsU[0];
@@ -261,7 +261,7 @@ namespace
 
         //  If there are boundary values in input texels, should use 4 interpolated color values to guarantee
         //  the exact code of the boundary values.
-        bool bUsing4BlockCodec = (MIN_NORM == fBlockMin || MAX_NORM == fBlockMax);
+        const bool bUsing4BlockCodec = (MIN_NORM == fBlockMin || MAX_NORM == fBlockMax);
 
         // Using Optimize
         float fStart, fEnd;
@@ -338,7 +338,7 @@ namespace
             float fBestDelta = 100000;
             for (size_t uIndex = 0; uIndex < 8; uIndex++)
             {
-                float fCurrentDelta = fabsf(rGradient[uIndex] - theTexelsU[i]);
+                const float fCurrentDelta = fabsf(rGradient[uIndex] - theTexelsU[i]);
                 if (fCurrentDelta < fBestDelta)
                 {
                     uBestIndex = uIndex;
@@ -365,7 +365,7 @@ namespace
             float fBestDelta = 100000;
             for (size_t uIndex = 0; uIndex < 8; uIndex++)
             {
-                float fCurrentDelta = fabsf(rGradient[uIndex] - theTexelsU[i]);
+                const float fCurrentDelta = fabsf(rGradient[uIndex] - theTexelsU[i]);
                 if (fCurrentDelta < fBestDelta)
                 {
                     uBestIndex = uIndex;
@@ -395,7 +395,7 @@ void DirectX::D3DXDecodeBC4U(XMVECTOR *pColor, const uint8_t *pBC) noexcept
 
     for (size_t i = 0; i < NUM_PIXELS_PER_BLOCK; ++i)
     {
-#pragma prefast(suppress:22103, "writing blocks in two halves confuses tool")
+    #pragma prefast(suppress:22103, "writing blocks in two halves confuses tool")
         pColor[i] = XMVectorSet(pBC4->R(i), 0, 0, 1.0f);
     }
 }
@@ -410,13 +410,13 @@ void DirectX::D3DXDecodeBC4S(XMVECTOR *pColor, const uint8_t *pBC) noexcept
 
     for (size_t i = 0; i < NUM_PIXELS_PER_BLOCK; ++i)
     {
-#pragma prefast(suppress:22103, "writing blocks in two halves confuses tool")
+    #pragma prefast(suppress:22103, "writing blocks in two halves confuses tool")
         pColor[i] = XMVectorSet(pBC4->R(i), 0, 0, 1.0f);
     }
 }
 
 _Use_decl_annotations_
-void DirectX::D3DXEncodeBC4U(uint8_t *pBC, const XMVECTOR *pColor, DWORD flags) noexcept
+void DirectX::D3DXEncodeBC4U(uint8_t *pBC, const XMVECTOR *pColor, uint32_t flags) noexcept
 {
     UNREFERENCED_PARAMETER(flags);
 
@@ -437,7 +437,7 @@ void DirectX::D3DXEncodeBC4U(uint8_t *pBC, const XMVECTOR *pColor, DWORD flags) 
 }
 
 _Use_decl_annotations_
-void DirectX::D3DXEncodeBC4S(uint8_t *pBC, const XMVECTOR *pColor, DWORD flags) noexcept
+void DirectX::D3DXEncodeBC4S(uint8_t *pBC, const XMVECTOR *pColor, uint32_t flags) noexcept
 {
     UNREFERENCED_PARAMETER(flags);
 
@@ -472,7 +472,7 @@ void DirectX::D3DXDecodeBC5U(XMVECTOR *pColor, const uint8_t *pBC) noexcept
 
     for (size_t i = 0; i < NUM_PIXELS_PER_BLOCK; ++i)
     {
-#pragma prefast(suppress:22103, "writing blocks in two halves confuses tool")
+    #pragma prefast(suppress:22103, "writing blocks in two halves confuses tool")
         pColor[i] = XMVectorSet(pBCR->R(i), pBCG->R(i), 0, 1.0f);
     }
 }
@@ -488,13 +488,13 @@ void DirectX::D3DXDecodeBC5S(XMVECTOR *pColor, const uint8_t *pBC) noexcept
 
     for (size_t i = 0; i < NUM_PIXELS_PER_BLOCK; ++i)
     {
-#pragma prefast(suppress:22103, "writing blocks in two halves confuses tool")
+    #pragma prefast(suppress:22103, "writing blocks in two halves confuses tool")
         pColor[i] = XMVectorSet(pBCR->R(i), pBCG->R(i), 0, 1.0f);
     }
 }
 
 _Use_decl_annotations_
-void DirectX::D3DXEncodeBC5U(uint8_t *pBC, const XMVECTOR *pColor, DWORD flags) noexcept
+void DirectX::D3DXEncodeBC5U(uint8_t *pBC, const XMVECTOR *pColor, uint32_t flags) noexcept
 {
     UNREFERENCED_PARAMETER(flags);
 
@@ -528,7 +528,7 @@ void DirectX::D3DXEncodeBC5U(uint8_t *pBC, const XMVECTOR *pColor, DWORD flags) 
 }
 
 _Use_decl_annotations_
-void DirectX::D3DXEncodeBC5S(uint8_t *pBC, const XMVECTOR *pColor, DWORD flags) noexcept
+void DirectX::D3DXEncodeBC5S(uint8_t *pBC, const XMVECTOR *pColor, uint32_t flags) noexcept
 {
     UNREFERENCED_PARAMETER(flags);
 

@@ -14,6 +14,10 @@ BlockParticleStage::BlockParticleStage()
 {
 	buffers = std::make_unique<CreateGpuBuffer>();
 
+	highFlag = false;
+	prepareFlag = true;
+	prepareTimer = 0;
+	flashTimer = 0;
 
 	//コマンドシグネチャ---------------------------
 	std::array<D3D12_INDIRECT_ARGUMENT_DESC, 2> args{};
@@ -303,11 +307,6 @@ void BlockParticleStage::Update()
 		constBufferData.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
 		constBufferData.billboardMat = CameraMgr::Instance()->GetMatBillBoard();
 
-		ImGui::Begin("ParticleStage");
-		ImGui::DragFloat("Height", &constBufferData.flash.x);
-		ImGui::DragFloat("AllFlash", &constBufferData.flash.y);
-		ImGui::End();
-
 		buffers->TransData(commonBufferHandle, &constBufferData, sizeof(CommonMoveData));
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(commonBufferHandle));
 		constBufferData.flash.y = 0;
@@ -321,6 +320,42 @@ void BlockParticleStage::Update()
 	}
 
 	DirectX12CmdList::Instance()->cmdList->Dispatch((PARTICLE_MAX_NUM * PER_USE_PARTICLE_MAX_NUM) / 1000, 1, 1);
+
+
+	if (highFlag)
+	{
+		constBufferData.flash.x += 5.0f;
+		if (650.0f <= constBufferData.flash.x)
+		{
+			highFlag = false;
+			prepareFlag = true;
+		}
+	}
+
+	if (prepareFlag)
+	{
+		++prepareTimer;
+		if (120 <= prepareTimer)
+		{
+			highFlag = true;
+			constBufferData.flash.x = -610.0f;
+
+			prepareTimer = 0;
+			prepareFlag = false;
+		}
+	}
+	
+	++flashTimer;
+	if (!highFlag && 360 <= flashTimer)
+	{
+		constBufferData.flash.y = 1;
+		flashTimer = 0;
+	}
+	else
+	{
+		constBufferData.flash.y = 0;
+	}
+	
 
 	galacticParticle.Update();
 }

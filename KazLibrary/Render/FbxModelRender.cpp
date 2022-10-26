@@ -105,10 +105,10 @@ void FbxModelRender::Draw()
 			{
 				for (int i = 0; i < resourceData->bone.size(); i++)
 				{
+					FbxSkin *bonePtr = FbxModelResourceMgr::Instance()->boneSkinArray[data.handle.handle];
+					FbxAMatrix lFbxCurrentPose = bonePtr->GetCluster(i)->GetLink()->EvaluateGlobalTransform(currentTime);
 					DirectX::XMMATRIX lMatCurrentPose;
-					FbxAMatrix lFbxCurrentPose = resourceData->bone[i].fbxSkin->GetCluster(i)->GetLink()->EvaluateGlobalTransform(currentTime);
 					KazMath::ConvertMatrixFromFbx(&lMatCurrentPose, lFbxCurrentPose);
-
 
 					if (resourceData->startTime.size() == 0)
 					{
@@ -120,16 +120,28 @@ void FbxModelRender::Draw()
 					}
 				}
 			}
-			else
+			else if(resourceData->bone.size() != 0)
 			{
-				for (int i = 0; i < MAX_BONES; i++)
+				for (int i = 0; i < resourceData->bone.size(); i++)
 				{
-					lConstMap->bones[i] = DirectX::XMMatrixIdentity();
+					FbxSkin *bonePtr = FbxModelResourceMgr::Instance()->boneSkinArray[data.handle.handle];
+					FbxAMatrix lFbxCurrentPose = bonePtr->GetCluster(i)->GetLink()->EvaluateGlobalTransform(currentTime);
+					DirectX::XMMATRIX lMatCurrentPose;
+					KazMath::ConvertMatrixFromFbx(&lMatCurrentPose, lFbxCurrentPose);
+
+					if (resourceData->startTime.size() == 0)
+					{
+						lConstMap->bones[i] = DirectX::XMMatrixIdentity();
+					}
+					else
+					{
+						lConstMap->bones[i] = resourceData->bone[i].invInitialPose * lMatCurrentPose;
+					}
 				}
 			}
 			gpuBuffer->GetBufferData(constBufferHandle[1])->Unmap(0, nullptr);
 		}
-		else if(resourceData->bone.size() != 0)
+		else if (resourceData->bone.size() != 0)
 		{
 			ConstBufferDataSkin *lConstMap = nullptr;
 			gpuBuffer->GetBufferData(constBufferHandle[1])->Map(0, nullptr, (void **)&lConstMap);

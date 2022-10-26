@@ -135,7 +135,7 @@ void Player::Hit()
 	coolTimeFlag = true;
 }
 
-bool Player::isAlive()
+bool Player::IsAlive()
 {
 	return 0 < hp;
 }

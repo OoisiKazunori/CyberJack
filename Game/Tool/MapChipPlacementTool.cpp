@@ -391,7 +391,7 @@ MapChipPlacementTool::MESH_DIR MapChipPlacementTool::CheckBlock(const KazMath::V
 			lHitDataArray.push_back(HitData(lDir, lDistance));
 		}
 	}
-	std::sort(lDistanceArray.begin(), lDistanceArray.end());
+	//sort(lDistanceArray.begin(), lDistanceArray.end());
 
 	std::vector<HitData>lResultArray;
 

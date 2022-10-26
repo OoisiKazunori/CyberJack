@@ -118,7 +118,7 @@ void Tutorial::Init(bool SKIP_FLAG)
 		tutorialAllClearFlag = false;
 		tutorialFlag = true;
 	}
-	tutorialAllClearFlag = true;
+	//tutorialAllClearFlag = true;
 	initSceneFlag = false;
 }
 
@@ -193,10 +193,6 @@ void Tutorial::Input()
 
 void Tutorial::Update()
 {
-	ImGui::Begin("Angle");
-	ImGui::DragFloat("a", &angleC);
-	ImGui::End();
-
 	const float MAX_ANGLE = 120.0f;
 	const float DEFAULT_ANGLE = 60.0f;
 	if (portalEffect.DrawNextPortal())

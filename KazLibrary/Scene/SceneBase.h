@@ -12,6 +12,8 @@ public:
 	
 
 	virtual int SceneChange() = 0;
+
+	bool endGameFlag;
 protected:
 
 };

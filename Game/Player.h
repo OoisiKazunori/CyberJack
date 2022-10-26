@@ -17,7 +17,7 @@ public:
 
 	void Hit();
 
-	bool isAlive();
+	bool IsAlive();
 	KazMath::Vec3<float> pos;
 private:
 	short hp,prevHp;

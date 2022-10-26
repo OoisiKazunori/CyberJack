@@ -77,10 +77,14 @@ Game::Game() :LOG_FONT_SIZE(1.0f)
 	pressAButtonTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f + 100.0f };
 	pressAButtonTex.data.transform.scale = { 0.4f,0.4f };
 
-	gameOverTex.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::GameOverPath + "GameOver.png");
+
+	gameClearResourceHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::GameOverPath + "GameClear.png");
+	gameOverResouceHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::GameOverPath + "GameOver.png");
+
+	gameOverTex.data.handleData = gameClearResourceHandle;
 	gameOverTex.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	gameOverTex.data.transform.scale = { 1.2f,1.2f };
-
+	gameOverTex.data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
 
 	bgmSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Bgm.wav");
 	lockSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Lock.wav", false);
@@ -96,10 +100,10 @@ Game::Game() :LOG_FONT_SIZE(1.0f)
 
 	stringLog.Init({ 50.0f,50.0f });
 	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+	mainRenderTarget.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
 
-	renderTarget = std::make_unique<GameRenderTarget>(KazMath::Color(0, 0, 0, 255));
-	nextRenderTarget = std::make_unique<GameRenderTarget>(KazMath::Color(29, 19, 72, 255));
-	meshEmitter = std::make_unique<MeshParticleEmitter>(0);
+	playerModel.data.transform.scale = { 0.5f, 1.3f, 0.5f };
+	playerModel.data.transform.rotation = { 35.0f,0.0f,1.0f };
 }
 
 Game::~Game()
@@ -109,8 +113,9 @@ Game::~Game()
 }
 
 void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> &RESPONE_DATA,
-	const std::array<std::shared_ptr<IStage>, 3> &STAGE_ARRAY,
-	const std::array<std::array<KazEnemyHelper::ForceCameraData, 10>, 3> &CAMERA_ARRAY)
+	const std::array<std::shared_ptr<IStage>, KazEnemyHelper::STAGE_NUM_MAX> &STAGE_ARRAY,
+	const std::array<KazMath::Color, KazEnemyHelper::STAGE_NUM_MAX> &BACKGROUND_COLOR,
+	const std::array<std::array<KazEnemyHelper::ForceCameraData, 10>, KazEnemyHelper::STAGE_NUM_MAX> &CAMERA_ARRAY)
 {
 	player.Init(KazMath::Transform3D().pos);
 	cursor.Init();
@@ -146,9 +151,10 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	cameraModeChangeFlag = false;
 	gameFlame = 0;
 	changeLayerLevelMaxTime[0] = KazMath::ConvertSecondToFlame(70);
-	changeLayerLevelMaxTime[1] = KazMath::ConvertSecondToFlame(85);
+	changeLayerLevelMaxTime[1] = KazMath::ConvertSecondToFlame(70);
+	changeLayerLevelMaxTime[2] = KazMath::ConvertSecondToFlame(50);
 	//ゴールに触れ無かった場合に次のステージに移動する際の最大フレーム数
-	for (int i = 2; i < changeLayerLevelMaxTime.size(); ++i)
+	for (int i = 3; i < changeLayerLevelMaxTime.size(); ++i)
 	{
 		changeLayerLevelMaxTime[i] = KazMath::ConvertSecondToFlame(70);
 	}
@@ -160,7 +166,8 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	testEnemyPos = { 0.0f,0.0f,100.0f };
 
 	appearGoalBoxPos[0] = { 0.0f,10.0f,40.0f };
-	appearGoalBoxPos[1] = { 20.0f,-15.0f,40.0f };
+	appearGoalBoxPos[1] = { 0.0f,10.0f,40.0f };
+	appearGoalBoxPos[2] = { 20.0f,-15.0f,40.0f };
 	responeGoalBoxPos = { -10.0f,-100.0f,40.0f };
 	goalBox.Init(responeGoalBoxPos);
 	initAppearFlag = false;
@@ -181,6 +188,29 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 
 	tutorial.Init(false);
 	portalEffect.Init();
+
+	isGameOverFlag = false;
+	isGameClearFlag = false;
+
+	gameClearFlag = false;
+	sceneChangeFlag = false;
+
+
+	d = false;
+	prepareToClearFlag = false;
+	initEndLogFlag = false;
+	gameClearTimer = 0;
+
+	//パディング用
+	for (int i = 0; i < BACKGROUND_COLOR.size(); ++i)
+	{
+		renderTarget[i] = std::make_unique<GameRenderTarget>(BACKGROUND_COLOR[i]);
+
+		if (i + 1 < BACKGROUND_COLOR.size())
+		{
+			nextRenderTarget[i + 1] = std::make_unique<GameRenderTarget>(BACKGROUND_COLOR[i + 1]);
+		}
+	}
 }
 
 void Game::Finalize()
@@ -234,15 +264,13 @@ void Game::Input()
 		rightFlag = true;
 	}
 
-	//ゲーム終了処理
-	//三ステージ目で6秒後にタイトル画面に戻る許可を出す
-	if (inputController->InputTrigger(XINPUT_GAMEPAD_A) && 2 <= gameStageLevel)
-	{
-		sceneNum = 0;
-	}
-
 	//ゲームオーバー画面でタイトル画面に戻る処理
 	if (inputController->InputTrigger(XINPUT_GAMEPAD_A) && gameOverFlag)
+	{
+		readyToBlackOutToGoTitleFlag = true;
+	}
+	//ゲームクリアでタイトルに戻る
+	if (inputController->InputTrigger(XINPUT_GAMEPAD_A) && gameClearFlag)
 	{
 		readyToBlackOutToGoTitleFlag = true;
 	}
@@ -309,7 +337,7 @@ void Game::Input()
 
 void Game::Update()
 {
-	tutorial.handle = renderTarget->GetGameRenderTargetHandle();
+	tutorial.handle = renderTarget[0]->GetGameRenderTargetHandle();
 	if (tutorial.tutorialFlag)
 	{
 		tutorial.Update();
@@ -348,6 +376,31 @@ void Game::Update()
 	cameraWork.Update(cursor.GetValue(), &player.pos, cameraModeChangeFlag);
 	eyePos = cameraWork.GetEyePos();
 	targetPos = cameraWork.GetTargetPos();
+
+
+	const float MAX_ANGLE = 120.0f;
+	const float DEFAULT_ANGLE = 60.0f;
+	if (!portalEffect.IsFinish())
+	{
+		if (portalEffect.DrawNextPortal())
+		{
+			cameraAngle = MAX_ANGLE + portalEffect.GetNextRate() * -(MAX_ANGLE - DEFAULT_ANGLE);
+		}
+		else
+		{
+			cameraAngle = DEFAULT_ANGLE + portalEffect.GetRate() * (MAX_ANGLE - DEFAULT_ANGLE);
+		}
+	}
+	else
+	{
+		cameraAngle = DEFAULT_ANGLE;
+	}
+
+	if (gameClearFlag)
+	{
+		cameraAngle = 60.0f;
+	}
+	CameraMgr::Instance()->CameraSetting(cameraAngle, 100000.0f, 0);
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 0);
 
 
@@ -397,18 +450,37 @@ void Game::Update()
 	//ポータル演出開始
 	if (goalBox.startPortalEffectFlag && !portalEffect.IsStart())
 	{
-		portalEffect.Init();
+		if (stages.size() <= stageNum + 1)
+		{
+			portalEffect.Init(false);
+		}
+		else
+		{
+			portalEffect.Init();
+		}
 		portalEffect.Start();
 	}
 
 	//入った後の初期化
-	if (portalEffect.disappearFlag)
+	if (portalEffect.disappearFlag && goalBox.startPortalEffectFlag)
 	{
-		//portal.Init(KazMath::Vec3<float>(0.0f, 3.0f, 50.0f));
+		if (stages.size() <= stageNum + 1)
+		{
+			prepareToClearFlag = true;
+		}
 		goalBox.startPortalEffectFlag = false;
 	}
 
+	if (prepareToClearFlag)
+	{
+		++gameClearTimer;
+	}
 
+	if (120 <= gameClearTimer && !initEndLogFlag)
+	{
+		logoutWindow.Init("log-out");
+		initEndLogFlag = true;
+	}
 
 #pragma region 生成処理
 	//敵を追加で初期化する処理----------------------------------------------------------------
@@ -736,11 +808,21 @@ void Game::Update()
 	//攻撃----------------------------------------------
 
 
-	//ゲームオーバー----------------------------------------------
-	if (!player.isAlive() && !gameOverFlag)
+	//ゲームオーバーかゲームクリアの表示----------------------------------------------
+	if (!player.IsAlive() && !gameOverFlag)
 	{
+		isGameOverFlag = true;
 		readyToBlackOutFlag = true;
 	}
+
+	if (logoutWindow.IsFinish() && !d)
+	{
+		isGameClearFlag = true;
+		readyToBlackOutFlag = true;
+		d = true;
+	}
+
+
 
 	if (readyToBlackOutFlag || readyToBlackOutToGoTitleFlag)
 	{
@@ -750,14 +832,21 @@ void Game::Update()
 			blackTex.data.colorData.color.a += 5;
 		}
 		//タイトル画面に戻る
-		else if (readyToBlackOutToGoTitleFlag && 255 <= blackTex.data.colorData.color.a)
+		else if (readyToBlackOutToGoTitleFlag && 255 <= blackTex.data.colorData.color.a && !sceneChangeFlag)
 		{
 			sceneNum = 0;
+			sceneChangeFlag = true;
 		}
 		//ゲームオーバー画面を表示
-		else
+		else if (isGameOverFlag)
 		{
 			gameOverFlag = true;
+			readyToBlackOutFlag = false;
+		}
+		//ゲームクリア画面表示
+		else if (isGameClearFlag)
+		{
+			gameClearFlag = true;
 			readyToBlackOutFlag = false;
 		}
 	}
@@ -769,20 +858,20 @@ void Game::Update()
 			blackTex.data.colorData.color.a -= 5;
 		}
 	}
-	if (gameOverFlag)
+
+	if (gameOverFlag || gameClearFlag)
 	{
 		++flashTimer;
-
 		if (60 <= flashTimer)
 		{
 			flashFlag = !flashFlag;
 			flashTimer = 0;
 		}
 	}
-	//ゲームオーバー----------------------------------------------
+	//ゲームオーバーかゲームクリアの表示----------------------------------------------
 
 
-	if (!gameOverFlag)
+	if (!gameOverFlag && !gameClearFlag)
 	{
 #pragma region 更新処理
 		goalBox.releaseFlag = cursor.releaseFlag;
@@ -794,6 +883,7 @@ void Game::Update()
 		stageUI.Update();
 		stages[stageNum]->Update();
 		tutorialWindow.Update();
+		logoutWindow.Update();
 
 		for (int i = 0; i < hitEffect.size(); ++i)
 		{
@@ -897,7 +987,6 @@ void Game::Update()
 		}
 #pragma endregion
 
-
 		emitters[emittNum]->Update();
 
 		for (int emitterTypeIndex = 0; emitterTypeIndex < deadEffectEmitter.size(); ++emitterTypeIndex)
@@ -955,14 +1044,15 @@ void Game::Update()
 	}
 
 	//ゲームループの経過時間----------------------------------------------------------------
-	if (meshEmitter->resetSceneFlag)
+
+//	if (meshEmitter->resetSceneFlag)
 	{
-		int lNum = meshEmitter->enemyIndex;
-		meshEmitter.reset();
-		meshEmitter = std::make_unique<MeshParticleEmitter>(lNum);
+		//		int lNum = meshEmitter->enemyIndex;
+		//		meshEmitter.reset();
+		//		meshEmitter = std::make_unique<MeshParticleEmitter>(lNum);
 	}
 
-	meshEmitter->Update();
+	//	meshEmitter->Update();
 }
 
 void Game::Draw()
@@ -992,17 +1082,21 @@ void Game::Draw()
 			lStageNum = static_cast<int>(stages.size() - 1);
 		}
 
-		nextRenderTarget->SetRenderTarget();
+		nextRenderTarget[lStageNum]->SetRenderTarget();
 		CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 1);
 		player.Draw();
 		stages[lStageNum]->SetCamera(1);
 		stages[lStageNum]->Draw();
-		nextRenderTarget->Draw();
+		nextRenderTarget[lStageNum]->Draw();
+
+
+		portalEffect.nextPortalRender.data.handleData = nextRenderTarget[lStageNum]->GetGameRenderTargetHandle();
+
 	}
 
-	if (!gameOverFlag)
+	if (!gameOverFlag && !gameClearFlag)
 	{
-		renderTarget->SetRenderTarget();
+		renderTarget[stageNum]->SetRenderTarget();
 		if (lineDebugFlag)
 		{
 			bg.Draw();
@@ -1017,8 +1111,6 @@ void Game::Draw()
 
 		stages[stageNum]->SetCamera(0);
 		stages[stageNum]->Draw();
-
-		player.Draw();
 
 
 		PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "Enemy");
@@ -1045,6 +1137,9 @@ void Game::Draw()
 			}
 		}
 		PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
+
+
+		player.Draw();
 
 
 		for (int i = 0; i < fireEffect.size(); ++i)
@@ -1081,7 +1176,6 @@ void Game::Draw()
 		//次ポータルの描画
 		if (portalEffect.DrawNextPortal())
 		{
-			portalEffect.nextPortalRender.data.handleData = nextRenderTarget->GetGameRenderTargetHandle();
 			portalEffect.nextPortalRender.Draw();
 		}
 		//中間演出までのポータル
@@ -1091,11 +1185,11 @@ void Game::Draw()
 		}
 
 
-		renderTarget->Draw();
+		renderTarget[stageNum]->Draw();
 
 
 		//現在の描画
-		mainRenderTarget.data.handleData = renderTarget->GetGameRenderTargetHandle();
+		mainRenderTarget.data.handleData = renderTarget[stageNum]->GetGameRenderTargetHandle();
 
 		//チュートリアル用の描画
 		if (tutorial.tutorialFlag)
@@ -1108,30 +1202,49 @@ void Game::Draw()
 			mainRenderTarget.data.handleData = portalEffect.renderTarget->GetGameRenderTargetHandle();
 		}
 
-
-
 		stringLog.Draw();
 		stageUI.Draw();
+		logoutWindow.Draw();
 
 		mainRenderTarget.Draw();
 		cursor.Draw();
+
 	}
-	else
+	else if (gameOverFlag)
 	{
+		gameOverTex.data.handleData = gameOverResouceHandle;
 		gameOverTex.Draw();
 		if (flashFlag)
 		{
 			pressAButtonTex.Draw();
 		}
 	}
+	else if (gameClearFlag)
+	{
+		gameOverTex.data.transform.pos = { WIN_X / 2.0f, WIN_Y / 2.0f - 200.0f };
+		pressAButtonTex.data.transform.pos = { WIN_X / 2.0f, WIN_Y / 2.0f + 200.0f };
+		gameOverTex.data.handleData = gameClearResourceHandle;
+		gameOverTex.Draw();
+		if (flashFlag)
+		{
+			pressAButtonTex.Draw();
+		}
 
-	//blackTex.Draw();
+		playerModel.data.transform.pos.z = 5.0f;
+		playerModel.data.transform.pos.y = 2.0f;
+		playerModel.data.transform.rotation.y += 1.0f;
+		playerModel.Draw();
+
+	}
+
+	blackTex.Draw();
 
 }
 
 int Game::SceneChange()
 {
-	if (sceneNum != -1) {
+	if (sceneNum != -1)
+	{
 		int tmp = sceneNum;
 		sceneNum = -1;
 		return tmp;

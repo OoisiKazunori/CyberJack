@@ -18,6 +18,7 @@ public:
 		bool FLASH_FLAG,
 		std::array<KazMath::Color, 2>FLASH_COLOR
 	);
+	void Finalize();
 	void Update(float Y_POS = -1.0f, bool USE_FLASHLINE_FLAG = true);
 	void Draw();
 

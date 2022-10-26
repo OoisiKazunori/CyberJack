@@ -537,6 +537,9 @@ namespace KazMath
 	{
 		Vec4<int> color;
 
+		Color() :color(255, 255, 255, 255), dirtyFlag(&color)
+		{
+		};
 		Color(int R, int G, int B, int A) :color({ R,G,B,A }), dirtyFlag(&color)
 		{};
 

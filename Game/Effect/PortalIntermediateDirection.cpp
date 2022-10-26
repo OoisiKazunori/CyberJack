@@ -216,11 +216,12 @@ PortalIntermediateDirection::PortalIntermediateDirection()
 
 PortalIntermediateDirection::~PortalIntermediateDirection()
 {
-	DescriptorHeapMgr::Instance()->Release(computeMemSize.startSize + 0);
-	DescriptorHeapMgr::Instance()->Release(computeMemSize.startSize + 1);
+	DescriptorHeapMgr::Instance()->Release(outputInitViewHandle);
+	DescriptorHeapMgr::Instance()->Release(particleViewHandle);
+	DescriptorHeapMgr::Instance()->Release(outputMatHandle);
 }
 
-void PortalIntermediateDirection::Init()
+void PortalIntermediateDirection::Init(bool SHOW_NEXT_STAGE_FLAG)
 {
 	disappearFlag = false;
 	nextPortalFlag = false;
@@ -228,6 +229,11 @@ void PortalIntermediateDirection::Init()
 	disappearTimer = 0;
 	startFlag = false;
 	portalRender.data.transform.pos.z = baseZ;
+
+	showNextStageFlag = SHOW_NEXT_STAGE_FLAG;
+
+	rate = 0.0f;
+	nextRate = 0.0f;
 }
 
 void PortalIntermediateDirection::Finalize()
@@ -238,12 +244,17 @@ void PortalIntermediateDirection::Finalize()
 	disappearTimer = 0;
 	portalRender.data.transform.pos.z = baseZ;
 	startFlag = false;
+
+	rate = 0.0f;
+	nextRate = 0.0f;
 }
 
 void PortalIntermediateDirection::Update(const KazMath::Vec3<float> &POS)
 {
 	if (!startFlag)
 	{
+		backRate = 0.0f;
+		nextBackRate = 0.0f;
 		return;
 	}
 	//パーティクルの更新--------------------------------------------
@@ -301,7 +312,7 @@ void PortalIntermediateDirection::Update(const KazMath::Vec3<float> &POS)
 
 
 		//ポータルが消えている時間
-		if (disappearFlag)
+		if (disappearFlag && showNextStageFlag)
 		{
 			++disappearTimer;
 			nextPortalRender.data.transform.pos.z = 700.0f;

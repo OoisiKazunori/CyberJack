@@ -53,6 +53,24 @@ void DrawGrid::Init(bool USE_FOR_FLOOR_FLAG, float SPACE, float BASE_POS, const 
 	flashFlag = FLASH_FLAG;
 	flashColorArray = FLASH_COLOR;
 	initFlag = true;
+
+
+	for (int i = 0; i < lightEffectInitFlagArray.size(); ++i)
+	{
+		lightEffectInitFlagArray[i] = false;
+	}
+	timer = 0;
+}
+
+void DrawGrid::Finalize()
+{
+	for (int i = 0; i < lightEffectArray.size(); ++i)
+	{
+		for (int j = 0; j < lightEffectArray[i].size(); ++j)
+		{
+			lightEffectArray[i][j].Finalize();
+		}
+	}
 }
 
 void DrawGrid::Update(float Y_POS, bool USE_FLASHLINE_FLAG)
