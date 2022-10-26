@@ -25,10 +25,13 @@ DebugStageScene::DebugStageScene()
 
 
 	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
-	stages[0]->startFlag = true;
-	stages[1]->startFlag = true;
 
-	stageNum = 0;
+	for (int i = 0; i < stages.size(); ++i)
+	{
+		stages[i]->startFlag = true;
+	}
+
+	stageNum = 2;
 
 	//stage2 = std::make_shared<BlockParticleStage>();
 }
@@ -42,7 +45,9 @@ void DebugStageScene::Init()
 	player.Init({ 0.0f,0.0f,15.0f }, false, false);
 	cameraWork.Init();
 	cursor.Init();
-	mapchipTool.Init();
+	//mapchipTool.Init();
+
+	gameCameraFlag = true;
 }
 
 void DebugStageScene::Finalize()
@@ -51,7 +56,7 @@ void DebugStageScene::Finalize()
 
 void DebugStageScene::Input()
 {
-	KeyBoradInputManager *input = KeyBoradInputManager::Instance();
+	//KeyBoradInputManager *input = KeyBoradInputManager::Instance();
 	ControllerInputManager *inputController = ControllerInputManager::Instance();
 
 	bool upFlag = false;
@@ -103,12 +108,12 @@ void DebugStageScene::Input()
 	);
 
 
-	ImGui::Begin("Stage");
-	ImGui::InputInt("StageNum", &stageNum);
-	ImGui::Checkbox("ToolMode", &toolModeFlag);
-	ImGui::Checkbox("CameraModeFlag", &gameCameraFlag);
-	ImGui::InputInt("CameraDir", &dir);
-	ImGui::End();
+	//ImGui::Begin("Stage");
+	//ImGui::InputInt("StageNum", &stageNum);
+	//ImGui::Checkbox("ToolMode", &toolModeFlag);
+	//ImGui::Checkbox("CameraModeFlag", &gameCameraFlag);
+	//ImGui::InputInt("CameraDir", &dir);
+	//ImGui::End();
 
 	cameraWork.ForceCamera(static_cast<KazEnemyHelper::CameraDir>(dir));
 
@@ -123,7 +128,7 @@ void DebugStageScene::Input()
 
 	if (toolModeFlag)
 	{
-		mapchipTool.Input(input->MouseInputTrigger(MOUSE_INPUT_LEFT), input->MouseInputTrigger(MOUSE_INPUT_RIGHT), input->GetMousePoint());
+		//	mapchipTool.Input(input->MouseInputTrigger(MOUSE_INPUT_LEFT), input->MouseInputTrigger(MOUSE_INPUT_RIGHT), input->GetMousePoint());
 	}
 }
 
@@ -137,21 +142,21 @@ void DebugStageScene::Update()
 	player.Update();
 	cursor.Update();
 
-	
+
 	cameraWork.Update(cursor.GetValue(), &player.pos, gameCameraFlag);
 	if (toolModeFlag)
 	{
-		mapchipTool.Update();
-		if (mapchipTool.isLoadFlag)
-		{
-			isLoadFlag = true;
-		}
+		//mapchipTool.Update();
+		//if (mapchipTool.isLoadFlag)
+		//{
+		//	isLoadFlag = true;
+		//}
 	}
 	else
 	{
 		if (isLoadFlag)
 		{
-			mapchipTool.Init();
+			//mapchipTool.Init();
 			stages[stageNum].reset();
 			stages[stageNum] = std::make_unique<BlockParticleStage>();
 			isLoadFlag = false;
@@ -171,10 +176,10 @@ void DebugStageScene::Draw()
 	RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
 	renderTarget[stageNum]->SetRenderTarget();
 	player.Draw();
-	
+
 	if (toolModeFlag)
 	{
-		mapchipTool.Draw();
+		//mapchipTool.Draw();
 	}
 	else
 	{

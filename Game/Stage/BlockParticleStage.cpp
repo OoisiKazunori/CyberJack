@@ -161,21 +161,23 @@ BlockParticleStage::BlockParticleStage()
 
 	{
 		std::array<ParticleData, PARTICLE_MAX_NUM>lData;
-		/*float space = 2.1f;
+		float space = 20.0f;
 		int index = 0;
 
 		int maxNum = PARTICLE_MAX_NUM / 2;
 		int yNum = 30;
 		int xNum = maxNum / yNum;
+		const KazMath::Vec2<float> adjPos(100.0f,300.0f);
+
 
 		for (int i = 0; i < yNum; ++i)
 		{
 			for (int j = 0; j < xNum; ++j)
 			{
 				lData[index].pos = {
-					-20.0f,
-					static_cast<float>(i) * space - 25.0f,
-					static_cast<float>(j) * space - 0.0f,
+					-adjPos.x,
+					static_cast<float>(i) * space - adjPos.y,
+					static_cast<float>(j) * space,
 					0.0f
 				};
 				++index;
@@ -187,10 +189,11 @@ BlockParticleStage::BlockParticleStage()
 			for (int j = 0; j < xNum; ++j)
 			{
 				lData[index].pos = {
-					20.0f,
-					static_cast<float>(i) * space - 25.0f,
-					static_cast<float>(j) * space - 0.0f,
-					0.0f };
+					adjPos.x,
+					static_cast<float>(i) * space - adjPos.y,
+					static_cast<float>(j) * space,
+					0.0f
+				};
 				++index;
 			}
 		}
@@ -199,26 +202,32 @@ BlockParticleStage::BlockParticleStage()
 		for (int i = 0; i < lData.size(); ++i)
 		{
 			lData[i].pos.z += -150.0f;
-		}*/
-
-		std::string lObjectName = "BlockIndex3";
-		blockFileMgr.LoadFile(KazFilePathName::StageParamPath + "blockPosData.json");
-		for (int i = 0; i < PARTICLE_MAX_NUM; ++i)
-		{
-			std::string name = lObjectName + "_" + std::to_string(i);
-			KazMath::Vec3<int> lNum(
-				blockFileMgr.doc[name.c_str()]["X"].GetInt(),
-				blockFileMgr.doc[name.c_str()]["Y"].GetInt(),
-				blockFileMgr.doc[name.c_str()]["Z"].GetInt()
-			);
-
-			lData[i].pos = {
-				static_cast<float>(lNum.x) * (lSize * 2.0f) - lSize * 30.0f,
-				static_cast<float>(lNum.y) * (lSize * 2.0f) - lSize * 30.0f,
-				static_cast<float>(lNum.z) * (lSize * 2.0f),
-				0.0f
-			};
 		}
+
+		//std::string lObjectName = "BlockIndex3";
+		//blockFileMgr.LoadFile(KazFilePathName::StageParamPath + "blockPosData.json");
+		//int lCountNum = 0;
+		//for (int i = 0; i < PARTICLE_MAX_NUM; ++i)
+		//{
+		//	std::string name = lObjectName + "_" + std::to_string(i);
+		//	KazMath::Vec3<int> lNum(
+		//		blockFileMgr.doc[name.c_str()]["X"].GetInt(),
+		//		blockFileMgr.doc[name.c_str()]["Y"].GetInt(),
+		//		blockFileMgr.doc[name.c_str()]["Z"].GetInt()
+		//	);
+
+		//	lData[i].pos = {
+		//		static_cast<float>(lNum.x) * (lSize * 2.0f) - lSize * 30.0f,
+		//		static_cast<float>(lNum.y) * (lSize * 2.0f) - lSize * 30.0f,
+		//		static_cast<float>(lNum.z) * (lSize * 2.0f),
+		//		0.0f
+		//	};
+		//	if (lNum.x != 0.0f || lNum.y != 0.0f || lNum.z != 0.0f)
+		//	{
+		//		++lCountNum;
+		//	}
+		//}
+
 		buffers->TransData(particleDataHandle, lData.data(), sizeof(ParticleData) * PARTICLE_MAX_NUM);
 	}
 
@@ -241,7 +250,6 @@ BlockParticleStage::BlockParticleStage()
 		outputInitViewHandle,
 		KazBufferHelper::SetUnorderedAccessView(sizeof(OutputInitData), PARTICLE_MAX_NUM * PER_USE_PARTICLE_MAX_NUM),
 		buffers->GetBufferData(outputInitBufferHandle).Get(),
-		//buffers->GetBufferData(counterBufferHandle).Get()
 		nullptr
 	);
 
@@ -265,12 +273,13 @@ BlockParticleStage::BlockParticleStage()
 	vertexBufferView = KazBufferHelper::SetVertexBufferView(buffers->GetGpuAddress(vertexBufferHandle), vertBuffSize, sizeof(vertices[0]));
 	indexBufferView = KazBufferHelper::SetIndexBufferView(buffers->GetGpuAddress(indexBufferHandle), indexBuffSize);
 
+	constBufferData.flash.x = 0.0f;
 
+
+	//パーティクル初期化処理--------------------------------------------
 	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_BLOCKPARTICLE);
 
-
-	//共通用バッファのデータ送信
 	{
 		lConstBufferData.cameraMat = CameraMgr::Instance()->GetViewMatrix();
 		lConstBufferData.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
@@ -285,9 +294,7 @@ BlockParticleStage::BlockParticleStage()
 	}
 
 	DirectX12CmdList::Instance()->cmdList->Dispatch(PARTICLE_MAX_NUM, 1, 1);
-
-	constBufferData.flash.x = 0.0f;
-
+	//パーティクル初期化処理--------------------------------------------
 }
 
 BlockParticleStage::~BlockParticleStage()
@@ -344,7 +351,7 @@ void BlockParticleStage::Update()
 			prepareFlag = false;
 		}
 	}
-	
+
 	++flashTimer;
 	if (!highFlag && 360 <= flashTimer)
 	{
@@ -355,9 +362,9 @@ void BlockParticleStage::Update()
 	{
 		constBufferData.flash.y = 0;
 	}
-	
 
-	galacticParticle.Update();
+
+	//galacticParticle.Update();
 }
 
 void BlockParticleStage::Draw()
@@ -390,6 +397,6 @@ void BlockParticleStage::Draw()
 	);
 
 
-	galacticParticle.Draw();
+	//galacticParticle.Draw();
 
 }

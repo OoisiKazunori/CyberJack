@@ -42,7 +42,7 @@ private:
 
 	Sprite2DRender mainRenderTarget;
 
-	MapChipPlacementTool mapchipTool;
+	//MapChipPlacementTool mapchipTool;
 	bool toolModeFlag;
 	bool isLoadFlag;
 

@@ -36,7 +36,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     updateData[index].pos.z += -3.0f;
     if(updateData[index].pos.z <= -100.0f)
     {
-        updateData[index].pos.z = 10000.0f;
+        updateData[index].pos.z = 4830.0f;
     }
 
     float3 outputPos = updateData[index].pos.xyz;

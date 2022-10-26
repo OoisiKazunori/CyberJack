@@ -45,7 +45,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     updateData[outPutIndex].pos.z -= 1.0f;
     if(updateData[outPutIndex].pos.z <= -150.0f)
     {
-        updateData[outPutIndex].pos.z = 1800.0f;
+        updateData[outPutIndex].pos.z = 4830.0f;
     }
     //ˆÚ“®--------------------------------------------
 
