@@ -82,4 +82,5 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     outputMat.mat = mul(viewProjection,pMatWorld);
     outputMat.color = updateData[outPutIndex].color;
     matrixData[outPutIndex] = outputMat;
+
 }

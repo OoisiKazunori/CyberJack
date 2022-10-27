@@ -27,7 +27,7 @@ private:
 	RESOURCE_HANDLE outputInitViewHandle, outputViewHandle, particleDataViewHandle;
 	//バッファ
 
-	static const int PARTICLE_MAX_NUM = 15000;
+	static const int PARTICLE_MAX_NUM = 50000;
 	static const int PER_USE_PARTICLE_MAX_NUM = 20;
 	static const int DRAW_CALL = 1;
 
@@ -77,7 +77,7 @@ private:
 	ParameterMgr blockFileMgr;
 
 
-	//GalacticParticle galacticParticle;
+	GalacticParticle galacticParticle;
 
 	bool highFlag, prepareFlag;
 	int prepareTimer;

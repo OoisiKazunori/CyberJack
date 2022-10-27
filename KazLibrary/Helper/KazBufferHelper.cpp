@@ -104,14 +104,29 @@ KazBufferHelper::BufferResourceData KazBufferHelper::SetRWStructuredBuffer(BUFFE
 	return data;
 }
 
+KazBufferHelper::BufferResourceData KazBufferHelper::SetOnlyReadStructuredBuffer(BUFFER_SIZE BUFFER_SIZE, const std::string &BUFFER_NAME)
+{
+	D3D12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Buffer(BUFFER_SIZE, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
+
+	KazBufferHelper::BufferResourceData data
+	(
+		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+		D3D12_HEAP_FLAG_NONE,
+		desc,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		nullptr,
+		BUFFER_NAME
+	);
+	return data;
+}
+
 KazBufferHelper::BufferResourceData KazBufferHelper::SetCommandBufferData(const unsigned int &BUFFER_SIZE, const std::string &BUFFER_NAME)
 {
-	D3D12_HEAP_PROPERTIES prop = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
 	D3D12_RESOURCE_DESC resourceDesc = CD3DX12_RESOURCE_DESC::Buffer(BUFFER_SIZE);
 
 	KazBufferHelper::BufferResourceData data
 	(
-		prop,
+		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 		D3D12_HEAP_FLAG_NONE,
 		resourceDesc,
 		D3D12_RESOURCE_STATE_COPY_DEST,

@@ -37,6 +37,10 @@ GaussianBuler::GaussianBuler(const KazMath::Vec2<UINT> &GRAPH_SIZE)
 
 	tex[0].data.transform.pos = { WIN_X / 2,WIN_Y / 2 };
 	tex[1].data.transform.pos = { WIN_X / 2,WIN_Y / 2 };
+
+
+
+
 }
 
 GaussianBuler::~GaussianBuler()
