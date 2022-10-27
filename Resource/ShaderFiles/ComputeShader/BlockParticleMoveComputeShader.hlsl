@@ -15,9 +15,8 @@ struct OutputData
 
 cbuffer RootConstants : register(b0)
 {
-    matrix view;        
-    matrix projection;
-    matrix billBoard;
+    matrix viewProjection;
+    matrix scaleRotateBillboardMat;
     //r...高さ,g...全体フラッシュ
     float2 flash;
 };
@@ -74,22 +73,11 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
 
     //行列計算-------------------------
     matrix pMatTrans = Translate(updateData[outPutIndex].pos.xyz);
-    matrix pMatRot = Rotate(float3(0.0f,0.0f,0.0f));
-    float scale = 1.0f;
-    matrix pMatScale = Scale(float3(scale, scale, scale));
-    
-    matrix pMatWorld = MatrixIdentity();
-    pMatWorld = mul(pMatScale, pMatWorld);
-    pMatWorld = mul(pMatRot, pMatWorld);
-    pMatWorld = mul(billBoard, pMatWorld);
-    pMatWorld = mul(pMatTrans, pMatWorld);
-    //行列計算-------------------------
-    
+    matrix pMatWorld = mul(pMatTrans, scaleRotateBillboardMat);
+
+    //行列計算-------------------------    
     OutputData outputMat;
-    outputMat.mat = MatrixIdentity();
-    outputMat.mat = mul(pMatWorld,  outputMat.mat);
-    outputMat.mat = mul(view,       outputMat.mat);
-    outputMat.mat = mul(projection, outputMat.mat);
+    outputMat.mat = mul(viewProjection,pMatWorld);
     outputMat.color = updateData[outPutIndex].color;
     matrixData[outPutIndex] = outputMat;
 }

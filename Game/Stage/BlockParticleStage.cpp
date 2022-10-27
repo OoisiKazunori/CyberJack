@@ -167,7 +167,7 @@ BlockParticleStage::BlockParticleStage()
 		int maxNum = PARTICLE_MAX_NUM / 2;
 		int yNum = 30;
 		int xNum = maxNum / yNum;
-		const KazMath::Vec2<float> adjPos(100.0f,300.0f);
+		const KazMath::Vec2<float> adjPos(100.0f, 300.0f);
 
 
 		for (int i = 0; i < yNum; ++i)
@@ -310,9 +310,8 @@ void BlockParticleStage::Update()
 
 	//共通用バッファのデータ送信
 	{
-		constBufferData.cameraMat = CameraMgr::Instance()->GetViewMatrix();
-		constBufferData.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
-		constBufferData.billboardMat = CameraMgr::Instance()->GetMatBillBoard();
+		constBufferData.viewProjectionMat = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
+		constBufferData.scaleRotateBillboardMat = KazMath::CaluScaleMatrix({ 1.0f,1.0f,1.0f }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f }) * CameraMgr::Instance()->GetMatBillBoard();
 
 		buffers->TransData(commonBufferHandle, &constBufferData, sizeof(CommonMoveData));
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(commonBufferHandle));

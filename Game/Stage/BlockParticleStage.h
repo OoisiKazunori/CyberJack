@@ -65,9 +65,8 @@ private:
 
 	struct CommonMoveData
 	{
-		DirectX::XMMATRIX cameraMat;
-		DirectX::XMMATRIX projectionMat;
-		DirectX::XMMATRIX billboardMat;
+		DirectX::XMMATRIX viewProjectionMat;
+		DirectX::XMMATRIX scaleRotateBillboardMat;
 		DirectX::XMFLOAT2 flash;
 	};
 

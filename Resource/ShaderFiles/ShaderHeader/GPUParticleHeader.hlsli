@@ -12,11 +12,10 @@ struct OutputData
     float4 color;
 };
 
-struct PosUvOutput
+struct PosColorOutput
 {
     float4 svpos : SV_POSITION; //システム用頂点座標
-    float2 uv : TEXCOORD; //uv値
-    uint id : SV_INSTANCEID;
+    float4 color : COLOR; //uv値
 };
 
 RWStructuredBuffer<OutputData> matrixData : register(u0);
