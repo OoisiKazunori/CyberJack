@@ -72,8 +72,10 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
 
 
     //行列計算-------------------------
-    matrix pMatTrans = Translate(updateData[outPutIndex].pos.xyz);
-    matrix pMatWorld = mul(pMatTrans, scaleRotateBillboardMat);
+    matrix pMatWorld = scaleRotateBillboardMat;
+    pMatWorld[0][3] = updateData[outPutIndex].pos.x;
+    pMatWorld[1][3] = updateData[outPutIndex].pos.y;
+    pMatWorld[2][3] = updateData[outPutIndex].pos.z;
 
     //行列計算-------------------------    
     OutputData outputMat;
