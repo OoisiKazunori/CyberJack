@@ -161,72 +161,30 @@ BlockParticleStage::BlockParticleStage()
 
 	{
 		std::array<ParticleData, PARTICLE_MAX_NUM>lData;
-		float space = 20.0f;
-		int index = 0;
 
-		int maxNum = PARTICLE_MAX_NUM / 2;
-		int yNum = 30;
-		int xNum = maxNum / yNum;
-		const KazMath::Vec2<float> adjPos(100.0f, 300.0f);
-
-
-		for (int i = 0; i < yNum; ++i)
+		std::string lObjectName = "BlockIndex3";
+		blockFileMgr.LoadFile(KazFilePathName::StageParamPath + "blockPosData.json");
+		int lCountNum = 0;
+		for (int i = 0; i < PARTICLE_MAX_NUM; ++i)
 		{
-			for (int j = 0; j < xNum; ++j)
+			std::string name = lObjectName + "_" + std::to_string(i);
+			KazMath::Vec3<int> lNum(
+				blockFileMgr.doc[name.c_str()]["X"].GetInt(),
+				blockFileMgr.doc[name.c_str()]["Y"].GetInt(),
+				blockFileMgr.doc[name.c_str()]["Z"].GetInt()
+			);
+
+			lData[i].pos = {
+				static_cast<float>(lNum.x) * (lSize * 2.0f) - lSize * 30.0f,
+				static_cast<float>(lNum.y) * (lSize * 2.0f) - lSize * 30.0f,
+				static_cast<float>(lNum.z) * (lSize * 2.0f),
+				0.0f
+			};
+			if (lNum.x != 0.0f || lNum.y != 0.0f || lNum.z != 0.0f)
 			{
-				lData[index].pos = {
-					-adjPos.x,
-					static_cast<float>(i) * space - adjPos.y,
-					static_cast<float>(j) * space,
-					0.0f
-				};
-				++index;
+				++lCountNum;
 			}
 		}
-
-		for (int i = 0; i < yNum; ++i)
-		{
-			for (int j = 0; j < xNum; ++j)
-			{
-				lData[index].pos = {
-					adjPos.x,
-					static_cast<float>(i) * space - adjPos.y,
-					static_cast<float>(j) * space,
-					0.0f
-				};
-				++index;
-			}
-		}
-
-
-		for (int i = 0; i < lData.size(); ++i)
-		{
-			lData[i].pos.z += -150.0f;
-		}
-
-		//std::string lObjectName = "BlockIndex3";
-		//blockFileMgr.LoadFile(KazFilePathName::StageParamPath + "blockPosData.json");
-		//int lCountNum = 0;
-		//for (int i = 0; i < PARTICLE_MAX_NUM; ++i)
-		//{
-		//	std::string name = lObjectName + "_" + std::to_string(i);
-		//	KazMath::Vec3<int> lNum(
-		//		blockFileMgr.doc[name.c_str()]["X"].GetInt(),
-		//		blockFileMgr.doc[name.c_str()]["Y"].GetInt(),
-		//		blockFileMgr.doc[name.c_str()]["Z"].GetInt()
-		//	);
-
-		//	lData[i].pos = {
-		//		static_cast<float>(lNum.x) * (lSize * 2.0f) - lSize * 30.0f,
-		//		static_cast<float>(lNum.y) * (lSize * 2.0f) - lSize * 30.0f,
-		//		static_cast<float>(lNum.z) * (lSize * 2.0f),
-		//		0.0f
-		//	};
-		//	if (lNum.x != 0.0f || lNum.y != 0.0f || lNum.z != 0.0f)
-		//	{
-		//		++lCountNum;
-		//	}
-		//}
 
 		buffers->TransData(particleDataHandle, lData.data(), sizeof(ParticleData) * PARTICLE_MAX_NUM);
 	}
