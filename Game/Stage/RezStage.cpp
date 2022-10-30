@@ -78,8 +78,37 @@ RezStage::RezStage()
 	appearRate = 0.0f;
 
 
-	blockMountain = std::make_unique<BlockMountain>();
-	blockMountain->Init();
+
+	InitBlockMountainData lInitData;
+	lInitData.fogDesinty = 0.001f;
+	lInitData.lightDir = { -1.0f,1.0f,1.0f };
+	lInitData.xRange = 70;
+	lInitData.yScale = 500.0f;
+	lInitData.centralPos = { 0.0f,-1500.0f,0.0f };
+	blockMountainArray[0] = std::make_unique<BlockMountain>(lInitData);
+
+	lInitData.fogDesinty = 0.0005f;
+	lInitData.lightDir = { 0.0f,0.0f,1.0f };
+	lInitData.xRange = 70;
+	lInitData.yScale = 500.0f;
+	lInitData.centralPos = { 0.0f,5300.0f,0.0f };
+	blockMountainArray[1] = std::make_unique<BlockMountain>(lInitData);
+
+	
+	lInitData.fogDesinty = 0.0005f;
+	lInitData.lightDir = { -1.0f,0.0f,0.0f };
+	lInitData.xRange = 10;
+	lInitData.yScale = 1000.0f;
+	lInitData.centralPos = { -6400.0f,0.0f,0.0f };
+	blockMountainArray[2] = std::make_unique<BlockMountain>(lInitData);
+
+
+	lInitData.fogDesinty = 0.0005f;
+	lInitData.lightDir = { 1.0f,0.0f,0.0f };
+	lInitData.xRange = 10;
+	lInitData.yScale = 1000.0f;
+	lInitData.centralPos = { 6400.0f,0.0f,0.0f };
+	blockMountainArray[3] = std::make_unique<BlockMountain>(lInitData);
 }
 
 void RezStage::Update()
@@ -103,7 +132,10 @@ void RezStage::Update()
 		vaporWaveSunRender.data.transform.scale.z = easeRate;
 	}
 
-	blockMountain->Update();
+	for (int i = 0; i < blockMountainArray.size(); ++i)
+	{
+		blockMountainArray[i]->Update();
+	}
 }
 
 void RezStage::Draw()
@@ -118,5 +150,8 @@ void RezStage::Draw()
 		gridRender[i]->Draw();
 	}
 
-	blockMountain->Draw();
+	for (int i = 0; i < blockMountainArray.size(); ++i)
+	{
+		blockMountainArray[i]->Draw();
+	}
 }

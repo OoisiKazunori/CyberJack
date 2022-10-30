@@ -56,5 +56,5 @@ private:
 	float appearRate;
 
 
-	std::unique_ptr<BlockMountain> blockMountain;
+	std::array<std::unique_ptr<BlockMountain>, 4>blockMountainArray;
 };

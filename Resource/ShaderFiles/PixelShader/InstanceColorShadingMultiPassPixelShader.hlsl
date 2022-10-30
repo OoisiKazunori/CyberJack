@@ -3,16 +3,17 @@
 #include"../ShaderHeader/MultiPassHeader.hlsli"
 #include"../ShaderHeader/FogShaderHeader.hlsli"
 
-cbuffer BloomData : register(b1)
+cbuffer ObjectData : register(b1)
 {
     float4 luminanceColor;
     float4 fogData;
+    float3 lightDir;
 }
 
 TwoRender PSmain(InstancePosNormalColorOut input) : SV_TARGET
 {
     TwoRender output;
-    float3 light = normalize(float3(-1, 1, 1));
+    float3 light = normalize(lightDir);
     float diffuse = saturate(dot(-light, input.normal));
     float brightness = diffuse + 0.3f;
 

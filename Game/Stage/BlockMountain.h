@@ -1,22 +1,30 @@
 #pragma once
 #include"../KazLibrary/Render/KazRender.h"
 
+struct InitBlockMountainData
+{
+	KazMath::Vec3<float> centralPos;
+	KazMath::Vec3<float> lightDir;
+	float yScale;
+	int xRange;
+	float fogDesinty;
+
+};
+
 /// <summary>
 /// ‰š“Ê‚Ì‚ ‚é’·•ûŒ`‚ð•`‰æ‚µ‚Ü‚·
 /// </summary>
 class BlockMountain
 {
 public:
-	BlockMountain();
-
-	void Init();
+	BlockMountain(const InitBlockMountainData &INIT_DATA);
 	void Update();
 	void Draw();
 
 private:
-	static const int BOX_MAX_NUM = 2000;
+	int boxMaxNum;
 	RESOURCE_HANDLE instanceBufferHandle;
-	RESOURCE_HANDLE bloomBufferHandle;
+	RESOURCE_HANDLE objectBufferHandle;
 	BoxPolygonRenderPtr boxRender;
 
 	struct MatData
@@ -25,16 +33,16 @@ private:
 		DirectX::XMMATRIX mat;
 	};
 
-	struct BloomData
+	struct ObjectData
 	{
 		DirectX::XMFLOAT4 luminanceColor;
 		DirectX::XMFLOAT4 fogData;
+		DirectX::XMFLOAT3 lightDir;
 	};
 
-	std::array<KazMath::Transform3D, BOX_MAX_NUM> boxDataArray;
+	std::vector<KazMath::Transform3D> boxDataArray;
 
-	BloomData lBloomData;
+	ObjectData objectData;
 	KazMath::Vec4<float>fogColor;
-	float basePosY;
 };
 
