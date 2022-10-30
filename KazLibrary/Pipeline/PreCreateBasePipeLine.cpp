@@ -51,6 +51,38 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	};
 
 	{
+		D3D12_INPUT_ELEMENT_DESC *input3DLayOut = new D3D12_INPUT_ELEMENT_DESC[2];
+
+		input3DLayOut[0] =
+		{
+			"POSITION",
+			0,
+			DXGI_FORMAT_R32G32B32_FLOAT,
+			0,
+			D3D12_APPEND_ALIGNED_ELEMENT,
+			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
+			0
+		};
+
+		input3DLayOut[1] =
+		{
+			"NORMAL",
+			0,
+			DXGI_FORMAT_R32G32B32_FLOAT,
+			0,
+			D3D12_APPEND_ALIGNED_ELEMENT,
+			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
+			0
+		};
+
+
+		InputLayOutData *input = new InputLayOutData();
+		input->inputLayOut = input3DLayOut;
+		input->size = 2;
+		GraphicsPipeLineMgr::Instance()->RegisterInputLayOutWithData(*input, LAYOUT_POS_NORMAL);
+	};
+
+	{
 		D3D12_INPUT_ELEMENT_DESC *input2DLayOut = new D3D12_INPUT_ELEMENT_DESC[2];
 
 		input2DLayOut[0] =
@@ -322,6 +354,11 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstancePosVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_COLOR);
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_COLOR);
+
+
+	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstancePosNormalColorVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_COLOR_SHADING);
+	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorShadingMultiPassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_COLOR_SHADING);
+
 
 	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstanceColorGetShadowVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_COLOR_GET_SHADOWMAP);
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorGetShadowPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_COLOR_GET_SHADOW);
@@ -2149,6 +2186,17 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		ROOTSIGNATURE_DATA_UAV_CB,
 		PIPELINE_NAME_INSTANCE_COLOR_MULTITEX
 	);
+
+
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS_NORMAL_TEX,
+		SHADER_VERTEX_INSTANCE_COLOR_SHADING,
+		SHADER_PIXCEL_INSTANCE_COLOR_SHADING,
+		PIPELINE_DATA_NOCARING_ALPHABLEND_RNEDERTARGET_SECOND,
+		ROOTSIGNATURE_DATA_UAV_CB,
+		PIPELINE_NAME_INSTANCE_COLOR_MULTITEX_SHADING
+	);
+
 
 	//ƒtƒHƒO
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(

@@ -146,6 +146,7 @@
     <ClCompile Include="KazLibrary\Scene\DebugStageScene.cpp" />
     <ClCompile Include="Game\Effect\GalacticParticle.cpp" />
     <ClCompile Include="Game\UI\StringWindow.cpp" />
+    <ClCompile Include="Game\Stage\BlockMountain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -306,6 +307,7 @@
     <ClInclude Include="KazLibrary\Scene\DebugStageScene.h" />
     <ClInclude Include="Game\Effect\GalacticParticle.h" />
     <ClInclude Include="Game\UI\StringWindow.h" />
+    <ClInclude Include="Game\Stage\BlockMountain.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

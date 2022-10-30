@@ -76,6 +76,10 @@ RezStage::RezStage()
 		floorObjectRender[40 + i].Init(initTrans, stageModelhandle[lNum], &cameraIndex);
 	}
 	appearRate = 0.0f;
+
+
+	blockMountain = std::make_unique<BlockMountain>();
+	blockMountain->Init();
 }
 
 void RezStage::Update()
@@ -98,6 +102,8 @@ void RezStage::Update()
 		vaporWaveSunRender.data.transform.scale.y = easeRate;
 		vaporWaveSunRender.data.transform.scale.z = easeRate;
 	}
+
+	blockMountain->Update();
 }
 
 void RezStage::Draw()
@@ -111,4 +117,6 @@ void RezStage::Draw()
 	{
 		gridRender[i]->Draw();
 	}
+
+	blockMountain->Draw();
 }

@@ -8,6 +8,7 @@
 #include"../Game/Debug/ParameterMgr.h"
 #include"../Game/Stage/DrawGrid.h"
 #include"../Game/Stage/MountainObject.h"
+#include"../Game/Stage/BlockMountain.h"
 
 class RezStage :public IStage
 {
@@ -53,4 +54,7 @@ private:
 	};
 
 	float appearRate;
+
+
+	std::unique_ptr<BlockMountain> blockMountain;
 };

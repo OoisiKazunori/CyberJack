@@ -107,6 +107,19 @@ namespace KazImGuiHelper
 		ImGui::InputInt(label.c_str(), &VEC_4->a);
 	};
 
+	inline void InputVec4(const std::string &LABEL, KazMath::Vec4<float> *VEC_4)
+	{
+		static std::string label = "";
+		label = LABEL + "X";
+		ImGui::DragFloat(label.c_str(), &VEC_4->x);
+		label = LABEL + "Y";
+		ImGui::DragFloat(label.c_str(), &VEC_4->y);
+		label = LABEL + "Z";
+		ImGui::DragFloat(label.c_str(), &VEC_4->z);
+		label = LABEL + "W";
+		ImGui::DragFloat(label.c_str(), &VEC_4->a);
+	};
+
 	inline void InputVec3(const std::string &LABEL, KazMath::Vec3<float> *VEC_3)
 	{
 		static std::string lLabel = "";

@@ -70,6 +70,13 @@ struct InstancePosOut
     uint id : SV_InstanceID;
 };
 
+struct InstancePosNormalColorOut
+{
+    float4 svpos : SV_POSITION;
+    float3 normal : NORMAL; //法線ベクトル
+    float4 color : COLOR;
+};
+
 struct lineData
 {
     float4 pos[2];

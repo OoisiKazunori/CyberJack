@@ -31,7 +31,7 @@ DebugStageScene::DebugStageScene()
 		stages[i]->startFlag = true;
 	}
 
-	stageNum = 2;
+	stageNum = 1;
 
 	//stage2 = std::make_shared<BlockParticleStage>();
 }
@@ -108,12 +108,12 @@ void DebugStageScene::Input()
 	);
 
 
-	//ImGui::Begin("Stage");
-	//ImGui::InputInt("StageNum", &stageNum);
-	//ImGui::Checkbox("ToolMode", &toolModeFlag);
-	//ImGui::Checkbox("CameraModeFlag", &gameCameraFlag);
-	//ImGui::InputInt("CameraDir", &dir);
-	//ImGui::End();
+	ImGui::Begin("Stage");
+	ImGui::InputInt("StageNum", &stageNum);
+	ImGui::Checkbox("ToolMode", &toolModeFlag);
+	ImGui::Checkbox("CameraModeFlag", &gameCameraFlag);
+	ImGui::InputInt("CameraDir", &dir);
+	ImGui::End();
 
 	cameraWork.ForceCamera(static_cast<KazEnemyHelper::CameraDir>(dir));
 
@@ -184,6 +184,7 @@ void DebugStageScene::Draw()
 	else
 	{
 		stages[stageNum]->Draw();
+		stages[stageNum]->vaporWaveSunRender.Draw();
 	}
 	renderTarget[stageNum]->Draw();
 	mainRenderTarget.Draw();

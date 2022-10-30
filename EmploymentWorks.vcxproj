@@ -232,6 +232,7 @@
     <ClCompile Include="Game\LineEffect\LineEffect.cpp" />
     <ClCompile Include="Game\LineEffect\LineLevel1.cpp" />
     <ClCompile Include="Game\Player.cpp" />
+    <ClCompile Include="Game\Stage\BlockMountain.cpp" />
     <ClCompile Include="Game\Stage\BlockParticleStage.cpp" />
     <ClCompile Include="Game\Stage\DrawGrid.cpp" />
     <ClCompile Include="Game\Stage\FirstStage.cpp" />
@@ -380,6 +381,7 @@
     <ClInclude Include="Game\LineEffect\LineEffect.h" />
     <ClInclude Include="Game\LineEffect\LineLevel1.h" />
     <ClInclude Include="Game\Player.h" />
+    <ClInclude Include="Game\Stage\BlockMountain.h" />
     <ClInclude Include="Game\Stage\BlockParticleStage.h" />
     <ClInclude Include="Game\Stage\DrawGrid.h" />
     <ClInclude Include="Game\Stage\FirstStage.h" />
