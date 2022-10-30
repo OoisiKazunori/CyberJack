@@ -447,6 +447,26 @@ PreCreateBaseRootSignature::PreCreateBaseRootSignature()
 	}
 #pragma endregion
 
+	{
+		RootSignatureData spriteData;
+		spriteData.paramData[0].param = 0;
+		spriteData.paramData[0].type = GRAPHICS_PRAMTYPE_DRAW;
+		spriteData.range[0] = GRAPHICS_RANGE_TYPE_CBV;
+
+		spriteData.paramData[1].param = 1;
+		spriteData.paramData[1].type = GRAPHICS_PRAMTYPE_DATA;
+		spriteData.range[1] = GRAPHICS_RANGE_TYPE_CBV;
+
+		spriteData.paramData[2].param = 2;
+		spriteData.paramData[2].type = GRAPHICS_PRAMTYPE_TEX;
+		spriteData.range[2] = GRAPHICS_RANGE_TYPE_SRV;
+
+		spriteData.paramData[3].param = 3;
+		spriteData.paramData[3].type = GRAPHICS_PRAMTYPE_TEX2;
+		spriteData.range[3] = GRAPHICS_RANGE_TYPE_SRV;
+		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_DRAW_DATA1_TEX_TEX2, spriteData, 4);
+	}
+
 
 	{
 		RootSignatureData uaAndCbData;

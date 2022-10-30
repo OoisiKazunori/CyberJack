@@ -9,7 +9,11 @@
 #include"../Game/Stage/DrawGrid.h"
 #include"../Game/Stage/MountainObject.h"
 #include"../Game/Stage/BlockMountain.h"
+#include"../Game/Stage/WindowForAd.h"
 
+/// <summary>
+/// Rez + vaporwave風のステージ
+/// </summary>
 class RezStage :public IStage
 {
 public:
@@ -57,4 +61,6 @@ private:
 
 
 	std::array<std::unique_ptr<BlockMountain>, 4>blockMountainArray;
+
+	std::array<WindowForAd, 100> windowArray;
 };

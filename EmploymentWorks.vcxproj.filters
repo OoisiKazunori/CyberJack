@@ -147,6 +147,7 @@
     <ClCompile Include="Game\Effect\GalacticParticle.cpp" />
     <ClCompile Include="Game\UI\StringWindow.cpp" />
     <ClCompile Include="Game\Stage\BlockMountain.cpp" />
+    <ClCompile Include="Game\Stage\WindowForAd.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -308,6 +309,7 @@
     <ClInclude Include="Game\Effect\GalacticParticle.h" />
     <ClInclude Include="Game\UI\StringWindow.h" />
     <ClInclude Include="Game\Stage\BlockMountain.h" />
+    <ClInclude Include="Game\Stage\WindowForAd.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

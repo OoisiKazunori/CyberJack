@@ -14,6 +14,13 @@ float4 PSmain(VSOutput input) : SV_TARGET
     if (1.0f <= luminanceData.r)
     {
         output = tex;
+
+        if(luminanceData.a <= output.a)
+        {
+            output.a = luminanceData.a;
+        }
     }
+
+
     return output;
 }

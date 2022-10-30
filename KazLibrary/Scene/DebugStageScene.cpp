@@ -15,9 +15,9 @@
 DebugStageScene::DebugStageScene()
 {
 	//stages[0] = std::make_shared<BlockParticleStage>();
-	stages[0] = std::make_shared<FirstStage>();
+	//stages[0] = std::make_shared<FirstStage>();
 	stages[1] = std::make_shared<RezStage>();
-	stages[2] = std::make_shared<BlockParticleStage>();
+	//stages[2] = std::make_shared<BlockParticleStage>();
 
 	renderTarget[0] = std::make_unique<GameRenderTarget>(KazMath::Color(29, 19, 72, 255));
 	renderTarget[1] = std::make_unique<GameRenderTarget>(KazMath::Color(29, 19, 72, 255));
@@ -28,7 +28,10 @@ DebugStageScene::DebugStageScene()
 
 	for (int i = 0; i < stages.size(); ++i)
 	{
-		stages[i]->startFlag = true;
+		if (stages[i] != nullptr)
+		{
+			stages[i]->startFlag = true;
+		}
 	}
 
 	stageNum = 1;

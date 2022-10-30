@@ -119,6 +119,7 @@ struct Sprite3DData
 	KazMath::Transform3D transform;
 	ResourceHandle handleData;
 	ResourceHandle animationHandle;
+	AddTextureData addHandle;
 	FlipData flip;
 	bool billBoardFlag;
 	MatMotherData motherMat;

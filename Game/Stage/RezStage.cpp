@@ -94,11 +94,11 @@ RezStage::RezStage()
 	lInitData.centralPos = { 0.0f,5300.0f,0.0f };
 	blockMountainArray[1] = std::make_unique<BlockMountain>(lInitData);
 
-	
+
 	lInitData.fogDesinty = 0.0005f;
 	lInitData.lightDir = { -1.0f,0.0f,0.0f };
 	lInitData.xRange = 10;
-	lInitData.yScale = 1000.0f;
+	lInitData.yScale = 5000.0f;
 	lInitData.centralPos = { -6400.0f,0.0f,0.0f };
 	blockMountainArray[2] = std::make_unique<BlockMountain>(lInitData);
 
@@ -106,9 +106,22 @@ RezStage::RezStage()
 	lInitData.fogDesinty = 0.0005f;
 	lInitData.lightDir = { 1.0f,0.0f,0.0f };
 	lInitData.xRange = 10;
-	lInitData.yScale = 1000.0f;
+	lInitData.yScale = 5000.0f;
 	lInitData.centralPos = { 6400.0f,0.0f,0.0f };
 	blockMountainArray[3] = std::make_unique<BlockMountain>(lInitData);
+
+	std::array<RESOURCE_HANDLE, 10>lData;
+	for (int i = 0; i < lData.size(); ++i)
+	{
+		lData[i] = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::UIPath + "damage.png");
+	}
+
+
+	for (int i = 0; i < windowArray.size(); ++i)
+	{
+		KazMath::Vec3<float>pos(KazMath::Rand(5000.0f, -5000.0f), KazMath::Rand(5000.0f, 100.0f), KazMath::Rand(10000.0f, 0.0f));
+		windowArray[i].Init(pos, lData);
+	}
 }
 
 void RezStage::Update()
@@ -136,6 +149,11 @@ void RezStage::Update()
 	{
 		blockMountainArray[i]->Update();
 	}
+
+	for (int i = 0; i < windowArray.size(); ++i)
+	{
+		windowArray[i].Update();
+	}
 }
 
 void RezStage::Draw()
@@ -153,5 +171,10 @@ void RezStage::Draw()
 	for (int i = 0; i < blockMountainArray.size(); ++i)
 	{
 		blockMountainArray[i]->Draw();
+	}
+
+	for (int i = 0; i < windowArray.size(); ++i)
+	{
+		windowArray[i].Draw();
 	}
 }

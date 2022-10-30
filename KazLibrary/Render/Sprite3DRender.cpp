@@ -205,9 +205,18 @@ void Sprite3DRender::Draw()
 	renderData.shaderResourceMgrInstance->SetSRV(data.handleData.handle, GraphicsRootSignature::Instance()->GetRootParam(renderData.pipelineMgr->GetRootSignatureName(data.pipelineName)), GRAPHICS_PRAMTYPE_TEX);
 	//バッファをコマンドリストに積む-----------------------------------------------------------------------------------------------------
 
+	//追加のテクスチャを送る---------------------------------------------------------------
+	for (int i = 0; i < data.addHandle.handle.size(); ++i)
+	{
+		renderData.shaderResourceMgrInstance->SetSRV(data.addHandle.handle[i], GraphicsRootSignature::Instance()->GetRootParam(renderData.pipelineMgr->GetRootSignatureName(data.pipelineName)), data.addHandle.paramType[i]);
+	}
+	//追加のテクスチャを送る---------------------------------------------------------------
+
+
 	//描画命令-----------------------------------------------------------------------------------------------------
 	DrawIndexInstanceCommand(drawIndexInstanceCommandData);
 	//描画命令-----------------------------------------------------------------------------------------------------
+
 
 
 
