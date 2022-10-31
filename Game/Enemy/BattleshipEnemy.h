@@ -27,5 +27,8 @@ private:
 	KazMath::Vec3<float>topRota;
 	FbxModelRenderPtr topModel;
 	bool isShotFlag;
+
+
+	KazMath::Vec3<float>lightDir;
 };
 

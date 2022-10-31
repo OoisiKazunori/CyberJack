@@ -30,7 +30,7 @@ void WindowForAd::Init(KazMath::Vec3<float> &POS, const std::array<RESOURCE_HAND
 
 	timer = 0;
 	noiseTimer = 0;
-	maxTimer = KazMath::Rand(KazMath::ConvertSecondToFlame(20), KazMath::ConvertSecondToFlame(10));
+	maxTimer = KazMath::Rand(KazMath::ConvertSecondToFlame(10), KazMath::ConvertSecondToFlame(5));
 }
 
 void WindowForAd::Update()

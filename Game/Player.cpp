@@ -18,7 +18,6 @@ Player::Player()
 
 	DirectX::XMFLOAT4 lColor = { 0.0f,0.0f,0.0f,0.0f };
 	render->TransData(&lColor, lHandle, typeid(DirectX::XMFLOAT4).name());
-
 }
 
 void Player::Init(const KazMath::Vec3<float> &POS, bool DRAW_UI_FLAG, bool APPEAR_FLAG)

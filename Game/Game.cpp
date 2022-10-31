@@ -148,7 +148,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	gameStartFlag = false;
 	cameraModeChangeFlag = false;
 	gameFlame = 0;
-	changeLayerLevelMaxTime[0] = KazMath::ConvertSecondToFlame(1);
+	changeLayerLevelMaxTime[0] = KazMath::ConvertSecondToFlame(1000);
 	changeLayerLevelMaxTime[1] = KazMath::ConvertSecondToFlame(70);
 	changeLayerLevelMaxTime[2] = KazMath::ConvertSecondToFlame(50);
 	//ゴールに触れ無かった場合に次のステージに移動する際の最大フレーム数
@@ -888,7 +888,6 @@ void Game::Update()
 			hitEffect[i].Update();
 		}
 
-
 		//配列外を超えない処理
 		if (stageNum + 1 < stages.size())
 		{
@@ -959,6 +958,7 @@ void Game::Update()
 					!enemies[enemyType][enemyCount]->GetData()->outOfStageFlag;
 				if (enableToUseDataFlag)
 				{
+					enemies[enemyType][enemyCount]->SetLight(cursor.hitBox.dir);
 					enemies[enemyType][enemyCount]->Update();
 #ifdef _DEBUG
 					enemyHitBox[enemyType][enemyCount].data.transform.pos = *enemies[enemyType][enemyCount]->GetData()->hitBox.center;

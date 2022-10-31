@@ -203,6 +203,28 @@ PreCreateBaseRootSignature::PreCreateBaseRootSignature()
 #pragma endregion
 
 
+	{
+		RootSignatureData fbxData;
+		fbxData.paramData[0].param = 0;
+		fbxData.paramData[0].type = GRAPHICS_PRAMTYPE_DRAW;
+		fbxData.range[0] = GRAPHICS_RANGE_TYPE_CBV;
+
+		fbxData.paramData[1].param = 1;
+		fbxData.paramData[1].type = GRAPHICS_PRAMTYPE_TEX;
+		fbxData.range[1] = GRAPHICS_RANGE_TYPE_SRV;
+
+		fbxData.paramData[2].param = 2;
+		fbxData.paramData[2].type = GRAPHICS_PRAMTYPE_SKINING;
+		fbxData.range[2] = GRAPHICS_RANGE_TYPE_CBV;
+
+		fbxData.paramData[3].param = 3;
+		fbxData.paramData[3].type = GRAPHICS_PRAMTYPE_DATA3;
+		fbxData.range[3] = GRAPHICS_RANGE_TYPE_CBV;
+
+		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_DRAW_TEX_SKINING_DATA3, fbxData, 4);
+	}
+
+
 #pragma region 座標とフォグの値を送る
 	{
 		//フォグ

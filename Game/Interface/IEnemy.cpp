@@ -8,7 +8,11 @@ IEnemy::IEnemy() :hpDirtyFlag(&iOperationData.rockOnNum)
 	iEnemy_ObjModelRender->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX;
 
 	iEnemy_FbxModelRender = std::make_unique<FbxModelRender>();
-	iEnemy_FbxModelRender->data.pipelineName = PIPELINE_NAME_FBX_RENDERTARGET_TWO;
+	iEnemy_FbxModelRender->data.pipelineName = PIPELINE_NAME_FBX_RENDERTARGET_TWO_LIGHT;
+
+	lightHandle = iEnemy_FbxModelRender->CreateConstBuffer(sizeof(DirectX::XMFLOAT3), typeid(DirectX::XMFLOAT3).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA3);
+	DirectX::XMFLOAT3 dir = { -1.0f,0.0f,0.0f };
+	iEnemy_FbxModelRender->TransData(&dir, lightHandle, typeid(DirectX::XMFLOAT3).name());
 	//•`‰æ‚Ì‰Šú‰»----------------------------------------------------------------
 
 	//“Gî•ñ‚Ì‰Šú‰»----------------------------------------------------------------
@@ -154,7 +158,7 @@ void IEnemy::InitModel(const KazMath::Transform3D &TRANSFORM, const std::string 
 		iEnemy_FbxModelRender->data.transform = TRANSFORM;
 		iEnemy_EnemyStatusData->hitBox.radius = HITBOX_RADIUS;	//“–‚½‚è”»’è‚Ì‘å‚«‚³•ÏX
 		iEnemy_EnemyStatusData->hitBox.center = &iEnemy_FbxModelRender->data.transform.pos;
-		iEnemy_FbxModelRender->data.pipelineName = PIPELINE_NAME_FBX_RENDERTARGET_TWO;
+		iEnemy_FbxModelRender->data.pipelineName = PIPELINE_NAME_FBX_RENDERTARGET_TWO_LIGHT;
 
 		iEnemy_FbxModelRender->data.removeMaterialFlag = false;
 		iEnemy_FbxModelRender->data.colorData.color.x = 255;
@@ -170,7 +174,7 @@ void IEnemy::InitModel(const KazMath::Transform3D &TRANSFORM, const std::string 
 		iEnemy_ObjModelRender->data.transform = TRANSFORM;
 		iEnemy_EnemyStatusData->hitBox.radius = HITBOX_RADIUS;	//“–‚½‚è”»’è‚Ì‘å‚«‚³•ÏX
 		iEnemy_EnemyStatusData->hitBox.center = &iEnemy_ObjModelRender->data.transform.pos;
-		iEnemy_ObjModelRender->data.pipelineName = PIPELINE_NAME_FBX_RENDERTARGET_TWO;
+		iEnemy_ObjModelRender->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX;
 
 		iEnemy_ObjModelRender->data.removeMaterialFlag = false;
 		iEnemy_ObjModelRender->data.colorData.color.x = 255;

@@ -65,6 +65,12 @@ public:
 	//UŒ‚‚ğŠm”F‚·‚é—p‚ÌŠÖ”
 	virtual void DebugShot() { debugShotFlag = true; };
 
+	void SetLight(const KazMath::Vec3<float> LIGHT_DIR)
+	{
+		DirectX::XMFLOAT3 dir = LIGHT_DIR.ConvertXMFLOAT3();
+		iEnemy_FbxModelRender->TransData(&dir, lightHandle, typeid(DirectX::XMFLOAT3).name());
+	};
+
 	std::unique_ptr<EnemyData> iEnemy_EnemyStatusData;		//“G‚Ìó‘Ô‚ğ•Û‘¶‚·‚éƒf[ƒ^
 	ObjModelRenderPtr iEnemy_ObjModelRender;				//“G‚Ì•`‰æ
 	FbxModelRenderPtr iEnemy_FbxModelRender;				//“G‚Ì•`‰æ
@@ -80,5 +86,7 @@ private:
 
 	DirtyFlag<short>hpDirtyFlag;
 	bool hitFlag;
+
+	RESOURCE_HANDLE lightHandle;
 
 };

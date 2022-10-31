@@ -14,9 +14,9 @@
 SceneManager::SceneManager()
 {
 	//scene.emplace_back(std::make_unique<TitleScene>());
-	//scene.emplace_back(std::make_unique<GameScene>());
+	scene.emplace_back(std::make_unique<GameScene>());
 	//scene.emplace_back(std::make_unique<DebugStageScene>());
-	scene.emplace_back(std::make_unique<EnemyDebugScene>());
+	//scene.emplace_back(std::make_unique<EnemyDebugScene>());
 
 	nowScene = 0;
 	nextScene = 0;

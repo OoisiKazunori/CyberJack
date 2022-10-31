@@ -8,7 +8,6 @@ cbuffer BloomData : register(b2)
     float4 luminanceColor;
 }
 
-
 TwoRender PSmain(FogOutPut input) : SV_TARGET
 {
     TwoRender op;
