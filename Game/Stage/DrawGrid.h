@@ -29,6 +29,8 @@ private:
 	static const int LINE_X_MAX = LINE_MAX / 2;
 
 	std::array<LineRender, LINE_MAX> gridLineRender;
+	std::array<RESOURCE_HANDLE, LINE_MAX> gridLineBloomBufferHandle;
+	//std::array<, LINE_MAX> gridLineBloomBufferHandle;
 	std::array<std::array<KazMath::Transform3D, 2>, LINE_Z_MAX> gridFloorZLinePos;
 	std::array<std::array<KazMath::Transform3D, 2>, LINE_X_MAX> gridFloorXLinePos;
 
@@ -54,5 +56,11 @@ private:
 	bool flashFlag;
 	std::array<KazMath::Color, 2>flashColorArray;
 	bool initFlag;
+
+
+	struct BloomData
+	{
+		DirectX::XMFLOAT4 luminanceColor;
+	};
 };
 

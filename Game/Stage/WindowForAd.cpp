@@ -17,7 +17,7 @@ WindowForAd::WindowForAd()
 	spriteRender->data.addHandle.paramType[0] = GRAPHICS_PRAMTYPE_TEX2;
 
 	DirectX::XMFLOAT3 colorRate = KazMath::Color(29, 19, 72, 255).ConvertColorRateToXMFLOAT3();
-	data.fogData = { colorRate.x,colorRate.y,colorRate.z,0.0005f };
+	data.fogData = { colorRate.x,colorRate.y,colorRate.z,0.0004f };
 }
 
 void WindowForAd::Init(KazMath::Vec3<float> &POS, const std::array<RESOURCE_HANDLE, 10> &HANDLE_ARRAY)
@@ -25,7 +25,7 @@ void WindowForAd::Init(KazMath::Vec3<float> &POS, const std::array<RESOURCE_HAND
 	windowTexHandleArray = HANDLE_ARRAY;
 	spriteRender->data.addHandle.handle[0] = windowTexHandleArray[KazMath::Rand(10, 0)];
 	spriteRender->data.transform.pos = POS;
-	float lScale = KazMath::Rand(1.5f, 1.0f);
+	float lScale = KazMath::Rand(2.5f, 1.0f);
 	spriteRender->data.transform.scale = { lScale,lScale,0.0f };
 
 	timer = 0;
@@ -47,7 +47,7 @@ void WindowForAd::Update()
 
 
 	spriteRender->data.transform.pos.z += -5.0f;
-	if (spriteRender->data.transform.pos.z <= -1000.0f)
+	if (spriteRender->data.transform.pos.z <= -10000.0f)
 	{
 		spriteRender->data.transform.pos.z = 10000.0f;
 	}

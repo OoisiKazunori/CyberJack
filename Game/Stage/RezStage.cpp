@@ -16,13 +16,13 @@ RezStage::RezStage()
 		gridRender[i] = std::make_unique<DrawGrid>(KazMath::Color(29, 19, 72, 255));
 	}
 
-	KazMath::Color lBaseColor(115, 85, 140, 255);
+	KazMath::Color lBaseColor(115 - 50, 85 - 50, 140 - 50, 255);
 	KazMath::Color lFlashColor(213, 5, 228, 255);
 	std::array<KazMath::Color, 2>lFlashColorArray = { lBaseColor,lFlashColor };
 
 
-	gridRender[0]->Init(true, 300.0f, -150.0f, &cameraIndex, true, false, lFlashColorArray);
-	gridRender[1]->Init(true, 300.0f, 3000.0f, &cameraIndex, true, false, lFlashColorArray);
+	gridRender[0]->Init(true, 300.0f, -150.0f, &cameraIndex, true, true, lFlashColorArray);
+	gridRender[1]->Init(true, 300.0f, 3000.0f, &cameraIndex, true, true, lFlashColorArray);
 	gridRender[2]->Init(false, 300.0f, -3000.0f, &cameraIndex, true, false, lFlashColorArray);
 	gridRender[3]->Init(false, 300.0f, 3000.0f, &cameraIndex, true, false, lFlashColorArray);
 
@@ -113,13 +113,14 @@ RezStage::RezStage()
 	std::array<RESOURCE_HANDLE, 10>lData;
 	for (int i = 0; i < lData.size(); ++i)
 	{
-		lData[i] = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::UIPath + "damage.png");
+		std::string lFilePass = "WindowTex" + std::to_string(i) + ".png";
+		lData[i] = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StagePath + "WindowTex/" + lFilePass);
 	}
 
 
 	for (int i = 0; i < windowArray.size(); ++i)
 	{
-		KazMath::Vec3<float>pos(KazMath::Rand(5000.0f, -5000.0f), KazMath::Rand(5000.0f, 100.0f), KazMath::Rand(10000.0f, 0.0f));
+		KazMath::Vec3<float>pos(KazMath::Rand(5000.0f, -5000.0f), KazMath::Rand(5000.0f, 500.0f), KazMath::Rand(10000.0f, -10000.0f));
 		windowArray[i].Init(pos, lData);
 	}
 }

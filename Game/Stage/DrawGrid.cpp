@@ -5,13 +5,22 @@ DrawGrid::DrawGrid(const KazMath::Color &FOG_COLOR) :flashColorArray({ KazMath::
 	for (int i = 0; i < gridLineRender.size(); ++i)
 	{
 		gridLineRender[i].data.colorData = { 255,255,255,255 };
-		gridLineRender[i].data.pipelineName = PIPELINE_NAME_FOG_LINE;
+		gridLineRender[i].data.pipelineName = PIPELINE_NAME_FOG_LINE_MULTIPASS;
 
-		FogData lData;
-		RESOURCE_HANDLE lHandle = gridLineRender[i].CreateConstBuffer(sizeof(FogData), typeid(FogData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
-		DirectX::XMFLOAT3 colorRate = FOG_COLOR.ConvertColorRateToXMFLOAT3();
-		lData.fogdata = { colorRate.x,colorRate.y,colorRate.z,0.0006f };
-		gridLineRender[i].TransData(&lData, lHandle, typeid(lData).name());
+		{
+			FogData lData;
+			RESOURCE_HANDLE lHandle = gridLineRender[i].CreateConstBuffer(sizeof(FogData), typeid(FogData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+			DirectX::XMFLOAT3 colorRate = FOG_COLOR.ConvertColorRateToXMFLOAT3();
+			lData.fogdata = { colorRate.x,colorRate.y,colorRate.z,0.0006f };
+			gridLineRender[i].TransData(&lData, lHandle, typeid(lData).name());
+		}
+
+		{
+			gridLineBloomBufferHandle[i] = gridLineRender[i].CreateConstBuffer(sizeof(BloomData), typeid(BloomData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA2);
+			BloomData lData;
+			lData.luminanceColor = { 0.0f,0.0f,0.0f,0.0f };
+			gridLineRender[i].TransData(&lData, gridLineBloomBufferHandle[i], typeid(BloomData).name());
+		}
 	}
 }
 
@@ -125,11 +134,11 @@ void DrawGrid::Update(float Y_POS, bool USE_FLASHLINE_FLAG)
 
 	if (reversValueFlag)
 	{
-		flashRate += 1.0f / 30.0f;
+		flashRate += 1.0f / 60.0f;
 	}
 	else
 	{
-		flashRate += -(1.0f / 10.0f);
+		flashRate += -(1.0f / 30.0f);
 	}
 
 	if (flashRate <= 0.0f)
@@ -266,6 +275,7 @@ void DrawGrid::Draw()
 		{
 			gridLineRender[i].data.colorData.color = flashColorArray[0].color;
 		}
+
 
 		gridLineRender[i].data.cameraIndex.id = *cameraIndex;
 		gridLineRender[i].Draw();

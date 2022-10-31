@@ -1902,6 +1902,17 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	);
 
 
+	//FogLineパイプライン
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS,
+		SHADER_VERTEX_FOG_COLOR,
+		SHADER_PIXCEL_FOG_MULTITEX,
+		PIPELINE_DATA_NOCARING_ALPHABLEND_LINE,
+		ROOTSIGNATURE_DATA_DRAW_DATA1_DATA2,
+		PIPELINE_NAME_FOG_LINE_MULTIPASS
+	);
+
+
 	//インスタンシング描画色パイプライン
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
