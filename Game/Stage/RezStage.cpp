@@ -120,7 +120,17 @@ RezStage::RezStage()
 
 	for (int i = 0; i < windowArray.size(); ++i)
 	{
-		KazMath::Vec3<float>pos(KazMath::Rand(5000.0f, -5000.0f), KazMath::Rand(5000.0f, 500.0f), KazMath::Rand(10000.0f, -10000.0f));
+		float lX = KazMath::Rand(5000.0f, 1000.0f);
+		if (2 <= KazMath::Rand(4, 0))
+		{
+			lX = KazMath::Rand(5000.0f, 1500.0f);
+		}
+		else
+		{
+			lX = -KazMath::Rand(5000.0f, 1500.0f);
+		}
+
+		KazMath::Vec3<float>pos(lX, KazMath::Rand(5000.0f, 500.0f), KazMath::Rand(10000.0f, -10000.0f));
 		windowArray[i].Init(pos, lData);
 	}
 }
