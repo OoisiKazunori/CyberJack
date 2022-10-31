@@ -138,8 +138,6 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	cameraMoveArray = CAMERA_ARRAY;
 	stages = STAGE_ARRAY;
 
-
-
 	//操作可能OBJを纏めて生成する処理----------------------------------------------------------------
 	KazEnemyHelper::GenerateEnemy(enemies, responeData, enemiesHandle);
 	//敵を纏めて生成する処理----------------------------------------------------------------
@@ -150,7 +148,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	gameStartFlag = false;
 	cameraModeChangeFlag = false;
 	gameFlame = 0;
-	changeLayerLevelMaxTime[0] = KazMath::ConvertSecondToFlame(70);
+	changeLayerLevelMaxTime[0] = KazMath::ConvertSecondToFlame(1);
 	changeLayerLevelMaxTime[1] = KazMath::ConvertSecondToFlame(70);
 	changeLayerLevelMaxTime[2] = KazMath::ConvertSecondToFlame(50);
 	//ゴールに触れ無かった場合に次のステージに移動する際の最大フレーム数
@@ -186,7 +184,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	fireIndex = 0;
 	cameraWork.Init();
 
-	tutorial.Init(false);
+	tutorial.Init(true);
 	portalEffect.Init();
 
 	isGameOverFlag = false;
@@ -894,7 +892,7 @@ void Game::Update()
 		//配列外を超えない処理
 		if (stageNum + 1 < stages.size())
 		{
-			//	stages[stageNum + 1]->Update();
+			stages[stageNum + 1]->Update();
 		}
 		//ロックオンのリリース処理
 		if (cursor.releaseFlag)

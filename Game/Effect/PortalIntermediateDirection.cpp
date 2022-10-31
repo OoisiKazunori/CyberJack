@@ -247,6 +247,9 @@ void PortalIntermediateDirection::Finalize()
 
 	rate = 0.0f;
 	nextRate = 0.0f;
+
+	backRate = 0.0f;
+	nextBackRate = 0.0f;
 }
 
 void PortalIntermediateDirection::Update(const KazMath::Vec3<float> &POS)
@@ -303,7 +306,7 @@ void PortalIntermediateDirection::Update(const KazMath::Vec3<float> &POS)
 		{
 			disappearFlag = true;
 		}
-		else if (nextPortalRender.data.transform.pos.z <= POS.z + 5.0f && nextPortalFlag)
+		else if (nextPortalRender.data.transform.pos.z <= POS.z && nextPortalFlag)
 		{
 			nextPortalFlag = false;
 			finishFlag = true;
