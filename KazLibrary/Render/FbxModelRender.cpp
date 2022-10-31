@@ -145,7 +145,7 @@ void FbxModelRender::Draw()
 		{
 			ConstBufferDataSkin *lConstMap = nullptr;
 			gpuBuffer->GetBufferData(constBufferHandle[1])->Map(0, nullptr, (void **)&lConstMap);
-			/*
+			
 			for (int i = 0; i < resourceData->bone.size(); i++)
 			{
 				DirectX::XMMATRIX lMatCurrentPose;
@@ -159,11 +159,8 @@ void FbxModelRender::Draw()
 				{
 					lConstMap->bones[i] = resourceData->bone[i].invInitialPose * lMatCurrentPose;
 				}
-			}*/
-			for (int i = 0; i < MAX_BONES; i++)
-			{
-				lConstMap->bones[i] = DirectX::XMMatrixIdentity();
 			}
+
 			gpuBuffer->GetBufferData(constBufferHandle[1])->Unmap(0, nullptr);
 		}
 

@@ -77,15 +77,20 @@ void BikeEnemy::Update()
 			misileR2.data.transform.pos.x -= 10.0f;
 
 			//左右からミサイルを発射する--------------------------------------
-			if (appearTimer == 210)
+			if (appearTimer == 310)
 			{
 				iEnemy_EnemyStatusData->genarateData.enemyGenerateData.initPos = misileR.data.transform.pos;
 				iEnemy_EnemyStatusData->genarateData.enemyType = ENEMY_TYPE_BIKE_MISILE;
 			}
-			if (appearTimer == 211)
+			if (appearTimer == 311)
 			{
 				iEnemy_EnemyStatusData->genarateData.enemyGenerateData.initPos = misileR2.data.transform.pos;
 				iEnemy_EnemyStatusData->genarateData.enemyType = ENEMY_TYPE_BIKE_MISILE;
+			}
+			if (appearTimer == 320)
+			{
+				iEnemy_FbxModelRender->data.isPlayFlag = false;
+				iEnemy_FbxModelRender->data.isReverseFlag = true;
 			}
 			//左右からミサイルを発射する--------------------------------------
 
@@ -148,6 +153,7 @@ void BikeEnemy::Draw()
 	if (!iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
 	{
 		iEnemy_FbxModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
+		iEnemy_FbxModelRender->data.removeMaterialFlag = true;
 	}
 	//misileR.Draw();
 	//misileR2.Draw();
