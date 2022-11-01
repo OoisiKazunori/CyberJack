@@ -106,29 +106,29 @@ void GameScene::Init()
 	//////ミサイル敵--------------------------------------
 
 	//左から戦艦-----------------------------------------------------------------
-	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 10;
-	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].generateData.initPos = { -1000.0f,-150.0f,400.0f };
-	++respoineIndex;
+	//responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 10;
+	//responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].generateData.initPos = { -1000.0f,-150.0f,400.0f };
+	//++respoineIndex;
 
 
-	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 10;
-	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].generateData.initPos = { -100.0f,-150.0f,200.0f };
-	++respoineIndex;
-	//左から戦艦-----------------------------------------------------------------
+	//responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 10;
+	//responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].generateData.initPos = { -100.0f,-150.0f,200.0f };
+	//++respoineIndex;
+	////左から戦艦-----------------------------------------------------------------
 
 
-	//バイク敵--------------------------------------
-	responeData[ENEMY_TYPE_BIKE][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_BIKE][respoineIndex].flame = time * 14;
-	responeData[ENEMY_TYPE_BIKE][respoineIndex].generateData.initPos = { -200.0f,50.0f,50.0f };
-	++respoineIndex;
+	////バイク敵--------------------------------------
+	//responeData[ENEMY_TYPE_BIKE][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_BIKE][respoineIndex].flame = time * 14;
+	//responeData[ENEMY_TYPE_BIKE][respoineIndex].generateData.initPos = { -200.0f,50.0f,50.0f };
+	//++respoineIndex;
 
-	responeData[ENEMY_TYPE_BIKE][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_BIKE][respoineIndex].flame = time * 14;
-	responeData[ENEMY_TYPE_BIKE][respoineIndex].generateData.initPos = { -100.0f,0.0f,100.0f };
-	++respoineIndex;
+	//responeData[ENEMY_TYPE_BIKE][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_BIKE][respoineIndex].flame = time * 14;
+	//responeData[ENEMY_TYPE_BIKE][respoineIndex].generateData.initPos = { -100.0f,0.0f,100.0f };
+	//++respoineIndex;
 	//バイク敵--------------------------------------
 
 

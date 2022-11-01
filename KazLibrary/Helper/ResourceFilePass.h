@@ -36,6 +36,7 @@ namespace KazFilePathName
 	static std::string LinePath = RelativeResourcePath + "Line/";
 	static std::string SoundPath = RelativeResourcePath + "Sound/";
 	static std::string StagePath = RelativeResourcePath + "Stage/";
+	static std::string PlayerPath = RelativeResourcePath + "Player/";
 
 
 	//デバックパス-----------------------

@@ -23,7 +23,7 @@ WindowForAd::WindowForAd()
 void WindowForAd::Init(KazMath::Vec3<float> &POS, const std::array<RESOURCE_HANDLE, 10> &HANDLE_ARRAY)
 {
 	windowTexHandleArray = HANDLE_ARRAY;
-	spriteRender->data.addHandle.handle[0] = windowTexHandleArray[KazMath::Rand(10, 0)];
+	spriteRender->data.addHandle.handle[0] = windowTexHandleArray[KazMath::Rand(9, 0)];
 	spriteRender->data.transform.pos = POS;
 	float lScale = KazMath::Rand(2.5f, 1.0f);
 	spriteRender->data.transform.scale = { lScale,lScale,0.0f };
@@ -70,7 +70,7 @@ void WindowForAd::Update()
 	{
 		noiseTimer = 0;
 		timer = 0;
-		spriteRender->data.addHandle.handle[0] = windowTexHandleArray[KazMath::Rand(10, 0)];
+		spriteRender->data.addHandle.handle[0] = windowTexHandleArray[KazMath::Rand(9, 0)];
 		exchangeWindowFlag = false;
 	}
 }

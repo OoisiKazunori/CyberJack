@@ -19,6 +19,7 @@ public:
 
 	bool IsAlive();
 	KazMath::Vec3<float> pos;
+	KazMath::Vec2<float> cameraRate;
 private:
 	short hp,prevHp;
 	int coolTimer;
@@ -26,6 +27,7 @@ private:
 	bool coolTimeFlag;
 	bool redFlag;
 	BoxPolygonRenderPtr render;
+	FbxModelRender lRender,rRender;
 	bool drawHpFlag;
 
 	PlayerHpUi hpUi;
@@ -33,5 +35,14 @@ private:
 	int damageSoundHandle;
 	PlayerDamageEmitter damageEffect;
 	DamageTextWindow damageWindow;
+
+
+	bool leftFlag;
+	bool rightFlag;
+	FbxTime totalTime;
+
+	int larpTime;
+	KazMath::Vec3<float>minScale;
+	float sinTimer;
 };
 

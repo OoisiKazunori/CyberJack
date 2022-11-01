@@ -32,7 +32,7 @@ void FbxModelRender::Draw()
 
 	if (data.handle.handle != -1)
 	{
-		if (resourceData->startTime.size() != 0)
+		if (resourceData->startTime.size() != 0 && !data.stopAnimationFlag)
 		{
 			if (data.isPlayFlag)
 			{

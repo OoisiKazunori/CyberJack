@@ -875,6 +875,8 @@ void Game::Update()
 		goalBox.releaseFlag = cursor.releaseFlag;
 
 		//更新処理----------------------------------------------------------------
+		player.cameraRate = cursor.GetValue();
+
 		player.Update();
 		cursor.Update();
 		goalBox.Update();

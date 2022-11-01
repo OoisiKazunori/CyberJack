@@ -12,6 +12,7 @@ public:
 	void Draw();
 
 	FbxModelData data;
+	FbxTime currentTime;
 private:
 
 	UINT vertByte;
@@ -27,7 +28,6 @@ private:
 	FbxTime frameTime;
 	FbxTime startTime;
 	FbxTime endTime;
-	FbxTime currentTime;
 
 };
 
