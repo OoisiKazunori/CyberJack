@@ -15,19 +15,43 @@ public:
 	void Update();
 	void Draw();
 
+	void ForceAnim(int PATTERN)
+	{
+		switch (PATTERN)
+		{
+		case 0:
+			forceCameraRate = 0.0f;
+			break;
+		case 1:
+			forceCameraRate = 0.0f;
+			break;
+		case 2:
+			forceCameraRate = -0.5f;
+			break;
+		case 3:
+			forceCameraRate = 0.5f;
+			break;
+		default:
+			break;
+		}
+	};
+
 	void Hit();
 
 	bool IsAlive();
 	KazMath::Vec3<float> pos;
 	KazMath::Vec2<float> cameraRate;
 private:
+
+	enum { LEFT, RIGHT, HEAD };
+
 	short hp,prevHp;
 	int coolTimer;
 	static const int COOL_MAX_TIME;
 	bool coolTimeFlag;
 	bool redFlag;
 	BoxPolygonRenderPtr render;
-	FbxModelRender lRender,rRender;
+	std::array<FbxModelRender,3> fbxRender;
 	bool drawHpFlag;
 
 	PlayerHpUi hpUi;
@@ -43,6 +67,10 @@ private:
 
 	int larpTime;
 	KazMath::Vec3<float>minScale;
+	KazMath::Vec3<float>adjPos;
+	KazMath::Vec3<float>adjRota;
 	float sinTimer;
+
+	float forceCameraRate;
 };
 

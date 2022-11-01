@@ -20,35 +20,26 @@ Player::Player()
 		render->TransData(&lColor, lHandle, typeid(DirectX::XMFLOAT4).name());
 	}
 
-	lRender.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::PlayerPath + "CH_Right_Back_Anim.fbx");
-	rRender.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::PlayerPath + "CH_Left_Back_Anim.fbx");
+	fbxRender[LEFT].data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::PlayerPath + "CH_Right_Back_Anim.fbx");
+	fbxRender[RIGHT].data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::PlayerPath + "CH_Left_Back_Anim.fbx");
+	fbxRender[HEAD].data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::PlayerPath + "CH_Model_Head.fbx");
 
-	lRender.data.pipelineName = PIPELINE_NAME_FBX_RENDERTARGET_TWO_LIGHT;
-	lRender.data.stopAnimationFlag = true;
-	rRender.data.pipelineName = PIPELINE_NAME_FBX_RENDERTARGET_TWO_LIGHT;
-	rRender.data.stopAnimationFlag = true;
-
-	lRender.data.transform.scale = { 0.5f,0.5f,0.5f };
-	rRender.data.transform.scale = { 0.5f,0.5f,0.5f };
-
+	for (int i = 0; i < fbxRender.size(); ++i)
 	{
-		RESOURCE_HANDLE lHandle = lRender.CreateConstBuffer(sizeof(DirectX::XMFLOAT3), typeid(DirectX::XMFLOAT3).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA3);
-		DirectX::XMFLOAT3 dir = { 0.0f,0.0f,1.0f };
-		lRender.TransData(&dir, lHandle, typeid(DirectX::XMFLOAT3).name());
+		fbxRender[i].data.pipelineName = PIPELINE_NAME_FBX_RENDERTARGET_TWO;
+		fbxRender[i].data.stopAnimationFlag = true;
+		fbxRender[i].data.transform.scale = { 0.5f,0.5f,0.5f };
 	}
 
-	{
-		RESOURCE_HANDLE lHandle = rRender.CreateConstBuffer(sizeof(DirectX::XMFLOAT3), typeid(DirectX::XMFLOAT3).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA3);
-		DirectX::XMFLOAT3 dir = { 0.0f,0.0f,1.0f };
-		rRender.TransData(&dir, lHandle, typeid(DirectX::XMFLOAT3).name());
-	}
 
-	totalTime = FbxModelResourceMgr::Instance()->GetResourceData(lRender.data.handle.handle)->endTime[0] - FbxModelResourceMgr::Instance()->GetResourceData(lRender.data.handle.handle)->startTime[0];
+	totalTime = FbxModelResourceMgr::Instance()->GetResourceData(fbxRender[0].data.handle.handle)->endTime[0] - FbxModelResourceMgr::Instance()->GetResourceData(fbxRender[0].data.handle.handle)->startTime[0];
 
 
 	float lScale = 0.5f;
 	minScale = { lScale ,lScale ,lScale };
 	sinTimer = 0.0f;
+
+	adjPos = { 0.0f,0.9f,0.3f };
 }
 
 void Player::Init(const KazMath::Vec3<float> &POS, bool DRAW_UI_FLAG, bool APPEAR_FLAG)
@@ -142,26 +133,41 @@ void Player::Update()
 		render->data.color.color.a = 255;
 	}
 
-	lRender.data.transform.pos = render->data.transform.pos + KazMath::Vec3<float>(0.0f, 1.0f+sinf(KazMath::PI_2F / 120.0f * sinTimer) * 0.2f, 0.0f);
-	rRender.data.transform.pos = render->data.transform.pos + KazMath::Vec3<float>(0.0f, 1.0f+sinf(KazMath::PI_2F / 120.0f * sinTimer) * 0.2f, 0.0f);
+
+	ImGui::Begin("Head");
+	KazImGuiHelper::InputVec3("Pos", &adjPos);
+	KazImGuiHelper::InputVec3("Rota", &adjRota);
+	ImGui::End();
+
+	fbxRender[HEAD].data.transform.rotation = adjRota;
+
+	for (int i = 0; i < fbxRender.size() - 1; ++i)
+	{
+		fbxRender[i].data.transform.pos = render->data.transform.pos + KazMath::Vec3<float>(0.0f, 1.0f + sinf(KazMath::PI_2F / 120.0f * sinTimer) * 0.2f, 0.0f);
+	}
+
+	fbxRender[HEAD].data.transform.pos = render->data.transform.pos + adjPos + KazMath::Vec3<float>(0.0f, 1.0f + sinf(KazMath::PI_2F / 120.0f * sinTimer) * 0.2f, 0.0f);
 
 	++sinTimer;
 	++larpTime;
 	if (30 <= larpTime)
 	{
 		float lScale = 0.55f;
-		lRender.data.transform.scale = { lScale,lScale,lScale + 0.1f };
-		rRender.data.transform.scale = { lScale,lScale,lScale + 0.1f };
+		for (int i = 0; i < fbxRender.size(); ++i)
+		{
+			fbxRender[i].data.transform.scale = { lScale,lScale,lScale + 0.1f };
+		}
 		larpTime = 0;
 	}
 
-
-	KazMath::Larp(minScale, &lRender.data.transform.scale, 0.1f);
-	KazMath::Larp(minScale, &rRender.data.transform.scale, 0.1f);
+	for (int i = 0; i < fbxRender.size(); ++i)
+	{
+		KazMath::Larp(minScale, &fbxRender[i].data.transform.scale, 0.1f);
+	}
 
 
 	//プレイヤーのアニメーション制御
-	float lNowRate = cameraRate.x * 0.5f;
+	float lNowRate = forceCameraRate + cameraRate.x * 0.5f;
 
 	//左向き
 	if (signbit(lNowRate))
@@ -182,14 +188,24 @@ void Player::Update()
 		float lTotalTime = static_cast<float>(totalTime.Get());
 		FbxLongLong convertTime = static_cast<FbxLongLong>(lTotalTime * -lNowRate);
 		FbxTime lNowTime = convertTime;
-		lRender.currentTime = lNowTime;
+		fbxRender[LEFT].currentTime = lNowTime;
+
+		adjPos.x = 0.0f + -cameraRate.x * 0.2f;
+
+		adjRota.x = 50.0f * -cameraRate.y;
+		adjRota.y = -52.0f * -cameraRate.x;
+		adjRota.z = 0.0f;
 	}
 	else if (rightFlag)
 	{
 		float lTotalTime = static_cast<float>(totalTime.Get());
 		FbxLongLong convertTime = static_cast<FbxLongLong>(lTotalTime * lNowRate);
 		FbxTime lNowTime = convertTime;
-		rRender.currentTime = lNowTime;
+		fbxRender[RIGHT].currentTime = lNowTime;
+
+		adjRota.x = 0.0f;
+		adjRota.y = -270.0f + 60.0f * cameraRate.x;
+		adjRota.z = 15.0f + 75.0f * -cameraRate.y;
 	}
 
 }
@@ -200,13 +216,13 @@ void Player::Draw()
 
 	if (leftFlag)
 	{
-		lRender.Draw();
+		fbxRender[LEFT].Draw();
 	}
 	else if (rightFlag)
 	{
-		rRender.Draw();
+		fbxRender[RIGHT].Draw();
 	}
-
+	fbxRender[HEAD].Draw();
 
 	damageEffect.Draw();
 	damageWindow.Draw();

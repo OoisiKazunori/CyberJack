@@ -380,7 +380,8 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "VHSPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_WIHITENOISE);
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FbxTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FBX_RENDER_TWO);
+	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FbxTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FBX_RENDER_TWO_LIGHT);
+	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FbxMultiPassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FBX_RENDER_TWO);
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GoalEffectPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_GOAL_EFFECT);
 
 
@@ -2005,19 +2006,19 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	);
 
 	//Fbx描画用パイプライン
-	//GraphicsPipeLineMgr::Instance()->CreatePipeLine(
-	//	LAYOUT_POS_NORMAL_TEX_BONE_WEIGHT,
-	//	SHADER_VERTEX_FBX,
-	//	SHADER_PIXCEL_FBX_RENDER_TWO,
-	//	PIPELINE_DATA_BACKCARING_ALPHABLEND_RNEDERTARGET_SECOND,
-	//	ROOTSIGNATURE_DATA_DRAW_TEX_SKINING,
-	//	PIPELINE_NAME_FBX_RENDERTARGET_TWO_LIGHT
-	//);
-
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX_BONE_WEIGHT,
 		SHADER_VERTEX_FBX,
 		SHADER_PIXCEL_FBX_RENDER_TWO,
+		PIPELINE_DATA_BACKCARING_ALPHABLEND_RNEDERTARGET_SECOND,
+		ROOTSIGNATURE_DATA_DRAW_TEX_SKINING,
+		PIPELINE_NAME_FBX_RENDERTARGET_TWO
+	);
+
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS_NORMAL_TEX_BONE_WEIGHT,
+		SHADER_VERTEX_FBX,
+		SHADER_PIXCEL_FBX_RENDER_TWO_LIGHT,
 		PIPELINE_DATA_BACKCARING_ALPHABLEND_RNEDERTARGET_SECOND,
 		ROOTSIGNATURE_DATA_DRAW_TEX_SKINING_DATA3,
 		PIPELINE_NAME_FBX_RENDERTARGET_TWO_LIGHT

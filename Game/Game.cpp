@@ -368,6 +368,7 @@ void Game::Update()
 		if (cameraMoveArray[stageNum][i].flame <= gameFlame && cameraMoveArray[stageNum][i].flame != -1)
 		{
 			cameraWork.ForceCamera(cameraMoveArray[stageNum][i].dir);
+			player.ForceAnim(static_cast<int>(cameraMoveArray[stageNum][i].dir));
 		}
 	}
 

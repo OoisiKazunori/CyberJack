@@ -25,6 +25,7 @@ void GameScene::Init()
 
 
 
+
 #pragma region RezStage
 	z = 800.0f;
 	stages[layerLevel] = std::make_shared<RezStage>();
@@ -32,7 +33,7 @@ void GameScene::Init()
 
 	cameraMoveArray[layerLevel][0].flame = KazMath::ConvertSecondToFlame(0);
 	cameraMoveArray[layerLevel][0].dir = KazEnemyHelper::CAMERA_LEFT;
-	cameraMoveArray[layerLevel][1].flame = KazMath::ConvertSecondToFlame(50);
+	cameraMoveArray[layerLevel][1].flame = KazMath::ConvertSecondToFlame(10000);
 	cameraMoveArray[layerLevel][1].dir = KazEnemyHelper::CAMERA_FRONT;
 
 	////正面から通常敵四体-----------------------------------------------------------------
@@ -103,32 +104,32 @@ void GameScene::Init()
 	//responeData[ENEMY_TYPE_MISILE][respoineIndex].generateData.speed = -3.0f;
 	//responeData[ENEMY_TYPE_MISILE][respoineIndex].generateData.misileEnemy.isShotFlag = true;
 	//++respoineIndex;
-	//////ミサイル敵--------------------------------------
+	////ミサイル敵--------------------------------------
 
 	//左から戦艦-----------------------------------------------------------------
-	//responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].layerLevel = layerLevel;
-	//responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 10;
-	//responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].generateData.initPos = { -1000.0f,-150.0f,400.0f };
-	//++respoineIndex;
+	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].layerLevel = layerLevel;
+	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 10;
+	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].generateData.initPos = { -1000.0f,-150.0f,400.0f };
+	++respoineIndex;
 
 
-	//responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].layerLevel = layerLevel;
-	//responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 10;
-	//responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].generateData.initPos = { -100.0f,-150.0f,200.0f };
-	//++respoineIndex;
-	////左から戦艦-----------------------------------------------------------------
+	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].layerLevel = layerLevel;
+	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 10;
+	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].generateData.initPos = { -100.0f,-150.0f,200.0f };
+	++respoineIndex;
+	//左から戦艦-----------------------------------------------------------------
 
 
-	////バイク敵--------------------------------------
-	//responeData[ENEMY_TYPE_BIKE][respoineIndex].layerLevel = layerLevel;
-	//responeData[ENEMY_TYPE_BIKE][respoineIndex].flame = time * 14;
-	//responeData[ENEMY_TYPE_BIKE][respoineIndex].generateData.initPos = { -200.0f,50.0f,50.0f };
-	//++respoineIndex;
+	//バイク敵--------------------------------------
+	responeData[ENEMY_TYPE_BIKE][respoineIndex].layerLevel = layerLevel;
+	responeData[ENEMY_TYPE_BIKE][respoineIndex].flame = time * 14;
+	responeData[ENEMY_TYPE_BIKE][respoineIndex].generateData.initPos = { -200.0f,50.0f,50.0f };
+	++respoineIndex;
 
-	//responeData[ENEMY_TYPE_BIKE][respoineIndex].layerLevel = layerLevel;
-	//responeData[ENEMY_TYPE_BIKE][respoineIndex].flame = time * 14;
-	//responeData[ENEMY_TYPE_BIKE][respoineIndex].generateData.initPos = { -100.0f,0.0f,100.0f };
-	//++respoineIndex;
+	responeData[ENEMY_TYPE_BIKE][respoineIndex].layerLevel = layerLevel;
+	responeData[ENEMY_TYPE_BIKE][respoineIndex].flame = time * 14;
+	responeData[ENEMY_TYPE_BIKE][respoineIndex].generateData.initPos = { -100.0f,0.0f,100.0f };
+	++respoineIndex;
 	//バイク敵--------------------------------------
 
 
