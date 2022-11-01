@@ -25,7 +25,6 @@ void GameScene::Init()
 
 
 
-
 #pragma region RezStage
 	z = 800.0f;
 	stages[layerLevel] = std::make_shared<RezStage>();
@@ -106,31 +105,31 @@ void GameScene::Init()
 	//++respoineIndex;
 	////ミサイル敵--------------------------------------
 
-	//左から戦艦-----------------------------------------------------------------
-	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 10;
-	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].generateData.initPos = { -1000.0f,-150.0f,400.0f };
-	++respoineIndex;
+	////左から戦艦-----------------------------------------------------------------
+	//responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 10;
+	//responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].generateData.initPos = { -1000.0f,-150.0f,400.0f };
+	//++respoineIndex;
 
 
-	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 10;
-	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].generateData.initPos = { -100.0f,-150.0f,200.0f };
-	++respoineIndex;
-	//左から戦艦-----------------------------------------------------------------
+	//responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 10;
+	//responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].generateData.initPos = { -100.0f,-150.0f,200.0f };
+	//++respoineIndex;
+	////左から戦艦-----------------------------------------------------------------
 
 
-	//バイク敵--------------------------------------
-	responeData[ENEMY_TYPE_BIKE][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_BIKE][respoineIndex].flame = time * 14;
-	responeData[ENEMY_TYPE_BIKE][respoineIndex].generateData.initPos = { -200.0f,50.0f,50.0f };
-	++respoineIndex;
+	////バイク敵--------------------------------------
+	//responeData[ENEMY_TYPE_BIKE][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_BIKE][respoineIndex].flame = time * 14;
+	//responeData[ENEMY_TYPE_BIKE][respoineIndex].generateData.initPos = { -200.0f,50.0f,50.0f };
+	//++respoineIndex;
 
-	responeData[ENEMY_TYPE_BIKE][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_BIKE][respoineIndex].flame = time * 14;
-	responeData[ENEMY_TYPE_BIKE][respoineIndex].generateData.initPos = { -100.0f,0.0f,100.0f };
-	++respoineIndex;
-	//バイク敵--------------------------------------
+	//responeData[ENEMY_TYPE_BIKE][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_BIKE][respoineIndex].flame = time * 14;
+	//responeData[ENEMY_TYPE_BIKE][respoineIndex].generateData.initPos = { -100.0f,0.0f,100.0f };
+	//++respoineIndex;
+	////バイク敵--------------------------------------
 
 
 	////召喚敵
@@ -150,149 +149,151 @@ void GameScene::Init()
 #pragma endregion
 	++layerLevel;
 
+
+
 #pragma region 敵の配置レベル1
 	z = 450.0f;
 	stages[layerLevel] = std::make_shared<BlockParticleStage>();
 	backGroundColorArray[layerLevel] = KazMath::Color(0, 0, 0, 255);
 
-	//2-----------------------------------------------------------------
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 3;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 20.0f,10.0f,z };
-	++respoineIndex;
+	////2-----------------------------------------------------------------
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 3;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 20.0f,10.0f,z };
+	//++respoineIndex;
 
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 3;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 60.0f,10.0f,z };
-	++respoineIndex;
-	//2-----------------------------------------------------------------
-
-
-	//respoineIndex = 0;
-	//2-----------------------------------------------------------------
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 6;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -20.0f,10.0f,z };
-	++respoineIndex;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 3;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 60.0f,10.0f,z };
+	//++respoineIndex;
+	////2-----------------------------------------------------------------
 
 
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 6;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -60.0f,10.0f,z };
-	++respoineIndex;
-	//2-----------------------------------------------------------------
+	////respoineIndex = 0;
+	////2-----------------------------------------------------------------
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 6;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -20.0f,10.0f,z };
+	//++respoineIndex;
 
 
-	//4-----------------------------------------------------------------
-
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 9;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 20.0f,10.0f,z };
-	++respoineIndex;
-
-
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 9;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 60.0f,10.0f,z };
-	++respoineIndex;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 6;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -60.0f,10.0f,z };
+	//++respoineIndex;
+	////2-----------------------------------------------------------------
 
 
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 9;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 100.0f,10.0f,z };
-	++respoineIndex;
+	////4-----------------------------------------------------------------
+
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 9;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 20.0f,10.0f,z };
+	//++respoineIndex;
 
 
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 9;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 140.0f,10.0f,z };
-	++respoineIndex;
-	//4-----------------------------------------------------------------
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 9;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 60.0f,10.0f,z };
+	//++respoineIndex;
 
 
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 9;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 100.0f,10.0f,z };
+	//++respoineIndex;
+
+
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 9;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 140.0f,10.0f,z };
+	//++respoineIndex;
+	////4-----------------------------------------------------------------
 
 
 
 
-	//4-----------------------------------------------------------------
-
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 12;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -20.0f,10.0f,z };
-	++respoineIndex;
 
 
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 12;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -60.0f,10.0f,z };
-	++respoineIndex;
+	////4-----------------------------------------------------------------
+
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 12;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -20.0f,10.0f,z };
+	//++respoineIndex;
 
 
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 12;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -100.0f,10.0f,z };
-	++respoineIndex;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 12;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -60.0f,10.0f,z };
+	//++respoineIndex;
 
 
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 12;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -140.0f,10.0f,z };
-	++respoineIndex;
-	//4-----------------------------------------------------------------
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 12;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -100.0f,10.0f,z };
+	//++respoineIndex;
 
 
-	//4-----------------------------------------------------------------
-
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 15;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 20.0f,10.0f,z };
-	++respoineIndex;
-
-
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 15;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 60.0f,10.0f,z };
-	++respoineIndex;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 12;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -140.0f,10.0f,z };
+	//++respoineIndex;
+	////4-----------------------------------------------------------------
 
 
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 15;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 100.0f,10.0f,z };
-	++respoineIndex;
+	////4-----------------------------------------------------------------
+
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 15;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 20.0f,10.0f,z };
+	//++respoineIndex;
 
 
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 15;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 140.0f,10.0f,z };
-	++respoineIndex;
-	//4-----------------------------------------------------------------
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 15;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 60.0f,10.0f,z };
+	//++respoineIndex;
 
 
-	//4-----------------------------------------------------------------
-
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 18;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -20.0f,10.0f,z };
-	++respoineIndex;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 15;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 100.0f,10.0f,z };
+	//++respoineIndex;
 
 
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 18;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -60.0f,10.0f,z };
-	++respoineIndex;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 15;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 140.0f,10.0f,z };
+	//++respoineIndex;
+	////4-----------------------------------------------------------------
 
 
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 18;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -100.0f,10.0f,z };
-	++respoineIndex;
+	////4-----------------------------------------------------------------
+
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 18;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -20.0f,10.0f,z };
+	//++respoineIndex;
 
 
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 18;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -140.0f,10.0f,z };
-	++respoineIndex;
-	//4-----------------------------------------------------------------
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 18;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -60.0f,10.0f,z };
+	//++respoineIndex;
+
+
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 18;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -100.0f,10.0f,z };
+	//++respoineIndex;
+
+
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 18;
+	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -140.0f,10.0f,z };
+	//++respoineIndex;
+	////4-----------------------------------------------------------------
 
 #pragma endregion
 	++layerLevel;
