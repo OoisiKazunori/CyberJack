@@ -943,7 +943,7 @@ void Game::Update()
 				{
 					if (enemies[enemyType][enemyCount]->GetData()->oprationObjData->enableToHitFlag)
 					{
-						enemies[enemyType][enemyCount]->SetLight(cursor.hitBox.dir);
+						enemies[enemyType][enemyCount]->SetLight(cursor.hitBox.dir, enemies[enemyType][enemyCount]->GetData()->objFlag);
 					}
 					enemies[enemyType][enemyCount]->Update();
 #ifdef _DEBUG

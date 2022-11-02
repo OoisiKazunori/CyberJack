@@ -122,7 +122,7 @@ struct EnemyData
 		timer(1),
 		outOfStageFlag(false),
 		radius(0.0f),
-		startFlag(false)
+		startFlag(false), objFlag(false)
 	{
 	};
 
@@ -133,6 +133,7 @@ struct EnemyData
 	bool outOfStageFlag;					//ステージの範囲外に出てしまった
 	float radius;
 	bool startFlag;
+	bool objFlag;
 };
 
 enum EnemyDeathType

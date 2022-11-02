@@ -5,14 +5,17 @@ IEnemy::IEnemy() :hpDirtyFlag(&iOperationData.rockOnNum)
 {
 	//ï`âÊÇÃèâä˙âª----------------------------------------------------------------
 	iEnemy_ObjModelRender = std::make_unique<ObjModelRender>();
-	iEnemy_ObjModelRender->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX;
+	iEnemy_ObjModelRender->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX_LIGHT;
 
 	iEnemy_FbxModelRender = std::make_unique<FbxModelRender>();
 	iEnemy_FbxModelRender->data.pipelineName = PIPELINE_NAME_FBX_RENDERTARGET_TWO_LIGHT;
 
-	lightHandle = iEnemy_FbxModelRender->CreateConstBuffer(sizeof(DirectX::XMFLOAT3), typeid(DirectX::XMFLOAT3).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA3);
+	fbxLightHandle = iEnemy_FbxModelRender->CreateConstBuffer(sizeof(DirectX::XMFLOAT3), typeid(DirectX::XMFLOAT3).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA3);
 	DirectX::XMFLOAT3 dir = { -1.0f,0.0f,0.0f };
-	iEnemy_FbxModelRender->TransData(&dir, lightHandle, typeid(DirectX::XMFLOAT3).name());
+	iEnemy_FbxModelRender->TransData(&dir, fbxLightHandle, typeid(DirectX::XMFLOAT3).name());
+
+	objLightHandle = iEnemy_ObjModelRender->CreateConstBuffer(sizeof(DirectX::XMFLOAT3), typeid(DirectX::XMFLOAT3).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA2);
+	iEnemy_FbxModelRender->TransData(&dir, objLightHandle, typeid(DirectX::XMFLOAT3).name());
 	//ï`âÊÇÃèâä˙âª----------------------------------------------------------------
 
 	//ìGèÓïÒÇÃèâä˙âª----------------------------------------------------------------
@@ -31,6 +34,10 @@ IEnemy::IEnemy() :hpDirtyFlag(&iOperationData.rockOnNum)
 	shotSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "Shot.wav", false);
 
 	debugShotFlag = false;
+
+
+	initDeadRotaVel = { KazMath::Rand(5.0f,-5.0f),KazMath::Rand(5.0f,-5.0f) ,KazMath::Rand(5.0f,-5.0f) };
+	initDeadYVel = { KazMath::Rand(1.0f,-0.5f),-KazMath::Rand(1.5f,0.5f),KazMath::Rand(1.0f,-0.5f) };
 }
 
 void IEnemy::Dead()
@@ -47,7 +54,7 @@ void IEnemy::DeadEffect(KazMath::Vec3<float> *POS, KazMath::Vec3<float> *ROTATIO
 	else
 	{
 		KazMath::Vec3<float> rota{ 5.0f,5.0f,5.0f };
-		*ROTATION += rota;
+		*ROTATION += initDeadRotaVel;
 		POS->y -= 0.5f;
 		*ALPHA -= 5;
 	}
@@ -67,6 +74,8 @@ bool IEnemy::ProcessingOfDeath(EnemyDeathType TYPE)
 		{
 			DeadSound();
 			initDeadSoundFlag = true;
+
+			iEnemy_ObjModelRender->Release(objLightHandle);
 		}
 
 		switch (TYPE)
@@ -109,7 +118,7 @@ bool IEnemy::ProcessingOfDeathFbx(EnemyDeathType TYPE)
 			DeadSound();
 			initDeadSoundFlag = true;
 
-			iEnemy_FbxModelRender->Release(lightHandle);
+			iEnemy_FbxModelRender->Release(fbxLightHandle);
 			iEnemy_FbxModelRender->ReleaseSkining();
 		}
 
@@ -177,7 +186,7 @@ void IEnemy::InitModel(const KazMath::Transform3D &TRANSFORM, const std::string 
 		iEnemy_ObjModelRender->data.transform = TRANSFORM;
 		iEnemy_EnemyStatusData->hitBox.radius = HITBOX_RADIUS;	//ìñÇΩÇËîªíËÇÃëÂÇ´Ç≥ïœçX
 		iEnemy_EnemyStatusData->hitBox.center = &iEnemy_ObjModelRender->data.transform.pos;
-		iEnemy_ObjModelRender->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX;
+		iEnemy_ObjModelRender->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX_LIGHT;
 
 		iEnemy_ObjModelRender->data.removeMaterialFlag = false;
 		iEnemy_ObjModelRender->data.colorData.color.x = 255;

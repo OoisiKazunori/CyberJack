@@ -65,10 +65,18 @@ public:
 	//攻撃を確認する用の関数
 	virtual void DebugShot() { debugShotFlag = true; };
 
-	void SetLight(const KazMath::Vec3<float> LIGHT_DIR)
+	void SetLight(const KazMath::Vec3<float> LIGHT_DIR, bool OBJ_FLAG)
 	{
-		DirectX::XMFLOAT3 dir = LIGHT_DIR.ConvertXMFLOAT3();
-		iEnemy_FbxModelRender->TransData(&dir, lightHandle, typeid(DirectX::XMFLOAT3).name());
+		if (!OBJ_FLAG)
+		{
+			DirectX::XMFLOAT3 dir = LIGHT_DIR.ConvertXMFLOAT3();
+			iEnemy_FbxModelRender->TransData(&dir, fbxLightHandle, typeid(DirectX::XMFLOAT3).name());
+		}
+		else
+		{
+			DirectX::XMFLOAT3 dir = LIGHT_DIR.ConvertXMFLOAT3();
+			iEnemy_ObjModelRender->TransData(&dir, objLightHandle, typeid(DirectX::XMFLOAT3).name());
+		}
 	};
 
 	std::unique_ptr<EnemyData> iEnemy_EnemyStatusData;		//敵の状態を保存するデータ
@@ -87,6 +95,9 @@ private:
 	DirtyFlag<short>hpDirtyFlag;
 	bool hitFlag;
 
-	RESOURCE_HANDLE lightHandle;
+	RESOURCE_HANDLE fbxLightHandle;
+	RESOURCE_HANDLE objLightHandle;
 
+	KazMath::Vec3<float>initDeadRotaVel;
+	KazMath::Vec3<float>initDeadYVel;
 };

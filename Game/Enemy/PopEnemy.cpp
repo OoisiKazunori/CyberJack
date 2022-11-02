@@ -7,21 +7,9 @@ PopEnemy::PopEnemy()
 
 void PopEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 {
-	iEnemy_ObjModelRender->data.transform.pos = GENERATE_DATA.initPos;	//座標の初期化
-	iEnemy_ObjModelRender->data.transform.scale = { 1.0f,1.0f,1.0f };
-	iEnemy_ObjModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "PopEnemy/" + "PopEnemy_Model.obj");	//モデル読み込み
-	iEnemy_EnemyStatusData->hitBox.radius = 15.0f;	//当たり判定の大きさ変更
+	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { 1.0f,1.0f,1.0f }, { 0.0f,180.0f,0.0f }), KazFilePathName::EnemyPath + "PopEnemy/" + "PopEnemy_Model.obj", 15.0f, false);
 	iOperationData.Init(1,"snkr_BR");							//残りロックオン数等の初期化
 
-	iEnemy_ObjModelRender->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX;
-	iEnemy_ObjModelRender->data.removeMaterialFlag = false;
-	iEnemy_ObjModelRender->data.colorData.color.x = 255;
-	iEnemy_ObjModelRender->data.colorData.color.y = 255;
-	iEnemy_ObjModelRender->data.colorData.color.z = 255;
-	iEnemy_ObjModelRender->data.colorData.color.a = 255;
-	iEnemy_ObjModelRender->data.transform.rotation.x = 0.0f;
-	iEnemy_ObjModelRender->data.transform.rotation.y = 180.0f;
-	iEnemy_ObjModelRender->data.transform.rotation.z = 0.0f;
 	initDeadSoundFlag = false;
 	demoFlag = DEMO_FLAG;
 
@@ -30,6 +18,9 @@ void PopEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 
 	reverseFlag = false;
 	vel.y = 0.0f;
+
+
+	iEnemy_EnemyStatusData->objFlag = true;
 	
 	if (demoFlag)
 	{

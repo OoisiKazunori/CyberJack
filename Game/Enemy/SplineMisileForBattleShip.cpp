@@ -6,25 +6,14 @@ SplineMisileForBattleShip::SplineMisileForBattleShip()
 {
 	maxTime = KazMath::ConvertSecondToFlame(10);
 	splineBox.data.color = { 255,0,0,255 };
-
-	iEnemy_ObjModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + +"BattleShipMisile/" + "BattleshipMissile_Model.obj");
 }
 
 void SplineMisileForBattleShip::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 {
-	iEnemy_ObjModelRender->data.transform.pos = GENERATE_DATA.initPos;
-	iEnemy_ObjModelRender->data.transform.scale = { 0.4f,0.4f,0.4f };
-	iEnemy_ObjModelRender->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX;
-	iEnemy_ObjModelRender->data.removeMaterialFlag = false;
-	iEnemy_ObjModelRender->data.colorData.color.x = 255;
-	iEnemy_ObjModelRender->data.colorData.color.y = 255;
-	iEnemy_ObjModelRender->data.colorData.color.z = 255;
-	iEnemy_ObjModelRender->data.colorData.color.a = 255;
+	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { 0.4f,0.4f,0.4f }, { 0.0f,0.0f,0.0f }), KazFilePathName::EnemyPath + +"BattleShipMisile/" + "BattleshipMissile_Model.obj", 5.0f, false);
 
+	iEnemy_EnemyStatusData->objFlag = true;
 	iEnemy_EnemyStatusData->timer = maxTime;
-	iEnemy_EnemyStatusData->hitBox.radius = 5.0f;
-	iEnemy_EnemyStatusData->hitBox.center = &iEnemy_ObjModelRender->data.transform.pos;
-
 	iOperationData.Init(1,"Kaz-M");
 
 	startIndex = 1;
