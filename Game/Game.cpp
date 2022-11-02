@@ -148,7 +148,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	gameStartFlag = false;
 	cameraModeChangeFlag = false;
 	gameFlame = 0;
-	changeLayerLevelMaxTime[0] = KazMath::ConvertSecondToFlame(2000);
+	changeLayerLevelMaxTime[0] = KazMath::ConvertSecondToFlame(70);
 	changeLayerLevelMaxTime[1] = KazMath::ConvertSecondToFlame(70);
 	changeLayerLevelMaxTime[2] = KazMath::ConvertSecondToFlame(50);
 	//ゴールに触れ無かった場合に次のステージに移動する際の最大フレーム数
@@ -309,26 +309,8 @@ void Game::Input()
 
 	if (input->InputTrigger(DIK_SPACE))
 	{
-		switch (KazMath::Rand(0, 4))
-		{
-		case 0:
-			stringLog.WriteLog("Abc Def", 1.0f);
-			break;
-		case 1:
-			stringLog.WriteLog("Gh f56", 1.0f);
-			break;
-		case 2:
-			stringLog.WriteLog("A bc1234Def", 1.0f);
-			break;
-		case 3:
-			stringLog.WriteLog("Abc0789D ef", 1.0f);
-			break;
-		case 4:
-			stringLog.WriteLog("Ab cD 5904ef", 1.0f);
-			break;
-		default:
-			break;
-		}
+		goalBox.Init(responeGoalBoxPos);
+		goalBox.Appear(appearGoalBoxPos[stageNum]);
 	}
 
 }
@@ -401,8 +383,6 @@ void Game::Update()
 	}
 	CameraMgr::Instance()->CameraSetting(cameraAngle, 100000.0f, 0);
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 0);
-
-
 
 	//敵が一通り生成終わった際に登場させる----------------------------------------------------------------
 	if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame && !initAppearFlag)
@@ -882,7 +862,7 @@ void Game::Update()
 		cursor.Update();
 		goalBox.Update();
 		stageUI.Update();
-		stages[stageNum]->Update();
+		//stages[stageNum]->Update();
 		tutorialWindow.Update();
 		logoutWindow.Update();
 
@@ -961,7 +941,10 @@ void Game::Update()
 					!enemies[enemyType][enemyCount]->GetData()->outOfStageFlag;
 				if (enableToUseDataFlag)
 				{
-					enemies[enemyType][enemyCount]->SetLight(cursor.hitBox.dir);
+					if (enemies[enemyType][enemyCount]->GetData()->oprationObjData->enableToHitFlag)
+					{
+						enemies[enemyType][enemyCount]->SetLight(cursor.hitBox.dir);
+					}
 					enemies[enemyType][enemyCount]->Update();
 #ifdef _DEBUG
 					enemyHitBox[enemyType][enemyCount].data.transform.pos = *enemies[enemyType][enemyCount]->GetData()->hitBox.center;
@@ -1111,7 +1094,7 @@ void Game::Draw()
 
 
 		stages[stageNum]->SetCamera(0);
-		stages[stageNum]->Draw();
+		//stages[stageNum]->Draw();
 
 
 		PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "Enemy");

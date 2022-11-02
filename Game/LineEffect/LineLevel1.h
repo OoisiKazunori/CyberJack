@@ -109,5 +109,9 @@ private:
 	{
 		return VALUE < 0;
 	}
+
+	//§ŒÀŽžŠÔ“à‚É–Ú•W‚Ü‚Å‚½‚Ç‚è’…‚¢‚Ä‚¢‚é‚©Šm”F‚·‚é
+	int finishTimer;
+	static const int FINISH_MAX_TIME = 120;
 };
 

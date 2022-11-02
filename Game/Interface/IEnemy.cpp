@@ -108,6 +108,9 @@ bool IEnemy::ProcessingOfDeathFbx(EnemyDeathType TYPE)
 		{
 			DeadSound();
 			initDeadSoundFlag = true;
+
+			iEnemy_FbxModelRender->Release(lightHandle);
+			iEnemy_FbxModelRender->ReleaseSkining();
 		}
 
 		switch (TYPE)

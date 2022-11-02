@@ -11,6 +11,7 @@ public:
 	FbxModelRender();
 	void Draw();
 
+	void ReleaseSkining();
 	FbxModelData data;
 	FbxTime currentTime;
 private:
@@ -29,5 +30,7 @@ private:
 	FbxTime startTime;
 	FbxTime endTime;
 
+
+	bool removeSkining;
 };
 

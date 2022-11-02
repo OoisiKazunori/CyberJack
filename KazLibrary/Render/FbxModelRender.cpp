@@ -18,6 +18,8 @@ FbxModelRender::FbxModelRender()
 		constMap->bones[i] = DirectX::XMMatrixIdentity();
 	}
 	gpuBuffer->GetBufferData(constBufferHandle[1])->Unmap(0, nullptr);
+
+	removeSkining = false;
 }
 
 void FbxModelRender::Draw()
@@ -96,7 +98,7 @@ void FbxModelRender::Draw()
 		}
 
 
-		if (data.isPlayFlag || data.isReverseFlag)
+		if ((data.isPlayFlag || data.isReverseFlag) && !removeSkining)
 		{
 			ConstBufferDataSkin *lConstMap = nullptr;
 			gpuBuffer->GetBufferData(constBufferHandle[1])->Map(0, nullptr, (void **)&lConstMap);
@@ -120,7 +122,7 @@ void FbxModelRender::Draw()
 					}
 				}
 			}
-			else if(resourceData->bone.size() != 0)
+			else if (resourceData->bone.size() != 0)
 			{
 				for (int i = 0; i < resourceData->bone.size(); i++)
 				{
@@ -141,11 +143,11 @@ void FbxModelRender::Draw()
 			}
 			gpuBuffer->GetBufferData(constBufferHandle[1])->Unmap(0, nullptr);
 		}
-		else if (resourceData->bone.size() != 0)
+		else if (resourceData->bone.size() != 0 && !removeSkining)
 		{
 			ConstBufferDataSkin *lConstMap = nullptr;
 			gpuBuffer->GetBufferData(constBufferHandle[1])->Map(0, nullptr, (void **)&lConstMap);
-			
+
 			for (int i = 0; i < resourceData->bone.size(); i++)
 			{
 				DirectX::XMMATRIX lMatCurrentPose;
@@ -185,4 +187,10 @@ void FbxModelRender::Draw()
 	}
 
 	data.Record();
+}
+
+void FbxModelRender::ReleaseSkining()
+{
+	removeSkining = true;
+	Release(constBufferHandle[1]);
 }

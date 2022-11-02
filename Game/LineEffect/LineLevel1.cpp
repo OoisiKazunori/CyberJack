@@ -176,9 +176,15 @@ void LineLevel1::Attack(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::V
 				int countLoop = 0;
 
 				//回り道線の処理開始
-				while (countLoop < 50)
+				while (1)
 				{
 					++countLoop;
+
+					if (10 <= countLoop)
+					{
+						goalPos.z += (ENEMY_POS.z - goalPos.z) / 2.0f;
+						break;
+					}
 
 					//どの方向に線を伸ばすか指定
 					moveVector = CalucurateDirection(moveVector, 5);
@@ -209,10 +215,10 @@ void LineLevel1::Attack(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::V
 
 
 						//ゴール座標と敵との距離
-						
+
 						DirectX::XMVECTOR enemyToGoalDistance = DirectX::XMVectorSubtract(ENEMY_POS.ConvertXMVECTOR(), goalPos.ConvertXMVECTOR());
 						//敵とプレイヤーの距離
-						DirectX::XMVECTOR playerToEnemyDistance = DirectX::XMVectorSubtract(ENEMY_POS.ConvertXMVECTOR(),PLAYER_POS.ConvertXMVECTOR());
+						DirectX::XMVECTOR playerToEnemyDistance = DirectX::XMVectorSubtract(ENEMY_POS.ConvertXMVECTOR(), PLAYER_POS.ConvertXMVECTOR());
 
 
 						//絶対値-----------------------
@@ -258,7 +264,7 @@ void LineLevel1::Attack(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::V
 							else
 							{
 								//越えなければそのまま使う
-								
+
 								vec = DirectX::XMVectorAdd(enemyToGoalDistance, addDistance);
 							}
 						}
@@ -416,7 +422,7 @@ void LineLevel1::Attack(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::V
 				{
 					dir.m128_f32[eVec] *= -1;
 				}
-				limitPos.push_back(DirectX::XMVectorAdd(tmp,dir));
+				limitPos.push_back(DirectX::XMVectorAdd(tmp, dir));
 			}
 		}
 
@@ -452,7 +458,7 @@ void LineLevel1::Attack(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::V
 
 			KazMath::Vec3<float> startPlayerdistance = lLimitPos - PLAYER_POS;
 			KazMath::Vec3<float> endPlayerdistance = lLimitPos2 - PLAYER_POS;
-			
+
 			line[i]->RockOn(lLimitPos, lLimitPos2, startPlayerdistance, endPlayerdistance, lSpeed);
 		}
 
@@ -479,6 +485,7 @@ void LineLevel1::Attack(const KazMath::Vec3<float> &PLAYER_POS, const KazMath::V
 
 
 		rockOnDistance = ENEMY_POS - PLAYER_POS;
+		finishTimer = 0;
 		allFinishFlag = false;
 	}
 
@@ -562,12 +569,14 @@ void LineLevel1::Update()
 			}
 		}
 
-
+		++finishTimer;
 		//リリース時の演出が目標にたどり着いたらフラグを立てる
-		if (line[line.size() - 1]->finishReleaseFlag)
+		if (line[line.size() - 1]->finishReleaseFlag || FINISH_MAX_TIME <= finishTimer)
 		{
 			lineReachObjFlag = true;
 		}
+
+
 
 		//終了処理
 		if (line.size() - 1 <= count)

@@ -9,17 +9,22 @@
 class IRender
 {
 public:
+	IRender();
+
 	RESOURCE_HANDLE CreateConstBuffer(const unsigned int &TRANSMISSION_DATA, const string &ID, const GraphicsRangeType &RANGE, const GraphicsRootParamType &ROOTPARAM);
 	void TransData(void *DATA, RESOURCE_HANDLE HANDLE, const std::string &ID);
+	void Release(RESOURCE_HANDLE HANDLE);
 
 	KazMath::BaseMatWorldData baseMatWorldData;
 private:
-	std::vector<std::unique_ptr<string>> constBufferDataName;
-	std::vector<std::unique_ptr<unsigned int>> constBufferDataSize;
-	std::vector<std::unique_ptr<RESOURCE_HANDLE>> constBufferHandles;
-	std::vector<std::unique_ptr<GraphicsRootParamType>> constBufferRootParam;
-	std::vector<std::unique_ptr<GraphicsRangeType>> constBufferRangeType;
+	static const int BUFFER_DATA_MAX = 10;
+	std::array<std::string, BUFFER_DATA_MAX> constBufferDataName;
+	std::array<unsigned int, BUFFER_DATA_MAX> constBufferDataSize;
+	std::array<RESOURCE_HANDLE, BUFFER_DATA_MAX> constBufferHandles;
+	std::array<GraphicsRootParamType, BUFFER_DATA_MAX> constBufferRootParam;
+	std::array<GraphicsRangeType, BUFFER_DATA_MAX> constBufferRangeType;
 
+	HandleMaker handle;
 
 protected:
 	void SetConstBufferOnCmdList(PipeLineNames pipeline, bool REMOVE_DATA_FLAG = false);

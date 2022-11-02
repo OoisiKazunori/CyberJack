@@ -37,7 +37,7 @@ void Letter::Init(const KazMath::Vec2<float> &POS, const char &CHARACTER, float 
 		fontType = CHARA_LARGE;
 		fontNum = CHARACTER - 65;
 	}
-	else if (CheckFontType(CHARACTER, 97, 122))
+	else if (CheckFontType(CHARACTER, 97, 123))
 	{
 		fontType = CHARA_SMALL;
 		fontNum = CHARACTER - 97;
