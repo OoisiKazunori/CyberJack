@@ -9,6 +9,7 @@
 #include"../Game/GameRenderTarget.h"
 #include"../Game/Interface/IStage.h"
 #include"../Game/Tool/MapChipPlacementTool.h"
+#include"../Game/Event/GoalBox.h"
 
 class DebugStageScene :public SceneBase
 {
@@ -42,11 +43,12 @@ private:
 
 	Sprite2DRender mainRenderTarget;
 
-	//MapChipPlacementTool mapchipTool;
+	MapChipPlacementTool mapchipTool;
 	bool toolModeFlag;
 	bool isLoadFlag;
 
 	bool gameCameraFlag;
 	int dir;
+	GoalBox goalBox;
 };
 

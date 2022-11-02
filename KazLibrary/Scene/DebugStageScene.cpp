@@ -19,9 +19,9 @@ DebugStageScene::DebugStageScene()
 	//stages[1] = std::make_shared<RezStage>();
 	stages[1] = std::make_shared<BlockParticleStage>();
 
-	renderTarget[0] = std::make_unique<GameRenderTarget>(KazMath::Color(29, 19, 72, 255));
-	renderTarget[1] = std::make_unique<GameRenderTarget>(KazMath::Color(29, 19, 72, 255));
-	renderTarget[2] = std::make_unique<GameRenderTarget>(KazMath::Color(0, 0, 0, 255));
+	//renderTarget[0] = std::make_unique<GameRenderTarget>(KazMath::Color(29, 19, 72, 255));
+	//renderTarget[1] = std::make_unique<GameRenderTarget>(KazMath::Color(29, 19, 72, 255));
+	renderTarget[1] = std::make_unique<GameRenderTarget>(KazMath::Color(0, 0, 0, 255));
 
 
 	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
@@ -48,9 +48,19 @@ void DebugStageScene::Init()
 	player.Init({ 0.0f,0.0f,15.0f }, false, false);
 	cameraWork.Init();
 	cursor.Init();
-	//mapchipTool.Init();
+	mapchipTool.Init();
 
 	gameCameraFlag = true;
+
+
+	goalBox.Init({ 0.0f, 10.0f, 40.0f });
+	goalBox.Appear({ 20.0f, 10.0f, 100.0f });
+
+
+	for (int i = 0; i < 8; ++i)
+	{
+		goalBox.lightEffect.Appear();
+	}
 }
 
 void DebugStageScene::Finalize()
@@ -59,7 +69,7 @@ void DebugStageScene::Finalize()
 
 void DebugStageScene::Input()
 {
-	//KeyBoradInputManager *input = KeyBoradInputManager::Instance();
+	KeyBoradInputManager *input = KeyBoradInputManager::Instance();
 	ControllerInputManager *inputController = ControllerInputManager::Instance();
 
 	bool upFlag = false;
@@ -131,7 +141,7 @@ void DebugStageScene::Input()
 
 	if (toolModeFlag)
 	{
-		//	mapchipTool.Input(input->MouseInputTrigger(MOUSE_INPUT_LEFT), input->MouseInputTrigger(MOUSE_INPUT_RIGHT), input->GetMousePoint());
+		mapchipTool.Input(input->MouseInputTrigger(MOUSE_INPUT_LEFT), input->MouseInputTrigger(MOUSE_INPUT_RIGHT), input->GetMousePoint());
 	}
 }
 
@@ -149,17 +159,17 @@ void DebugStageScene::Update()
 	cameraWork.Update(cursor.GetValue(), &player.pos, gameCameraFlag);
 	if (toolModeFlag)
 	{
-		//mapchipTool.Update();
-		//if (mapchipTool.isLoadFlag)
-		//{
-		//	isLoadFlag = true;
-		//}
+		mapchipTool.Update();
+		if (mapchipTool.isLoadFlag)
+		{
+			isLoadFlag = true;
+		}
 	}
 	else
 	{
 		if (isLoadFlag)
 		{
-			//mapchipTool.Init();
+			mapchipTool.Init();
 			stages[stageNum].reset();
 			stages[stageNum] = std::make_unique<BlockParticleStage>();
 			isLoadFlag = false;
@@ -169,6 +179,10 @@ void DebugStageScene::Update()
 
 		//stage2->Update();
 	}
+
+
+	goalBox.Update();
+
 
 	mainRenderTarget.data.handleData = renderTarget[stageNum]->GetGameRenderTargetHandle();
 }
@@ -182,20 +196,24 @@ void DebugStageScene::Draw()
 
 	if (toolModeFlag)
 	{
-		//mapchipTool.Draw();
+		mapchipTool.Draw();
 	}
 	else
 	{
 		stages[stageNum]->Draw();
 		stages[stageNum]->vaporWaveSunRender.Draw();
 	}
+
+	goalBox.Draw();
+	goalBox.lightEffect.Draw();
+
 	renderTarget[stageNum]->Draw();
 	mainRenderTarget.Draw();
 
 	if (!toolModeFlag)
 	{
 		//stage2->Draw();
-		cursor.Draw();
+		//cursor.Draw();
 	}
 }
 

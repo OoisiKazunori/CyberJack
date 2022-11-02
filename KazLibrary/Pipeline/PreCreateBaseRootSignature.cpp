@@ -17,7 +17,7 @@ PreCreateBaseRootSignature::PreCreateBaseRootSignature()
 		RootSignatureData colorData;
 		colorData.paramData[0].param = 0;
 		colorData.paramData[0].type = GRAPHICS_PRAMTYPE_DATA;
-		colorData.range[0] = GRAPHICS_RANGE_TYPE_UAV;
+		colorData.range[0] = GRAPHICS_RANGE_TYPE_UAV_VIEW;
 		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_UAV, colorData, 1);
 	}
 
@@ -336,7 +336,7 @@ PreCreateBaseRootSignature::PreCreateBaseRootSignature()
 
 		lineData.paramData[1].param = 1;
 		lineData.paramData[1].type = GRAPHICS_PRAMTYPE_DATA2;
-		lineData.range[1] = GRAPHICS_RANGE_TYPE_UAV;
+		lineData.range[1] = GRAPHICS_RANGE_TYPE_UAV_VIEW;
 
 		lineData.paramData[2].param = 2;
 		lineData.paramData[2].type = GRAPHICS_PRAMTYPE_TEX;
@@ -508,8 +508,8 @@ PreCreateBaseRootSignature::PreCreateBaseRootSignature()
 		RootSignatureData uaAndTexData;
 		uaAndTexData.paramData[0].param = 0;
 		uaAndTexData.paramData[0].type = GRAPHICS_PRAMTYPE_DATA;
-		uaAndTexData.range[0] = GRAPHICS_RANGE_TYPE_UAV_DESC;
-		uaAndTexData.paramData[1].param = 0;
+		uaAndTexData.range[0] = GRAPHICS_RANGE_TYPE_UAV_VIEW;
+		uaAndTexData.paramData[1].param = 1;
 		uaAndTexData.paramData[1].type = GRAPHICS_PRAMTYPE_TEX;
 		uaAndTexData.range[1] = GRAPHICS_RANGE_TYPE_SRV;
 		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_DRAW_UAB_TEX, uaAndTexData, 2);
@@ -519,7 +519,7 @@ PreCreateBaseRootSignature::PreCreateBaseRootSignature()
 		RootSignatureData uaAndTexData;
 		uaAndTexData.paramData[0].param = 0;
 		uaAndTexData.paramData[0].type = GRAPHICS_PRAMTYPE_DATA;
-		uaAndTexData.range[0] = GRAPHICS_RANGE_TYPE_UAV;
+		uaAndTexData.range[0] = GRAPHICS_RANGE_TYPE_UAV_VIEW;
 		uaAndTexData.paramData[1].param = 1;
 		uaAndTexData.paramData[1].type = GRAPHICS_PRAMTYPE_DATA2;
 		uaAndTexData.range[1] = GRAPHICS_RANGE_TYPE_CBV;

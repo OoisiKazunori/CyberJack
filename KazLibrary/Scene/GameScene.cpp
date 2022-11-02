@@ -31,7 +31,7 @@ void GameScene::Init()
 	backGroundColorArray[layerLevel] = KazMath::Color(29, 19, 72, 255);
 
 	cameraMoveArray[layerLevel][0].flame = KazMath::ConvertSecondToFlame(0);
-	cameraMoveArray[layerLevel][0].dir = KazEnemyHelper::CAMERA_LEFT;
+	cameraMoveArray[layerLevel][0].dir = KazEnemyHelper::CAMERA_FRONT;
 	cameraMoveArray[layerLevel][1].flame = KazMath::ConvertSecondToFlame(10000);
 	cameraMoveArray[layerLevel][1].dir = KazEnemyHelper::CAMERA_FRONT;
 

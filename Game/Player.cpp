@@ -134,10 +134,10 @@ void Player::Update()
 	}
 
 
-	ImGui::Begin("Head");
-	KazImGuiHelper::InputVec3("Pos", &adjPos);
-	KazImGuiHelper::InputVec3("Rota", &adjRota);
-	ImGui::End();
+	//ImGui::Begin("Head");
+	//KazImGuiHelper::InputVec3("Pos", &adjPos);
+	//KazImGuiHelper::InputVec3("Rota", &adjRota);
+	//ImGui::End();
 
 	fbxRender[HEAD].data.transform.rotation = adjRota;
 

@@ -27,20 +27,20 @@ GalacticParticle::GalacticParticle()
 	desc.ByteStride = sizeof(IndirectCommand);
 
 	HRESULT lR =
-		DirectX12Device::Instance()->dev->CreateCommandSignature(&desc, GraphicsRootSignature::Instance()->GetRootSignature(ROOTSIGNATURE_DATA_DRAW_UAV).Get(), IID_PPV_ARGS(&commandSig));
+		DirectX12Device::Instance()->dev->CreateCommandSignature(&desc, GraphicsRootSignature::Instance()->GetRootSignature(ROOTSIGNATURE_DATA_DRAW_UAB_TEX).Get(), IID_PPV_ARGS(&commandSig));
 	//コマンドシグネチャ---------------------------
 	if (lR != S_OK)
 	{
 		assert(0);
 	}
 
-	std::array<Vertex, 4>vertices;
+	std::array<SpriteVertex, 4>vertices;
 	std::array<USHORT, 6> indices;
 	indices = KazRenderHelper::InitIndciesForPlanePolygon();
 	KazRenderHelper::InitVerticesPos(&vertices[0].pos, &vertices[1].pos, &vertices[2].pos, &vertices[3].pos, { 0.5f,0.5f });
 	KazRenderHelper::InitUvPos(&vertices[0].uv, &vertices[1].uv, &vertices[2].uv, &vertices[3].uv);
 
-	BUFFER_SIZE vertBuffSize = KazBufferHelper::GetBufferSize<BUFFER_SIZE>(vertices.size(), sizeof(Vertex));
+	BUFFER_SIZE vertBuffSize = KazBufferHelper::GetBufferSize<BUFFER_SIZE>(vertices.size(), sizeof(SpriteVertex));
 	BUFFER_SIZE indexBuffSize = KazBufferHelper::GetBufferSize<BUFFER_SIZE>(indices.size(), sizeof(unsigned int));
 
 	//バッファ生成-------------------------
@@ -106,7 +106,7 @@ GalacticParticle::GalacticParticle()
 	DirectX::XMFLOAT4 lColor = { 1.0f,0.0f,0.0f,1.0f };
 	box->TransData(&lColor, lHandle, typeid(DirectX::XMFLOAT4).name());
 
-	instanceBufferHandle = box->CreateConstBuffer(sizeof(MatData) * BOX_MAX_NUM, typeid(MatData).name(), GRAPHICS_RANGE_TYPE_UAV, GRAPHICS_PRAMTYPE_DATA);
+	instanceBufferHandle = box->CreateConstBuffer(sizeof(MatData) * BOX_MAX_NUM, typeid(MatData).name(), GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA);
 
 
 	//空中に散らばる矩形の初期化処理
@@ -139,6 +139,10 @@ GalacticParticle::GalacticParticle()
 		boxDataArray[i].rotaVel = KazMath::Vec3<float>(KazMath::Rand(5.0f, 1.0f), KazMath::Rand(5.0f, 1.0f), KazMath::Rand(5.0f, 1.0f));
 		boxDataArray[i].color = { KazMath::Rand(255,155),KazMath::Rand(255,155),KazMath::Rand(255,155),255 };
 	}
+
+
+
+	texHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "Circle.png");
 
 }
 
@@ -195,10 +199,13 @@ void GalacticParticle::Update()
 
 void GalacticParticle::Draw()
 {
-	GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE);
+	GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE_TEX);
 	DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
 	DirectX12CmdList::Instance()->cmdList->IASetIndexBuffer(&indexBufferView);
+
+	TextureResourceMgr::Instance()->SetSRV(texHandle, GraphicsRootSignature::Instance()->GetRootParam(ROOTSIGNATURE_DATA_DRAW_UAB_TEX), GRAPHICS_PRAMTYPE_TEX);
+
 
 	RenderTargetStatus::Instance()->ChangeBarrier(
 		buffers->GetBufferData(drawCommandHandle).Get(),

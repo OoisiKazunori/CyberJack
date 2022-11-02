@@ -9,7 +9,7 @@
 /// </summary>
 class MapChipPlacementTool
 {
-	static const int BLOCK_MAX_NUM = 6000;
+	static const int BLOCK_MAX_NUM = 30000;
 	static const KazMath::Vec3<float> MAP_SIZE;
 	typedef std::array<KazMath::Vec3<float>, 200> Z_ARRAY;
 	typedef std::array<Z_ARRAY, 30> Y_ARRAY;
@@ -32,10 +32,9 @@ public:
 private:
 	POS_ARRAY blockPosArray;
 
-	static const int xSize = 100;
+	static const int xSize = 300;
 	static const int ySize = 200;
-	static const int matSize = xSize * ySize;
-	std::array<std::array<KazMath::Transform3D, xSize>, ySize> defaultBlockPosArray;
+	static const int matSize = 30000;
 	const float BLOCK_SIZE;
 	Ray ray;
 
@@ -137,4 +136,8 @@ private:
 		KazMath::Vec3<int> lNum(static_cast<int>(adjPos.x / BLOCK_SIZE), static_cast<int>(adjPos.y / BLOCK_SIZE), static_cast<int>(adjPos.z / BLOCK_SIZE));
 		return lNum;
 	}
+
+
+
+	std::array<BoxPolygonRender, 8>debugBox;
 };

@@ -20,7 +20,7 @@ BlockMountain::BlockMountain(const InitBlockMountainData &INIT_DATA)
 	boxRender = std::make_unique<BoxPolygonRender>(true, boxMaxNum);
 	boxRender->data.pipelineName = PIPELINE_NAME_INSTANCE_COLOR_MULTITEX_SHADING;
 	objectBufferHandle = boxRender->CreateConstBuffer(sizeof(ObjectData), typeid(ObjectData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA2);
-	instanceBufferHandle = boxRender->CreateConstBuffer(sizeof(MatData) * boxMaxNum, typeid(MatData).name(), GRAPHICS_RANGE_TYPE_UAV, GRAPHICS_PRAMTYPE_DATA);
+	instanceBufferHandle = boxRender->CreateConstBuffer(sizeof(MatData) * boxMaxNum, typeid(MatData).name(), GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA);
 
 	boxDataArray.resize(boxMaxNum);
 

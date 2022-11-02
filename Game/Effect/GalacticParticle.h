@@ -80,5 +80,7 @@ private:
 		DirectX::XMFLOAT4 color;
 		DirectX::XMMATRIX mat;
 	};
+
+	RESOURCE_HANDLE texHandle;
 };
 

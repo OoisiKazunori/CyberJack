@@ -409,6 +409,11 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GPUParticlePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_GPUPARTICLE);
 
 
+	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "GPUParticlePosUvVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_GPUPARTICLE_POSUV);
+	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GPUParticleTexturePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_GPUPARTICLE_TEX);
+
+
+
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "NoiseSignalPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_NOISE);
 
 	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "PortalVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_PORTAL);
@@ -1544,6 +1549,18 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		ROOTSIGNATURE_DATA_DRAW_UAV,
 		PIPELINE_NAME_GPUPARTICLE
 	);
+
+	//GPUパーティクル用のパイプライン
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS_TEX,
+		SHADER_VERTEX_GPUPARTICLE_POSUV,
+		SHADER_PIXEL_GPUPARTICLE_TEX,
+		PIPELINE_DATA_NOCARING_BLENDALPHA_MULTIPASS_TWO,
+		ROOTSIGNATURE_DATA_DRAW_UAB_TEX,
+		PIPELINE_NAME_GPUPARTICLE_TEX
+	);
+
+
 
 	//ポータルのGPUパーティクル用のパイプライン
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(

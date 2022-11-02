@@ -17,7 +17,7 @@ RESOURCE_HANDLE IRender::CreateConstBuffer(const unsigned int &TRANSMISSION_DATA
 			KazBufferHelper::SetConstBufferData(TRANSMISSION_DATA)
 		);
 		break;
-	case GRAPHICS_RANGE_TYPE_UAV:
+	case GRAPHICS_RANGE_TYPE_UAV_VIEW:
 		lBufferHandle = gpuBuffer->CreateBuffer
 		(
 			KazBufferHelper::SetRWStructuredBuffer(TRANSMISSION_DATA)
@@ -61,7 +61,7 @@ void IRender::SetConstBufferOnCmdList(PipeLineNames pipeline, bool REMOVE_DATA_F
 			case GRAPHICS_RANGE_TYPE_CBV:
 				renderData.cmdListInstance->cmdList->SetGraphicsRootConstantBufferView(num, gpuBuffer->GetBufferData(*constBufferHandles[i]).Get()->GetGPUVirtualAddress());
 				break;
-			case GRAPHICS_RANGE_TYPE_UAV:
+			case GRAPHICS_RANGE_TYPE_UAV_VIEW:
 				renderData.cmdListInstance->cmdList->SetGraphicsRootUnorderedAccessView(num, gpuBuffer->GetBufferData(*constBufferHandles[i]).Get()->GetGPUVirtualAddress());
 				break;
 			default:
