@@ -2,6 +2,9 @@
 #include"../DirectXCommon/Base.h"
 #include"../Helper/ISinglton.h"
 
+#include <d3d11.h>
+#include <d3d11_1.h>
+
 /// <summary>
 /// デバイスを生成、管理します
 /// </summary>
@@ -17,9 +20,10 @@ public:
 	/// <param name="adapter">アダプター</param>
 	void CreateDevice(Microsoft::WRL::ComPtr<IDXGIAdapter> adapter);
 	Microsoft::WRL::ComPtr<ID3D12Device> dev;
+	Microsoft::WRL::ComPtr<ID3D11Device>dev11;
 private:
 	HRESULT result;
 	friend ISingleton<DirectX12Device>;
-	
+
 };
 
