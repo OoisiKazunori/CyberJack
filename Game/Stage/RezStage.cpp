@@ -37,7 +37,7 @@ RezStage::RezStage()
 	stageModelhandle[2] = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "Mountain03_Model.obj");
 
 	vaporWaveSunRender.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::RelativeResourcePath + "Stage/" + "vaporWaveSun.png");
-	vaporWaveSunRender.data.transform.pos = { 0.0f,2000.0f,5000.0f };
+	vaporWaveSunRender.data.transform.pos = { 0.0f,1500.0f,5000.0f };
 	vaporWaveSunRender.data.transform.scale = { 0.0f,0.0f,1.0f };
 	vaporWaveSunRender.data.colorData = { 255,0,0,255 };
 	vaporWaveSunRender.data.pipelineName = PIPELINE_NAME_SPRITE_MULTITEX;
@@ -84,31 +84,17 @@ RezStage::RezStage()
 	lInitData.lightDir = { -1.0f,1.0f,1.0f };
 	lInitData.xRange = 70;
 	lInitData.yScale = 500.0f;
-	lInitData.centralPos = { 0.0f,-1500.0f,0.0f };
+	lInitData.centralPos = { 0.0f,-2000.0f,0.0f };
+	lInitData.rotation = { 0.0f,0.0f,0.0f };
 	blockMountainArray[0] = std::make_unique<BlockMountain>(lInitData);
 
 	lInitData.fogDesinty = 0.0005f;
 	lInitData.lightDir = { 0.0f,0.0f,1.0f };
 	lInitData.xRange = 70;
 	lInitData.yScale = 500.0f;
-	lInitData.centralPos = { 0.0f,5300.0f,0.0f };
+	lInitData.centralPos = { 0.0f,4500.0f,0.0f };
+	lInitData.rotation = { 180.0f,0.0f,0.0f };
 	blockMountainArray[1] = std::make_unique<BlockMountain>(lInitData);
-
-
-	lInitData.fogDesinty = 0.0005f;
-	lInitData.lightDir = { -1.0f,0.0f,0.0f };
-	lInitData.xRange = 10;
-	lInitData.yScale = 5000.0f;
-	lInitData.centralPos = { -6400.0f,0.0f,0.0f };
-	blockMountainArray[2] = std::make_unique<BlockMountain>(lInitData);
-
-
-	lInitData.fogDesinty = 0.0005f;
-	lInitData.lightDir = { 1.0f,0.0f,0.0f };
-	lInitData.xRange = 10;
-	lInitData.yScale = 5000.0f;
-	lInitData.centralPos = { 6400.0f,0.0f,0.0f };
-	blockMountainArray[3] = std::make_unique<BlockMountain>(lInitData);
 
 	std::array<RESOURCE_HANDLE, 10>lData;
 	for (int i = 0; i < lData.size(); ++i)
@@ -130,7 +116,7 @@ RezStage::RezStage()
 			lX = -KazMath::Rand(5000.0f, 1500.0f);
 		}
 
-		KazMath::Vec3<float>pos(lX, KazMath::Rand(5000.0f, 500.0f), KazMath::Rand(10000.0f, -10000.0f));
+		KazMath::Vec3<float>pos(lX, KazMath::Rand(4500.0f, 500.0f), KazMath::Rand(10000.0f, -10000.0f));
 		windowArray[i].Init(pos, lData);
 	}
 }

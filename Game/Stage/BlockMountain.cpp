@@ -1,5 +1,6 @@
 #include "BlockMountain.h"
 #include"../KazLibrary/Imgui/MyImgui.h"
+#include"../KazLibrary/Helper/ResourceFilePass.h"
 
 BlockMountain::BlockMountain(const InitBlockMountainData &INIT_DATA)
 {
@@ -16,12 +17,6 @@ BlockMountain::BlockMountain(const InitBlockMountainData &INIT_DATA)
 
 
 	boxMaxNum = X_MAX_NUM * Z_MAX_NUM;
-
-	boxRender = std::make_unique<BoxPolygonRender>(true, boxMaxNum);
-	boxRender->data.pipelineName = PIPELINE_NAME_INSTANCE_COLOR_MULTITEX_SHADING;
-	objectBufferHandle = boxRender->CreateConstBuffer(sizeof(ObjectData), typeid(ObjectData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA2);
-	instanceBufferHandle = boxRender->CreateConstBuffer(sizeof(MatData) * boxMaxNum, typeid(MatData).name(), GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA);
-
 	boxDataArray.resize(boxMaxNum);
 
 
@@ -30,7 +25,7 @@ BlockMountain::BlockMountain(const InitBlockMountainData &INIT_DATA)
 	{
 		for (int z = 0; z < Z_MAX_NUM; ++z)
 		{
-			boxDataArray[lBoxIndex].pos =
+			boxDataArray[lBoxIndex].transform.pos =
 			{
 				INIT_DATA.centralPos.x + L_BLOCK_CENTRAL_POS.x + static_cast<float>(x) * (L_SCALE * 2.2f),
 				INIT_DATA.centralPos.y,
@@ -38,46 +33,75 @@ BlockMountain::BlockMountain(const InitBlockMountainData &INIT_DATA)
 			};
 
 
+			float lScale = KazMath::Rand(5.0f, 2.0f);
+			boxDataArray[lBoxIndex].transform.scale = { lScale,lScale,lScale };
 
-			boxDataArray[lBoxIndex].scale = { L_SCALE ,KazMath::Rand(INIT_DATA.yScale,50.0f),L_SCALE };
+			boxDataArray[lBoxIndex].transform.rotation = INIT_DATA.rotation;
 			++lBoxIndex;
 		}
 	}
 
+
+	billRender = std::make_unique<ObjModelRender>(true, boxMaxNum, true);
+	billRender->data.pipelineName = PIPELINE_NAME_BILL;
+	billRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "Bill_Model.obj");
+
+	billRender->data.addHandle.handle[0] = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StagePath + "lambert1_Base_color.png");
+	billRender->data.addHandle.paramType[0] = GRAPHICS_PRAMTYPE_TEX2;
+
+
+	billRender->data.addHandle.handle[1] = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StagePath + "CiEHwaAUUAAp0ZR.jpg");
+	billRender->data.addHandle.paramType[1] = GRAPHICS_PRAMTYPE_TEX;
+
+
 	fogColor.a = INIT_DATA.fogDesinty;
-	objectData.luminanceColor = { 0.0f,0.0f,0.0f,1.0f };
-	DirectX::XMFLOAT3 colorRate = KazMath::Color(29, 19, 72, 255).ConvertColorRateToXMFLOAT3();
-	objectData.fogData = { colorRate.x,colorRate.y,colorRate.z,fogColor.a };
-	objectData.lightDir = INIT_DATA.lightDir.ConvertXMFLOAT3();
-	boxRender->TransData(&objectData, objectBufferHandle, typeid(ObjectData).name());
+	instanceBufferHandle = billRender->CreateConstBuffer(sizeof(MatData) * boxMaxNum, typeid(MatData).name(), GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA2);
+	objectBufferHandle = billRender->CreateConstBuffer(sizeof(ObjectData), typeid(ObjectData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+
+	billRender->TransData(&objectData, objectBufferHandle, typeid(ObjectData).name());
 }
 
 void BlockMountain::Update()
 {
 
 	std::vector<MatData> lData(boxMaxNum);
+	std::vector<ObjectData> lData2(boxMaxNum);
 	for (int i = 0; i < boxDataArray.size(); ++i)
 	{
-		boxDataArray[i].pos += -KazMath::Vec3<float>(0.0f, 0.0f, 5.0f);
-		if (boxDataArray[i].pos.z <= -(70.0f * 100.0f * 2.2f) / 2.0f)
+		boxDataArray[i].transform.pos += -KazMath::Vec3<float>(0.0f, 0.0f, 5.0f);
+		if (boxDataArray[i].transform.pos.z <= -(70.0f * 100.0f * 2.2f) / 2.0f)
 		{
-			boxDataArray[i].pos.z = (70.0f * 100.0f * 2.2f) / 2.0f;
+			boxDataArray[i].transform.pos.z = (70.0f * 100.0f * 2.2f) / 2.0f;
 		}
 
-		lData[i].mat = KazMath::CaluMat(boxDataArray[i], CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection(), { 0,1,0 }, { 0,0,1 });
-		lData[i].color = { 0.32f, 0.32f, 0.54f,1.0f };
+		lData[i].mat = KazMath::CaluMat(boxDataArray[i].transform, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection(), { 0,1,0 }, { 0,0,1 });
+
+		boxDataArray[i].uvOffset.x += 0.01f;
+
+		DirectX::XMFLOAT3 colorRate = KazMath::Color(29, 19, 72, 255).ConvertColorRateToXMFLOAT3();
+		objectData.fogData = { colorRate.x,colorRate.y,colorRate.z,fogColor.a };
+		lData2[i].fogData = objectData.fogData;
+		lData2[i].uvoffset = boxDataArray[i].uvOffset;
 	}
 
 
-	boxRender->TransData
+	billRender->TransData
 	(
 		lData.data(),
 		instanceBufferHandle,
 		typeid(MatData).name()
 	);
+
+	billRender->TransData
+	(
+		lData2.data(),
+		objectBufferHandle,
+		typeid(ObjectData).name()
+	);
+
 }
 
 void BlockMountain::Draw()
 {
-	boxRender->Draw();
+	billRender->Draw();
 }

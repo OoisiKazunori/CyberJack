@@ -60,7 +60,7 @@ private:
 	float appearRate;
 
 
-	std::array<std::unique_ptr<BlockMountain>, 4>blockMountainArray;
+	std::array<std::unique_ptr<BlockMountain>, 2>blockMountainArray;
 
 	std::array<WindowForAd, 100> windowArray;
 };

@@ -43,7 +43,12 @@ private:
 
 	Sprite2DRender mainRenderTarget;
 
+#ifdef _DEBUG
+#else
 	MapChipPlacementTool mapchipTool;
+#endif
+
+
 	bool toolModeFlag;
 	bool isLoadFlag;
 

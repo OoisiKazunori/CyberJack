@@ -4,11 +4,11 @@
 struct InitBlockMountainData
 {
 	KazMath::Vec3<float> centralPos;
+	KazMath::Vec3<float> rotation;
 	KazMath::Vec3<float> lightDir;
 	float yScale;
 	int xRange;
 	float fogDesinty;
-
 };
 
 /// <summary>
@@ -25,22 +25,26 @@ private:
 	int boxMaxNum;
 	RESOURCE_HANDLE instanceBufferHandle;
 	RESOURCE_HANDLE objectBufferHandle;
-	BoxPolygonRenderPtr boxRender;
+	ObjModelRenderPtr billRender;
 
 	struct MatData
 	{
-		DirectX::XMFLOAT4 color;
 		DirectX::XMMATRIX mat;
 	};
 
 	struct ObjectData
 	{
-		DirectX::XMFLOAT4 luminanceColor;
 		DirectX::XMFLOAT4 fogData;
-		DirectX::XMFLOAT3 lightDir;
+		DirectX::XMFLOAT2 uvoffset;
 	};
 
-	std::vector<KazMath::Transform3D> boxDataArray;
+	struct PosUvData
+	{
+		KazMath::Transform3D transform;
+		DirectX::XMFLOAT2 uvOffset;
+	};
+
+	std::vector<PosUvData> boxDataArray;
 
 	ObjectData objectData;
 	KazMath::Vec4<float>fogColor;

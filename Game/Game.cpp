@@ -682,7 +682,7 @@ void Game::Update()
 
 
 
-#pragma region 線のロックオン解放<
+#pragma region 線のロックオン解放
 
 	//線がたどり着いたら敵を死亡させる
 	for (int i = 0; i < lineEffectArrayData.size(); ++i)

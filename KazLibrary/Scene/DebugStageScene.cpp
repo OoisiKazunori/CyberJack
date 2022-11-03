@@ -14,14 +14,13 @@
 
 DebugStageScene::DebugStageScene()
 {
-	//stages[0] = std::make_shared<BlockParticleStage>();
-	//stages[0] = std::make_shared<FirstStage>();
-	//stages[1] = std::make_shared<RezStage>();
+	stages[0] = std::make_shared<FirstStage>();
 	stages[1] = std::make_shared<BlockParticleStage>();
+	stages[2] = std::make_shared<RezStage>();
 
-	//renderTarget[0] = std::make_unique<GameRenderTarget>(KazMath::Color(29, 19, 72, 255));
-	//renderTarget[1] = std::make_unique<GameRenderTarget>(KazMath::Color(29, 19, 72, 255));
+	renderTarget[0] = std::make_unique<GameRenderTarget>(KazMath::Color(29, 19, 72, 255));
 	renderTarget[1] = std::make_unique<GameRenderTarget>(KazMath::Color(0, 0, 0, 255));
+	renderTarget[2] = std::make_unique<GameRenderTarget>(KazMath::Color(29, 19, 72, 255));
 
 
 	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
@@ -34,7 +33,7 @@ DebugStageScene::DebugStageScene()
 		}
 	}
 
-	stageNum = 1;
+	stageNum = 2;
 
 	//stage2 = std::make_shared<BlockParticleStage>();
 }
@@ -48,7 +47,7 @@ void DebugStageScene::Init()
 	player.Init({ 0.0f,0.0f,15.0f }, false, false);
 	cameraWork.Init();
 	cursor.Init();
-	mapchipTool.Init();
+	//mapchipTool.Init();
 
 	gameCameraFlag = true;
 
@@ -69,7 +68,11 @@ void DebugStageScene::Finalize()
 
 void DebugStageScene::Input()
 {
+#ifdef _DEBUG
+#else
 	KeyBoradInputManager *input = KeyBoradInputManager::Instance();
+#endif
+
 	ControllerInputManager *inputController = ControllerInputManager::Instance();
 
 	bool upFlag = false;
@@ -139,10 +142,13 @@ void DebugStageScene::Input()
 		stageNum = static_cast<int>(stages.size() - 1);
 	}
 
+#ifdef _DEBUG
+#else
 	if (toolModeFlag)
 	{
 		mapchipTool.Input(input->MouseInputTrigger(MOUSE_INPUT_LEFT), input->MouseInputTrigger(MOUSE_INPUT_RIGHT), input->GetMousePoint());
 	}
+#endif
 }
 
 void DebugStageScene::Update()
@@ -159,14 +165,20 @@ void DebugStageScene::Update()
 	cameraWork.Update(cursor.GetValue(), &player.pos, gameCameraFlag);
 	if (toolModeFlag)
 	{
+#ifdef _DEBUG
+#else
 		mapchipTool.Update();
 		if (mapchipTool.isLoadFlag)
 		{
 			isLoadFlag = true;
 		}
+#endif
 	}
 	else
 	{
+
+#ifdef _DEBUG
+#else
 		if (isLoadFlag)
 		{
 			mapchipTool.Init();
@@ -174,9 +186,8 @@ void DebugStageScene::Update()
 			stages[stageNum] = std::make_unique<BlockParticleStage>();
 			isLoadFlag = false;
 		}
+#endif
 		stages[stageNum]->Update();
-
-
 		//stage2->Update();
 	}
 
@@ -196,7 +207,10 @@ void DebugStageScene::Draw()
 
 	if (toolModeFlag)
 	{
+#ifdef _DEBUG
+#else
 		mapchipTool.Draw();
+#endif
 	}
 	else
 	{

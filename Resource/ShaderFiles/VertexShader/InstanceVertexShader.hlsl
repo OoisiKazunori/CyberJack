@@ -8,5 +8,6 @@ InstanceOutPut VSmain(float4 pos : POSITION, float3 normal : NORMAL, float2 uv :
     op.normal = normal;
     op.uv = uv;
     op.id = id;
+    op.worldPos = op.svpos;
     return op;
 }
