@@ -70,15 +70,18 @@ void IRender::Release(RESOURCE_HANDLE HANDLE)
 	constBufferHandles[HANDLE] = -1;
 }
 
-void IRender::SetConstBufferOnCmdList(PipeLineNames pipeline, bool REMOVE_DATA_FLAG)
+void IRender::SetConstBufferOnCmdList(PipeLineNames pipeline, bool REMOVE_DATA_FLAG, bool d)
 {
 	for (int i = 0; i < constBufferRootParam.size(); i++)
 	{
-		bool lRemoveFlag = i != 1 || !REMOVE_DATA_FLAG;
-		lRemoveFlag = false;
+		bool lRemoveFlag = true;
+		if (!d)
+		{
+			lRemoveFlag = i != 1 || !REMOVE_DATA_FLAG;
+		}
 
 		bool lErrorFlag = constBufferRootParam[i] != GRAPHICS_RANGE_TYPE_NONE;
-		if (lErrorFlag)
+		if (lRemoveFlag && lErrorFlag)
 		{
 			UINT lNum = KazRenderHelper::SetBufferOnCmdList(GraphicsRootSignature::Instance()->GetRootParam(renderData.pipelineMgr->GetRootSignatureName(pipeline)), constBufferRangeType[i], constBufferRootParam[i]);
 

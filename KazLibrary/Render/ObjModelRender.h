@@ -16,7 +16,7 @@ public:
 	DirectX::XMMATRIX* GetMotherMatrixPtr();
 	void Draw();
 
-
+	bool demoFlag;
 	Obj3DData data;
 private:
 

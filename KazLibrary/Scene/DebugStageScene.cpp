@@ -15,12 +15,13 @@
 DebugStageScene::DebugStageScene()
 {
 	stages[0] = std::make_shared<FirstStage>();
-	stages[1] = std::make_shared<BlockParticleStage>();
-	stages[2] = std::make_shared<RezStage>();
+	stages[1] = std::make_shared<RezStage>();
+	stages[2] = std::make_shared<BlockParticleStage>();
+
 
 	renderTarget[0] = std::make_unique<GameRenderTarget>(KazMath::Color(29, 19, 72, 255));
-	renderTarget[1] = std::make_unique<GameRenderTarget>(KazMath::Color(0, 0, 0, 255));
-	renderTarget[2] = std::make_unique<GameRenderTarget>(KazMath::Color(29, 19, 72, 255));
+	renderTarget[1] = std::make_unique<GameRenderTarget>(KazMath::Color(29, 19, 72, 255));
+	renderTarget[2] = std::make_unique<GameRenderTarget>(KazMath::Color(0, 0, 0, 255));
 
 
 	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };

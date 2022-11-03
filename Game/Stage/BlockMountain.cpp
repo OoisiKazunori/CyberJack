@@ -98,7 +98,7 @@ void BlockMountain::Update()
 		objectBufferHandle,
 		typeid(ObjectData).name()
 	);
-
+	billRender->demoFlag = true;
 }
 
 void BlockMountain::Draw()

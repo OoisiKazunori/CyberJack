@@ -114,7 +114,7 @@ void ObjModelRender::Draw()
 			//バッファをコマンドリストに積む-----------------------------------------------------------------------------------------------------
 		}
 
-		SetConstBufferOnCmdList(data.pipelineName, data.removeMaterialFlag);
+		SetConstBufferOnCmdList(data.pipelineName, data.removeMaterialFlag, demoFlag);
 
 
 		//追加のテクスチャを送る---------------------------------------------------------------

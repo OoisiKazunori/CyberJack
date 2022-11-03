@@ -186,7 +186,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	fireIndex = 0;
 	cameraWork.Init();
 
-	tutorial.Init(false);
+	tutorial.Init(true);
 	portalEffect.Init();
 
 	isGameOverFlag = false;
@@ -1180,7 +1180,7 @@ void Game::Draw()
 		//チュートリアル用の描画
 		if (tutorial.tutorialFlag)
 		{
-			mainRenderTarget.data.handleData = tutorial.mainRenderTarget.data.handleData;
+			mainRenderTarget.data.handleData.handle = tutorial.mainRenderTarget.data.handleData.handle;
 		}
 		//中間演出の描画
 		if (portalEffect.disappearFlag || portalEffect.DrawNextPortal())
@@ -1226,8 +1226,8 @@ void Game::Draw()
 		headModel.data.transform.rotation.y += 1.0f;
 		headModel.data.transform.rotation.x = 10.0f;
 
-		playerModel.Draw();
-		headModel.Draw();
+		//playerModel.Draw();
+		//headModel.Draw();
 
 	}
 

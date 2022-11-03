@@ -360,6 +360,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstancePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_OBJ);
 
 	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstancePosVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_COLOR);
+	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstanceObjDepthVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_OBJ_DEPTH);
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_COLOR);
 
 
@@ -1836,14 +1837,14 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 
 	//インスタンシング描画Objパイプライン
-	/*GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX,
 		SHADER_VERTEX_INSTANCE_OBJ,
 		SHADER_PIXCEL_INSTANCE_OBJ,
 		PIPELINE_DATA_NOCARING_BLENDALPHA,
 		ROOTSIGNATURE_DATA_DATA1_DATA2_TEX,
 		PIPELINE_NAME_INSTANCE_OBJ
-	);*/
+	);
 
 	//頂点拡大のパイプライン
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
@@ -1908,7 +1909,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX,
-		SHADER_VERTEX_INSTANCE_OBJ,
+		SHADER_VERTEX_INSTANCE_OBJ_DEPTH,
 		SHADER_PIXCEL_FOG_OBJ_MULTIPASS_BILL,
 		PIPELINE_DATA_NOCARING_BLENDALPHA_MULTIPASS_TWO,
 		ROOTSIGNATURE_DATA_DRAW_UAV_DATA2_TEX_TEX2,
