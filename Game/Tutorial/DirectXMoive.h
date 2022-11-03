@@ -8,7 +8,7 @@
 #include<string>
 #include"../KazLibrary/Buffer/CreateGpuBuffer.h"
 
-#include"../KazLibrary/Render/Sprite2DRender.h"
+#include"../KazLibrary/Render/MovieRender.h"
 
 /// <summary>
 /// 動画公開のテスト
@@ -55,7 +55,7 @@ private:
 
 	BufferMemorySize memorySize;
 	RESOURCE_HANDLE movieTexHandle;
-	Sprite2DRender render;
+	MovieRender render;
 
 
 	bool isPlaying;

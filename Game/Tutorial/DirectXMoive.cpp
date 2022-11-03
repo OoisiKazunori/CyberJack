@@ -23,8 +23,8 @@ DirectXMoive::DirectXMoive()
 
 	//動画ファイルを読み込む
 	std::string lFullPath = KazFilePathName::TestPath + "test.mp4";
-	wchar_t wfilepat[128];
-	KazHelper::ConvertStringToWchar_t(lFullPath, wfilepat, 128);
+	std::array<wchar_t,128> wfilepat;
+	KazHelper::ConvertStringToWchar_t(lFullPath, wfilepat.data(), 128);
 
 
 	//フォーマットの変換に必要
@@ -33,7 +33,7 @@ DirectXMoive::DirectXMoive()
 	MFCreateAttributes(&lAttribs, 1);
 	lAttribs->SetUINT32(MF_SOURCE_READER_ENABLE_VIDEO_PROCESSING, TRUE);
 
-	HRESULT hr = MFCreateSourceReaderFromURL(wfilepat, lAttribs, &mfSourceReader);
+	HRESULT hr = MFCreateSourceReaderFromURL(wfilepat.data(), lAttribs, &mfSourceReader);
 	if (FAILED(hr))
 	{
 		assert(0);
@@ -228,8 +228,11 @@ void DirectXMoive::UpdateTexture(Microsoft::WRL::ComPtr<ID3D12GraphicsCommandLis
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
 	);
 
-	//render.data.d = movieTexHandle + memorySize.startSize;
-	//render.data.buff = gpuBuffer->GetBufferData(movieTexHandle);
+	render.data.handleData = movieTexHandle + memorySize.startSize;
+	render.data.buff = gpuBuffer->GetBufferData(movieTexHandle);
+
+	render.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+	render.data.transform.scale = { 0.5f,0.5f };
 }
 
 

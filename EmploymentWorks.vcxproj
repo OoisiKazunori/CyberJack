@@ -304,6 +304,7 @@
     <ClCompile Include="KazLibrary\Render\FbxModelRender.cpp" />
     <ClCompile Include="KazLibrary\Render\IRender.cpp" />
     <ClCompile Include="KazLibrary\Render\LineRender.cpp" />
+    <ClCompile Include="KazLibrary\Render\MovieRender.cpp" />
     <ClCompile Include="KazLibrary\Render\ObjModelRender.cpp" />
     <ClCompile Include="KazLibrary\Render\PolygonRender.cpp" />
     <ClCompile Include="KazLibrary\Render\Sprite2DRender.cpp" />
@@ -463,6 +464,7 @@
     <ClInclude Include="KazLibrary\Render\IRender.h" />
     <ClInclude Include="KazLibrary\Render\KazRender.h" />
     <ClInclude Include="KazLibrary\Render\LineRender.h" />
+    <ClInclude Include="KazLibrary\Render\MovieRender.h" />
     <ClInclude Include="KazLibrary\Render\ObjModelRender.h" />
     <ClInclude Include="KazLibrary\Render\PolygonRender.h" />
     <ClInclude Include="KazLibrary\Render\RenderData.h" />
