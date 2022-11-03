@@ -245,6 +245,7 @@
     <ClCompile Include="Game\Stage\WindowForAd.cpp" />
     <ClCompile Include="Game\Tool\MapChipPlacementTool.cpp" />
     <ClCompile Include="Game\Tutorial.cpp" />
+    <ClCompile Include="Game\Tutorial\DirectXMoive.cpp" />
     <ClCompile Include="Game\UI\AnnounceStageUI.cpp" />
     <ClCompile Include="Game\UI\AttackLog.cpp" />
     <ClCompile Include="Game\UI\Cursor.cpp" />
@@ -395,6 +396,7 @@
     <ClInclude Include="Game\Stage\WindowForAd.h" />
     <ClInclude Include="Game\Tool\MapChipPlacementTool.h" />
     <ClInclude Include="Game\Tutorial.h" />
+    <ClInclude Include="Game\Tutorial\DirectXMoive.h" />
     <ClInclude Include="Game\UI\AnnounceStageUI.h" />
     <ClInclude Include="Game\UI\AttackLog.h" />
     <ClInclude Include="Game\UI\Cursor.h" />
