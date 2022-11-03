@@ -7,18 +7,10 @@ const int Player::COOL_MAX_TIME = 120;
 
 Player::Player()
 {
-	render = std::make_unique<BoxPolygonRender>();
-	render->data.pipelineName = PIPELINE_NAME_COLOR_MULTITEX;
 	hp = -1;
 	pos = {};
 
 	damageSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "PlayerDamage.wav");
-
-	{
-		RESOURCE_HANDLE lHandle = render->CreateConstBuffer(sizeof(DirectX::XMFLOAT4), typeid(DirectX::XMFLOAT4).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
-		DirectX::XMFLOAT4 lColor = { 0.0f,0.0f,0.0f,0.0f };
-		render->TransData(&lColor, lHandle, typeid(DirectX::XMFLOAT4).name());
-	}
 
 	fbxRender[LEFT].data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::PlayerPath + "CH_Right_Back_Anim.fbx");
 	fbxRender[RIGHT].data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::PlayerPath + "CH_Left_Back_Anim.fbx");
@@ -45,17 +37,19 @@ Player::Player()
 void Player::Init(const KazMath::Vec3<float> &POS, bool DRAW_UI_FLAG, bool APPEAR_FLAG)
 {
 	pos = POS;
-	render->data.transform.pos = pos;
-	render->data.transform.scale = { 0.5f,1.3f,0.5f };
-	render->data.transform.rotation = { 35.0f,0.0f,1.0f };
-	render->data.color.color = { 255,255,255,0 };
 	if (APPEAR_FLAG)
 	{
-		render->data.color.color.a = 0;
+		for (int i = 0; i < fbxRender.size(); ++i)
+		{
+			fbxRender[i].data.colorData.color.a = 0;
+		}
 	}
 	else
 	{
-		render->data.color.color.a = 255;
+		for (int i = 0; i < fbxRender.size(); ++i)
+		{
+			fbxRender[i].data.colorData.color.a = 255;
+		}
 	}
 	hp = 3;
 
@@ -81,7 +75,6 @@ void Player::Input()
 
 void Player::Update()
 {
-	render->data.transform.pos = pos;
 	hpUi.Update();
 
 
@@ -112,25 +105,28 @@ void Player::Update()
 
 	if (redFlag)
 	{
-		render->data.color.color.x = 255;
-		render->data.color.color.y = 0;
-		render->data.color.color.z = 0;
+		//render->data.color.color.x = 255;
+		//render->data.color.color.y = 0;
+		//render->data.color.color.z = 0;
 	}
 	else
 	{
-		render->data.color.color.x = 255;
-		render->data.color.color.y = 255;
-		render->data.color.color.z = 255;
+		//render->data.color.color.x = 255;
+		//render->data.color.color.y = 255;
+		//render->data.color.color.z = 255;
 	}
 	//----------HP‚ªŒ¸‚Á‚½‚çƒvƒŒƒCƒ„[‚ðÔ‚­‚·‚é----------
 
 	damageEffect.Update();
 	damageWindow.Update();
 
-	render->data.color.color.a += 255 / 120;
-	if (255 <= render->data.color.color.a)
+	for (int i = 0; i < fbxRender.size(); ++i)
 	{
-		render->data.color.color.a = 255;
+		fbxRender[i].data.colorData.color.a += 255 / 120;
+		if (255 <= fbxRender[i].data.colorData.color.a)
+		{
+			fbxRender[i].data.colorData.color.a = 255;
+		}
 	}
 
 
@@ -143,10 +139,10 @@ void Player::Update()
 
 	for (int i = 0; i < fbxRender.size() - 1; ++i)
 	{
-		fbxRender[i].data.transform.pos = render->data.transform.pos + KazMath::Vec3<float>(0.0f, 1.0f + sinf(KazMath::PI_2F / 120.0f * sinTimer) * 0.2f, 0.0f);
+		fbxRender[i].data.transform.pos = pos + KazMath::Vec3<float>(0.0f, 1.0f + sinf(KazMath::PI_2F / 120.0f * sinTimer) * 0.2f, 0.0f);
 	}
 
-	fbxRender[HEAD].data.transform.pos = render->data.transform.pos + adjPos + KazMath::Vec3<float>(0.0f, 1.0f + sinf(KazMath::PI_2F / 120.0f * sinTimer) * 0.2f, 0.0f);
+	fbxRender[HEAD].data.transform.pos = pos + adjPos + KazMath::Vec3<float>(0.0f, 1.0f + sinf(KazMath::PI_2F / 120.0f * sinTimer) * 0.2f, 0.0f);
 
 	++sinTimer;
 	++larpTime;
@@ -212,8 +208,6 @@ void Player::Update()
 
 void Player::Draw()
 {
-	//render->Draw();
-
 	if (leftFlag)
 	{
 		fbxRender[LEFT].Draw();

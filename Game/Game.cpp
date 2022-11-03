@@ -102,8 +102,10 @@ Game::Game() :LOG_FONT_SIZE(1.0f)
 	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	mainRenderTarget.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
 
-	playerModel.data.transform.scale = { 0.5f, 1.3f, 0.5f };
-	playerModel.data.transform.rotation = { 35.0f,0.0f,1.0f };
+	playerModel.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::PlayerPath + "CH_Right_Back_Anim.fbx");
+	headModel.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::PlayerPath + "CH_Model_Head.fbx");
+
+	
 }
 
 Game::~Game()
@@ -184,7 +186,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	fireIndex = 0;
 	cameraWork.Init();
 
-	tutorial.Init(true);
+	tutorial.Init(false);
 	portalEffect.Init();
 
 	isGameOverFlag = false;
@@ -862,7 +864,7 @@ void Game::Update()
 		cursor.Update();
 		goalBox.Update();
 		stageUI.Update();
-		//stages[stageNum]->Update();
+		stages[stageNum]->Update();
 		tutorialWindow.Update();
 		logoutWindow.Update();
 
@@ -1094,7 +1096,7 @@ void Game::Draw()
 
 
 		stages[stageNum]->SetCamera(0);
-		//stages[stageNum]->Draw();
+		stages[stageNum]->Draw();
 
 
 		PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "Enemy");
@@ -1217,7 +1219,15 @@ void Game::Draw()
 		playerModel.data.transform.pos.z = 5.0f;
 		playerModel.data.transform.pos.y = 2.0f;
 		playerModel.data.transform.rotation.y += 1.0f;
+
+		headModel.data.transform.pos.z = 6.0f;
+		headModel.data.transform.pos.y = 4.0f;
+		headModel.data.transform.pos.x = 1.0f;
+		headModel.data.transform.rotation.y += 1.0f;
+		headModel.data.transform.rotation.x = 10.0f;
+
 		playerModel.Draw();
+		headModel.Draw();
 
 	}
 

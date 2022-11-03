@@ -79,6 +79,12 @@ public:
 		}
 	};
 
+	void ReleaseLight()
+	{
+		iEnemy_ObjModelRender->Release(objLightHandle);
+		iEnemy_FbxModelRender->Release(fbxLightHandle);
+	}
+
 	std::unique_ptr<EnemyData> iEnemy_EnemyStatusData;		//“G‚Ìó‘Ô‚ğ•Û‘¶‚·‚éƒf[ƒ^
 	ObjModelRenderPtr iEnemy_ObjModelRender;				//“G‚Ì•`‰æ
 	FbxModelRenderPtr iEnemy_FbxModelRender;				//“G‚Ì•`‰æ

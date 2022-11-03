@@ -9,6 +9,8 @@ TutorialBlock::TutorialBlock()
 
 void TutorialBlock::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 {
+	ReleaseLight();
+
 	iEnemy_ObjModelRender->data.transform.pos = GENERATE_DATA.initPos;	//À•W‚Ì‰Šú‰»
 	iEnemy_ObjModelRender->data.transform.scale = { 1.0f,1.0f,1.0f };
 	iEnemy_ObjModelRender->data.handle = redBlockResourceHandle;

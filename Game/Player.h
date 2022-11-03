@@ -50,7 +50,6 @@ private:
 	static const int COOL_MAX_TIME;
 	bool coolTimeFlag;
 	bool redFlag;
-	BoxPolygonRenderPtr render;
 	std::array<FbxModelRender,3> fbxRender;
 	bool drawHpFlag;
 

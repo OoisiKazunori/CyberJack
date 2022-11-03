@@ -207,7 +207,7 @@ private:
 	//std::unique_ptr<MeshParticleEmitter> meshEmitter;
 
 
-	BoxPolygonRender playerModel;
+	FbxModelRender playerModel, headModel;
 
 
 	bool d;
