@@ -20,17 +20,12 @@ MapChipPlacementTool::MapChipPlacementTool() :BLOCK_SIZE(10.0f), objectName("Blo
 	instanceObjRender = std::make_unique<ObjModelRender>(true, BLOCK_MAX_NUM, true);
 	instanceObjRender->data.pipelineName = PIPELINE_NAME_INSTANCE_OBJ;
 	instanceObjRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "testPlacementBlock.obj");
-	{
-		RESOURCE_HANDLE lHandle = instanceObjRender->CreateConstBuffer(sizeof(ConstBufferDataB1), typeid(ConstBufferDataB1).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
-		ConstBufferDataB1 lData;
-		lData.alpha = 1.0f;
-		lData.ambient = { 0.0f,0.0f,0.0f };
-		lData.diffuse = { 0.0f,0.0f,0.0f };
-		instanceObjRender->TransData(&lData, lHandle, typeid(ConstBufferDataB1).name());
-	}
-	instanceBoxHandle = instanceObjRender->CreateConstBuffer(sizeof(MatData) * BLOCK_MAX_NUM, typeid(MatData).name(), GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA2);
+	instanceBoxHandle = instanceObjRender->CreateConstBuffer(sizeof(MatData) * BLOCK_MAX_NUM, typeid(MatData).name(), GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA);
 	//配置したブロックがどれか分かる用の描画準備--------------------------------------------
+	instanceObjRender->demoFlag = true;
 
+	instanceObjRender->data.addHandle.handle[0] = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "testPlacementBlock.png");
+	instanceObjRender->data.addHandle.paramType[0] = GRAPHICS_PRAMTYPE_TEX;
 
 	for (int x = 0; x < blockPosArray.size(); ++x)
 	{
@@ -63,16 +58,16 @@ MapChipPlacementTool::MapChipPlacementTool() :BLOCK_SIZE(10.0f), objectName("Blo
 	//blockFileMgr.ExportFile(filePass);
 
 
-	for (int i = 0; i < BLOCK_MAX_NUM; ++i)
-	{
-		std::string name = objectName + "_" + std::to_string(i);
-		KazMath::Vec3<int> lNum(
-			blockFileMgr.doc[name.c_str()]["X"].GetInt(),
-			blockFileMgr.doc[name.c_str()]["Y"].GetInt(),
-			blockFileMgr.doc[name.c_str()]["Z"].GetInt()
-		);
-		blockPosArray[lNum.x][lNum.y][lNum.z] = { lNum.x * (BLOCK_SIZE * 2.0f),lNum.y * (BLOCK_SIZE * 2.0f),lNum.z * (BLOCK_SIZE * 2.0f) };
-	}
+	//for (int i = 0; i < BLOCK_MAX_NUM; ++i)
+	//{
+	//	std::string name = objectName + "_" + std::to_string(i);
+	//	KazMath::Vec3<int> lNum(
+	//		blockFileMgr.doc[name.c_str()]["X"].GetInt(),
+	//		blockFileMgr.doc[name.c_str()]["Y"].GetInt(),
+	//		blockFileMgr.doc[name.c_str()]["Z"].GetInt()
+	//	);
+	//	blockPosArray[lNum.x][lNum.y][lNum.z] = { lNum.x * (BLOCK_SIZE * 2.0f),lNum.y * (BLOCK_SIZE * 2.0f),lNum.z * (BLOCK_SIZE * 2.0f) };
+	//}
 
 	//const float HALF_SCALE = BLOCK_SIZE;
 	//for (int i = 0; i < 8; ++i)

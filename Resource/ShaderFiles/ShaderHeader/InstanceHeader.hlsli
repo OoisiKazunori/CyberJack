@@ -1,4 +1,4 @@
-#define INSTANCE_DATA_MAX 800
+#define INSTANCE_DATA_MAX 1
 
 struct InstanceOutPut
 {

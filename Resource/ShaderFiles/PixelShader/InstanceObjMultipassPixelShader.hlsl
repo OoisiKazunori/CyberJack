@@ -4,13 +4,11 @@
 #include"../ShaderHeader/FogShaderHeader.hlsli"
 
 Texture2D<float4> tex : register(t0);
-Texture2D<float4> maskColor : register(t1);
 SamplerState smp : register(s0);
 
 cbuffer FogData : register(b0)
 {
     float4 fogData;
-    float2 uvOffset;
 }
 
 TwoRender PSmain(InstanceDepthOutPut input) : SV_TARGET

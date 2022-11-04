@@ -12,19 +12,9 @@ SplineMisile::SplineMisile()
 
 void SplineMisile::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 {
-	iEnemy_ObjModelRender->data.transform.pos = GENERATE_DATA.initPos;
-	iEnemy_ObjModelRender->data.transform.scale = { 1.3f,1.3f,1.3f };
-	iEnemy_ObjModelRender->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX;
-	iEnemy_ObjModelRender->data.removeMaterialFlag = false;
-	iEnemy_ObjModelRender->data.colorData.color.x = 255;
-	iEnemy_ObjModelRender->data.colorData.color.y = 255;
-	iEnemy_ObjModelRender->data.colorData.color.z = 255;
+	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { 1.3f,1.3f,1.3f }, { 0.0f,0.0f,0.0f }), KazFilePathName::EnemyPath + "Misile/" + "missile_Model.obj", 10.0f, false);
 	iEnemy_ObjModelRender->data.colorData.color.a = 255;
-
 	iEnemy_EnemyStatusData->timer = maxTime;
-	iEnemy_EnemyStatusData->hitBox.radius = 5.0f;
-	iEnemy_EnemyStatusData->hitBox.center = &iEnemy_ObjModelRender->data.transform.pos;
-
 	iOperationData.Init(1, "gwJ-M");
 
 	startIndex = 1;

@@ -71,8 +71,8 @@ void DebugStageScene::Input()
 {
 #ifdef _DEBUG
 #else
-	KeyBoradInputManager *input = KeyBoradInputManager::Instance();
 #endif
+	KeyBoradInputManager *input = KeyBoradInputManager::Instance();
 
 	ControllerInputManager *inputController = ControllerInputManager::Instance();
 
@@ -143,12 +143,12 @@ void DebugStageScene::Input()
 		stageNum = static_cast<int>(stages.size() - 1);
 	}
 
-#ifdef _DEBUG
-#else
 	if (toolModeFlag)
 	{
 		mapchipTool.Input(input->MouseInputTrigger(MOUSE_INPUT_LEFT), input->MouseInputTrigger(MOUSE_INPUT_RIGHT), input->GetMousePoint());
 	}
+#ifdef _DEBUG
+#else
 #endif
 }
 
@@ -166,20 +166,17 @@ void DebugStageScene::Update()
 	cameraWork.Update(cursor.GetValue(), &player.pos, gameCameraFlag);
 	if (toolModeFlag)
 	{
-#ifdef _DEBUG
-#else
 		mapchipTool.Update();
 		if (mapchipTool.isLoadFlag)
 		{
 			isLoadFlag = true;
 		}
+#ifdef _DEBUG
+#else
 #endif
 	}
 	else
 	{
-
-#ifdef _DEBUG
-#else
 		if (isLoadFlag)
 		{
 			mapchipTool.Init();
@@ -187,6 +184,8 @@ void DebugStageScene::Update()
 			stages[stageNum] = std::make_unique<BlockParticleStage>();
 			isLoadFlag = false;
 		}
+#ifdef _DEBUG
+#else
 #endif
 		stages[stageNum]->Update();
 		//stage2->Update();
@@ -208,10 +207,7 @@ void DebugStageScene::Draw()
 
 	if (toolModeFlag)
 	{
-#ifdef _DEBUG
-#else
 		mapchipTool.Draw();
-#endif
 	}
 	else
 	{

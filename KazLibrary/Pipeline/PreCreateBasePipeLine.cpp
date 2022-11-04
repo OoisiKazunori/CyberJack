@@ -241,7 +241,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 #pragma endregion
 
 
-#pragma region シェーダーのコンパイルと登録
+#pragma region ShaderCompile
 	OutputDebugStringA("シェーダーのコンパイルを開始します\n");
 	//色シェーダー
 	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "BasicVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_COLOR);
@@ -1842,7 +1842,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		SHADER_VERTEX_INSTANCE_OBJ,
 		SHADER_PIXCEL_INSTANCE_OBJ,
 		PIPELINE_DATA_NOCARING_BLENDALPHA,
-		ROOTSIGNATURE_DATA_DATA1_DATA2_TEX,
+		ROOTSIGNATURE_DATA_DATA1_TEX,
 		PIPELINE_NAME_INSTANCE_OBJ
 	);
 
@@ -1912,7 +1912,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		SHADER_VERTEX_INSTANCE_OBJ_DEPTH,
 		SHADER_PIXCEL_FOG_OBJ_MULTIPASS_BILL,
 		PIPELINE_DATA_NOCARING_BLENDALPHA_MULTIPASS_TWO,
-		ROOTSIGNATURE_DATA_DRAW_UAV_DATA2_TEX_TEX2,
+		ROOTSIGNATURE_DATA_DRAW_UAV_DATA_TEX,
 		PIPELINE_NAME_BILL
 	);
 

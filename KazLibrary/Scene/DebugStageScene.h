@@ -45,8 +45,8 @@ private:
 
 #ifdef _DEBUG
 #else
-	MapChipPlacementTool mapchipTool;
 #endif
+	MapChipPlacementTool mapchipTool;
 
 
 	bool toolModeFlag;

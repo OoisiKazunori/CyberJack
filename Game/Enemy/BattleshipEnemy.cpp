@@ -17,7 +17,7 @@ BattleshipEnemy::BattleshipEnemy()
 
 void BattleshipEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 {
-	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { 0.5f,0.5f,0.5f }, { 0.0f,0.0f,0.0f }), KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_HachOpen_anim.fbx", 15.0f, true);
+	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { 0.5f,0.5f,0.5f }, { 0.0f,0.0f,0.0f }), KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_HachOpen_anim.fbx", 30.0f, true);
 
 	topModel->data.pipelineName = PIPELINE_NAME_FBX_RENDERTARGET_TWO_LIGHT;
 	topModel->data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_Head_anim.fbx");	//ƒ‚ƒfƒ‹“Ç‚İ‚İ

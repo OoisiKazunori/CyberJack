@@ -27,7 +27,7 @@ private:
 	HandleMaker handle;
 
 protected:
-	void SetConstBufferOnCmdList(PipeLineNames pipeline, bool REMOVE_DATA_FLAG = false, bool d=false);
+	void SetConstBufferOnCmdList(PipeLineNames pipeline, bool REMOVE_DATA_FLAG = false, bool d = false);
 
 	KazRenderHelper::RenderInstancesData renderData;
 	std::unique_ptr<CreateGpuBuffer> gpuBuffer;

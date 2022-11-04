@@ -166,8 +166,8 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	testEnemyPos = { 0.0f,0.0f,100.0f };
 
 	appearGoalBoxPos[0] = { 0.0f,10.0f,40.0f };
-	appearGoalBoxPos[1] = { 0.0f,10.0f,40.0f };
-	appearGoalBoxPos[2] = { 20.0f,-15.0f,40.0f };
+	appearGoalBoxPos[1] = { 0.0f,-15.0f,40.0f };
+	appearGoalBoxPos[2] = { 20.0f,-5.0f,40.0f };
 	responeGoalBoxPos = { -10.0f,-100.0f,40.0f };
 	goalBox.Init(responeGoalBoxPos);
 	initAppearFlag = false;
@@ -1094,7 +1094,6 @@ void Game::Draw()
 			goalBox.Draw();
 		}
 
-
 		stages[stageNum]->SetCamera(0);
 		stages[stageNum]->Draw();
 
@@ -1139,6 +1138,17 @@ void Game::Draw()
 		}
 
 
+		//次ポータルの描画
+		if (portalEffect.DrawNextPortal())
+		{
+			portalEffect.nextPortalRender.Draw();
+		}
+		//中間演出までのポータル
+		if (portalEffect.IsStart() && !portalEffect.IsFinish())
+		{
+			portalEffect.portalRender.Draw();
+		}
+
 		stages[stageNum]->vaporWaveSunRender.Draw();
 
 
@@ -1158,17 +1168,6 @@ void Game::Draw()
 			goalBox.lightEffect.Draw();
 		}
 
-
-		//次ポータルの描画
-		if (portalEffect.DrawNextPortal())
-		{
-			portalEffect.nextPortalRender.Draw();
-		}
-		//中間演出までのポータル
-		if (portalEffect.IsStart() && !portalEffect.IsFinish())
-		{
-			portalEffect.portalRender.Draw();
-		}
 
 
 		renderTarget[stageNum]->Draw();
@@ -1207,7 +1206,7 @@ void Game::Draw()
 	}
 	else if (gameClearFlag)
 	{
-		gameOverTex.data.transform.pos = { WIN_X / 2.0f, WIN_Y / 2.0f - 200.0f };
+		gameOverTex.data.transform.pos = { WIN_X / 2.0f, WIN_Y / 2.0f };
 		pressAButtonTex.data.transform.pos = { WIN_X / 2.0f, WIN_Y / 2.0f + 200.0f };
 		gameOverTex.data.handleData = gameClearResourceHandle;
 		gameOverTex.Draw();

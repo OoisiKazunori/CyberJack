@@ -569,9 +569,8 @@ void LineLevel1::Update()
 			}
 		}
 
-		++finishTimer;
 		//リリース時の演出が目標にたどり着いたらフラグを立てる
-		if (line[line.size() - 1]->finishReleaseFlag || FINISH_MAX_TIME <= finishTimer)
+		if (line[line.size() - 1]->finishReleaseFlag)
 		{
 			lineReachObjFlag = true;
 		}

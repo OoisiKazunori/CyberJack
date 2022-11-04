@@ -19,7 +19,7 @@ NormalMisileEnemy::NormalMisileEnemy()
 void NormalMisileEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 {
 	lerpPos = GENERATE_DATA.initPos;	//座標の初期化
-	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { 1.0f,1.0f,1.0f }, { 0.0f,180.0f,0.0f }), KazFilePathName::EnemyPath + "MisileEnemy/" + "Gunner_Switch_anim.fbx", 5.0f, true);
+	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { 1.0f,1.0f,1.0f }, { 0.0f,180.0f,0.0f }), KazFilePathName::EnemyPath + "MisileEnemy/" + "Gunner_Switch_anim.fbx", 10.0f, true);
 	iOperationData.Init(1,"gw-M");							//残りロックオン数等の初期化
 
 	initShotFlag = false;
@@ -110,6 +110,17 @@ void NormalMisileEnemy::Update()
 			lerpPos += vel;
 		}
 	}
+	else
+	{
+		if (iEnemy_FbxModelRender->data.colorData.color.a < 255)
+		{
+			iEnemy_FbxModelRender->data.colorData.color.a += 5;
+		}
+		else
+		{
+			iEnemy_FbxModelRender->data.colorData.color.a = 255;
+		}
+	}
 
 	KazMath::Larp(lerpPos.z, &iEnemy_FbxModelRender->data.transform.pos.z, 0.1f);
 
@@ -183,8 +194,8 @@ void NormalMisileEnemy::Draw()
 
 	if (iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
 	{
-		iEnemy_FbxModelRender->Draw();
 		flashR.Draw();
 		circleFlashR.Draw();
 	}
+	iEnemy_FbxModelRender->Draw();
 }

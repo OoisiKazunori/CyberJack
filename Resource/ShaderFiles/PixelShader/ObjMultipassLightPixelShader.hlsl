@@ -14,7 +14,7 @@ TwoRender PSmain(VSOutput input) : SV_TARGET
 {
     float3 light = normalize(lightDir);
     float diffuse = saturate(dot(-light, input.normal));
-    float brightness = diffuse + 0.7f;
+    float brightness = diffuse + 0.9f;
 
     float4 texColor = tex.Sample(smp, input.uv);
 

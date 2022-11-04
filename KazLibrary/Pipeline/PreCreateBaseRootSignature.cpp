@@ -332,17 +332,13 @@ PreCreateBaseRootSignature::PreCreateBaseRootSignature()
 		RootSignatureData lineData;
 		lineData.paramData[0].param = 0;
 		lineData.paramData[0].type = GRAPHICS_PRAMTYPE_DATA;
-		lineData.range[0] = GRAPHICS_RANGE_TYPE_CBV;
+		lineData.range[0] = GRAPHICS_RANGE_TYPE_UAV_VIEW;
 
 		lineData.paramData[1].param = 1;
-		lineData.paramData[1].type = GRAPHICS_PRAMTYPE_DATA2;
-		lineData.range[1] = GRAPHICS_RANGE_TYPE_UAV_VIEW;
+		lineData.paramData[1].type = GRAPHICS_PRAMTYPE_TEX;
+		lineData.range[1] = GRAPHICS_RANGE_TYPE_SRV;
 
-		lineData.paramData[2].param = 2;
-		lineData.paramData[2].type = GRAPHICS_PRAMTYPE_TEX;
-		lineData.range[2] = GRAPHICS_RANGE_TYPE_SRV;
-
-		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_DATA1_DATA2_TEX, lineData, 3);
+		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_DATA1_TEX, lineData, 2);
 	}
 #pragma endregion
 
@@ -550,5 +546,22 @@ PreCreateBaseRootSignature::PreCreateBaseRootSignature()
 		lData.range[3] = GRAPHICS_RANGE_TYPE_SRV;
 		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_DRAW_UAV_DATA2_TEX_TEX2, lData, 4);
 	}
-	;
+	
+
+	{
+		RootSignatureData lData;
+		lData.paramData[0].param = 0;
+		lData.paramData[0].type = GRAPHICS_PRAMTYPE_DATA;
+		lData.range[0] = GRAPHICS_RANGE_TYPE_CBV;
+
+		lData.paramData[1].param = 1;
+		lData.paramData[1].type = GRAPHICS_PRAMTYPE_DATA2;
+		lData.range[1] = GRAPHICS_RANGE_TYPE_UAV_VIEW;
+
+		lData.paramData[2].param = 2;
+		lData.paramData[2].type = GRAPHICS_PRAMTYPE_TEX;
+		lData.range[2] = GRAPHICS_RANGE_TYPE_SRV;
+		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_DRAW_UAV_DATA_TEX, lData, 3);
+	}
+	
 }

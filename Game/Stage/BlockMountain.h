@@ -35,13 +35,11 @@ private:
 	struct ObjectData
 	{
 		DirectX::XMFLOAT4 fogData;
-		DirectX::XMFLOAT2 uvoffset;
 	};
 
 	struct PosUvData
 	{
 		KazMath::Transform3D transform;
-		DirectX::XMFLOAT2 uvOffset;
 	};
 
 	std::vector<PosUvData> boxDataArray;

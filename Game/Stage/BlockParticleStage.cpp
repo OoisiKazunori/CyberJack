@@ -165,7 +165,7 @@ BlockParticleStage::BlockParticleStage()
 		std::string lObjectName = "BlockIndex3";
 		blockFileMgr.LoadFile(KazFilePathName::StageParamPath + "blockPosData.json");
 		int lCountNum = 0;
-		for (int i = 0; i < 6000; ++i)
+		for (int i = 0; i < 4000; ++i)
 		{
 			std::string name = lObjectName + "_" + std::to_string(i);
 			KazMath::Vec3<int> lNum(
@@ -180,6 +180,11 @@ BlockParticleStage::BlockParticleStage()
 				static_cast<float>(lNum.z) * (lSize * 2.0f),
 				0.0f
 			};
+
+			if (lData[i].pos.x == 0.0f && lData[i].pos.y == 0.0f && lData[i].pos.z == 0.0f)
+			{
+				lData[i].pos.x = -1000000.0f;
+			}
 			if (lNum.x != 0.0f || lNum.y != 0.0f || lNum.z != 0.0f)
 			{
 				++lCountNum;

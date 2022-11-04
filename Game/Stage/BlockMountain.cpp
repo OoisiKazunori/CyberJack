@@ -46,26 +46,31 @@ BlockMountain::BlockMountain(const InitBlockMountainData &INIT_DATA)
 	billRender->data.pipelineName = PIPELINE_NAME_BILL;
 	billRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "Bill_Model.obj");
 
-	billRender->data.addHandle.handle[0] = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StagePath + "lambert1_Base_color.png");
-	billRender->data.addHandle.paramType[0] = GRAPHICS_PRAMTYPE_TEX2;
-
-
-	billRender->data.addHandle.handle[1] = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StagePath + "CiEHwaAUUAAp0ZR.jpg");
-	billRender->data.addHandle.paramType[1] = GRAPHICS_PRAMTYPE_TEX;
-
+	billRender->data.addHandle.handle[0] = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StagePath + "CiEHwaAUUAAp0ZR.jpg");
+	billRender->data.addHandle.paramType[0] = GRAPHICS_PRAMTYPE_TEX;
 
 	fogColor.a = INIT_DATA.fogDesinty;
 	instanceBufferHandle = billRender->CreateConstBuffer(sizeof(MatData) * boxMaxNum, typeid(MatData).name(), GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA2);
 	objectBufferHandle = billRender->CreateConstBuffer(sizeof(ObjectData), typeid(ObjectData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
 
 	billRender->TransData(&objectData, objectBufferHandle, typeid(ObjectData).name());
+
+
+	DirectX::XMFLOAT3 colorRate = KazMath::Color(29, 19, 72, 255).ConvertColorRateToXMFLOAT3();
+	objectData.fogData = { colorRate.x,colorRate.y,colorRate.z,fogColor.a };
+	billRender->TransData
+	(
+		&objectData,
+		objectBufferHandle,
+		typeid(ObjectData).name()
+	);
+	billRender->demoFlag = true;
 }
 
 void BlockMountain::Update()
 {
 
 	std::vector<MatData> lData(boxMaxNum);
-	std::vector<ObjectData> lData2(boxMaxNum);
 	for (int i = 0; i < boxDataArray.size(); ++i)
 	{
 		boxDataArray[i].transform.pos += -KazMath::Vec3<float>(0.0f, 0.0f, 5.0f);
@@ -75,13 +80,6 @@ void BlockMountain::Update()
 		}
 
 		lData[i].mat = KazMath::CaluMat(boxDataArray[i].transform, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection(), { 0,1,0 }, { 0,0,1 });
-
-		boxDataArray[i].uvOffset.x += 0.01f;
-
-		DirectX::XMFLOAT3 colorRate = KazMath::Color(29, 19, 72, 255).ConvertColorRateToXMFLOAT3();
-		objectData.fogData = { colorRate.x,colorRate.y,colorRate.z,fogColor.a };
-		lData2[i].fogData = objectData.fogData;
-		lData2[i].uvoffset = boxDataArray[i].uvOffset;
 	}
 
 
@@ -92,13 +90,6 @@ void BlockMountain::Update()
 		typeid(MatData).name()
 	);
 
-	billRender->TransData
-	(
-		lData2.data(),
-		objectBufferHandle,
-		typeid(ObjectData).name()
-	);
-	billRender->demoFlag = true;
 }
 
 void BlockMountain::Draw()
