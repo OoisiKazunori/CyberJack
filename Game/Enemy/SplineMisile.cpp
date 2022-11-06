@@ -15,6 +15,8 @@ void SplineMisile::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { 1.3f,1.3f,1.3f }, { 0.0f,0.0f,0.0f }), KazFilePathName::EnemyPath + "Misile/" + "missile_Model.obj", 10.0f, false);
 	iEnemy_ObjModelRender->data.colorData.color.a = 255;
 	iEnemy_EnemyStatusData->timer = maxTime;
+	iEnemy_EnemyStatusData->radius = 3.0f;
+	iEnemy_EnemyStatusData->startFlag = true;
 	iOperationData.Init(1, "gwJ-M");
 
 	startIndex = 1;

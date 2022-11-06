@@ -22,9 +22,9 @@ RezStage::RezStage()
 
 
 	gridRender[0]->Init(true, 300.0f, -150.0f, &cameraIndex, true, true, lFlashColorArray);
-	gridRender[1]->Init(true, 300.0f, 3000.0f, &cameraIndex, true, true, lFlashColorArray);
-	gridRender[2]->Init(false, 300.0f, -3000.0f, &cameraIndex, true, false, lFlashColorArray);
-	gridRender[3]->Init(false, 300.0f, 3000.0f, &cameraIndex, true, false, lFlashColorArray);
+	//gridRender[1]->Init(true, 300.0f, 2000.0f, &cameraIndex, true, true, lFlashColorArray);
+	gridRender[1]->Init(false, 300.0f, -3000.0f, &cameraIndex, true, false, lFlashColorArray);
+	gridRender[2]->Init(false, 300.0f, 3000.0f, &cameraIndex, true, false, lFlashColorArray);
 
 
 	for (int i = 0; i < filePassNum.size(); ++i)
@@ -37,7 +37,7 @@ RezStage::RezStage()
 	stageModelhandle[2] = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "Mountain03_Model.obj");
 
 	vaporWaveSunRender.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::RelativeResourcePath + "Stage/" + "vaporWaveSun.png");
-	vaporWaveSunRender.data.transform.pos = { 0.0f,2000.0f,5000.0f };
+	vaporWaveSunRender.data.transform.pos = { 0.0f,600.0f,5000.0f };
 	vaporWaveSunRender.data.transform.scale = { 0.0f,0.0f,1.0f };
 	vaporWaveSunRender.data.colorData = { 255,0,0,255 };
 	vaporWaveSunRender.data.pipelineName = PIPELINE_NAME_SPRITE_MULTITEX;
@@ -80,7 +80,7 @@ RezStage::RezStage()
 
 
 	InitBlockMountainData lInitData;
-	lInitData.fogDesinty = 0.001f;
+	lInitData.fogDesinty = 0.0003f;
 	lInitData.lightDir = { -1.0f,1.0f,1.0f };
 	lInitData.xRange = 70;
 	lInitData.yScale = 500.0f;
@@ -92,7 +92,7 @@ RezStage::RezStage()
 	lInitData.lightDir = { 0.0f,0.0f,1.0f };
 	lInitData.xRange = 70;
 	lInitData.yScale = 500.0f;
-	lInitData.centralPos = { 0.0f,4500.0f,0.0f };
+	lInitData.centralPos = { 0.0f,2500.0f,0.0f };
 	lInitData.rotation = { 180.0f,0.0f,0.0f };
 	blockMountainArray[1] = std::make_unique<BlockMountain>(lInitData);
 
@@ -116,7 +116,7 @@ RezStage::RezStage()
 			lX = -KazMath::Rand(5000.0f, 1500.0f);
 		}
 
-		KazMath::Vec3<float>pos(lX, KazMath::Rand(4500.0f, 500.0f), KazMath::Rand(10000.0f, -10000.0f));
+		KazMath::Vec3<float>pos(lX, KazMath::Rand(500.0f, -500.0f), KazMath::Rand(10000.0f, -10000.0f));
 		windowArray[i].Init(pos, lData);
 	}
 }
@@ -136,7 +136,7 @@ void RezStage::Update()
 	if (startFlag)
 	{
 		Rate(&appearRate, 0.01f, 1.0f);
-		float easeRate = EasingMaker(Out, Cubic, appearRate) * 3.0f;
+		float easeRate = EasingMaker(Out, Cubic, appearRate) * 2.0f;
 		vaporWaveSunRender.data.transform.scale.x = easeRate;
 		vaporWaveSunRender.data.transform.scale.y = easeRate;
 		vaporWaveSunRender.data.transform.scale.z = easeRate;

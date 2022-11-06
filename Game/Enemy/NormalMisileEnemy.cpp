@@ -29,13 +29,14 @@ void NormalMisileEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_F
 
 	shotTimer = 0;
 
-	iEnemy_EnemyStatusData->startFlag = true;
-
 	disappearTimer = 0;
 	flashTimer = 0;
 	startFlag = false;
 
 	shotFlag = GENERATE_DATA.misileEnemy.isShotFlag;
+
+	iEnemy_EnemyStatusData->startFlag = true;
+	iEnemy_EnemyStatusData->radius = 10.0f;
 }
 
 void NormalMisileEnemy::Finalize()

@@ -43,7 +43,7 @@ private:
 	BoxPolygonRender selectingR;
 
 
-	std::array<std::unique_ptr<DrawGrid>, 4> gridRender;
+	std::array<std::unique_ptr<DrawGrid>, 3> gridRender;
 
 	std::unique_ptr<BoxPolygonRender> poly;
 	RESOURCE_HANDLE lineDrawHandle;
@@ -62,5 +62,5 @@ private:
 
 	std::array<std::unique_ptr<BlockMountain>, 2>blockMountainArray;
 
-	std::array<WindowForAd, 100> windowArray;
+	std::array<WindowForAd, 50> windowArray;
 };

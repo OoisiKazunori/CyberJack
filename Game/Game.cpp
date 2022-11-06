@@ -152,7 +152,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	gameFlame = 0;
 	changeLayerLevelMaxTime[0] = KazMath::ConvertSecondToFlame(70);
 	changeLayerLevelMaxTime[1] = KazMath::ConvertSecondToFlame(70);
-	changeLayerLevelMaxTime[2] = KazMath::ConvertSecondToFlame(50);
+	changeLayerLevelMaxTime[2] = KazMath::ConvertSecondToFlame(71);
 	//ゴールに触れ無かった場合に次のステージに移動する際の最大フレーム数
 	for (int i = 3; i < changeLayerLevelMaxTime.size(); ++i)
 	{
@@ -504,6 +504,11 @@ void Game::Update()
 					break;
 
 				case ENEMY_TYPE_BIKE_MISILE:
+					lightEffect[rocketIndex].Init(enemies[enemyType][enemyCount]->GetData()->hitBox.center, KazMath::Vec3<float>(0.0f, 0.0f, 0.0f), false, &enemies[enemyType][enemyCount]->GetData()->oprationObjData->enableToHitFlag, &enemies[enemyType][enemyCount]->GetData()->radius, &enemies[enemyType][enemyCount]->GetData()->startFlag);
+					++rocketIndex;
+					break;
+
+				case ENEMY_TYPE_MISILE_SPLINE:
 					lightEffect[rocketIndex].Init(enemies[enemyType][enemyCount]->GetData()->hitBox.center, KazMath::Vec3<float>(0.0f, 0.0f, 0.0f), false, &enemies[enemyType][enemyCount]->GetData()->oprationObjData->enableToHitFlag, &enemies[enemyType][enemyCount]->GetData()->radius, &enemies[enemyType][enemyCount]->GetData()->startFlag);
 					++rocketIndex;
 					break;
@@ -1149,6 +1154,11 @@ void Game::Draw()
 			portalEffect.portalRender.Draw();
 		}
 
+		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
+		{
+			goalBox.lightEffect.Draw();
+		}
+
 		stages[stageNum]->vaporWaveSunRender.Draw();
 
 
@@ -1161,13 +1171,6 @@ void Game::Draw()
 		{
 			lineLevel[i].Draw();
 		}
-
-
-		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
-		{
-			goalBox.lightEffect.Draw();
-		}
-
 
 
 		renderTarget[stageNum]->Draw();
