@@ -36,15 +36,18 @@ private:
 	//三角形描画
 	std::array<KazMath::Vec3<float>, 3>triangelPosArray;
 	std::array<LineRender, 3>triangelLine;
+	std::array<LineRender, 3>clossTriangelLine;
 
 	//パーティクルの数
-	static const int PARTICLE_MAX_NUM = 30;
+	static const int PARTICLE_MAX_NUM = 100;
 	std::array<BoxPolygonRender, PARTICLE_MAX_NUM>particle;
 	int drawParticleNum;
+	int particleBias;//パーティクルをエッジ周辺に偏よらせる値
+	static const int PARTICLE_MAX_BIAS = 100;//パーティクルをエッジ周辺に偏よらせる値
 
 	//計算
 	bool initFlag;
-
+	BackGroundForDebug debugDraw;
 	//デバック用--------------------------------------------
 
 };

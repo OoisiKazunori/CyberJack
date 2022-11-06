@@ -23,6 +23,10 @@ DebugMeshParticleScene::~DebugMeshParticleScene()
 void DebugMeshParticleScene::Init()
 {
 	cameraWork.Init();
+
+	triangelPosArray[0] = {-30.0f,0.0f,0.0f};
+	triangelPosArray[1] = {30.0f,0.0f,0.0f};
+	triangelPosArray[2] = {0.0f,30.0f,0.0f};
 }
 
 void DebugMeshParticleScene::Finalize()
@@ -53,8 +57,13 @@ void DebugMeshParticleScene::Update()
 		KazImGuiHelper::InputVec3("Pos3", &triangelPosArray[2]);
 		ImGui::TreePop();
 	}
+	if (ImGui::TreeNode("Particle"))
+	{
+		ImGui::SliderInt("ParticleNum", &drawParticleNum, 0, PARTICLE_MAX_NUM);
+		ImGui::SliderInt("ParticleBias", &particleBias, 0, PARTICLE_MAX_BIAS);
+		ImGui::TreePop();
+	}
 	initFlag = ImGui::Button("SetParticle");
-	ImGui::SliderInt("ParticleNum", &drawParticleNum, 0, PARTICLE_MAX_NUM);
 	ImGui::End();
 
 
@@ -65,16 +74,31 @@ void DebugMeshParticleScene::Update()
 	triangelLine[2].data.startPos = triangelPosArray[2];
 	triangelLine[2].data.endPos = triangelPosArray[0];
 
+	KazMath::Vec3<float>lCentralPos = {};
+	//法線ベクトルの算出
+	for (int i = 0; i < triangelPosArray.size(); ++i)
+	{
+		lCentralPos += triangelPosArray[i];
+
+		clossTriangelLine[i].data.startPos = triangelLine[i].data.startPos + (triangelLine[i].data.endPos - triangelLine[i].data.startPos) / 2.0f;
+		clossTriangelLine[i].data.colorData.color = { 255,0,0,255 };
+	}
+	KazMath::Vec3<float>lTriangleCentralPos = lCentralPos / 3.0f;
+	for (int i = 0; i < clossTriangelLine.size(); ++i)
+	{
+		clossTriangelLine[i].data.endPos = lTriangleCentralPos;
+	}
+
 
 	//パーティクルの計算処理
 	if (initFlag)
 	{
 		int particleNum = 0;
+
+		//一つのレイ当たりで使用できるパーティクルを決定する
+		const int L_MAX_PARTICLE = static_cast<int>(particle.size()) / static_cast<int>(triangelPosArray.size());
 		for (int rayIndex = 0; rayIndex < triangelLine.size(); ++rayIndex)
 		{
-			//一つのレイ当たりで使用できるパーティクルを決定する
-			const int L_MAX_PARTICLE = static_cast<int>(particle.size()) / static_cast<int>(triangelPosArray.size());
-
 			KazMath::Vec3<float>lDistance = triangelLine[rayIndex].data.endPos - triangelLine[rayIndex].data.startPos;
 
 			//以下の項目を計算し、配置する
@@ -84,29 +108,25 @@ void DebugMeshParticleScene::Update()
 				float lRate = KazMath::Rand(1.0f, 0.0f);
 				KazMath::Vec3<float>lStartPos = triangelLine[rayIndex].data.startPos + lDistance * lRate;
 
-				//2.指定した座標から垂直にレイを飛ばす。レイは二方向に飛ばし、別のレイと当たった方向に伸ばす
+				//2.1で決めた座標を始点、重心座標を終点とし、その長さを求める
+				KazMath::Vec3<float>lResultDistance = lTriangleCentralPos - lStartPos;
 
-
-				//3.1で決めた座標を始点、別のレイが当たった座標を終点とし、その長さを求める
-				KazMath::Vec3<float>lResultDistance;
-
-
-
-				//4.先程決めた長さの内、エッジ周辺にパーティクルを配置するか、長さの範囲で座標を決めるか乱数で決める
 
 				//数が多いほどエッジ周辺に偏らせる
-				const int L_RANDOM_NUMBER_BIAS = 80;
+				const int L_RANDOM_NUMBER_BIAS = particleBias;
 
-				//5-1.エッジ周辺にパーティクルを配置する場合は、長さを3割った値から乱数でどの場所に配置するか決める
-				if (L_RANDOM_NUMBER_BIAS <= KazMath::Rand(100, 0))
+				//3.先程決めた長さの内、エッジ周辺にパーティクルを配置するか、長さの範囲で座標を決めるか乱数で決める
+				if (KazMath::Rand(PARTICLE_MAX_BIAS, 0) <= L_RANDOM_NUMBER_BIAS)
 				{
-					particle[particleNum].data.transform.pos = lStartPos + (lResultDistance / 3.0) * KazMath::Rand(1.0f, 0.0f);
+					//4-1.エッジ周辺にパーティクルを配置する場合は、長さを一定値割った値から乱数でどの場所に配置するか決める
+					particle[particleNum].data.transform.pos = lStartPos + lResultDistance * KazMath::Rand(0.1f, 0.0f);
 				}
-				//5-2.長さの範囲で座標を決める場合は長さの値でどの場所に配置するか決める
 				else
 				{
+					//4-2.長さの範囲で座標を決める場合は長さの値でどの場所に配置するか決める
 					particle[particleNum].data.transform.pos = lStartPos + lResultDistance * KazMath::Rand(1.0f, 0.0f);
 				}
+				particle[particleNum].data.transform.scale = { 0.1f,0.1f,0.1f };
 				++particleNum;
 			}
 		}
@@ -130,8 +150,12 @@ void DebugMeshParticleScene::Draw()
 	{
 		particle[i].Draw();
 	}
+	for (int i = 0; i < clossTriangelLine.size(); ++i)
+	{
+		clossTriangelLine[i].Draw();
+	}
 
-	RenderTargetStatus::Instance()->SwapResourceBarrier();
+	debugDraw.Draw();
 
 }
 

@@ -537,6 +537,58 @@ bool CollisionManager::CheckRayAndPlane3D(const Ray &RAY, const ModiRectangle &M
 	}
 }
 
+bool CollisionManager::IsIntersected(const KazMath::Vec3<float> &START_POS_A, const KazMath::Vec3<float> &END_POS_A, const KazMath::Vec3<float> &START_POS_B, const KazMath::Vec3<float> &END_POS_B)
+{
+	//--線分の外積を計算して交差判定を行う--
+	//第一回 線分Aから見たBの交差判定
+	KazMath::Vec3<float> lBuffA = END_POS_A - START_POS_A;
+	lBuffA.Normalize();
+	KazMath::Vec3<float> lBuffB = START_POS_B - START_POS_A;
+	lBuffB.Normalize();
+	KazMath::Vec3<float> lBuffC = lBuffA;
+	lBuffC.Normalize();
+	KazMath::Vec3<float> lBuffD = END_POS_B - START_POS_A;
+	lBuffD.Normalize();
+
+	KazMath::Vec3<float> lBuffE = lBuffA.Cross(lBuffB);
+	KazMath::Vec3<float> lBuffF = lBuffC.Cross(lBuffD);
+	KazMath::Vec3<float> lResult1 = lBuffE * lBuffF;
+
+	//第二回 線分Bから見たAの交差判定
+	lBuffA = END_POS_B - END_POS_A;
+	lBuffA.Normalize();
+	lBuffB = START_POS_A - START_POS_B;
+	lBuffB.Normalize();
+	lBuffC = lBuffA;
+	lBuffC.Normalize();
+	lBuffD = END_POS_A - START_POS_A;
+	lBuffD.Normalize();
+
+	lBuffE = lBuffA.Cross(lBuffB);
+	lBuffF = lBuffC.Cross(lBuffD);
+	KazMath::Vec3<float> lResult2 = lBuffE * lBuffF;
+
+	//線分が交差している時は、線分から見て交差判定したい線分の端点2つが両側にある時。
+	//外積で左右判定をすると、交差している時は値の結果が+と-になる。
+	//つまり両方の外積を掛けて結果が-になった場合のみ交差している。
+	//線分AからみてBを判定、線分BからみてAを判定と二通り判定を行う。
+	//この2つの判定結果を掛けた時に-、若しくは0の時2つの線分は交差している。
+	if (lResult1.x < 0 && lResult2.x < 0)
+	{
+		return true;
+	}
+	return false;
+}
+
+KazMath::Vec3<float> CollisionManager::CalIntersectPoint(const KazMath::Vec3<float> &START_POS_A, const KazMath::Vec3<float> &END_POS_A, const KazMath::Vec3<float> &START_POS_B, const KazMath::Vec3<float> &END_POS_B)
+{
+	//交点を求める この式は資料そのまま
+	KazMath::Vec3<float> lBuff = END_POS_B - START_POS_B;
+	double lD1 = fabs(lBuff.Cross(START_POS_A - START_POS_B).x);
+	double lD2 = fabs(lBuff.Cross(END_POS_A - START_POS_B).x);
+	double lT = lD1 / (lD1 + lD2);
+	return START_POS_A + (END_POS_A - START_POS_A) * static_cast<float>(lT);
+}
 
 void CollisionManager::ClosestPtPoint2Triangle(const KazMath::Vec3<float> &point, const Triangle &triangle, KazMath::Vec3<float> *closest)
 {

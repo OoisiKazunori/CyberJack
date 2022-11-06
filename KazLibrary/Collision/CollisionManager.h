@@ -181,6 +181,12 @@ public:
 	bool CheckRayAndPlane3D(const Ray &RAY, const ModiRectangle &MODI, float *DISTANCE = nullptr);
 
 
+	//ü•ª‚Æü•ª‚Ì“–‚½‚è”»’è
+	bool IsIntersected(const KazMath::Vec3<float> &START_POS_A, const KazMath::Vec3<float> &END_POS_A, const KazMath::Vec3<float> &START_POS_B, const KazMath::Vec3<float> &END_POS_B);
+
+	// ü•ª‚Æü•ª‚ÌŒğ“_‚ğ‹‚ß‚éˆ—
+	KazMath::Vec3<float> CalIntersectPoint(const KazMath::Vec3<float> &START_POS_A, const KazMath::Vec3<float> &END_POS_A, const KazMath::Vec3<float> &START_POS_B, const KazMath::Vec3<float> &END_POS_B);
+
 	friend ISingleton<CollisionManager>;
 private:
 
