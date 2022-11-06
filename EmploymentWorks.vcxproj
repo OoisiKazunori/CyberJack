@@ -308,6 +308,7 @@
     <ClCompile Include="KazLibrary\Render\Sprite2DRender.cpp" />
     <ClCompile Include="KazLibrary\Render\Sprite3DRender.cpp" />
     <ClCompile Include="KazLibrary\Scene\ClassScene.cpp" />
+    <ClCompile Include="KazLibrary\Scene\DebugMeshParticle.cpp" />
     <ClCompile Include="KazLibrary\Scene\DebugScene.cpp" />
     <ClCompile Include="KazLibrary\Scene\DebugStageScene.cpp" />
     <ClCompile Include="KazLibrary\Scene\EnemyDebugScene.cpp" />
@@ -468,6 +469,7 @@
     <ClInclude Include="KazLibrary\Render\Sprite2DRender.h" />
     <ClInclude Include="KazLibrary\Render\Sprite3DRender.h" />
     <ClInclude Include="KazLibrary\Scene\ClassScene.h" />
+    <ClInclude Include="KazLibrary\Scene\DebugMeshParticle.h" />
     <ClInclude Include="KazLibrary\Scene\DebugScene.h" />
     <ClInclude Include="KazLibrary\Scene\DebugStageScene.h" />
     <ClInclude Include="KazLibrary\Scene\EnemyDebugScene.h" />

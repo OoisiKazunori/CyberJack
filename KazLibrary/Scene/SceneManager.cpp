@@ -10,12 +10,13 @@
 #include"../Scene/EnemyDebugScene.h"
 #include"../Scene/TutorialScene.h"
 #include"../Scene/DebugStageScene.h"
+#include"../Scene/DebugMeshParticle.h"
 
 SceneManager::SceneManager()
 {
-	scene.emplace_back(std::make_unique<TitleScene>());
-	scene.emplace_back(std::make_unique<GameScene>());
-	//scene.emplace_back(std::make_unique<DebugStageScene>());
+	//scene.emplace_back(std::make_unique<TitleScene>());
+	//scene.emplace_back(std::make_unique<GameScene>());
+	scene.emplace_back(std::make_unique<DebugMeshParticleScene>());
 	//scene.emplace_back(std::make_unique<EnemyDebugScene>());
 
 	nowScene = 0;
@@ -34,7 +35,7 @@ void SceneManager::Update()
 {
 	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
 
-	//�V�[���J�ڂ̋N��
+	//シーン遷移の開始
 	if (nextScene != nowScene)
 	{
 		change.Start();
@@ -43,16 +44,14 @@ void SceneManager::Update()
 
 	const int RESTART_NUM = -2;
 
-	//��ʂ��B�ꂽ�u��
+	//ゲーム画面が隠された判定
 	if (change.AllHiden())
 	{
 		scene[nowScene]->Finalize();
-		//�ʏ�̃V�[���؂�ւ�
 		if (nextScene != RESTART_NUM)
 		{
 			nowScene = nextScene;
 		}
-		//���V�[���̃��Z�b�g
 		else if (nextScene == RESTART_NUM)
 		{
 			nextScene = nowScene;
@@ -69,9 +68,9 @@ void SceneManager::Update()
 		}
 	}
 
+	//更新処理
 	if (itisInArrayFlag)
 	{
-
 		scene[nowScene]->Input();
 		scene[nowScene]->Update();
 
