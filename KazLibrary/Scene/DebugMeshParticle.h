@@ -39,7 +39,7 @@ private:
 	std::array<LineRender, 3>clossTriangelLine;
 
 	//パーティクルの数
-	static const int PARTICLE_MAX_NUM = 100;
+	static const int PARTICLE_MAX_NUM = 1000;
 	std::array<BoxPolygonRender, PARTICLE_MAX_NUM>particle;
 	int drawParticleNum;
 	int particleBias;//パーティクルをエッジ周辺に偏よらせる値

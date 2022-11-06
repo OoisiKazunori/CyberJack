@@ -24,9 +24,9 @@ void DebugMeshParticleScene::Init()
 {
 	cameraWork.Init();
 
-	triangelPosArray[0] = {-30.0f,0.0f,0.0f};
-	triangelPosArray[1] = {30.0f,0.0f,0.0f};
-	triangelPosArray[2] = {0.0f,30.0f,0.0f};
+	triangelPosArray[0] = { -30.0f,0.0f,0.0f };
+	triangelPosArray[1] = { 30.0f,0.0f,0.0f };
+	triangelPosArray[2] = { 0.0f,30.0f,0.0f };
 }
 
 void DebugMeshParticleScene::Finalize()
@@ -130,6 +130,12 @@ void DebugMeshParticleScene::Update()
 				++particleNum;
 			}
 		}
+
+		for (int i = particleNum; i < particle.size(); ++i)
+		{
+			particle[i].data.transform.scale = { 0.1f,0.1f,0.1f };
+		}
+
 		initFlag = false;
 	}
 
