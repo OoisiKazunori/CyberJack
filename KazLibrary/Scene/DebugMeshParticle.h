@@ -29,7 +29,7 @@ private:
 
 	CameraWork cameraWork;
 
-	//MeshParticleEmitter meshEmitter;
+	MeshParticleEmitter meshEmitter;
 
 
 	//デバック用--------------------------------------------

@@ -12,7 +12,7 @@
 
 #include"../KazLibrary/Input/ControllerInputManager.h"
 
-DebugMeshParticleScene::DebugMeshParticleScene()
+DebugMeshParticleScene::DebugMeshParticleScene() :meshEmitter(5)
 {
 }
 
@@ -27,6 +27,9 @@ void DebugMeshParticleScene::Init()
 	triangelPosArray[0] = { -30.0f,0.0f,0.0f };
 	triangelPosArray[1] = { 30.0f,0.0f,0.0f };
 	triangelPosArray[2] = { 0.0f,30.0f,0.0f };
+
+
+	meshEmitter.Init({});
 }
 
 void DebugMeshParticleScene::Finalize()
@@ -139,6 +142,7 @@ void DebugMeshParticleScene::Update()
 		initFlag = false;
 	}
 
+	meshEmitter.Update();
 }
 
 void DebugMeshParticleScene::Draw()
@@ -161,7 +165,9 @@ void DebugMeshParticleScene::Draw()
 		clossTriangelLine[i].Draw();
 	}
 
-	debugDraw.Draw();
+	//debugDraw.Draw();
+
+	meshEmitter.Draw();
 
 }
 

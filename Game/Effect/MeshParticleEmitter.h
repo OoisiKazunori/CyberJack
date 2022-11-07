@@ -23,19 +23,11 @@ private:
 
 	//バッファ
 	std::unique_ptr<CreateGpuBuffer> buffers;
-	RESOURCE_HANDLE vertexBufferHandle, indexBufferHandle, 
-		outputInitBufferHandle, verticesDataHandle, indexDataHandle,
-		drawCommandHandle, counterBufferHandle, commonInitBufferHandle,
-		countIndexBuffHandle;
-
-	RESOURCE_HANDLE outputInitViewHandle, vertDataViewHandle, indexViewDataHandle, counterIndexBufferViewHandle;
-
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 	D3D12_INDEX_BUFFER_VIEW indexBufferView;
 	//バッファ
 
-	static const int PARTICLE_MAX_NUM = 1;
-	static const int PER_USE_PARTICLE_MAX_NUM = 5000;
+	static const int PARTICLE_MAX_NUM = 50000;
 	static const int DRAW_CALL = 1;
 
 	struct IndirectCommand
@@ -45,27 +37,52 @@ private:
 	};
 
 
-	struct OutputInitData
-	{
-		DirectX::XMMATRIX mat;
-		DirectX::XMFLOAT4 color;
-	};
 
-	struct CommonData
+	Microsoft::WRL::ComPtr<ID3D12CommandSignature> commandSig;
+	ObjModelRender model;
+	std::array<std::string, 10>filePass;
+
+	//必要情報--------------------------------------------
+	KazMath::Vec3<float>pos;
+	//必要情報--------------------------------------------
+
+	//初期化--------------------------------------------
+	struct InitCommonData
 	{
-		DirectX::XMMATRIX cameraMat;
-		DirectX::XMMATRIX projectionMat;
-		DirectX::XMMATRIX billboardMat;
 		DirectX::XMFLOAT4 worldPos;
 		UINT vertMaxNum;
 		UINT indexMaxNum;
-		UINT dev;
 	};
+	InitCommonData constBufferData;
+	RESOURCE_HANDLE vertexBufferHandle, indexBufferHandle;
+	RESOURCE_HANDLE verticesDataHandle, indexDataHandle, indexOffsetHandle, initCommonHandle;
 
-	Microsoft::WRL::ComPtr<ID3D12CommandSignature> commandSig;
-	CommonData constBufferData;
-	KazMath::Vec3<float>pos;
-	ObjModelRender model;
-	int lDev = 0;
-	std::array<std::string, 10>filePass;
+	RESOURCE_HANDLE outputHandle,outputCounterHandle;
+
+	RESOURCE_HANDLE outputViewHandle, vertDataViewHandle, indexViewDataHandle, indexOffsetViewHandle;
+	//初期化--------------------------------------------
+
+	//更新用--------------------------------------------
+	struct UpdateData
+	{
+		DirectX::XMMATRIX matrix;
+		DirectX::XMFLOAT4 color;
+	};
+	struct UpdateCommonData
+	{
+		DirectX::XMMATRIX scaleRotateBillboardMat;
+		DirectX::XMMATRIX viewProjection;
+		UINT indexMaxNum;
+	};
+	UpdateCommonData updateCommonData;
+	RESOURCE_HANDLE updateHandle,updateCommonHandle;
+	RESOURCE_HANDLE updateViewHandle;
+	DirectX::XMMATRIX scaleRotaMat;
+
+
+	UINT indexNum;
+
+	//更新用--------------------------------------------
+
+	RESOURCE_HANDLE drawCommandHandle;
 };

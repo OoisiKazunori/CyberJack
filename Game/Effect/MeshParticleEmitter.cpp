@@ -35,6 +35,19 @@ MeshParticleEmitter::MeshParticleEmitter(int NUM)
 		assert(0);
 	}
 
+
+	filePass[0] = KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_Model.obj";
+	filePass[1] = KazFilePathName::EnemyPath + "Bike/" + "Bike_Model.obj";
+	filePass[2] = KazFilePathName::EnemyPath + "MisileEnemy/" + "Gunner_Model.obj";
+	filePass[3] = KazFilePathName::EnemyPath + "Move/" + "MoveEnemy_Model.obj";
+	filePass[4] = KazFilePathName::EnemyPath + "PopEnemy/" + "PopEnemy_Model.obj";
+	filePass[5] = KazFilePathName::EnemyPath + "Summon/" + "SummonEnemy_Model.obj";
+
+	RESOURCE_HANDLE lHandle = ObjResourceMgr::Instance()->LoadModel(filePass[NUM]);
+	std::vector<DirectX::XMFLOAT4>modelVertArrayData = ObjResourceMgr::Instance()->GetResourceData(lHandle).vertices;
+	std::vector<UINT>modelIndexArrayData = ObjResourceMgr::Instance()->GetResourceData(lHandle).index;
+	indexNum = static_cast<UINT>(modelIndexArrayData.size());
+
 	std::array<Vertex, 4>vertices;
 	std::array<USHORT, 6> indices;
 	indices = KazRenderHelper::InitIndciesForPlanePolygon();
@@ -45,89 +58,94 @@ MeshParticleEmitter::MeshParticleEmitter(int NUM)
 	BUFFER_SIZE indexBuffSize = KazBufferHelper::GetBufferSize<BUFFER_SIZE>(indices.size(), sizeof(unsigned int));
 
 	//バッファ生成-------------------------
+	//初期化用--------
+	//描画情報
 	vertexBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetVertexBufferData(vertBuffSize));
 	indexBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetIndexBufferData(indexBuffSize));
+	verticesDataHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(DirectX::XMFLOAT4) * static_cast<UINT>(modelVertArrayData.size())));
+	indexDataHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(UINT) * static_cast<UINT>(modelIndexArrayData.size())));
+	indexOffsetHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(UINT)));
 
-	commonInitBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(CommonData)));
+	//共通情報
+	initCommonHandle = buffers->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(InitCommonData)));
 
-	verticesDataHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer((sizeof(DirectX::XMFLOAT4) * PER_USE_PARTICLE_MAX_NUM) * PARTICLE_MAX_NUM));
-	indexDataHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer((sizeof(UINT) * PER_USE_PARTICLE_MAX_NUM) * PARTICLE_MAX_NUM));
-	outputInitBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer((sizeof(OutputInitData) * 50000)));
+	//出力
+	outputHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer((sizeof(DirectX::XMFLOAT4) * PARTICLE_MAX_NUM)));
+	//初期化用--------
+
+	//更新用
+	updateHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer((sizeof(UpdateData) * PARTICLE_MAX_NUM)));
+	updateCommonHandle = buffers->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(UpdateCommonData)));
+
+	//描画用
 	drawCommandHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(IndirectCommand) * DRAW_CALL));
-	countIndexBuffHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(UINT)));
-	counterBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(UINT)));
+
+	outputCounterHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(UINT)));
 	//バッファ生成-------------------------
 
 	//転送-------------------------
 	buffers->TransData(vertexBufferHandle, vertices.data(), vertBuffSize);
 	buffers->TransData(indexBufferHandle, indices.data(), indexBuffSize);
+
 	UINT reset = 0;
-	buffers->TransData(countIndexBuffHandle, &reset, sizeof(UINT));
-	buffers->TransData(counterBufferHandle, &reset, sizeof(UINT));
-
-
-	filePass[0] = KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_Model.obj";
-	filePass[1] = KazFilePathName::EnemyPath + "Bike/" + "Bike_Model.obj";
-	filePass[2] = KazFilePathName::EnemyPath + "MisileEnemy/" + "Gunner_Model.obj";
-	filePass[3] = KazFilePathName::EnemyPath + "Move/" + "MoveEnemy_Model.obj";
-	filePass[4] = KazFilePathName::EnemyPath + "PopEnemy/" + "PopEnemy_Model.obj";
-	filePass[5] = KazFilePathName::EnemyPath + "Summon/" + "SummonEnemy_Model.obj";
+	buffers->TransData(outputCounterHandle, &reset, sizeof(UINT));
+	buffers->TransData(indexOffsetHandle, &reset, sizeof(UINT));
 
 	enemyIndex = NUM;
 	oldEnemyNum = NUM;
 	{
-		RESOURCE_HANDLE lHandle = ObjResourceMgr::Instance()->LoadModel(filePass[NUM]);
 		model.data.handle = lHandle;
 
 		//頂点情報
 		memcpy
 		(
 			buffers->GetMapAddres(verticesDataHandle),
-			ObjResourceMgr::Instance()->GetResourceData(lHandle).vertices.data(),
-			ObjResourceMgr::Instance()->GetResourceData(lHandle).vertices.size() * sizeof(DirectX::XMFLOAT4)
+			modelVertArrayData.data(),
+			modelVertArrayData.size() * sizeof(DirectX::XMFLOAT4)
 		);
 
 		//インデックス情報
 		memcpy
 		(
 			buffers->GetMapAddres(indexDataHandle),
-			ObjResourceMgr::Instance()->GetResourceData(lHandle).index.data(),
-			ObjResourceMgr::Instance()->GetResourceData(lHandle).index.size() * sizeof(UINT)
+			modelIndexArrayData.data(),
+			modelIndexArrayData.size() * sizeof(UINT)
 		);
 
 		constBufferData.worldPos = {};
 		constBufferData.vertMaxNum = static_cast<UINT>(ObjResourceMgr::Instance()->GetResourceData(lHandle).vertices.size());
 		constBufferData.indexMaxNum = static_cast<UINT>(ObjResourceMgr::Instance()->GetResourceData(lHandle).index.size());
+		buffers->TransData(initCommonHandle, &constBufferData, sizeof(InitCommonData));
 	}
-
 
 	model.data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
 	model.data.removeMaterialFlag = true;
 	model.data.colorData.color = { 255,255,255,255 };
+	model.data.transform.scale = { 0.5f,0.5f,0.5f };
 
 	IndirectCommand command;
 	command.drawArguments.IndexCountPerInstance = static_cast<UINT>(indices.size());
-	command.drawArguments.InstanceCount = 50000;
+	command.drawArguments.InstanceCount = PARTICLE_MAX_NUM;
 	command.drawArguments.StartIndexLocation = 0;
 	command.drawArguments.StartInstanceLocation = 0;
 	command.drawArguments.BaseVertexLocation = 0;
 
-	command.uav = buffers->GetGpuAddress(outputInitBufferHandle);
+	command.uav = buffers->GetGpuAddress(outputHandle);
 	buffers->TransData(drawCommandHandle, &command, sizeof(IndirectCommand) * DRAW_CALL);
 	//転送-------------------------
 
-	outputInitViewHandle = UavViewHandleMgr::Instance()->GetHandle();
+	outputViewHandle = UavViewHandleMgr::Instance()->GetHandle();
 	DescriptorHeapMgr::Instance()->CreateBufferView(
-		outputInitViewHandle,
-		KazBufferHelper::SetUnorderedAccessView(sizeof(OutputInitData), 50000),
-		buffers->GetBufferData(outputInitBufferHandle).Get(),
-		buffers->GetBufferData(counterBufferHandle).Get()
+		outputViewHandle,
+		KazBufferHelper::SetUnorderedAccessView(sizeof(DirectX::XMFLOAT4), PARTICLE_MAX_NUM),
+		buffers->GetBufferData(outputHandle).Get(),
+		buffers->GetBufferData(outputCounterHandle).Get()
 	);
 
 	vertDataViewHandle = UavViewHandleMgr::Instance()->GetHandle();
 	DescriptorHeapMgr::Instance()->CreateBufferView(
 		vertDataViewHandle,
-		KazBufferHelper::SetUnorderedAccessView(sizeof(DirectX::XMFLOAT4), PARTICLE_MAX_NUM * PER_USE_PARTICLE_MAX_NUM),
+		KazBufferHelper::SetUnorderedAccessView(sizeof(DirectX::XMFLOAT4), static_cast<UINT>(modelVertArrayData.size())),
 		buffers->GetBufferData(verticesDataHandle).Get(),
 		nullptr
 	);
@@ -135,16 +153,24 @@ MeshParticleEmitter::MeshParticleEmitter(int NUM)
 	indexViewDataHandle = UavViewHandleMgr::Instance()->GetHandle();
 	DescriptorHeapMgr::Instance()->CreateBufferView(
 		indexViewDataHandle,
-		KazBufferHelper::SetUnorderedAccessView(sizeof(UINT), PARTICLE_MAX_NUM * PER_USE_PARTICLE_MAX_NUM),
+		KazBufferHelper::SetUnorderedAccessView(sizeof(UINT), static_cast<UINT>(modelIndexArrayData.size())),
 		buffers->GetBufferData(indexDataHandle).Get(),
 		nullptr
 	);
 
-	counterIndexBufferViewHandle = UavViewHandleMgr::Instance()->GetHandle();
+	indexOffsetViewHandle = UavViewHandleMgr::Instance()->GetHandle();
 	DescriptorHeapMgr::Instance()->CreateBufferView(
-		counterIndexBufferViewHandle,
+		indexOffsetViewHandle,
 		KazBufferHelper::SetUnorderedAccessView(sizeof(UINT), 1),
-		buffers->GetBufferData(countIndexBuffHandle).Get(),
+		buffers->GetBufferData(indexOffsetHandle).Get(),
+		nullptr
+	);
+
+	updateViewHandle = UavViewHandleMgr::Instance()->GetHandle();
+	DescriptorHeapMgr::Instance()->CreateBufferView(
+		updateViewHandle,
+		KazBufferHelper::SetUnorderedAccessView(sizeof(UINT), 1),
+		buffers->GetBufferData(indexOffsetHandle).Get(),
 		nullptr
 	);
 
@@ -152,15 +178,41 @@ MeshParticleEmitter::MeshParticleEmitter(int NUM)
 	indexBufferView = KazBufferHelper::SetIndexBufferView(buffers->GetGpuAddress(indexBufferHandle), indexBuffSize);
 
 
+
+
+
+	//初期化処理--------------------------------------------
+	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
+	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_MESHPARTICLE_INIT);
+
+	{
+		//頂点
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(vertDataViewHandle));
+		//インデックス
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(indexViewDataHandle));
+		//インデックスオフセット
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(2, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(indexOffsetViewHandle));
+		//出力
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(3, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
+	}
+
+	//共通用バッファのデータ送信
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(4, buffers->GetGpuAddress(initCommonHandle));
+
+	//初期化処理--------------------------------------------
+
 	resetSceneFlag = false;
+
+
+	scaleRotaMat = KazMath::CaluScaleMatrix({ 1.0f,1.0f,1.0f }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
 }
 
 MeshParticleEmitter::~MeshParticleEmitter()
 {
-	DescriptorHeapMgr::Instance()->Release(outputInitViewHandle);
 	DescriptorHeapMgr::Instance()->Release(vertDataViewHandle);
 	DescriptorHeapMgr::Instance()->Release(indexViewDataHandle);
-	DescriptorHeapMgr::Instance()->Release(counterIndexBufferViewHandle);
+	DescriptorHeapMgr::Instance()->Release(indexOffsetViewHandle);
+	DescriptorHeapMgr::Instance()->Release(outputViewHandle);
 }
 
 void MeshParticleEmitter::Init(const KazMath::Vec3<float> &POS)
@@ -173,54 +225,21 @@ void MeshParticleEmitter::Init(const KazMath::Vec3<float> &POS)
 
 void MeshParticleEmitter::Update()
 {
-	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_MESHPARTICLE);
-
-	UINT reset = 0;
-	buffers->TransData(countIndexBuffHandle, &reset, sizeof(UINT));
-	buffers->TransData(counterBufferHandle, &reset, sizeof(UINT));
+	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_MESHPARTICLE_UPDATE);
 
 	{
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputInitViewHandle));
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(vertDataViewHandle));
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(2, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(indexViewDataHandle));
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(3, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(counterIndexBufferViewHandle));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(updateViewHandle));
 	}
 
 	//共通用バッファのデータ送信
 	{
-		constBufferData.cameraMat = CameraMgr::Instance()->GetViewMatrix();
-		constBufferData.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
-		constBufferData.billboardMat = CameraMgr::Instance()->GetMatBillBoard();
-		buffers->TransData(commonInitBufferHandle, &constBufferData, sizeof(CommonData));
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(4, buffers->GetGpuAddress(commonInitBufferHandle));
+		updateCommonData.scaleRotateBillboardMat = scaleRotaMat * CameraMgr::Instance()->GetMatBillBoard();
+		updateCommonData.viewProjection = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
+		updateCommonData.indexMaxNum = indexNum;
+		buffers->TransData(updateCommonHandle, &updateCommonData, sizeof(UpdateCommonData));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(updateCommonHandle));
 	}
-
-
-	{
-		RESOURCE_HANDLE lHandle = ObjResourceMgr::Instance()->LoadModel(filePass[enemyIndex]);
-		model.data.handle = lHandle;
-
-		//頂点情報
-		memcpy
-		(
-			buffers->GetMapAddres(verticesDataHandle),
-			ObjResourceMgr::Instance()->GetResourceData(lHandle).vertices.data(),
-			ObjResourceMgr::Instance()->GetResourceData(lHandle).vertices.size() * sizeof(DirectX::XMFLOAT4)
-		);
-
-		//インデックス情報
-		memcpy
-		(
-			buffers->GetMapAddres(indexDataHandle),
-			ObjResourceMgr::Instance()->GetResourceData(lHandle).index.data(),
-			ObjResourceMgr::Instance()->GetResourceData(lHandle).index.size() * sizeof(UINT)
-		);
-
-		constBufferData.worldPos = {};
-		constBufferData.vertMaxNum = static_cast<UINT>(ObjResourceMgr::Instance()->GetResourceData(lHandle).vertices.size());
-		constBufferData.indexMaxNum = static_cast<UINT>(ObjResourceMgr::Instance()->GetResourceData(lHandle).index.size());
-	}
-
 
 	DirectX12CmdList::Instance()->cmdList->Dispatch(10, 1, 1);
 
@@ -228,7 +247,6 @@ void MeshParticleEmitter::Update()
 	ImGui::SliderInt("ColorA", &model.data.colorData.color.a, 0, 255);
 	ImGui::InputInt("Enemy", &enemyIndex);
 	ImGui::End();
-	constBufferData.dev = lDev;
 
 	if (enemyIndex != oldEnemyNum)
 	{
