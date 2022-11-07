@@ -18,13 +18,13 @@ cbuffer RootConstants : register(b0)
 RWStructuredBuffer<float4> worldPosArrayData : register(u0);
 RWStructuredBuffer<OutputData> matrixData : register(u1);
 
-[numthreads(1024, 1, 1)]
+[numthreads(8, 1, 1)]
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 groupThreadID : SV_GroupThreadID)
 {
     uint index = (groupThreadID.y * 1204) + groupThreadID.x + groupThreadID.z;
     index += 1024 * groupId.x;
 
-    if(indexMax < index)
+    if(8 < index)
     {
         return;
     }
@@ -39,7 +39,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     //o—Í--------------------------------------------
     OutputData outputMat;
     outputMat.mat = mul(viewProjection,pMatWorld);
-    outputMat.color = float4(1,1,1,1);
+    outputMat.color = float4(0.5,0,0,1);
     matrixData[index] = outputMat;
     //o—Í--------------------------------------------
 }

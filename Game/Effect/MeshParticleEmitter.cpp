@@ -121,7 +121,7 @@ MeshParticleEmitter::MeshParticleEmitter(int NUM)
 	model.data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
 	model.data.removeMaterialFlag = true;
 	model.data.colorData.color = { 255,255,255,255 };
-	model.data.transform.scale = { 0.5f,0.5f,0.5f };
+	model.data.transform.scale = { 1.0f,1.0f,1.0f };
 
 	IndirectCommand command;
 	command.drawArguments.IndexCountPerInstance = static_cast<UINT>(indices.size());
@@ -130,7 +130,7 @@ MeshParticleEmitter::MeshParticleEmitter(int NUM)
 	command.drawArguments.StartInstanceLocation = 0;
 	command.drawArguments.BaseVertexLocation = 0;
 
-	command.uav = buffers->GetGpuAddress(outputHandle);
+	command.uav = buffers->GetGpuAddress(updateHandle);
 	buffers->TransData(drawCommandHandle, &command, sizeof(IndirectCommand) * DRAW_CALL);
 	//転送-------------------------
 
@@ -169,8 +169,8 @@ MeshParticleEmitter::MeshParticleEmitter(int NUM)
 	updateViewHandle = UavViewHandleMgr::Instance()->GetHandle();
 	DescriptorHeapMgr::Instance()->CreateBufferView(
 		updateViewHandle,
-		KazBufferHelper::SetUnorderedAccessView(sizeof(UINT), 1),
-		buffers->GetBufferData(indexOffsetHandle).Get(),
+		KazBufferHelper::SetUnorderedAccessView(sizeof(UpdateData), PARTICLE_MAX_NUM),
+		buffers->GetBufferData(updateHandle).Get(),
 		nullptr
 	);
 
@@ -180,11 +180,12 @@ MeshParticleEmitter::MeshParticleEmitter(int NUM)
 
 
 
-
 	//初期化処理--------------------------------------------
 	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_MESHPARTICLE_INIT);
 
+	buffers->TransData(outputCounterHandle, &reset, sizeof(UINT));
+	buffers->TransData(indexOffsetHandle, &reset, sizeof(UINT));
 	{
 		//頂点
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(vertDataViewHandle));
@@ -199,7 +200,8 @@ MeshParticleEmitter::MeshParticleEmitter(int NUM)
 	//共通用バッファのデータ送信
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(4, buffers->GetGpuAddress(initCommonHandle));
 
-	//初期化処理--------------------------------------------
+	DirectX12CmdList::Instance()->cmdList->Dispatch(1, 1, 1);
+
 
 	resetSceneFlag = false;
 
@@ -225,6 +227,10 @@ void MeshParticleEmitter::Init(const KazMath::Vec3<float> &POS)
 
 void MeshParticleEmitter::Update()
 {
+
+
+	//初期化処理--------------------------------------------
+
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_MESHPARTICLE_UPDATE);
 
 	{
@@ -241,7 +247,7 @@ void MeshParticleEmitter::Update()
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(updateCommonHandle));
 	}
 
-	DirectX12CmdList::Instance()->cmdList->Dispatch(10, 1, 1);
+	DirectX12CmdList::Instance()->cmdList->Dispatch(1, 1, 1);
 
 	ImGui::Begin("Mesh");
 	ImGui::SliderInt("ColorA", &model.data.colorData.color.a, 0, 255);
@@ -257,6 +263,10 @@ void MeshParticleEmitter::Update()
 
 void MeshParticleEmitter::Draw()
 {
+
+	model.Draw();
+
+
 	GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE);
 	DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
@@ -283,7 +293,5 @@ void MeshParticleEmitter::Draw()
 		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
 	);
-
-	model.Draw();
 
 }
