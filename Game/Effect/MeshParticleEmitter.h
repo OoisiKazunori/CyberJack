@@ -50,12 +50,6 @@ private:
 	struct OutputData
 	{
 		DirectX::XMFLOAT4 pos;
-		DirectX::XMFLOAT2 rate;
-		DirectX::XMFLOAT2 pad;
-
-		DirectX::XMFLOAT4 resultDistance;
-		DirectX::XMFLOAT4 startPos;
-		DirectX::XMFLOAT4 rayStartPos;
 	};
 	struct InitCommonData
 	{
@@ -65,11 +59,11 @@ private:
 	};
 	InitCommonData constBufferData;
 	RESOURCE_HANDLE vertexBufferHandle, indexBufferHandle;
-	RESOURCE_HANDLE verticesDataHandle, indexDataHandle, indexOffsetHandle, initCommonHandle;
+	RESOURCE_HANDLE verticesDataHandle, indexDataHandle, initCommonHandle;
 
 	RESOURCE_HANDLE outputHandle,outputCounterHandle;
 
-	RESOURCE_HANDLE outputViewHandle, vertDataViewHandle, indexViewDataHandle, indexOffsetViewHandle;
+	RESOURCE_HANDLE outputViewHandle, vertDataViewHandle, indexViewDataHandle;
 	//èâä˙âª--------------------------------------------
 
 	//çXêVóp--------------------------------------------

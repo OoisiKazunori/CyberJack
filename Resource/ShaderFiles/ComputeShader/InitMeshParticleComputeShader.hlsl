@@ -11,18 +11,13 @@ cbuffer RootConstants : register(b0)
 struct OutputData
 {
     float4 pos;
-    float2 rate;
-    float4 distance;    
-    float4 startPos;
-    float4 rayStartPos;
 };
 
 //更新
 RWStructuredBuffer<float4> vertciesData : register(u0);
 RWStructuredBuffer<uint> indexData : register(u1);
-RWStructuredBuffer<uint> indexOffset : register(u2);
 //出力
-RWStructuredBuffer<OutputData> worldPosData : register(u3);
+RWStructuredBuffer<OutputData> worldPosData : register(u2);
 
 float4 GetPos(float3 VERT_POS,float3 WORLD_POS)
 {
@@ -37,23 +32,22 @@ float4 GetPos(float3 VERT_POS,float3 WORLD_POS)
     return float4(worldMat[0].w,worldMat[1].w,worldMat[2].w,0.0f);
 };
 
-[numthreads(1, 1, 1)]
+[numthreads(2, 1, 1)]
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 groupThreadID : SV_GroupThreadID)
 {
     uint index = (groupThreadID.y * 1204) + groupThreadID.x + groupThreadID.z;
     index += 1024 * groupId.x;
 
     //頂点数以内なら処理する
-    if(indexMaxNum < indexOffset[0] + index + 2)
+    if(indexMaxNum < index * 3 + 2)
     {
         return;
     }
 
     //三角形を構成するインデックスの指定--------------------------------------------
-    uint firstVertIndex = indexData[indexOffset[0] + index];
-    uint secondVertIndex = indexData[indexOffset[0] + index + 1];
-    uint thirdVertIndex = indexData[indexOffset[0] + index + 2];
-    indexOffset[0] += 2;
+    uint firstVertIndex = indexData[index * 3];
+    uint secondVertIndex = indexData[index * 3 + 1];
+    uint thirdVertIndex = indexData[index * 3 + 2];
     //三角形を構成するインデックスの指定--------------------------------------------
 
     //頂点座標からワールド座標に変換後----------------------------------------------
@@ -100,8 +94,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
             float3 resultPos;
             const int PARTICLE_MAX_BIAS = 100;
             const int RANDOM_NUMBER_BIAS = 70;
-
-            worldPosData[outputIndex].rate.x = rate;
+            
             if(RandVec3(outputIndex,PARTICLE_MAX_BIAS,0).x <= RANDOM_NUMBER_BIAS)
             {
                 //エッジ周辺に偏らせる
@@ -116,13 +109,6 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
                 resultPos = startPos + resultDistance * rate;
                 worldPosData[outputIndex].pos.xyz = resultPos;
             }
-            //始点
-            worldPosData[outputIndex].startPos.xyz = startPos;
-            //重心座標から始点の距離
-            worldPosData[outputIndex].distance.xyz = resultDistance;
-            //重心座標から始点の距離乱数
-            worldPosData[outputIndex].rate.y = rate;
-            worldPosData[outputIndex].rayStartPos.xyz = triangleRay[rayIndex][0];
         }
     }
     //パーティクルの配置--------------------------------------------

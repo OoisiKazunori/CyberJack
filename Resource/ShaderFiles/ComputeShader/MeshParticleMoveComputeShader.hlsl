@@ -11,16 +11,12 @@ cbuffer RootConstants : register(b0)
 {    
     matrix scaleRotateBillboardMat;
     matrix viewProjection;
-    int indexMax;
+    int indexMaxNum;
 };
 
 struct UpdateData
 {
     float4 pos;
-    float2 rate;
-    float4 distance;    
-    float4 startPos;
-    float4 rayStartPos;
 };
 
 RWStructuredBuffer<UpdateData> worldPosArrayData : register(u0);
@@ -32,9 +28,9 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     uint index = (groupThreadID.y * 1204) + groupThreadID.x + groupThreadID.z;
     index += 1024 * groupId.x;
 
-    if(76 < index)
+    if(indexMaxNum < index)
     {
-        //return;
+        return;
     }
 
     //行列計算-------------------------
@@ -46,18 +42,9 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
 
     //出力--------------------------------------------
     OutputData outputMat;
-    outputMat.mat = mul(viewProjection,pMatWorld);
-
-    //if(1.0 <= abs(pMatWorld[0][3]) || 1.0 <= abs(pMatWorld[1][3]) || 1.0 <= abs(pMatWorld[2][3]))
-    if(1.0f <= worldPosArrayData[index].rate.x || 1.0f <= worldPosArrayData[index].rate.y)
-    {
-        outputMat.color = float4(0,0.5,0,1);
-    }
-    else
-    {
-        outputMat.color = float4(0.5,0,0,1);
-    }
+    outputMat.mat = mul(viewProjection,pMatWorld); 
     
+    outputMat.color = float4(0.5,0,0,1);
     matrixData[index] = outputMat;
     //出力--------------------------------------------
 }

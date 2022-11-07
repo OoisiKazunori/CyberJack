@@ -65,7 +65,6 @@ MeshParticleEmitter::MeshParticleEmitter(int NUM)
 	indexBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetIndexBufferData(indexBuffSize));
 	verticesDataHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(DirectX::XMFLOAT4) * static_cast<UINT>(modelVertArrayData.size())));
 	indexDataHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(UINT) * static_cast<UINT>(modelIndexArrayData.size())));
-	indexOffsetHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(UINT)));
 
 	//共通情報
 	initCommonHandle = buffers->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(InitCommonData)));
@@ -90,7 +89,6 @@ MeshParticleEmitter::MeshParticleEmitter(int NUM)
 
 	UINT reset = 0;
 	buffers->TransData(outputCounterHandle, &reset, sizeof(UINT));
-	buffers->TransData(indexOffsetHandle, &reset, sizeof(UINT));
 
 	enemyIndex = NUM;
 	oldEnemyNum = NUM;
@@ -160,14 +158,6 @@ MeshParticleEmitter::MeshParticleEmitter(int NUM)
 		nullptr
 	);
 
-	indexOffsetViewHandle = UavViewHandleMgr::Instance()->GetHandle();
-	DescriptorHeapMgr::Instance()->CreateBufferView(
-		indexOffsetViewHandle,
-		KazBufferHelper::SetUnorderedAccessView(sizeof(UINT), 1),
-		buffers->GetBufferData(indexOffsetHandle).Get(),
-		nullptr
-	);
-
 	updateViewHandle = UavViewHandleMgr::Instance()->GetHandle();
 	DescriptorHeapMgr::Instance()->CreateBufferView(
 		updateViewHandle,
@@ -181,6 +171,21 @@ MeshParticleEmitter::MeshParticleEmitter(int NUM)
 
 
 
+	//初期化処理--------------------------------------------
+	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
+	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_MESHPARTICLE_INIT);
+
+	//頂点
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(vertDataViewHandle));
+	//インデックス
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(indexViewDataHandle));
+	//出力
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(2, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
+	//共通用バッファのデータ送信
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(3, buffers->GetGpuAddress(initCommonHandle));
+
+	DirectX12CmdList::Instance()->cmdList->Dispatch(1, 1, 1);
+	//初期化処理--------------------------------------------
 
 
 
@@ -194,7 +199,6 @@ MeshParticleEmitter::~MeshParticleEmitter()
 {
 	DescriptorHeapMgr::Instance()->Release(vertDataViewHandle);
 	DescriptorHeapMgr::Instance()->Release(indexViewDataHandle);
-	DescriptorHeapMgr::Instance()->Release(indexOffsetViewHandle);
 	DescriptorHeapMgr::Instance()->Release(outputViewHandle);
 }
 
@@ -208,30 +212,6 @@ void MeshParticleEmitter::Init(const KazMath::Vec3<float> &POS)
 
 void MeshParticleEmitter::Update()
 {
-
-	//初期化処理--------------------------------------------
-	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
-	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_MESHPARTICLE_INIT);
-	UINT lReset = 0;
-	buffers->TransData(outputCounterHandle, &lReset, sizeof(UINT));
-	buffers->TransData(indexOffsetHandle, &lReset, sizeof(UINT));
-	{
-		//頂点
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(vertDataViewHandle));
-		//インデックス
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(indexViewDataHandle));
-		//インデックスオフセット
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(2, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(indexOffsetViewHandle));
-		//出力
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(3, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
-	}
-
-	//共通用バッファのデータ送信
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(4, buffers->GetGpuAddress(initCommonHandle));
-
-	DirectX12CmdList::Instance()->cmdList->Dispatch(1, 1, 1);
-	//初期化処理--------------------------------------------
-
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_MESHPARTICLE_UPDATE);
 
 	{
