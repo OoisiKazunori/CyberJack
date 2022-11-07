@@ -28,11 +28,6 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     uint index = (groupThreadID.y * 1204) + groupThreadID.x + groupThreadID.z;
     index += 1024 * groupId.x;
 
-    if(indexMaxNum < index)
-    {
-        return;
-    }
-
     //s—ñŒvŽZ-------------------------
     matrix pMatWorld = scaleRotateBillboardMat;
     pMatWorld[0][3] = worldPosArrayData[index].pos.x;
