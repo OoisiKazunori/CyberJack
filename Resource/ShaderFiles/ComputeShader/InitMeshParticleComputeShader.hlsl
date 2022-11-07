@@ -8,12 +8,21 @@ cbuffer RootConstants : register(b0)
     uint indexMaxNum;
 };
 
+struct OutputData
+{
+    float4 pos;
+    float2 rate;
+    float4 distance;    
+    float4 startPos;
+    float4 rayStartPos;
+};
+
 //更新
 RWStructuredBuffer<float4> vertciesData : register(u0);
 RWStructuredBuffer<uint> indexData : register(u1);
 RWStructuredBuffer<uint> indexOffset : register(u2);
 //出力
-AppendStructuredBuffer<float4> worldPosData : register(u3);
+RWStructuredBuffer<OutputData> worldPosData : register(u3);
 
 float4 GetPos(float3 VERT_POS,float3 WORLD_POS)
 {
@@ -50,7 +59,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     //頂点座標からワールド座標に変換後----------------------------------------------
     float4 firstVertWorldPos = GetPos(vertciesData[firstVertIndex].xyz,pos.xyz);
     float4 secondVertWorldPos = GetPos(vertciesData[secondVertIndex].xyz,pos.xyz);
-    float4 thirdVertWorldPos = GetPos(vertciesData[secondVertIndex].xyz,pos.xyz);
+    float4 thirdVertWorldPos = GetPos(vertciesData[thirdVertIndex].xyz,pos.xyz);
     //頂点座標からワールド座標に変換------------------------------------------------
 
     //三角形を構成するレイ--------------------------------------------
@@ -66,44 +75,54 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     //三角形を構成するレイ--------------------------------------------
 
     //重心座標
-    float3 triangleCentralPos;
-    triangleCentralPos += firstVertWorldPos.xyz;
-    triangleCentralPos += secondVertWorldPos.xyz;
-    triangleCentralPos += thirdVertWorldPos.xyz;
-    triangleCentralPos /= 3.0f;
+    float3 triangleCentralPos = (firstVertWorldPos.xyz + secondVertWorldPos.xyz + thirdVertWorldPos.xyz) / 3.0f;
  
     //パーティクルの配置--------------------------------------------
-    const int PARTICLE_MAX_NUM = 10 / 3;
+    const int PARTICLE_MAX_NUM = 100;
+    const int PER_PARTICLE_MAX_NUM = PARTICLE_MAX_NUM / 3;
     for(int rayIndex = 0; rayIndex < RAY_MAX_NUM; ++rayIndex)
     {
         //一辺の長さ
         float3 distance = triangleRay[rayIndex][1] - triangleRay[rayIndex][0];
 
-        for(int particleIndex = 0; particleIndex < PARTICLE_MAX_NUM; ++particleIndex)
+        for(int particleIndex = 0; particleIndex < PER_PARTICLE_MAX_NUM; ++particleIndex)
         {
+            uint outputIndex = index * PARTICLE_MAX_NUM + rayIndex * PER_PARTICLE_MAX_NUM + particleIndex;
+            float rate = RandVec3(outputIndex + 100,1,0).x;
             //始点算出
-            float3 startPos = triangleRay[rayIndex][0] + distance * (float(RandVec3(index,100,0).x) / 100);
+            float3 startPos = triangleRay[rayIndex][0] + distance * rate;
             //終点算出
             float3 endPos = triangleCentralPos;
             //一辺のとある位置から重心座標までの距離
             float3 resultDistance = endPos - startPos;
 
             //パーティクルの配置
-            float4 resultPos;
+            float3 resultPos;
             const int PARTICLE_MAX_BIAS = 100;
-            const int RANDOM_NUMBER_BIAS = 80;
-            if(RandVec3(index,PARTICLE_MAX_BIAS,0).x <= RANDOM_NUMBER_BIAS)
+            const int RANDOM_NUMBER_BIAS = 70;
+
+            worldPosData[outputIndex].rate.x = rate;
+            if(RandVec3(outputIndex,PARTICLE_MAX_BIAS,0).x <= RANDOM_NUMBER_BIAS)
             {
                 //エッジ周辺に偏らせる
-                resultPos = float4(triangleRay[rayIndex][0] + resultDistance * (float(RandVec3(index,10,0).x) / 100),0.0f);
-                worldPosData.Append(resultPos);
+                rate = RandVec3(outputIndex + 1000,10,0).x / 100.0f;
+                resultPos = startPos + resultDistance * rate;
+                worldPosData[outputIndex].pos.xyz = resultPos;
             }
             else
             {
                 //面周辺に偏らせる
-                resultPos = float4(triangleRay[rayIndex][0] + resultDistance * (float(RandVec3(index,100,0).x) / 100),0.0f);
-                worldPosData.Append(resultPos);
+                rate = RandVec3(startPos.y * 10.0f + outputIndex + 10000,1,0).x;
+                resultPos = startPos + resultDistance * rate;
+                worldPosData[outputIndex].pos.xyz = resultPos;
             }
+            //始点
+            worldPosData[outputIndex].startPos.xyz = startPos;
+            //重心座標から始点の距離
+            worldPosData[outputIndex].distance.xyz = resultDistance;
+            //重心座標から始点の距離乱数
+            worldPosData[outputIndex].rate.y = rate;
+            worldPosData[outputIndex].rayStartPos.xyz = triangleRay[rayIndex][0];
         }
     }
     //パーティクルの配置--------------------------------------------

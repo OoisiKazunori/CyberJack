@@ -47,6 +47,16 @@ private:
 	//ïKóvèÓïÒ--------------------------------------------
 
 	//èâä˙âª--------------------------------------------
+	struct OutputData
+	{
+		DirectX::XMFLOAT4 pos;
+		DirectX::XMFLOAT2 rate;
+		DirectX::XMFLOAT2 pad;
+
+		DirectX::XMFLOAT4 resultDistance;
+		DirectX::XMFLOAT4 startPos;
+		DirectX::XMFLOAT4 rayStartPos;
+	};
 	struct InitCommonData
 	{
 		DirectX::XMFLOAT4 worldPos;

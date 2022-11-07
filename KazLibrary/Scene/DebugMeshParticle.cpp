@@ -12,7 +12,7 @@
 
 #include"../KazLibrary/Input/ControllerInputManager.h"
 
-DebugMeshParticleScene::DebugMeshParticleScene() :meshEmitter(5)
+DebugMeshParticleScene::DebugMeshParticleScene() :meshEmitter(6)
 {
 }
 
@@ -129,14 +129,14 @@ void DebugMeshParticleScene::Update()
 					//4-2.長さの範囲で座標を決める場合は長さの値でどの場所に配置するか決める
 					particle[particleNum].data.transform.pos = lStartPos + lResultDistance * KazMath::Rand(1.0f, 0.0f);
 				}
-				particle[particleNum].data.transform.scale = { 0.1f,0.1f,0.1f };
+				particle[particleNum].data.transform.scale = { 0.01f,0.01f,0.01f };
 				++particleNum;
 			}
 		}
 
 		for (int i = particleNum; i < particle.size(); ++i)
 		{
-			particle[i].data.transform.scale = { 0.1f,0.1f,0.1f };
+			particle[i].data.transform.scale = { 0.01f,0.01f,0.01f };
 		}
 
 		initFlag = false;
