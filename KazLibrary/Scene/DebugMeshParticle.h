@@ -55,5 +55,8 @@ private:
 	BackGroundForDebug debugDraw;
 	//デバック用--------------------------------------------
 
+
+	std::unique_ptr<GameRenderTarget>rendertarget;
+	Sprite2DRender mainRenderTarget;
 };
 

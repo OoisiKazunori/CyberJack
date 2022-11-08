@@ -14,6 +14,10 @@
 
 DebugMeshParticleScene::DebugMeshParticleScene() :meshEmitter(std::make_unique<MeshParticleEmitter>(6))
 {
+	rendertarget = std::make_unique<GameRenderTarget>(KazMath::Color(0, 0, 0, 255));
+	mainRenderTarget.data.handleData = rendertarget->GetGameRenderTargetHandle();
+	mainRenderTarget.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
+	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 }
 
 DebugMeshParticleScene::~DebugMeshParticleScene()
@@ -34,6 +38,7 @@ void DebugMeshParticleScene::Init()
 
 void DebugMeshParticleScene::Finalize()
 {
+	rendertarget->Finalize();
 }
 
 void DebugMeshParticleScene::Input()
@@ -74,7 +79,7 @@ void DebugMeshParticleScene::Update()
 	}
 	else if (gpuCheckParticleFlag)
 	{
-		ImGui::SliderInt("EnemyIndex", &meshIndex, 5, 6);
+		ImGui::SliderInt("EnemyIndex", &meshIndex, 5, 7);
 		KazImGuiHelper::InputTransform3D("Mother", &motherTransform);
 		if (meshIndex != prevMeshIndex)
 		{
@@ -173,6 +178,8 @@ void DebugMeshParticleScene::Draw()
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 	RenderTargetStatus::Instance()->ClearDoubuleBuffer({ 0.0f,0.0f,0.0f });
 
+	rendertarget->SetRenderTarget();
+
 	if (cpuCheckParticleFlag)
 	{
 		//ŽOŠpŒ`•`‰æ
@@ -195,15 +202,16 @@ void DebugMeshParticleScene::Draw()
 		meshEmitter->Draw();
 	}
 
+	rendertarget->Draw();
 	//debugDraw.Draw();
-
+	mainRenderTarget.Draw();
 }
 
 int DebugMeshParticleScene::SceneChange()
 {
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_0))
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_1))
 	{
-		return 0;
+		return 1;
 	}
 	else
 	{

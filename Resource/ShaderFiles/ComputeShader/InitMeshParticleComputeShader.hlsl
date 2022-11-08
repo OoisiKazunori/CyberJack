@@ -35,19 +35,23 @@ float4 GetPos(float3 VERT_POS,float3 WORLD_POS)
 [numthreads(1024, 1, 1)]
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 groupThreadID : SV_GroupThreadID)
 {
-    uint index = (groupThreadID.y * 1204) + groupThreadID.x + groupThreadID.z;
+    uint index = groupThreadID.x;
     index += 1024 * groupId.x;
 
     //インデックス数以内なら処理する
     if(indexMaxNum < index * 3 + 2)
     {
-        return;
+    //    return;
     }
 
     //三角形を構成するインデックスの指定--------------------------------------------
-    uint firstVertIndex = indexData[index * 3];
-    uint secondVertIndex = indexData[index * 3 + 1];
-    uint thirdVertIndex = indexData[index * 3 + 2];
+    //uint firstVertIndex = indexData[index * 3];
+    //uint secondVertIndex = indexData[index * 3 + 1];
+    //uint thirdVertIndex = indexData[index * 3 + 2];
+
+    uint firstVertIndex = index * 3;
+    uint secondVertIndex = index * 3 + 1;
+    uint thirdVertIndex = index * 3 + 2;
     //三角形を構成するインデックスの指定--------------------------------------------
 
     //頂点座標からワールド座標に変換後----------------------------------------------
@@ -93,7 +97,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
             //パーティクルの配置
             float3 resultPos;
             const int PARTICLE_MAX_BIAS = 100;
-            const int RANDOM_NUMBER_BIAS = 70;
+            const int RANDOM_NUMBER_BIAS = 100;
             
             if(RandVec3(outputIndex,PARTICLE_MAX_BIAS,0).x <= RANDOM_NUMBER_BIAS)
             {
