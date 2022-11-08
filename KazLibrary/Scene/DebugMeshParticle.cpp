@@ -12,12 +12,17 @@
 
 #include"../KazLibrary/Input/ControllerInputManager.h"
 
-DebugMeshParticleScene::DebugMeshParticleScene() :meshEmitter(std::make_unique<MeshParticleEmitter>(6))
+DebugMeshParticleScene::DebugMeshParticleScene()
 {
 	rendertarget = std::make_unique<GameRenderTarget>(KazMath::Color(0, 0, 0, 255));
 	mainRenderTarget.data.handleData = rendertarget->GetGameRenderTargetHandle();
 	mainRenderTarget.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
 	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+
+	for (int i = 0; i < meshEmitter.size(); ++i)
+	{
+		meshEmitter[i] = std::make_unique<MeshParticleEmitter>(5);
+	}
 }
 
 DebugMeshParticleScene::~DebugMeshParticleScene()
@@ -33,7 +38,10 @@ void DebugMeshParticleScene::Init()
 	triangelPosArray[2] = { 0.0f,30.0f,0.0f };
 
 
-	meshEmitter->Init(&motherMat);
+	for (int i = 0; i < meshEmitter.size(); ++i)
+	{
+		meshEmitter[i]->Init(&motherMat);
+	}
 }
 
 void DebugMeshParticleScene::Finalize()
@@ -83,9 +91,9 @@ void DebugMeshParticleScene::Update()
 		KazImGuiHelper::InputTransform3D("Mother", &motherTransform);
 		if (meshIndex != prevMeshIndex)
 		{
-			meshEmitter.reset();
-			meshEmitter = std::make_unique<MeshParticleEmitter>(meshIndex);
-			meshEmitter->Init(&motherMat);
+			//meshEmitter.reset();
+			//meshEmitter = std::make_unique<MeshParticleEmitter>(meshIndex);
+			//meshEmitter->Init(&motherMat);
 			prevMeshIndex = meshIndex;
 		}
 	}
@@ -169,7 +177,11 @@ void DebugMeshParticleScene::Update()
 	else if (gpuCheckParticleFlag)
 	{
 		motherMat = KazMath::CaluWorld(motherTransform, { 0,1,0 }, { 0,0,1 });
-		meshEmitter->Update();
+
+		for (int i = 0; i < meshEmitter.size(); ++i)
+		{
+			meshEmitter[i]->Update();
+		}
 	}
 }
 
@@ -199,7 +211,10 @@ void DebugMeshParticleScene::Draw()
 	}
 	else if (gpuCheckParticleFlag)
 	{
-		meshEmitter->Draw();
+		for (int i = 0; i < meshEmitter.size(); ++i)
+		{
+			meshEmitter[i]->Draw();
+		}
 	}
 
 	rendertarget->Draw();

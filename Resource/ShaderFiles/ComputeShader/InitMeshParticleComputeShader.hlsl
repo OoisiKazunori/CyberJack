@@ -97,7 +97,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
             //パーティクルの配置
             float3 resultPos;
             const int PARTICLE_MAX_BIAS = 100;
-            const int RANDOM_NUMBER_BIAS = 100;
+            const int RANDOM_NUMBER_BIAS = 80;
             
             if(RandVec3(outputIndex,PARTICLE_MAX_BIAS,0).x <= RANDOM_NUMBER_BIAS)
             {

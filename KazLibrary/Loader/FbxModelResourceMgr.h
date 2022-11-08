@@ -85,7 +85,8 @@ private:
 
 	Node *meshNode = nullptr;
 	std::vector<VertexPosNormalUvSkin>vertices;
-	std::vector<unsigned short>indices;
+	std::vector<DirectX::XMFLOAT4>vertData;
+	std::vector<UINT>indices;
 
 
 	DirectX::XMFLOAT3 ambient = { 1.0f,1.0f,1.0f };
@@ -117,6 +118,8 @@ public:
 	std::vector<FbxTime> endTime;
 
 	UINT vertNum;
+	std::vector<DirectX::XMFLOAT4>vertData;
+	std::vector<UINT>indexData;
 
 	FbxMesh *mesh;
 

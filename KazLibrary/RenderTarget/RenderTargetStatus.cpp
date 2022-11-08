@@ -57,7 +57,7 @@ void RenderTargetStatus::CreateDoubleBuffer(Microsoft::WRL::ComPtr<IDXGISwapChai
 
 	//RenderTarget用のヒープ
 	heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;	//レンダーターゲットビュー
-	heapDesc.NumDescriptors = 100;
+	heapDesc.NumDescriptors = 1000;
 	//マルチパスレンダリング用のデスクリプタヒープ生成
 	DirectX12Device::Instance()->dev->CreateDescriptorHeap(
 		&heapDesc,

@@ -104,6 +104,10 @@ RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME, bo
 
 	modelResource[lHandle]->vertNum = static_cast<UINT>(model->vertices.size());
 
+	modelResource[lHandle]->indexData = model->indices;
+	modelResource[lHandle]->vertData = model->vertData;
+
+
 	modelResource[modelResource.size() - 1]->mesh = mesh;
 
 	//アニメーションの数を取得
@@ -299,16 +303,16 @@ void FbxModelResourceMgr::ParseMeshFaces(Model *MODEL, FbxMesh *FBX_MESH)
 			if (j < 3)
 			{
 				//1点追加し、他の2点と三角形を構築する
-				indices.push_back(static_cast<USHORT>(index));
+				indices.push_back(static_cast<UINT>(index));
 			}
 			//4頂点目
 			else
 			{
 				//3点追加し、
 				//四角形の0,1,2,3の内,2,3,0で三角形を構築する
-				USHORT index2 = indices[indices.size() - 1];
-				USHORT index3 = static_cast<USHORT>(index);
-				USHORT index0 = indices[indices.size() - 3];
+				UINT index2 = indices[indices.size() - 1];
+				UINT index3 = static_cast<UINT>(index);
+				UINT index0 = indices[indices.size() - 3];
 				indices.push_back(index2);
 				indices.push_back(index3);
 				indices.push_back(index0);
@@ -530,7 +534,7 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 	FbxStringList uvNames;
 	FBX_MESH->GetUVSetNames(uvNames);
 
-	std::vector<KazMath::Vec3<float>>vertPos(polygonVertexNum);
+	std::vector<DirectX::XMFLOAT4>vertPos(polygonVertexNum);
 	for (int i = 0; i < polygonVertexNum; ++i)
 	{
 		vertPos[i].x = (float)pCoord[i][0];
@@ -538,10 +542,9 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 		vertPos[i].z = (float)pCoord[i][2];
 	}
 
-
 	//重複あり頂点情報
 	std::vector<Model::VertexPosNormalUvSkin> vertices;
-	std::vector<int> indexData;
+	std::vector<UINT> indexData;
 	for (int i = 0; i < polygonCount; i++)
 	{
 		//面を構成する頂点の数を取得(3なら三角形ポリゴン)
@@ -555,6 +558,8 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 			vertex.pos.x = vertPos[index].x;
 			vertex.pos.y = vertPos[index].y;
 			vertex.pos.z = vertPos[index].z;
+
+			MODEL->vertData.push_back(vertPos[index]);
 
 			//UV
 			if (textureUVCount > 0)
@@ -590,6 +595,7 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 		}
 	}
 	MODEL->vertices = vertices;
+	MODEL->indices = indexData;
 
 
 	FbxSkin *fbxSkin = static_cast<FbxSkin *>(FBX_MESH->GetDeformer(0, FbxDeformer::eSkin));
@@ -640,7 +646,7 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 		for (int i = 0; i < indexData.size(); ++i)
 		{
 			//インデックスとウェイトのインデックスが合っていない場合書き込まない
-			if (indexData[i] != weightIndex)continue;
+			if (static_cast<int>(indexData[i]) != weightIndex)continue;
 
 			//頂点のウェイトから最も大きい4つを選択
 			auto &weightList = weightLists[weightIndex];

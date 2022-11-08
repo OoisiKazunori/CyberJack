@@ -82,7 +82,7 @@ public:
 
 	std::unique_ptr<HandleMaker> handle;
 private:	
-	std::array<Microsoft::WRL::ComPtr<ID3D12Resource>, 100> buffers;
+	std::array<Microsoft::WRL::ComPtr<ID3D12Resource>, 1000> buffers;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> heap;
 
 	D3D12_CPU_DESCRIPTOR_HANDLE heapHandle;

@@ -27,7 +27,7 @@ private:
 	D3D12_INDEX_BUFFER_VIEW indexBufferView;
 	//バッファ
 
-	static const int PARTICLE_MAX_NUM = 1000000;
+	static const int PARTICLE_MAX_NUM = 100000;
 	static const int DRAW_CALL = 1;
 
 	struct IndirectCommand
@@ -40,6 +40,7 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D12CommandSignature> commandSig;
 	ObjModelRender model;
+	FbxModelRender fbxModel;
 	std::array<std::string, 10>filePass;
 
 	//必要情報--------------------------------------------
