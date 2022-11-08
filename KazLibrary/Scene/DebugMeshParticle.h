@@ -29,8 +29,13 @@ private:
 
 	CameraWork cameraWork;
 
-	MeshParticleEmitter meshEmitter;
+	std::unique_ptr<MeshParticleEmitter> meshEmitter;
+	int meshIndex,prevMeshIndex;
+	bool cpuCheckParticleFlag;
+	bool gpuCheckParticleFlag;
 
+	KazMath::Transform3D motherTransform;
+	DirectX::XMMATRIX motherMat;
 
 	//デバック用--------------------------------------------
 	//三角形描画

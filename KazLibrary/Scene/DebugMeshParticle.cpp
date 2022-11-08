@@ -12,7 +12,7 @@
 
 #include"../KazLibrary/Input/ControllerInputManager.h"
 
-DebugMeshParticleScene::DebugMeshParticleScene() :meshEmitter(6)
+DebugMeshParticleScene::DebugMeshParticleScene() :meshEmitter(std::make_unique<MeshParticleEmitter>(6))
 {
 }
 
@@ -29,7 +29,7 @@ void DebugMeshParticleScene::Init()
 	triangelPosArray[2] = { 0.0f,30.0f,0.0f };
 
 
-	meshEmitter.Init({});
+	meshEmitter->Init(&motherMat);
 }
 
 void DebugMeshParticleScene::Finalize()
@@ -53,125 +53,160 @@ void DebugMeshParticleScene::Update()
 
 	//デバック用のGUI
 	ImGui::Begin("MeshParticle");
-	if (ImGui::TreeNode("TrianglePosArray"))
+	ImGui::Checkbox("CheckCPUParticle", &cpuCheckParticleFlag);
+	ImGui::Checkbox("CheckGPUParticle", &gpuCheckParticleFlag);
+	if (cpuCheckParticleFlag)
 	{
-		KazImGuiHelper::InputVec3("Pos1", &triangelPosArray[0]);
-		KazImGuiHelper::InputVec3("Pos2", &triangelPosArray[1]);
-		KazImGuiHelper::InputVec3("Pos3", &triangelPosArray[2]);
-		ImGui::TreePop();
+		if (ImGui::TreeNode("TrianglePosArray"))
+		{
+			KazImGuiHelper::InputVec3("Pos1", &triangelPosArray[0]);
+			KazImGuiHelper::InputVec3("Pos2", &triangelPosArray[1]);
+			KazImGuiHelper::InputVec3("Pos3", &triangelPosArray[2]);
+			ImGui::TreePop();
+		}
+		if (ImGui::TreeNode("Particle"))
+		{
+			ImGui::SliderInt("ParticleNum", &drawParticleNum, 0, PARTICLE_MAX_NUM);
+			ImGui::SliderInt("ParticleBias", &particleBias, 0, PARTICLE_MAX_BIAS);
+			ImGui::TreePop();
+		}
+		initFlag = ImGui::Button("SetParticle");
 	}
-	if (ImGui::TreeNode("Particle"))
+	else if (gpuCheckParticleFlag)
 	{
-		ImGui::SliderInt("ParticleNum", &drawParticleNum, 0, PARTICLE_MAX_NUM);
-		ImGui::SliderInt("ParticleBias", &particleBias, 0, PARTICLE_MAX_BIAS);
-		ImGui::TreePop();
+		ImGui::SliderInt("EnemyIndex", &meshIndex, 5, 6);
+		KazImGuiHelper::InputTransform3D("Mother", &motherTransform);
+		if (meshIndex != prevMeshIndex)
+		{
+			meshEmitter.reset();
+			meshEmitter = std::make_unique<MeshParticleEmitter>(meshIndex);
+			meshEmitter->Init(&motherMat);
+			prevMeshIndex = meshIndex;
+		}
 	}
-	initFlag = ImGui::Button("SetParticle");
 	ImGui::End();
 
 
-	triangelLine[0].data.startPos = triangelPosArray[0];
-	triangelLine[0].data.endPos = triangelPosArray[1];
-	triangelLine[1].data.startPos = triangelPosArray[1];
-	triangelLine[1].data.endPos = triangelPosArray[2];
-	triangelLine[2].data.startPos = triangelPosArray[2];
-	triangelLine[2].data.endPos = triangelPosArray[0];
-
-	KazMath::Vec3<float>lCentralPos = {};
-	//法線ベクトルの算出
-	for (int i = 0; i < triangelPosArray.size(); ++i)
+	if (cpuCheckParticleFlag)
 	{
-		lCentralPos += triangelPosArray[i];
+		triangelLine[0].data.startPos = triangelPosArray[0];
+		triangelLine[0].data.endPos = triangelPosArray[1];
+		triangelLine[1].data.startPos = triangelPosArray[1];
+		triangelLine[1].data.endPos = triangelPosArray[2];
+		triangelLine[2].data.startPos = triangelPosArray[2];
+		triangelLine[2].data.endPos = triangelPosArray[0];
 
-		clossTriangelLine[i].data.startPos = triangelLine[i].data.startPos + (triangelLine[i].data.endPos - triangelLine[i].data.startPos) / 2.0f;
-		clossTriangelLine[i].data.colorData.color = { 255,0,0,255 };
-	}
-	KazMath::Vec3<float>lTriangleCentralPos = lCentralPos / 3.0f;
-	for (int i = 0; i < clossTriangelLine.size(); ++i)
-	{
-		clossTriangelLine[i].data.endPos = lTriangleCentralPos;
-	}
-
-
-	//パーティクルの計算処理
-	if (initFlag)
-	{
-		int particleNum = 0;
-
-		//一つのレイ当たりで使用できるパーティクルを決定する
-		const int L_MAX_PARTICLE = static_cast<int>(particle.size()) / static_cast<int>(triangelPosArray.size());
-		for (int rayIndex = 0; rayIndex < triangelLine.size(); ++rayIndex)
+		KazMath::Vec3<float>lCentralPos = {};
+		//法線ベクトルの算出
+		for (int i = 0; i < triangelPosArray.size(); ++i)
 		{
-			KazMath::Vec3<float>lDistance = triangelLine[rayIndex].data.endPos - triangelLine[rayIndex].data.startPos;
+			lCentralPos += triangelPosArray[i];
 
-			//以下の項目を計算し、配置する
-			for (int i = 0; i < L_MAX_PARTICLE; ++i)
+			clossTriangelLine[i].data.startPos = triangelLine[i].data.startPos + (triangelLine[i].data.endPos - triangelLine[i].data.startPos) / 2.0f;
+			clossTriangelLine[i].data.colorData.color = { 255,0,0,255 };
+		}
+		KazMath::Vec3<float>lTriangleCentralPos = lCentralPos / 3.0f;
+		for (int i = 0; i < clossTriangelLine.size(); ++i)
+		{
+			clossTriangelLine[i].data.endPos = lTriangleCentralPos;
+		}
+
+
+		//パーティクルの計算処理
+		if (initFlag)
+		{
+			int particleNum = 0;
+
+			//一つのレイ当たりで使用できるパーティクルを決定する
+			const int L_MAX_PARTICLE = static_cast<int>(particle.size()) / static_cast<int>(triangelPosArray.size());
+			for (int rayIndex = 0; rayIndex < triangelLine.size(); ++rayIndex)
 			{
-				//1.レイに沿った座標を乱数で決定する
-				float lRate = KazMath::Rand(1.0f, 0.0f);
-				KazMath::Vec3<float>lStartPos = triangelLine[rayIndex].data.startPos + lDistance * lRate;
+				KazMath::Vec3<float>lDistance = triangelLine[rayIndex].data.endPos - triangelLine[rayIndex].data.startPos;
 
-				//2.1で決めた座標を始点、重心座標を終点とし、その長さを求める
-				KazMath::Vec3<float>lResultDistance = lTriangleCentralPos - lStartPos;
-
-
-				//数が多いほどエッジ周辺に偏らせる
-				const int L_RANDOM_NUMBER_BIAS = particleBias;
-
-				//3.先程決めた長さの内、エッジ周辺にパーティクルを配置するか、長さの範囲で座標を決めるか乱数で決める
-				if (KazMath::Rand(PARTICLE_MAX_BIAS, 0) <= L_RANDOM_NUMBER_BIAS)
+				//以下の項目を計算し、配置する
+				for (int i = 0; i < L_MAX_PARTICLE; ++i)
 				{
-					//4-1.エッジ周辺にパーティクルを配置する場合は、長さを一定値割った値から乱数でどの場所に配置するか決める
-					particle[particleNum].data.transform.pos = lStartPos + lResultDistance * KazMath::Rand(0.1f, 0.0f);
+					//1.レイに沿った座標を乱数で決定する
+					float lRate = KazMath::Rand(1.0f, 0.0f);
+					KazMath::Vec3<float>lStartPos = triangelLine[rayIndex].data.startPos + lDistance * lRate;
+
+					//2.1で決めた座標を始点、重心座標を終点とし、その長さを求める
+					KazMath::Vec3<float>lResultDistance = lTriangleCentralPos - lStartPos;
+
+
+					//数が多いほどエッジ周辺に偏らせる
+					const int L_RANDOM_NUMBER_BIAS = particleBias;
+
+					//3.先程決めた長さの内、エッジ周辺にパーティクルを配置するか、長さの範囲で座標を決めるか乱数で決める
+					if (KazMath::Rand(PARTICLE_MAX_BIAS, 0) <= L_RANDOM_NUMBER_BIAS)
+					{
+						//4-1.エッジ周辺にパーティクルを配置する場合は、長さを一定値割った値から乱数でどの場所に配置するか決める
+						particle[particleNum].data.transform.pos = lStartPos + lResultDistance * KazMath::Rand(0.1f, 0.0f);
+					}
+					else
+					{
+						//4-2.長さの範囲で座標を決める場合は長さの値でどの場所に配置するか決める
+						particle[particleNum].data.transform.pos = lStartPos + lResultDistance * KazMath::Rand(1.0f, 0.0f);
+					}
+					particle[particleNum].data.transform.scale = { 0.1f,0.1f,0.1f };
+					++particleNum;
 				}
-				else
-				{
-					//4-2.長さの範囲で座標を決める場合は長さの値でどの場所に配置するか決める
-					particle[particleNum].data.transform.pos = lStartPos + lResultDistance * KazMath::Rand(1.0f, 0.0f);
-				}
-				particle[particleNum].data.transform.scale = { 0.01f,0.01f,0.01f };
-				++particleNum;
 			}
-		}
 
-		for (int i = particleNum; i < particle.size(); ++i)
-		{
-			particle[i].data.transform.scale = { 0.01f,0.01f,0.01f };
-		}
+			for (int i = particleNum; i < particle.size(); ++i)
+			{
+				particle[i].data.transform.scale = { 0.01f,0.01f,0.01f };
+			}
 
-		initFlag = false;
+			initFlag = false;
+		}
 	}
-
-	meshEmitter.Update();
+	else if (gpuCheckParticleFlag)
+	{
+		motherMat = KazMath::CaluWorld(motherTransform, { 0,1,0 }, { 0,0,1 });
+		meshEmitter->Update();
+	}
 }
 
 void DebugMeshParticleScene::Draw()
 {
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
-	RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
+	RenderTargetStatus::Instance()->ClearDoubuleBuffer({ 0.0f,0.0f,0.0f });
 
-	//三角形描画
-	for (int i = 0; i < triangelLine.size(); ++i)
+	if (cpuCheckParticleFlag)
 	{
-		triangelLine[i].Draw();
-	}
+		//三角形描画
+		for (int i = 0; i < triangelLine.size(); ++i)
+		{
+			triangelLine[i].Draw();
+		}
 
-	for (int i = 0; i < drawParticleNum; ++i)
-	{
-		particle[i].Draw();
+		for (int i = 0; i < drawParticleNum; ++i)
+		{
+			particle[i].Draw();
+		}
+		for (int i = 0; i < clossTriangelLine.size(); ++i)
+		{
+			clossTriangelLine[i].Draw();
+		}
 	}
-	for (int i = 0; i < clossTriangelLine.size(); ++i)
+	else if (gpuCheckParticleFlag)
 	{
-		clossTriangelLine[i].Draw();
+		meshEmitter->Draw();
 	}
 
 	//debugDraw.Draw();
-
-	meshEmitter.Draw();
 
 }
 
 int DebugMeshParticleScene::SceneChange()
 {
-	return SCENE_NONE;
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_0))
+	{
+		return 0;
+	}
+	else
+	{
+		return SCENE_NONE;
+	}
 }

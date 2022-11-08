@@ -10,7 +10,7 @@ class MeshParticleEmitter
 public:
 	MeshParticleEmitter(int NUM);
 	~MeshParticleEmitter();
-	void Init(const KazMath::Vec3<float> &POS);
+	void Init(DirectX::XMMATRIX *MOTHER_MAT);
 	void Update();
 	void Draw();
 
@@ -27,7 +27,7 @@ private:
 	D3D12_INDEX_BUFFER_VIEW indexBufferView;
 	//バッファ
 
-	static const int PARTICLE_MAX_NUM = 50000;
+	static const int PARTICLE_MAX_NUM = 1000000;
 	static const int DRAW_CALL = 1;
 
 	struct IndirectCommand
@@ -43,7 +43,8 @@ private:
 	std::array<std::string, 10>filePass;
 
 	//必要情報--------------------------------------------
-	KazMath::Vec3<float>pos;
+	KazMath::Vec3<float>*pos;
+	DirectX::XMMATRIX *motherMat;
 	//必要情報--------------------------------------------
 
 	//初期化--------------------------------------------
@@ -61,7 +62,7 @@ private:
 	RESOURCE_HANDLE vertexBufferHandle, indexBufferHandle;
 	RESOURCE_HANDLE verticesDataHandle, indexDataHandle, initCommonHandle;
 
-	RESOURCE_HANDLE outputHandle,outputCounterHandle;
+	RESOURCE_HANDLE outputHandle;
 
 	RESOURCE_HANDLE outputViewHandle, vertDataViewHandle, indexViewDataHandle;
 	//初期化--------------------------------------------
@@ -76,6 +77,7 @@ private:
 	{
 		DirectX::XMMATRIX scaleRotateBillboardMat;
 		DirectX::XMMATRIX viewProjection;
+		DirectX::XMMATRIX motherMat;
 		UINT indexMaxNum;
 	};
 	UpdateCommonData updateCommonData;

@@ -32,13 +32,13 @@ float4 GetPos(float3 VERT_POS,float3 WORLD_POS)
     return float4(worldMat[0].w,worldMat[1].w,worldMat[2].w,0.0f);
 };
 
-[numthreads(2, 1, 1)]
+[numthreads(1024, 1, 1)]
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 groupThreadID : SV_GroupThreadID)
 {
     uint index = (groupThreadID.y * 1204) + groupThreadID.x + groupThreadID.z;
     index += 1024 * groupId.x;
 
-    //頂点数以内なら処理する
+    //インデックス数以内なら処理する
     if(indexMaxNum < index * 3 + 2)
     {
         return;
@@ -72,7 +72,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     float3 triangleCentralPos = (firstVertWorldPos.xyz + secondVertWorldPos.xyz + thirdVertWorldPos.xyz) / 3.0f;
  
     //パーティクルの配置--------------------------------------------
-    const int PARTICLE_MAX_NUM = 100;
+    const int PARTICLE_MAX_NUM = 50;
     const int PER_PARTICLE_MAX_NUM = PARTICLE_MAX_NUM / 3;
     for(int rayIndex = 0; rayIndex < RAY_MAX_NUM; ++rayIndex)
     {

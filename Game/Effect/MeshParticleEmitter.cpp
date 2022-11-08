@@ -70,25 +70,21 @@ MeshParticleEmitter::MeshParticleEmitter(int NUM)
 	initCommonHandle = buffers->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(InitCommonData)));
 
 	//出力
-	outputHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer((sizeof(OutputData) * PARTICLE_MAX_NUM)));
+	outputHandle = buffers->CreateBuffer(KazBufferHelper::SetOnlyReadStructuredBuffer((sizeof(OutputData) * PARTICLE_MAX_NUM)));
 	//初期化用--------
 
 	//更新用
-	updateHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer((sizeof(UpdateData) * PARTICLE_MAX_NUM)));
+	updateHandle = buffers->CreateBuffer(KazBufferHelper::SetOnlyReadStructuredBuffer((sizeof(UpdateData) * PARTICLE_MAX_NUM)));
 	updateCommonHandle = buffers->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(UpdateCommonData)));
 
 	//描画用
 	drawCommandHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(IndirectCommand) * DRAW_CALL));
 
-	outputCounterHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(UINT)));
 	//バッファ生成-------------------------
 
 	//転送-------------------------
 	buffers->TransData(vertexBufferHandle, vertices.data(), vertBuffSize);
 	buffers->TransData(indexBufferHandle, indices.data(), indexBuffSize);
-
-	UINT reset = 0;
-	buffers->TransData(outputCounterHandle, &reset, sizeof(UINT));
 
 	enemyIndex = NUM;
 	oldEnemyNum = NUM;
@@ -138,7 +134,6 @@ MeshParticleEmitter::MeshParticleEmitter(int NUM)
 		outputViewHandle,
 		KazBufferHelper::SetUnorderedAccessView(sizeof(OutputData), PARTICLE_MAX_NUM),
 		buffers->GetBufferData(outputHandle).Get(),
-		//buffers->GetBufferData(outputCounterHandle).Get()
 		nullptr
 	);
 
@@ -184,14 +179,19 @@ MeshParticleEmitter::MeshParticleEmitter(int NUM)
 	//共通用バッファのデータ送信
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(3, buffers->GetGpuAddress(initCommonHandle));
 
-	DirectX12CmdList::Instance()->cmdList->Dispatch(1, 1, 1);
+	UINT lNum = indexNum / 1024;
+	if (lNum <= 0)
+	{
+		lNum = 1;
+	}
+	DirectX12CmdList::Instance()->cmdList->Dispatch(10, 1, 1);
 	//初期化処理--------------------------------------------
 
 
 
 	resetSceneFlag = false;
 
-	float lScale = 0.1f;
+	float lScale = 0.3f;
 	scaleRotaMat = KazMath::CaluScaleMatrix({ lScale,lScale,lScale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
 }
 
@@ -200,11 +200,12 @@ MeshParticleEmitter::~MeshParticleEmitter()
 	DescriptorHeapMgr::Instance()->Release(vertDataViewHandle);
 	DescriptorHeapMgr::Instance()->Release(indexViewDataHandle);
 	DescriptorHeapMgr::Instance()->Release(outputViewHandle);
+	DescriptorHeapMgr::Instance()->Release(updateViewHandle);
 }
 
-void MeshParticleEmitter::Init(const KazMath::Vec3<float> &POS)
+void MeshParticleEmitter::Init(DirectX::XMMATRIX *MOTHER_MAT)
 {
-	pos = POS;
+	motherMat = MOTHER_MAT;
 	sceneNum = 0;
 	oldEnemyNum = 0;
 	resetSceneFlag = false;
@@ -224,11 +225,16 @@ void MeshParticleEmitter::Update()
 		updateCommonData.scaleRotateBillboardMat = scaleRotaMat * CameraMgr::Instance()->GetMatBillBoard();
 		updateCommonData.viewProjection = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
 		updateCommonData.indexMaxNum = indexNum;
+		updateCommonData.motherMat = *motherMat;
 		buffers->TransData(updateCommonHandle, &updateCommonData, sizeof(UpdateCommonData));
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(updateCommonHandle));
 	}
-
-	DirectX12CmdList::Instance()->cmdList->Dispatch(1, 1, 1);
+	UINT lNum = indexNum / 1024;
+	if (lNum <= 0)
+	{
+		lNum = 1;
+	}
+	DirectX12CmdList::Instance()->cmdList->Dispatch(10, 1, 1);
 
 	ImGui::Begin("Mesh");
 	ImGui::SliderInt("ColorA", &model.data.colorData.color.a, 0, 255);

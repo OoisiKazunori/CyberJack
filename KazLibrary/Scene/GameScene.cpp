@@ -371,6 +371,10 @@ int GameScene::SceneChange()
 	{
 		return -2;
 	}
+	else if (KeyBoradInputManager::Instance()->InputTrigger(DIK_1))
+	{
+		return 1;
+	}
 	else
 	{
 		return SCENE_NONE;

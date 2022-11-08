@@ -11,6 +11,7 @@ cbuffer RootConstants : register(b0)
 {    
     matrix scaleRotateBillboardMat;
     matrix viewProjection;
+    matrix motherMat;
     int indexMaxNum;
 };
 
@@ -33,13 +34,15 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     pMatWorld[0][3] = worldPosArrayData[index].pos.x;
     pMatWorld[1][3] = worldPosArrayData[index].pos.y;
     pMatWorld[2][3] = worldPosArrayData[index].pos.z;
+
+    pMatWorld = mul(motherMat,pMatWorld);
     //行列計算-------------------------
 
     //出力--------------------------------------------
     OutputData outputMat;
     outputMat.mat = mul(viewProjection,pMatWorld); 
     
-    outputMat.color = float4(0.5,0,0,1);
+    outputMat.color = float4(1,1,1,1);
     matrixData[index] = outputMat;
     //出力--------------------------------------------
 }
