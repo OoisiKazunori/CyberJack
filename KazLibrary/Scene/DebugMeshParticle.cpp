@@ -224,9 +224,9 @@ void DebugMeshParticleScene::Draw()
 
 int DebugMeshParticleScene::SceneChange()
 {
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_1))
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_0))
 	{
-		return 1;
+		return 0;
 	}
 	else
 	{
