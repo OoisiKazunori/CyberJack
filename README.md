@@ -1,2 +1,2 @@
 # CyberJack
-現在 masterFromOct18と言うブランチで更新中です
+現在 masterにプッシュできなくなった為、masterFromOct18と言うブランチで更新中です
