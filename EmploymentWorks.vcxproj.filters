@@ -150,6 +150,7 @@
     <ClCompile Include="Game\Stage\WindowForAd.cpp" />
     <ClCompile Include="Game\Tutorial\DirectXMoive.cpp" />
     <ClCompile Include="KazLibrary\Render\MovieRender.cpp" />
+    <ClCompile Include="Game\Tutorial\DirectX12MoviePlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -314,6 +315,7 @@
     <ClInclude Include="Game\Stage\WindowForAd.h" />
     <ClInclude Include="Game\Tutorial\DirectXMoive.h" />
     <ClInclude Include="KazLibrary\Render\MovieRender.h" />
+    <ClInclude Include="Game\Tutorial\DirectX12MoviePlayer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

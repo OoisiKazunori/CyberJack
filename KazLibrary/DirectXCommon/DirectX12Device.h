@@ -20,7 +20,7 @@ public:
 	/// <param name="adapter">アダプター</param>
 	void CreateDevice(Microsoft::WRL::ComPtr<IDXGIAdapter> adapter);
 	Microsoft::WRL::ComPtr<ID3D12Device> dev;
-	Microsoft::WRL::ComPtr<ID3D11Device>dev11;
+	Microsoft::WRL::ComPtr<ID3D11Device1>dev11;
 private:
 	HRESULT result;
 	friend ISingleton<DirectX12Device>;
