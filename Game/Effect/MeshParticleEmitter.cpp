@@ -198,7 +198,7 @@ MeshParticleEmitter::MeshParticleEmitter(int NUM)
 
 	resetSceneFlag = false;
 
-	float lScale = 0.1f;
+	float lScale = 0.18f;
 	scaleRotaMat = KazMath::CaluScaleMatrix({ lScale,lScale,lScale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
 
 	updateCommonData.indexMaxNum = indexNum;
