@@ -142,7 +142,7 @@ GalacticParticle::GalacticParticle()
 
 
 
-	texHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "Circle.png");
+	texHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StagePath + "Circle.png");
 
 }
 

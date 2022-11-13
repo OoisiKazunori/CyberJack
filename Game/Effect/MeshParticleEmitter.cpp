@@ -222,7 +222,7 @@ void MeshParticleEmitter::Init(DirectX::XMMATRIX *MOTHER_MAT)
 
 void MeshParticleEmitter::Update()
 {
-
+	
 	//‰Šú‰»ˆ—--------------------------------------------
 	//DescriptorHeapMgr::Instance()->SetDescriptorHeap();
 	//GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_MESHPARTICLE_INIT);
@@ -275,7 +275,6 @@ void MeshParticleEmitter::Update()
 
 void MeshParticleEmitter::Draw()
 {
-
 	//model.Draw();
 	fbxModel.Draw();
 

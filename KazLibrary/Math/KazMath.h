@@ -55,7 +55,7 @@ namespace KazMath
 
 		Vec2<int>Int()const
 		{
-			return Vec2<int>(x, y);
+			return Vec2<int>(static_cast<int>(x), static_cast<int>(y));
 		}
 		Vec2<float>Float()const
 		{

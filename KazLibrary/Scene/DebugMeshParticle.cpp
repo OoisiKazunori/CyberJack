@@ -8,7 +8,8 @@
 #include"../Game/Stage/BlockParticleStage.h"
 #include"../Game/Stage/FirstStage.h"
 #include"../Game/Stage/RezStage.h"
-
+#include<cmath>
+#include<iostream>
 
 #include"../KazLibrary/Input/ControllerInputManager.h"
 
@@ -68,6 +69,7 @@ void DebugMeshParticleScene::Update()
 	ImGui::Begin("MeshParticle");
 	ImGui::Checkbox("CheckCPUParticle", &cpuCheckParticleFlag);
 	ImGui::Checkbox("CheckGPUParticle", &gpuCheckParticleFlag);
+	ImGui::Checkbox("CheckPerlinNoise", &perlinNoizeFlag);
 	if (cpuCheckParticleFlag)
 	{
 		if (ImGui::TreeNode("TrianglePosArray"))
@@ -96,6 +98,12 @@ void DebugMeshParticleScene::Update()
 			//meshEmitter->Init(&motherMat);
 			prevMeshIndex = meshIndex;
 		}
+	}
+	else if (perlinNoizeFlag)
+	{
+		initNoizeFlag = ImGui::Button("Init");
+		ImGui::SliderFloat("UV_X", &uv.x, 0, 10);
+		ImGui::SliderFloat("UV_Y", &uv.y, 0, 10);
 	}
 	ImGui::End();
 
@@ -183,6 +191,58 @@ void DebugMeshParticleScene::Update()
 			meshEmitter[i]->Update();
 		}
 	}
+	else if (perlinNoizeFlag)
+	{
+		if (initNoizeFlag)
+		{
+			for (int x = 0; x < perlinDebugBox.size(); ++x)
+			{
+				for (int y = 0; y < perlinDebugBox[x].size(); ++y)
+				{
+					float lX = static_cast<float>(x);
+					float lZ = static_cast<float>(y);
+					float lY = PerlinNoize({ lX / 10.0f,lZ / 10.0f }, 1) * 0.5f + 0.5f;
+					perlinDebugBox[y][x].data.transform.pos =
+					{
+						lY * 3.0f,
+						0.0f,
+						lY * 3.0f };
+
+					noiseData[y][x].x = lY;
+					noiseData[y][x].y = lY;
+
+					perlinDebugBox[y][x].data.color.color =
+					{
+						static_cast<int>(lY * 255.0f),
+						static_cast<int>(lY * 255.0f),
+						static_cast<int>(lY * 255.0f),
+						255
+					};
+				}
+			}
+			initNoizeFlag = false;
+		}
+
+		if (uv.x != prevUv.x ||
+			uv.y != prevUv.y)
+		{
+			KazMath::Vec2<float>lUV = { uv.x / 10.0f,uv.y / 10.0f };
+			float lX = PerlinNoize(lUV, 1) * 0.5f + 0.5f;
+			float lY = PerlinNoize(lUV, 1) * 0.5f + 0.5f;
+
+			moveNoiseBlock.data.transform.pos = {};
+			moveNoiseBlock.data.transform.pos.x = lX * 100.0f;
+			moveNoiseBlock.data.transform.pos.y = 5.0f;
+			moveNoiseBlock.data.transform.pos.z = lY * 100.0f;
+			prevUv = uv;
+		}
+		KazMath::Vec3<float>vel = CurlNoise(moveNoiseBlock.data.transform.pos, 1);
+		moveNoiseBlock.data.transform.pos += vel;
+	}
+
+
+
+
 }
 
 void DebugMeshParticleScene::Draw()
@@ -216,7 +276,18 @@ void DebugMeshParticleScene::Draw()
 			meshEmitter[i]->Draw();
 		}
 	}
+	else if (perlinNoizeFlag)
+	{
+		for (int x = 0; x < perlinDebugBox.size(); ++x)
+		{
+			for (int y = 0; y < perlinDebugBox[x].size(); ++y)
+			{
+				perlinDebugBox[y][x].Draw();
+			}
+		}
 
+		moveNoiseBlock.Draw();
+	}
 	rendertarget->Draw();
 	//debugDraw.Draw();
 	mainRenderTarget.Draw();
@@ -232,4 +303,33 @@ int DebugMeshParticleScene::SceneChange()
 	{
 		return SCENE_NONE;
 	}
+}
+
+float DebugMeshParticleScene::PerlinNoize(const KazMath::Vec2<float> UV, int SEED)
+{
+	KazMath::Vec2<float> p = { std::floor(UV.x),std::floor(UV.y) };
+	KazMath::Vec2<float> f = { Frac(UV.x),Frac(UV.y) };
+
+	int lS = SEED;
+	lS = 0;
+
+	KazMath::Vec2<float>dot1(KazMath::Rand(1.0f, -1.0f), KazMath::Rand(1.0f, -1.0f));
+	float w00 = dot1.Dot(f);
+
+	KazMath::Vec2<float>dot2(KazMath::Rand(1.0f, -1.0f), KazMath::Rand(1.0f, -1.0f));
+	float w10 = dot1.Dot(f);
+
+	KazMath::Vec2<float>dot3(KazMath::Rand(1.0f, -1.0f), KazMath::Rand(1.0f, -1.0f));
+	float w01 = dot1.Dot(f);
+
+	KazMath::Vec2<float>dot4(KazMath::Rand(1.0f, -1.0f), KazMath::Rand(1.0f, -1.0f));
+	float w11 = dot1.Dot(f);
+
+	KazMath::Vec2<float> u = f * f * (KazMath::Vec2<float>(3.0f, 3.0f) - (f * 2.0f));
+
+
+	float l1 = Larp(w00, w10, u.x);
+	float l2 = Larp(w01, w11, u.x);
+
+	return Larp(l1, l2, u.y);
 }
