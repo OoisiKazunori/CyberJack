@@ -389,6 +389,9 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "InitMeshParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_MESHPARTICLE_INIT);
 	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "MeshParticleMoveComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_MESHPARTICLE_UPDATE);
 
+	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "InitDeadParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_DEADPARTICLE_INIT);
+	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "UpdateDeadparticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_DEADPARTICLE_UPDATE);
+
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "VHSPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_WIHITENOISE);
 
 	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FbxTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FBX_RENDER_TWO_LIGHT);
@@ -1538,6 +1541,21 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_COMPUTE_DATA_TEST,
 		ROOTSIGNATURE_DATA_UAV_UAV_CBV,
 		PIPELINE_COMPUTE_NAME_MESHPARTICLE_UPDATE
+	);
+
+	//死亡パーティクルの初期化
+	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+		SHADER_COMPUTE_DEADPARTICLE_INIT,
+		PIPELINE_COMPUTE_DATA_TEST,
+		ROOTSIGNATURE_DATA_UAV_UAV,
+		PIPELINE_COMPUTE_NAME_DEADPARTICLE_INIT
+	);
+	//死亡パーティクルの更新
+	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+		SHADER_COMPUTE_DEADPARTICLE_UPDATE,
+		PIPELINE_COMPUTE_DATA_TEST,
+		ROOTSIGNATURE_DATA_UAV_UAV_CBV,
+		PIPELINE_COMPUTE_NAME_DEADPARTICLE_UPDATE
 	);
 
 

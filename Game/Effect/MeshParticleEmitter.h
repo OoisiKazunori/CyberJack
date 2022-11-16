@@ -14,6 +14,14 @@ public:
 	void Update();
 	void Draw();
 
+	D3D12_GPU_VIRTUAL_ADDRESS GetAddress()
+	{
+		return buffers->GetGpuAddress(outputHandle);
+	}
+	int GetVertNum()
+	{
+		return constBufferData.vertMaxNum;
+	}
 	int enemyIndex;
 	bool resetSceneFlag;
 

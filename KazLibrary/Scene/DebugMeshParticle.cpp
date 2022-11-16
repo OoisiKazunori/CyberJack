@@ -43,6 +43,9 @@ void DebugMeshParticleScene::Init()
 	{
 		meshEmitter[i]->Init(&motherMat);
 	}
+
+	prevDeadParticleFlag = false;
+	deadParticleFlag = false;
 }
 
 void DebugMeshParticleScene::Finalize()
@@ -98,6 +101,14 @@ void DebugMeshParticleScene::Update()
 			//meshEmitter->Init(&motherMat);
 			prevMeshIndex = meshIndex;
 		}
+		ImGui::Checkbox("Dead", &deadParticleFlag);
+		if (deadParticleFlag != prevDeadParticleFlag)
+		{
+			deadParticle.reset();
+			deadParticle = std::make_unique<DeadParticle>(meshEmitter[0]->GetAddress(), meshEmitter[0]->GetVertNum());
+			prevDeadParticleFlag = deadParticleFlag;
+		}
+
 	}
 	else if (perlinNoizeFlag)
 	{
@@ -186,10 +197,18 @@ void DebugMeshParticleScene::Update()
 	{
 		motherMat = KazMath::CaluWorld(motherTransform, { 0,1,0 }, { 0,0,1 });
 
-		for (int i = 0; i < meshEmitter.size(); ++i)
+		if (!deadParticleFlag)
 		{
-			meshEmitter[i]->Update();
+			for (int i = 0; i < meshEmitter.size(); ++i)
+			{
+				meshEmitter[i]->Update();
+			}
 		}
+		else
+		{
+			deadParticle->Update();
+		}
+
 	}
 	else if (perlinNoizeFlag)
 	{
@@ -271,9 +290,16 @@ void DebugMeshParticleScene::Draw()
 	}
 	else if (gpuCheckParticleFlag)
 	{
-		for (int i = 0; i < meshEmitter.size(); ++i)
+		if (!deadParticleFlag)
 		{
-			meshEmitter[i]->Draw();
+			for (int i = 0; i < meshEmitter.size(); ++i)
+			{
+				meshEmitter[i]->Draw();
+			}
+		}
+		else
+		{
+			deadParticle->Draw();
 		}
 	}
 	else if (perlinNoizeFlag)

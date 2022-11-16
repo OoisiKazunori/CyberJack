@@ -5,6 +5,7 @@
 #include"../Game/Helper/CameraWork.h"
 #include"../Game/GameRenderTarget.h"
 #include"../Game/Effect/MeshParticleEmitter.h"
+#include"../Game/Effect/DeadParticle.h"
 #include"../KazLibrary/Math/KazMath.h"
 
 
@@ -35,8 +36,13 @@ private:
 	bool gpuCheckParticleFlag;
 	bool perlinNoizeFlag;
 
+	bool deadParticleFlag, prevDeadParticleFlag;
+
 	KazMath::Transform3D motherTransform;
 	DirectX::XMMATRIX motherMat;
+
+	
+	std::unique_ptr<DeadParticle> deadParticle;
 
 	//デバック用--------------------------------------------
 	//三角形描画

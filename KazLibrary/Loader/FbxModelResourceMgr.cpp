@@ -527,27 +527,18 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 	//UVデータの数
 	const int textureUVCount = FBX_MESH->GetTextureUVCount();
 
-	//もし重複なしの頂点数なら何かに使えるかも
-	int polygonVertexNum = FBX_MESH->GetPolygonVertexCount();
-
 	//UV名リスト
 	FbxStringList uvNames;
 	FBX_MESH->GetUVSetNames(uvNames);
 
-	std::vector<DirectX::XMFLOAT4>vertPos(polygonVertexNum);
-	for (int i = 0; i < polygonVertexNum; ++i)
+	//頂点座標データの数
+	const int controlPointsCount = FBX_MESH->GetControlPointsCount();
+	std::vector<DirectX::XMFLOAT4>vertPos(controlPointsCount);
+	for (int i = 0; i < controlPointsCount; ++i)
 	{
-		if (pCoord[i])
-		{
-			vertPos[i].x = (float)pCoord[i][0];
-			vertPos[i].y = (float)pCoord[i][1];
-			vertPos[i].z = (float)pCoord[i][2];
-		}
-		else
-		{
-			bool debug = false;
-			debug = true;
-		}
+		vertPos[i].x = (float)pCoord[i][0];
+		vertPos[i].y = (float)pCoord[i][1];
+		vertPos[i].z = (float)pCoord[i][2];
 	}
 
 	//重複あり頂点情報
