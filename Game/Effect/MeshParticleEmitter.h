@@ -41,6 +41,10 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12CommandSignature> commandSig;
 	ObjModelRender model;
 	FbxModelRender fbxModel;
+	bool drawFlameFlag;
+	bool drawParticleFlag;
+	int bias, prevBias;
+	float scale;
 	std::array<std::string, 10>filePass;
 
 	//ïKóvèÓïÒ--------------------------------------------
@@ -58,6 +62,7 @@ private:
 		DirectX::XMFLOAT4 worldPos;
 		UINT vertMaxNum;
 		UINT indexMaxNum;
+		UINT bias;
 	};
 	InitCommonData constBufferData;
 	RESOURCE_HANDLE vertexBufferHandle, indexBufferHandle;

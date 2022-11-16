@@ -119,7 +119,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	const std::array<KazMath::Color, KazEnemyHelper::STAGE_NUM_MAX> &BACKGROUND_COLOR,
 	const std::array<std::array<KazEnemyHelper::ForceCameraData, 10>, KazEnemyHelper::STAGE_NUM_MAX> &CAMERA_ARRAY)
 {
-	player.Init(KazMath::Transform3D().pos);
+	player.Init(KazMath::Transform3D().pos,false);
 	cursor.Init();
 
 
@@ -1096,7 +1096,7 @@ void Game::Draw()
 
 		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
 		{
-			goalBox.Draw();
+		//	goalBox.Draw();
 		}
 
 		stages[stageNum]->SetCamera(0);
@@ -1195,7 +1195,7 @@ void Game::Draw()
 		logoutWindow.Draw();
 
 		mainRenderTarget.Draw();
-		cursor.Draw();
+		//cursor.Draw();
 
 	}
 	else if (gameOverFlag)

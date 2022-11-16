@@ -29,7 +29,7 @@ private:
 
 	CameraWork cameraWork;
 
-	std::array<std::unique_ptr<MeshParticleEmitter>, 10> meshEmitter;
+	std::array<std::unique_ptr<MeshParticleEmitter>, 1> meshEmitter;
 	int meshIndex,prevMeshIndex;
 	bool cpuCheckParticleFlag;
 	bool gpuCheckParticleFlag;

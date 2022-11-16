@@ -21,7 +21,7 @@ DebugMeshParticleScene::DebugMeshParticleScene()
 
 	for (int i = 0; i < meshEmitter.size(); ++i)
 	{
-		meshEmitter[i] = std::make_unique<MeshParticleEmitter>(5);
+		meshEmitter[i] = std::make_unique<MeshParticleEmitter>(0);
 	}
 }
 
@@ -87,13 +87,13 @@ void DebugMeshParticleScene::Update()
 	}
 	else if (gpuCheckParticleFlag)
 	{
-		ImGui::SliderInt("EnemyIndex", &meshIndex, 5, 7);
+		ImGui::SliderInt("EnemyIndex", &meshIndex, 0, 3);
 		KazImGuiHelper::InputTransform3D("Mother", &motherTransform);
 		if (meshIndex != prevMeshIndex)
 		{
-			//meshEmitter.reset();
-			//meshEmitter = std::make_unique<MeshParticleEmitter>(meshIndex);
-			//meshEmitter->Init(&motherMat);
+			meshEmitter[0].reset();
+			meshEmitter[0] = std::make_unique<MeshParticleEmitter>(meshIndex);
+			meshEmitter[0]->Init(&motherMat);
 			prevMeshIndex = meshIndex;
 		}
 	}

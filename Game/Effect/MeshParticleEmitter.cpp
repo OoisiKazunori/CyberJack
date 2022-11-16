@@ -36,14 +36,21 @@ MeshParticleEmitter::MeshParticleEmitter(int NUM)
 	}
 
 
-	filePass[0] = KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_Model.obj";
-	filePass[1] = KazFilePathName::EnemyPath + "Bike/" + "Bike_Model.obj";
-	filePass[2] = KazFilePathName::EnemyPath + "MisileEnemy/" + "Gunner_Model.obj";
-	filePass[3] = KazFilePathName::EnemyPath + "Move/" + "MoveEnemy_Model.obj";
-	filePass[4] = KazFilePathName::EnemyPath + "PopEnemy/" + "PopEnemy_Model.obj";
-	filePass[5] = KazFilePathName::EnemyPath + "Summon/" + "SummonEnemy_anim.fbx";
-	filePass[6] = KazFilePathName::TestPath + "plane.fbx";
-	filePass[7] = KazFilePathName::TestPath + "block.fbx";
+	filePass[0] = KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_Head_anim.fbx";
+	filePass[1] = KazFilePathName::EnemyPath + "Bike/" + "BikeEnemy_anim.fbx";
+	filePass[2] = KazFilePathName::EnemyPath + "MisileEnemy/" + "Gunner_Switch_anim.fbx";
+	filePass[3] = KazFilePathName::EnemyPath + "Summon/" + "SummonEnemy_anim.fbx";
+	filePass[4] = KazFilePathName::TestPath + "plane.fbx";
+	filePass[5] = KazFilePathName::TestPath + "block.fbx";
+
+	filePass[6] = KazFilePathName::EnemyPath + "Move/" + "MoveEnemy_Model.obj";
+	filePass[7] = KazFilePathName::EnemyPath + "PopEnemy/" + "PopEnemy_Model.obj";
+
+	for (int i = 0; i < 8; ++i)
+	{
+		FbxModelResourceMgr::Instance()->LoadModel(filePass[NUM]);
+	}
+
 
 	RESOURCE_HANDLE lHandle = FbxModelResourceMgr::Instance()->LoadModel(filePass[NUM]);
 	std::vector<DirectX::XMFLOAT4>modelVertArrayData = FbxModelResourceMgr::Instance()->GetResourceData(lHandle)->vertData;
@@ -112,6 +119,11 @@ MeshParticleEmitter::MeshParticleEmitter(int NUM)
 		constBufferData.worldPos = {};
 		constBufferData.vertMaxNum = static_cast<UINT>(modelVertArrayData.size());
 		constBufferData.indexMaxNum = static_cast<UINT>(modelIndexArrayData.size());
+		constBufferData.bias = 80;
+
+
+		bias = 80;
+		prevBias = 80;
 		buffers->TransData(initCommonHandle, &constBufferData, sizeof(InitCommonData));
 	}
 
@@ -198,10 +210,11 @@ MeshParticleEmitter::MeshParticleEmitter(int NUM)
 
 	resetSceneFlag = false;
 
-	float lScale = 0.18f;
-	scaleRotaMat = KazMath::CaluScaleMatrix({ lScale,lScale,lScale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
+	scale = 0.18f;
+	scaleRotaMat = KazMath::CaluScaleMatrix({ scale,scale,scale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
 
 	updateCommonData.indexMaxNum = indexNum;
+	drawFlameFlag = true;
 }
 
 MeshParticleEmitter::~MeshParticleEmitter()
@@ -222,21 +235,42 @@ void MeshParticleEmitter::Init(DirectX::XMMATRIX *MOTHER_MAT)
 
 void MeshParticleEmitter::Update()
 {
+	ImGui::Begin("Mesh");
+	ImGui::Checkbox("DrawFlame", &drawFlameFlag);
+	ImGui::Checkbox("DrawParticle", &drawParticleFlag);
+	ImGui::SliderInt("FlameAlpha", &fbxModel.data.colorData.color.a, 0, 255);
+	ImGui::SliderInt("Bias", &bias, 0, 100);
+	ImGui::DragFloat("ParticleScale", &scale);
+	ImGui::End();
 
-	//初期化処理--------------------------------------------
-	//DescriptorHeapMgr::Instance()->SetDescriptorHeap();
-	//GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_MESHPARTICLE_INIT);
+	float lScale = scale;
+	scaleRotaMat = KazMath::CaluScaleMatrix({ lScale,lScale,lScale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
 
-	////頂点
-	//DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(vertDataViewHandle));
-	////インデックス
-	//DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(indexViewDataHandle));
-	////出力
-	//DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(2, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
-	////共通用バッファのデータ送信
-	//DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(3, buffers->GetGpuAddress(initCommonHandle));
-	//DirectX12CmdList::Instance()->cmdList->Dispatch(50, 1, 1);
-	//初期化処理--------------------------------------------
+
+	if (bias != prevBias)
+	{
+		constBufferData.bias = static_cast<UINT>(bias);
+		buffers->TransData(initCommonHandle, &constBufferData, sizeof(InitCommonData));
+
+		//初期化処理--------------------------------------------
+		DescriptorHeapMgr::Instance()->SetDescriptorHeap();
+		GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_MESHPARTICLE_INIT);
+
+		//頂点
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(vertDataViewHandle));
+		//インデックス
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(indexViewDataHandle));
+		//出力
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(2, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
+		//共通用バッファのデータ送信
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(3, buffers->GetGpuAddress(initCommonHandle));
+		DirectX12CmdList::Instance()->cmdList->Dispatch(50, 1, 1);
+		//初期化処理--------------------------------------------
+
+		prevBias = bias;
+	}
+
+
 
 
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_MESHPARTICLE_UPDATE);
@@ -261,10 +295,6 @@ void MeshParticleEmitter::Update()
 	}
 	DirectX12CmdList::Instance()->cmdList->Dispatch(80, 1, 1);
 
-	ImGui::Begin("Mesh");
-	ImGui::SliderInt("ColorA", &fbxModel.data.colorData.color.a, 0, 255);
-	ImGui::InputInt("Enemy", &enemyIndex);
-	ImGui::End();
 
 	if (enemyIndex != oldEnemyNum)
 	{
@@ -275,35 +305,40 @@ void MeshParticleEmitter::Update()
 
 void MeshParticleEmitter::Draw()
 {
-
-	//model.Draw();
+	if (!drawFlameFlag)
+	{
+		fbxModel.data.colorData.color.a = 0;
+	}
 	fbxModel.Draw();
 
-	GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE);
-	DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
-	DirectX12CmdList::Instance()->cmdList->IASetIndexBuffer(&indexBufferView);
+	if (drawParticleFlag)
+	{
+		GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE);
+		DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
+		DirectX12CmdList::Instance()->cmdList->IASetIndexBuffer(&indexBufferView);
 
-	RenderTargetStatus::Instance()->ChangeBarrier(
-		buffers->GetBufferData(drawCommandHandle).Get(),
-		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT
-	);
+		RenderTargetStatus::Instance()->ChangeBarrier(
+			buffers->GetBufferData(drawCommandHandle).Get(),
+			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+			D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT
+		);
 
-	DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
-	(
-		commandSig.Get(),
-		1,
-		buffers->GetBufferData(drawCommandHandle).Get(),
-		0,
-		nullptr,
-		0
-	);
+		DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
+		(
+			commandSig.Get(),
+			1,
+			buffers->GetBufferData(drawCommandHandle).Get(),
+			0,
+			nullptr,
+			0
+		);
 
-	RenderTargetStatus::Instance()->ChangeBarrier(
-		buffers->GetBufferData(drawCommandHandle).Get(),
-		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
-		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
-	);
+		RenderTargetStatus::Instance()->ChangeBarrier(
+			buffers->GetBufferData(drawCommandHandle).Get(),
+			D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
+			D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+		);
+	}
 
 }
