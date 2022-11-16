@@ -537,17 +537,9 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 	std::vector<DirectX::XMFLOAT4>vertPos(polygonVertexNum);
 	for (int i = 0; i < polygonVertexNum; ++i)
 	{
-		if (pCoord[i])
-		{
-			vertPos[i].x = (float)pCoord[i][0];
-			vertPos[i].y = (float)pCoord[i][1];
-			vertPos[i].z = (float)pCoord[i][2];
-		}
-		else
-		{
-			bool debug = false;
-			debug = true;
-		}
+		vertPos[i].x = (float)pCoord[i][0];
+		vertPos[i].y = (float)pCoord[i][1];
+		vertPos[i].z = (float)pCoord[i][2];
 	}
 
 	//重複あり頂点情報

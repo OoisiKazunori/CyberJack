@@ -13,6 +13,9 @@ BattleshipEnemy::BattleshipEnemy()
 	topModel = std::make_unique<FbxModelRender>();
 
 	//iEnemy_ModelRender = std::make_unique<FbxModelRender>();
+	FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_Head_anim.fbx");
+	FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_HachOpen_anim.fbx");
+
 }
 
 void BattleshipEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
