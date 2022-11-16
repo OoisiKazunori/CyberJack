@@ -245,6 +245,8 @@
     <ClCompile Include="Game\Stage\WindowForAd.cpp" />
     <ClCompile Include="Game\Tool\MapChipPlacementTool.cpp" />
     <ClCompile Include="Game\Tutorial.cpp" />
+    <ClCompile Include="Game\Tutorial\DirectX12MoviePlayer.cpp" />
+    <ClCompile Include="Game\Tutorial\DirectXMoive.cpp" />
     <ClCompile Include="Game\UI\AnnounceStageUI.cpp" />
     <ClCompile Include="Game\UI\AttackLog.cpp" />
     <ClCompile Include="Game\UI\Cursor.cpp" />
@@ -303,6 +305,7 @@
     <ClCompile Include="KazLibrary\Render\FbxModelRender.cpp" />
     <ClCompile Include="KazLibrary\Render\IRender.cpp" />
     <ClCompile Include="KazLibrary\Render\LineRender.cpp" />
+    <ClCompile Include="KazLibrary\Render\MovieRender.cpp" />
     <ClCompile Include="KazLibrary\Render\ObjModelRender.cpp" />
     <ClCompile Include="KazLibrary\Render\PolygonRender.cpp" />
     <ClCompile Include="KazLibrary\Render\Sprite2DRender.cpp" />
@@ -396,6 +399,8 @@
     <ClInclude Include="Game\Stage\WindowForAd.h" />
     <ClInclude Include="Game\Tool\MapChipPlacementTool.h" />
     <ClInclude Include="Game\Tutorial.h" />
+    <ClInclude Include="Game\Tutorial\DirectX12MoviePlayer.h" />
+    <ClInclude Include="Game\Tutorial\DirectXMoive.h" />
     <ClInclude Include="Game\UI\AnnounceStageUI.h" />
     <ClInclude Include="Game\UI\AttackLog.h" />
     <ClInclude Include="Game\UI\Cursor.h" />
@@ -462,6 +467,7 @@
     <ClInclude Include="KazLibrary\Render\IRender.h" />
     <ClInclude Include="KazLibrary\Render\KazRender.h" />
     <ClInclude Include="KazLibrary\Render\LineRender.h" />
+    <ClInclude Include="KazLibrary\Render\MovieRender.h" />
     <ClInclude Include="KazLibrary\Render\ObjModelRender.h" />
     <ClInclude Include="KazLibrary\Render\PolygonRender.h" />
     <ClInclude Include="KazLibrary\Render\RenderData.h" />

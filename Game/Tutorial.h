@@ -14,6 +14,7 @@
 #include"../Game/Event/TutorialGame.h"
 #include"../Game/Effect/PortalIntermediateDirection.h"
 #include"../Game/GameRenderTarget.h"
+#include"../Game/Tutorial/DirectX12MoviePlayer.h"
 
 /// <summary>
 /// ゲーム開始前のチュートリアル用のステージ
@@ -90,4 +91,5 @@ private:
 	bool initSceneFlag;
 
 	float angleC;
+	std::unique_ptr<DirectX12MoviePlayer> movie;
 };

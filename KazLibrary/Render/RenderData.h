@@ -114,6 +114,33 @@ struct Sprite2DData
 };
 
 
+struct MovieData
+{
+	KazMath::Transform2D transform;
+	ResourceHandle handleData;
+	FlipData flip;
+	PipeLineNames pipelineName;
+
+	KazMath::Color colorData;
+	AddTextureData addHandle;
+
+	Microsoft::WRL::ComPtr<ID3D12Resource>buff;
+
+	MovieData() :colorData(0, 0, 0, 255), pipelineName(PIPELINE_NAME_SPRITE_NOBLEND)
+	{
+	}
+
+	void Record()
+	{
+		transform.Record();
+		handleData.flag.Record();
+		flip.Record();
+		colorData.Record();
+	};
+};
+
+
+
 struct Sprite3DData
 {
 	KazMath::Transform3D transform;

@@ -25,6 +25,9 @@ Tutorial::Tutorial() :LOG_FONT_SIZE(1.0f), FLAME_MAX_TIME(20)
 	mainRenderTarget.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
 	mainRenderTarget.data.handleData = renderTarget->GetGameRenderTargetHandle();
 
+	movie = std::make_unique<DirectX12MoviePlayer>();
+	movie->SetMediaSource(KazFilePathName::TestPath + "test1m.mp4");
+	movie->Play();
 }
 
 Tutorial::~Tutorial()
@@ -503,6 +506,7 @@ void Tutorial::Update()
 	cameraWork.Update(cursor.GetValue(), &player.pos, false);
 	gridR[0]->Update(-1.0f);
 	gridR[1]->Update(800.0f);
+	movie->TranferFrame();
 
 
 	for (int tutorialNum = 0; tutorialNum < enemies.size(); ++tutorialNum)
@@ -569,6 +573,8 @@ void Tutorial::Draw()
 	//レンダーターゲットセット
 	renderTarget->SetRenderTarget();
 	//ゲーム内描画
+
+	movie->Draw();
 
 	for (int i = 0; i < gridR.size(); ++i)
 	{
