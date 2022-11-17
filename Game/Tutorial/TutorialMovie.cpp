@@ -50,7 +50,7 @@ void TutorialMovie::Update()
 	{
 		normalRender.TransData(&seedNum, noiseSeedHandle, typeid(float).name());
 	}
-	else if (stopFlag)
+	else
 	{
 		float lstopNoiseNum = -1;
 		normalRender.TransData(&lstopNoiseNum, noiseSeedHandle, typeid(float).name());
@@ -101,4 +101,15 @@ void TutorialMovie::Stop()
 	startMovieFlag = false;
 	startNoiseFlag = false;
 	stopFlag = true;
+}
+
+bool TutorialMovie::End()
+{
+	//動画時間まで到達したら、最初に巻き戻しトリガー判定でtrueを返す
+	bool lIsEndFlag = moviePlayer->IsEnd();
+	if (lIsEndFlag)
+	{
+		moviePlayer->Restart();
+	}
+	return lIsEndFlag;
 }

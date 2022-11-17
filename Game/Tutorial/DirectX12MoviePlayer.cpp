@@ -147,6 +147,16 @@ void DirectX12MoviePlayer::Stop()
 	isFinished = false;
 }
 
+bool DirectX12MoviePlayer::IsEnd()
+{
+	return static_cast<bool>(mediaEngine->IsEnded());
+}
+
+void DirectX12MoviePlayer::Restart()
+{
+	mediaEngine->SetCurrentTime(0.0);
+}
+
 bool DirectX12MoviePlayer::TranferFrame()
 {
 	if (mediaEngine && isPlaying)

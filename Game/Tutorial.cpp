@@ -218,7 +218,8 @@ void Tutorial::Update()
 
 	for (int enemyIndex = 0; enemyIndex < tutorial[tutorialArrayIndex].GetBoxNum(); ++enemyIndex)
 	{
-		if (initEnemyFlagArray[tutorialArrayIndex])
+		//“®‰æI—¹‚©‚Â‰Šú‰»‚³‚ê‚Ä‚¢‚È‚¯‚ê‚Î‰Šú‰»‚·‚é
+		if (initEnemyFlagArray[tutorialArrayIndex] && !tutorialMovie.End())
 		{
 			continue;
 		}
@@ -508,9 +509,9 @@ void Tutorial::Update()
 	gridR[1]->Update(800.0f);
 
 
-	//tutorialMovie.Play();
+	tutorialMovie.Play();
 	//tutorialMovie.Noise();
-	tutorialMovie.Stop();
+	//tutorialMovie.Stop();
 	tutorialMovie.Update();
 
 

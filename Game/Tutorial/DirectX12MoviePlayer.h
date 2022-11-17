@@ -24,6 +24,8 @@ public:
 
 	void Play();
 	void Stop();
+	bool IsEnd();
+	void Restart();
 
 	bool TranferFrame();
 
