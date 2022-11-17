@@ -201,7 +201,6 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	initEndLogFlag = false;
 	gameClearTimer = 0;
 
-	//パディング用
 	for (int i = 0; i < BACKGROUND_COLOR.size(); ++i)
 	{
 		renderTarget[i] = std::make_unique<GameRenderTarget>(BACKGROUND_COLOR[i]);

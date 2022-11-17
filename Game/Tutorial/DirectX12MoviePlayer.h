@@ -29,6 +29,15 @@ public:
 
 	void Draw();
 
+	Microsoft::WRL::ComPtr<ID3D12Resource>GetBuffer()
+	{
+		return gpuBuffer->GetBufferData(movieTexHandle);
+	};
+	RESOURCE_HANDLE GetDescriptorHeapHandle()
+	{
+		return movieTexHandle + memorySize.startSize;
+	};
+
 private:
 	bool isPlaying;
 	bool isFinished;
