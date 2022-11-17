@@ -571,8 +571,8 @@ void Tutorial::Draw()
 
 	portalEffect.Draw(&cursor);
 
+	//チュートリアルの動画再生
 	tutorialMovie.Draw();
-
 
 
 	//レンダーターゲットセット
@@ -639,6 +639,8 @@ void Tutorial::Draw()
 	{
 		portalEffect.portalRender.Draw();
 	}
+
+
 
 	//cursor.Draw();
 	//ブルーム系統のレンダーターゲット切り替え

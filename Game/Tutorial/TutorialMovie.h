@@ -14,22 +14,19 @@ public:
 	void Update();
 	void Draw();
 
-	void Noise();
 	void Play();
+
 
 private:
 	//“®‰æÄ¶--------------------------------------------
 	bool startMovieFlag;
 	std::unique_ptr<DirectX12MoviePlayer> moviePlayer;
 	RESOURCE_HANDLE seedHandle;
-	MovieRender render;
+	MovieRender movieRender;
 	float seedNum;
 	//“®‰æÄ¶--------------------------------------------
 
-	bool startNoiseFlag;
-	RESOURCE_HANDLE greenBackHandle;
-
-	std::unique_ptr<GameRenderTarget> renderTarget;
+	RESOURCE_HANDLE renderTargetHandle;
 
 
 	//UI--------------------------------------------

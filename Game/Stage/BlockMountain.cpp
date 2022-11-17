@@ -2,7 +2,12 @@
 #include"../KazLibrary/Imgui/MyImgui.h"
 #include"../KazLibrary/Helper/ResourceFilePass.h"
 
-BlockMountain::BlockMountain(const InitBlockMountainData &INIT_DATA)
+BlockMountain::BlockMountain()
+{
+
+}
+
+void BlockMountain::Init(const InitBlockMountainData &INIT_DATA)
 {
 	const float L_SCALE = 100.0f;
 	const int X_MAX_NUM = INIT_DATA.xRange;

@@ -17,7 +17,8 @@ struct InitBlockMountainData
 class BlockMountain
 {
 public:
-	BlockMountain(const InitBlockMountainData &INIT_DATA);
+	BlockMountain();
+	void Init(const InitBlockMountainData &INIT_DATA);
 	void Update();
 	void Draw();
 

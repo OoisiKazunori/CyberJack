@@ -179,7 +179,6 @@ void DirectX12MoviePlayer::Draw()
 	render.data.buff = gpuBuffer->GetBufferData(movieTexHandle);
 	render.data.handleData = movieTexHandle + memorySize.startSize;
 	render.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
-	render.data.transform.scale = { 0.5f,0.5f };
 	render.Draw();
 }
 

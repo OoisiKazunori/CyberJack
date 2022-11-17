@@ -1,5 +1,6 @@
 #include"../ShaderHeader/SpriteShaderHeader.hlsli"
 #include"../ShaderHeader/FogShaderHeader.hlsli"
+#include"../ShaderHeader/MultiPassHeader.hlsli"
 
 Texture2D<float4> flameTex : register(t0);
 Texture2D<float4> windowTex : register(t1);
@@ -21,7 +22,7 @@ float Rand(float2 coord, float seed)
     return frac(sin(dot(coord.xy, float2(12.9898, 78.233)) + seed) * 43758.5453);
 }
 
-float4 PSmain(VSOutput input) : SV_TARGET
+TwoRender PSmain(VSOutput input) : SV_TARGET
 {
     float4 outputNoiseInWindow = float4(0.0f,0.0f,0.0f,0.0f);
     if(seed != -1)
@@ -40,6 +41,9 @@ float4 PSmain(VSOutput input) : SV_TARGET
     }
 
 
+    TwoRender output;
+    output.target1 = float4(0,0,0,0);
+
     //枠内にテクスチャを描画
     if(LEFT_UP_UV.x <= input.uv.x && LEFT_UP_UV.y <= input.uv.y &&
         LEFT_DOWN_UV.x <= input.uv.x && input.uv.y <= LEFT_DOWN_UV.y &&
@@ -50,14 +54,17 @@ float4 PSmain(VSOutput input) : SV_TARGET
 
         if(seed != -1)
         {
-            return CaluFog(input.svpos, outputNoiseInWindow, fogData.xyz, fogData.w);
+            output.target0 = CaluFog(input.svpos, outputNoiseInWindow, fogData.xyz, fogData.w);
+            return output;
         }
         else
         {
-            return CaluFog(input.svpos, float4(windowTex.Sample(smp, inUv)), fogData.xyz, fogData.w);
+            output.target0 = CaluFog(input.svpos, float4(windowTex.Sample(smp, inUv)), fogData.xyz, fogData.w);
+            return output;
         }
     }
 
+    output.target0 = CaluFog(input.svpos, float4(flameTex.Sample(smp, input.uv)), fogData.xyz, fogData.w);
     //ウインドウ部分の出力
-    return CaluFog(input.svpos, float4(flameTex.Sample(smp, input.uv)), fogData.xyz, fogData.w);;
+    return output;
 }

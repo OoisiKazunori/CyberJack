@@ -86,7 +86,7 @@ RezStage::RezStage()
 	lInitData.yScale = 500.0f;
 	lInitData.centralPos = { 0.0f,-2000.0f,0.0f };
 	lInitData.rotation = { 0.0f,0.0f,0.0f };
-	blockMountainArray[0] = std::make_unique<BlockMountain>(lInitData);
+	blockMountainArray[0].Init(lInitData);
 
 	lInitData.fogDesinty = 0.0005f;
 	lInitData.lightDir = { 0.0f,0.0f,1.0f };
@@ -94,7 +94,7 @@ RezStage::RezStage()
 	lInitData.yScale = 500.0f;
 	lInitData.centralPos = { 0.0f,2500.0f,0.0f };
 	lInitData.rotation = { 180.0f,0.0f,0.0f };
-	blockMountainArray[1] = std::make_unique<BlockMountain>(lInitData);
+	blockMountainArray[1].Init(lInitData);
 
 	std::array<RESOURCE_HANDLE, 10>lData;
 	for (int i = 0; i < lData.size(); ++i)
@@ -144,7 +144,7 @@ void RezStage::Update()
 
 	for (int i = 0; i < blockMountainArray.size(); ++i)
 	{
-		blockMountainArray[i]->Update();
+		blockMountainArray[i].Update();
 	}
 
 	for (int i = 0; i < windowArray.size(); ++i)
@@ -167,7 +167,7 @@ void RezStage::Draw()
 
 	for (int i = 0; i < blockMountainArray.size(); ++i)
 	{
-		blockMountainArray[i]->Draw();
+		blockMountainArray[i].Draw();
 	}
 
 	for (int i = 0; i < windowArray.size(); ++i)
