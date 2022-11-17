@@ -123,7 +123,6 @@ void Tutorial::Init(bool SKIP_FLAG)
 
 
 	tutorialMovie.Init();
-	tutorialMovie.Play();
 }
 
 void Tutorial::Finalize()
@@ -508,6 +507,10 @@ void Tutorial::Update()
 	gridR[0]->Update(-1.0f);
 	gridR[1]->Update(800.0f);
 
+
+	//tutorialMovie.Play();
+	//tutorialMovie.Noise();
+	tutorialMovie.Stop();
 	tutorialMovie.Update();
 
 
@@ -627,7 +630,7 @@ void Tutorial::Draw()
 
 	for (int i = 0; i < tutorial.size(); ++i)
 	{
-		tutorial[i].Draw();
+		//tutorial[i].Draw();
 	}
 
 	//次ポータルの描画
@@ -640,7 +643,9 @@ void Tutorial::Draw()
 		portalEffect.portalRender.Draw();
 	}
 
-
+	movieR.data.handleData = tutorialMovie.GetTexture();
+	movieR.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+	movieR.Draw();
 
 	//cursor.Draw();
 	//ブルーム系統のレンダーターゲット切り替え

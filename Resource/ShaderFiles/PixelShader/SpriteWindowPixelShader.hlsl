@@ -32,7 +32,6 @@ TwoRender PSmain(VSOutput input) : SV_TARGET
         randamNum *= sin(seed);
         //乱数
         float r = Rand(input.uv, seed); // = rand(randamNum);
-    
         //砂嵐作�??
         float3 noiseSignal = float3(r, r, r);
         float noiseIntensity = 1.0f;

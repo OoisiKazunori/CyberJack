@@ -95,4 +95,5 @@ private:
 	float angleC;
 
 	TutorialMovie tutorialMovie;
+	Sprite2DRender movieR;
 };

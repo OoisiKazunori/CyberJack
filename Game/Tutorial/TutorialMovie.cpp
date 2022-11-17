@@ -7,17 +7,31 @@ TutorialMovie::TutorialMovie()
 {
 	moviePlayer = std::make_unique<DirectX12MoviePlayer>();
 	renderTargetHandle = RenderTargetStatus::Instance()->CreateRenderTarget(KazMath::Vec2<UINT>(WIN_X, WIN_Y), { 0,0,0 }, DXGI_FORMAT_R8G8B8A8_UNORM);
+	outputRenderTargetHandle = RenderTargetStatus::Instance()->CreateRenderTarget(KazMath::Vec2<UINT>(WIN_X, WIN_Y), { 0,0,0 }, DXGI_FORMAT_R8G8B8A8_UNORM);
 
 	movieRender.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+	outputRender.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+	normalRender.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+	movieRender.data.transform.scale = { 0.67f,0.7f };
+
+
+	vhsSeedHandle = outputRender.CreateConstBuffer(sizeof(float), typeid(float).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+	outputRender.data.pipelineName = PIPELINE_NAME_SPRITE_VHS;
+	outputRender.data.handleData = renderTargetHandle;
+
+	noiseSeedHandle = normalRender.CreateConstBuffer(sizeof(float), typeid(float).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+	normalRender.data.pipelineName = PIPELINE_NAME_SPRITE_NOISE;
+	normalRender.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "NormalMovie.png");
+
+
+	moviePlayer->SetMediaSource(KazFilePathName::TestPath + "test1m.mp4");
+	tutorialText.Init("L Stick", {});
+
 }
 
 void TutorialMovie::Init()
 {
-	moviePlayer->SetMediaSource(KazFilePathName::TestPath + "test1m.mp4");
-
-	seedHandle = movieRender.CreateConstBuffer(sizeof(float), typeid(float).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
 	seedNum = 0;
-
 	startMovieFlag = false;
 }
 
@@ -28,33 +42,63 @@ void TutorialMovie::Update()
 	{
 		moviePlayer->Play();
 		moviePlayer->TranferFrame();
-		movieRender.data.pipelineName = PIPELINE_NAME_SPRITE_VHS;
+		
 		movieRender.data.buff = moviePlayer->GetBuffer();
 		movieRender.data.handleData = moviePlayer->GetDescriptorHeapHandle();
-
-		movieRender.TransData(&seedNum, seedHandle, typeid(float).name());
+	}
+	else if(startNoiseFlag)
+	{
+		normalRender.TransData(&seedNum, noiseSeedHandle, typeid(float).name());
+	}
+	else if (stopFlag)
+	{
+		float lstopNoiseNum = -1;
+		normalRender.TransData(&lstopNoiseNum, noiseSeedHandle, typeid(float).name());
 	}
 
 	seedNum += 1.0f;
-	movieRender.data.transform.scale = { 0.67f,0.7f };
-	ImGui::Begin("Size");
-	KazImGuiHelper::InputVec2("Size", &movieRender.data.transform.scale);
-	ImGui::End();
+	outputRender.TransData(&seedNum, vhsSeedHandle, typeid(float).name());
 
+	tutorialText.Update();
 }
 
 void TutorialMovie::Draw()
 {
 	RenderTargetStatus::Instance()->PrepareToChangeBarrier(renderTargetHandle);
+	RenderTargetStatus::Instance()->ClearRenderTarget(renderTargetHandle);
 	if (startMovieFlag)
 	{
+		tutorialText.Draw();
 		movieRender.Draw();
 	}
-	RenderTargetStatus::Instance()->PrepareToCloseBarrier(renderTargetHandle);
+	else
+	{
+		normalRender.Draw();
+	}
+	RenderTargetStatus::Instance()->PrepareToChangeBarrier(outputRenderTargetHandle, renderTargetHandle);
+	RenderTargetStatus::Instance()->ClearRenderTarget(outputRenderTargetHandle);
+	outputRender.Draw();
+	RenderTargetStatus::Instance()->PrepareToCloseBarrier(outputRenderTargetHandle);
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 }
 
 void TutorialMovie::Play()
 {
 	startMovieFlag = true;
+	startNoiseFlag = false;
+	stopFlag = false;
+}
+
+void TutorialMovie::Noise()
+{
+	startMovieFlag = false;
+	startNoiseFlag = true;
+	stopFlag = false;
+}
+
+void TutorialMovie::Stop()
+{
+	startMovieFlag = false;
+	startNoiseFlag = false;
+	stopFlag = true;
 }
