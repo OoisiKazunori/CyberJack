@@ -1,8 +1,8 @@
 #pragma once
 #include"../DirectXCommon/Base.h"
 #include<cmath>
-#pragma warning(push)
-#pragma warning(disable:4023)
+#pragma warning(push,0)
+#pragma warning(disable: ALL_CODE_ANALYSIS_WARNINGS)
 #include"fbxsdk.h"
 #pragma warning(pop)
 #include"../Helper/DirtyFlag.h"
