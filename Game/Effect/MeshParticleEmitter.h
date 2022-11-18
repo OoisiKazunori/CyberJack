@@ -5,22 +5,30 @@
 #include<vector>
 #include"../KazLibrary/Render/KazRender.h"
 
+/// <summary>
+/// メッシュ情報をエミッターとしたGPGPUでのパーティクル表現
+/// </summary>
 class MeshParticleEmitter
 {
 public:
-	MeshParticleEmitter(int NUM);
+	MeshParticleEmitter(std::vector<DirectX::XMFLOAT4> VERT_NUM);
 	~MeshParticleEmitter();
 	void Init(DirectX::XMMATRIX *MOTHER_MAT);
 	void Update();
 	void Draw();
 
-	int enemyIndex;
+	D3D12_GPU_VIRTUAL_ADDRESS GetAddress()
+	{
+		return buffers->GetGpuAddress(outputHandle);
+	}
+	int GetVertNum()
+	{
+		return constBufferData.vertMaxNum;
+	}
 	bool resetSceneFlag;
 
 private:
 	int sceneNum;
-	int oldEnemyNum;
-
 	//バッファ
 	std::unique_ptr<CreateGpuBuffer> buffers;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
@@ -39,13 +47,9 @@ private:
 
 
 	Microsoft::WRL::ComPtr<ID3D12CommandSignature> commandSig;
-	ObjModelRender model;
-	FbxModelRender fbxModel;
-	bool drawFlameFlag;
 	bool drawParticleFlag;
 	int bias, prevBias;
 	float scale;
-	std::array<std::string, 10>filePass;
 
 	//必要情報--------------------------------------------
 	KazMath::Vec3<float>*pos;
@@ -61,16 +65,15 @@ private:
 	{
 		DirectX::XMFLOAT4 worldPos;
 		UINT vertMaxNum;
-		UINT indexMaxNum;
 		UINT bias;
 	};
 	InitCommonData constBufferData;
 	RESOURCE_HANDLE vertexBufferHandle, indexBufferHandle;
-	RESOURCE_HANDLE verticesDataHandle, indexDataHandle, initCommonHandle;
+	RESOURCE_HANDLE verticesDataHandle, initCommonHandle;
 
 	RESOURCE_HANDLE outputHandle;
 
-	RESOURCE_HANDLE outputViewHandle, vertDataViewHandle, indexViewDataHandle;
+	RESOURCE_HANDLE outputViewHandle, vertDataViewHandle;
 	//初期化--------------------------------------------
 
 	//更新用--------------------------------------------

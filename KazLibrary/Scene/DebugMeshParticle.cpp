@@ -8,7 +8,8 @@
 #include"../Game/Stage/BlockParticleStage.h"
 #include"../Game/Stage/FirstStage.h"
 #include"../Game/Stage/RezStage.h"
-
+#include<cmath>
+#include<iostream>
 
 #include"../KazLibrary/Input/ControllerInputManager.h"
 
@@ -19,10 +20,38 @@ DebugMeshParticleScene::DebugMeshParticleScene()
 	mainRenderTarget.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
 	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 
+
+	filePass[0] = KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_Head_anim.fbx";
+	filePass[1] = KazFilePathName::EnemyPath + "Bike/" + "BikeEnemy_anim.fbx";
+	filePass[2] = KazFilePathName::EnemyPath + "MisileEnemy/" + "Gunner_Switch_anim.fbx";
+	filePass[3] = KazFilePathName::EnemyPath + "Summon/" + "SummonEnemy_anim.fbx";
+	filePass[4] = KazFilePathName::EnemyPath + "Move/" + "MoveEnemy_Model.obj";
+	filePass[5] = KazFilePathName::EnemyPath + "PopEnemy/" + "PopEnemy_Model.obj";
+
 	for (int i = 0; i < meshEmitter.size(); ++i)
 	{
-		meshEmitter[i] = std::make_unique<MeshParticleEmitter>(0);
+		std::string lPass;
+		lPass += filePass[i][filePass[i].size() - 3];
+		lPass += filePass[i][filePass[i].size() - 2];
+		lPass += filePass[i][filePass[i].size() - 1];
+
+		if (lPass == "obj")
+		{
+			RESOURCE_HANDLE lHandle = ObjResourceMgr::Instance()->LoadModel(filePass[i]);
+			meshEmitter[i] = std::make_unique<MeshParticleEmitter>(ObjResourceMgr::Instance()->GetResourceData(lHandle).vertices);
+		}
+		else
+		{
+			RESOURCE_HANDLE lHandle = FbxModelResourceMgr::Instance()->LoadModel(filePass[i]);
+			meshEmitter[i] = std::make_unique<MeshParticleEmitter>(FbxModelResourceMgr::Instance()->GetResourceData(lHandle)->vertData);
+		}
 	}
+	meshIndex = 0;
+	model.data.handle = FbxModelResourceMgr::Instance()->LoadModel(filePass[meshIndex]);
+	model.data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
+	model.data.removeMaterialFlag = true;
+	model.data.colorData.color = { 255,255,255,255 };
+	model.data.transform.scale = { 1.0f,1.0f,1.0f };
 }
 
 DebugMeshParticleScene::~DebugMeshParticleScene()
@@ -42,6 +71,9 @@ void DebugMeshParticleScene::Init()
 	{
 		meshEmitter[i]->Init(&motherMat);
 	}
+
+	prevDeadParticleFlag = false;
+	deadParticleFlag = false;
 }
 
 void DebugMeshParticleScene::Finalize()
@@ -68,6 +100,7 @@ void DebugMeshParticleScene::Update()
 	ImGui::Begin("MeshParticle");
 	ImGui::Checkbox("CheckCPUParticle", &cpuCheckParticleFlag);
 	ImGui::Checkbox("CheckGPUParticle", &gpuCheckParticleFlag);
+	ImGui::Checkbox("CheckPerlinNoise", &perlinNoizeFlag);
 	if (cpuCheckParticleFlag)
 	{
 		if (ImGui::TreeNode("TrianglePosArray"))
@@ -87,15 +120,28 @@ void DebugMeshParticleScene::Update()
 	}
 	else if (gpuCheckParticleFlag)
 	{
-		ImGui::SliderInt("EnemyIndex", &meshIndex, 0, 3);
-		KazImGuiHelper::InputTransform3D("Mother", &motherTransform);
+		ImGui::SliderInt("EnemyIndex", &meshIndex, 0, MESH_MAX_NUM - 1);
+		KazImGuiHelper::InputTransform3D("Mother", &model.data.transform);
 		if (meshIndex != prevMeshIndex)
 		{
-			meshEmitter[0].reset();
-			meshEmitter[0] = std::make_unique<MeshParticleEmitter>(meshIndex);
-			meshEmitter[0]->Init(&motherMat);
+			model.data.handle = FbxModelResourceMgr::Instance()->LoadModel(filePass[meshIndex]);
 			prevMeshIndex = meshIndex;
 		}
+		ImGui::SliderInt("FlameAlpha", &model.data.colorData.color.a, 0, 255);
+		ImGui::Checkbox("Dead", &deadParticleFlag);
+		if (deadParticleFlag != prevDeadParticleFlag)
+		{
+			deadParticle.reset();
+			deadParticle = std::make_unique<DeadParticle>(meshEmitter[meshIndex]->GetAddress(), meshEmitter[meshIndex]->GetVertNum());
+			prevDeadParticleFlag = deadParticleFlag;
+		}
+
+	}
+	else if (perlinNoizeFlag)
+	{
+		initNoizeFlag = ImGui::Button("Init");
+		ImGui::SliderFloat("UV_X", &uv.x, 0, 10);
+		ImGui::SliderFloat("UV_Y", &uv.y, 0, 10);
 	}
 	ImGui::End();
 
@@ -176,13 +222,70 @@ void DebugMeshParticleScene::Update()
 	}
 	else if (gpuCheckParticleFlag)
 	{
-		motherMat = KazMath::CaluWorld(motherTransform, { 0,1,0 }, { 0,0,1 });
+		motherMat = model.motherMat;
 
-		for (int i = 0; i < meshEmitter.size(); ++i)
+		if (!deadParticleFlag)
 		{
-			meshEmitter[i]->Update();
+			meshEmitter[meshIndex]->Update();
 		}
+		else
+		{
+			deadParticle->Update();
+		}
+
 	}
+	else if (perlinNoizeFlag)
+	{
+		if (initNoizeFlag)
+		{
+			for (int x = 0; x < perlinDebugBox.size(); ++x)
+			{
+				for (int y = 0; y < perlinDebugBox[x].size(); ++y)
+				{
+					float lX = static_cast<float>(x);
+					float lZ = static_cast<float>(y);
+					float lY = PerlinNoize({ lX / 10.0f,lZ / 10.0f }, 1) * 0.5f + 0.5f;
+					perlinDebugBox[y][x].data.transform.pos =
+					{
+						lY * 3.0f,
+						0.0f,
+						lY * 3.0f };
+
+					noiseData[y][x].x = lY;
+					noiseData[y][x].y = lY;
+
+					perlinDebugBox[y][x].data.color.color =
+					{
+						static_cast<int>(lY * 255.0f),
+						static_cast<int>(lY * 255.0f),
+						static_cast<int>(lY * 255.0f),
+						255
+					};
+				}
+			}
+			initNoizeFlag = false;
+		}
+
+		if (uv.x != prevUv.x ||
+			uv.y != prevUv.y)
+		{
+			KazMath::Vec2<float>lUV = { uv.x / 10.0f,uv.y / 10.0f };
+			float lX = PerlinNoize(lUV, 1) * 0.5f + 0.5f;
+			float lY = PerlinNoize(lUV, 1) * 0.5f + 0.5f;
+
+			moveNoiseBlock.data.transform.pos = {};
+			moveNoiseBlock.data.transform.pos.x = lX * 100.0f;
+			moveNoiseBlock.data.transform.pos.y = 5.0f;
+			moveNoiseBlock.data.transform.pos.z = lY * 100.0f;
+			prevUv = uv;
+		}
+		KazMath::Vec3<float>vel = CurlNoise(moveNoiseBlock.data.transform.pos, 1);
+		moveNoiseBlock.data.transform.pos += vel;
+	}
+
+
+
+
 }
 
 void DebugMeshParticleScene::Draw()
@@ -211,12 +314,28 @@ void DebugMeshParticleScene::Draw()
 	}
 	else if (gpuCheckParticleFlag)
 	{
-		for (int i = 0; i < meshEmitter.size(); ++i)
+		if (!deadParticleFlag)
 		{
-			meshEmitter[i]->Draw();
+			meshEmitter[meshIndex]->Draw();
 		}
+		else
+		{
+			deadParticle->Draw();
+		}
+		model.Draw();
 	}
+	else if (perlinNoizeFlag)
+	{
+		for (int x = 0; x < perlinDebugBox.size(); ++x)
+		{
+			for (int y = 0; y < perlinDebugBox[x].size(); ++y)
+			{
+				perlinDebugBox[y][x].Draw();
+			}
+		}
 
+		moveNoiseBlock.Draw();
+	}
 	rendertarget->Draw();
 	//debugDraw.Draw();
 	mainRenderTarget.Draw();
@@ -232,4 +351,33 @@ int DebugMeshParticleScene::SceneChange()
 	{
 		return SCENE_NONE;
 	}
+}
+
+float DebugMeshParticleScene::PerlinNoize(const KazMath::Vec2<float> UV, int SEED)
+{
+	KazMath::Vec2<float> p = { std::floor(UV.x),std::floor(UV.y) };
+	KazMath::Vec2<float> f = { Frac(UV.x),Frac(UV.y) };
+
+	int lS = SEED;
+	lS = 0;
+
+	KazMath::Vec2<float>dot1(KazMath::Rand(1.0f, -1.0f), KazMath::Rand(1.0f, -1.0f));
+	float w00 = dot1.Dot(f);
+
+	KazMath::Vec2<float>dot2(KazMath::Rand(1.0f, -1.0f), KazMath::Rand(1.0f, -1.0f));
+	float w10 = dot1.Dot(f);
+
+	KazMath::Vec2<float>dot3(KazMath::Rand(1.0f, -1.0f), KazMath::Rand(1.0f, -1.0f));
+	float w01 = dot1.Dot(f);
+
+	KazMath::Vec2<float>dot4(KazMath::Rand(1.0f, -1.0f), KazMath::Rand(1.0f, -1.0f));
+	float w11 = dot1.Dot(f);
+
+	KazMath::Vec2<float> u = f * f * (KazMath::Vec2<float>(3.0f, 3.0f) - (f * 2.0f));
+
+
+	float l1 = Larp(w00, w10, u.x);
+	float l2 = Larp(w01, w11, u.x);
+
+	return Larp(l1, l2, u.y);
 }

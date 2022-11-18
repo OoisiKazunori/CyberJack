@@ -11,8 +11,14 @@
 #include"../KazLibrary/Loader/ObjResourceMgr.h"
 #include"../KazLibrary/Buffer/UavViewHandleMgr.h"
 
-MeshParticleEmitter::MeshParticleEmitter(int NUM)
+MeshParticleEmitter::MeshParticleEmitter(std::vector<DirectX::XMFLOAT4> VERT_NUM)
 {
+	if (VERT_NUM.size() == 0)
+	{
+		assert(0);
+	}
+
+
 	buffers = std::make_unique<CreateGpuBuffer>();
 
 
@@ -35,28 +41,6 @@ MeshParticleEmitter::MeshParticleEmitter(int NUM)
 		assert(0);
 	}
 
-
-	filePass[0] = KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_Head_anim.fbx";
-	filePass[1] = KazFilePathName::EnemyPath + "Bike/" + "BikeEnemy_anim.fbx";
-	filePass[2] = KazFilePathName::EnemyPath + "MisileEnemy/" + "Gunner_Switch_anim.fbx";
-	filePass[3] = KazFilePathName::EnemyPath + "Summon/" + "SummonEnemy_anim.fbx";
-	filePass[4] = KazFilePathName::TestPath + "plane.fbx";
-	filePass[5] = KazFilePathName::TestPath + "block.fbx";
-
-	filePass[6] = KazFilePathName::EnemyPath + "Move/" + "MoveEnemy_Model.obj";
-	filePass[7] = KazFilePathName::EnemyPath + "PopEnemy/" + "PopEnemy_Model.obj";
-
-	for (int i = 0; i < 8; ++i)
-	{
-		FbxModelResourceMgr::Instance()->LoadModel(filePass[NUM]);
-	}
-
-
-	RESOURCE_HANDLE lHandle = FbxModelResourceMgr::Instance()->LoadModel(filePass[NUM]);
-	std::vector<DirectX::XMFLOAT4>modelVertArrayData = FbxModelResourceMgr::Instance()->GetResourceData(lHandle)->vertData;
-	std::vector<UINT>modelIndexArrayData = FbxModelResourceMgr::Instance()->GetResourceData(lHandle)->indexData;
-	indexNum = static_cast<UINT>(modelIndexArrayData.size());
-
 	std::array<Vertex, 4>vertices;
 	std::array<USHORT, 6> indices;
 	indices = KazRenderHelper::InitIndciesForPlanePolygon();
@@ -71,8 +55,7 @@ MeshParticleEmitter::MeshParticleEmitter(int NUM)
 	//描画情報
 	vertexBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetVertexBufferData(vertBuffSize));
 	indexBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetIndexBufferData(indexBuffSize));
-	verticesDataHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(DirectX::XMFLOAT4) * static_cast<UINT>(modelVertArrayData.size())));
-	indexDataHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(UINT) * static_cast<UINT>(modelIndexArrayData.size())));
+	verticesDataHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(DirectX::XMFLOAT4) * static_cast<UINT>(VERT_NUM.size())));
 
 	//共通情報
 	initCommonHandle = buffers->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(InitCommonData)));
@@ -94,31 +77,17 @@ MeshParticleEmitter::MeshParticleEmitter(int NUM)
 	buffers->TransData(vertexBufferHandle, vertices.data(), vertBuffSize);
 	buffers->TransData(indexBufferHandle, indices.data(), indexBuffSize);
 
-	enemyIndex = NUM;
-	oldEnemyNum = NUM;
 	{
-		model.data.handle = lHandle;
-		fbxModel.data.handle = lHandle;
-
 		//頂点情報
 		memcpy
 		(
 			buffers->GetMapAddres(verticesDataHandle),
-			modelVertArrayData.data(),
-			modelVertArrayData.size() * sizeof(DirectX::XMFLOAT4)
-		);
-
-		//インデックス情報
-		memcpy
-		(
-			buffers->GetMapAddres(indexDataHandle),
-			modelIndexArrayData.data(),
-			modelIndexArrayData.size() * sizeof(UINT)
+			VERT_NUM.data(),
+			VERT_NUM.size() * sizeof(DirectX::XMFLOAT4)
 		);
 
 		constBufferData.worldPos = {};
-		constBufferData.vertMaxNum = static_cast<UINT>(modelVertArrayData.size());
-		constBufferData.indexMaxNum = static_cast<UINT>(modelIndexArrayData.size());
+		constBufferData.vertMaxNum = static_cast<UINT>(VERT_NUM.size());
 		constBufferData.bias = 80;
 
 
@@ -126,16 +95,6 @@ MeshParticleEmitter::MeshParticleEmitter(int NUM)
 		prevBias = 80;
 		buffers->TransData(initCommonHandle, &constBufferData, sizeof(InitCommonData));
 	}
-
-	model.data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
-	model.data.removeMaterialFlag = true;
-	model.data.colorData.color = { 255,255,255,255 };
-	model.data.transform.scale = { 1.0f,1.0f,1.0f };
-
-	fbxModel.data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
-	fbxModel.data.removeMaterialFlag = true;
-	fbxModel.data.colorData.color = { 255,255,255,255 };
-	fbxModel.data.transform.scale = { 1.0f,1.0f,1.0f };
 
 	IndirectCommand command;
 	command.drawArguments.IndexCountPerInstance = static_cast<UINT>(indices.size());
@@ -159,16 +118,8 @@ MeshParticleEmitter::MeshParticleEmitter(int NUM)
 	vertDataViewHandle = UavViewHandleMgr::Instance()->GetHandle();
 	DescriptorHeapMgr::Instance()->CreateBufferView(
 		vertDataViewHandle,
-		KazBufferHelper::SetUnorderedAccessView(sizeof(DirectX::XMFLOAT4), static_cast<UINT>(modelVertArrayData.size())),
+		KazBufferHelper::SetUnorderedAccessView(sizeof(DirectX::XMFLOAT4), static_cast<UINT>(VERT_NUM.size())),
 		buffers->GetBufferData(verticesDataHandle).Get(),
-		nullptr
-	);
-
-	indexViewDataHandle = UavViewHandleMgr::Instance()->GetHandle();
-	DescriptorHeapMgr::Instance()->CreateBufferView(
-		indexViewDataHandle,
-		KazBufferHelper::SetUnorderedAccessView(sizeof(UINT), static_cast<UINT>(modelIndexArrayData.size())),
-		buffers->GetBufferData(indexDataHandle).Get(),
 		nullptr
 	);
 
@@ -191,12 +142,10 @@ MeshParticleEmitter::MeshParticleEmitter(int NUM)
 
 	//頂点
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(vertDataViewHandle));
-	//インデックス
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(indexViewDataHandle));
 	//出力
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(2, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
 	//共通用バッファのデータ送信
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(3, buffers->GetGpuAddress(initCommonHandle));
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(initCommonHandle));
 
 	UINT lNum = indexNum / 1024;
 	if (lNum <= 0)
@@ -214,13 +163,11 @@ MeshParticleEmitter::MeshParticleEmitter(int NUM)
 	scaleRotaMat = KazMath::CaluScaleMatrix({ scale,scale,scale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
 
 	updateCommonData.indexMaxNum = indexNum;
-	drawFlameFlag = true;
 }
 
 MeshParticleEmitter::~MeshParticleEmitter()
 {
 	DescriptorHeapMgr::Instance()->Release(vertDataViewHandle);
-	DescriptorHeapMgr::Instance()->Release(indexViewDataHandle);
 	DescriptorHeapMgr::Instance()->Release(outputViewHandle);
 	DescriptorHeapMgr::Instance()->Release(updateViewHandle);
 }
@@ -229,16 +176,14 @@ void MeshParticleEmitter::Init(DirectX::XMMATRIX *MOTHER_MAT)
 {
 	motherMat = MOTHER_MAT;
 	sceneNum = 0;
-	oldEnemyNum = 0;
 	resetSceneFlag = false;
+	drawParticleFlag = true;
 }
 
 void MeshParticleEmitter::Update()
 {
 	ImGui::Begin("Mesh");
-	ImGui::Checkbox("DrawFlame", &drawFlameFlag);
 	ImGui::Checkbox("DrawParticle", &drawParticleFlag);
-	ImGui::SliderInt("FlameAlpha", &fbxModel.data.colorData.color.a, 0, 255);
 	ImGui::SliderInt("Bias", &bias, 0, 100);
 	ImGui::DragFloat("ParticleScale", &scale);
 	ImGui::End();
@@ -258,12 +203,10 @@ void MeshParticleEmitter::Update()
 
 		//頂点
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(vertDataViewHandle));
-		//インデックス
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(indexViewDataHandle));
 		//出力
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(2, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
 		//共通用バッファのデータ送信
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(3, buffers->GetGpuAddress(initCommonHandle));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(initCommonHandle));
 		DirectX12CmdList::Instance()->cmdList->Dispatch(50, 1, 1);
 		//初期化処理--------------------------------------------
 
@@ -294,23 +237,10 @@ void MeshParticleEmitter::Update()
 		lNum = 1;
 	}
 	DirectX12CmdList::Instance()->cmdList->Dispatch(80, 1, 1);
-
-
-	if (enemyIndex != oldEnemyNum)
-	{
-		oldEnemyNum = enemyIndex;
-		resetSceneFlag = true;
-	}
 }
 
 void MeshParticleEmitter::Draw()
 {
-	if (!drawFlameFlag)
-	{
-		fbxModel.data.colorData.color.a = 0;
-	}
-	fbxModel.Draw();
-
 	if (drawParticleFlag)
 	{
 		GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE);

@@ -107,7 +107,6 @@ RESOURCE_HANDLE ObjResourceMgr::LoadModel(std::string RESOURCE)
 				vert[vert.size() - 1].uv = texcoords[indexTexcoord - 1];
 				vert[vert.size() - 1].normal = normals[indexNormal - 1];
 
-
 				// インデックスデータの追加
 				if (faceIndexCount >= 3) {
 					// 四角形ポリゴンの4点目なので、
@@ -190,7 +189,6 @@ RESOURCE_HANDLE ObjResourceMgr::LoadModel(std::string RESOURCE)
 	}
 
 	SucceedCheck(RESOURCE + "の読み込みに成功しました\n");
-
 
 	//頂点データとインデックスバッファの生成、転送---------------------------------------
 	int vertByte = KazBufferHelper::GetBufferSize<int>(vert.size(), sizeof(Vertex));

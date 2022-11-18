@@ -23,6 +23,7 @@ void GameScene::Init()
 	int time = 60;
 	float z = 0.0f;
 
+
 #pragma region RezStage
 	z = 800.0f;
 	stages[layerLevel] = std::make_shared<RezStage>();
@@ -183,6 +184,7 @@ void GameScene::Init()
 #pragma endregion
 	++layerLevel;
 
+
 #pragma region 敵の配置レベル1
 	z = 450.0f;
 	stages[layerLevel] = std::make_shared<BlockParticleStage>();
@@ -329,8 +331,6 @@ void GameScene::Init()
 
 #pragma endregion
 	++layerLevel;
-
-
 
 
 

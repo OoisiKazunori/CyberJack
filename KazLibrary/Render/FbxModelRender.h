@@ -14,12 +14,14 @@ public:
 	void ReleaseSkining();
 	FbxModelData data;
 	FbxTime currentTime;
+
+	DirectX::XMMATRIX motherMat;
+	DirectX::XMMATRIX motherBoneMat;
 private:
 
 	UINT vertByte;
 	UINT indexByte;
 
-	DirectX::XMMATRIX motherMat;
 	short vertexBufferHandle;
 	short indexBufferHandle;
 

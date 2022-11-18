@@ -1,4 +1,4 @@
-#include "GalacticParticle.h"
+#include"DeadParticle.h"
 #include"../KazLibrary/DirectXCommon/DirectX12Device.h"
 #include"../KazLibrary/DirectXCommon/DirectX12CmdList.h"
 #include"../KazLibrary/Pipeline/GraphicsRootSignature.h"
@@ -10,10 +10,11 @@
 #include"../KazLibrary/Imgui/MyImgui.h"
 #include"../KazLibrary/Buffer/UavViewHandleMgr.h"
 
-GalacticParticle::GalacticParticle()
+DeadParticle::DeadParticle(const D3D12_GPU_VIRTUAL_ADDRESS &ADDRESS, int VERT_NUM)
 {
+	PARTICLE_MAX_NUM = VERT_NUM;
+	PARTICLE_MAX_NUM = 100000;
 	buffers = std::make_unique<CreateGpuBuffer>();
-
 
 	//コマンドシグネチャ---------------------------
 	std::array<D3D12_INDIRECT_ARGUMENT_DESC, 2> args{};
@@ -27,7 +28,7 @@ GalacticParticle::GalacticParticle()
 	desc.ByteStride = sizeof(IndirectCommand);
 
 	HRESULT lR =
-		DirectX12Device::Instance()->dev->CreateCommandSignature(&desc, GraphicsRootSignature::Instance()->GetRootSignature(ROOTSIGNATURE_DATA_DRAW_UAB_TEX).Get(), IID_PPV_ARGS(&commandSig));
+		DirectX12Device::Instance()->dev->CreateCommandSignature(&desc, GraphicsRootSignature::Instance()->GetRootSignature(ROOTSIGNATURE_DATA_DRAW_UAV).Get(), IID_PPV_ARGS(&commandSig));
 	//コマンドシグネチャ---------------------------
 	if (lR != S_OK)
 	{
@@ -92,74 +93,34 @@ GalacticParticle::GalacticParticle()
 
 	//初期化処理--------------------------------------------
 	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
-	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_FLOORPARTICLE);
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootUnorderedAccessView(0, buffers->GetBufferData(outputInitBufferHandle)->GetGPUVirtualAddress());
+	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_DEADPARTICLE_INIT);
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootUnorderedAccessView(0, ADDRESS);
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootUnorderedAccessView(1, buffers->GetBufferData(outputInitBufferHandle)->GetGPUVirtualAddress());
 	DirectX12CmdList::Instance()->cmdList->Dispatch(PARTICLE_MAX_NUM / 1000, 1, 1);
 	//初期化処理--------------------------------------------
-
-
-
-	box = std::make_unique<BoxPolygonRender>(true, BOX_MAX_NUM);
-	box->data.pipelineName = PIPELINE_NAME_INSTANCE_COLOR_MULTITEX;
-
-	RESOURCE_HANDLE lHandle = box->CreateConstBuffer(sizeof(DirectX::XMFLOAT4), typeid(DirectX::XMFLOAT4).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA2);
-	DirectX::XMFLOAT4 lColor = { 1.0f,0.0f,0.0f,1.0f };
-	box->TransData(&lColor, lHandle, typeid(DirectX::XMFLOAT4).name());
-
-	instanceBufferHandle = box->CreateConstBuffer(sizeof(MatData) * BOX_MAX_NUM, typeid(MatData).name(), GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA);
-
-
-	//空中に散らばる矩形の初期化処理
-	for (int i = 0; i < boxDataArray.size(); ++i)
-	{
-		boxDataArray[i].transform.pos =
-		{
-			0.0f,
-			KazMath::Rand(5000.0f,-5000.0f),
-			KazMath::Rand(10000.0f,-100.0f)
-		};
-
-		if (1000.0f <= abs(boxDataArray[i].transform.pos.y))
-		{
-			if (3 <= KazMath::Rand(6, 0))
-			{
-				boxDataArray[i].transform.pos.x = -KazMath::Rand(700.0f, 10000.0f);
-			}
-			else
-			{
-				boxDataArray[i].transform.pos.x = KazMath::Rand(700.0f, 10000.0f);
-			}
-		}
-		else
-		{
-			boxDataArray[i].transform.pos.x = KazMath::Rand(5000.0f, -5000.0f);
-		}
-
-		boxDataArray[i].transform.scale = { KazMath::Rand(50.0f,10.0f),KazMath::Rand(50.0f,10.0f),KazMath::Rand(50.0f,10.0f) };
-		boxDataArray[i].rotaVel = KazMath::Vec3<float>(KazMath::Rand(5.0f, 1.0f), KazMath::Rand(5.0f, 1.0f), KazMath::Rand(5.0f, 1.0f));
-		boxDataArray[i].color = { KazMath::Rand(255,155),KazMath::Rand(255,155),KazMath::Rand(255,155),255 };
-	}
-
 
 
 	texHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StagePath + "Circle.png");
 
 }
 
-GalacticParticle::~GalacticParticle()
+void DeadParticle::Init(void* BUFFER_PTR)
 {
+	//初期化用処理
+	void *p = BUFFER_PTR;
+	p = nullptr;
 }
 
-void GalacticParticle::Update()
+void DeadParticle::Update()
 {
-	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_FLOORPARTICLE_MOVE);
+	//更新用処理
+	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_DEADPARTICLE_UPDATE);
 
 	//共通用バッファのデータ送信
 	{
-		constBufferData.cameraMat = CameraMgr::Instance()->GetViewMatrix();
-		constBufferData.projectionMat = CameraMgr::Instance()->GetPerspectiveMatProjection();
-		constBufferData.billboardMat = CameraMgr::Instance()->GetMatBillBoard();
-
+		float lScale = 0.18f;
+		constBufferData.scaleRotateBillboardMat = KazMath::CaluScaleMatrix({ lScale,lScale,lScale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f }) * CameraMgr::Instance()->GetMatBillBoard();
+		constBufferData.viewProjection = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
 		buffers->TransData(commonBufferHandle, &constBufferData, sizeof(CommonMoveData));
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(commonBufferHandle));
 	}
@@ -171,40 +132,19 @@ void GalacticParticle::Update()
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
 	}
 
-	DirectX12CmdList::Instance()->cmdList->Dispatch((PARTICLE_MAX_NUM) / 1000, 1, 1);
+	DirectX12CmdList::Instance()->cmdList->Dispatch(80, 1, 1);
 
-
-	std::array<MatData, BOX_MAX_NUM> lData;
-	for (int i = 0; i < boxDataArray.size(); ++i)
-	{
-		boxDataArray[i].transform.pos += -KazMath::Vec3<float>(0.0f, 0.0f, 5.0f);
-		if (boxDataArray[i].transform.pos.z <= -100.0f)
-		{
-			boxDataArray[i].transform.pos.z = 10000.0f;
-		}
-		boxDataArray[i].transform.rotation += boxDataArray[i].rotaVel;
-
-		lData[i].mat = KazMath::CaluMat(boxDataArray[i].transform, CameraMgr::Instance()->GetViewMatrix(), CameraMgr::Instance()->GetPerspectiveMatProjection(), { 0,1,0 }, { 0,0,1 });
-		lData[i].color = boxDataArray[i].color.ConvertColorRateToXMFLOAT4();
-	}
-
-
-	box->TransData
-	(
-		lData.data(),
-		instanceBufferHandle,
-		typeid(MatData).name()
-	);
 }
 
-void GalacticParticle::Draw()
+void DeadParticle::Draw()
 {
-	GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE_TEX);
+	//描画用処理
+	GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE);
 	DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
 	DirectX12CmdList::Instance()->cmdList->IASetIndexBuffer(&indexBufferView);
 
-	TextureResourceMgr::Instance()->SetSRV(texHandle, GraphicsRootSignature::Instance()->GetRootParam(ROOTSIGNATURE_DATA_DRAW_UAB_TEX), GRAPHICS_PRAMTYPE_TEX);
+	//TextureResourceMgr::Instance()->SetSRV(texHandle, GraphicsRootSignature::Instance()->GetRootParam(ROOTSIGNATURE_DATA_DRAW_UAB_TEX), GRAPHICS_PRAMTYPE_TEX);
 
 
 	RenderTargetStatus::Instance()->ChangeBarrier(
@@ -228,7 +168,4 @@ void GalacticParticle::Draw()
 		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
 	);
-
-
-	box->Draw();
 }

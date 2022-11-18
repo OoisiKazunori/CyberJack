@@ -154,6 +154,7 @@
     <ClCompile Include="Game\Tutorial\DirectX12MoviePlayer.cpp" />
     <ClCompile Include="Game\Tutorial\TutorialMovie.cpp" />
     <ClCompile Include="Game\Tutorial\OldComputer.cpp" />
+    <ClCompile Include="Game\Effect\DeadParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -322,6 +323,8 @@
     <ClInclude Include="Game\Tutorial\DirectX12MoviePlayer.h" />
     <ClInclude Include="Game\Tutorial\TutorialMovie.h" />
     <ClInclude Include="Game\Tutorial\OldComputer.h" />
+    <ClInclude Include="Game\Effect\DeadParticle.h" />
+    <ClInclude Include="KazLibrary\Render\KazExcuteIndirect.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

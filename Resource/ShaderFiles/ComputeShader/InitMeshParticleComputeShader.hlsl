@@ -5,7 +5,6 @@ cbuffer RootConstants : register(b0)
 {
     float4 pos;
     uint vertMaxNum;
-    uint indexMaxNum;
     uint bias;
 };
 
@@ -16,9 +15,8 @@ struct OutputData
 
 //更新
 RWStructuredBuffer<float4> vertciesData : register(u0);
-RWStructuredBuffer<uint> indexData : register(u1);
 //出力
-RWStructuredBuffer<OutputData> worldPosData : register(u2);
+RWStructuredBuffer<OutputData> worldPosData : register(u1);
 
 float4 GetPos(float3 VERT_POS,float3 WORLD_POS)
 {
@@ -40,16 +38,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     index += 1024 * groupId.x;
 
     //インデックス数以内なら処理する
-    if(indexMaxNum < index * 3 + 2)
-    {
-    //    return;
-    }
-
     //三角形を構成するインデックスの指定--------------------------------------------
-    //uint firstVertIndex = indexData[index * 3];
-    //uint secondVertIndex = indexData[index * 3 + 1];
-    //uint thirdVertIndex = indexData[index * 3 + 2];
-
     uint firstVertIndex = index * 3;
     uint secondVertIndex = index * 3 + 1;
     uint thirdVertIndex = index * 3 + 2;
