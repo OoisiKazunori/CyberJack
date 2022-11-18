@@ -10,7 +10,7 @@ SplineMisileForBattleShip::SplineMisileForBattleShip()
 
 void SplineMisileForBattleShip::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 {
-	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { 0.4f,0.4f,0.4f }, { 0.0f,0.0f,0.0f }), KazFilePathName::EnemyPath + +"BattleShipMisile/" + "BattleshipMissile_Model.obj", 5.0f, false);
+	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { 0.4f,0.4f,0.4f }, { 0.0f,0.0f,0.0f }), KazFilePathName::EnemyPath + +"BattleShipMisile/" + "BattleshipMissile_Model.obj", 5.0f, ENEMY_MODEL_OBJ);
 
 	iEnemy_EnemyStatusData->objFlag = true;
 	iEnemy_EnemyStatusData->timer = maxTime;
@@ -178,9 +178,7 @@ void SplineMisileForBattleShip::Draw()
 				pointsRender[i].Draw();
 			}
 		}
-		//rocketLight.Draw();
 		iEnemy_ObjModelRender->Draw();
-		//smokeEmitter.Draw();
 		LockOnWindow(iEnemy_ObjModelRender->data.transform.pos);
 	}
 }

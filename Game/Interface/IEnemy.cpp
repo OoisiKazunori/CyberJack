@@ -162,10 +162,27 @@ void IEnemy::ShotSound()
 	SoundManager::Instance()->PlaySoundMem(shotSoundHandle, 1);
 }
 
-void IEnemy::InitModel(const KazMath::Transform3D &TRANSFORM, const std::string &MODEL_FILEPASS, float HITBOX_RADIUS, bool FBX_OR_OBJ_FLAG, bool REV_UV_FLAG)
+void IEnemy::InitModel(const KazMath::Transform3D &TRANSFORM, const std::string &MODEL_FILEPASS, float HITBOX_RADIUS, EnemyModelType MODEL_TYPE, bool REV_UV_FLAG)
 {
-	if (FBX_OR_OBJ_FLAG)
+	modelType = MODEL_TYPE;
+	switch (MODEL_TYPE)
 	{
+	case ENEMY_MODEL_NONE:
+		break;
+	case ENEMY_MODEL_OBJ:
+		iEnemy_ObjModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(MODEL_FILEPASS);	//モデル読み込み
+		iEnemy_ObjModelRender->data.transform = TRANSFORM;
+		iEnemy_EnemyStatusData->hitBox.radius = HITBOX_RADIUS;	//当たり判定の大きさ変更
+		iEnemy_EnemyStatusData->hitBox.center = &iEnemy_ObjModelRender->data.transform.pos;
+		iEnemy_ObjModelRender->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX_LIGHT;
+
+		iEnemy_ObjModelRender->data.removeMaterialFlag = false;
+		iEnemy_ObjModelRender->data.colorData.color.x = 255;
+		iEnemy_ObjModelRender->data.colorData.color.y = 255;
+		iEnemy_ObjModelRender->data.colorData.color.z = 255;
+		iEnemy_ObjModelRender->data.colorData.color.a = 1;
+		break;
+	case ENEMY_MODEL_FBX:
 		iEnemy_FbxModelRender->data.handle = FbxModelResourceMgr::Instance()->LoadModel(MODEL_FILEPASS, REV_UV_FLAG);	//モデル読み込み
 		iEnemy_FbxModelRender->data.transform = TRANSFORM;
 		iEnemy_EnemyStatusData->hitBox.radius = HITBOX_RADIUS;	//当たり判定の大きさ変更
@@ -179,19 +196,13 @@ void IEnemy::InitModel(const KazMath::Transform3D &TRANSFORM, const std::string 
 		iEnemy_FbxModelRender->data.colorData.color.a = 1;
 
 		iEnemy_FbxModelRender->data.isPlayFlag = false;
-	}
-	else
-	{
-		iEnemy_ObjModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(MODEL_FILEPASS);	//モデル読み込み
-		iEnemy_ObjModelRender->data.transform = TRANSFORM;
-		iEnemy_EnemyStatusData->hitBox.radius = HITBOX_RADIUS;	//当たり判定の大きさ変更
-		iEnemy_EnemyStatusData->hitBox.center = &iEnemy_ObjModelRender->data.transform.pos;
-		iEnemy_ObjModelRender->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX_LIGHT;
-
-		iEnemy_ObjModelRender->data.removeMaterialFlag = false;
-		iEnemy_ObjModelRender->data.colorData.color.x = 255;
-		iEnemy_ObjModelRender->data.colorData.color.y = 255;
-		iEnemy_ObjModelRender->data.colorData.color.z = 255;
-		iEnemy_ObjModelRender->data.colorData.color.a = 1;
+		break;
+	case ENEMY_MODEL_MESHPARTICLE:
+		RESOURCE_HANDLE lHandle = FbxModelResourceMgr::Instance()->LoadModel(MODEL_FILEPASS, REV_UV_FLAG);	//モデル読み込み)
+		iEnemy_MeshModelRender = std::make_unique<MeshParticleEmitter>(FbxModelResourceMgr::Instance()->GetResourceData(lHandle)->vertData);
+		iEnemy_MeshModelRender->Init();
+		break;
+	default:
+		break;
 	}
 }

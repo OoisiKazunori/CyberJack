@@ -10,7 +10,7 @@ BikeEnemy::BikeEnemy()
 void BikeEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 {
 	float lScale = 0.7f;
-	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { lScale,lScale,lScale }, { 0.0f,0.0f,0.0f }), KazFilePathName::EnemyPath + "Bike/" + "BikeEnemy_anim.fbx", 15.0f, true);
+	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { lScale,lScale,lScale }, { 0.0f,0.0f,0.0f }), KazFilePathName::EnemyPath + "Bike/" + "BikeEnemy_anim.fbx", 15.0f, ENEMY_MODEL_FBX);
 	iEnemy_FbxModelRender->data.colorData.color.a = 255;
 
 

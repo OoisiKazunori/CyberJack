@@ -21,6 +21,14 @@ enum eEnemyType
 	ENEMY_TYPE_BIKE_MISILE
 };
 
+enum EnemyModelType
+{
+	ENEMY_MODEL_NONE,
+	ENEMY_MODEL_OBJ,
+	ENEMY_MODEL_FBX,
+	ENEMY_MODEL_MESHPARTICLE
+};
+
 enum BattleShipMisileEnum
 {
 	BATTLESHIP_MISILE_SHOT_LEFT,
@@ -71,6 +79,7 @@ struct EnemyGenerateData
 	BattleShipData battleShipData;
 	PopEnemyData popEnemyData;
 	MisileEnemy misileEnemy;
+	bool useMeshPaticleFlag;
 
 	EnemyGenerateData() :speed(-1.5f)
 	{

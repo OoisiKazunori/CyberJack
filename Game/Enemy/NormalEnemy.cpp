@@ -9,7 +9,12 @@ NormalEnemy::NormalEnemy()
 
 void NormalEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 {
-	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { 1.0f,1.0f,1.0f }, { 0.0f,180.0f,0.0f }), KazFilePathName::EnemyPath + "Move/" + "MoveEnemy_Model.obj", 15.0f, false);
+	EnemyModelType lModelType = ENEMY_MODEL_FBX;
+	if (GENERATE_DATA.useMeshPaticleFlag)
+	{
+		lModelType = ENEMY_MODEL_MESHPARTICLE;
+	}
+	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { 1.0f,1.0f,1.0f }, { 0.0f,180.0f,0.0f }), KazFilePathName::EnemyPath + "Move/" + "MoveEnemy_Model.obj", 15.0f, lModelType);
 	iOperationData.Init(1, "gw-1");							//残りロックオン数等の初期化
 
 

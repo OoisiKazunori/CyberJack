@@ -10,7 +10,7 @@ void SummonEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 {
 	basePos = GENERATE_DATA.initPos;
 	iOperationData.Init(24, "snkr_BS");							//残りロックオン数等の初期化
-	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos + KazMath::Vec3<float>(0.0f, 0.0f, 30.0f), { 0.5f,0.5f,0.5f }, { 0.0f,180.0f,0.0f }), KazFilePathName::EnemyPath + "Summon/" + "SummonEnemy_anim.fbx", 15.0f, true, true);
+	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos + KazMath::Vec3<float>(0.0f, 0.0f, 30.0f), { 0.5f,0.5f,0.5f }, { 0.0f,180.0f,0.0f }), KazFilePathName::EnemyPath + "Summon/" + "SummonEnemy_anim.fbx", 15.0f, ENEMY_MODEL_FBX, true);
 
 	initDeadSoundFlag = false;
 	demoFlag = DEMO_FLAG;

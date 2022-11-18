@@ -19,7 +19,13 @@ NormalMisileEnemy::NormalMisileEnemy()
 void NormalMisileEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 {
 	lerpPos = GENERATE_DATA.initPos;	//座標の初期化
-	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { 1.0f,1.0f,1.0f }, { 0.0f,180.0f,0.0f }), KazFilePathName::EnemyPath + "MisileEnemy/" + "Gunner_Switch_anim.fbx", 10.0f, true);
+
+	EnemyModelType lModelType = ENEMY_MODEL_FBX;
+	if (GENERATE_DATA.useMeshPaticleFlag)
+	{
+		lModelType = ENEMY_MODEL_MESHPARTICLE;
+	}
+	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { 1.0f,1.0f,1.0f }, { 0.0f,180.0f,0.0f }), KazFilePathName::EnemyPath + "MisileEnemy/" + "Gunner_Switch_anim.fbx", 10.0f, lModelType);
 	iOperationData.Init(1,"gw-M");							//残りロックオン数等の初期化
 
 	initShotFlag = false;
