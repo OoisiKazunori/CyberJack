@@ -123,6 +123,8 @@ void Tutorial::Init(bool SKIP_FLAG)
 
 
 	tutorialMovie.Init();
+
+	pc.Init(tutorialMovie.GetTexture());
 }
 
 void Tutorial::Finalize()
@@ -507,12 +509,26 @@ void Tutorial::Update()
 	cameraWork.Update(cursor.GetValue(), &player.pos, false);
 	gridR[0]->Update(-1.0f);
 	gridR[1]->Update(800.0f);
+	
+	//pc.SetTransform(lTrans);
+	pc.Update();
 
-
-	tutorialMovie.Play();
-	//tutorialMovie.Noise();
-	//tutorialMovie.Stop();
+	ImGui::Begin("PC_MOVIE");
+	if (ImGui::Checkbox("Play", &playFlag))
+	{
+		tutorialMovie.Play();
+	}
+	if (ImGui::Checkbox("Noise", &noiseFlag))
+	{
+		tutorialMovie.Noise();
+	}
+	if (ImGui::Checkbox("Stop", &stopFlag))
+	{
+		tutorialMovie.Stop();
+	}
+	ImGui::End();
 	tutorialMovie.Update();
+
 
 
 	for (int tutorialNum = 0; tutorialNum < enemies.size(); ++tutorialNum)
@@ -644,9 +660,7 @@ void Tutorial::Draw()
 		portalEffect.portalRender.Draw();
 	}
 
-	movieR.data.handleData = tutorialMovie.GetTexture();
-	movieR.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
-	movieR.Draw();
+	pc.Draw();
 
 	//cursor.Draw();
 	//ブルーム系統のレンダーターゲット切り替え

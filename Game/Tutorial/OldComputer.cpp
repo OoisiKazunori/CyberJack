@@ -1,21 +1,32 @@
 #include "OldComputer.h"
+#include"../KazLibrary/Helper/ResourceFilePass.h"
+#include"../KazLibrary/Imgui/MyImgui.h"
 
 OldComputer::OldComputer()
 {
-	render.data.pipelineName;
+	render.data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "PC/" + "PC_Model.obj");
+	render.data.pipelineName = PIPELINE_NAME_PCMONITOR_MULTITEX;
 }
 
 void OldComputer::Init(RESOURCE_HANDLE MOVIE_HANDLE)
 {
 	//ƒ}ƒXƒN‰æ‘œ
-	render.data.addHandle.handle[0] = TextureResourceMgr::Instance()->LoadGraph("");
+	render.data.addHandle.handle[0] = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StagePath + "PC/" + "PC_Mask.png");
+	render.data.addHandle.paramType[0] = GRAPHICS_PRAMTYPE_TEX2;
 	//“®‰æ‰æ‘œ
 	render.data.addHandle.handle[1] = MOVIE_HANDLE;
+	render.data.addHandle.paramType[1] = GRAPHICS_PRAMTYPE_TEX3;
+
+	render.data.transform.pos = { 0.0f,-6.0f,0.0f };
+	render.data.transform.scale = { 7.0f,7.0f,7.0f };
+	render.data.transform.rotation.y = 180.0f;
 }
 
 void OldComputer::Update()
 {
-
+	ImGui::Begin("PC");
+	KazImGuiHelper::InputTransform3D("Transform", &render.data.transform);
+	ImGui::End();
 }
 
 void OldComputer::Draw()

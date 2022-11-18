@@ -17,6 +17,7 @@
 #include"../Game/Tutorial/DirectX12MoviePlayer.h"
 
 #include"../Game/Tutorial/TutorialMovie.h"
+#include"../Game/Tutorial/OldComputer.h"
 
 /// <summary>
 /// ゲーム開始前のチュートリアル用のステージ
@@ -75,6 +76,9 @@ private:
 	bool initEffectFlag;
 	//チュートリアル用ーーーーーー
 
+	OldComputer pc;
+
+
 	std::array<int, 2> flameTimer;
 	std::array<std::array<LineRender, 2>, 2> portalFlameLineR;
 	std::array<KazMath::Vec3<float>, 2> portalFlameBasePosArray;
@@ -95,5 +99,8 @@ private:
 	float angleC;
 
 	TutorialMovie tutorialMovie;
-	Sprite2DRender movieR;
+	bool playFlag;
+	bool stopFlag;
+	bool noiseFlag;
+
 };

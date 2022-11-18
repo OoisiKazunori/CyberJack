@@ -366,18 +366,19 @@ int GameScene::SceneChange()
 {
 	if (game->SceneChange() == 0)
 	{
-		return 0;
+		//return 0;
 	}
 	else if (ControllerInputManager::Instance()->InputTrigger(XINPUT_GAMEPAD_START))
 	{
-		return -2;
+		//return -2;
 	}
 	else if (KeyBoradInputManager::Instance()->InputTrigger(DIK_1))
 	{
-		return 1;
+		//return 1;
 	}
 	else
 	{
 		return SCENE_NONE;
 	}
+	return SCENE_NONE;
 }
