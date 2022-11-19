@@ -179,6 +179,7 @@
     <ClCompile Include="Game\Tutorial.cpp" />
     <ClCompile Include="Game\Tutorial\DirectX12MoviePlayer.cpp" />
     <ClCompile Include="Game\Tutorial\DirectXMoive.cpp" />
+    <ClCompile Include="Game\Tutorial\Gauge.cpp" />
     <ClCompile Include="Game\Tutorial\OldComputer.cpp" />
     <ClCompile Include="Game\Tutorial\TutorialMovie.cpp" />
     <ClCompile Include="Game\UI\AnnounceStageUI.cpp" />
@@ -336,6 +337,7 @@
     <ClInclude Include="Game\Tutorial.h" />
     <ClInclude Include="Game\Tutorial\DirectX12MoviePlayer.h" />
     <ClInclude Include="Game\Tutorial\DirectXMoive.h" />
+    <ClInclude Include="Game\Tutorial\Gauge.h" />
     <ClInclude Include="Game\Tutorial\OldComputer.h" />
     <ClInclude Include="Game\Tutorial\TutorialMovie.h" />
     <ClInclude Include="Game\UI\AnnounceStageUI.h" />

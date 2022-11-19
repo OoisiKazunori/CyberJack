@@ -3,6 +3,7 @@
 #include"../Tutorial/DirectX12MoviePlayer.h"
 #include"../GameRenderTarget.h"
 #include"../Game/Event/TutorialGame.h"
+#include"../Game/Tutorial/Gauge.h"
 
 /// <summary>
 /// ゲーム内で流れるチュートリアル
@@ -51,6 +52,7 @@ private:
 
 	//UI--------------------------------------------
 	TutorialGame tutorialText;//操作UI
+	Gauge gauge;
 	//UI--------------------------------------------
 
 	RESOURCE_HANDLE renderTargetHandle;

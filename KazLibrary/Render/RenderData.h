@@ -98,8 +98,15 @@ struct Sprite2DData
 
 	KazMath::Color colorData;
 	AddTextureData addHandle;
+	KazMath::Vec2<float>leftScale;
+	KazMath::Vec2<float>rightScale;
 
-	Sprite2DData() :colorData(0, 0, 0, 255), pipelineName(PIPELINE_NAME_SPRITE)
+	DirtyFlag<KazMath::Vec2<float>> leftScaleDirtyFlag;
+	DirtyFlag<KazMath::Vec2<float>> rightScaleDirtyFlag;
+
+	Sprite2DData() :colorData(0, 0, 0, 255), pipelineName(PIPELINE_NAME_SPRITE),
+		leftScale({ 1.0f,1.0f }), rightScale({ 1.0f,1.0f }),
+		leftScaleDirtyFlag(&leftScale, true), rightScaleDirtyFlag(&rightScale, true)
 	{
 	}
 
@@ -110,6 +117,8 @@ struct Sprite2DData
 		animationHandle.flag.Record();
 		flip.Record();
 		colorData.Record();
+		leftScaleDirtyFlag.Record();
+		rightScaleDirtyFlag.Record();
 	};
 };
 
@@ -262,7 +271,7 @@ struct PolygonDrawData
 	PipeLineNames pipelineName;
 	CameraIndexData cameraIndex;
 
-	PolygonDrawData():color(255, 255, 255, 255), pipelineName(PIPELINE_NAME_COLOR)
+	PolygonDrawData() :color(255, 255, 255, 255), pipelineName(PIPELINE_NAME_COLOR)
 	{
 	}
 

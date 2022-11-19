@@ -3,7 +3,9 @@
 #include"../KazLibrary/Imgui/MyImgui.h"
 #include"../KazLibrary/RenderTarget/RenderTargetStatus.h"
 
-TutorialMovie::TutorialMovie()
+TutorialMovie::TutorialMovie() :
+	gauge(TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TutorialPath + "Flame.png"),
+		TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TutorialPath + "Gauge.png"))
 {
 	moviePlayer = std::make_unique<DirectX12MoviePlayer>();
 	renderTargetHandle = RenderTargetStatus::Instance()->CreateRenderTarget(KazMath::Vec2<UINT>(WIN_X, WIN_Y), { 0,0,0 }, DXGI_FORMAT_R8G8B8A8_UNORM);
@@ -33,6 +35,7 @@ void TutorialMovie::Init()
 {
 	seedNum = 0;
 	startMovieFlag = false;
+	gauge.Init(100);
 }
 
 void TutorialMovie::Update()
@@ -42,11 +45,11 @@ void TutorialMovie::Update()
 	{
 		moviePlayer->Play();
 		moviePlayer->TranferFrame();
-		
+
 		movieRender.data.buff = moviePlayer->GetBuffer();
 		movieRender.data.handleData = moviePlayer->GetDescriptorHeapHandle();
 	}
-	else if(startNoiseFlag)
+	else if (startNoiseFlag)
 	{
 		normalRender.TransData(&seedNum, noiseSeedHandle, typeid(float).name());
 	}
@@ -59,7 +62,23 @@ void TutorialMovie::Update()
 	seedNum += 1.0f;
 	outputRender.TransData(&seedNum, vhsSeedHandle, typeid(float).name());
 
+
+	if (gauge.IsMax())
+	{
+		tutorialText.Succeed();
+	}
+
+	ImGui::Begin("Gauge");
+	if (ImGui::Button("Add"))
+	{
+		gauge.Add(10);
+	}
+	ImGui::End();
+
+
 	tutorialText.Update();
+	gauge.Update();
+
 }
 
 void TutorialMovie::Draw()
@@ -69,6 +88,7 @@ void TutorialMovie::Draw()
 	if (startMovieFlag)
 	{
 		tutorialText.Draw();
+		gauge.Draw();
 		movieRender.Draw();
 	}
 	else
