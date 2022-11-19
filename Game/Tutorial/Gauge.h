@@ -23,5 +23,7 @@ private:
 	float rate;
 
 	Sprite2DRender flameR, gaugeR;
+
+	const KazMath::Color NORMAL_COLOR, HALF_COLOR, MAX_COLOR;
 };
 

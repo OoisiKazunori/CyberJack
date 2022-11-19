@@ -100,7 +100,7 @@ void TutorialGame::Succeed()
 	{
 		tutorialText[i]->Finalize();
 	}
-	tutorialText[0]->Init({WIN_X / 2.0f - 120.0f,125.0f}, "Succeed", 3.0f);
+	tutorialText[0]->Init({ WIN_X / 2.0f - 158.0f,160.0f }, "Succeed", 3.0f);
 	endFlag = true;
 }
 

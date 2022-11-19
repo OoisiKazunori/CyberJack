@@ -109,6 +109,12 @@ void Sprite2DRender::Draw()
 				vertices[i].pos = { lVert[i].x,-lVert[i].y,0.0f };
 			}
 			KazRenderHelper::InitUvPos(&vertices[0].uv, &vertices[1].uv, &vertices[2].uv, &vertices[3].uv);
+
+			if (600.0f <= abs(vertices[0].pos.x))
+			{
+				bool debug = false;
+				debug = false;
+			}
 		}
 		//レンダーターゲットのテクスチャサイズ
 		else
@@ -145,7 +151,8 @@ void Sprite2DRender::Draw()
 
 
 	//UV切り取り
-	if (data.handleData.flag.Dirty() || data.animationHandle.flag.Dirty() || data.transform.scaleDirtyFlag.Dirty())
+	if (data.handleData.flag.Dirty() || data.animationHandle.flag.Dirty() || data.transform.scaleDirtyFlag.Dirty() ||
+		data.leftScaleDirtyFlag.Dirty() || data.rightScaleDirtyFlag.Dirty())
 	{
 		KazMath::Vec2<int> lDivSize = renderData.shaderResourceMgrInstance->GetDivData(data.handleData.handle).divSize;
 		KazMath::Vec2<float> lTmpSize = { data.transform.scale.x, data.transform.scale.y };
@@ -166,6 +173,9 @@ void Sprite2DRender::Draw()
 				vertices[i].pos.y *= -1.0f;
 			}
 		}
+
+		bool debug = false;
+		debug = false;
 	}
 
 	//X軸にUVを反転

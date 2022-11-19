@@ -617,7 +617,7 @@ void Tutorial::Draw()
 
 	for (int i = 0; i < gridR.size(); ++i)
 	{
-//		gridR[i]->Draw();
+		gridR[i]->Draw();
 	}
 
 	player.Draw();

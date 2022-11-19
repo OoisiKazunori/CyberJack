@@ -13,32 +13,6 @@
 
 Game::Game() :LOG_FONT_SIZE(1.0f)
 {
-	emitters[0] = std::make_unique<HitEffectPattern1Emitter>();
-	emitters[1] = std::make_unique<HitEffectPattern2Emitter>();
-	emitters[2] = std::make_unique<HitEffectPattern3Emitter>();
-
-	for (int emitterTypeIndex = 0; emitterTypeIndex < deadEffectEmitter.size(); ++emitterTypeIndex)
-	{
-		for (int stackIndex = 0; stackIndex < deadEffectEmitter[emitterTypeIndex].size(); ++stackIndex)
-		{
-			switch (emitterTypeIndex)
-			{
-			case 0:
-				deadEffectEmitter[emitterTypeIndex][stackIndex] = std::make_unique<HitEffectPattern1Emitter>();
-				break;
-			case 1:
-				deadEffectEmitter[emitterTypeIndex][stackIndex] = std::make_unique<HitEffectPattern2Emitter>();
-				break;
-			case 2:
-				deadEffectEmitter[emitterTypeIndex][stackIndex] = std::make_unique<HitEffectPattern3Emitter>();
-				break;
-			default:
-				break;
-			}
-		}
-	}
-
-
 
 	for (int i = 0; i < smokeR.size(); ++i)
 	{
@@ -105,7 +79,7 @@ Game::Game() :LOG_FONT_SIZE(1.0f)
 	playerModel.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::PlayerPath + "CH_Right_Back_Anim.fbx");
 	headModel.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::PlayerPath + "CH_Model_Head.fbx");
 
-	
+
 }
 
 Game::~Game()
@@ -119,7 +93,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	const std::array<KazMath::Color, KazEnemyHelper::STAGE_NUM_MAX> &BACKGROUND_COLOR,
 	const std::array<std::array<KazEnemyHelper::ForceCameraData, 10>, KazEnemyHelper::STAGE_NUM_MAX> &CAMERA_ARRAY)
 {
-	player.Init(KazMath::Transform3D().pos,false);
+	player.Init(KazMath::Transform3D().pos, false);
 	cursor.Init();
 
 
@@ -296,17 +270,6 @@ void Game::Input()
 		joyStick
 	);
 
-
-	if (input->InputTrigger(DIK_G))
-	{
-		emittNum = 2;
-		emitters[emittNum]->Init(KazMath::Vec2<float>(WIN_X / 2.0f, WIN_Y / 2.0f));
-	}
-	if (input->InputTrigger(DIK_H))
-	{
-		emittNum = KazMath::Rand<int>(3, 0);
-		emitters[emittNum]->Init(KazMath::Vec2<float>(WIN_X / 2.0f, WIN_Y / 2.0f));
-	}
 
 	if (input->InputTrigger(DIK_SPACE))
 	{
@@ -725,24 +688,6 @@ void Game::Update()
 						break;
 					}
 				}
-
-				//死亡時の煙演出
-				int lEmitterType = KazMath::Rand<int>(3, 0);
-				for (int stackIndex = 0; stackIndex < deadEffectEmitter[lEmitterType].size(); ++stackIndex)
-				{
-					if (!deadEffectEmitter[lEmitterType][stackIndex]->IsActive())
-					{
-						KazMath::Vec3<float>screenPos =
-							KazMath::ConvertWorldPosToScreenPos(*enemies[enemyTypeIndex][enemyIndex]->GetData()->hitBox.center, CameraMgr::Instance()->GetViewMatrix(0), CameraMgr::Instance()->GetPerspectiveMatProjection());
-						//敵が画面外に出た際に画面横からウィンドウが出ないように変換後のz値が1.0以上は描画しない
-						if (screenPos.z <= 1.0f)
-						{
-							deadEffectEmitter[lEmitterType][stackIndex]->Init(KazMath::Vec2<float>(screenPos.x, screenPos.y));
-						}
-						break;
-					}
-				}
-
 			}
 		}
 	}
@@ -977,16 +922,6 @@ void Game::Update()
 		}
 #pragma endregion
 
-		emitters[emittNum]->Update();
-
-		for (int emitterTypeIndex = 0; emitterTypeIndex < deadEffectEmitter.size(); ++emitterTypeIndex)
-		{
-			for (int stackIndex = 0; stackIndex < deadEffectEmitter[emitterTypeIndex].size(); ++stackIndex)
-			{
-				deadEffectEmitter[emitterTypeIndex][stackIndex]->Update();
-			}
-		}
-
 		stringLog.Update();
 	}
 
@@ -1095,7 +1030,7 @@ void Game::Draw()
 
 		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
 		{
-		//	goalBox.Draw();
+			//	goalBox.Draw();
 		}
 
 		stages[stageNum]->SetCamera(0);
