@@ -49,6 +49,7 @@ private:
 
 	std::array<std::unique_ptr<DrawGrid>, 2> gridR;
 
+	bool cameraFlag;
 	Player player;
 	Cursor cursor;
 	CameraWork cameraWork;
@@ -102,5 +103,7 @@ private:
 	bool playFlag;
 	bool stopFlag;
 	bool noiseFlag;
+
+	int startTime;
 
 };

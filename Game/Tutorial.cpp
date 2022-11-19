@@ -125,6 +125,8 @@ void Tutorial::Init(bool SKIP_FLAG)
 	tutorialMovie.Init();
 
 	pc.Init(tutorialMovie.GetTexture());
+
+	startTime = 0;
 }
 
 void Tutorial::Finalize()
@@ -198,6 +200,7 @@ void Tutorial::Input()
 
 void Tutorial::Update()
 {
+
 	const float MAX_ANGLE = 120.0f;
 	const float DEFAULT_ANGLE = 60.0f;
 	if (portalEffect.DrawNextPortal())
@@ -506,7 +509,7 @@ void Tutorial::Update()
 
 	player.Update();
 	cursor.Update();
-	cameraWork.Update(cursor.GetValue(), &player.pos, false);
+	cameraWork.Update(cursor.GetValue(), &player.pos, cameraFlag);
 	gridR[0]->Update(-1.0f);
 	gridR[1]->Update(800.0f);
 	
@@ -514,6 +517,7 @@ void Tutorial::Update()
 	pc.Update();
 
 	ImGui::Begin("PC_MOVIE");
+	ImGui::Checkbox("Camera", &cameraFlag);
 	if (ImGui::Checkbox("Play", &playFlag))
 	{
 		tutorialMovie.Play();
@@ -527,6 +531,16 @@ void Tutorial::Update()
 		tutorialMovie.Stop();
 	}
 	ImGui::End();
+
+	++startTime;
+	if (KazMath::ConvertSecondToFlame(3) <= startTime)
+	{
+		tutorialMovie.Play();
+	}
+	else if(KazMath::ConvertSecondToFlame(1) <= startTime)
+	{
+		tutorialMovie.Noise();
+	}
 	tutorialMovie.Update();
 
 
@@ -603,7 +617,7 @@ void Tutorial::Draw()
 
 	for (int i = 0; i < gridR.size(); ++i)
 	{
-		gridR[i]->Draw();
+//		gridR[i]->Draw();
 	}
 
 	player.Draw();

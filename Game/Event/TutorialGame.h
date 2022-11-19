@@ -28,11 +28,11 @@ private:
 	KazMath::Vec3<float>basePos;
 	std::vector<KazMath::Vec3<float>>blockPosArray;
 	WindowFlame window;
-	String tutorialText;
+	std::vector<std::unique_ptr<String>> tutorialText;
 
 	bool endFlag;
 	int endTimer;
 	bool readyToWriteFlag;
 
-	std::string text;
+	std::vector<std::string> text;
 };

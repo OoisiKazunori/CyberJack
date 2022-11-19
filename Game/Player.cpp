@@ -12,9 +12,9 @@ Player::Player()
 
 	damageSoundHandle = SoundManager::Instance()->LoadSoundMem(KazFilePathName::SoundPath + "PlayerDamage.wav");
 
-	//fbxRender[LEFT].data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::PlayerPath + "CH_Right_Back_Anim.fbx");
-	//fbxRender[RIGHT].data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::PlayerPath + "CH_Left_Back_Anim.fbx");
-	//fbxRender[HEAD].data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::PlayerPath + "CH_Model_Head.fbx");
+	fbxRender[LEFT].data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::PlayerPath + "CH_Right_Back_Anim.fbx");
+	fbxRender[RIGHT].data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::PlayerPath + "CH_Left_Back_Anim.fbx");
+	fbxRender[HEAD].data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::PlayerPath + "CH_Model_Head.fbx");
 
 	for (int i = 0; i < fbxRender.size(); ++i)
 	{
@@ -24,7 +24,7 @@ Player::Player()
 	}
 
 
-	//totalTime = FbxModelResourceMgr::Instance()->GetResourceData(fbxRender[0].data.handle.handle)->endTime[0] - FbxModelResourceMgr::Instance()->GetResourceData(fbxRender[0].data.handle.handle)->startTime[0];
+	totalTime = FbxModelResourceMgr::Instance()->GetResourceData(fbxRender[0].data.handle.handle)->endTime[0] - FbxModelResourceMgr::Instance()->GetResourceData(fbxRender[0].data.handle.handle)->startTime[0];
 
 
 	float lScale = 0.5f;
@@ -210,13 +210,13 @@ void Player::Draw()
 {
 	if (leftFlag)
 	{
-	//	fbxRender[LEFT].Draw();
+		fbxRender[LEFT].Draw();
 	}
 	else if (rightFlag)
 	{
-	//	fbxRender[RIGHT].Draw();
+		fbxRender[RIGHT].Draw();
 	}
-	//fbxRender[HEAD].Draw();
+	fbxRender[HEAD].Draw();
 
 	damageEffect.Draw();
 	damageWindow.Draw();

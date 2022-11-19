@@ -80,14 +80,18 @@ void Letter::Init(const KazMath::Vec2<float> &POS, const char &CHARACTER, float 
 	}
 
 
-
-	render.data.handleData = graphHandle[fontType];
-	render.data.animationHandle = fontNum;
 	changeHandleFlag = false;
 	initFlag = true;
 
 	timer = 0;
 	prevStringIndex = STRING_INDEX;
+
+	if (spaceFlag)
+	{
+		return;
+	}
+	render.data.handleData = graphHandle[fontType];
+	render.data.animationHandle = fontNum;
 }
 
 void Letter::Finalize()

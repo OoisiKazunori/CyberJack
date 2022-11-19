@@ -24,8 +24,8 @@ TutorialMovie::TutorialMovie()
 	normalRender.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "NormalMovie.png");
 
 
-	moviePlayer->SetMediaSource(KazFilePathName::TestPath + "test1m.mp4");
-	tutorialText.Init("L Stick", {});
+	moviePlayer->SetMediaSource(KazFilePathName::TestPath + "test.mp4");
+	tutorialText.Init("L Stick\nA Button", {});
 
 }
 

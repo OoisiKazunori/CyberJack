@@ -17,8 +17,8 @@ void OldComputer::Init(RESOURCE_HANDLE MOVIE_HANDLE)
 	render.data.addHandle.handle[1] = MOVIE_HANDLE;
 	render.data.addHandle.paramType[1] = GRAPHICS_PRAMTYPE_TEX3;
 
-	render.data.transform.pos = { 0.0f,-6.0f,0.0f };
-	render.data.transform.scale = { 7.0f,7.0f,7.0f };
+	render.data.transform.pos = { 0.0f,-76.0f,80.0f };
+	render.data.transform.scale = { 70.0f,70.0f,49.0f };
 	render.data.transform.rotation.y = 180.0f;
 }
 
