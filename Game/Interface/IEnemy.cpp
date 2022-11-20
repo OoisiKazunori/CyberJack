@@ -181,6 +181,12 @@ void IEnemy::InitModel(const KazMath::Transform3D &TRANSFORM, const std::string 
 		iEnemy_ObjModelRender->data.colorData.color.y = 255;
 		iEnemy_ObjModelRender->data.colorData.color.z = 255;
 		iEnemy_ObjModelRender->data.colorData.color.a = 1;
+
+		iEnemy_EnemyStatusData->meshParticleData.push_back(
+			{
+				iEnemy_ObjModelRender->data.handle.handle,
+				iEnemy_ObjModelRender->GetMotherMatrixPtr()
+			});
 		break;
 	case ENEMY_MODEL_FBX:
 		iEnemy_FbxModelRender->data.handle = FbxModelResourceMgr::Instance()->LoadModel(MODEL_FILEPASS, REV_UV_FLAG);	//ƒ‚ƒfƒ‹“Ç‚İ‚İ
@@ -196,11 +202,17 @@ void IEnemy::InitModel(const KazMath::Transform3D &TRANSFORM, const std::string 
 		iEnemy_FbxModelRender->data.colorData.color.a = 1;
 
 		iEnemy_FbxModelRender->data.isPlayFlag = false;
+
+		iEnemy_EnemyStatusData->meshParticleData.push_back(
+			{
+				iEnemy_FbxModelRender->data.handle.handle,
+				&iEnemy_FbxModelRender->motherMat
+			});
 		break;
 	case ENEMY_MODEL_MESHPARTICLE:
-		RESOURCE_HANDLE lHandle = FbxModelResourceMgr::Instance()->LoadModel(MODEL_FILEPASS, REV_UV_FLAG);	//ƒ‚ƒfƒ‹“Ç‚İ‚İ)
-		iEnemy_MeshModelRender = std::make_unique<MeshParticleEmitter>(FbxModelResourceMgr::Instance()->GetResourceData(lHandle)->vertData);
-		iEnemy_MeshModelRender->Init();
+		//RESOURCE_HANDLE lHandle = FbxModelResourceMgr::Instance()->LoadModel(MODEL_FILEPASS, REV_UV_FLAG);	//ƒ‚ƒfƒ‹“Ç‚İ‚İ)
+		//iEnemy_MeshModelRender = std::make_unique<MeshParticleEmitter>(FbxModelResourceMgr::Instance()->GetResourceData(lHandle)->vertData);
+		//iEnemy_MeshModelRender->Init();
 		break;
 	default:
 		break;

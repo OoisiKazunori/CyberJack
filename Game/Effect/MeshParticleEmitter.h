@@ -13,7 +13,7 @@ class MeshParticleEmitter
 public:
 	MeshParticleEmitter(std::vector<DirectX::XMFLOAT4> VERT_NUM);
 	~MeshParticleEmitter();
-	void Init(DirectX::XMMATRIX *MOTHER_MAT);
+	void Init(const DirectX::XMMATRIX *MOTHER_MAT);
 	void Update();
 	void Draw();
 
@@ -53,7 +53,7 @@ private:
 
 	//必要情報--------------------------------------------
 	KazMath::Vec3<float>*pos;
-	DirectX::XMMATRIX *motherMat;
+	const DirectX::XMMATRIX *motherMat;
 	//必要情報--------------------------------------------
 
 	//初期化--------------------------------------------

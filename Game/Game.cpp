@@ -13,6 +13,7 @@
 
 Game::Game() :LOG_FONT_SIZE(1.0f)
 {
+
 	emitters[0] = std::make_unique<HitEffectPattern1Emitter>();
 	emitters[1] = std::make_unique<HitEffectPattern2Emitter>();
 	emitters[2] = std::make_unique<HitEffectPattern3Emitter>();
@@ -105,7 +106,8 @@ Game::Game() :LOG_FONT_SIZE(1.0f)
 	playerModel.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::PlayerPath + "CH_Right_Back_Anim.fbx");
 	headModel.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::PlayerPath + "CH_Model_Head.fbx");
 
-	
+	logoutWindow = std::make_unique<StringWindow>();
+
 }
 
 Game::~Game()
@@ -119,7 +121,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	const std::array<KazMath::Color, KazEnemyHelper::STAGE_NUM_MAX> &BACKGROUND_COLOR,
 	const std::array<std::array<KazEnemyHelper::ForceCameraData, 10>, KazEnemyHelper::STAGE_NUM_MAX> &CAMERA_ARRAY)
 {
-	player.Init(KazMath::Transform3D().pos,false);
+	player.Init(KazMath::Transform3D().pos, false);
 	cursor.Init();
 
 
@@ -186,7 +188,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	fireIndex = 0;
 	cameraWork.Init();
 
-	tutorial.Init(false);
+	tutorial.Init(true);
 	portalEffect.Init();
 
 	isGameOverFlag = false;
@@ -458,7 +460,7 @@ void Game::Update()
 
 	if (120 <= gameClearTimer && !initEndLogFlag)
 	{
-		logoutWindow.Init("log-out");
+		logoutWindow->Init("log-out");
 		initEndLogFlag = true;
 	}
 
@@ -479,7 +481,29 @@ void Game::Update()
 
 			if (enableToUseThisDataFlag && readyToStartFlag && enemies[enemyType][enemyCount] != nullptr && !enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag)
 			{
+#ifdef _DEBUG
+				const float L_SCALE = enemies[enemyType][enemyCount]->GetData()->hitBox.radius;
+				enemyHitBox[enemyType][enemyCount].data.transform.scale = { L_SCALE ,L_SCALE ,L_SCALE };
+				enemyHitBox[enemyType][enemyCount].data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
+#endif
+
+				enemies[enemyType][enemyCount]->OnInit(responeData[enemyType][enemyCount].generateData.useMeshPaticleFlag);
 				enemies[enemyType][enemyCount]->Init(responeData[enemyType][enemyCount].generateData, false);
+
+				//メッシュパーティクルの付与
+				for (int i = 0; i < enemies[enemyType][enemyCount]->GetData()->meshParticleData.size(); ++i)
+				{
+					MeshData lMeshData = enemies[enemyType][enemyCount]->GetData()->meshParticleData[i];
+
+					std::vector<DirectX::XMFLOAT4>lVertData = FbxModelResourceMgr::Instance()->GetResourceData(lMeshData.resourceHandle)->vertData;
+					meshParticleArray[enemyType][enemyCount].push_back(std::make_unique<MeshParticleEmitter>(lVertData));
+					deadParticleArray[enemyType][enemyCount].push_back(std::make_unique<DeadParticle>(meshParticleArray[enemyType][enemyCount][i]->GetAddress(), meshParticleArray[enemyType][enemyCount][i]->GetVertNum()));
+
+					if (enemies[enemyType][enemyCount]->GetData()->meshParticleFlag)
+					{
+						meshParticleArray[enemyType][enemyCount][i]->Init(lMeshData.motherMat);
+					}
+				}
 
 				switch (enemyType)
 				{
@@ -514,12 +538,6 @@ void Game::Update()
 				default:
 					break;
 				}
-
-#ifdef _DEBUG
-				const float lScale = enemies[enemyType][enemyCount]->GetData()->hitBox.radius;
-				enemyHitBox[enemyType][enemyCount].data.transform.scale = { lScale ,lScale ,lScale };
-				enemyHitBox[enemyType][enemyCount].data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
-#endif
 			}
 		}
 	}
@@ -712,9 +730,11 @@ void Game::Update()
 			else if (lineLevel[lineIndex].lineReachObjFlag && !enemies[enemyTypeIndex][enemyIndex]->IsAlive() && !lineEffectArrayData[i].hitFlag)
 			{
 				enemies[enemyTypeIndex][enemyIndex]->Dead();
+				for (int deadParticleIndex = 0; deadParticleIndex < deadParticleArray[enemyTypeIndex][enemyIndex].size(); ++deadParticleIndex)
+				{
+					deadParticleArray[enemyTypeIndex][enemyIndex][deadParticleIndex]->Init();
+				}
 				lineEffectArrayData[i].hitFlag = true;
-				//lineEffectArrayData[i].Reset();
-				//lineLevel[lineIndex].lineReachObjFlag = false;
 
 				//ヒット時の円演出
 				for (int hitEffectIndex = 0; hitEffectIndex < hitEffect.size(); ++hitEffectIndex)
@@ -725,24 +745,6 @@ void Game::Update()
 						break;
 					}
 				}
-
-				//死亡時の煙演出
-				int lEmitterType = KazMath::Rand<int>(3, 0);
-				for (int stackIndex = 0; stackIndex < deadEffectEmitter[lEmitterType].size(); ++stackIndex)
-				{
-					if (!deadEffectEmitter[lEmitterType][stackIndex]->IsActive())
-					{
-						KazMath::Vec3<float>screenPos =
-							KazMath::ConvertWorldPosToScreenPos(*enemies[enemyTypeIndex][enemyIndex]->GetData()->hitBox.center, CameraMgr::Instance()->GetViewMatrix(0), CameraMgr::Instance()->GetPerspectiveMatProjection());
-						//敵が画面外に出た際に画面横からウィンドウが出ないように変換後のz値が1.0以上は描画しない
-						if (screenPos.z <= 1.0f)
-						{
-							deadEffectEmitter[lEmitterType][stackIndex]->Init(KazMath::Vec2<float>(screenPos.x, screenPos.y));
-						}
-						break;
-					}
-				}
-
 			}
 		}
 	}
@@ -794,13 +796,13 @@ void Game::Update()
 
 
 	//ゲームオーバーかゲームクリアの表示----------------------------------------------
-	if (!player.IsAlive() && !gameOverFlag)
+	if (!player.IsAlive() && !gameOverFlag && false)
 	{
 		isGameOverFlag = true;
 		readyToBlackOutFlag = true;
 	}
 
-	if (logoutWindow.IsFinish() && !d)
+	if (logoutWindow->IsFinish() && !d && false)
 	{
 		isGameClearFlag = true;
 		readyToBlackOutFlag = true;
@@ -870,7 +872,7 @@ void Game::Update()
 		stageUI.Update();
 		stages[stageNum]->Update();
 		tutorialWindow.Update();
-		logoutWindow.Update();
+		logoutWindow->Update();
 
 		for (int i = 0; i < hitEffect.size(); ++i)
 		{
@@ -951,6 +953,7 @@ void Game::Update()
 					{
 						enemies[enemyType][enemyCount]->SetLight(cursor.hitBox.dir, enemies[enemyType][enemyCount]->GetData()->objFlag);
 					}
+					enemies[enemyType][enemyCount]->OnUpdate();
 					enemies[enemyType][enemyCount]->Update();
 #ifdef _DEBUG
 					enemyHitBox[enemyType][enemyCount].data.transform.pos = *enemies[enemyType][enemyCount]->GetData()->hitBox.center;
@@ -974,6 +977,37 @@ void Game::Update()
 		for (int i = 0; i < lightEffect.size(); ++i)
 		{
 			lightEffect[i].Update();
+		}
+
+		//メッシュパーティクル更新処理
+		for (int enemyType = 0; enemyType < meshParticleArray.size(); ++enemyType)
+		{
+			for (int enemyCount = 0; enemyCount < meshParticleArray[enemyType].size(); ++enemyCount)
+			{
+				for (int particleEmittIndex = 0; particleEmittIndex < meshParticleArray[enemyType][enemyCount].size(); ++particleEmittIndex)
+				{
+					if (!meshParticleArray[enemyType][enemyCount][particleEmittIndex])
+					{
+						continue;
+					}
+					meshParticleArray[enemyType][enemyCount][particleEmittIndex]->Update();
+				}
+			}
+		}
+		//メッシュパーティクルの死亡処理
+		for (int enemyType = 0; enemyType < deadParticleArray.size(); ++enemyType)
+		{
+			for (int enemyCount = 0; enemyCount < deadParticleArray[enemyType].size(); ++enemyCount)
+			{
+				for (int particleEmittIndex = 0; particleEmittIndex < meshParticleArray[enemyType][enemyCount].size(); ++particleEmittIndex)
+				{
+					if (!deadParticleArray[enemyType][enemyCount][particleEmittIndex])
+					{
+						continue;
+					}
+					deadParticleArray[enemyType][enemyCount][particleEmittIndex]->Update();
+				}
+			}
 		}
 #pragma endregion
 
@@ -1095,11 +1129,11 @@ void Game::Draw()
 
 		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
 		{
-		//	goalBox.Draw();
+			//	goalBox.Draw();
 		}
 
 		stages[stageNum]->SetCamera(0);
-		stages[stageNum]->Draw();
+		//stages[stageNum]->Draw();
 
 
 		PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "Enemy");
@@ -1114,7 +1148,7 @@ void Game::Draw()
 					!enemies[enemyType][enemyCount]->GetData()->outOfStageFlag;
 				if (enableToUseDataFlag)
 				{
-					enemies[enemyType][enemyCount]->Draw();
+					enemies[enemyType][enemyCount]->OnDraw();
 				}
 #ifdef _DEBUG
 				if (enableToUseDataFlag && enemies[enemyType][enemyCount]->iOperationData.enableToHitFlag)
@@ -1139,6 +1173,37 @@ void Game::Draw()
 		for (int i = 0; i < lightEffect.size(); ++i)
 		{
 			lightEffect[i].Draw();
+		}
+
+		//メッシュパーティクル更新処理
+		for (int enemyType = 0; enemyType < meshParticleArray.size(); ++enemyType)
+		{
+			for (int enemyCount = 0; enemyCount < meshParticleArray[enemyType].size(); ++enemyCount)
+			{
+				for (int particleEmittIndex = 0; particleEmittIndex < meshParticleArray[enemyType][enemyCount].size(); ++particleEmittIndex)
+				{
+					if (!meshParticleArray[enemyType][enemyCount][particleEmittIndex])
+					{
+						continue;
+					}
+					meshParticleArray[enemyType][enemyCount][particleEmittIndex]->Draw();
+				}
+			}
+		}
+
+		for (int enemyType = 0; enemyType < deadParticleArray.size(); ++enemyType)
+		{
+			for (int enemyCount = 0; enemyCount < deadParticleArray[enemyType].size(); ++enemyCount)
+			{
+				for (int particleEmittIndex = 0; particleEmittIndex < meshParticleArray[enemyType][enemyCount].size(); ++particleEmittIndex)
+				{
+					if (!deadParticleArray[enemyType][enemyCount][particleEmittIndex])
+					{
+						continue;
+					}
+					deadParticleArray[enemyType][enemyCount][particleEmittIndex]->Draw();
+				}
+			}
 		}
 
 
@@ -1191,7 +1256,7 @@ void Game::Draw()
 
 		stringLog.Draw();
 		stageUI.Draw();
-		logoutWindow.Draw();
+		logoutWindow->Draw();
 
 		mainRenderTarget.Draw();
 		//cursor.Draw();

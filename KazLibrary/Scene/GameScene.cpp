@@ -29,10 +29,10 @@ void GameScene::Init()
 	stages[layerLevel] = std::make_shared<RezStage>();
 	backGroundColorArray[layerLevel] = KazMath::Color(29, 19, 72, 255);
 
-	//cameraMoveArray[layerLevel][0].flame = KazMath::ConvertSecondToFlame(21);
-	//cameraMoveArray[layerLevel][0].dir = KazEnemyHelper::CAMERA_LEFT;
-	//cameraMoveArray[layerLevel][1].flame = KazMath::ConvertSecondToFlame(30);
-	//cameraMoveArray[layerLevel][1].dir = KazEnemyHelper::CAMERA_FRONT;
+	cameraMoveArray[layerLevel][0].flame = KazMath::ConvertSecondToFlame(0);
+	cameraMoveArray[layerLevel][0].dir = KazEnemyHelper::CAMERA_LEFT;
+	cameraMoveArray[layerLevel][1].flame = KazMath::ConvertSecondToFlame(10);
+	cameraMoveArray[layerLevel][1].dir = KazEnemyHelper::CAMERA_FRONT;
 
 	////正面から通常敵四体-----------------------------------------------------------------
 	//responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
@@ -62,43 +62,49 @@ void GameScene::Init()
 	//++respoineIndex;
 	////正面から通常敵四体-----------------------------------------------------------------
 
-	////左から戦艦-----------------------------------------------------------------
-	//responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].layerLevel = layerLevel;
-	//responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 20;
-	//responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].generateData.initPos = { -1000.0f,-150.0f,400.0f };
-	//++respoineIndex;
+	//左から戦艦-----------------------------------------------------------------
+	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].layerLevel = layerLevel;
+	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 5;
+	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].generateData.initPos = { -1000.0f,-150.0f,400.0f };
+	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].generateData.useMeshPaticleFlag = true;
+	++respoineIndex;
 
 
-	//responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].layerLevel = layerLevel;
-	//responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 20;
-	//responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].generateData.initPos = { -100.0f,-150.0f,200.0f };
-	//++respoineIndex;
-	////左から戦艦-----------------------------------------------------------------
+	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].layerLevel = layerLevel;
+	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].flame = time * 5;
+	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].generateData.initPos = { -100.0f,-150.0f,200.0f };
+	responeData[ENEMY_TYPE_BATTLESHIP][respoineIndex].generateData.useMeshPaticleFlag = true;
+	++respoineIndex;
+	//左から戦艦-----------------------------------------------------------------
 
 
-	////バイク敵--------------------------------------
-	//responeData[ENEMY_TYPE_BIKE][respoineIndex].layerLevel = layerLevel;
-	//responeData[ENEMY_TYPE_BIKE][respoineIndex].flame = time * 24;
-	//responeData[ENEMY_TYPE_BIKE][respoineIndex].generateData.initPos = { -200.0f,50.0f,50.0f };
-	//++respoineIndex;
+	//バイク敵--------------------------------------
+	responeData[ENEMY_TYPE_BIKE][respoineIndex].layerLevel = layerLevel;
+	responeData[ENEMY_TYPE_BIKE][respoineIndex].flame = time * 8;
+	responeData[ENEMY_TYPE_BIKE][respoineIndex].generateData.initPos = { -200.0f,50.0f,50.0f };
+	responeData[ENEMY_TYPE_BIKE][respoineIndex].generateData.useMeshPaticleFlag = true;
+	++respoineIndex;
 
-	//responeData[ENEMY_TYPE_BIKE][respoineIndex].layerLevel = layerLevel;
-	//responeData[ENEMY_TYPE_BIKE][respoineIndex].flame = time * 24;
-	//responeData[ENEMY_TYPE_BIKE][respoineIndex].generateData.initPos = { -100.0f,0.0f,100.0f };
-	//++respoineIndex;
-	////バイク敵--------------------------------------
+	responeData[ENEMY_TYPE_BIKE][respoineIndex].layerLevel = layerLevel;
+	responeData[ENEMY_TYPE_BIKE][respoineIndex].flame = time * 8;
+	responeData[ENEMY_TYPE_BIKE][respoineIndex].generateData.initPos = { -100.0f,0.0f,100.0f };
+	responeData[ENEMY_TYPE_BIKE][respoineIndex].generateData.useMeshPaticleFlag = true;
+	++respoineIndex;
+	//バイク敵--------------------------------------
 
 
-	////召喚敵
-	//responeData[ENEMY_TYPE_MOTHER][respoineIndex].layerLevel = layerLevel;
-	//responeData[ENEMY_TYPE_MOTHER][respoineIndex].flame = time * 50;
-	//responeData[ENEMY_TYPE_MOTHER][respoineIndex].generateData.initPos = { 60.0f,50.0f,300.0f };
-	//++respoineIndex;
-	////召喚敵
-	//responeData[ENEMY_TYPE_MOTHER][respoineIndex].layerLevel = layerLevel;
-	//responeData[ENEMY_TYPE_MOTHER][respoineIndex].flame = time * 50;
-	//responeData[ENEMY_TYPE_MOTHER][respoineIndex].generateData.initPos = { -60.0f,50.0f,300.0f };
-	//++respoineIndex;
+	//召喚敵
+	responeData[ENEMY_TYPE_MOTHER][respoineIndex].layerLevel = layerLevel;
+	responeData[ENEMY_TYPE_MOTHER][respoineIndex].flame = time * 10;
+	responeData[ENEMY_TYPE_MOTHER][respoineIndex].generateData.initPos = { 60.0f,50.0f,300.0f };
+	responeData[ENEMY_TYPE_MOTHER][respoineIndex].generateData.useMeshPaticleFlag = true;
+	++respoineIndex;
+	//召喚敵
+	responeData[ENEMY_TYPE_MOTHER][respoineIndex].layerLevel = layerLevel;
+	responeData[ENEMY_TYPE_MOTHER][respoineIndex].flame = time * 10;
+	responeData[ENEMY_TYPE_MOTHER][respoineIndex].generateData.initPos = { -60.0f,50.0f,300.0f };
+	responeData[ENEMY_TYPE_MOTHER][respoineIndex].generateData.useMeshPaticleFlag = true;
+	++respoineIndex;
 
 
 	//正面から戦艦と通常敵-----------------------------------------------------------------

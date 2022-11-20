@@ -9,11 +9,12 @@ class DeadParticle
 {
 public:
 	DeadParticle(const D3D12_GPU_VIRTUAL_ADDRESS &ADDRESS, int VERT_NUM);
-	void Init(void *BUFFER_PTR);
+	void Init();
 	void Update();
 	void Draw();
 
 private:
+	bool startFlag;
 
 	//バッファ
 	std::unique_ptr<CreateGpuBuffer> buffers;

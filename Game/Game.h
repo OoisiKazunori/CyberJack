@@ -32,6 +32,7 @@
 #include"../Game/Effect/FireEffect.h"
 #include"../Game/Effect/RocketLightEffect.h"
 #include"../Game/Effect/MeshParticleEmitter.h"
+#include"../Game/Effect/DeadParticle.h"
 
 #include"../Game/UI/AttackLog.h"
 #include"../Game/Helper/CameraWork.h"
@@ -189,6 +190,9 @@ private:
 	std::array<std::unique_ptr<IHitEffectEmitter>, 3>emitters;
 
 	std::array<std::array<std::unique_ptr<IHitEffectEmitter>, 10>, 3>deadEffectEmitter;
+	
+	std::array<std::array<std::vector<std::unique_ptr<MeshParticleEmitter>>, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> meshParticleArray;
+	std::array<std::array<std::vector<std::unique_ptr<DeadParticle>>, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> deadParticleArray;
 
 
 	//エフェクト--------------------------------------
@@ -211,7 +215,7 @@ private:
 
 
 	bool d;
-	StringWindow logoutWindow;
+	std::unique_ptr<StringWindow> logoutWindow;
 	bool prepareToClearFlag;
 	bool initEndLogFlag;
 	int gameClearTimer;

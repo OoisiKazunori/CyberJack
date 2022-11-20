@@ -163,6 +163,8 @@ MeshParticleEmitter::MeshParticleEmitter(std::vector<DirectX::XMFLOAT4> VERT_NUM
 	scaleRotaMat = KazMath::CaluScaleMatrix({ scale,scale,scale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
 
 	updateCommonData.indexMaxNum = indexNum;
+
+	drawParticleFlag = false;
 }
 
 MeshParticleEmitter::~MeshParticleEmitter()
@@ -172,7 +174,7 @@ MeshParticleEmitter::~MeshParticleEmitter()
 	DescriptorHeapMgr::Instance()->Release(updateViewHandle);
 }
 
-void MeshParticleEmitter::Init(DirectX::XMMATRIX *MOTHER_MAT)
+void MeshParticleEmitter::Init(const DirectX::XMMATRIX *MOTHER_MAT)
 {
 	motherMat = MOTHER_MAT;
 	sceneNum = 0;
@@ -187,6 +189,11 @@ void MeshParticleEmitter::Update()
 	ImGui::SliderInt("Bias", &bias, 0, 100);
 	ImGui::DragFloat("ParticleScale", &scale);
 	ImGui::End();
+
+	if (!drawParticleFlag)
+	{
+		return;
+	}
 
 	float lScale = scale;
 	scaleRotaMat = KazMath::CaluScaleMatrix({ lScale,lScale,lScale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
@@ -241,34 +248,36 @@ void MeshParticleEmitter::Update()
 
 void MeshParticleEmitter::Draw()
 {
-	if (drawParticleFlag)
+	if (!drawParticleFlag)
 	{
-		GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE);
-		DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
-		DirectX12CmdList::Instance()->cmdList->IASetIndexBuffer(&indexBufferView);
-
-		RenderTargetStatus::Instance()->ChangeBarrier(
-			buffers->GetBufferData(drawCommandHandle).Get(),
-			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-			D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT
-		);
-
-		DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
-		(
-			commandSig.Get(),
-			1,
-			buffers->GetBufferData(drawCommandHandle).Get(),
-			0,
-			nullptr,
-			0
-		);
-
-		RenderTargetStatus::Instance()->ChangeBarrier(
-			buffers->GetBufferData(drawCommandHandle).Get(),
-			D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
-			D3D12_RESOURCE_STATE_UNORDERED_ACCESS
-		);
+		return;
 	}
+	GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE);
+	DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
+	DirectX12CmdList::Instance()->cmdList->IASetIndexBuffer(&indexBufferView);
+
+	RenderTargetStatus::Instance()->ChangeBarrier(
+		buffers->GetBufferData(drawCommandHandle).Get(),
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT
+	);
+
+	DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
+	(
+		commandSig.Get(),
+		1,
+		buffers->GetBufferData(drawCommandHandle).Get(),
+		0,
+		nullptr,
+		0
+	);
+
+	RenderTargetStatus::Instance()->ChangeBarrier(
+		buffers->GetBufferData(drawCommandHandle).Get(),
+		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+	);
+
 
 }

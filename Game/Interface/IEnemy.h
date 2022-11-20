@@ -90,6 +90,10 @@ public:
 	virtual void DrawIn() {};
 
 	//‹¤’Êˆ—--------------------------------------------
+	void OnInit(bool MESH_PARTICLE_FLAG)
+	{
+		iEnemy_EnemyStatusData->meshParticleFlag = MESH_PARTICLE_FLAG;
+	}
 	void OnUpdate()
 	{
 		switch (modelType)
@@ -97,21 +101,21 @@ public:
 		case ENEMY_MODEL_NONE:
 			break;
 		case ENEMY_MODEL_OBJ:
-			if (!ProcessingOfDeath(DEATH_ROLL))
-			{
-				//“oêˆ—
-				if (iEnemy_ObjModelRender->data.colorData.color.a < 255)
-				{
-					iEnemy_ObjModelRender->data.colorData.color.a += 5;
-				}
-				else
-				{
-					iEnemy_ObjModelRender->data.colorData.color.a = 255;
-				}
-			}
+			//if (!ProcessingOfDeath(DEATH_ROLL))
+			//{
+			//	//“oêˆ—
+			//	if (iEnemy_ObjModelRender->data.colorData.color.a < 255)
+			//	{
+			//		iEnemy_ObjModelRender->data.colorData.color.a += 5;
+			//	}
+			//	else
+			//	{
+			//		iEnemy_ObjModelRender->data.colorData.color.a = 255;
+			//	}
+			//}
 			break;
 		case ENEMY_MODEL_FBX:
-			ProcessingOfDeathFbx(DEATH_SINK);
+			//ProcessingOfDeathFbx(DEATH_SINK);
 			break;
 		case ENEMY_MODEL_MESHPARTICLE:
 			iEnemy_MeshModelRender->Update();
@@ -125,6 +129,8 @@ public:
 	{
 		if (1.0f <= iEnemy_ObjModelRender->data.colorData.color.a)
 		{
+			DrawIn();
+
 			switch (modelType)
 			{
 			case ENEMY_MODEL_NONE:
@@ -141,8 +147,6 @@ public:
 			default:
 				break;
 			}
-			DrawIn();
-
 			LockOnWindow(*iEnemy_EnemyStatusData->hitBox.center);
 		}
 	};

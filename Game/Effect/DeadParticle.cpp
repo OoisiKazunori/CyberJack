@@ -102,17 +102,21 @@ DeadParticle::DeadParticle(const D3D12_GPU_VIRTUAL_ADDRESS &ADDRESS, int VERT_NU
 
 	texHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StagePath + "Circle.png");
 
+	startFlag = false;
 }
 
-void DeadParticle::Init(void* BUFFER_PTR)
+void DeadParticle::Init()
 {
-	//初期化用処理
-	void *p = BUFFER_PTR;
-	p = nullptr;
+	startFlag = true;
 }
 
 void DeadParticle::Update()
 {
+	if (!startFlag)
+	{
+		return;
+	}
+
 	//更新用処理
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_DEADPARTICLE_UPDATE);
 
@@ -138,6 +142,10 @@ void DeadParticle::Update()
 
 void DeadParticle::Draw()
 {
+	if (!startFlag)
+	{
+		return;
+	}
 	//描画用処理
 	GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE);
 	DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

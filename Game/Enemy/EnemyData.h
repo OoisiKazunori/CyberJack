@@ -114,6 +114,16 @@ struct GenarateOtherObjData
 	EnemyGenerateData enemyGenerateData;
 };
 
+//メッシュパーティクルに必要なデータ
+struct MeshData
+{
+	RESOURCE_HANDLE resourceHandle;
+	const DirectX::XMMATRIX *motherMat;
+	MeshData(RESOURCE_HANDLE HANDLE, const DirectX::XMMATRIX *MOTHER_MAT) :resourceHandle(HANDLE), motherMat(MOTHER_MAT)
+	{
+	};
+};
+
 /// <summary>
 /// ゲーム内に登場する敵のデータ
 /// </summary>
@@ -143,6 +153,9 @@ struct EnemyData
 	float radius;
 	bool startFlag;
 	bool objFlag;
+
+	bool meshParticleFlag;
+	std::vector<MeshData> meshParticleData;
 };
 
 enum EnemyDeathType

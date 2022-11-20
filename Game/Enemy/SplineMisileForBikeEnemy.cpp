@@ -11,7 +11,7 @@ SplineMisileForBikeEnemy::SplineMisileForBikeEnemy()
 void SplineMisileForBikeEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 {
 	float lScale = 0.2f;
-	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { lScale,lScale,lScale }, { 0.0f,0.0f,0.0f }), KazFilePathName::EnemyPath + "BattleShipMisile/" + "BattleshipMissile_Model.obj", 5.0f, false);
+	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { lScale,lScale,lScale }, { 0.0f,0.0f,0.0f }), KazFilePathName::EnemyPath + "BattleShipMisile/" + "BattleshipMissile_Model.obj", 5.0f, ENEMY_MODEL_OBJ);
 
 	iEnemy_ObjModelRender->data.colorData.color.a = 255;
 

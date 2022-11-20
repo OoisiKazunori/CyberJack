@@ -71,8 +71,10 @@ void NormalEnemy::Draw()
 		{
 			iEnemy_ObjModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
 		}
-
-		iEnemy_ObjModelRender->Draw();
+		if (!iEnemy_EnemyStatusData->meshParticleFlag)
+		{
+			iEnemy_ObjModelRender->Draw();
+		}
 		LockOnWindow(iEnemy_ObjModelRender->data.transform.pos);
 	}
 }
