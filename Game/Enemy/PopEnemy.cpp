@@ -7,7 +7,7 @@ PopEnemy::PopEnemy()
 
 void PopEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 {
-	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { 1.0f,1.0f,1.0f }, { 0.0f,180.0f,0.0f }), KazFilePathName::EnemyPath + "PopEnemy/" + "PopEnemy_Model.obj", 15.0f, ENEMY_MODEL_OBJ);
+	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { 1.0f,1.0f,1.0f }, { 0.0f,180.0f,0.0f }), KazFilePathName::EnemyPath + "PopEnemy/" + "PopEnemy_Model.fbx", 15.0f, ENEMY_MODEL_FBX);
 	iOperationData.Init(1, "snkr_BR");							//残りロックオン数等の初期化
 
 	iEnemy_ObjModelRender->data.colorData.color.a = 255;
@@ -22,7 +22,7 @@ void PopEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 	vel.y = 0.0f;
 
 
-	iEnemy_EnemyStatusData->objFlag = true;
+	iEnemy_EnemyStatusData->objFlag = false;
 
 	if (demoFlag)
 	{

@@ -162,8 +162,6 @@ MeshParticleEmitter::MeshParticleEmitter(std::vector<DirectX::XMFLOAT4> VERT_NUM
 	scale = PARTICLE_SCALE;
 	scaleRotaMat = KazMath::CaluScaleMatrix({ scale,scale,scale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
 
-	updateCommonData.indexMaxNum = indexNum;
-
 	drawParticleFlag = false;
 }
 
@@ -182,7 +180,7 @@ void MeshParticleEmitter::Init(const DirectX::XMMATRIX *MOTHER_MAT)
 	drawParticleFlag = true;
 }
 
-void MeshParticleEmitter::Update()
+void MeshParticleEmitter::Update(float ALPHA)
 {
 	ImGui::Begin("Mesh");
 	ImGui::Checkbox("DrawParticle", &drawParticleFlag);
@@ -235,6 +233,7 @@ void MeshParticleEmitter::Update()
 		updateCommonData.scaleRotateBillboardMat = scaleRotaMat * CameraMgr::Instance()->GetMatBillBoard();
 		updateCommonData.viewProjection = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
 		updateCommonData.motherMat = *motherMat;
+		updateCommonData.alpha = ALPHA;
 		buffers->TransData(updateCommonHandle, &updateCommonData, sizeof(UpdateCommonData));
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(updateCommonHandle));
 	}

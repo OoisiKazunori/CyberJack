@@ -12,7 +12,7 @@ cbuffer RootConstants : register(b0)
     matrix scaleRotateBillboardMat;
     matrix viewProjection;
     matrix motherMat;
-    int indexMaxNum;
+    float alpha;
 };
 
 struct UpdateData
@@ -42,7 +42,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     OutputData outputMat;
     outputMat.mat = mul(viewProjection,pMatWorld); 
     
-    outputMat.color = float4(0.96, 0.69, 0.12,1);
+    outputMat.color = float4(0.96, 0.69, 0.12, alpha);
     matrixData[index] = outputMat;
     //èoóÕ--------------------------------------------
 }

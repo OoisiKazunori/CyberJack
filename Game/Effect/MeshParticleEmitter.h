@@ -14,7 +14,7 @@ public:
 	MeshParticleEmitter(std::vector<DirectX::XMFLOAT4> VERT_NUM, float PARTICLE_SCALE = 0.18f);
 	~MeshParticleEmitter();
 	void Init(const DirectX::XMMATRIX *MOTHER_MAT);
-	void Update();
+	void Update(float ALPHA = 1.0f);
 	void Draw();
 
 	D3D12_GPU_VIRTUAL_ADDRESS GetAddress()
@@ -87,7 +87,7 @@ private:
 		DirectX::XMMATRIX scaleRotateBillboardMat;
 		DirectX::XMMATRIX viewProjection;
 		DirectX::XMMATRIX motherMat;
-		UINT indexMaxNum;
+		float alpha;
 	};
 	UpdateCommonData updateCommonData;
 	RESOURCE_HANDLE updateHandle,updateCommonHandle;

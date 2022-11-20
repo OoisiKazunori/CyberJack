@@ -453,6 +453,44 @@ void Game::Update()
 
 
 
+				if (enemyType == ENEMY_TYPE_BATTLESHIP_MISILE ||
+					enemyType == ENEMY_TYPE_BIKE_MISILE ||
+					enemyType == ENEMY_TYPE_MISILE_SPLINE
+					)
+				{
+					continue;
+				}
+
+				//メッシュパーティクルの付与
+				for (int i = 0; i < enemies[enemyType][enemyCount]->GetData()->meshParticleData.size(); ++i)
+				{
+					MeshData lMeshData = enemies[enemyType][enemyCount]->GetData()->meshParticleData[i];
+
+					std::vector<DirectX::XMFLOAT4>lVertData = FbxModelResourceMgr::Instance()->GetResourceData(lMeshData.resourceHandle)->vertData;
+
+					float lScale = 0.18f;
+					switch (enemyType)
+					{
+					case ENEMY_TYPE_BATTLESHIP:
+						lScale = 1.0f;
+						break;
+					default:
+						break;
+					}
+
+					meshParticleArray[enemyType][enemyCount].push_back(std::make_unique<MeshParticleEmitter>(lVertData, lScale));
+					deadParticleArray[enemyType][enemyCount].push_back(std::make_unique<DeadParticle>(meshParticleArray[enemyType][enemyCount][i]->GetAddress(), meshParticleArray[enemyType][enemyCount][i]->GetVertNum(), lScale));
+
+					if (enemies[enemyType][enemyCount]->GetData()->meshParticleFlag)
+					{
+						meshParticleArray[enemyType][enemyCount][i]->Init(lMeshData.motherMat);
+					}
+				}
+				if (enemies[enemyType][enemyCount]->GetData()->meshParticleFlag)
+				{
+					continue;
+				}
+
 				switch (enemyType)
 				{
 				case ENEMY_TYPE_NORMAL:
@@ -485,42 +523,6 @@ void Game::Update()
 					break;
 				default:
 					break;
-				}
-
-
-				if (enemyType == ENEMY_TYPE_MISILE || 
-					enemyType == ENEMY_TYPE_BATTLESHIP_MISILE ||
-					enemyType == ENEMY_TYPE_BIKE_MISILE ||
-					enemyType == ENEMY_TYPE_MISILE_SPLINE
-					)
-				{
-					continue;
-				}
-
-				//メッシュパーティクルの付与
-				for (int i = 0; i < enemies[enemyType][enemyCount]->GetData()->meshParticleData.size(); ++i)
-				{
-					MeshData lMeshData = enemies[enemyType][enemyCount]->GetData()->meshParticleData[i];
-
-					std::vector<DirectX::XMFLOAT4>lVertData = FbxModelResourceMgr::Instance()->GetResourceData(lMeshData.resourceHandle)->vertData;
-
-					float lScale = 0.18f;
-					switch (enemyType)
-					{
-					case ENEMY_TYPE_BATTLESHIP:
-						lScale = 1.0f;
-						break;
-					default:
-						break;
-					}
-
-					meshParticleArray[enemyType][enemyCount].push_back(std::make_unique<MeshParticleEmitter>(lVertData, lScale));
-					deadParticleArray[enemyType][enemyCount].push_back(std::make_unique<DeadParticle>(meshParticleArray[enemyType][enemyCount][i]->GetAddress(), meshParticleArray[enemyType][enemyCount][i]->GetVertNum(), lScale));
-
-					if (enemies[enemyType][enemyCount]->GetData()->meshParticleFlag)
-					{
-						meshParticleArray[enemyType][enemyCount][i]->Init(lMeshData.motherMat);
-					}
 				}
 			}
 		}
@@ -937,7 +939,6 @@ void Game::Update()
 					{
 						enemies[enemyType][enemyCount]->SetLight(cursor.hitBox.dir, enemies[enemyType][enemyCount]->GetData()->objFlag);
 					}
-					enemies[enemyType][enemyCount]->OnUpdate();
 					enemies[enemyType][enemyCount]->Update();
 #ifdef _DEBUG
 					enemyHitBox[enemyType][enemyCount].data.transform.pos = *enemies[enemyType][enemyCount]->GetData()->hitBox.center;
@@ -974,7 +975,7 @@ void Game::Update()
 					{
 						continue;
 					}
-					meshParticleArray[enemyType][enemyCount][particleEmittIndex]->Update();
+					meshParticleArray[enemyType][enemyCount][particleEmittIndex]->Update(static_cast<float>(*enemies[enemyType][enemyCount]->GetData()->alpha) / 255.0f);
 				}
 			}
 		}
@@ -1042,14 +1043,6 @@ void Game::Update()
 
 	//ゲームループの経過時間----------------------------------------------------------------
 
-//	if (meshEmitter->resetSceneFlag)
-	{
-		//		int lNum = meshEmitter->enemyIndex;
-		//		meshEmitter.reset();
-		//		meshEmitter = std::make_unique<MeshParticleEmitter>(lNum);
-	}
-
-	//	meshEmitter->Update();
 }
 
 void Game::Draw()
@@ -1102,7 +1095,7 @@ void Game::Draw()
 
 		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
 		{
-			//	goalBox.Draw();
+			goalBox.Draw();
 		}
 
 		stages[stageNum]->SetCamera(0);
@@ -1118,7 +1111,8 @@ void Game::Draw()
 				//生成されている敵のみ描画処理を通す
 				bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr &&
 					enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag &&
-					!enemies[enemyType][enemyCount]->GetData()->outOfStageFlag;
+					!enemies[enemyType][enemyCount]->GetData()->outOfStageFlag &&
+					enemies[enemyType][enemyCount]->GetData()->oprationObjData->enableToHitFlag;
 				if (enableToUseDataFlag)
 				{
 					enemies[enemyType][enemyCount]->Draw();
@@ -1147,6 +1141,35 @@ void Game::Draw()
 		{
 			lightEffect[i].Draw();
 		}
+
+		//次ポータルの描画
+		if (portalEffect.DrawNextPortal())
+		{
+			portalEffect.nextPortalRender.Draw();
+		}
+		//中間演出までのポータル
+		if (portalEffect.IsStart() && !portalEffect.IsFinish())
+		{
+			portalEffect.portalRender.Draw();
+		}
+
+		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
+		{
+			goalBox.lightEffect.Draw();
+		}
+
+		stages[stageNum]->vaporWaveSunRender.Draw();
+
+		for (int i = 0; i < hitEffect.size(); ++i)
+		{
+			hitEffect[i].Draw();
+		}
+
+		for (int i = 0; i < lineLevel.size(); ++i)
+		{
+			lineLevel[i].Draw();
+		}
+
 
 		//メッシュパーティクル更新処理
 		for (int enemyType = 0; enemyType < meshParticleArray.size(); ++enemyType)
@@ -1179,35 +1202,6 @@ void Game::Draw()
 			}
 		}
 
-
-		//次ポータルの描画
-		if (portalEffect.DrawNextPortal())
-		{
-			portalEffect.nextPortalRender.Draw();
-		}
-		//中間演出までのポータル
-		if (portalEffect.IsStart() && !portalEffect.IsFinish())
-		{
-			portalEffect.portalRender.Draw();
-		}
-
-		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
-		{
-			goalBox.lightEffect.Draw();
-		}
-
-		stages[stageNum]->vaporWaveSunRender.Draw();
-
-
-		for (int i = 0; i < hitEffect.size(); ++i)
-		{
-			hitEffect[i].Draw();
-		}
-
-		for (int i = 0; i < lineLevel.size(); ++i)
-		{
-			lineLevel[i].Draw();
-		}
 
 
 		renderTarget[stageNum]->Draw();

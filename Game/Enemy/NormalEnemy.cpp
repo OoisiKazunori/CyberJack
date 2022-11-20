@@ -10,11 +10,7 @@ NormalEnemy::NormalEnemy()
 void NormalEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 {
 	EnemyModelType lModelType = ENEMY_MODEL_FBX;
-	if (GENERATE_DATA.useMeshPaticleFlag)
-	{
-		lModelType = ENEMY_MODEL_MESHPARTICLE;
-	}
-	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { 1.0f,1.0f,1.0f }, { 0.0f,180.0f,0.0f }), KazFilePathName::EnemyPath + "Move/" + "MoveEnemy_Model.obj", 15.0f, lModelType);
+	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { 1.0f,1.0f,1.0f }, { 0.0f,180.0f,0.0f }), KazFilePathName::EnemyPath + "Move/" + "MoveEnemy_Model.fbx", 15.0f, lModelType, true);
 	iOperationData.Init(1, "gw-1");							//残りロックオン数等の初期化
 
 
@@ -23,7 +19,7 @@ void NormalEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 
 	speed = GENERATE_DATA.speed;
 	iEnemy_EnemyStatusData->startFlag = true;
-	iEnemy_EnemyStatusData->objFlag = true;
+	iEnemy_EnemyStatusData->objFlag = false;
 	iEnemy_EnemyStatusData->radius = 10.0f;
 }
 
@@ -33,44 +29,43 @@ void NormalEnemy::Finalize()
 
 void NormalEnemy::Update()
 {
-	++iEnemy_ObjModelRender->data.transform.rotation.z;
+	++iEnemy_FbxModelRender->data.transform.rotation.z;
 	//移動
 	if (!demoFlag)
 	{
-		iEnemy_ObjModelRender->data.transform.pos.z += speed;
+		iEnemy_FbxModelRender->data.transform.pos.z += speed;
 	}
 
 	//死亡演出中に登場演出は行わない
-	if (!ProcessingOfDeath(DEATH_ROLL))
+	if (!ProcessingOfDeathFbx(DEATH_SINK))
 	{
 		//登場処理
-		if (iEnemy_ObjModelRender->data.colorData.color.a < 255)
+		if (iEnemy_FbxModelRender->data.colorData.color.a < 255)
 		{
-			iEnemy_ObjModelRender->data.colorData.color.a += 5;
+			iEnemy_FbxModelRender->data.colorData.color.a += 5;
 		}
 		else
 		{
-			iEnemy_ObjModelRender->data.colorData.color.a = 255;
+			iEnemy_FbxModelRender->data.colorData.color.a = 255;
 		}
 	}
 
-	if (iEnemy_ObjModelRender->data.transform.pos.z <= -50.0f)
+	if (iEnemy_FbxModelRender->data.transform.pos.z <= -50.0f)
 	{
 		iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag = false;
 		iEnemy_EnemyStatusData->outOfStageFlag = true;
 	}
-
 }
 
 void NormalEnemy::Draw()
 {
-	if (1.0f <= iEnemy_ObjModelRender->data.colorData.color.a)
+	if (1.0f <= iEnemy_FbxModelRender->data.colorData.color.a)
 	{
 		if (!iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
 		{
-			iEnemy_ObjModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
+			iEnemy_FbxModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
 		}
-		//iEnemy_ObjModelRender->Draw(!iEnemy_EnemyStatusData->meshParticleFlag);
-		LockOnWindow(iEnemy_ObjModelRender->data.transform.pos);
+		iEnemy_FbxModelRender->Draw(!iEnemy_EnemyStatusData->meshParticleFlag);
+		LockOnWindow(iEnemy_FbxModelRender->data.transform.pos);
 	}
 }

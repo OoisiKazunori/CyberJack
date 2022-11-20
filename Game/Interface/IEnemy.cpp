@@ -208,6 +208,8 @@ void IEnemy::InitModel(const KazMath::Transform3D &TRANSFORM, const std::string 
 				iEnemy_FbxModelRender->data.handle.handle,
 				&iEnemy_FbxModelRender->motherMat
 			});
+
+		iEnemy_EnemyStatusData->alpha = &iEnemy_FbxModelRender->data.colorData.color.a;
 		break;
 	case ENEMY_MODEL_MESHPARTICLE:
 		//RESOURCE_HANDLE lHandle = FbxModelResourceMgr::Instance()->LoadModel(MODEL_FILEPASS, REV_UV_FLAG);	//ƒ‚ƒfƒ‹“Ç‚Ýž‚Ý)

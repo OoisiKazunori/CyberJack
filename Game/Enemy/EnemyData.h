@@ -153,6 +153,7 @@ struct EnemyData
 	float radius;
 	bool startFlag;
 	bool objFlag;
+	int *alpha;
 
 	bool meshParticleFlag;
 	std::vector<MeshData> meshParticleData;
