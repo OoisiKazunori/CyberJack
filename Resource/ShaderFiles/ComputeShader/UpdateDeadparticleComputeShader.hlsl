@@ -31,7 +31,9 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     uint index = groupThreadID.x;
     index += 1024 * groupId.x;
 
-    if(particleData[index].color.a <= 0.0f)
+    bool zeroParticeFlag = particleData[index].pos.x == 0.0f && particleData[index].pos.y== 0.0f && particleData[index].pos.z == 0.0f;
+
+    if(particleData[index].color.a <= 0.0f || zeroParticeFlag)
     {
         return;
     }
