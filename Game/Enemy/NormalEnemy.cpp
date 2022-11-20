@@ -24,7 +24,6 @@ void NormalEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 	speed = GENERATE_DATA.speed;
 	iEnemy_EnemyStatusData->startFlag = true;
 	iEnemy_EnemyStatusData->objFlag = true;
-
 	iEnemy_EnemyStatusData->radius = 10.0f;
 }
 

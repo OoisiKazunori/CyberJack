@@ -490,20 +490,7 @@ void Game::Update()
 				enemies[enemyType][enemyCount]->OnInit(responeData[enemyType][enemyCount].generateData.useMeshPaticleFlag);
 				enemies[enemyType][enemyCount]->Init(responeData[enemyType][enemyCount].generateData, false);
 
-				//メッシュパーティクルの付与
-				for (int i = 0; i < enemies[enemyType][enemyCount]->GetData()->meshParticleData.size(); ++i)
-				{
-					MeshData lMeshData = enemies[enemyType][enemyCount]->GetData()->meshParticleData[i];
 
-					std::vector<DirectX::XMFLOAT4>lVertData = FbxModelResourceMgr::Instance()->GetResourceData(lMeshData.resourceHandle)->vertData;
-					meshParticleArray[enemyType][enemyCount].push_back(std::make_unique<MeshParticleEmitter>(lVertData));
-					deadParticleArray[enemyType][enemyCount].push_back(std::make_unique<DeadParticle>(meshParticleArray[enemyType][enemyCount][i]->GetAddress(), meshParticleArray[enemyType][enemyCount][i]->GetVertNum()));
-
-					if (enemies[enemyType][enemyCount]->GetData()->meshParticleFlag)
-					{
-						meshParticleArray[enemyType][enemyCount][i]->Init(lMeshData.motherMat);
-					}
-				}
 
 				switch (enemyType)
 				{
@@ -537,6 +524,42 @@ void Game::Update()
 					break;
 				default:
 					break;
+				}
+
+
+				if (enemyType == ENEMY_TYPE_MISILE || 
+					enemyType == ENEMY_TYPE_BATTLESHIP_MISILE ||
+					enemyType == ENEMY_TYPE_BIKE_MISILE ||
+					enemyType == ENEMY_TYPE_MISILE_SPLINE
+					)
+				{
+					continue;
+				}
+
+				//メッシュパーティクルの付与
+				for (int i = 0; i < enemies[enemyType][enemyCount]->GetData()->meshParticleData.size(); ++i)
+				{
+					MeshData lMeshData = enemies[enemyType][enemyCount]->GetData()->meshParticleData[i];
+
+					std::vector<DirectX::XMFLOAT4>lVertData = FbxModelResourceMgr::Instance()->GetResourceData(lMeshData.resourceHandle)->vertData;
+
+					float lScale = 0.18f;
+					switch (enemyType)
+					{
+					case ENEMY_TYPE_BATTLESHIP:
+						lScale = 1.0f;
+						break;
+					default:
+						break;
+					}
+
+					meshParticleArray[enemyType][enemyCount].push_back(std::make_unique<MeshParticleEmitter>(lVertData, lScale));
+					deadParticleArray[enemyType][enemyCount].push_back(std::make_unique<DeadParticle>(meshParticleArray[enemyType][enemyCount][i]->GetAddress(), meshParticleArray[enemyType][enemyCount][i]->GetVertNum(), lScale));
+
+					if (enemies[enemyType][enemyCount]->GetData()->meshParticleFlag)
+					{
+						meshParticleArray[enemyType][enemyCount][i]->Init(lMeshData.motherMat);
+					}
 				}
 			}
 		}
@@ -732,7 +755,7 @@ void Game::Update()
 				enemies[enemyTypeIndex][enemyIndex]->Dead();
 				for (int deadParticleIndex = 0; deadParticleIndex < deadParticleArray[enemyTypeIndex][enemyIndex].size(); ++deadParticleIndex)
 				{
-					deadParticleArray[enemyTypeIndex][enemyIndex][deadParticleIndex]->Init();
+					deadParticleArray[enemyTypeIndex][enemyIndex][deadParticleIndex]->Init(enemies[enemyTypeIndex][enemyIndex]->GetData()->meshParticleData[deadParticleIndex].motherMat);
 				}
 				lineEffectArrayData[i].hitFlag = true;
 
@@ -1133,7 +1156,7 @@ void Game::Draw()
 		}
 
 		stages[stageNum]->SetCamera(0);
-		//stages[stageNum]->Draw();
+		stages[stageNum]->Draw();
 
 
 		PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "Enemy");
@@ -1148,7 +1171,7 @@ void Game::Draw()
 					!enemies[enemyType][enemyCount]->GetData()->outOfStageFlag;
 				if (enableToUseDataFlag)
 				{
-					enemies[enemyType][enemyCount]->OnDraw();
+					enemies[enemyType][enemyCount]->Draw();
 				}
 #ifdef _DEBUG
 				if (enableToUseDataFlag && enemies[enemyType][enemyCount]->iOperationData.enableToHitFlag)
@@ -1182,7 +1205,7 @@ void Game::Draw()
 			{
 				for (int particleEmittIndex = 0; particleEmittIndex < meshParticleArray[enemyType][enemyCount].size(); ++particleEmittIndex)
 				{
-					if (!meshParticleArray[enemyType][enemyCount][particleEmittIndex])
+					if (!meshParticleArray[enemyType][enemyCount][particleEmittIndex] || !enemies[enemyType][enemyCount]->GetData()->oprationObjData->enableToHitFlag)
 					{
 						continue;
 					}
@@ -1259,8 +1282,7 @@ void Game::Draw()
 		logoutWindow->Draw();
 
 		mainRenderTarget.Draw();
-		//cursor.Draw();
-
+		cursor.Draw();
 	}
 	else if (gameOverFlag)
 	{

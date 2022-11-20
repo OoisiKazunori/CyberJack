@@ -22,7 +22,7 @@ FbxModelRender::FbxModelRender()
 	removeSkining = false;
 }
 
-void FbxModelRender::Draw()
+void FbxModelRender::Draw(bool DRAE_FLAG)
 {
 	if (data.handle.flag.Dirty())
 	{
@@ -83,6 +83,10 @@ void FbxModelRender::Draw()
 		}
 		//行列計算-----------------------------------------------------------------------------------------------------
 
+		if (!DRAE_FLAG)
+		{
+			return;
+		}
 
 		//バッファの転送-----------------------------------------------------------------------------------------------------
 		//行列

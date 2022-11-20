@@ -10,7 +10,7 @@
 #include"../KazLibrary/Imgui/MyImgui.h"
 #include"../KazLibrary/Buffer/UavViewHandleMgr.h"
 
-DeadParticle::DeadParticle(const D3D12_GPU_VIRTUAL_ADDRESS &ADDRESS, int VERT_NUM)
+DeadParticle::DeadParticle(const D3D12_GPU_VIRTUAL_ADDRESS &ADDRESS, int VERT_NUM, float PARTICLE_SCALE)
 {
 	PARTICLE_MAX_NUM = VERT_NUM;
 	PARTICLE_MAX_NUM = 100000;
@@ -103,11 +103,15 @@ DeadParticle::DeadParticle(const D3D12_GPU_VIRTUAL_ADDRESS &ADDRESS, int VERT_NU
 	texHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StagePath + "Circle.png");
 
 	startFlag = false;
+
+	float lScale = PARTICLE_SCALE;
+	scaleRotaMat = KazMath::CaluScaleMatrix({ lScale,lScale,lScale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
 }
 
-void DeadParticle::Init()
+void DeadParticle::Init(const DirectX::XMMATRIX *MAT)
 {
 	startFlag = true;
+	motherMat = MAT;
 }
 
 void DeadParticle::Update()
@@ -123,8 +127,9 @@ void DeadParticle::Update()
 	//共通用バッファのデータ送信
 	{
 		float lScale = 0.18f;
-		constBufferData.scaleRotateBillboardMat = KazMath::CaluScaleMatrix({ lScale,lScale,lScale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f }) * CameraMgr::Instance()->GetMatBillBoard();
+		constBufferData.scaleRotateBillboardMat = scaleRotaMat * CameraMgr::Instance()->GetMatBillBoard();
 		constBufferData.viewProjection = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
+		constBufferData.motherMat = *motherMat;
 		buffers->TransData(commonBufferHandle, &constBufferData, sizeof(CommonMoveData));
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(commonBufferHandle));
 	}

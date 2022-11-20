@@ -18,6 +18,7 @@ cbuffer RootConstants : register(b0)
 {    
     matrix scaleRotateBillboardMat;
     matrix viewProjection;
+    matrix motherMat;
 };
 
 //更新
@@ -42,6 +43,8 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     pMatWorld[0][3] = particleData[index].pos.x;
     pMatWorld[1][3] = particleData[index].pos.y;
     pMatWorld[2][3] = particleData[index].pos.z;
+    
+    pMatWorld = mul(motherMat,pMatWorld);
 
     //行列計算-------------------------    
     MatData outputMat;

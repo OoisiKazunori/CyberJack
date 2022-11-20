@@ -129,8 +129,6 @@ public:
 	{
 		if (1.0f <= iEnemy_ObjModelRender->data.colorData.color.a)
 		{
-			DrawIn();
-
 			switch (modelType)
 			{
 			case ENEMY_MODEL_NONE:
@@ -147,6 +145,7 @@ public:
 			default:
 				break;
 			}
+			DrawIn();
 			LockOnWindow(*iEnemy_EnemyStatusData->hitBox.center);
 		}
 	};

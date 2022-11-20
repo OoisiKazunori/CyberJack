@@ -24,6 +24,15 @@ void BattleshipEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLA
 
 	topModel->data.pipelineName = PIPELINE_NAME_FBX_RENDERTARGET_TWO_LIGHT;
 	topModel->data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_Head_anim.fbx");	//モデル読み込み
+
+	iEnemy_EnemyStatusData->meshParticleData.push_back(
+		MeshData
+		(
+			topModel->data.handle.handle,
+			&topModel->baseMatWorldData.matWorld
+		)
+	);
+
 	iOperationData.Init(3, "Kaz-BS");							//残りロックオン数等の初期化
 	initDeadSoundFlag = false;
 	demoFlag = DEMO_FLAG;
@@ -208,7 +217,11 @@ void BattleshipEnemy::Draw()
 	{
 		iEnemy_FbxModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
 	}
-	iEnemy_FbxModelRender->Draw();
-	topModel->Draw();
+
+	iEnemy_FbxModelRender->Draw(!iEnemy_EnemyStatusData->meshParticleFlag);
+	topModel->Draw(!iEnemy_EnemyStatusData->meshParticleFlag);
+
+
+
 	LockOnWindow(*iEnemy_EnemyStatusData->hitBox.center);
 }

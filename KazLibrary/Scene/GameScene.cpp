@@ -93,18 +93,18 @@ void GameScene::Init()
 	//バイク敵--------------------------------------
 
 
-	//召喚敵
-	responeData[ENEMY_TYPE_MOTHER][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_MOTHER][respoineIndex].flame = time * 10;
-	responeData[ENEMY_TYPE_MOTHER][respoineIndex].generateData.initPos = { 60.0f,50.0f,300.0f };
-	responeData[ENEMY_TYPE_MOTHER][respoineIndex].generateData.useMeshPaticleFlag = true;
-	++respoineIndex;
-	//召喚敵
-	responeData[ENEMY_TYPE_MOTHER][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_MOTHER][respoineIndex].flame = time * 10;
-	responeData[ENEMY_TYPE_MOTHER][respoineIndex].generateData.initPos = { -60.0f,50.0f,300.0f };
-	responeData[ENEMY_TYPE_MOTHER][respoineIndex].generateData.useMeshPaticleFlag = true;
-	++respoineIndex;
+	////召喚敵
+	//responeData[ENEMY_TYPE_MOTHER][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_MOTHER][respoineIndex].flame = time * 10;
+	//responeData[ENEMY_TYPE_MOTHER][respoineIndex].generateData.initPos = { 60.0f,50.0f,300.0f };
+	//responeData[ENEMY_TYPE_MOTHER][respoineIndex].generateData.useMeshPaticleFlag = true;
+	//++respoineIndex;
+	////召喚敵
+	//responeData[ENEMY_TYPE_MOTHER][respoineIndex].layerLevel = layerLevel;
+	//responeData[ENEMY_TYPE_MOTHER][respoineIndex].flame = time * 10;
+	//responeData[ENEMY_TYPE_MOTHER][respoineIndex].generateData.initPos = { -60.0f,50.0f,300.0f };
+	//responeData[ENEMY_TYPE_MOTHER][respoineIndex].generateData.useMeshPaticleFlag = true;
+	//++respoineIndex;
 
 
 	//正面から戦艦と通常敵-----------------------------------------------------------------

@@ -11,7 +11,7 @@
 class MeshParticleEmitter
 {
 public:
-	MeshParticleEmitter(std::vector<DirectX::XMFLOAT4> VERT_NUM);
+	MeshParticleEmitter(std::vector<DirectX::XMFLOAT4> VERT_NUM, float PARTICLE_SCALE = 0.18f);
 	~MeshParticleEmitter();
 	void Init(const DirectX::XMMATRIX *MOTHER_MAT);
 	void Update();

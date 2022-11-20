@@ -145,11 +145,7 @@ void BikeEnemy::Update()
 
 void BikeEnemy::Draw()
 {
-	if (iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
-	{
-		line.Draw();
-		emitt.Draw();
-	}
+	
 	if (!iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
 	{
 		iEnemy_FbxModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
@@ -157,6 +153,12 @@ void BikeEnemy::Draw()
 	}
 	//misileR.Draw();
 	//misileR2.Draw();
-	iEnemy_FbxModelRender->Draw();
+	iEnemy_FbxModelRender->Draw(!iEnemy_EnemyStatusData->meshParticleFlag);
 	LockOnWindow(*iEnemy_EnemyStatusData->hitBox.center);
+
+	if (iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
+	{
+		line.Draw();
+		emitt.Draw();
+	}
 }

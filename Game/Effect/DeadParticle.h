@@ -8,13 +8,14 @@
 class DeadParticle
 {
 public:
-	DeadParticle(const D3D12_GPU_VIRTUAL_ADDRESS &ADDRESS, int VERT_NUM);
-	void Init();
+	DeadParticle(const D3D12_GPU_VIRTUAL_ADDRESS &ADDRESS, int VERT_NUM, float PARTICLE_SCALE = 0.18f);
+	void Init(const DirectX::XMMATRIX *MAT);
 	void Update();
 	void Draw();
 
 private:
 	bool startFlag;
+	const DirectX::XMMATRIX *motherMat;
 
 	//バッファ
 	std::unique_ptr<CreateGpuBuffer> buffers;
@@ -55,11 +56,13 @@ private:
 	{
 		DirectX::XMMATRIX scaleRotateBillboardMat;
 		DirectX::XMMATRIX viewProjection;
+		DirectX::XMMATRIX motherMat;
 	};
 
 	Microsoft::WRL::ComPtr<ID3D12CommandSignature> commandSig;
 	CommonMoveData constBufferData;
 	int num;
+	DirectX::XMMATRIX scaleRotaMat;
 
 	RESOURCE_HANDLE texHandle;
 };

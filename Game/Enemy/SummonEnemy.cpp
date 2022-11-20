@@ -116,6 +116,6 @@ void SummonEnemy::Update()
 
 void SummonEnemy::Draw()
 {
-	iEnemy_FbxModelRender->Draw();
+	iEnemy_FbxModelRender->Draw(!iEnemy_EnemyStatusData->meshParticleFlag);
 	LockOnWindow(iEnemy_FbxModelRender->data.transform.pos);
 }

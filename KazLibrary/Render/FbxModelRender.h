@@ -9,7 +9,7 @@ class FbxModelRender :public IRender
 {
 public:
 	FbxModelRender();
-	void Draw();
+	void Draw(bool DRAW_FLAG = true);
 
 	void ReleaseSkining();
 	FbxModelData data;

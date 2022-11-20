@@ -11,7 +11,7 @@
 #include"../KazLibrary/Loader/ObjResourceMgr.h"
 #include"../KazLibrary/Buffer/UavViewHandleMgr.h"
 
-MeshParticleEmitter::MeshParticleEmitter(std::vector<DirectX::XMFLOAT4> VERT_NUM)
+MeshParticleEmitter::MeshParticleEmitter(std::vector<DirectX::XMFLOAT4> VERT_NUM, float PARTICLE_SCALE)
 {
 	if (VERT_NUM.size() == 0)
 	{
@@ -159,7 +159,7 @@ MeshParticleEmitter::MeshParticleEmitter(std::vector<DirectX::XMFLOAT4> VERT_NUM
 
 	resetSceneFlag = false;
 
-	scale = 0.18f;
+	scale = PARTICLE_SCALE;
 	scaleRotaMat = KazMath::CaluScaleMatrix({ scale,scale,scale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
 
 	updateCommonData.indexMaxNum = indexNum;
