@@ -126,7 +126,6 @@ void DeadParticle::Update()
 
 	//共通用バッファのデータ送信
 	{
-		float lScale = 0.18f;
 		constBufferData.scaleRotateBillboardMat = scaleRotaMat * CameraMgr::Instance()->GetMatBillBoard();
 		constBufferData.viewProjection = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
 		constBufferData.motherMat = *motherMat;

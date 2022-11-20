@@ -14,33 +14,6 @@
 Game::Game() :LOG_FONT_SIZE(1.0f)
 {
 
-	emitters[0] = std::make_unique<HitEffectPattern1Emitter>();
-	emitters[1] = std::make_unique<HitEffectPattern2Emitter>();
-	emitters[2] = std::make_unique<HitEffectPattern3Emitter>();
-
-	for (int emitterTypeIndex = 0; emitterTypeIndex < deadEffectEmitter.size(); ++emitterTypeIndex)
-	{
-		for (int stackIndex = 0; stackIndex < deadEffectEmitter[emitterTypeIndex].size(); ++stackIndex)
-		{
-			switch (emitterTypeIndex)
-			{
-			case 0:
-				deadEffectEmitter[emitterTypeIndex][stackIndex] = std::make_unique<HitEffectPattern1Emitter>();
-				break;
-			case 1:
-				deadEffectEmitter[emitterTypeIndex][stackIndex] = std::make_unique<HitEffectPattern2Emitter>();
-				break;
-			case 2:
-				deadEffectEmitter[emitterTypeIndex][stackIndex] = std::make_unique<HitEffectPattern3Emitter>();
-				break;
-			default:
-				break;
-			}
-		}
-	}
-
-
-
 	for (int i = 0; i < smokeR.size(); ++i)
 	{
 		smokeR[i].data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::RelativeResourcePath + "Effect/Smoke/smoke9.png");
@@ -297,18 +270,6 @@ void Game::Input()
 		releaseFlag,
 		joyStick
 	);
-
-
-	if (input->InputTrigger(DIK_G))
-	{
-		emittNum = 2;
-		emitters[emittNum]->Init(KazMath::Vec2<float>(WIN_X / 2.0f, WIN_Y / 2.0f));
-	}
-	if (input->InputTrigger(DIK_H))
-	{
-		emittNum = KazMath::Rand<int>(3, 0);
-		emitters[emittNum]->Init(KazMath::Vec2<float>(WIN_X / 2.0f, WIN_Y / 2.0f));
-	}
 
 	if (input->InputTrigger(DIK_SPACE))
 	{
@@ -1033,17 +994,6 @@ void Game::Update()
 			}
 		}
 #pragma endregion
-
-		emitters[emittNum]->Update();
-
-		for (int emitterTypeIndex = 0; emitterTypeIndex < deadEffectEmitter.size(); ++emitterTypeIndex)
-		{
-			for (int stackIndex = 0; stackIndex < deadEffectEmitter[emitterTypeIndex].size(); ++stackIndex)
-			{
-				deadEffectEmitter[emitterTypeIndex][stackIndex]->Update();
-			}
-		}
-
 		stringLog.Update();
 	}
 

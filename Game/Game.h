@@ -187,10 +187,6 @@ private:
 	std::array<Sprite2DRender,4> smokeR;
 
 	int emittNum;
-	std::array<std::unique_ptr<IHitEffectEmitter>, 3>emitters;
-
-	std::array<std::array<std::unique_ptr<IHitEffectEmitter>, 10>, 3>deadEffectEmitter;
-	
 	std::array<std::array<std::vector<std::unique_ptr<MeshParticleEmitter>>, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> meshParticleArray;
 	std::array<std::array<std::vector<std::unique_ptr<DeadParticle>>, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> deadParticleArray;
 
