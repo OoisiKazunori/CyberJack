@@ -34,6 +34,12 @@ void OldComputer::Draw()
 	render.Draw();
 }
 
+void OldComputer::SetMonitorTexture(RESOURCE_HANDLE MOVIE_HANDLE)
+{
+	render.data.addHandle.handle[1] = MOVIE_HANDLE;
+	render.data.addHandle.paramType[1] = GRAPHICS_PRAMTYPE_TEX3;
+}
+
 void OldComputer::SetTransform(const KazMath::Transform3D &TRANSFORM)
 {
 	render.data.transform = TRANSFORM;

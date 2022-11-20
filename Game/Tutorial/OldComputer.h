@@ -9,6 +9,7 @@ public:
 	void Update();
 	void Draw();
 
+	void SetMonitorTexture(RESOURCE_HANDLE MOVIE_HANDLE);
 	void SetTransform(const KazMath::Transform3D &TRANSFORM);
 private:
 	ObjModelRender render;

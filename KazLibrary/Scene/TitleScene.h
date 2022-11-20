@@ -11,6 +11,8 @@
 #include"../Game/Event/WindowFlame.h"
 #include"../Game/GameRenderTarget.h"
 
+#include"../Game/Tutorial/OldComputer.h"
+#include"../Game/Tutorial/TutorialMovie.h"
 
 class TitleScene :public SceneBase {
 
@@ -35,9 +37,11 @@ private:
 	KazMath::Vec2<float> angle;
 
 	std::array<std::unique_ptr<DrawGrid>, 2> gridR;
+	std::array<std::unique_ptr<DrawGrid>, 2> mainGridR;
 
 	std::unique_ptr<GameRenderTarget>renderTarget;
-	Sprite2DRender mainRenderTarget;
+	std::unique_ptr<GameRenderTarget>mainRenderTarget;
+	Sprite2DRender mainRenderTargetRender;
 
 
 
@@ -55,6 +59,7 @@ private:
 
 	bool startGameFlag;
 	Player player;
+	bool initPlayerFlag;
 	std::array<CircleRender, 2> playerAroundCircleR;
 
 	std::array<AttackLog, 4> log;
@@ -66,4 +71,8 @@ private:
 
 	int appearTimer;
 	float gridTopRate;
+
+
+	OldComputer pc;
+	TutorialMovie movie;
 };

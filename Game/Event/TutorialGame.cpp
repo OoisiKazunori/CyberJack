@@ -5,9 +5,8 @@ TutorialGame::TutorialGame()
 	endFlag = false;
 }
 
-void TutorialGame::Init(const std::string &TEXT, const std::vector<KazMath::Vec3<float>> &POS_ARRAY)
+void TutorialGame::Init(const std::string &TEXT)
 {
-	blockPosArray = POS_ARRAY;
 	KazMath::Transform3D lTrans;
 	lTrans.pos = { WIN_X / 2.0f,150.0f,0.0f };
 	KazMath::Vec2<float> lScale;
@@ -25,7 +24,7 @@ void TutorialGame::Init(const std::string &TEXT, const std::vector<KazMath::Vec3
 	{
 		if ('\n' == TEXT[i])
 		{
-			text.push_back(lText);
+			textArray.push_back(lText);
 			lText = {};
 			++lCount;
 			tutorialText.push_back(std::make_unique<String>());
@@ -35,7 +34,7 @@ void TutorialGame::Init(const std::string &TEXT, const std::vector<KazMath::Vec3
 			lText += TEXT[i];
 		}
 	}
-	text.push_back(lText);
+	textArray.push_back(lText);
 	tutorialText.push_back(std::make_unique<String>());
 
 }
@@ -55,7 +54,7 @@ void TutorialGame::Update()
 	{
 		for (int i = 0; i < tutorialText.size(); ++i)
 		{
-			tutorialText[i]->Init({ WIN_X / 2.0f - 158.0f,125.0f }, text[i], 3.0f);
+			tutorialText[i]->Init({ WIN_X / 2.0f - 158.0f,125.0f }, textArray[i], 3.0f);
 		}
 		readyToWriteFlag = true;
 	}

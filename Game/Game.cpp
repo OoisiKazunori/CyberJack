@@ -1131,6 +1131,10 @@ void Game::Draw()
 		mainRenderTarget.Draw();
 		//cursor.Draw();
 
+		if (tutorial.tutorialFlag)
+		{
+			tutorial.cursor.Draw();
+		}
 	}
 	else if (gameOverFlag)
 	{

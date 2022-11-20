@@ -10,6 +10,7 @@
 #pragma comment(lib, "mfuuid.lib")
 #pragma comment(lib, "mfreadwrite.lib")
 
+int DirectX12MoviePlayer::TEX_HANDLE = 0;
 
 DirectX12MoviePlayer::DirectX12MoviePlayer()
 {
@@ -107,7 +108,8 @@ void DirectX12MoviePlayer::SetMediaSource(const std::string &fileName)
 	lSrvDesc.Format = lResDescMovieTex.Format;
 	memorySize = DescriptorHeapMgr::Instance()->GetSize(DESCRIPTORHEAP_MEMORY_MOVIE);
 
-	DescriptorHeapMgr::Instance()->CreateBufferView(movieTexHandle + memorySize.startSize, lSrvDesc, gpuBuffer->GetBufferData(movieTexHandle).Get());
+	DescriptorHeapMgr::Instance()->CreateBufferView(TEX_HANDLE + memorySize.startSize, lSrvDesc, gpuBuffer->GetBufferData(movieTexHandle).Get());
+	++TEX_HANDLE;
 	//シェーダーリソースバッファ、ビューの用意--------------------------------------------
 
 	DirectX12Device::Instance()->dev->CreateSharedHandle(
@@ -187,7 +189,7 @@ bool DirectX12MoviePlayer::TranferFrame()
 void DirectX12MoviePlayer::Draw()
 {
 	render.data.buff = gpuBuffer->GetBufferData(movieTexHandle);
-	render.data.handleData = movieTexHandle + memorySize.startSize;
+	render.data.handleData = TEX_HANDLE + memorySize.startSize;
 	render.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	render.Draw();
 }

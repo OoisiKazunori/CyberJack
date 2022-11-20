@@ -132,7 +132,6 @@
     <ClCompile Include="Game\UI\Letter.cpp" />
     <ClCompile Include="Game\UI\AttackLog.cpp" />
     <ClCompile Include="Game\UI\DrawMenu.cpp" />
-    <ClCompile Include="KazLibrary\Scene\TutorialScene.cpp" />
     <ClCompile Include="Game\Helper\CameraWork.cpp" />
     <ClCompile Include="Game\Enemy\TutorialBlock.cpp" />
     <ClCompile Include="Game\Event\TutorialGame.cpp" />
@@ -302,7 +301,6 @@
     <ClInclude Include="Game\UI\Letter.h" />
     <ClInclude Include="Game\UI\AttackLog.h" />
     <ClInclude Include="Game\UI\DrawMenu.h" />
-    <ClInclude Include="KazLibrary\Scene\TutorialScene.h" />
     <ClInclude Include="Game\Helper\CameraWork.h" />
     <ClInclude Include="Game\Event\TutorialGame.h" />
     <ClInclude Include="Game\Enemy\TutorialBlock.h" />

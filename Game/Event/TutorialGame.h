@@ -7,7 +7,7 @@ class TutorialGame
 {
 public:
 	TutorialGame();
-	void Init(const std::string &TEXT, const std::vector<KazMath::Vec3<float>> &POS_ARRAY);
+	void Init(const std::string &TEXT);
 	void Finalize();
 	void Update();
 	void Draw();
@@ -15,18 +15,8 @@ public:
 	void Succeed();
 	bool NextTutorial();
 
-	size_t GetBoxNum()
-	{
-		return blockPosArray.size();
-	}
-	std::vector<KazMath::Vec3<float>> GetBoxPosArray()
-	{
-		return blockPosArray;
-	}
-
 private:
 	KazMath::Vec3<float>basePos;
-	std::vector<KazMath::Vec3<float>>blockPosArray;
 	WindowFlame window;
 	std::vector<std::unique_ptr<String>> tutorialText;
 
@@ -34,5 +24,5 @@ private:
 	int endTimer;
 	bool readyToWriteFlag;
 
-	std::vector<std::string> text;
+	std::vector<std::string> textArray;
 };

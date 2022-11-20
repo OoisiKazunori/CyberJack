@@ -15,13 +15,14 @@ Gauge::Gauge(RESOURCE_HANDLE FLAME_TEXTURE_HANDLE, RESOURCE_HANDLE GAUGE_TEXTURE
 	flameR.data.pipelineName = PIPELINE_NAME_SPRITE_COLOR;
 	gaugeR.data.pipelineName = PIPELINE_NAME_SPRITE_COLOR;
 
-
+	isMaxFlag = false;
+	isHalfFlag = false;
 }
 
 void Gauge::Init(int MAX)
 {
 	maxNum = MAX;
-	nowNum = MAX - 10;
+	nowNum = 0;
 	isMaxFlag = false;
 	isHalfFlag = false;
 
@@ -35,7 +36,7 @@ void Gauge::Update()
 
 	if (1.0f <= rate)
 	{
-		nowNum = maxNum;
+		rate = 1.0f;
 		gaugeR.data.colorData.color = MAX_COLOR.color;
 		flameR.data.colorData.color = MAX_COLOR.color;
 		isMaxFlag = true;

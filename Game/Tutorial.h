@@ -39,6 +39,7 @@ public:
 
 	Sprite2DRender mainRenderTarget;
 
+	Cursor cursor;
 private:
 	int sceneNum;
 
@@ -51,7 +52,6 @@ private:
 
 	bool cameraFlag;
 	Player player;
-	Cursor cursor;
 	CameraWork cameraWork;
 	const float LOG_FONT_SIZE;
 	AttackLog stringLog;
@@ -63,14 +63,13 @@ private:
 	KazMath::Vec3<float> testEnemyPos;			//ロックオンする対象座標(テスト)
 	//線演出----------------------------------------------------------------
 
+	static const int TUTORIAL_MAX_NUM = 1;
 
-	std::array<std::array<std::unique_ptr<IEnemy>, 10>, 3> enemies;
-	std::array<std::array<LineRender, 10>, 3> hitLineR;
-	std::array<std::array<int, 10>, 3>hitLineTimer;
+	std::array<std::array<std::unique_ptr<IEnemy>, 10>, TUTORIAL_MAX_NUM> enemies;
 	RESOURCE_HANDLE damageSoundHandle, lockSoundHandle;
 
 	//チュートリアル用ーーーーーー
-	std::array<TutorialGame, 3>tutorial;
+	bool startFlag;
 	std::array<bool, 3>initEnemyFlagArray;
 	int tutorialArrayIndex;
 	bool tutorialAllClearFlag;
@@ -80,18 +79,6 @@ private:
 	OldComputer pc;
 
 
-	std::array<int, 2> flameTimer;
-	std::array<std::array<LineRender, 2>, 2> portalFlameLineR;
-	std::array<KazMath::Vec3<float>, 2> portalFlameBasePosArray;
-	std::array<std::array<int, 2>, 2> portalLineTimer;
-	const int FLAME_MAX_TIME;
-	void StrachLine(const KazMath::Vec3<float> &BASE_POS, const KazMath::Vec3<float> &AFTER_POS, KazMath::Vec3<float> *LINE, int TIME, int MAX_TIME)
-	{
-		float lRate = static_cast<float>(TIME) / static_cast<float>(MAX_TIME);
-		*LINE = BASE_POS + AFTER_POS * lRate;
-	};
-
-	int cursorLockOnNum;
 
 	std::unique_ptr<GameRenderTarget> renderTarget;
 	PortalIntermediateDirection portalEffect;
@@ -99,7 +86,8 @@ private:
 
 	float angleC;
 
-	TutorialMovie tutorialMovie;
+	std::array<std::unique_ptr<TutorialMovie>, TUTORIAL_MAX_NUM> tutorialMovieArray;
+	std::array<std::array<KazMath::Vec3<float>, 2>, TUTORIAL_MAX_NUM>tutorialPosArray;
 	bool playFlag;
 	bool stopFlag;
 	bool noiseFlag;
