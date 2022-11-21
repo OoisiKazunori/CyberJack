@@ -25,4 +25,5 @@ private:
 	RESOURCE_HANDLE redBlockResourceHandle, greenBlockResourceHandle;
 
 	float baseScale;
+	bool deadFlag;
 };

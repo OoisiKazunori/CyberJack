@@ -43,6 +43,7 @@ private:
 	Player player;
 
 	bool startFlag;
+	bool initFlag;
 
 
 	//バッファ

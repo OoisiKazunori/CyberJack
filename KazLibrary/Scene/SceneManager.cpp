@@ -13,8 +13,8 @@
 
 SceneManager::SceneManager()
 {
-	scene.emplace_back(std::make_unique<GameScene>());
 	scene.emplace_back(std::make_unique<TitleScene>());
+	scene.emplace_back(std::make_unique<GameScene>());
 
 	nowScene = 0;
 	nextScene = 0;

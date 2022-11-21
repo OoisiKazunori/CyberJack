@@ -24,9 +24,9 @@ void OldComputer::Init(RESOURCE_HANDLE MOVIE_HANDLE)
 
 void OldComputer::Update()
 {
-	ImGui::Begin("PC");
+	/*ImGui::Begin("PC");
 	KazImGuiHelper::InputTransform3D("Transform", &render.data.transform);
-	ImGui::End();
+	ImGui::End();*/
 }
 
 void OldComputer::Draw()

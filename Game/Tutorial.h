@@ -88,11 +88,12 @@ private:
 	float angleC;
 
 	std::array<std::unique_ptr<TutorialMovie>, TUTORIAL_MAX_NUM> tutorialMovieArray;
-	std::array<std::array<KazMath::Vec3<float>, 2>, TUTORIAL_MAX_NUM>tutorialPosArray;
+	std::array<std::array<KazMath::Vec3<float>, 8>, TUTORIAL_MAX_NUM>tutorialPosArray;
 	bool playFlag;
 	bool stopFlag;
 	bool noiseFlag;
 
 	int startTime;
+	bool deadAllEnemyFlag;
 
 };

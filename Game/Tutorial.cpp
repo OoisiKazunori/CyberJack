@@ -49,9 +49,15 @@ void Tutorial::Init(bool SKIP_FLAG)
 
 	tutorialArrayIndex = 0;
 	{
-		tutorialPosArray[tutorialArrayIndex][0] = KazMath::Vec3<float>(100.0f, 0.0f, 30.0f);
-		tutorialPosArray[tutorialArrayIndex][1] = KazMath::Vec3<float>(100.0f, 0.0f, 30.0f);
-		int lBoxNum = static_cast<int>(tutorialPosArray.size());
+		tutorialPosArray[tutorialArrayIndex][0] = KazMath::Vec3<float>(40.0f,  -30.0f, 40.0f);
+		tutorialPosArray[tutorialArrayIndex][1] = KazMath::Vec3<float>(40.0f,  -10.0f, 40.0f);
+		tutorialPosArray[tutorialArrayIndex][2] = KazMath::Vec3<float>(40.0f,   10.0f, 40.0f);
+		tutorialPosArray[tutorialArrayIndex][3] = KazMath::Vec3<float>(40.0f,   30.0f, 40.0f);
+		tutorialPosArray[tutorialArrayIndex][4] = KazMath::Vec3<float>(-40.0f, -30.0f, 40.0f);
+		tutorialPosArray[tutorialArrayIndex][5] = KazMath::Vec3<float>(-40.0f, -10.0f, 40.0f);
+		tutorialPosArray[tutorialArrayIndex][6] = KazMath::Vec3<float>(-40.0f,  10.0f, 40.0f);
+		tutorialPosArray[tutorialArrayIndex][7] = KazMath::Vec3<float>(-40.0f,  30.0f, 40.0f);
+		int lBoxNum = static_cast<int>(tutorialPosArray[tutorialArrayIndex].size());
 		std::string tutorialName = "L Stick\nA Button";
 		tutorialMovieArray[tutorialArrayIndex] = std::make_unique<TutorialMovie>(false);
 		tutorialMovieArray[tutorialArrayIndex]->Init(tutorialName, lBoxNum);
@@ -91,6 +97,8 @@ void Tutorial::Init(bool SKIP_FLAG)
 
 	startTime = 0;
 	startFlag = false;
+	initEffectFlag = false;
+	deadAllEnemyFlag = false;
 	noiseTimer = 0;
 }
 
@@ -185,11 +193,11 @@ void Tutorial::Update()
 	targetPos = cameraWork.GetTargetPos();
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 0);
 
-
-	for (int enemyIndex = 0; enemyIndex < tutorialMovieArray.size(); ++enemyIndex)
+	bool isMovieEndFlag = !tutorialMovieArray[tutorialArrayIndex]->End();
+	for (int enemyIndex = 0; enemyIndex < tutorialPosArray[tutorialArrayIndex].size(); ++enemyIndex)
 	{
 		//“®‰æI—¹‚©‚Â‰Šú‰»‚³‚ê‚Ä‚¢‚È‚¯‚ê‚Î‰Šú‰»‚·‚é
-		if (!tutorialMovieArray[enemyIndex]->End() && startFlag)
+		if (isMovieEndFlag || startFlag)
 		{
 			continue;
 		}
@@ -198,7 +206,11 @@ void Tutorial::Update()
 		EnemyGenerateData lData;
 		lData.initPos = tutorialPosArray[tutorialArrayIndex][enemyIndex];
 		enemies[tutorialArrayIndex][enemyIndex]->Init(lData);
-		startFlag = true;
+
+		if (tutorialPosArray[tutorialArrayIndex].size() - 1 <= enemyIndex)
+		{
+			startFlag = true;
+		}
 	}
 
 
@@ -366,6 +378,7 @@ void Tutorial::Update()
 		lineLevel[i].Update();
 	}
 
+	player.cameraRate = cursor.GetValue();
 	player.Update();
 	cursor.Update();
 	cameraWork.Update(cursor.GetValue(), &player.pos, cameraFlag);
@@ -373,22 +386,6 @@ void Tutorial::Update()
 	gridR[1]->Update(800.0f);
 
 	pc.Update();
-
-	ImGui::Begin("PC_MOVIE");
-	ImGui::Checkbox("Camera", &cameraFlag);
-	if (ImGui::Checkbox("Play", &playFlag))
-	{
-		tutorialMovieArray[tutorialArrayIndex]->Play();
-	}
-	if (ImGui::Checkbox("Noise", &noiseFlag))
-	{
-		tutorialMovieArray[tutorialArrayIndex]->Noise();
-	}
-	if (ImGui::Checkbox("Stop", &stopFlag))
-	{
-		tutorialMovieArray[tutorialArrayIndex]->Stop();
-	}
-	ImGui::End();
 
 	++startTime;
 	if (KazMath::ConvertSecondToFlame(3) <= startTime)
@@ -443,6 +440,25 @@ void Tutorial::Update()
 	if (tutorialAllClearFlag)
 	{
 		++noiseTimer;
+		tutorialMovieArray[tutorialArrayIndex]->Noise();
+
+		if (!deadAllEnemyFlag)
+		{
+			for (int tutorialNum = 0; tutorialNum < enemies.size(); ++tutorialNum)
+			{
+				for (int enemyIndex = 0; enemyIndex < enemies[tutorialNum].size(); ++enemyIndex)
+				{
+					bool enableToUseDataFlag = enemies[tutorialNum][enemyIndex] == nullptr ||
+						!enemies[tutorialNum][enemyIndex]->GetData()->oprationObjData->initFlag;
+					if (enableToUseDataFlag)
+					{
+						continue;
+					}
+					enemies[tutorialNum][enemyIndex]->Finalize();
+				}
+			}
+			deadAllEnemyFlag = true;
+		}
 	}
 
 

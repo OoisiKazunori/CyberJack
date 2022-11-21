@@ -11,7 +11,7 @@ TutorialMovie::TutorialMovie(bool STOP_MOVIE_FLAG) :
 	if (!STOP_MOVIE_FLAG)
 	{
 		moviePlayer = std::make_unique<DirectX12MoviePlayer>();
-		moviePlayer->SetMediaSource(KazFilePathName::TestPath + "test.mp4");
+		moviePlayer->SetMediaSource(KazFilePathName::TutorialPath + "TutorialMovie.mp4");
 	}
 
 	renderTargetHandle = RenderTargetStatus::Instance()->CreateRenderTarget(KazMath::Vec2<UINT>(WIN_X, WIN_Y), { 0,0,0 }, DXGI_FORMAT_R8G8B8A8_UNORM);
@@ -20,7 +20,7 @@ TutorialMovie::TutorialMovie(bool STOP_MOVIE_FLAG) :
 	movieRender.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	outputRender.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
 	normalRender.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
-	movieRender.data.transform.scale = { 0.67f,0.7f };
+	movieRender.data.transform.scale = { 0.9f,0.9f };
 
 
 	vhsSeedHandle = outputRender.CreateConstBuffer(sizeof(float), typeid(float).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);

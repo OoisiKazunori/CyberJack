@@ -14,8 +14,8 @@ DirectionalMarker::DirectionalMarker()
 void DirectionalMarker::Init(const KazMath::Vec3<float> &OBJ_POS)
 {
 	objPos = OBJ_POS;
-	dir3DRender.data.transform.pos = objPos + KazMath::Vec3<float>(-7.0f, 8.0f, 0.0f);
-	dir3DRender.data.transform.scale = { 0.7f,0.7f,0.7f };
+	dir3DRender.data.transform.pos = objPos + KazMath::Vec3<float>(-5.0f, 4.0f, 0.0f);
+	dir3DRender.data.transform.scale = { 0.4f,0.4f,0.4f };
 	dir3DRender.data.transform.rotation = { 0.0f,0.0f,-135.0f };
 	dir3DRender.data.billBoardFlag = true;
 

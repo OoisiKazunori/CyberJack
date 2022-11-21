@@ -12,7 +12,7 @@ void TutorialBlock::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 	ReleaseLight();
 
 	iEnemy_ObjModelRender->data.transform.pos = GENERATE_DATA.initPos;	//À•W‚Ì‰Šú‰»
-	iEnemy_ObjModelRender->data.transform.scale = { 1.0f,1.0f,1.0f };
+	iEnemy_ObjModelRender->data.transform.scale = { 0.0f,0.0f,0.0f };
 	iEnemy_ObjModelRender->data.handle = redBlockResourceHandle;
 	iEnemy_EnemyStatusData->hitBox.center = &iEnemy_ObjModelRender->data.transform.pos;
 	iEnemy_EnemyStatusData->hitBox.radius = 5.0f;	//“–‚½‚è”»’è‚Ì‘å‚«‚³•ÏX
@@ -32,40 +32,58 @@ void TutorialBlock::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 	iEnemy_EnemyStatusData->radius = 8.0f;
 	iEnemy_EnemyStatusData->startFlag = true;
 
-
 	larpScale = { 1.5f,1.5f,1.5f };
 	marker.Init(*iEnemy_EnemyStatusData->hitBox.center);
 
 	baseScale = 0.5f;
+	deadFlag = false;
 }
 
 void TutorialBlock::Finalize()
 {
+	deadFlag = true;
+	timer = 0;
 }
 
 void TutorialBlock::Update()
 {
-	++timer;
 
 	KazMath::Larp(larpScale, &iEnemy_ObjModelRender->data.transform.scale, 0.1f);
-	if (60 <= timer && iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
+	if (!deadFlag)
 	{
-		iEnemy_ObjModelRender->data.transform.scale = { baseScale,baseScale,baseScale };
-		timer = 0;
-		larpScale = { 1.5f,1.5f,1.5f };
-		baseScale = 0.5f;
-		iEnemy_ObjModelRender->data.handle = redBlockResourceHandle;
-	}
-	else if (30 <= timer && !iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
-	{
-		iEnemy_ObjModelRender->data.transform.scale = { baseScale,baseScale,baseScale };
-		timer = 0;
-		larpScale = { 2.0f,2.0f,2.0f };
-		baseScale = 1.0f;
-		iEnemy_ObjModelRender->data.handle = greenBlockResourceHandle;
-	}
+		++timer;
+		if (60 <= timer && iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
+		{
+			iEnemy_ObjModelRender->data.transform.scale = { baseScale,baseScale,baseScale };
+			timer = 0;
+			larpScale = { 1.5f,1.5f,1.5f };
+			baseScale = 0.5f;
+			iEnemy_ObjModelRender->data.handle = redBlockResourceHandle;
+		}
+		else if (30 <= timer && !iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
+		{
+			iEnemy_ObjModelRender->data.transform.scale = { baseScale,baseScale,baseScale };
+			timer = 0;
+			larpScale = { 2.0f,2.0f,2.0f };
+			baseScale = 1.0f;
+			iEnemy_ObjModelRender->data.handle = greenBlockResourceHandle;
+		}
 
-	marker.Update();
+		marker.Update();
+	}
+	else
+	{
+		++timer;
+		if (timer <= 30)
+		{
+			larpScale = { 3.0f,3.0f,3.0f };
+		}
+		else
+		{
+			larpScale = { 0.0f,0.0f,0.0f };
+		}
+		
+	}
 }
 
 void TutorialBlock::Draw()
@@ -74,6 +92,11 @@ void TutorialBlock::Draw()
 	{
 		iEnemy_ObjModelRender->Draw();
 		LockOnWindow(iEnemy_ObjModelRender->data.transform.pos);
+	}
+
+	if (deadFlag)
+	{
+		return;
 	}
 
 	if (iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)

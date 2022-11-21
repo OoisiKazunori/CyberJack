@@ -212,6 +212,7 @@ PortalIntermediateDirection::PortalIntermediateDirection()
 	startFlag = false;
 
 	baseZ = 200.0f;
+	initFlag = false;
 }
 
 PortalIntermediateDirection::~PortalIntermediateDirection()
@@ -234,6 +235,7 @@ void PortalIntermediateDirection::Init(bool SHOW_NEXT_STAGE_FLAG)
 
 	rate = 0.0f;
 	nextRate = 0.0f;
+	initFlag = true;
 }
 
 void PortalIntermediateDirection::Finalize()
@@ -250,6 +252,7 @@ void PortalIntermediateDirection::Finalize()
 
 	backRate = 0.0f;
 	nextBackRate = 0.0f;
+	initFlag = false;
 }
 
 void PortalIntermediateDirection::Update(const KazMath::Vec3<float> &POS)
@@ -394,7 +397,7 @@ bool PortalIntermediateDirection::IsStart()
 
 bool PortalIntermediateDirection::IsFinish()
 {
-	return finishFlag;
+	return finishFlag && initFlag;
 }
 
 bool PortalIntermediateDirection::DrawNextPortal()
