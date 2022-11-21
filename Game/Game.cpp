@@ -452,18 +452,17 @@ void Game::Update()
 				enemies[enemyType][enemyCount]->Init(responeData[enemyType][enemyCount].generateData, false);
 
 
-
-				if (enemyType == ENEMY_TYPE_BATTLESHIP_MISILE ||
-					enemyType == ENEMY_TYPE_BIKE_MISILE ||
-					enemyType == ENEMY_TYPE_MISILE_SPLINE
-					)
-				{
-					continue;
-				}
-
 				//メッシュパーティクルの付与
 				for (int i = 0; i < enemies[enemyType][enemyCount]->GetData()->meshParticleData.size(); ++i)
 				{
+					if (enemyType == ENEMY_TYPE_BATTLESHIP_MISILE ||
+						enemyType == ENEMY_TYPE_BIKE_MISILE ||
+						enemyType == ENEMY_TYPE_MISILE_SPLINE
+						)
+					{
+						continue;
+					}
+
 					MeshData lMeshData = enemies[enemyType][enemyCount]->GetData()->meshParticleData[i];
 
 					std::vector<DirectX::XMFLOAT4>lVertData = FbxModelResourceMgr::Instance()->GetResourceData(lMeshData.resourceHandle)->vertData;
@@ -950,8 +949,8 @@ void Game::Update()
 				{
 					isEnemyNotMoveFlag = false;
 				}
+				}
 			}
-		}
 		//更新処理----------------------------------------------------------------
 
 
@@ -996,7 +995,7 @@ void Game::Update()
 		}
 #pragma endregion
 		stringLog.Update();
-	}
+		}
 
 
 	//ゲームループの経過時間----------------------------------------------------------------
@@ -1043,7 +1042,7 @@ void Game::Update()
 
 	//ゲームループの経過時間----------------------------------------------------------------
 
-}
+	}
 
 void Game::Draw()
 {
@@ -1227,7 +1226,7 @@ void Game::Draw()
 
 		mainRenderTarget.Draw();
 		cursor.Draw();
-	}
+				}
 	else if (gameOverFlag)
 	{
 		gameOverTex.data.handleData = gameOverResouceHandle;
@@ -1265,7 +1264,7 @@ void Game::Draw()
 
 	blackTex.Draw();
 
-}
+			}
 
 int Game::SceneChange()
 {
