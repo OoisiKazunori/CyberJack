@@ -91,6 +91,7 @@ void Tutorial::Init(bool SKIP_FLAG)
 
 	startTime = 0;
 	startFlag = false;
+	noiseTimer = 0;
 }
 
 void Tutorial::Finalize()
@@ -371,7 +372,6 @@ void Tutorial::Update()
 	gridR[0]->Update(-1.0f);
 	gridR[1]->Update(800.0f);
 
-	//pc.SetTransform(lTrans);
 	pc.Update();
 
 	ImGui::Begin("PC_MOVIE");
@@ -439,8 +439,16 @@ void Tutorial::Update()
 			tutorialAllClearFlag = true;
 		}
 	}
-	if (!initEffectFlag && tutorialAllClearFlag)
+
+	if (tutorialAllClearFlag)
 	{
+		++noiseTimer;
+	}
+
+
+	if (!initEffectFlag && KazMath::ConvertSecondToFlame(2) <= noiseTimer)
+	{
+		pc.SetMonitorTexture(portalEffect.renderTarget->GetGameRenderTargetHandle());
 		portalEffect.Init();
 		portalEffect.Start();
 		initEffectFlag = true;

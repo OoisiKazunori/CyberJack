@@ -68,13 +68,14 @@ private:
 	std::array<std::array<std::unique_ptr<IEnemy>, 10>, TUTORIAL_MAX_NUM> enemies;
 	RESOURCE_HANDLE damageSoundHandle, lockSoundHandle;
 
-	//チュートリアル用ーーーーーー
+	//チュートリアル用----------------------------------------------------------------
 	bool startFlag;
 	std::array<bool, 3>initEnemyFlagArray;
 	int tutorialArrayIndex;
 	bool tutorialAllClearFlag;
 	bool initEffectFlag;
-	//チュートリアル用ーーーーーー
+	int noiseTimer;
+	//チュートリアル用----------------------------------------------------------------
 
 	OldComputer pc;
 
