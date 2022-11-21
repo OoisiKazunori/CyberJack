@@ -11,7 +11,7 @@ PortalIntermediateDirection::PortalIntermediateDirection()
 
 
 	portalRender.data.handleData = renderTarget->GetGameRenderTargetHandle();
-	portalRender.data.transform.pos = { 0.0f,0.0f,40.0f };
+	portalRender.data.transform.pos = { 0.0f,10.0f,30.0f };
 	portalRender.data.transform.scale = { 0.3f,0.3f,0.0f };
 	portalRender.data.pipelineName = PIPELINE_NAME_PORTAL;
 
@@ -222,14 +222,15 @@ PortalIntermediateDirection::~PortalIntermediateDirection()
 	DescriptorHeapMgr::Instance()->Release(outputMatHandle);
 }
 
-void PortalIntermediateDirection::Init(bool SHOW_NEXT_STAGE_FLAG)
+void PortalIntermediateDirection::Init(bool SHOW_NEXT_STAGE_FLAG, const KazMath::Transform3D &PORTAL_POS)
 {
 	disappearFlag = false;
 	nextPortalFlag = false;
 	finishFlag = false;
 	disappearTimer = 0;
 	startFlag = false;
-	portalRender.data.transform.pos.z = baseZ;
+	portalRender.data.transform = PORTAL_POS;
+	baseZ = PORTAL_POS.pos.z;
 
 	showNextStageFlag = SHOW_NEXT_STAGE_FLAG;
 

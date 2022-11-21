@@ -11,7 +11,8 @@ class PortalIntermediateDirection
 public:
 	PortalIntermediateDirection();
 	~PortalIntermediateDirection();
-	void Init(bool SHOW_NEXT_STAGE_FLAG = true);
+	void Init(bool SHOW_NEXT_STAGE_FLAG = true, const KazMath::Transform3D &PORTAL_POS =
+		KazMath::Transform3D({ 0.0f, 10.0f, 200.0f }, { 0.3f,0.3f,0.0f }, { 0.0f,0.0f,0.0f }));
 	void Finalize();
 	void Update(const KazMath::Vec3<float> &POS);
 	void Draw(Cursor *CURSOR);
@@ -44,7 +45,6 @@ private:
 
 	bool startFlag;
 	bool initFlag;
-
 
 	//バッファ
 	std::unique_ptr<CreateGpuBuffer> buffers;

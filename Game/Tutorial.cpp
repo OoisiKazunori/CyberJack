@@ -94,12 +94,18 @@ void Tutorial::Init(bool SKIP_FLAG)
 
 
 	pc.Init(tutorialMovieArray[tutorialArrayIndex]->GetTexture());
+	pc.BloomMonitor();
 
 	startTime = 0;
 	startFlag = false;
 	initEffectFlag = false;
 	deadAllEnemyFlag = false;
 	noiseTimer = 0;
+
+
+	pcTransform.pos = { 0.0f,-76.0f,80.0f };
+	pcTransform.scale = { 70.0f,70.0f,49.0f };
+	pcTransform.rotation.y = 180.0f;
 }
 
 void Tutorial::Finalize()
@@ -183,6 +189,9 @@ void Tutorial::Update()
 	else
 	{
 		angleC = DEFAULT_ANGLE + portalEffect.GetRate() * (MAX_ANGLE - DEFAULT_ANGLE);
+
+		pcTransform.pos.z = 81.0f + -200.0f * portalEffect.GetRate();
+		pc.SetTransform(pcTransform);
 	}
 
 
@@ -464,12 +473,12 @@ void Tutorial::Update()
 
 	if (!initEffectFlag && KazMath::ConvertSecondToFlame(2) <= noiseTimer)
 	{
+		pc.PortalMode();
 		pc.SetMonitorTexture(portalEffect.renderTarget->GetGameRenderTargetHandle());
-		portalEffect.Init();
+		portalEffect.Init(true, KazMath::Transform3D({ 0.0f,8.0f,80.0f }, { 0.26f,0.3f,0.0f }, { 8.0f,0.0f,0.0f }));
 		portalEffect.Start();
 		initEffectFlag = true;
 	}
-
 	tutorialMovieArray[tutorialArrayIndex]->Update();
 	portalEffect.Update(player.pos);
 
@@ -478,6 +487,11 @@ void Tutorial::Update()
 		tutorialFlag = false;
 		initSceneFlag = true;
 	}
+
+	ImGui::Begin("A");
+	KazImGuiHelper::InputTransform3D("A", &portalEffect.portalRender.data.transform);
+	ImGui::End();
+
 }
 
 void Tutorial::Draw()
@@ -531,7 +545,7 @@ void Tutorial::Draw()
 	}
 	if (portalEffect.IsStart() && !portalEffect.IsFinish())
 	{
-		portalEffect.portalRender.Draw();
+		//portalEffect.portalRender.Draw();
 	}
 	pc.Draw();
 

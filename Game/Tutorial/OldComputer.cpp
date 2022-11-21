@@ -6,6 +6,9 @@ OldComputer::OldComputer()
 {
 	render.data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "PC/" + "PC_Model.obj");
 	render.data.pipelineName = PIPELINE_NAME_PCMONITOR_MULTITEX;
+
+
+	dataHandle = render.CreateConstBuffer(sizeof(Data), typeid(Data).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA2);
 }
 
 void OldComputer::Init(RESOURCE_HANDLE MOVIE_HANDLE)
@@ -27,6 +30,10 @@ void OldComputer::Update()
 	/*ImGui::Begin("PC");
 	KazImGuiHelper::InputTransform3D("Transform", &render.data.transform);
 	ImGui::End();*/
+
+
+	render.TransData(&data, dataHandle, typeid(Data).name());
+
 }
 
 void OldComputer::Draw()

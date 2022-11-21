@@ -259,6 +259,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 	//objシェーダー
 	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_OBJ);
+	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJPortalVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_OBJ_PORTAL);
 	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJVertexExpantionShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_EXPANTION_OBJ);	// 頂点拡張用
 	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJGetShadowMapVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_GET_SHADOWMAP);	// シャドウマップ取得用
 	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJDrawShadowMapVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_DRAW_SHADOWMAP);	// シャドウマップを元に影描画用
@@ -1846,10 +1847,10 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX,
-		SHADER_VERTEX_OBJ,
+		SHADER_VERTEX_OBJ_PORTAL,
 		SHADER_PIXCEL_MONITOR_MULTITEX,
 		PIPELINE_DATA_NOCARING_ALPHABLEND_RNEDERTARGET_SECOND,
-		ROOTSIGNATURE_DATA_CBV_CBV_SRV_SRV_SRV,
+		ROOTSIGNATURE_DATA_CBV_CBV_CBV_SRV_SRV_SRV,
 		PIPELINE_NAME_PCMONITOR_MULTITEX
 	);
 

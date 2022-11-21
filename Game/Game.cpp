@@ -1149,7 +1149,7 @@ void Game::Draw()
 		//中間演出までのポータル
 		if (portalEffect.IsStart() && !portalEffect.IsFinish())
 		{
-			portalEffect.portalRender.Draw();
+			//portalEffect.portalRender.Draw();
 		}
 
 		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)

@@ -626,16 +626,20 @@ PreCreateBaseRootSignature::PreCreateBaseRootSignature()
 		lData.range[1] = GRAPHICS_RANGE_TYPE_CBV;
 
 		lData.paramData[2].param = 2;
-		lData.paramData[2].type = GRAPHICS_PRAMTYPE_TEX;
-		lData.range[2] = GRAPHICS_RANGE_TYPE_SRV;
+		lData.paramData[2].type = GRAPHICS_PRAMTYPE_DATA2;
+		lData.range[2] = GRAPHICS_RANGE_TYPE_CBV;
 
 		lData.paramData[3].param = 3;
-		lData.paramData[3].type = GRAPHICS_PRAMTYPE_TEX2;
+		lData.paramData[3].type = GRAPHICS_PRAMTYPE_TEX;
 		lData.range[3] = GRAPHICS_RANGE_TYPE_SRV;
 
 		lData.paramData[4].param = 4;
-		lData.paramData[4].type = GRAPHICS_PRAMTYPE_TEX3;
+		lData.paramData[4].type = GRAPHICS_PRAMTYPE_TEX2;
 		lData.range[4] = GRAPHICS_RANGE_TYPE_SRV;
-		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_CBV_CBV_SRV_SRV_SRV, lData, 5);
+
+		lData.paramData[5].param = 5;
+		lData.paramData[5].type = GRAPHICS_PRAMTYPE_TEX3;
+		lData.range[5] = GRAPHICS_RANGE_TYPE_SRV;
+		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_CBV_CBV_CBV_SRV_SRV_SRV, lData, 6);
 	}
 }

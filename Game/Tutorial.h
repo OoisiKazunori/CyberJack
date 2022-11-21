@@ -96,4 +96,6 @@ private:
 	int startTime;
 	bool deadAllEnemyFlag;
 
+	KazMath::Transform3D pcTransform;
+
 };
