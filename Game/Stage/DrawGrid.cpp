@@ -24,7 +24,7 @@ DrawGrid::DrawGrid(const KazMath::Color &FOG_COLOR) :flashColorArray({ KazMath::
 	}
 }
 
-void DrawGrid::Init(bool USE_FOR_FLOOR_FLAG, float SPACE, float BASE_POS, const int *CAMERA_ID_PTR, bool STOP_FLAG, bool FLASH_FLAG, std::array<KazMath::Color, 2>FLASH_COLOR)
+void DrawGrid::Init(bool USE_FOR_FLOOR_FLAG, float SPACE, float BASE_POS, const int *CAMERA_ID_PTR, bool STOP_FLAG, bool FLASH_FLAG, std::array<KazMath::Color, 2>FLASH_COLOR, bool APPEAR_FLAG)
 {
 	if (USE_FOR_FLOOR_FLAG)
 	{
@@ -69,6 +69,17 @@ void DrawGrid::Init(bool USE_FOR_FLOOR_FLAG, float SPACE, float BASE_POS, const 
 		lightEffectInitFlagArray[i] = false;
 	}
 	timer = 0;
+
+
+	appearFlag = false;
+	if (APPEAR_FLAG)
+	{
+		appearAlpha = 0;
+	}
+	else
+	{
+		appearAlpha = 255;
+	}
 }
 
 void DrawGrid::Finalize()
@@ -151,6 +162,17 @@ void DrawGrid::Update(float Y_POS, bool USE_FLASHLINE_FLAG)
 		flashRate = 1.0f;
 		reversValueFlag = false;
 	}
+
+
+	if (appearFlag)
+	{
+		appearAlpha += 5;
+		if (255 < appearAlpha)
+		{
+			appearAlpha = 255;
+		}
+	}
+
 
 
 #pragma region LightEffect
@@ -276,7 +298,7 @@ void DrawGrid::Draw()
 			gridLineRender[i].data.colorData.color = flashColorArray[0].color;
 		}
 
-
+		gridLineRender[i].data.colorData.color.a = appearAlpha;
 		gridLineRender[i].data.cameraIndex.id = *cameraIndex;
 		gridLineRender[i].Draw();
 	}

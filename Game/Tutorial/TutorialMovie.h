@@ -3,6 +3,7 @@
 #include"../Tutorial/DirectX12MoviePlayer.h"
 #include"../GameRenderTarget.h"
 #include"../Game/Event/TutorialGame.h"
+#include"../Game/Tutorial/Gauge.h"
 
 /// <summary>
 /// ゲーム内で流れるチュートリアル
@@ -10,8 +11,8 @@
 class TutorialMovie
 {
 public:
-	TutorialMovie();
-	void Init();
+	TutorialMovie(bool STOP_MOVIE_FLAG);
+	void Init(const std::string &TEXT,int MAX_ACHIEVEMENT_ITEMS);
 	void Update();
 	void Draw();
 
@@ -19,6 +20,7 @@ public:
 	void Noise();
 	void Stop();
 
+	void Achieved();
 	bool End();
 
 	void Succeed()
@@ -29,7 +31,6 @@ public:
 	{
 		return tutorialText.NextTutorial();
 	}
-
 	RESOURCE_HANDLE GetTexture()
 	{
 		return outputRenderTargetHandle;
@@ -51,9 +52,12 @@ private:
 
 	//UI--------------------------------------------
 	TutorialGame tutorialText;//操作UI
+	Gauge gauge;
+	const int ADD_NUM;
 	//UI--------------------------------------------
 
 	RESOURCE_HANDLE renderTargetHandle;
 	RESOURCE_HANDLE outputRenderTargetHandle;
 	Sprite2DRender outputRender;
+
 };

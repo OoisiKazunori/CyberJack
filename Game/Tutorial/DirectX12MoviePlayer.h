@@ -61,6 +61,7 @@ private:
 	MovieRender render;
 
 
+	static int TEX_HANDLE;
 };
 
 

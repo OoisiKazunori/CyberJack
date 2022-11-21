@@ -5,13 +5,12 @@ TutorialGame::TutorialGame()
 	endFlag = false;
 }
 
-void TutorialGame::Init(const std::string &TEXT, const std::vector<KazMath::Vec3<float>> &POS_ARRAY)
+void TutorialGame::Init(const std::string &TEXT)
 {
-	blockPosArray = POS_ARRAY;
 	KazMath::Transform3D lTrans;
-	lTrans.pos = { WIN_X / 2.0f,100.0f,0.0f };
+	lTrans.pos = { WIN_X / 2.0f,150.0f,0.0f };
 	KazMath::Vec2<float> lScale;
-	lScale = { 3.0f,0.8f };
+	lScale = { 5.0f,1.3f };
 	window.Init(lTrans, lScale, false, WINDOW_2D);
 
 	endFlag = false;
@@ -19,12 +18,33 @@ void TutorialGame::Init(const std::string &TEXT, const std::vector<KazMath::Vec3
 	window.Start();
 	readyToWriteFlag = false;
 
-	text = TEXT;
+	std::string lText;
+	int lCount = 0;
+	for (int i = 0; i < TEXT.size(); ++i)
+	{
+		if ('\n' == TEXT[i])
+		{
+			textArray.push_back(lText);
+			lText = {};
+			++lCount;
+			tutorialText.push_back(std::make_unique<String>());
+		}
+		else
+		{
+			lText += TEXT[i];
+		}
+	}
+	textArray.push_back(lText);
+	tutorialText.push_back(std::make_unique<String>());
+
 }
 
 void TutorialGame::Finalize()
 {
-	tutorialText.Finalize();
+	for (int i = 0; i < tutorialText.size(); ++i)
+	{
+		tutorialText[i]->Finalize();
+	}
 	window.End();
 }
 
@@ -32,11 +52,16 @@ void TutorialGame::Update()
 {
 	if (window.ReadyToWrite() && !readyToWriteFlag)
 	{
-		tutorialText.Init({ WIN_X / 2.0f - 158.0f,100.0f }, text, 1.4f);
+		for (int i = 0; i < tutorialText.size(); ++i)
+		{
+			tutorialText[i]->Init({ WIN_X / 2.0f - 158.0f,125.0f }, textArray[i], 3.0f);
+		}
 		readyToWriteFlag = true;
 	}
-
-	tutorialText.Update(0);
+	for (int i = 0; i < tutorialText.size(); ++i)
+	{
+		tutorialText[i]->Update(i * 3);
+	}
 	window.Update();
 
 	if (!endFlag)
@@ -48,13 +73,19 @@ void TutorialGame::Update()
 	if (KazMath::ConvertSecondToFlame(2) <= endTimer)
 	{
 		window.End();
-		tutorialText.Finalize();
+		for (int i = 0; i < tutorialText.size(); ++i)
+		{
+			tutorialText[i]->Finalize();
+		}
 	}
 }
 
 void TutorialGame::Draw()
 {
-	tutorialText.Draw();
+	for (int i = 0; i < tutorialText.size(); ++i)
+	{
+		tutorialText[i]->Draw();
+	}
 	window.Draw();
 }
 
@@ -64,8 +95,11 @@ void TutorialGame::Succeed()
 	{
 		return;
 	}
-	tutorialText.Finalize();
-	tutorialText.Init({ WIN_X / 2.0f - 120.0f,100.0f }, "Succeed", 1.4f);
+	for (int i = 0; i < tutorialText.size(); ++i)
+	{
+		tutorialText[i]->Finalize();
+	}
+	tutorialText[0]->Init({ WIN_X / 2.0f - 158.0f,160.0f }, "Succeed", 3.0f);
 	endFlag = true;
 }
 

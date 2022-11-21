@@ -3,9 +3,17 @@
 #include"../KazLibrary/Imgui/MyImgui.h"
 #include"../KazLibrary/RenderTarget/RenderTargetStatus.h"
 
-TutorialMovie::TutorialMovie()
+TutorialMovie::TutorialMovie(bool STOP_MOVIE_FLAG) :
+	gauge(TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TutorialPath + "Flame.png"),
+		TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TutorialPath + "Gauge.png")),
+	ADD_NUM(1)
 {
-	moviePlayer = std::make_unique<DirectX12MoviePlayer>();
+	if (!STOP_MOVIE_FLAG)
+	{
+		moviePlayer = std::make_unique<DirectX12MoviePlayer>();
+		moviePlayer->SetMediaSource(KazFilePathName::TestPath + "test.mp4");
+	}
+
 	renderTargetHandle = RenderTargetStatus::Instance()->CreateRenderTarget(KazMath::Vec2<UINT>(WIN_X, WIN_Y), { 0,0,0 }, DXGI_FORMAT_R8G8B8A8_UNORM);
 	outputRenderTargetHandle = RenderTargetStatus::Instance()->CreateRenderTarget(KazMath::Vec2<UINT>(WIN_X, WIN_Y), { 0,0,0 }, DXGI_FORMAT_R8G8B8A8_UNORM);
 
@@ -23,30 +31,28 @@ TutorialMovie::TutorialMovie()
 	normalRender.data.pipelineName = PIPELINE_NAME_SPRITE_NOISE;
 	normalRender.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "NormalMovie.png");
 
-
-	moviePlayer->SetMediaSource(KazFilePathName::TestPath + "test1m.mp4");
-	tutorialText.Init("L Stick", {});
-
 }
 
-void TutorialMovie::Init()
+void TutorialMovie::Init(const std::string &TEXT, int MAX_ACHIEVEMENT_ITEMS)
 {
 	seedNum = 0;
 	startMovieFlag = false;
+	gauge.Init(MAX_ACHIEVEMENT_ITEMS);
+	tutorialText.Init(TEXT);
 }
 
 void TutorialMovie::Update()
 {
 	//VHS‚Ì“®‰æ•`‰æ
-	if (startMovieFlag)
+	if (startMovieFlag && moviePlayer)
 	{
 		moviePlayer->Play();
 		moviePlayer->TranferFrame();
-		
+
 		movieRender.data.buff = moviePlayer->GetBuffer();
 		movieRender.data.handleData = moviePlayer->GetDescriptorHeapHandle();
 	}
-	else if(startNoiseFlag)
+	else if (startNoiseFlag)
 	{
 		normalRender.TransData(&seedNum, noiseSeedHandle, typeid(float).name());
 	}
@@ -59,7 +65,28 @@ void TutorialMovie::Update()
 	seedNum += 1.0f;
 	outputRender.TransData(&seedNum, vhsSeedHandle, typeid(float).name());
 
+
+	if (gauge.IsMax())
+	{
+		tutorialText.Succeed();
+	}
+
+	ImGui::Begin("Gauge");
+	if (ImGui::Button("Add"))
+	{
+		gauge.Add(10);
+	}
+	ImGui::End();
+
+	if (gauge.IsMax())
+	{
+		tutorialText.Succeed();
+	}
+
+
 	tutorialText.Update();
+	gauge.Update();
+
 }
 
 void TutorialMovie::Draw()
@@ -69,6 +96,7 @@ void TutorialMovie::Draw()
 	if (startMovieFlag)
 	{
 		tutorialText.Draw();
+		gauge.Draw();
 		movieRender.Draw();
 	}
 	else
@@ -103,8 +131,17 @@ void TutorialMovie::Stop()
 	stopFlag = true;
 }
 
+void TutorialMovie::Achieved()
+{
+	gauge.Add(1);
+}
+
 bool TutorialMovie::End()
 {
+	if (!moviePlayer)
+	{
+		return false;
+	}
 	//“®‰æŽžŠÔ‚Ü‚Å“ž’B‚µ‚½‚çAÅ‰‚ÉŠª‚«–ß‚µƒgƒŠƒK[”»’è‚Åtrue‚ð•Ô‚·
 	bool lIsEndFlag = moviePlayer->IsEnd();
 	if (lIsEndFlag)

@@ -16,11 +16,17 @@ public:
 		const int *CAMERA_ID_PTR,
 		bool STOP_FLAG,
 		bool FLASH_FLAG,
-		std::array<KazMath::Color, 2>FLASH_COLOR
+		std::array<KazMath::Color, 2>FLASH_COLOR,
+		bool APPEAR_FLAG = false
 	);
 	void Finalize();
 	void Update(float Y_POS = -1.0f, bool USE_FLASHLINE_FLAG = true);
 	void Draw();
+
+	void Appear()
+	{
+		appearFlag = true;
+	}
 
 private:
 	//グリッドの描画ーーー
@@ -57,6 +63,8 @@ private:
 	std::array<KazMath::Color, 2>flashColorArray;
 	bool initFlag;
 
+	bool appearFlag;
+	int appearAlpha;
 
 	struct BloomData
 	{

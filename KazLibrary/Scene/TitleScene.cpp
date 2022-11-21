@@ -8,13 +8,17 @@
 #include"../Helper/ResourceFilePass.h"
 #include"../Easing/easing.h"
 
-TitleScene::TitleScene()
+TitleScene::TitleScene() :movie(true)
 {
-	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
-	mainRenderTarget.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
+	mainRenderTargetRender.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
+	mainRenderTargetRender.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
 
 	gridR[0] = std::make_unique<DrawGrid>(KazMath::Color(14, 12, 13, 255));
 	gridR[1] = std::make_unique<DrawGrid>(KazMath::Color(14, 12, 13, 255));
+
+	mainGridR[0] = std::make_unique<DrawGrid>(KazMath::Color(14, 12, 13, 255));
+	mainGridR[1] = std::make_unique<DrawGrid>(KazMath::Color(14, 12, 13, 255));
+
 	CameraMgr::Instance()->CameraSetting(60.0f, 10000.0f, 0);
 
 
@@ -27,6 +31,13 @@ TitleScene::TitleScene()
 	lineLogoR.data.transform.scale = { 1000.0f,0.5f };
 	startButtonR.data.transform.pos = { 270.0f,380.0f };
 	startButtonR.data.transform.scale = { 0.5f,0.5f };
+
+	titleLogoR.data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
+	startButtonR.data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
+
+
+	eyePos = { 0.0f,6.0f,20.0f };
+	targetPos = { 0.0f,-29.0f,632.0f };
 
 	endGameFlag = false;
 }
@@ -43,8 +54,10 @@ void TitleScene::Init()
 	KazMath::Color lBaseColor(155, 155, 155, 155);
 	KazMath::Color lFlashColor(155, 155, 155, 255);
 	std::array<KazMath::Color, 2>lFlashColorArray = { lBaseColor,lFlashColor };
-	gridR[0]->Init(true, 800.0f, -200.0f, &cameraIndex, false, false, lFlashColorArray);
-	gridR[1]->Init(true, 800.0f, -200.0f, &cameraIndex, false, false, lFlashColorArray);
+	gridR[0]->Init(true, 800.0f, -200.0f, &cameraIndex, false, true, lFlashColorArray, false);
+	gridR[1]->Init(true, 800.0f, -200.0f, &cameraIndex, false, true, lFlashColorArray, false);
+	mainGridR[0]->Init(true, 800.0f, -200.0f, &cameraIndex, false, true, lFlashColorArray, true);
+	mainGridR[1]->Init(true, 800.0f, -200.0f, &cameraIndex, false, true, lFlashColorArray, true);
 
 	buttonTimer = 0;
 	buttonFlashFlag = true;
@@ -96,13 +109,23 @@ void TitleScene::Init()
 	appearTimer = 0;
 	gridTopRate = 0.0f;
 
-	eyePos =	{ 0.0f,0.0f,-8.0f  };
-	targetPos = { 0.0f,0.0f,15.0f  };
-
 
 	renderTarget = std::make_unique<GameRenderTarget>(KazMath::Color(14, 12, 13, 255));
-	mainRenderTarget.data.handleData = renderTarget->GetGameRenderTargetHandle();
+	mainRenderTarget = std::make_unique<GameRenderTarget>(KazMath::Color(14, 12, 13, 255));
+	mainRenderTargetRender.data.handleData = mainRenderTarget->GetGameRenderTargetHandle();
 
+	movie.Init("", 10);
+	movie.Noise();
+
+	pc.Init(renderTarget->GetGameRenderTargetHandle());
+
+	KazMath::Transform3D lTrans;
+	lTrans.pos = { 0.0f,-76.0f,80.0f };
+	lTrans.scale = { 70.0f,70.0f,49.0f };
+	lTrans.rotation.y = 180.0f;
+	pc.SetTransform(lTrans);
+
+	initPlayerFlag = false;
 }
 
 void TitleScene::Finalize()
@@ -110,6 +133,10 @@ void TitleScene::Finalize()
 	for (int i = 0; i < gridR.size(); ++i)
 	{
 		gridR[i]->Finalize();
+	}
+	for (int i = 0; i < gridR.size(); ++i)
+	{
+		mainGridR[i]->Finalize();
 	}
 	renderTarget.reset();
 }
@@ -174,7 +201,6 @@ void TitleScene::Input()
 		case 0:
 			//ゲーム開始
 			startGameFlag = true;
-			player.Init({ 0.0f,0.0f,15.0f }, false,true);
 			break;
 
 		case 1:
@@ -201,6 +227,8 @@ void TitleScene::Update()
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 0);
 
 	gridR[0]->Update(-1.0f);
+	mainGridR[0]->Update(-1.0f, false);
+
 
 	selectMenu.Update();
 	for (int i = 0; i < menuR.size(); ++i)
@@ -217,6 +245,11 @@ void TitleScene::Update()
 	//KazImGuiHelper::InputVec2("MenuExit", &basePos[1]);
 	//ImGui::End();
 
+	ImGui::Begin("UI");
+	KazImGuiHelper::InputVec3("EyePos", &eyePos);
+	KazImGuiHelper::InputVec3("TargetPos", &targetPos);
+	ImGui::End();
+
 	++buttonTimer;
 	if (20 <= buttonTimer)
 	{
@@ -224,42 +257,100 @@ void TitleScene::Update()
 		buttonFlashFlag = !buttonFlashFlag;
 	}
 
+	pc.Update();
+	movie.Update();
+
 	//ゲーム開始時の演出ーーーーーー
 	if (!startGameFlag)
 	{
 		return;
 	}
+	if (!initPlayerFlag)
+	{
+		player.Init({ 0.0f,0.0f,4.5f }, false, true);
+		initPlayerFlag = true;
+	}
+
+
 
 	++appearTimer;
-	bool lEndFlag = KazMath::ConvertSecondToFlame(4) <= appearTimer;
+	//全体の終了
+	bool lEndFlag = KazMath::ConvertSecondToFlame(5) <= appearTimer;
 
+	//プレイヤーが一気に引く
+	if (KazMath::ConvertSecondToFlame(1) - 30 <= appearTimer)
+	{
+		KazMath::Larp({ 0.0f,3.0f,-8.0f }, &eyePos, 0.1f);
+		KazMath::Larp({ 0.0f,3.0f,0.0f }, &targetPos, 0.1f);
+	}
+	//ログウィンドウの起動
+	if (KazMath::ConvertSecondToFlame(2) - 30 <= appearTimer)
+	{
+		++logAppearTimer;
+		if (logAppearMaxTime <= logAppearTimer && logWindowIndex < logWindow.size())
+		{
+			logAppearMaxTime = KazMath::Rand(20, 10);
+			logAppearTimer = 0;
+			logWindow[logWindowIndex].Start();
+			++logWindowIndex;
+		}
+	}
+	//プレイヤーの登場
 	if (KazMath::ConvertSecondToFlame(2) <= appearTimer)
 	{
-		Rate(&gridTopRate, 0.01f, 1.0f);
-		gridR[1]->Update(-200.0f + EasingMaker(Out, Cubic, gridTopRate) * 1000.0f, 1.0f <= gridTopRate);
+		for (int i = 0; i < logWindow.size(); ++i)
+		{
+			if (logWindow[i].IsEnd())
+			{
+				continue;
+			}
+
+			++logWriteTimer[i];
+			if (logWriteMaxTime[i] <= logWriteTimer[i])
+			{
+				logWriteMaxTime[i] = KazMath::Rand(20, 10);
+				log[i].WriteLog("WriteTestLog", 1.0f);
+				logWriteTimer[i] = 0;
+			}
+		}
+
+
+
+		for (int i = 0; i < playerAroundCircleR.size(); ++i)
+		{
+			playerAroundCircleR[i].data.transform.rotation.x += 2.0f;
+			playerAroundCircleR[i].data.transform.rotation.y += 2.0f;
+			playerAroundCircleR[i].data.transform.rotation.z += 2.0f;
+
+			if (playerAroundCircleR[i].data.radius <= 5.0f && !lEndFlag)
+			{
+				playerAroundCircleR[i].data.radius += 0.1f;
+			}
+			else if (0.0f <= playerAroundCircleR[i].data.radius && lEndFlag)
+			{
+				playerAroundCircleR[i].data.radius += -0.1f;
+			}
+		}
+		player.Update();
 	}
+	//背景グリッド現れる
 	if (KazMath::ConvertSecondToFlame(3) <= appearTimer)
 	{
-		KazMath::Larp({ 0.0f,3.0f,-8.0f + 15.0f }, &eyePos, 0.05f);
-		KazMath::Larp({ 0.0f,3.0f,15.0f }, &targetPos, 0.05f);
+		pc.SetMonitorTexture(movie.GetTexture());
+		for (int i = 0; i < mainGridR.size(); ++i)
+		{
+			mainGridR[i]->Appear();
+		}
 	}
-
-	for (int i = 0; i < playerAroundCircleR.size(); ++i)
+	//グリッドが動く
+	if (KazMath::ConvertSecondToFlame(4) <= appearTimer)
 	{
-		playerAroundCircleR[i].data.transform.rotation.x += 2.0f;
-		playerAroundCircleR[i].data.transform.rotation.y += 2.0f;
-		playerAroundCircleR[i].data.transform.rotation.z += 2.0f;
-
-		if (playerAroundCircleR[i].data.radius <= 5.0f && !lEndFlag)
-		{
-			playerAroundCircleR[i].data.radius += 0.1f;
-		}
-		else if (0.0f <= playerAroundCircleR[i].data.radius && lEndFlag)
-		{
-			playerAroundCircleR[i].data.radius += -0.1f;
-		}
+		movie.Stop();
+		Rate(&gridTopRate, 0.01f, 1.0f);
+		mainGridR[1]->Update(-200.0f + EasingMaker(Out, Cubic, gridTopRate) * 1000.0f, false);
 	}
 
+	//演出終了
 	if (lEndFlag)
 	{
 		for (int i = 0; i < logWriteMaxTime.size(); ++i)
@@ -270,41 +361,16 @@ void TitleScene::Update()
 	}
 
 
-
 	for (int i = 0; i < menuR.size(); ++i)
 	{
 		menuR[i].Finalize();
 	}
-	player.Update();
+
 	for (int i = 0; i < log.size(); ++i)
 	{
 		log[i].Update();
 	}
 
-	++logAppearTimer;
-	if (logAppearMaxTime <= logAppearTimer && logWindowIndex < logWindow.size())
-	{
-		logAppearMaxTime = KazMath::Rand(20, 10);
-		logAppearTimer = 0;
-		logWindow[logWindowIndex].Start();
-		++logWindowIndex;
-	}
-
-	for (int i = 0; i < logWindow.size(); ++i)
-	{
-		if (logWindow[i].IsEnd())
-		{
-			continue;
-		}
-
-		++logWriteTimer[i];
-		if (logWriteMaxTime[i] <= logWriteTimer[i])
-		{
-			logWriteMaxTime[i] = KazMath::Rand(20, 10);
-			log[i].WriteLog("WriteTestLog", 1.0f);
-			logWriteTimer[i] = 0;
-		}
-	}
 	for (int i = 0; i < logWindow.size(); ++i)
 	{
 		logWindow[i].Update();
@@ -322,27 +388,10 @@ void TitleScene::Draw()
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
 	RenderTargetStatus::Instance()->ClearDoubuleBuffer(BG_COLOR);
 
+	movie.Draw();
 
+	//タイトル画面描画--------------------------------------------
 	renderTarget->SetRenderTarget();
-
-	if (startGameFlag)
-	{
-		for (int i = 0; i < playerAroundCircleR.size(); ++i)
-		{
-			playerAroundCircleR[i].Draw();
-		}
-		player.Draw();
-		for (int i = 0; i < log.size(); ++i)
-		{
-			log[i].Draw();
-		}
-
-		for (int i = 0; i < logWindow.size(); ++i)
-		{
-			logWindow[i].Draw();
-		}
-	}
-
 	for (int i = 0; i < gridR.size(); ++i)
 	{
 		gridR[i]->Draw();
@@ -366,8 +415,42 @@ void TitleScene::Draw()
 		}
 	}
 	renderTarget->Draw();
+	//タイトル画面描画--------------------------------------------
 
-	mainRenderTarget.Draw();
+
+	mainRenderTarget->SetRenderTarget();
+
+	if (startGameFlag)
+	{
+		for (int i = 0; i < log.size(); ++i)
+		{
+			log[i].Draw();
+		}
+
+		for (int i = 0; i < logWindow.size(); ++i)
+		{
+			logWindow[i].Draw();
+		}
+	}
+
+	for (int i = 0; i < playerAroundCircleR.size(); ++i)
+	{
+		playerAroundCircleR[i].Draw();
+	}
+
+	pc.Draw();
+	player.Draw();
+	for (int i = 0; i < mainGridR.size(); ++i)
+	{
+		mainGridR[i]->Draw();
+	}
+
+	mainRenderTarget->Draw();
+
+
+
+
+	mainRenderTargetRender.Draw();
 }
 
 int TitleScene::SceneChange()

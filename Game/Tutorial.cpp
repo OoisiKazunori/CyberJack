@@ -5,7 +5,7 @@
 #include"../Game/Stage/FirstStage.h"
 #include"Tutorial.h"
 
-Tutorial::Tutorial() :LOG_FONT_SIZE(1.0f), FLAME_MAX_TIME(20)
+Tutorial::Tutorial() :LOG_FONT_SIZE(1.0f)
 {
 	gridR[0] = std::make_unique<DrawGrid>(KazMath::Color(14, 12, 13, 255));
 	gridR[1] = std::make_unique<DrawGrid>(KazMath::Color(14, 12, 13, 255));
@@ -47,55 +47,22 @@ void Tutorial::Init(bool SKIP_FLAG)
 	cameraWork.Init();
 	stringLog.Init({ 50.0f,50.0f });
 
-	portalFlameBasePosArray[0] = { -60.0f,45.0f,150.0f };
-	portalFlameBasePosArray[1] = { 60.0f, -35.0f,150.0f };
-
-	float lLength = abs(portalFlameBasePosArray[0].x) + abs(portalFlameBasePosArray[1].x);
 	tutorialArrayIndex = 0;
 	{
-		std::vector<KazMath::Vec3<float>>lBoxPos;
-		lBoxPos.push_back(portalFlameBasePosArray[0] + KazMath::Vec3<float>(0.0f, 0.0f, -50.0f));
-		lBoxPos.push_back(portalFlameBasePosArray[1] + KazMath::Vec3<float>(0.0f, 0.0f, -100.0f));
-		tutorial[0].Init("test", lBoxPos);
+		tutorialPosArray[tutorialArrayIndex][0] = KazMath::Vec3<float>(100.0f, 0.0f, 30.0f);
+		tutorialPosArray[tutorialArrayIndex][1] = KazMath::Vec3<float>(100.0f, 0.0f, 30.0f);
+		int lBoxNum = static_cast<int>(tutorialPosArray.size());
+		std::string tutorialName = "L Stick\nA Button";
+		tutorialMovieArray[tutorialArrayIndex] = std::make_unique<TutorialMovie>(false);
+		tutorialMovieArray[tutorialArrayIndex]->Init(tutorialName, lBoxNum);
 	}
-	{
-		std::vector<KazMath::Vec3<float>>lBoxPos;
-		lBoxPos.push_back(portalFlameBasePosArray[0] + KazMath::Vec3<float>(0.0f, -20.0f, -100.0f));
-		lBoxPos.push_back(portalFlameBasePosArray[1] + KazMath::Vec3<float>(0.0f, 20.0f, -100.0f));
-		tutorial[1].Init("test", lBoxPos);
-	}
-	{
-		std::vector<KazMath::Vec3<float>>lBoxPos;
-		for (int i = 0; i < 4; ++i)
-		{
-			KazMath::Vec3<float>lPos;
-			lPos = portalFlameBasePosArray[0] + KazMath::Vec3<float>((lLength / 5.0f) * i + 15.0f, 0.0f, -KazMath::Rand(130.0f, 10.0f));
-			lBoxPos.push_back(lPos);
-		}
-		for (int i = 0; i < 4; ++i)
-		{
-			KazMath::Vec3<float>lPos;
-			lPos = portalFlameBasePosArray[1] + KazMath::Vec3<float>(-(lLength / 5.0f) * i - 15.0f, 0.0f, -KazMath::Rand(130.0f, 10.0f));
-			lBoxPos.push_back(lPos);
-		}
-		tutorial[2].Init("test", lBoxPos);
-	}
-
 
 	//チュートリアル数、そこで生成される敵の数
 	for (int tutorialNum = 0; tutorialNum < enemies.size(); ++tutorialNum)
 	{
-		for (int enemyIndex = 0; enemyIndex < tutorial[tutorialNum].GetBoxNum(); ++enemyIndex)
+		for (int enemyIndex = 0; enemyIndex < tutorialPosArray[tutorialNum].size(); ++enemyIndex)
 		{
 			enemies[tutorialNum][enemyIndex] = std::make_unique<TutorialBlock>();
-		}
-	}
-
-	for (int tutorialNum = 0; tutorialNum < enemies.size(); ++tutorialNum)
-	{
-		for (int enemyIndex = 0; enemyIndex < enemies[tutorialNum].size(); ++enemyIndex)
-		{
-			hitLineTimer[tutorialNum][enemyIndex] = 0;
 		}
 	}
 
@@ -105,8 +72,6 @@ void Tutorial::Init(bool SKIP_FLAG)
 	}
 	cursor.Init();
 
-	flameTimer[0] = 0;
-	flameTimer[1] = 0;
 
 	if (SKIP_FLAG)
 	{
@@ -122,7 +87,11 @@ void Tutorial::Init(bool SKIP_FLAG)
 	initSceneFlag = false;
 
 
-	tutorialMovie.Init();
+	pc.Init(tutorialMovieArray[tutorialArrayIndex]->GetTexture());
+
+	startTime = 0;
+	startFlag = false;
+	noiseTimer = 0;
 }
 
 void Tutorial::Finalize()
@@ -196,6 +165,7 @@ void Tutorial::Input()
 
 void Tutorial::Update()
 {
+
 	const float MAX_ANGLE = 120.0f;
 	const float DEFAULT_ANGLE = 60.0f;
 	if (portalEffect.DrawNextPortal())
@@ -216,18 +186,20 @@ void Tutorial::Update()
 	CameraMgr::Instance()->Camera(eyePos, targetPos, { 0.0f,1.0f,0.0f }, 0);
 
 
-	for (int enemyIndex = 0; enemyIndex < tutorial[tutorialArrayIndex].GetBoxNum(); ++enemyIndex)
+	for (int enemyIndex = 0; enemyIndex < tutorialMovieArray.size(); ++enemyIndex)
 	{
 		//動画終了かつ初期化されていなければ初期化する
-		if (initEnemyFlagArray[tutorialArrayIndex] && !tutorialMovie.End())
+		if (!tutorialMovieArray[enemyIndex]->End() && startFlag)
 		{
 			continue;
 		}
+		initEnemyFlagArray[tutorialArrayIndex] = true;
+
 		EnemyGenerateData lData;
-		lData.initPos = tutorial[tutorialArrayIndex].GetBoxPosArray()[enemyIndex];
+		lData.initPos = tutorialPosArray[tutorialArrayIndex][enemyIndex];
 		enemies[tutorialArrayIndex][enemyIndex]->Init(lData);
+		startFlag = true;
 	}
-	initEnemyFlagArray[tutorialArrayIndex] = true;
 
 
 #pragma region ブロックのロックオン処理
@@ -239,63 +211,23 @@ void Tutorial::Update()
 			{
 				continue;
 			}
-			bool enableToLockOnEnemyFlag = enemies[tutorialNum][enemyIndex]->IsAlive() && !enemies[tutorialNum][enemyIndex]->LockedOrNot();
 
-			//チュートリアルによって判定の処理を変える
-			switch (tutorialNum)
+			if (!KazEnemyHelper::LockOn(&cursor, enemies[tutorialNum][enemyIndex], &stringLog, LOG_FONT_SIZE, lockSoundHandle))
 			{
-			case 0:
-				if (enableToLockOnEnemyFlag && CollisionManager::Instance()->CheckRayAndSphere(cursor.hitBox, enemies[0][enemyIndex]->GetData()->hitBox))
+				continue;
+			}
+			//線演出をかける際にどの配列を使用するか決める
+			for (int lineIndex = 0; lineIndex < lineEffectArrayData.size(); ++lineIndex)
+			{
+				if (!lineEffectArrayData[lineIndex].usedFlag)
 				{
-					//敵が当たった情報を書く
-					enemies[0][enemyIndex]->Dead();
-					stringLog.WriteLog(enemies[0][enemyIndex]->GetData()->oprationObjData->name, LOG_FONT_SIZE);
+					lineLevel[lineIndex].Attack(lineEffectArrayData[lineIndex].startPos, *enemies[tutorialNum][enemyIndex]->GetData()->hitBox.center);
+					lineEffectArrayData[lineIndex].usedFlag = true;
+					lineEffectArrayData[lineIndex].lineIndex = lineIndex;
+					lineEffectArrayData[lineIndex].enemyTypeIndex = tutorialNum;
+					lineEffectArrayData[lineIndex].enemyIndex = enemyIndex;
+					break;
 				}
-				else
-				{
-					continue;
-				}
-				break;
-			case 1:
-				if (!KazEnemyHelper::LockOn(&cursor, enemies[tutorialNum][enemyIndex], &stringLog, LOG_FONT_SIZE, lockSoundHandle))
-				{
-					continue;
-				}
-				//線演出をかける際にどの配列を使用するか決める
-				for (int lineIndex = 0; lineIndex < lineEffectArrayData.size(); ++lineIndex)
-				{
-					if (!lineEffectArrayData[lineIndex].usedFlag)
-					{
-						lineLevel[lineIndex].Attack(lineEffectArrayData[lineIndex].startPos, *enemies[tutorialNum][enemyIndex]->GetData()->hitBox.center);
-						lineEffectArrayData[lineIndex].usedFlag = true;
-						lineEffectArrayData[lineIndex].lineIndex = lineIndex;
-						lineEffectArrayData[lineIndex].enemyTypeIndex = tutorialNum;
-						lineEffectArrayData[lineIndex].enemyIndex = enemyIndex;
-						break;
-					}
-				}
-			case 2:
-				if (!KazEnemyHelper::LockOn(&cursor, enemies[tutorialNum][enemyIndex], &stringLog, LOG_FONT_SIZE, lockSoundHandle))
-				{
-					continue;
-				}
-				++cursorLockOnNum;
-				//線演出をかける際にどの配列を使用するか決める
-				for (int lineIndex = 0; lineIndex < lineEffectArrayData.size(); ++lineIndex)
-				{
-					if (!lineEffectArrayData[lineIndex].usedFlag)
-					{
-						lineLevel[lineIndex].Attack(lineEffectArrayData[lineIndex].startPos, *enemies[tutorialNum][enemyIndex]->GetData()->hitBox.center);
-						lineEffectArrayData[lineIndex].usedFlag = true;
-						lineEffectArrayData[lineIndex].lineIndex = lineIndex;
-						lineEffectArrayData[lineIndex].enemyTypeIndex = tutorialNum;
-						lineEffectArrayData[lineIndex].enemyIndex = enemyIndex;
-						break;
-					}
-				}
-				break;
-			default:
-				break;
 			}
 		}
 	}
@@ -376,6 +308,7 @@ void Tutorial::Update()
 			else if (lineLevel[lineIndex].lineReachObjFlag && !enemies[enemyTypeIndex][enemyIndex]->IsAlive() && !lineEffectArrayData[i].hitFlag)
 			{
 				enemies[enemyTypeIndex][enemyIndex]->Dead();
+				tutorialMovieArray[enemyTypeIndex]->Achieved();
 				lineEffectArrayData[i].hitFlag = true;
 			}
 		}
@@ -391,17 +324,6 @@ void Tutorial::Update()
 			if (enemies[2][enemyIndex] != nullptr && !enemies[2][enemyIndex]->GetData()->oprationObjData->enableToHitFlag)
 			{
 				lEnemyDeadFlag = true;
-			}
-		}
-
-		if (cursorLockOnNum < 8 && lEnemyDeadFlag)
-		{
-			cursorLockOnNum = 0;
-			initEnemyFlagArray[2] = false;
-
-			for (int i = 0; i < hitLineTimer[2].size(); ++i)
-			{
-				hitLineTimer[2][i] = 0;
 			}
 		}
 	}
@@ -430,64 +352,6 @@ void Tutorial::Update()
 #pragma endregion
 
 
-	//ポータルを形成する線
-	for (int flameIndex = 0; flameIndex < portalLineTimer.size(); ++flameIndex)
-	{
-		if (hitLineTimer[0][flameIndex] < FLAME_MAX_TIME)
-		{
-			continue;
-		}
-
-		portalFlameLineR[flameIndex][0].data.startPos = portalFlameBasePosArray[flameIndex];
-		portalFlameLineR[flameIndex][1].data.startPos = portalFlameBasePosArray[flameIndex];
-		KazMath::Vec3<float>lDistance = {};
-		if (flameIndex % 2 == 0)
-		{
-			lDistance = portalFlameBasePosArray[1] - portalFlameBasePosArray[0];
-		}
-		else
-		{
-			lDistance = portalFlameBasePosArray[0] - portalFlameBasePosArray[1];
-		}
-
-		++flameTimer[flameIndex];
-		if (FLAME_MAX_TIME <= flameTimer[flameIndex])
-		{
-			flameTimer[flameIndex] = FLAME_MAX_TIME;
-		}
-		StrachLine(portalFlameBasePosArray[flameIndex], KazMath::Vec3<float>(lDistance.x, 0.0f, 0.0f), &portalFlameLineR[flameIndex][0].data.endPos, flameTimer[flameIndex], FLAME_MAX_TIME);
-		StrachLine(portalFlameBasePosArray[flameIndex], KazMath::Vec3<float>(0.0f, lDistance.y, 0.0f), &portalFlameLineR[flameIndex][1].data.endPos, flameTimer[flameIndex], FLAME_MAX_TIME);
-	}
-
-
-	//ブロック壊した際に線を伸ばす
-	for (int tutorialNum = 0; tutorialNum < enemies.size(); ++tutorialNum)
-	{
-		for (int enemyIndex = 0; enemyIndex < enemies[tutorialNum].size(); ++enemyIndex)
-		{
-			bool enableToUseDataFlag = enemies[tutorialNum][enemyIndex] == nullptr ||
-				!enemies[tutorialNum][enemyIndex]->GetData()->oprationObjData->initFlag;
-			if (enableToUseDataFlag)
-			{
-				continue;
-			}
-
-			if (!enemies[tutorialNum][enemyIndex]->GetData()->oprationObjData->enableToHitFlag)
-			{
-				int *lTimer = &hitLineTimer[tutorialNum][enemyIndex];
-				++ *lTimer;
-				if (FLAME_MAX_TIME <= *lTimer)
-				{
-					*lTimer = FLAME_MAX_TIME;
-				}
-				float lZDistance = portalFlameBasePosArray[0].z - hitLineR[tutorialNum][enemyIndex].data.startPos.z;
-				hitLineR[tutorialNum][enemyIndex].data.startPos = *enemies[tutorialNum][enemyIndex]->GetData()->hitBox.center;
-				StrachLine(hitLineR[tutorialNum][enemyIndex].data.startPos, KazMath::Vec3<float>(0.0f, 0.0f, lZDistance), &hitLineR[tutorialNum][enemyIndex].data.endPos, *lTimer, FLAME_MAX_TIME);
-			}
-		}
-	}
-
-
 	for (int i = 0; i < lineLevel.size(); ++i)
 	{
 		if (lineEffectArrayData[i].usedFlag)
@@ -504,20 +368,42 @@ void Tutorial::Update()
 
 	player.Update();
 	cursor.Update();
-	cameraWork.Update(cursor.GetValue(), &player.pos, false);
+	cameraWork.Update(cursor.GetValue(), &player.pos, cameraFlag);
 	gridR[0]->Update(-1.0f);
 	gridR[1]->Update(800.0f);
 
+	pc.Update();
 
-	tutorialMovie.Play();
-	//tutorialMovie.Noise();
-	//tutorialMovie.Stop();
-	tutorialMovie.Update();
+	ImGui::Begin("PC_MOVIE");
+	ImGui::Checkbox("Camera", &cameraFlag);
+	if (ImGui::Checkbox("Play", &playFlag))
+	{
+		tutorialMovieArray[tutorialArrayIndex]->Play();
+	}
+	if (ImGui::Checkbox("Noise", &noiseFlag))
+	{
+		tutorialMovieArray[tutorialArrayIndex]->Noise();
+	}
+	if (ImGui::Checkbox("Stop", &stopFlag))
+	{
+		tutorialMovieArray[tutorialArrayIndex]->Stop();
+	}
+	ImGui::End();
+
+	++startTime;
+	if (KazMath::ConvertSecondToFlame(3) <= startTime)
+	{
+		tutorialMovieArray[tutorialArrayIndex]->Play();
+	}
+	else if (KazMath::ConvertSecondToFlame(1) <= startTime)
+	{
+		tutorialMovieArray[tutorialArrayIndex]->Noise();
+	}
 
 
 	for (int tutorialNum = 0; tutorialNum < enemies.size(); ++tutorialNum)
 	{
-		bool lIsNotAllKillFlag = true;
+		bool lIsNotAllKillFlag = startFlag;
 		for (int enemyIndex = 0; enemyIndex < enemies[tutorialNum].size(); ++enemyIndex)
 		{
 			bool enableToUseDataFlag = enemies[tutorialNum][enemyIndex] == nullptr ||
@@ -526,7 +412,8 @@ void Tutorial::Update()
 			{
 				continue;
 			}
-			if (enemies[tutorialNum][enemyIndex]->GetData()->oprationObjData->enableToHitFlag)
+			if (enemies[tutorialNum][enemyIndex]->GetData()->oprationObjData->enableToHitFlag ||
+				enemies[tutorialNum][enemyIndex]->GetData()->oprationObjData->initFlag)
 			{
 				lIsNotAllKillFlag = false;
 			}
@@ -536,29 +423,38 @@ void Tutorial::Update()
 		//そのステージの敵が全て死んでいたらチュートリアルが完了したことを知らせる
 		if (lIsNotAllKillFlag && tutorialArrayIndex == tutorialNum)
 		{
-			tutorial[tutorialNum].Succeed();
+			tutorialMovieArray[tutorialNum]->Succeed();
 		}
 	}
 
 
-	if (tutorial[tutorialArrayIndex].NextTutorial())
+	if (tutorialMovieArray[tutorialArrayIndex]->NextTutorial())
 	{
 		++tutorialArrayIndex;
+		startFlag = false;
 		//チュートリアル数より超えたら全て達成したことを示す
-		if (tutorial.size() <= tutorialArrayIndex)
+		if (tutorialMovieArray.size() <= tutorialArrayIndex)
 		{
-			tutorialArrayIndex = static_cast<int>(tutorial.size() - 1);
+			tutorialArrayIndex = static_cast<int>(tutorialMovieArray.size() - 1);
 			tutorialAllClearFlag = true;
 		}
 	}
-	if (!initEffectFlag && tutorialAllClearFlag)
+
+	if (tutorialAllClearFlag)
 	{
+		++noiseTimer;
+	}
+
+
+	if (!initEffectFlag && KazMath::ConvertSecondToFlame(2) <= noiseTimer)
+	{
+		pc.SetMonitorTexture(portalEffect.renderTarget->GetGameRenderTargetHandle());
 		portalEffect.Init();
 		portalEffect.Start();
 		initEffectFlag = true;
 	}
 
-	tutorial[tutorialArrayIndex].Update();
+	tutorialMovieArray[tutorialArrayIndex]->Update();
 	portalEffect.Update(player.pos);
 
 	if (tutorialAllClearFlag && portalEffect.IsFinish() && !initSceneFlag)
@@ -576,7 +472,7 @@ void Tutorial::Draw()
 	portalEffect.Draw(&cursor);
 
 	//チュートリアルの動画再生
-	tutorialMovie.Draw();
+	tutorialMovieArray[tutorialArrayIndex]->Draw();
 
 
 	//レンダーターゲットセット
@@ -612,28 +508,6 @@ void Tutorial::Draw()
 		}
 	}
 
-
-	for (int tutorialNum = 0; tutorialNum < hitLineR.size(); ++tutorialNum)
-	{
-		for (int enemyIndex = 0; enemyIndex < hitLineR[tutorialNum].size(); ++enemyIndex)
-		{
-			hitLineR[tutorialNum][enemyIndex].Draw();
-		}
-	}
-
-	for (int portalFlameIndex = 0; portalFlameIndex < portalFlameLineR.size(); ++portalFlameIndex)
-	{
-		for (int portalLineIndex = 0; portalLineIndex < portalFlameLineR[portalFlameIndex].size(); ++portalLineIndex)
-		{
-			portalFlameLineR[portalFlameIndex][portalLineIndex].Draw();
-		}
-	}
-
-	for (int i = 0; i < tutorial.size(); ++i)
-	{
-		//tutorial[i].Draw();
-	}
-
 	//次ポータルの描画
 	if (portalEffect.DrawNextPortal())
 	{
@@ -643,12 +517,8 @@ void Tutorial::Draw()
 	{
 		portalEffect.portalRender.Draw();
 	}
+	pc.Draw();
 
-	movieR.data.handleData = tutorialMovie.GetTexture();
-	movieR.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
-	movieR.Draw();
-
-	//cursor.Draw();
 	//ブルーム系統のレンダーターゲット切り替え
 	renderTarget->Draw();
 
@@ -662,7 +532,6 @@ void Tutorial::Draw()
 	{
 		mainRenderTarget.data.handleData = renderTarget->GetGameRenderTargetHandle();
 	}
-
 	//ゲーム画面描画
 	//mainRenderTarget.Draw();
 }

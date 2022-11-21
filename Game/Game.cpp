@@ -949,8 +949,8 @@ void Game::Update()
 				{
 					isEnemyNotMoveFlag = false;
 				}
-				}
 			}
+		}
 		//更新処理----------------------------------------------------------------
 
 
@@ -995,7 +995,7 @@ void Game::Update()
 		}
 #pragma endregion
 		stringLog.Update();
-		}
+	}
 
 
 	//ゲームループの経過時間----------------------------------------------------------------
@@ -1042,7 +1042,7 @@ void Game::Update()
 
 	//ゲームループの経過時間----------------------------------------------------------------
 
-	}
+}
 
 void Game::Draw()
 {
@@ -1226,7 +1226,11 @@ void Game::Draw()
 
 		mainRenderTarget.Draw();
 		cursor.Draw();
-				}
+		if (tutorial.tutorialFlag)
+		{
+			tutorial.cursor.Draw();
+		}
+	}
 	else if (gameOverFlag)
 	{
 		gameOverTex.data.handleData = gameOverResouceHandle;
@@ -1264,7 +1268,7 @@ void Game::Draw()
 
 	blackTex.Draw();
 
-			}
+}
 
 int Game::SceneChange()
 {

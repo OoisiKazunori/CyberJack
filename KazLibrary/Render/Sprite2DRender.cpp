@@ -79,7 +79,11 @@ void Sprite2DRender::Draw()
 
 	//読み込んだテクスチャのサイズ
 	//読み込んだ画像のサイズを合わせる
-	if (data.handleData.flag.Dirty() || data.transform.scaleDirtyFlag.Dirty())
+	if (data.handleData.flag.Dirty() ||
+		data.transform.scaleDirtyFlag.Dirty() ||
+		data.leftScaleDirtyFlag.Dirty() ||
+		data.rightScaleDirtyFlag.Dirty()
+		)
 	{
 		//外部リソースのテクスチャサイズ
 		if (DescriptorHeapMgr::Instance()->GetType(data.handleData.handle) != DESCRIPTORHEAP_MEMORY_TEXTURE_RENDERTARGET)
@@ -104,8 +108,13 @@ void Sprite2DRender::Draw()
 			{
 				vertices[i].pos = { lVert[i].x,-lVert[i].y,0.0f };
 			}
-
 			KazRenderHelper::InitUvPos(&vertices[0].uv, &vertices[1].uv, &vertices[2].uv, &vertices[3].uv);
+
+			if (600.0f <= abs(vertices[0].pos.x))
+			{
+				bool debug = false;
+				debug = false;
+			}
 		}
 		//レンダーターゲットのテクスチャサイズ
 		else
@@ -126,11 +135,24 @@ void Sprite2DRender::Draw()
 				vertices[i].pos = { tmp[i].x,-tmp[i].y,0.0f };
 			}
 		}
+
+		vertices[0].pos.x *= data.leftScale.x;
+		vertices[0].pos.y *= data.leftScale.y;
+		vertices[1].pos.x *= data.leftScale.x;
+		vertices[1].pos.y *= data.leftScale.y;
+
+		vertices[2].pos.x *= data.rightScale.x;
+		vertices[2].pos.y *= data.rightScale.y;
+		vertices[3].pos.x *= data.rightScale.x;
+		vertices[3].pos.y *= data.rightScale.y;
 	}
 
 
+
+
 	//UV切り取り
-	if (data.handleData.flag.Dirty() || data.animationHandle.flag.Dirty() || data.transform.scaleDirtyFlag.Dirty())
+	if (data.handleData.flag.Dirty() || data.animationHandle.flag.Dirty() || data.transform.scaleDirtyFlag.Dirty() ||
+		data.leftScaleDirtyFlag.Dirty() || data.rightScaleDirtyFlag.Dirty())
 	{
 		KazMath::Vec2<int> lDivSize = renderData.shaderResourceMgrInstance->GetDivData(data.handleData.handle).divSize;
 		KazMath::Vec2<float> lTmpSize = { data.transform.scale.x, data.transform.scale.y };
@@ -151,6 +173,9 @@ void Sprite2DRender::Draw()
 				vertices[i].pos.y *= -1.0f;
 			}
 		}
+
+		bool debug = false;
+		debug = false;
 	}
 
 	//X軸にUVを反転
@@ -167,7 +192,12 @@ void Sprite2DRender::Draw()
 
 	bool lFlipDirtyFlag = data.flip.xDirtyFlag.Dirty() || data.flip.yDirtyFlag.Dirty();
 	//頂点データに何か変更があったら転送する
-	if (data.handleData.flag.Dirty() || data.transform.scaleDirtyFlag.Dirty() || data.animationHandle.flag.Dirty() || lFlipDirtyFlag)
+	if (data.handleData.flag.Dirty() ||
+		data.transform.scaleDirtyFlag.Dirty() ||
+		data.animationHandle.flag.Dirty() ||
+		lFlipDirtyFlag ||
+		data.leftScaleDirtyFlag.Dirty() ||
+		data.rightScaleDirtyFlag.Dirty())
 	{
 		gpuBuffer->TransData(vertexBufferHandle, vertices.data(), vertByte);
 	}
@@ -176,7 +206,7 @@ void Sprite2DRender::Draw()
 
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 	//行列
-	if (data.transform.Dirty() || renderData.cameraMgrInstance->ViewAndProjDirty()||data.colorData.Dirty())
+	if (data.transform.Dirty() || renderData.cameraMgrInstance->ViewAndProjDirty() || data.colorData.Dirty())
 	{
 		ConstBufferData lConstMap;
 		lConstMap.world = baseMatWorldData.matWorld;

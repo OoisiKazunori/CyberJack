@@ -12,6 +12,7 @@ TwoRender PSmain(FogOutPut input) : SV_TARGET
 {
     TwoRender op;
     op.target0 = CaluFog(input.svpos, color, fogData.xyz, fogData.w);
+    op.target0.a = color.a;
     op.target1 = luminanceColor;
     return op;
 }

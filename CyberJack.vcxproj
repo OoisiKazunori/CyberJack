@@ -179,6 +179,7 @@
     <ClCompile Include="Game\Tutorial.cpp" />
     <ClCompile Include="Game\Tutorial\DirectX12MoviePlayer.cpp" />
     <ClCompile Include="Game\Tutorial\DirectXMoive.cpp" />
+    <ClCompile Include="Game\Tutorial\Gauge.cpp" />
     <ClCompile Include="Game\Tutorial\OldComputer.cpp" />
     <ClCompile Include="Game\Tutorial\TutorialMovie.cpp" />
     <ClCompile Include="Game\UI\AnnounceStageUI.cpp" />
@@ -256,7 +257,6 @@
     <ClCompile Include="KazLibrary\Scene\SceneManager.cpp" />
     <ClCompile Include="KazLibrary\Scene\StageSelectScene.cpp" />
     <ClCompile Include="KazLibrary\Scene\TitleScene.cpp" />
-    <ClCompile Include="KazLibrary\Scene\TutorialScene.cpp" />
     <ClCompile Include="KazLibrary\Sound\IAXAudio2VoiceCallback.cpp" />
     <ClCompile Include="KazLibrary\Sound\SoundManager.cpp" />
     <ClCompile Include="KazLibrary\WinApi\Msg.cpp" />
@@ -336,6 +336,7 @@
     <ClInclude Include="Game\Tutorial.h" />
     <ClInclude Include="Game\Tutorial\DirectX12MoviePlayer.h" />
     <ClInclude Include="Game\Tutorial\DirectXMoive.h" />
+    <ClInclude Include="Game\Tutorial\Gauge.h" />
     <ClInclude Include="Game\Tutorial\OldComputer.h" />
     <ClInclude Include="Game\Tutorial\TutorialMovie.h" />
     <ClInclude Include="Game\UI\AnnounceStageUI.h" />
@@ -425,7 +426,6 @@
     <ClInclude Include="KazLibrary\Scene\SceneManager.h" />
     <ClInclude Include="KazLibrary\Scene\StageSelectScene.h" />
     <ClInclude Include="KazLibrary\Scene\TitleScene.h" />
-    <ClInclude Include="KazLibrary\Scene\TutorialScene.h" />
     <ClInclude Include="KazLibrary\Sound\IAXAudio2VoiceCallback.h" />
     <ClInclude Include="KazLibrary\Sound\SoundManager.h" />
     <ClInclude Include="KazLibrary\WinApi\Msg.h" />

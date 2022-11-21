@@ -132,7 +132,6 @@
     <ClCompile Include="Game\UI\Letter.cpp" />
     <ClCompile Include="Game\UI\AttackLog.cpp" />
     <ClCompile Include="Game\UI\DrawMenu.cpp" />
-    <ClCompile Include="KazLibrary\Scene\TutorialScene.cpp" />
     <ClCompile Include="Game\Helper\CameraWork.cpp" />
     <ClCompile Include="Game\Enemy\TutorialBlock.cpp" />
     <ClCompile Include="Game\Event\TutorialGame.cpp" />
@@ -155,6 +154,7 @@
     <ClCompile Include="Game\Tutorial\TutorialMovie.cpp" />
     <ClCompile Include="Game\Tutorial\OldComputer.cpp" />
     <ClCompile Include="Game\Effect\DeadParticle.cpp" />
+    <ClCompile Include="Game\Tutorial\Gauge.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -301,7 +301,6 @@
     <ClInclude Include="Game\UI\Letter.h" />
     <ClInclude Include="Game\UI\AttackLog.h" />
     <ClInclude Include="Game\UI\DrawMenu.h" />
-    <ClInclude Include="KazLibrary\Scene\TutorialScene.h" />
     <ClInclude Include="Game\Helper\CameraWork.h" />
     <ClInclude Include="Game\Event\TutorialGame.h" />
     <ClInclude Include="Game\Enemy\TutorialBlock.h" />
@@ -325,6 +324,7 @@
     <ClInclude Include="Game\Tutorial\OldComputer.h" />
     <ClInclude Include="Game\Effect\DeadParticle.h" />
     <ClInclude Include="KazLibrary\Render\KazExcuteIndirect.h" />
+    <ClInclude Include="Game\Tutorial\Gauge.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
