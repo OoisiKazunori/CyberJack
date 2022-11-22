@@ -17,7 +17,7 @@ void KazEnemyHelper::GenerateEnemy(std::array<std::array<std::unique_ptr<IEnemy>
 				case ENEMY_TYPE_MOTHER:
 					ENEMIES[enemyType][enemyCount] = std::make_unique<SummonEnemy>();
 					//子敵の生成(テスト用)
-					for (int i = 0; i < 20; ++i)
+					for (int i = 0; i < 8; ++i)
 					{
 						int index = ENEMISE_HANDLE[ENEMY_TYPE_POP];
 						ENEMIES[ENEMY_TYPE_POP][index] = std::make_unique<PopEnemy>();

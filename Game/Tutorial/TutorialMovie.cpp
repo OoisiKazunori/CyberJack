@@ -71,13 +71,6 @@ void TutorialMovie::Update()
 		tutorialText.Succeed();
 	}
 
-	ImGui::Begin("Gauge");
-	if (ImGui::Button("Add"))
-	{
-		gauge.Add(10);
-	}
-	ImGui::End();
-
 	if (gauge.IsMax())
 	{
 		tutorialText.Succeed();

@@ -106,6 +106,8 @@ DeadParticle::DeadParticle(const D3D12_GPU_VIRTUAL_ADDRESS &ADDRESS, int VERT_NU
 
 	float lScale = PARTICLE_SCALE;
 	scaleRotaMat = KazMath::CaluScaleMatrix({ lScale,lScale,lScale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
+
+	timer = KazMath::ConvertSecondToFlame(5);
 }
 
 void DeadParticle::Init(const DirectX::XMMATRIX *MAT)
@@ -114,11 +116,16 @@ void DeadParticle::Init(const DirectX::XMMATRIX *MAT)
 	motherMat = MAT;
 }
 
-void DeadParticle::Update()
+void DeadParticle::Update(int ALPHA)
 {
 	if (!startFlag)
 	{
 		return;
+	}
+	--timer;
+	if (timer <= 0)
+	{
+		startFlag = false;
 	}
 
 	//XV—pˆ—

@@ -36,10 +36,9 @@ TitleScene::TitleScene() :movie(true)
 	startButtonR.data.pipelineName = PIPELINE_NAME_SPRITE_CUTALPHA;
 
 
-	eyePos = { 0.0f,6.0f,20.0f };
-	targetPos = { 0.0f,-29.0f,632.0f };
-
 	endGameFlag = false;
+
+	player.Init({ 0.0f,0.0f,4.5f }, false, true);
 }
 
 TitleScene::~TitleScene()
@@ -125,7 +124,13 @@ void TitleScene::Init()
 	lTrans.rotation.y = 180.0f;
 	pc.SetTransform(lTrans);
 
+	pc.BloomMonitor();
+
 	initPlayerFlag = false;
+
+
+	eyePos = { 0.0f,6.0f,20.0f };
+	targetPos = { 0.0f,-29.0f,632.0f };
 }
 
 void TitleScene::Finalize()
@@ -245,10 +250,10 @@ void TitleScene::Update()
 	//KazImGuiHelper::InputVec2("MenuExit", &basePos[1]);
 	//ImGui::End();
 
-	ImGui::Begin("UI");
+	/*ImGui::Begin("UI");
 	KazImGuiHelper::InputVec3("EyePos", &eyePos);
 	KazImGuiHelper::InputVec3("TargetPos", &targetPos);
-	ImGui::End();
+	ImGui::End();*/
 
 	++buttonTimer;
 	if (20 <= buttonTimer)
@@ -438,8 +443,12 @@ void TitleScene::Draw()
 		playerAroundCircleR[i].Draw();
 	}
 
+	if (KazMath::ConvertSecondToFlame(2) <= appearTimer)
+	{
+		player.Draw();
+	}
+
 	pc.Draw();
-	player.Draw();
 	for (int i = 0; i < mainGridR.size(); ++i)
 	{
 		mainGridR[i]->Draw();

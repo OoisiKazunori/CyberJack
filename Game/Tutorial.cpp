@@ -487,11 +487,6 @@ void Tutorial::Update()
 		tutorialFlag = false;
 		initSceneFlag = true;
 	}
-
-	ImGui::Begin("A");
-	KazImGuiHelper::InputTransform3D("A", &portalEffect.portalRender.data.transform);
-	ImGui::End();
-
 }
 
 void Tutorial::Draw()

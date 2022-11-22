@@ -52,7 +52,7 @@ Game::Game() :LOG_FONT_SIZE(1.0f)
 	pressAButtonTex.data.transform.scale = { 0.4f,0.4f };
 
 
-	gameClearResourceHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::GameOverPath + "GameClear.png");
+	gameClearResourceHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::UIPath + "GameClear.png");
 	gameOverResouceHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::GameOverPath + "GameOver.png");
 
 	gameOverTex.data.handleData = gameClearResourceHandle;
@@ -781,13 +781,13 @@ void Game::Update()
 
 
 	//ゲームオーバーかゲームクリアの表示----------------------------------------------
-	if (!player.IsAlive() && !gameOverFlag && false)
+	if (!player.IsAlive() && !gameOverFlag)
 	{
 		isGameOverFlag = true;
 		readyToBlackOutFlag = true;
 	}
 
-	if (logoutWindow->IsFinish() && !d && false)
+	if (logoutWindow->IsFinish() && !d)
 	{
 		isGameClearFlag = true;
 		readyToBlackOutFlag = true;
@@ -989,7 +989,7 @@ void Game::Update()
 					{
 						continue;
 					}
-					deadParticleArray[enemyType][enemyCount][particleEmittIndex]->Update();
+					deadParticleArray[enemyType][enemyCount][particleEmittIndex]->Update(*enemies[enemyType][enemyCount]->GetData()->alpha);
 				}
 			}
 		}
@@ -1149,7 +1149,7 @@ void Game::Draw()
 		//中間演出までのポータル
 		if (portalEffect.IsStart() && !portalEffect.IsFinish())
 		{
-			//portalEffect.portalRender.Draw();
+			portalEffect.portalRender.Draw();
 		}
 
 		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)

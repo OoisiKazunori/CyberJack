@@ -20,7 +20,7 @@ Player::Player()
 	{
 		fbxRender[i].data.pipelineName = PIPELINE_NAME_FBX_RENDERTARGET_TWO;
 		fbxRender[i].data.stopAnimationFlag = true;
-		fbxRender[i].data.transform.scale = { 0.5f,0.5f,0.5f };
+		fbxRender[i].data.transform.scale = { 0.0f,0.0f,0.0f };
 	}
 
 
@@ -42,6 +42,7 @@ void Player::Init(const KazMath::Vec3<float> &POS, bool DRAW_UI_FLAG, bool APPEA
 		for (int i = 0; i < fbxRender.size(); ++i)
 		{
 			fbxRender[i].data.colorData.color.a = 0;
+			fbxRender[i].data.transform.scale = { 0.5f,0.5f,0.5f };
 		}
 	}
 	else
@@ -49,6 +50,7 @@ void Player::Init(const KazMath::Vec3<float> &POS, bool DRAW_UI_FLAG, bool APPEA
 		for (int i = 0; i < fbxRender.size(); ++i)
 		{
 			fbxRender[i].data.colorData.color.a = 255;
+			fbxRender[i].data.transform.scale = { 0.5f,0.5f,0.5f };
 		}
 	}
 	hp = 3;
@@ -62,6 +64,7 @@ void Player::Init(const KazMath::Vec3<float> &POS, bool DRAW_UI_FLAG, bool APPEA
 	drawHpFlag = DRAW_UI_FLAG;
 
 	larpTime = 0;
+
 }
 
 void Player::Finalize()

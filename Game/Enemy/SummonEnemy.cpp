@@ -76,7 +76,7 @@ void SummonEnemy::Update()
 			break;
 		case SummonEnemy::SUMMON:
 
-			for (int i = 0; i < 20; ++i)
+			for (int i = 0; i < 8; ++i)
 			{
 				if (appearTimer == baseTimer + i * 10)
 				{

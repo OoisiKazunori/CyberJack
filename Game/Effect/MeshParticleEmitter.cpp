@@ -192,6 +192,10 @@ void MeshParticleEmitter::Update(float ALPHA)
 	{
 		return;
 	}
+	if (ALPHA <= 0.0f)
+	{
+		drawParticleFlag = false;
+	}
 
 	float lScale = scale;
 	scaleRotaMat = KazMath::CaluScaleMatrix({ lScale,lScale,lScale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });

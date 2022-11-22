@@ -21,7 +21,7 @@ cbuffer RootConstants : register(b0)
     matrix motherMat;
 };
 
-//XV
+//æ›´æ–°
 RWStructuredBuffer<InitData> particleData : register(u0);
 RWStructuredBuffer<MatData> outputParticleData : register(u1);
 
@@ -40,7 +40,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     particleData[index].pos += particleData[index].vel;
     particleData[index].color.a  += -0.01f;
     
-    //s—ñŒvZ-------------------------
+    //è¡Œåˆ—è¨ˆç®—-------------------------
     matrix pMatWorld = scaleRotateBillboardMat;
     pMatWorld[0][3] = particleData[index].pos.x;
     pMatWorld[1][3] = particleData[index].pos.y;
@@ -48,7 +48,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     
     pMatWorld = mul(motherMat,pMatWorld);
 
-    //s—ñŒvZ-------------------------    
+    //è¡Œåˆ—è¨ˆç®—-------------------------    
     MatData outputMat;
     outputMat.mat = mul(viewProjection,pMatWorld);
     outputMat.color = particleData[index].color;
