@@ -13,16 +13,34 @@ struct OutputData
     float4 pos;
 };
 
+struct InputData
+{
+    float4 pos;
+    float2 uv;
+};
+
 //更新
-RWStructuredBuffer<float4> vertciesData : register(u0);
+RWStructuredBuffer<InputData> vertciesData : register(u0);
 //出力
 RWStructuredBuffer<OutputData> worldPosData : register(u1);
+
+Texture2D<float4> tex : register(t0);
+
+SamplerState smp
+{
+    Filter = MIN_MAG_MIP_POINT;
+    AddressU = Wrap;
+    AddressV = Wrap;
+};
 
 [numthreads(1024, 1, 1)]
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 groupThreadID : SV_GroupThreadID)
 {
     uint index = groupThreadID.x;
     index += 1024 * groupId.x;
+
+   
+    float4 textureColor = tex.SampleLevel(smp,float2(0,0),0);
 
     //インデックス数以内なら処理する
     //三角形を構成するインデックスの指定--------------------------------------------
@@ -32,9 +50,9 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     //三角形を構成するインデックスの指定--------------------------------------------
 
     //頂点座標からワールド座標に変換後----------------------------------------------
-    float4 firstVertWorldPos = GetPos(vertciesData[firstVertIndex].xyz,pos.xyz);
-    float4 secondVertWorldPos = GetPos(vertciesData[secondVertIndex].xyz,pos.xyz);
-    float4 thirdVertWorldPos = GetPos(vertciesData[thirdVertIndex].xyz,pos.xyz);
+    float4 firstVertWorldPos = GetPos(vertciesData[firstVertIndex].pos.xyz,pos.xyz);
+    float4 secondVertWorldPos = GetPos(vertciesData[secondVertIndex].pos.xyz,pos.xyz);
+    float4 thirdVertWorldPos = GetPos(vertciesData[thirdVertIndex].pos.xyz,pos.xyz);
     //頂点座標からワールド座標に変換------------------------------------------------
 
     //三角形を構成するレイ--------------------------------------------

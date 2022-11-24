@@ -169,6 +169,22 @@ void GraphicsRootSignature::CreateRootSignature(RootSignatureMode ROOTSIGNATURE,
 	
 		CreateMyRootSignature(ROOTSIGNATURE_DATA.sample, computeRootParameters.data(), computeRootParameters.size(), ROOTSIGNATURE);
 	}
+	else if (ROOTSIGNATURE == ROOTSIGNATURE_DATA_UAV_UAV_CBV_SRV)
+	{
+		std::array<CD3DX12_ROOT_PARAMETER, 5> computeRootParameters;
+		std::array <CD3DX12_DESCRIPTOR_RANGE, 4> ranges{};
+		ranges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0);
+		ranges[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 1);
+		ranges[2].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 2);
+		ranges[3].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 3);
+		computeRootParameters[0].InitAsDescriptorTable(1, &ranges[0]);
+		computeRootParameters[1].InitAsDescriptorTable(1, &ranges[1]);
+		computeRootParameters[2].InitAsDescriptorTable(1, &ranges[2]);
+		computeRootParameters[3].InitAsDescriptorTable(1, &ranges[3]);
+		computeRootParameters[4].InitAsConstantBufferView(0, 0);
+
+		CreateMyRootSignature(computeRootParameters.data(), computeRootParameters.size(), ROOTSIGNATURE);
+	}
 	else
 	{
 		CreateMyRootSignature(ROOTSIGNATURE_DATA.sample, rootparam.data(), rootparam.size(), ROOTSIGNATURE);
@@ -244,6 +260,29 @@ void GraphicsRootSignature::CreateMyRootSignature(D3D12_STATIC_SAMPLER_DESC SAMP
 	{
 		rootSignatureDesc.Init_1_1(static_cast<UINT>(DATA_MAX), ROOT_PARAM_DATA);
 	}
+	//バージョン自動判定でのシリアライズ
+	Microsoft::WRL::ComPtr<ID3DBlob> rootSigBlob = nullptr;
+	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
+	D3DX12SerializeVersionedRootSignature(
+		&rootSignatureDesc,
+		D3D_ROOT_SIGNATURE_VERSION_1_0,
+		&rootSigBlob,
+		&errorBlob);
+
+	//ルートシグネチャの生成
+	DirectX12Device::Instance()->dev->CreateRootSignature(
+		0,
+		rootSigBlob->GetBufferPointer(),
+		rootSigBlob->GetBufferSize(),
+		IID_PPV_ARGS(&rootSignature[ROOTSIGNATURE])
+	);
+}
+
+void GraphicsRootSignature::CreateMyRootSignature(D3D12_ROOT_PARAMETER1 *ROOT_PARAM_DATA, size_t DATA_MAX, RootSignatureMode ROOTSIGNATURE)
+{
+	CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDesc;
+	rootSignatureDesc.Init_1_1(static_cast<UINT>(DATA_MAX), ROOT_PARAM_DATA, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+
 	//バージョン自動判定でのシリアライズ
 	Microsoft::WRL::ComPtr<ID3DBlob> rootSigBlob = nullptr;
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;

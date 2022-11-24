@@ -155,6 +155,7 @@
     <ClCompile Include="Game\Tutorial\OldComputer.cpp" />
     <ClCompile Include="Game\Effect\DeadParticle.cpp" />
     <ClCompile Include="Game\Tutorial\Gauge.cpp" />
+    <ClCompile Include="Game\Effect\TextureParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -325,6 +326,7 @@
     <ClInclude Include="Game\Effect\DeadParticle.h" />
     <ClInclude Include="KazLibrary\Render\KazExcuteIndirect.h" />
     <ClInclude Include="Game\Tutorial\Gauge.h" />
+    <ClInclude Include="Game\Effect\TextureParticle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
