@@ -4,7 +4,7 @@
 
 PreCreateBasePipeLine::PreCreateBasePipeLine()
 {
-	GraphicsPipeLineMgr *pipelineMgr = GraphicsPipeLineMgr::Instance();
+	GraphicsPipeLineMgr *lPipelineMgr = GraphicsPipeLineMgr::Instance();
 
 #pragma region InputLayOutの登録
 	{
@@ -244,81 +244,81 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 #pragma region ShaderCompile
 	OutputDebugStringA("シェーダーのコンパイルを開始します\n");
 	//色シェーダー
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "BasicVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_COLOR);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "BasicPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_COLOR);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "BasicVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_COLOR);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "BasicPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_COLOR);
 
 	//テクスチャシェーダー...テクスチャ影あり
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "TextureVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_TEXTURE);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "TexturePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_TEXTURE);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "TextureVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_TEXTURE);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "TexturePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_TEXTURE);
 
 
 	//スプライトシェーダー...テクスチャ影無し
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "SpriteVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_SPRITE);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "SpritePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "SpriteVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_SPRITE);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "SpritePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE);
 
 
 	//objシェーダー
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_OBJ);
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJPortalVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_OBJ_PORTAL);
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJVertexExpantionShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_EXPANTION_OBJ);	// 頂点拡張用
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJGetShadowMapVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_GET_SHADOWMAP);	// シャドウマップ取得用
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJDrawShadowMapVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_DRAW_SHADOWMAP);	// シャドウマップを元に影描画用
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJPixelExpantionShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_EXPANTION_OBJ);	// 頂点拡張用
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJGetShadowPixcelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_GET_SHADOWMAP);	// シャドウマップ取得用
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJDrawShadowMapPixcelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_DRAW_SHADOWMAP);	// シャドウマップを元に影描画用
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_OBJ);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJPortalVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_OBJ_PORTAL);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJVertexExpantionShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_EXPANTION_OBJ);	// 頂点拡張用
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJGetShadowMapVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_GET_SHADOWMAP);	// シャドウマップ取得用
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJDrawShadowMapVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_DRAW_SHADOWMAP);	// シャドウマップを元に影描画用
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJPixelExpantionShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_EXPANTION_OBJ);	// 頂点拡張用
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJGetShadowPixcelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_GET_SHADOWMAP);	// シャドウマップ取得用
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJDrawShadowMapPixcelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_DRAW_SHADOWMAP);	// シャドウマップを元に影描画用
 
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstanceObjGetShadowMapVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_GET_SHADOWMAP);	// シャドウマップ取得用
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceObjGetShadowPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_GET_SHADOWMAP);	// シャドウマップを元に影描画用
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstanceObjGetShadowMapVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_GET_SHADOWMAP);	// シャドウマップ取得用
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceObjGetShadowPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_GET_SHADOWMAP);	// シャドウマップを元に影描画用
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceObjExpantionPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_OBJ_EXPANTION);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceObjExpantionPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_OBJ_EXPANTION);
 
 
 	//ライト
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "LightVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_LIGHT);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LightPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LIGHT);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "LightVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_LIGHT);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LightPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LIGHT);
 
 
 	//輝度抽出
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "LumiVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_LUMINAS);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LumiPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LUMINAS);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "LumiVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_LUMINAS);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LumiPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LUMINAS);
 
 
 	//ガウシアンブラー
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GaussianPixelShader.hlsl", "GaussianUpBlur", "ps_6_4", SHADER_PIXCEL_GAUSSIAN_UPBLUR);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GaussianPixelShader.hlsl", "GaussianSideBlur", "ps_6_4", SHADER_PIXCEL_GAUSSIAN_SIDEBLUR);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GaussianPixelShader.hlsl", "GaussianUpBlur", "ps_6_4", SHADER_PIXCEL_GAUSSIAN_UPBLUR);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GaussianPixelShader.hlsl", "GaussianSideBlur", "ps_6_4", SHADER_PIXCEL_GAUSSIAN_SIDEBLUR);
 
 
 
 	//fbx
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "FbxModelVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_FBX);
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "FbxOutPutPosVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_FBX_FOG);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FbxModelPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FBX);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "FbxModelVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_FBX);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "FbxOutPutPosVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_FBX_FOG);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FbxModelPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FBX);
 
 
 
 	//bloom
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "BloomPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_BLOOM);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "BloomPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_BLOOM);
 
 
 	//削除予定
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "multipassVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_MULTIPASS);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "multipassVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_MULTIPASS);
 
 
 	//削除予定
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GoalLightPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_GOALLIGHT);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GoalLightPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_GOALLIGHT);
 
 
 
 	//Fog
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "FogVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_FOG_COLOR);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_COLOR);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "FogVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_FOG_COLOR);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_COLOR);
 
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogObjPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_OBJ);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogObjPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_OBJ);
 
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogFbxPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_FBX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogFbxPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_FBX);
 
 
 	//太さ変えられる線用ジオメトリーシェーダー
@@ -326,119 +326,118 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 
 	//線
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "LineVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_LINE);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LinePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "LineVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_LINE);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LinePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE);
 
 
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineTickFogPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_TICK_LINE_FOG);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineTickFogPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_TICK_LINE_FOG);
 
 
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogTexturePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_SPRITE);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogTexturePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_SPRITE);
 
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogLinePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_FOG);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogLinePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_FOG);
 
 	//削除予定
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogLineForEffectBGPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_FOG_FORBG);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogLineForEffectBGPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_FOG_FORBG);
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LuminancePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_LUMINANCE);
-
-
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "ObjLightVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_OBJ_LIGHT);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ObjLightPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ_LIGHT);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LuminancePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_LUMINANCE);
 
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceObjMultipassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_OBJ_MULTIPASS_BILL);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "ObjLightVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_OBJ_LIGHT);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ObjLightPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ_LIGHT);
+
+
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceObjMultipassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_OBJ_MULTIPASS_BILL);
 
 
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ObjMultipassLightPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ_MULTIPASS_LIGHT);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ObjMultipassLightPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ_MULTIPASS_LIGHT);
 
 
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstanceVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_OBJ);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstancePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_OBJ);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstanceVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_OBJ);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstancePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_OBJ);
 
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstancePosVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_COLOR);
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstanceObjDepthVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_OBJ_DEPTH);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_COLOR);
-
-
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstancePosNormalColorVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_COLOR_SHADING);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorShadingMultiPassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_COLOR_SHADING);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstancePosVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_COLOR);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstanceObjDepthVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_OBJ_DEPTH);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_COLOR);
 
 
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstanceColorGetShadowVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_COLOR_GET_SHADOWMAP);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorGetShadowPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_COLOR_GET_SHADOW);
-
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineUvPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_UV);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstancePosNormalColorVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_COLOR_SHADING);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorShadingMultiPassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_COLOR_SHADING);
 
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "SpriteWindowPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_WINDOW);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstanceColorGetShadowVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_COLOR_GET_SHADOWMAP);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorGetShadowPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_COLOR_GET_SHADOW);
+
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineUvPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_UV);
+
+
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "SpriteWindowPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_WINDOW);
 
 	//コンピュートシェーダーのコンパイル
 	//pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "TestComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_TEST);
-	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "FloorParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_FLOORPARTICLE);
-	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "FloorParticleMoveComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_FLOORPARTICLE_MOVE);
-	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "BlockParticleInitComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_BLOCKPARTICLE);
-	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "PortalLineComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_PORTALLINE);
-	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "PortalLineMoveComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_PORTALLINE_MOVE);
-	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "MeshParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_MESHPARTICLE);
-	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "BlockParticleMoveComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_BLOCKPARTICLE_MOVE);
-	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "InitMeshTextureParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_TEXTUREPARTICLE_INIT);
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "FloorParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_FLOORPARTICLE);
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "FloorParticleMoveComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_FLOORPARTICLE_MOVE);
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "BlockParticleInitComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_BLOCKPARTICLE);
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "PortalLineComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_PORTALLINE);
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "PortalLineMoveComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_PORTALLINE_MOVE);
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "MeshParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_MESHPARTICLE);
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "BlockParticleMoveComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_BLOCKPARTICLE_MOVE);
 
-	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "InitMeshParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_MESHPARTICLE_INIT);
-	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "MeshParticleMoveComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_MESHPARTICLE_UPDATE);
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "InitMeshParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_MESHPARTICLE_INIT);
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "MeshParticleMoveComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_MESHPARTICLE_UPDATE);
 
-	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "InitDeadParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_DEADPARTICLE_INIT);
-	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "UpdateDeadparticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_DEADPARTICLE_UPDATE);
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "InitDeadParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_DEADPARTICLE_INIT);
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "UpdateDeadparticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_DEADPARTICLE_UPDATE);
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "VHSPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_WIHITENOISE);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "VHSPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_WIHITENOISE);
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FbxTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FBX_RENDER_TWO_LIGHT);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FbxMultiPassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FBX_RENDER_TWO);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GoalEffectPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_GOAL_EFFECT);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FbxTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FBX_RENDER_TWO_LIGHT);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FbxMultiPassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FBX_RENDER_TWO);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GoalEffectPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_GOAL_EFFECT);
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJPcMonitorPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_MONITOR_MULTITEX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJPcMonitorPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_MONITOR_MULTITEX);
 
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ColorTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_COLOR_MULTITEX);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorMultiPassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_COLOR_MULTITEX);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "SpriteTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_MULTITEX);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ObjTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ_MULTITEX);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GoalLightTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_GOALLIGHT_MULTITEX);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogColorTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_COLOR_MULTITEX);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogMultiPassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_MULTITEX);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "MultiPassLuminancePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LUMINANCE_MULTI);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineUvMultiTexPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_UV_MULTITEX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ColorTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_COLOR_MULTITEX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorMultiPassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_COLOR_MULTITEX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "SpriteTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_MULTITEX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ObjTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ_MULTITEX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GoalLightTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_GOALLIGHT_MULTITEX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogColorTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_COLOR_MULTITEX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogMultiPassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_MULTITEX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "MultiPassLuminancePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LUMINANCE_MULTI);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineUvMultiTexPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_UV_MULTITEX);
 
 
 
 	
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineFlashEffectPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_FLASHEFFECT);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineFlashEffectPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_FLASHEFFECT);
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GradationPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_GRADATION);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GradationPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_GRADATION);
 
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "ObjFogVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_FOG_OBJ);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GradationObjPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ_GRADATION);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "ObjFogVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_FOG_OBJ);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GradationObjPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ_GRADATION);
 
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "GPUParticleVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_GPUPARTICLE);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GPUParticlePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_GPUPARTICLE);
-
-
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "GPUParticlePosUvVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_GPUPARTICLE_POSUV);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GPUParticleTexturePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_GPUPARTICLE_TEX);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "GPUParticleVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_GPUPARTICLE);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GPUParticlePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_GPUPARTICLE);
 
 
-
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "NoiseSignalPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_NOISE);
-
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "PortalVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_PORTAL);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "PortalPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_PORTAL);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "GPUParticlePosUvVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_GPUPARTICLE_POSUV);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GPUParticleTexturePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_GPUPARTICLE_TEX);
 
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "SpriteColorPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_SPRITE_COLOR);
+
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "NoiseSignalPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_NOISE);
+
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "PortalVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_PORTAL);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "PortalPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_PORTAL);
+
+
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "SpriteColorPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_SPRITE_COLOR);
 
 	OutputDebugStringA("シェーダーのコンパイルを終了します\n");
 #pragma endregion
@@ -1572,6 +1571,13 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_COMPUTE_NAME_BLOCKPARTICLE
 	);
 
+	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+		SHADER_COMPUTE_BLOCKPARTICLE_MOVE,
+		PIPELINE_COMPUTE_DATA_TEST,
+		ROOTSIGNATURE_DATA_DRAW_UAB_CB,
+		PIPELINE_COMPUTE_NAME_BLOCKPARTICLE_MOVE
+	);
+
 	//エミッターの場所を決める
 	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 		SHADER_COMPUTE_MESHPARTICLE,
@@ -1580,20 +1586,9 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_COMPUTE_NAME_MESHPARTICLE
 	);
 
-	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-		SHADER_COMPUTE_TEXTUREPARTICLE_INIT,
-		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_UAV_UAV_CBV_SRV,
-		PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_INIT
-	);
+	
 
 
-	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-		SHADER_COMPUTE_BLOCKPARTICLE_MOVE,
-		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_DRAW_UAB_CB,
-		PIPELINE_COMPUTE_NAME_BLOCKPARTICLE_MOVE
-	);
 
 
 	//GPUパーティクル用のパイプライン
@@ -2800,4 +2795,25 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	);
 #pragma endregion
 
+
+
+	//コンパイルする予定のコンピュートパイプライン------------------------------------------------------------
+	//SRV
+	{
+		RootSignatureData lData;
+		lData.paramData[0].param = 0;
+		lData.paramData[0].type = GRAPHICS_PRAMTYPE_TEX;
+		lData.range[0] = GRAPHICS_RANGE_TYPE_SRV;
+		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_SRV, lData, 1);
+	}
+
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "InitMeshTextureParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_TEXTUREPARTICLE_INIT);
+
+	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+		SHADER_COMPUTE_TEXTUREPARTICLE_INIT,
+		PIPELINE_COMPUTE_DATA_TEST,
+		ROOTSIGNATURE_DATA_SRV,
+		PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_INIT
+	);
+	//コンパイルする予定のコンピュートパイプライン------------------------------------------------------------
 }

@@ -403,17 +403,17 @@ private:
 	static const int PIPELINE_MAX_NUM = 100;
 	//ìoò^ÉfÅ[É^
 
-	std::array<InputLayOutData, PIPELINE_MAX_NUM> InputLayOutRegisterData;
-	std::array<Microsoft::WRL::ComPtr<IDxcBlob>, PIPELINE_MAX_NUM> VertexShaderRegisterData;
-	std::array<Microsoft::WRL::ComPtr<IDxcBlob>, PIPELINE_MAX_NUM> PixcelShaderRegisterData;
-	std::array<Microsoft::WRL::ComPtr<IDxcBlob>, PIPELINE_MAX_NUM> GeometoryShaderRegisterData;
-	std::array<RootSignatureMode, PIPELINE_MAX_NUM> RootSignatureName;
-	std::array<D3D12_GRAPHICS_PIPELINE_STATE_DESC, PIPELINE_MAX_NUM> PipeLineDataRegisterData;
-	std::array<Microsoft::WRL::ComPtr<ID3D12PipelineState>, PIPELINE_MAX_NUM> PipeLineRegisterData;
+	std::array<InputLayOutData, PIPELINE_MAX_NUM> inputLayOutRegisterData;
+	std::array<Microsoft::WRL::ComPtr<IDxcBlob>, PIPELINE_MAX_NUM> vertexShaderRegisterData;
+	std::array<Microsoft::WRL::ComPtr<IDxcBlob>, PIPELINE_MAX_NUM> pixcelShaderRegisterData;
+	std::array<Microsoft::WRL::ComPtr<IDxcBlob>, PIPELINE_MAX_NUM> geometoryShaderRegisterData;
+	std::array<RootSignatureMode, PIPELINE_MAX_NUM> rootSignatureName;
+	std::array<D3D12_GRAPHICS_PIPELINE_STATE_DESC, PIPELINE_MAX_NUM> pipeLineDataRegisterData;
+	std::array<Microsoft::WRL::ComPtr<ID3D12PipelineState>, PIPELINE_MAX_NUM> pipeLineRegisterData;
 
-	std::array<Microsoft::WRL::ComPtr<IDxcBlob>, PIPELINE_MAX_NUM> ComputeShaderRegisterData;
+	std::array<Microsoft::WRL::ComPtr<IDxcBlob>, PIPELINE_MAX_NUM> computeShaderRegisterData;
 	std::array<D3D12_COMPUTE_PIPELINE_STATE_DESC, PIPELINE_MAX_NUM> computePipeLineDataRegisterData;
-	std::array<Microsoft::WRL::ComPtr<ID3D12PipelineState>, PIPELINE_MAX_NUM> ComputePipeLineRegisterData;
+	std::array<Microsoft::WRL::ComPtr<ID3D12PipelineState>, PIPELINE_MAX_NUM> computePipeLineRegisterData;
 	std::array<RootSignatureMode, PIPELINE_MAX_NUM> computeRootSignatureName;
 
 	bool geo;
