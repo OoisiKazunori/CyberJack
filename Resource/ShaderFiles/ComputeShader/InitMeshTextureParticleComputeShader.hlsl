@@ -24,12 +24,6 @@ struct InputData
 //    uint bias;
 //};
 
-SamplerState g_samPoint
-{
-    Filter = MIN_MAG_MIP_POINT;
-    AddressU = Wrap;
-    AddressV = Wrap;
-};
 Texture2D<float4> tex : register(t0);
 SamplerState smp : register(s0);
 
@@ -40,5 +34,5 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     index += 1 * groupId.x;
 
     float2 uv = float2(0,0);
-    float4 textureColor = tex.SampleLevel(g_samPoint,uv,0);
+    float4 textureColor = tex.SampleLevel(smp,uv,0);
 }
