@@ -69,12 +69,12 @@ DebugMeshParticleScene::DebugMeshParticleScene()
 	KazRenderHelper::InitVerticesPos(&vertices[0].pos, &vertices[1].pos, &vertices[2].pos, &vertices[3].pos, { 0.5f,0.5f });
 	KazRenderHelper::InitUvPos(&vertices[0].uv, &vertices[1].uv, &vertices[2].uv, &vertices[3].uv);
 
-	RESOURCE_HANDLE lHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "tex.png");
+	handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TitlePath + "TitleName.png");
 
 	KazMath::Vec2<int>lTexSize
 	(
-		static_cast<int>(TextureResourceMgr::Instance()->GetTextureSize(lHandle).Width),
-		static_cast<int>(TextureResourceMgr::Instance()->GetTextureSize(lHandle).Height))
+		static_cast<int>(TextureResourceMgr::Instance()->GetTextureSize(handle).Width),
+		static_cast<int>(TextureResourceMgr::Instance()->GetTextureSize(handle).Height))
 		;
 
 	KazMath::Vec2<float> lLeftUp, lRightDown;
@@ -345,7 +345,7 @@ void DebugMeshParticleScene::Update()
 	}
 
 
-	texParticle->Update(TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StagePath + "lambert1_Base_color.png"));
+	texParticle->Update(handle);
 
 }
 
