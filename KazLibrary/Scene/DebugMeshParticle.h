@@ -61,6 +61,33 @@ private:
 	//計算
 	bool initFlag;
 	BackGroundForDebug debugDraw;
+
+	float CalucurateTriangleArea(KazMath::Vec3<float> P0, KazMath::Vec3<float> P1, KazMath::Vec3<float> P2)
+	{
+		KazMath::Vec3<float> p0p1Vec = P1 - P0;
+		KazMath::Vec3<float> p1p2Vec = P2 - P1;
+		KazMath::Vec3<float> r = p0p1Vec.Cross(p1p2Vec);
+		return r.z / 2.0f;
+	}
+
+	float CalucurateUVW(KazMath::Vec3<float> P0, KazMath::Vec3<float> P1, KazMath::Vec3<float> ATTACK_POINT, float TRIANGLE_AREA)
+	{
+		KazMath::Vec3<float> p0p1Vec = ATTACK_POINT - P0;
+		KazMath::Vec3<float> p1p2Vec = ATTACK_POINT - P1;
+		KazMath::Vec3<float> r = p0p1Vec.Cross(p1p2Vec);
+		float area = r.z / 2.0f;
+		float rate = area / TRIANGLE_AREA;
+		return rate;
+	}
+	float CalucurateV(KazMath::Vec3<float> P0, KazMath::Vec3<float> P1, KazMath::Vec3<float> ATTACK_POINT, float TRIANGLE_AREA)
+	{
+		KazMath::Vec3<float> p0p1Vec = ATTACK_POINT - P0;
+		KazMath::Vec3<float> p1p2Vec = ATTACK_POINT - P1;
+		KazMath::Vec3<float> r = p0p1Vec.Cross(p1p2Vec);
+		float area = r.z / 2.0f;
+		float rate = area / TRIANGLE_AREA;
+		return P0.x * rate;
+	}
 	//デバック用--------------------------------------------
 
 	//GPUでのパーティクル--------------------------------------------

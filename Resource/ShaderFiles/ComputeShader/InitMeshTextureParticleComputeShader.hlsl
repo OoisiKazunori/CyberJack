@@ -34,7 +34,7 @@ float Cross(float3 VEC_1,float3 VEC_2)
     result.x = VEC_1.y * VEC_2.z - VEC_2.y * VEC_1.z;
     result.y = VEC_1.z * VEC_2.x - VEC_2.z * VEC_1.x;
     result.z = VEC_1.x * VEC_2.y - VEC_2.x * VEC_1.y;
-    return result;
+    return result.z;
 }
 
 float CalucurateTriangleArea(float3 P0,float3 P1,float3 P2)
@@ -46,8 +46,11 @@ float CalucurateTriangleArea(float3 P0,float3 P1,float3 P2)
 
 float CalucurateUVW(float3 P0,float3 P1,float3 ATTACK_POINT,float TRIANGLE_AREA)
 {
-    float rate = CalucurateTriangleArea(P0,P1,ATTACK_POINT) / TRIANGLE_AREA;
-    return P0 * rate;
+    float3 p0p1Vec = P0 - ATTACK_POINT;
+    float3 p1p2Vec = P1 - ATTACK_POINT;
+    float area = Cross(p0p1Vec,p1p2Vec) / 2.0f;
+    float rate = area / TRIANGLE_AREA;
+    return rate;
 }
 
 [numthreads(1024, 1, 1)]
@@ -69,32 +72,40 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     //三角形を構成するインデックスの指定--------------------------------------------
 
     //頂点座標からワールド座標に変換後----------------------------------------------
-    float4 firstVertWorldPos = GetPos(vertciesData[firstVertIndex].pos.xyz,pos.xyz);
-    float4 secondVertWorldPos = GetPos(vertciesData[secondVertIndex].pos.xyz,pos.xyz);
-    float4 thirdVertWorldPos = GetPos(vertciesData[thirdVertIndex].pos.xyz,pos.xyz);
-    //頂点座標からワールド座標に変換------------------------------------------------
+    InputData firstVertWorldPos;
+    InputData secondVertWorldPos;
+    InputData thirdVertWorldPos;
 
-    //三角形の面積を計算
-    float triangleArea = CalucurateTriangleArea(firstVertWorldPos.xyz,secondVertWorldPos.xyz,thirdVertWorldPos.xyz);
+    firstVertWorldPos.pos = GetPos(vertciesData[firstVertIndex].pos.xyz,pos.xyz);
+    secondVertWorldPos.pos = GetPos(vertciesData[secondVertIndex].pos.xyz,pos.xyz);
+    thirdVertWorldPos.pos = GetPos(vertciesData[thirdVertIndex].pos.xyz,pos.xyz);
+    firstVertWorldPos.uv = vertciesData[firstVertIndex].uv;
+    secondVertWorldPos.uv = vertciesData[secondVertIndex].uv;
+    thirdVertWorldPos.uv = vertciesData[thirdVertIndex].uv;
+    //頂点座標からワールド座標に変換------------------------------------------------
 
     //三角形を構成するレイ--------------------------------------------
     const int RAY_MAX_NUM = 3;
     const int RAY_POS_MAX_NUM = 2;
     float3 triangleRay[RAY_MAX_NUM][RAY_POS_MAX_NUM];
-    triangleRay[0][0] = firstVertWorldPos.xyz;
-    triangleRay[0][1] = secondVertWorldPos.xyz;
-    triangleRay[1][0] = secondVertWorldPos.xyz;
-    triangleRay[1][1] = thirdVertWorldPos.xyz;
-    triangleRay[2][0] = thirdVertWorldPos.xyz;
-    triangleRay[2][1] = firstVertWorldPos.xyz;
+    triangleRay[0][0] = firstVertWorldPos.pos.xyz;
+    triangleRay[0][1] = secondVertWorldPos.pos.xyz;
+    triangleRay[1][0] = secondVertWorldPos.pos.xyz;
+    triangleRay[1][1] = thirdVertWorldPos.pos.xyz;
+    triangleRay[2][0] = thirdVertWorldPos.pos.xyz;
+    triangleRay[2][1] = firstVertWorldPos.pos.xyz;
 
     //三角形を構成するレイ--------------------------------------------
 
     //重心座標
-    float3 triangleCentralPos = (firstVertWorldPos.xyz + secondVertWorldPos.xyz + thirdVertWorldPos.xyz) / 3.0f;
+    float3 triangleCentralPos = (firstVertWorldPos.pos.xyz + secondVertWorldPos.pos.xyz + thirdVertWorldPos.pos.xyz) / 3.0f;
+
+    //三角形の面積を計算
+    float triangleArea = CalucurateTriangleArea(firstVertWorldPos.pos.xyz,secondVertWorldPos.pos.xyz,thirdVertWorldPos.pos.xyz);
+
  
     //パーティクルの配置--------------------------------------------
-    const int PARTICLE_MAX_NUM = 1000;
+    const int PARTICLE_MAX_NUM = 5000;
     const int PER_PARTICLE_MAX_NUM = PARTICLE_MAX_NUM / 3;
     for(int rayIndex = 0; rayIndex < RAY_MAX_NUM; ++rayIndex)
     {
@@ -124,12 +135,14 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
                 resultPos = startPos + resultDistance * rate;
 
                 //座標からUVを取る
-                float2 uv;
-                uv.x = CalucurateUVW(firstVertWorldPos.xyz,secondVertWorldPos.xyz,resultPos,triangleArea);
-                uv.y = CalucurateUVW(secondVertWorldPos.xyz,thirdVertWorldPos.xyz,resultPos,triangleArea);
+                float3 uvw;
+                uvw.x = CalucurateUVW(firstVertWorldPos.pos.xyz,secondVertWorldPos.pos.xyz,resultPos,triangleArea);
+                uvw.y = CalucurateUVW(secondVertWorldPos.pos.xyz,thirdVertWorldPos.pos.xyz,resultPos,triangleArea);
+                uvw.z = CalucurateUVW(thirdVertWorldPos.pos.xyz,firstVertWorldPos.pos.xyz,resultPos,triangleArea);
+                float2 uv = uvw.x * firstVertWorldPos.uv.xy + uvw.y * secondVertWorldPos.uv.xy + uvw.z * thirdVertWorldPos.uv.xy;
 
                 worldPosData[outputIndex].pos.xyz = resultPos;
-                worldPosData[outputIndex].color = tex.SampleLevel(smp,uv,0);
+                worldPosData[outputIndex].color = float4(uv,1,1);
             }
             else
             {
@@ -138,12 +151,14 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
                 resultPos = startPos + resultDistance * rate;
 
                 //座標からUVを取る
-                float2 uv;
-                uv.x = CalucurateUVW(firstVertWorldPos.xyz,secondVertWorldPos.xyz,resultPos,triangleArea);
-                uv.y = CalucurateUVW(secondVertWorldPos.xyz,thirdVertWorldPos.xyz,resultPos,triangleArea);
+                float3 uvw;
+                uvw.x = CalucurateUVW(firstVertWorldPos.pos.xyz,secondVertWorldPos.pos.xyz,resultPos,triangleArea);
+                uvw.y = CalucurateUVW(secondVertWorldPos.pos.xyz,thirdVertWorldPos.pos.xyz,resultPos,triangleArea);
+                uvw.z = CalucurateUVW(thirdVertWorldPos.pos.xyz,firstVertWorldPos.pos.xyz,resultPos,triangleArea);
+                float2 uv = uvw.x * firstVertWorldPos.uv.xy + uvw.y * secondVertWorldPos.uv.xy + uvw.z * thirdVertWorldPos.uv.xy;
 
                 worldPosData[outputIndex].pos.xyz = resultPos;
-                worldPosData[outputIndex].color = tex.SampleLevel(smp,uv,0);
+                worldPosData[outputIndex].color = float4(uv,1,1);
             }
         }
     }

@@ -95,7 +95,7 @@ DebugMeshParticleScene::DebugMeshParticleScene()
 
 
 	//重複ありの三角形
-	texParticle = std::make_unique<TextureParticle>(lVertArray, 0.2f);
+	texParticle = std::make_unique<TextureParticle>(lVertArray, 1.0f);
 }
 
 DebugMeshParticleScene::~DebugMeshParticleScene()
@@ -222,6 +222,9 @@ void DebugMeshParticleScene::Update()
 		{
 			int particleNum = 0;
 
+			float triangleArea = CalucurateTriangleArea(triangelLine[0].data.startPos, triangelLine[1].data.startPos, triangelLine[2].data.startPos);
+
+
 			//一つのレイ当たりで使用できるパーティクルを決定する
 			const int L_MAX_PARTICLE = static_cast<int>(particle.size()) / static_cast<int>(triangelPosArray.size());
 			for (int rayIndex = 0; rayIndex < triangelLine.size(); ++rayIndex)
@@ -253,6 +256,16 @@ void DebugMeshParticleScene::Update()
 						//4-2.長さの範囲で座標を決める場合は長さの値でどの場所に配置するか決める
 						particle[particleNum].data.transform.pos = lStartPos + lResultDistance * KazMath::Rand(1.0f, 0.0f);
 					}
+
+					//UV--------------------
+					float u = CalucurateUVW(triangelLine[0].data.startPos, triangelLine[0].data.endPos, particle[particleNum].data.transform.pos, triangleArea);
+					float v = CalucurateUVW(triangelLine[1].data.startPos, triangelLine[1].data.endPos, particle[particleNum].data.transform.pos, triangleArea);
+					float w = CalucurateUVW(triangelLine[2].data.startPos, triangelLine[2].data.endPos, particle[particleNum].data.transform.pos, triangleArea);
+
+					KazMath::Vec3<float> uvw = triangelLine[0].data.startPos * u + triangelLine[1].data.startPos * v + triangelLine[2].data.startPos * w;
+					//UV--------------------
+
+
 					particle[particleNum].data.transform.scale = { 0.1f,0.1f,0.1f };
 					++particleNum;
 				}

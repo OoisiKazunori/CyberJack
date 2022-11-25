@@ -80,13 +80,15 @@ TextureParticle::TextureParticle(std::vector<VertexUv> VERT_NUM, float PARTICLE_
 			VERT_NUM.size() * sizeof(VertexUv)
 		);
 
+
+		bias = 0;
+		prevBias = 80;
+
 		constBufferData.worldPos = {};
 		constBufferData.vertMaxNum = static_cast<UINT>(VERT_NUM.size());
-		constBufferData.bias = 80;
+		constBufferData.bias = bias;
 
 
-		bias = 80;
-		prevBias = 80;
 		buffers->TransData(initCommonHandle, &constBufferData, sizeof(InitCommonData));
 	}
 
@@ -130,6 +132,24 @@ TextureParticle::TextureParticle(std::vector<VertexUv> VERT_NUM, float PARTICLE_
 
 
 
+
+
+	resetSceneFlag = false;
+
+	scale = PARTICLE_SCALE;
+	scaleRotaMat = KazMath::CaluScaleMatrix({ scale,scale,scale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
+
+	drawParticleFlag = false;
+}
+
+void TextureParticle::Init()
+{
+}
+
+void TextureParticle::Update()
+{
+
+
 	//‰Šú‰»ˆ—--------------------------------------------
 	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_INIT);
@@ -148,20 +168,7 @@ TextureParticle::TextureParticle(std::vector<VertexUv> VERT_NUM, float PARTICLE_
 
 
 
-	resetSceneFlag = false;
 
-	scale = PARTICLE_SCALE;
-	scaleRotaMat = KazMath::CaluScaleMatrix({ scale,scale,scale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
-
-	drawParticleFlag = false;
-}
-
-void TextureParticle::Init()
-{
-}
-
-void TextureParticle::Update()
-{
 	DirectX::XMMATRIX lMatWorld = KazMath::CaluTransMatrix({ 0.0f,0.0f,0.0f }) * KazMath::CaluScaleMatrix({ scale,scale,scale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_UPDATE);
 
