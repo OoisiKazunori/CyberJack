@@ -69,7 +69,7 @@ DebugMeshParticleScene::DebugMeshParticleScene()
 	KazRenderHelper::InitVerticesPos(&vertices[0].pos, &vertices[1].pos, &vertices[2].pos, &vertices[3].pos, { 0.5f,0.5f });
 	KazRenderHelper::InitUvPos(&vertices[0].uv, &vertices[1].uv, &vertices[2].uv, &vertices[3].uv);
 
-	handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TitlePath + "TitleName.png");
+	handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "tex.png");
 
 	KazMath::Vec2<int>lTexSize
 	(
