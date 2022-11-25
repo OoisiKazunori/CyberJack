@@ -7,7 +7,7 @@
 #include"../Game/Effect/MeshParticleEmitter.h"
 #include"../Game/Effect/DeadParticle.h"
 #include"../KazLibrary/Math/KazMath.h"
-
+#include"../Game/Effect/TextureParticle.h"
 
 class DebugMeshParticleScene :public SceneBase
 {
@@ -38,6 +38,7 @@ private:
 	bool cpuCheckParticleFlag;
 	bool gpuCheckParticleFlag;
 	bool perlinNoizeFlag;
+	bool textureParticleFlag;
 
 	bool deadParticleFlag, prevDeadParticleFlag;
 
@@ -72,6 +73,10 @@ private:
 	std::unique_ptr<GameRenderTarget>rendertarget;
 	Sprite2DRender mainRenderTarget;
 
+
+	//テクスチャをコンピュートシェーダーで読み込む--------------------------------------------
+	TextureParticle texParticle;
+	//テクスチャをコンピュートシェーダーで読み込む--------------------------------------------
 
 
 	//パーリンノイズの確認--------------------------------------------

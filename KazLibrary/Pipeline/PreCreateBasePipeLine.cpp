@@ -2804,6 +2804,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		lData.paramData[0].param = 0;
 		lData.paramData[0].type = GRAPHICS_PRAMTYPE_TEX;
 		lData.range[0] = GRAPHICS_RANGE_TYPE_SRV;
+		lData.sample.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_SRV, lData, 1);
 	}
 
