@@ -10,8 +10,17 @@
 #include"../Game/Stage/RezStage.h"
 #include<cmath>
 #include<iostream>
+#include<vector>
 
 #include"../KazLibrary/Input/ControllerInputManager.h"
+
+void AddVert(std::vector<VertexUv> &DATA, std::array<Vertex, 4>VERT_DATA, std::array<KazMath::Vec2<float>, 4>TEX_VERT_DATA, int INDEX)
+{
+	VertexUv lData;
+	lData.pos = { TEX_VERT_DATA[INDEX].ConvertXMFLOAT2().x,TEX_VERT_DATA[INDEX].ConvertXMFLOAT2().y,0.0f };
+	lData.uv = VERT_DATA[INDEX].uv;
+	DATA.push_back(lData);
+};
 
 DebugMeshParticleScene::DebugMeshParticleScene()
 {
@@ -52,6 +61,41 @@ DebugMeshParticleScene::DebugMeshParticleScene()
 	model.data.removeMaterialFlag = true;
 	model.data.colorData.color = { 255,255,255,255 };
 	model.data.transform.scale = { 1.0f,1.0f,1.0f };
+
+
+	std::array<Vertex, 4>vertices;
+	std::array<USHORT, 6> indices;
+	indices = KazRenderHelper::InitIndciesForPlanePolygon();
+	KazRenderHelper::InitVerticesPos(&vertices[0].pos, &vertices[1].pos, &vertices[2].pos, &vertices[3].pos, { 0.5f,0.5f });
+	KazRenderHelper::InitUvPos(&vertices[0].uv, &vertices[1].uv, &vertices[2].uv, &vertices[3].uv);
+
+	RESOURCE_HANDLE lHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "tex.png");
+
+	KazMath::Vec2<int>lTexSize
+	(
+		static_cast<int>(TextureResourceMgr::Instance()->GetTextureSize(lHandle).Width),
+		static_cast<int>(TextureResourceMgr::Instance()->GetTextureSize(lHandle).Height))
+		;
+
+	KazMath::Vec2<float> lLeftUp, lRightDown;
+	lLeftUp = { 0.0f,0.0f };
+	lRightDown = { 1.0f,1.0f };
+	//サイズ変更
+	std::array<KazMath::Vec2<float>, 4>lVert;
+	lVert = KazRenderHelper::ChangePlaneScale(lLeftUp, lRightDown, { 1.0f,1.0f }, { 0.5f,0.5f }, lTexSize);
+
+
+	std::vector<VertexUv>lVertArray;
+	AddVert(lVertArray, vertices, lVert, 0);
+	AddVert(lVertArray, vertices, lVert, 1);
+	AddVert(lVertArray, vertices, lVert, 2);
+	AddVert(lVertArray, vertices, lVert, 2);
+	AddVert(lVertArray, vertices, lVert, 1);
+	AddVert(lVertArray, vertices, lVert, 3);
+
+
+	//重複ありの三角形
+	texParticle = std::make_unique<TextureParticle>(lVertArray, 0.2f);
 }
 
 DebugMeshParticleScene::~DebugMeshParticleScene()
@@ -74,6 +118,8 @@ void DebugMeshParticleScene::Init()
 
 	prevDeadParticleFlag = false;
 	deadParticleFlag = false;
+
+	texParticle->Init();
 }
 
 void DebugMeshParticleScene::Finalize()
@@ -284,7 +330,7 @@ void DebugMeshParticleScene::Update()
 	}
 
 
-
+	texParticle->Update();
 
 }
 
@@ -336,6 +382,9 @@ void DebugMeshParticleScene::Draw()
 
 		moveNoiseBlock.Draw();
 	}
+
+	texParticle->Draw();
+
 	rendertarget->Draw();
 	//debugDraw.Draw();
 	mainRenderTarget.Draw();

@@ -11,7 +11,7 @@
 #include"../KazLibrary/Loader/ObjResourceMgr.h"
 #include"../KazLibrary/Buffer/UavViewHandleMgr.h"
 
-TextureParticle::TextureParticle()
+TextureParticle::TextureParticle(std::vector<VertexUv> VERT_NUM, float PARTICLE_SCALE)
 {
 	buffers = std::make_unique<CreateGpuBuffer>();
 
@@ -49,7 +49,7 @@ TextureParticle::TextureParticle()
 	//描画情報
 	vertexBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetVertexBufferData(vertBuffSize));
 	indexBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetIndexBufferData(indexBuffSize));
-	verticesDataHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(DirectX::XMFLOAT4) * static_cast<UINT>(PARTICLE_MAX_NUM)));
+	verticesDataHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(VertexUv) * static_cast<UINT>(VERT_NUM.size())));
 
 	//共通情報
 	initCommonHandle = buffers->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(InitCommonData)));
@@ -77,7 +77,7 @@ TextureParticle::TextureParticle()
 		(
 			buffers->GetMapAddres(verticesDataHandle),
 			VERT_NUM.data(),
-			VERT_NUM.size() * sizeof(DirectX::XMFLOAT4)
+			VERT_NUM.size() * sizeof(VertexUv)
 		);
 
 		constBufferData.worldPos = {};
@@ -112,7 +112,7 @@ TextureParticle::TextureParticle()
 	vertDataViewHandle = UavViewHandleMgr::Instance()->GetHandle();
 	DescriptorHeapMgr::Instance()->CreateBufferView(
 		vertDataViewHandle,
-		KazBufferHelper::SetUnorderedAccessView(sizeof(DirectX::XMFLOAT4), static_cast<UINT>(VERT_NUM.size())),
+		KazBufferHelper::SetUnorderedAccessView(sizeof(VertexUv), static_cast<UINT>(VERT_NUM.size())),
 		buffers->GetBufferData(verticesDataHandle).Get(),
 		nullptr
 	);
@@ -129,25 +129,21 @@ TextureParticle::TextureParticle()
 	indexBufferView = KazBufferHelper::SetIndexBufferView(buffers->GetGpuAddress(indexBufferHandle), indexBuffSize);
 
 
-	RESOURCE_HANDLE lHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "");
 
 	//初期化処理--------------------------------------------
 	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_INIT);
 
 	//頂点
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(lHandle));
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(vertDataViewHandle));
 	//出力
-	//DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
 	//共通用バッファのデータ送信
-	//DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(initCommonHandle));
-
-	UINT lNum = indexNum / 1024;
-	if (lNum <= 0)
-	{
-		lNum = 1;
-	}
-	DirectX12CmdList::Instance()->cmdList->Dispatch(50, 1, 1);
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(initCommonHandle));
+	//テクスチャ
+	RESOURCE_HANDLE lHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "tex.png");
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(3, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(lHandle));
+	DirectX12CmdList::Instance()->cmdList->Dispatch(100, 1, 1);
 	//初期化処理--------------------------------------------
 
 
@@ -166,8 +162,48 @@ void TextureParticle::Init()
 
 void TextureParticle::Update()
 {
+	DirectX::XMMATRIX lMatWorld = KazMath::CaluTransMatrix({ 0.0f,0.0f,0.0f }) * KazMath::CaluScaleMatrix({ scale,scale,scale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
+	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_UPDATE);
+
+
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(updateViewHandle));
+
+	//共通用バッファのデータ送信
+	updateCommonData.scaleRotateBillboardMat = scaleRotaMat * CameraMgr::Instance()->GetMatBillBoard();
+	updateCommonData.viewProjection = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
+	updateCommonData.motherMat = lMatWorld;
+	buffers->TransData(updateCommonHandle, &updateCommonData, sizeof(UpdateCommonData));
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(updateCommonHandle));
+	DirectX12CmdList::Instance()->cmdList->Dispatch(100, 1, 1);
 }
 
 void TextureParticle::Draw()
 {
+	GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE);
+	DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
+	DirectX12CmdList::Instance()->cmdList->IASetIndexBuffer(&indexBufferView);
+
+	RenderTargetStatus::Instance()->ChangeBarrier(
+		buffers->GetBufferData(drawCommandHandle).Get(),
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT
+	);
+
+	DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
+	(
+		commandSig.Get(),
+		1,
+		buffers->GetBufferData(drawCommandHandle).Get(),
+		0,
+		nullptr,
+		0
+	);
+
+	RenderTargetStatus::Instance()->ChangeBarrier(
+		buffers->GetBufferData(drawCommandHandle).Get(),
+		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+	);
 }

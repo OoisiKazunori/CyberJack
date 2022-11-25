@@ -75,7 +75,7 @@ private:
 
 
 	//テクスチャをコンピュートシェーダーで読み込む--------------------------------------------
-	TextureParticle texParticle;
+	std::unique_ptr<TextureParticle> texParticle;
 	//テクスチャをコンピュートシェーダーで読み込む--------------------------------------------
 
 

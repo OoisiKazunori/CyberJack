@@ -6,10 +6,16 @@
 #include<vector>
 #include"../KazLibrary/Render/KazRender.h"
 
+struct VertexUv
+{
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT2 uv;
+};
+
 class TextureParticle
 {
 public:
-	TextureParticle();
+	TextureParticle(std::vector<VertexUv> VERT_NUM, float PARTICLE_SCALE = 0.18f);
 	void Init();
 	void Update();
 	void Draw();
@@ -56,7 +62,8 @@ private:
 	//èâä˙âª--------------------------------------------
 	struct OutputData
 	{
-		DirectX::XMFLOAT4 pos;
+		DirectX::XMFLOAT3 pos;
+		DirectX::XMFLOAT4 color;
 	};
 	struct InitCommonData
 	{
