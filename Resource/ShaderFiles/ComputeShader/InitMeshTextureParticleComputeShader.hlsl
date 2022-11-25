@@ -23,32 +23,26 @@ cbuffer RootConstants : register(b0)
     float4 pos;
     uint vertMaxNum;
     uint bias;
+    uint3 index1;
+    uint3 index2;
 };
 
 Texture2D<float4> tex : register(t2);
 SamplerState smp : register(s0);
 
-float Cross(float3 VEC_1,float3 VEC_2)
-{
-    float3 result;
-    result.x = VEC_1.y * VEC_2.z - VEC_2.y * VEC_1.z;
-    result.y = VEC_1.z * VEC_2.x - VEC_2.z * VEC_1.x;
-    result.z = VEC_1.x * VEC_2.y - VEC_2.x * VEC_1.y;
-    return result.z;
-}
 
 float CalucurateTriangleArea(float3 P0,float3 P1,float3 P2)
 {
     float3 p0p1Vec = P1 - P0;
     float3 p1p2Vec = P2 - P1;
-    return Cross(p0p1Vec,p1p2Vec) / 2.0f;
+    return length(cross(p0p1Vec,p1p2Vec)) / 2.0f;
 }
 
 float CalucurateUVW(float3 P0,float3 P1,float3 ATTACK_POINT,float TRIANGLE_AREA)
 {
-    float3 p0p1Vec = P0 - ATTACK_POINT;
-    float3 p1p2Vec = P1 - ATTACK_POINT;
-    float area = Cross(p0p1Vec,p1p2Vec) / 2.0f;
+    float3 p0p1Vec = ATTACK_POINT - P0;
+    float3 p1p2Vec = ATTACK_POINT - P1;
+    float area = length(cross(p0p1Vec,p1p2Vec)) / 2.0f;   
     float rate = area / TRIANGLE_AREA;
     return rate;
 }
@@ -69,6 +63,30 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     uint firstVertIndex = index * 3;
     uint secondVertIndex = index * 3 + 1;
     uint thirdVertIndex = index * 3 + 2;
+
+    uint uvFirstVertIndex = firstVertIndex;
+    uint uvSecondVertIndex = secondVertIndex;
+    uint uvThirdVertIndex = thirdVertIndex;
+    
+    if(index == 0)
+    {
+    //    uvFirstVertIndex = index1.x;
+    //    uvSecondVertIndex = index1.y;
+    //    uvThirdVertIndex = index1.z;
+
+        uvFirstVertIndex = 2;
+        uvSecondVertIndex = 0;
+        uvThirdVertIndex = 1;
+    }
+    else
+    {
+    //       uvFirstVertIndex = index2.x;
+    //       uvSecondVertIndex = index2.y;
+    //        uvThirdVertIndex = index2.z;
+        uvFirstVertIndex = 5;
+        uvSecondVertIndex = 3;
+        uvThirdVertIndex = 4;
+    }
     //三角形を構成するインデックスの指定--------------------------------------------
 
     //頂点座標からワールド座標に変換後----------------------------------------------
@@ -79,9 +97,9 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     firstVertWorldPos.pos = GetPos(vertciesData[firstVertIndex].pos.xyz,pos.xyz);
     secondVertWorldPos.pos = GetPos(vertciesData[secondVertIndex].pos.xyz,pos.xyz);
     thirdVertWorldPos.pos = GetPos(vertciesData[thirdVertIndex].pos.xyz,pos.xyz);
-    firstVertWorldPos.uv = vertciesData[firstVertIndex].uv;
-    secondVertWorldPos.uv = vertciesData[secondVertIndex].uv;
-    thirdVertWorldPos.uv = vertciesData[thirdVertIndex].uv;
+    firstVertWorldPos.uv = vertciesData[uvFirstVertIndex].uv;
+    secondVertWorldPos.uv = vertciesData[uvSecondVertIndex].uv;
+    thirdVertWorldPos.uv = vertciesData[uvThirdVertIndex].uv;
     //頂点座標からワールド座標に変換------------------------------------------------
 
     //三角形を構成するレイ--------------------------------------------
@@ -105,7 +123,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
 
  
     //パーティクルの配置--------------------------------------------
-    const int PARTICLE_MAX_NUM = 5000;
+    const int PARTICLE_MAX_NUM = 10000;
     const int PER_PARTICLE_MAX_NUM = PARTICLE_MAX_NUM / 3;
     for(int rayIndex = 0; rayIndex < RAY_MAX_NUM; ++rayIndex)
     {
@@ -139,10 +157,24 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
                 uvw.x = CalucurateUVW(firstVertWorldPos.pos.xyz,secondVertWorldPos.pos.xyz,resultPos,triangleArea);
                 uvw.y = CalucurateUVW(secondVertWorldPos.pos.xyz,thirdVertWorldPos.pos.xyz,resultPos,triangleArea);
                 uvw.z = CalucurateUVW(thirdVertWorldPos.pos.xyz,firstVertWorldPos.pos.xyz,resultPos,triangleArea);
-                float2 uv = uvw.x * firstVertWorldPos.uv.xy + uvw.y * secondVertWorldPos.uv.xy + uvw.z * thirdVertWorldPos.uv.xy;
+
+                float2 firstVec;
+                firstVec.x = firstVertWorldPos.uv.x * uvw.x;
+                firstVec.y = firstVertWorldPos.uv.y * uvw.x;
+
+                float2 secondVec;
+                secondVec.x = secondVertWorldPos.uv.x * uvw.y;
+                secondVec.y = secondVertWorldPos.uv.y * uvw.y;
+
+                float2 thirdVec;
+                thirdVec.x = thirdVertWorldPos.uv.x * uvw.z;
+                thirdVec.y = thirdVertWorldPos.uv.y * uvw.z;
+
+                float2 uv = firstVec + secondVec + thirdVec;
 
                 worldPosData[outputIndex].pos.xyz = resultPos;
-                worldPosData[outputIndex].color = float4(uv,1,1);
+                //worldPosData[outputIndex].color = float4(uv,1,1);
+                worldPosData[outputIndex].color = tex.SampleLevel(smp,uv,0);
             }
             else
             {
@@ -154,11 +186,24 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
                 float3 uvw;
                 uvw.x = CalucurateUVW(firstVertWorldPos.pos.xyz,secondVertWorldPos.pos.xyz,resultPos,triangleArea);
                 uvw.y = CalucurateUVW(secondVertWorldPos.pos.xyz,thirdVertWorldPos.pos.xyz,resultPos,triangleArea);
-                uvw.z = CalucurateUVW(thirdVertWorldPos.pos.xyz,firstVertWorldPos.pos.xyz,resultPos,triangleArea);
-                float2 uv = uvw.x * firstVertWorldPos.uv.xy + uvw.y * secondVertWorldPos.uv.xy + uvw.z * thirdVertWorldPos.uv.xy;
+                uvw.z = CalucurateUVW(thirdVertWorldPos.pos,firstVertWorldPos.pos,resultPos,triangleArea);
+                
+                float2 firstVec;
+                firstVec.x = firstVertWorldPos.uv.x * uvw.x;
+                firstVec.y = firstVertWorldPos.uv.y * uvw.x;
+
+                float2 secondVec;
+                secondVec.x = secondVertWorldPos.uv.x * uvw.y;
+                secondVec.y = secondVertWorldPos.uv.y * uvw.y;
+
+                float2 thirdVec;
+                thirdVec.x = thirdVertWorldPos.uv.x * uvw.z;
+                thirdVec.y = thirdVertWorldPos.uv.y * uvw.z;
+
+                float2 uv = firstVec + secondVec + thirdVec;
 
                 worldPosData[outputIndex].pos.xyz = resultPos;
-                worldPosData[outputIndex].color = float4(uv,1,1);
+                worldPosData[outputIndex].color = tex.SampleLevel(smp,uv,0);
             }
         }
     }

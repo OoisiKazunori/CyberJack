@@ -88,11 +88,10 @@ DebugMeshParticleScene::DebugMeshParticleScene()
 	std::vector<VertexUv>lVertArray;
 	AddVert(lVertArray, vertices, lVert, 0);
 	AddVert(lVertArray, vertices, lVert, 1);
-	AddVert(lVertArray, vertices, lVert, 2);
+	AddVert(lVertArray, vertices, lVert, 2);//ñ‚ëËÇÃâ”èä
 	AddVert(lVertArray, vertices, lVert, 2);
 	AddVert(lVertArray, vertices, lVert, 1);
-	AddVert(lVertArray, vertices, lVert, 3);
-
+	AddVert(lVertArray, vertices, lVert, 3);//ñ‚ëËÇÃâ”èä
 
 	//èdï°Ç†ÇËÇÃéOäpå`
 	texParticle = std::make_unique<TextureParticle>(lVertArray, 1.0f);
@@ -262,7 +261,10 @@ void DebugMeshParticleScene::Update()
 					float v = CalucurateUVW(triangelLine[1].data.startPos, triangelLine[1].data.endPos, particle[particleNum].data.transform.pos, triangleArea);
 					float w = CalucurateUVW(triangelLine[2].data.startPos, triangelLine[2].data.endPos, particle[particleNum].data.transform.pos, triangleArea);
 
-					KazMath::Vec3<float> uvw = triangelLine[0].data.startPos * u + triangelLine[1].data.startPos * v + triangelLine[2].data.startPos * w;
+					KazMath::Vec3<float> uvw;
+					KazMath::Vec2<float> uVec = KazMath::Vec2<float>(0.0f, 0.0f) * u;
+					KazMath::Vec2<float> vVec = KazMath::Vec2<float>(0.0f, 1.0f) * v;
+					KazMath::Vec2<float> wVec = KazMath::Vec2<float>(1.0f, 0.0f) * w;
 					//UV--------------------
 
 
@@ -343,7 +345,7 @@ void DebugMeshParticleScene::Update()
 	}
 
 
-	texParticle->Update();
+	texParticle->Update(TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StagePath + "lambert1_Base_color.png"));
 
 }
 

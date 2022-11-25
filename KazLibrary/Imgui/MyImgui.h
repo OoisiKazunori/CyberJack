@@ -161,4 +161,24 @@ namespace KazImGuiHelper
 		lLabel = LABEL + "Z" + ":" + std::to_string(VEC_3.z);
 		ImGui::Text(lLabel.c_str());
 	};
+
+	inline void InputXMUINT3(const std::string &LABEL, DirectX::XMUINT3 *VEC_3)
+	{
+		KazMath::Vec3<int>lVec3;
+		lVec3.x = static_cast<UINT>(VEC_3->x);
+		lVec3.y = static_cast<UINT>(VEC_3->y);
+		lVec3.z = static_cast<UINT>(VEC_3->z);
+		
+		static std::string lLabel = "";
+		lLabel = LABEL + "X";
+		ImGui::DragInt(lLabel.c_str(), &lVec3.x);
+		lLabel = LABEL + "Y";
+		ImGui::DragInt(lLabel.c_str(), &lVec3.y);
+		lLabel = LABEL + "Z";
+		ImGui::DragInt(lLabel.c_str(), &lVec3.z);
+
+		VEC_3->x = static_cast<UINT>(lVec3.x);
+		VEC_3->y = static_cast<UINT>(lVec3.y);
+		VEC_3->z = static_cast<UINT>(lVec3.z);
+	};
 };

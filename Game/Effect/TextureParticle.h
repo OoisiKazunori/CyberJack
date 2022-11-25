@@ -17,7 +17,7 @@ class TextureParticle
 public:
 	TextureParticle(std::vector<VertexUv> VERT_NUM, float PARTICLE_SCALE = 0.18f);
 	void Init();
-	void Update();
+	void Update(RESOURCE_HANDLE HANDLE);
 	void Draw();
 
 	D3D12_GPU_VIRTUAL_ADDRESS GetAddress()
@@ -70,6 +70,10 @@ private:
 		DirectX::XMFLOAT4 worldPos;
 		UINT vertMaxNum;
 		UINT bias;
+		DirectX::XMUINT3 pad3;
+		DirectX::XMUINT3 index1;
+		float pad;
+		DirectX::XMUINT3 index2;
 	};
 	InitCommonData constBufferData;
 	RESOURCE_HANDLE vertexBufferHandle, indexBufferHandle;
