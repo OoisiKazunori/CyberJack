@@ -461,8 +461,7 @@ DirectX::XMMATRIX KazMath::CaluMat(const KazMath::Transform3D &TRANSFORM, const 
 	return baseMatWorldData.matWorld * VIEW_MAT * PROJECT_MAT;
 }
 
-template<typename T>
-inline DirectX::XMMATRIX KazMath::CaluWorld(const KazMath::Transform3D &TRANSFORM, const Vec3<T> &Y_VEC, const Vec3<T> &Z_VEC)
+DirectX::XMMATRIX KazMath::CaluWorld(const KazMath::Transform3D &TRANSFORM, const Vec3<float> &Y_VEC, const Vec3<float> &Z_VEC)
 {
 	BaseMatWorldData baseMatWorldData;
 	baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
@@ -499,6 +498,13 @@ void KazMath::Larp(const Vec2<float> BASE_TRANSFORM, Vec2<float> *TRANSFORM, flo
 {
 	Vec2<float> distance = BASE_TRANSFORM - *TRANSFORM;
 	*TRANSFORM += distance * MUL;
+}
+
+void KazMath::Larp(const Vec3<float> BASE_TRANSFORM, Vec3<float> *TRANSFORM, float MUL)
+{
+	Vec3<float> distance = BASE_TRANSFORM - *TRANSFORM;
+	distance *= MUL;
+	*TRANSFORM += distance;
 }
 
 KazMath::Vec3<float> KazMath::SplinePosition(const std::vector<Vec3<float>> &points, size_t startIndex, float t, bool Loop)

@@ -11,12 +11,15 @@
 #include"../Game/Enemy/SplineMisileForBikeEnemy.h"
 #include"../Game/Enemy/SummonEnemy.h"
 #include"../Game/Enemy/PopEnemy.h"
+#include"../Game/UI/Cursor.h"
+#include"../Game/UI/AttackLog.h"
 
 
 namespace KazEnemyHelper
 {
 	static const int LAYER_LEVEL_MAX = 10;				//レイヤーレベルの最大数
 	static const int ENEMY_NUM_MAX = 100;				//1レイヤーレベルに登場する敵の最大数
+	static const int STAGE_NUM_MAX = 3;				//1レイヤーレベルに登場する敵の最大数
 
 	void GenerateEnemy(
 		std::array<std::array<std::unique_ptr<IEnemy>, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> &ENEMIES,
@@ -39,6 +42,8 @@ namespace KazEnemyHelper
 		int GAME_STAGE_LEVEL,
 		bool DEMO_FLAG = false
 	);
+
+	bool LockOn(Cursor *CURSOR, const std::unique_ptr<IEnemy> &ENEMY, AttackLog *LOG, float FONT_SIZE, RESOURCE_HANDLE LOCKON_SOUND);
 
 	enum CameraDir
 	{

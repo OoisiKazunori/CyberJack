@@ -9,27 +9,18 @@ NormalEnemy::NormalEnemy()
 
 void NormalEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 {
-	iEnemy_ModelRender->data.transform.pos = GENERATE_DATA.initPos;	//座標の初期化
-	iEnemy_ModelRender->data.transform.scale = { 1.0f,1.0f,1.0f };
-	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath +"Move/"+ "MoveEnemy_Model.obj");	//モデル読み込み
-	iEnemy_EnemyStatusData->hitBox.radius = 15.0f;	//当たり判定の大きさ変更
-	iOperationData.Init(1);							//残りロックオン数等の初期化
+	EnemyModelType lModelType = ENEMY_MODEL_FBX;
+	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { 1.0f,1.0f,1.0f }, { 0.0f,180.0f,0.0f }), KazFilePathName::EnemyPath + "Move/" + "MoveEnemy_Model.fbx", 15.0f, lModelType, true);
+	iOperationData.Init(1, "gw-1");							//残りロックオン数等の初期化
 
-	iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX;
-	iEnemy_ModelRender->data.removeMaterialFlag = false;
-	iEnemy_ModelRender->data.colorData.color.x = 255;
-	iEnemy_ModelRender->data.colorData.color.y = 255;
-	iEnemy_ModelRender->data.colorData.color.z = 255;
-	iEnemy_ModelRender->data.colorData.color.a = 1;
-	iEnemy_ModelRender->data.transform.rotation.x = 0.0f;
-	iEnemy_ModelRender->data.transform.rotation.y = 180.0f;
-	iEnemy_ModelRender->data.transform.rotation.z = 0.0f;
+
 	initDeadSoundFlag = false;
 	demoFlag = DEMO_FLAG;
 
 	speed = GENERATE_DATA.speed;
-	iEnemy_EnemyStatusData->radius = 8.0f;
 	iEnemy_EnemyStatusData->startFlag = true;
+	iEnemy_EnemyStatusData->objFlag = false;
+	iEnemy_EnemyStatusData->radius = 10.0f;
 }
 
 void NormalEnemy::Finalize()
@@ -38,40 +29,43 @@ void NormalEnemy::Finalize()
 
 void NormalEnemy::Update()
 {
-	++iEnemy_ModelRender->data.transform.rotation.z;
+	++iEnemy_FbxModelRender->data.transform.rotation.z;
 	//移動
 	if (!demoFlag)
 	{
-		iEnemy_ModelRender->data.transform.pos.z += speed;
+		iEnemy_FbxModelRender->data.transform.pos.z += speed;
 	}
 
 	//死亡演出中に登場演出は行わない
-	if (!ProcessingOfDeath(DEATH_ROLL))
+	if (!ProcessingOfDeathFbx(DEATH_SINK))
 	{
 		//登場処理
-		if (iEnemy_ModelRender->data.colorData.color.a < 255)
+		if (iEnemy_FbxModelRender->data.colorData.color.a < 255)
 		{
-			iEnemy_ModelRender->data.colorData.color.a += 5;
+			iEnemy_FbxModelRender->data.colorData.color.a += 5;
 		}
 		else
 		{
-			iEnemy_ModelRender->data.colorData.color.a = 255;
+			iEnemy_FbxModelRender->data.colorData.color.a = 255;
 		}
 	}
 
-	if (iEnemy_ModelRender->data.transform.pos.z <= -50.0f)
+	if (iEnemy_FbxModelRender->data.transform.pos.z <= -50.0f)
 	{
 		iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag = false;
 		iEnemy_EnemyStatusData->outOfStageFlag = true;
 	}
-
 }
 
 void NormalEnemy::Draw()
 {
-	if (1.0f <= iEnemy_ModelRender->data.colorData.color.a)
+	if (1.0f <= iEnemy_FbxModelRender->data.colorData.color.a)
 	{
-		iEnemy_ModelRender->Draw();
-		LockOnWindow(iEnemy_ModelRender->data.transform.pos);
+		if (!iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
+		{
+			iEnemy_FbxModelRender->data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
+		}
+		iEnemy_FbxModelRender->Draw(!iEnemy_EnemyStatusData->meshParticleFlag);
+		LockOnWindow(iEnemy_FbxModelRender->data.transform.pos);
 	}
 }

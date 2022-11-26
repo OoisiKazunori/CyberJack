@@ -1,10 +1,9 @@
 #include"../ShaderHeader/GPUParticleHeader.hlsli"
 
-PosUvOutput VSmain(float4 pos : POSITION,float2 uv : TEXCOORD,uint id : SV_INSTANCEID)
+PosColorOutput VSmain(float4 pos : POSITION,float2 uv : TEXCOORD,uint id : SV_INSTANCEID)
 {
-    PosUvOutput op;
+    PosColorOutput op;
     op.svpos = mul(matrixData[id].mat, pos);
-    op.uv = uv;
-    op.id = id;
+    op.color = matrixData[id].color;
     return op;
 }

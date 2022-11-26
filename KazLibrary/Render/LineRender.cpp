@@ -68,13 +68,13 @@ void LineRender::Draw()
 	//バッファの転送-----------------------------------------------------------------------------------------------------
 	//行列
 	if (drawInstanceCommandData.drawInstanceData.instanceCount == 1 &&
-		(renderData.cameraMgrInstance->ViewAndProjDirty(data.cameraIndex.id) || data.color.Dirty() || data.motherMat.dirty.Dirty() || data.cameraIndex.dirty.Dirty()))
+		(renderData.cameraMgrInstance->ViewAndProjDirty(data.cameraIndex.id) || data.colorData.Dirty() || data.motherMat.dirty.Dirty() || data.cameraIndex.dirty.Dirty()))
 	{
 		ConstBufferData constMap;
 		constMap.world = baseMatWorldData.matWorld;
 		constMap.view = renderData.cameraMgrInstance->GetViewMatrix(data.cameraIndex.id);
 		constMap.viewproj = renderData.cameraMgrInstance->GetPerspectiveMatProjection(data.cameraIndex.id);
-		constMap.color = data.color.ConvertColorRateToXMFLOAT4();
+		constMap.color = data.colorData.ConvertColorRateToXMFLOAT4();
 		constMap.mat = constMap.world * constMap.view * constMap.viewproj;
 		TransData(&constMap, constBufferHandle, typeid(constMap).name());
 	}

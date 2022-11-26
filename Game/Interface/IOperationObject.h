@@ -9,6 +9,7 @@ struct IOperationObjectData
 	bool initFlag;			//既に初期化が通ったか判断するフラグ
 	int hp;					//OBJの体力
 	bool lockOnFlag;
+	std::string name;
 
 	IOperationObjectData()
 	{
@@ -23,13 +24,14 @@ struct IOperationObjectData
 	/// 操作可能OBJがもつ基本的なデータの初期化
 	/// </summary>
 	/// <param name="MAX_ROCKON_NUM">ロックオンできる回数</param>
-	void Init(const short &MAX_ROCKON_NUM)
+	void Init(short MAX_ROCKON_NUM, const std::string &NAME)
 	{
 		rockOnNum = MAX_ROCKON_NUM;
 		hp = MAX_ROCKON_NUM;
 		enableToHitFlag = true;
 		initFlag = true;
 		lockOnFlag = false;
+		name = NAME;
 	};
 };
 

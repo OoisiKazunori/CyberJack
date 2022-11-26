@@ -3,11 +3,16 @@
 #include"../ShaderHeader/FogBufferHeader.hlsli"
 #include"../ShaderHeader/MultiPassHeader.hlsli"
 
+cbuffer BloomData : register(b2)
+{
+    float4 luminanceColor;
+}
+
 TwoRender PSmain(FogOutPut input) : SV_TARGET
 {
-    //float4 fog = CaluFog(input.svpos, color, fogData.xyz, fogData.w);
     TwoRender op;
-    op.target0 = float4(1.0f,1.0f,1.0f,1.0f);
-    op.target1 = float4(0.0f,0.0f,0.0f,0.0f);
+    op.target0 = CaluFog(input.svpos, color, fogData.xyz, fogData.w);
+    op.target0.a = color.a;
+    op.target1 = luminanceColor;
     return op;
 }

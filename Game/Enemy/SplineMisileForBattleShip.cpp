@@ -6,26 +6,15 @@ SplineMisileForBattleShip::SplineMisileForBattleShip()
 {
 	maxTime = KazMath::ConvertSecondToFlame(10);
 	splineBox.data.color = { 255,0,0,255 };
-
-	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + +"BattleShipMisile/" + "BattleshipMissile_Model.obj");
 }
 
 void SplineMisileForBattleShip::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 {
-	iEnemy_ModelRender->data.transform.pos = GENERATE_DATA.initPos;
-	iEnemy_ModelRender->data.transform.scale = { 0.4f,0.4f,0.4f };
-	iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX;
-	iEnemy_ModelRender->data.removeMaterialFlag = false;
-	iEnemy_ModelRender->data.colorData.color.x = 255;
-	iEnemy_ModelRender->data.colorData.color.y = 255;
-	iEnemy_ModelRender->data.colorData.color.z = 255;
-	iEnemy_ModelRender->data.colorData.color.a = 255;
+	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { 0.4f,0.4f,0.4f }, { 0.0f,0.0f,0.0f }), KazFilePathName::EnemyPath + +"BattleShipMisile/" + "BattleshipMissile_Model.obj", 5.0f, ENEMY_MODEL_OBJ);
 
+	iEnemy_EnemyStatusData->objFlag = true;
 	iEnemy_EnemyStatusData->timer = maxTime;
-	iEnemy_EnemyStatusData->hitBox.radius = 5.0f;
-	iEnemy_EnemyStatusData->hitBox.center = &iEnemy_ModelRender->data.transform.pos;
-
-	iOperationData.Init(1);
+	iOperationData.Init(1,"Kaz-M");
 
 	startIndex = 1;
 	timeRate = 0.0f;
@@ -137,7 +126,7 @@ void SplineMisileForBattleShip::Update()
 			pointsRender[i].data.transform.pos = points[i];
 		}
 
-		iEnemy_ModelRender->data.transform.pos = position;
+		iEnemy_ObjModelRender->data.transform.pos = position;
 		//座標設定----------------------------------------------
 
 		//前ベクトルの設定----------------------------------------------
@@ -149,7 +138,7 @@ void SplineMisileForBattleShip::Update()
 		{
 			KazMath::Vec3<float> upVector = nextpos - position;
 			upVector.Normalize();
-			iEnemy_ModelRender->data.upVector = upVector;
+			iEnemy_ObjModelRender->data.upVector = upVector;
 		}
 		//炎点火
 		if (startIndex == 2)
@@ -169,7 +158,7 @@ void SplineMisileForBattleShip::Update()
 	}
 
 	//死亡処理
-	if (iEnemy_ModelRender->data.colorData.color.a <= 0.0f)
+	if (iEnemy_ObjModelRender->data.colorData.color.a <= 0.0f)
 	{
 		iOperationData.enableToHitFlag = false;
 	}
@@ -189,9 +178,7 @@ void SplineMisileForBattleShip::Draw()
 				pointsRender[i].Draw();
 			}
 		}
-		//rocketLight.Draw();
-		iEnemy_ModelRender->Draw();
-		//smokeEmitter.Draw();
-		LockOnWindow(iEnemy_ModelRender->data.transform.pos);
+		iEnemy_ObjModelRender->Draw();
+		LockOnWindow(iEnemy_ObjModelRender->data.transform.pos);
 	}
 }

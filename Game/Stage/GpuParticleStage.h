@@ -15,7 +15,7 @@ public:
 private:
 	//バッファ
 	std::unique_ptr<CreateGpuBuffer> buffers;
-	RESOURCE_HANDLE vertexBufferHandle, indexBufferHandle, outputBufferHandle, particleDataHandle, drawCommandHandle, counterBufferHandle, commonBufferHandle;
+	RESOURCE_HANDLE vertexBufferHandle, indexBufferHandle, outputInitBufferHandle, particleDataHandle, drawCommandHandle, counterBufferHandle, commonInitBufferHandle;
 	RESOURCE_HANDLE texHandle;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 	D3D12_INDEX_BUFFER_VIEW indexBufferView;
@@ -39,7 +39,7 @@ private:
 		UINT timer;
 	};
 
-	struct OutputData
+	struct OutputInitData
 	{
 		DirectX::XMMATRIX mat;
 		DirectX::XMFLOAT4 color;
@@ -49,7 +49,7 @@ private:
 	{
 		DirectX::XMMATRIX cameraMat;
 		DirectX::XMMATRIX projectionMat;
-		DirectX::XMMATRIX bollboardMat;
+		DirectX::XMMATRIX billboardMat;
 		DirectX::XMFLOAT4 emittPos;
 		UINT increSize;
 		UINT64 gpuAddress;

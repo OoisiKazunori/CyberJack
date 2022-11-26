@@ -17,7 +17,7 @@ float4 PSmain(VSLightOutput input) : SV_TARGET
     //float3 lightColor = blightColor;    
     float4 texColor = tex.Sample(smp, input.uv);
     
-    float3 ambientData =  m_ambient;
+    float3 ambientData = m_ambient;
     float3 diffuseData = m_diffuse;
     float3 specularData = m_specular;
     

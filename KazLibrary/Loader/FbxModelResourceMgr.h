@@ -1,14 +1,12 @@
 #pragma once
-#pragma warning(push)
-#pragma warning(disable:4023)
+#pragma warning(push,0)
+#pragma warning(disable: ALL_CODE_ANALYSIS_WARNINGS)
 #include"fbxsdk.h"
 #pragma warning(pop)
 #include"../DirectXCommon/Base.h"
 #include"../Helper/ISinglton.h"
 #include"../Helper/HandleMaker.h"
 #include"../Buffer/CreateGpuBuffer.h"
-
-
 
 struct WeightSet
 {
@@ -60,7 +58,7 @@ public:
 		//初期姿勢の逆行列
 		DirectX::XMMATRIX invInitialPose;
 		//クラスター(FBXのボーン情報)
-		FbxSkin *fbxSkin;
+		FbxSkin* fbxSkin;
 
 		Bone(const std::string &NAME)
 		{
@@ -85,7 +83,8 @@ private:
 
 	Node *meshNode = nullptr;
 	std::vector<VertexPosNormalUvSkin>vertices;
-	std::vector<unsigned short>indices;
+	std::vector<DirectX::XMFLOAT4>vertData;
+	std::vector<UINT>indices;
 
 
 	DirectX::XMFLOAT3 ambient = { 1.0f,1.0f,1.0f };
@@ -117,6 +116,8 @@ public:
 	std::vector<FbxTime> endTime;
 
 	UINT vertNum;
+	std::vector<DirectX::XMFLOAT4>vertData;
+	std::vector<UINT>indexData;
 
 	FbxMesh *mesh;
 
@@ -131,14 +132,15 @@ public:
 	FbxModelResourceMgr();
 	~FbxModelResourceMgr();
 
-	RESOURCE_HANDLE LoadModel(const std::string &MODEL_NAME);
+	RESOURCE_HANDLE LoadModel(const std::string &MODEL_NAME, bool REV_UV_FLAG = false);
 
 	const std::shared_ptr<FbxResourceData> &GetResourceData(RESOURCE_HANDLE HANDLE);
 
+	std::vector<FbxSkin *>boneSkinArray;
 private:
 	FbxManager *fbxManager;
 	FbxImporter *fbxImporter;
-	FbxScene *fbxScene;
+	std::vector<FbxScene *>fbxScene;
 
 	std::vector<std::shared_ptr<FbxResourceData>>modelResource;
 	std::shared_ptr<FbxResourceData> errorResource;
@@ -177,6 +179,12 @@ private:
 	std::string ExtractFileName(const std::string &PATH);
 
 	std::vector<std::string> handleName;
+
+
+	bool revUvFlag;
+
+	FbxMesh *mesh;
+
 
 };
 

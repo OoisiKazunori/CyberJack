@@ -132,30 +132,30 @@ void FirstStage::Update()
 	easeY = EasingMaker(Out, Cubic, t);
 	for (int i = 0; i < pillarObj.size(); ++i)
 	{
-		float lStartYPos = 800;
-		float lEndYPos = -35;
-		float lFarEndYPos = -200;
+		float lStartYPos = 800.0f;
+		float lEndYPos = -35.0f;
+		float lFarEndYPos = -200.0f;
 		pillarObj[i].data.transform.pos.y = (-lStartYPos + easeY * abs(lEndYPos + lStartYPos));
 		farSidePillarObj[i].data.transform.pos.y = (-lStartYPos + easeY * abs(lFarEndYPos + lStartYPos));
 	}
 
 
-	float lVel = -1.0f;
+	float lVel = -objectSpeed;
 	for (int i = 0; i < floorStage.size(); ++i)
 	{
-		floorStage[i].data.transform.pos.y = -30.0f;
+		floorStage[i].data.transform.pos.y = -60.0f;
 		floorStage[i].data.transform.pos.z += lVel;
 
 		if (floorStage[i].data.transform.pos.z <= -200.0f)
 		{
-			floorStage[i].data.transform.pos.z = 1000.0f;
+			floorStage[i].data.transform.pos.z = 980.0f;
 		}
 	}
 
 	for (int i = 0; i < pillarObj.size(); ++i)
 	{
-		pillarObj[i].data.transform.pos.z += lVel;
-		farSidePillarObj[i].data.transform.pos.z += lVel;
+		pillarObj[i].data.transform.pos.z += -1.0f;
+		farSidePillarObj[i].data.transform.pos.z += -1.0f;
 
 		if (pillarObj[i].data.transform.pos.z <= -1100.0f)
 		{
@@ -181,7 +181,7 @@ void FirstStage::Update()
 			}
 		}
 	}
-	else if(startFlag)
+	else if (startFlag)
 	{
 		for (int y = 0; y < topPillarObj.size(); ++y)
 		{
@@ -189,11 +189,11 @@ void FirstStage::Update()
 			{
 				if (y % 2 == 0)
 				{
-					topPillarObj[y][x].data.transform.pos.x += -lVel;
+					topPillarObj[y][x].data.transform.pos.x += -1.0f;
 				}
 				else
 				{
-					topPillarObj[y][x].data.transform.pos.x += lVel;
+					topPillarObj[y][x].data.transform.pos.x += -1.0f;
 				}
 
 

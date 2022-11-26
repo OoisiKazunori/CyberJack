@@ -8,7 +8,12 @@
 #include"../Game/Debug/ParameterMgr.h"
 #include"../Game/Stage/DrawGrid.h"
 #include"../Game/Stage/MountainObject.h"
+#include"../Game/Stage/BlockMountain.h"
+#include"../Game/Stage/WindowForAd.h"
 
+/// <summary>
+/// Rez + vaporwave風のステージ
+/// </summary>
 class RezStage :public IStage
 {
 public:
@@ -38,7 +43,7 @@ private:
 	BoxPolygonRender selectingR;
 
 
-	std::array<DrawGrid, 4> gridRender;
+	std::array<std::unique_ptr<DrawGrid>, 3> gridRender;
 
 	std::unique_ptr<BoxPolygonRender> poly;
 	RESOURCE_HANDLE lineDrawHandle;
@@ -53,4 +58,9 @@ private:
 	};
 
 	float appearRate;
+
+
+	std::array<BlockMountain, 2>blockMountainArray;
+
+	std::array<WindowForAd, 50> windowArray;
 };

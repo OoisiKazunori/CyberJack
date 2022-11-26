@@ -20,6 +20,7 @@ enum BufferMemory
 	DESCRIPTORHEAP_MEMORY_TEXTURE_COMPUTEBUFFER,
 	DESCRIPTORHEAP_MEMORY_CBV,
 	DESCRIPTORHEAP_MEMORY_SRV,
+	DESCRIPTORHEAP_MEMORY_MOVIE,
 	DESCRIPTORHEAP_MEMORY_MAX
 };
 
@@ -79,6 +80,8 @@ namespace KazBufferHelper
 	KazBufferHelper::BufferResourceData SetStructureBuffer(BUFFER_SIZE BUFFER_SIZE, const std::string &BUFFER_NAME = "StructureBuffer");
 
 	KazBufferHelper::BufferResourceData SetRWStructuredBuffer(BUFFER_SIZE BUFFER_SIZE, const std::string &BUFFER_NAME = "RWStructureBuffer");
+
+	KazBufferHelper::BufferResourceData SetOnlyReadStructuredBuffer(BUFFER_SIZE BUFFER_SIZE, const std::string &BUFFER_NAME = "OnlyReadStructureBuffer");
 
 
 	KazBufferHelper::BufferResourceData SetCommandBufferData(const unsigned int &BUFFER_SIZE, const std::string &BUFFER_NAME = "CommandBuffer");

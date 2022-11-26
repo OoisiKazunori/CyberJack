@@ -83,8 +83,10 @@ public:
 	std::unique_ptr<CreateGpuBuffer> buffers;
 	int bbIndex;
 
+	static const int RENDERTARGET_MAX_NUM = 1000;
+
 	//レンダーターゲットのハンドルからパス数を記録した配列
-	std::array<std::vector<RESOURCE_HANDLE>, 100>renderTargetData;
+	std::array<std::vector<RESOURCE_HANDLE>, RENDERTARGET_MAX_NUM>renderTargetData;
 
 	void ChangeBarrier(ID3D12Resource *RESOURCE, const D3D12_RESOURCE_STATES &BEFORE_STATE, const D3D12_RESOURCE_STATES &AFTER_STATE);
 
@@ -95,7 +97,7 @@ public:
 private:
 
 
-	std::array<DirectX::XMFLOAT4, 100> clearColors;
+	std::array<DirectX::XMFLOAT4, RENDERTARGET_MAX_NUM> clearColors;
 
 
 

@@ -14,7 +14,6 @@ cbuffer time : register(b1)
 
 float4 PSmain(VSOutput input) : SV_TARGET
 {
-
     //’Mó˜p‹È-----------------------------------------------------------
     //˜c‚İ—¦
     float Distortion = 0.06f;

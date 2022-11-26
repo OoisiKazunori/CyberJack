@@ -22,13 +22,14 @@ private:
 		CHARA_LARGE,
 		CHARA_SMALL,
 		CHARA_NUM,
+		CHARA_SPECIAL,
 		CHARA_MAX
 	};
 	bool CheckFontType(const char &CHARACTER, int MIN_NUM, int MAX_NUM);
 
 	FontType fontType;
 	int fontNum;
-	std::array<RESOURCE_HANDLE, 3> graphHandle;
+	std::array<RESOURCE_HANDLE, 4> graphHandle;
 	RESOURCE_HANDLE inputLogHandle,testHandle;
 	bool initFlag;
 	bool spaceFlag;
@@ -52,6 +53,10 @@ public:
 	{
 		return KazMath::ConvertSecondToFlame(10) <= timer;
 	}
+	const KazMath::Vec2<float> GetPos()
+	{
+		return stringPos;
+	}
 private:
 	static const int LETTER_MAX_NUM = 20;
 	std::array<Letter, LETTER_MAX_NUM>letters;
@@ -61,4 +66,5 @@ private:
 	std::string logString;
 	float fontSize;
 	KazMath::Vec2<float>basePos;
+	KazMath::Vec2<float>stringPos;
 };

@@ -37,6 +37,10 @@ GaussianBuler::GaussianBuler(const KazMath::Vec2<UINT> &GRAPH_SIZE)
 
 	tex[0].data.transform.pos = { WIN_X / 2,WIN_Y / 2 };
 	tex[1].data.transform.pos = { WIN_X / 2,WIN_Y / 2 };
+
+
+
+
 }
 
 GaussianBuler::~GaussianBuler()
@@ -87,7 +91,6 @@ RESOURCE_HANDLE GaussianBuler::BlurImage(RESOURCE_HANDLE TEXTURE_HANDLE, RESOURC
 	else
 	{
 		RenderTargetStatus::Instance()->PrepareToChangeBarrier(CURRENT_RENDERTARGET_HANDLE, renderTargetBlurSideHandle);
-		RenderTargetStatus::Instance()->ClearRenderTarget(CURRENT_RENDERTARGET_HANDLE);
 	}
 
 	CD3DX12_RECT Rect(0, 0, static_cast<long>(WIN_X), static_cast<long>(WIN_Y));

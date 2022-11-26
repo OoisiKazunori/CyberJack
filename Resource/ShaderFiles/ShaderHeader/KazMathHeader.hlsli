@@ -87,6 +87,100 @@ matrix Rotate(float3 ANGLE)
 
 float Rand(int SEED,int SEED2,int MAX,int MIN)
 {
-    float rand = frac(sin(dot(float2(SEED / 2,SEED * 2), float2(12.9898, 78.233)) + (SEED2 * 5 + SEED)) * 43758.5453);
+    float rand = frac(sin(dot(float2(SEED,SEED), float2(12.9898, 78.233)) + (SEED2 + SEED)) * 43758.5453);
     return (MAX + abs(MIN)) * rand - abs(MIN);
+}
+
+float AngleToRadian(float ANGLE)
+{
+	float radian = ANGLE * (3.14f / 180.0f);
+	return radian;
+}
+
+static float3 K = float3(0x456789abu, 0x6789ab45u, 0x89ab4567u); //large odd digits, 0 and 1 are fully mixed)
+
+//https://www.reedbeta.com/blog/quick-and-easy-gpu-random-numbers-in-d3d11/
+uint wang_hash(uint seed)
+{
+	seed = (seed ^ 61) ^ (seed >> 16);
+	seed *= 9;
+	seed = seed ^ (seed >> 4);
+	seed *= 0x27d4eb2d;
+	seed = seed ^ (seed >> 15);
+	return seed;
+}
+
+float3 RandVec3(uint SEED,int MAX,int MIN)
+{
+    uint rand = wang_hash(SEED * 1847483629);
+    float3 result;
+    result.x = (rand % 1024) / 1024.0f;
+    rand /= 1024;
+    result.y = (rand % 1024) / 1024.0f;
+    rand /= 1024;
+    result.z = (rand % 1024) / 1024.0f;
+
+    result.x = (MAX + abs(MIN)) * result.x - abs(MIN);
+    result.y = (MAX + abs(MIN)) * result.y - abs(MIN);
+    result.z = (MAX + abs(MIN)) * result.z - abs(MIN);
+    return result;
+}
+
+float Rand1(uint SEED,int MAX,int MIN)
+{
+    uint rand = wang_hash(SEED * 1847483629);
+    float result;
+    result = (rand % 1024) / 1024.0f;
+    result = (MAX + abs(MIN)) * result - abs(MIN);
+    return result;
+}
+
+matrix CalucurateWorldMat(float3 POS,float3 SCALE,float3 ROTA)
+{
+    matrix pMatTrans = Translate(POS);
+    matrix pMatRot = Rotate(ROTA);
+    matrix pMatScale = Scale(SCALE);
+
+    matrix pMatWorld = MatrixIdentity();
+    pMatWorld = mul(pMatScale, pMatWorld);
+    pMatWorld = mul(pMatRot,   pMatWorld);
+    pMatWorld = mul(pMatTrans, pMatWorld);
+
+    return pMatWorld;
+}
+
+matrix CalucurateWorldMat(float3 POS,float3 SCALE,float3 ROTA,matrix BILLBOARD)
+{
+    matrix pMatTrans = Translate(POS);
+    matrix pMatRot = Rotate(ROTA);
+    matrix pMatScale = Scale(SCALE);
+
+    matrix pMatWorld = MatrixIdentity();
+    pMatWorld = mul(pMatScale, pMatWorld);
+    pMatWorld = mul(pMatRot,   pMatWorld);
+    pMatWorld = mul(BILLBOARD, pMatWorld);
+    pMatWorld = mul(pMatTrans, pMatWorld);
+
+    return pMatWorld;
+}
+
+matrix CalucurateMat(matrix WORLD,matrix VIEW,matrix PROJ)
+{
+    matrix mat;
+    mat = MatrixIdentity();
+    mat = mul(WORLD,mat);
+    mat = mul(VIEW, mat);
+    mat = mul(PROJ, mat);
+    return mat;
+}
+
+float CaluDistacne(float3 POS_A, float3 POS_B)
+{
+    float3 distance = float3(abs(POS_B.x - POS_A.x),abs(POS_B.y - POS_A.y),abs(POS_B.z - POS_A.z));
+    float3 lpow;
+	lpow.x = pow(distance.x, 2.0f);
+	lpow.y = pow(distance.y, 2.0f);
+	lpow.z = pow(distance.z, 2.0f);
+
+	return sqrt(lpow.x + lpow.y + lpow.z);
 }

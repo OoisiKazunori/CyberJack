@@ -7,21 +7,11 @@ PopEnemy::PopEnemy()
 
 void PopEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 {
-	iEnemy_ModelRender->data.transform.pos = GENERATE_DATA.initPos;	//座標の初期化
-	iEnemy_ModelRender->data.transform.scale = { 1.0f,1.0f,1.0f };
-	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "PopEnemy/" + "PopEnemy_Model.obj");	//モデル読み込み
-	iEnemy_EnemyStatusData->hitBox.radius = 15.0f;	//当たり判定の大きさ変更
-	iOperationData.Init(1);							//残りロックオン数等の初期化
+	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { 1.0f,1.0f,1.0f }, { 0.0f,180.0f,0.0f }), KazFilePathName::EnemyPath + "PopEnemy/" + "PopEnemy_Model.fbx", 15.0f, ENEMY_MODEL_FBX, true);
+	iOperationData.Init(1, "snkr_BR");							//残りロックオン数等の初期化
 
-	iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX;
-	iEnemy_ModelRender->data.removeMaterialFlag = false;
-	iEnemy_ModelRender->data.colorData.color.x = 255;
-	iEnemy_ModelRender->data.colorData.color.y = 255;
-	iEnemy_ModelRender->data.colorData.color.z = 255;
-	iEnemy_ModelRender->data.colorData.color.a = 255;
-	iEnemy_ModelRender->data.transform.rotation.x = 0.0f;
-	iEnemy_ModelRender->data.transform.rotation.y = 180.0f;
-	iEnemy_ModelRender->data.transform.rotation.z = 0.0f;
+	iEnemy_FbxModelRender->data.colorData.color.a = 255;
+
 	initDeadSoundFlag = false;
 	demoFlag = DEMO_FLAG;
 
@@ -30,7 +20,10 @@ void PopEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 
 	reverseFlag = false;
 	vel.y = 0.0f;
-	
+
+
+	iEnemy_EnemyStatusData->objFlag = false;
+
 	if (demoFlag)
 	{
 		vel.z = 0.0f;
@@ -62,7 +55,7 @@ void PopEnemy::Update()
 	{
 		reverseFlag = false;
 	}
-	if (iEnemy_ModelRender->data.transform.pos.y <= bottomPos.y)
+	if (iEnemy_FbxModelRender->data.transform.pos.y <= bottomPos.y)
 	{
 		reverseFlag = true;
 		vel.x += 0.1f;
@@ -81,7 +74,7 @@ void PopEnemy::Update()
 		vel.y += -0.1f;
 	}
 
-	
+
 	if (reverseFlag != oldReverseFlag)
 	{
 		vel.y *= -1.0f;
@@ -89,16 +82,16 @@ void PopEnemy::Update()
 	oldReverseFlag = reverseFlag;
 
 
-	iEnemy_ModelRender->data.transform.pos += vel;
+	iEnemy_FbxModelRender->data.transform.pos += vel;
 
 	ProcessingOfDeath(DEATH_ROLL);
 }
 
 void PopEnemy::Draw()
 {
-	if (0 < iEnemy_ModelRender->data.colorData.color.a)
+	if (0 < iEnemy_FbxModelRender->data.colorData.color.a)
 	{
-		iEnemy_ModelRender->Draw();
-		LockOnWindow(iEnemy_ModelRender->data.transform.pos);
+		iEnemy_FbxModelRender->Draw();
+		LockOnWindow(iEnemy_FbxModelRender->data.transform.pos);
 	}
 }

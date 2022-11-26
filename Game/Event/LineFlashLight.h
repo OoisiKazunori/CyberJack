@@ -7,6 +7,7 @@ class LineFlashLight
 public:
 	LineFlashLight();
 	void Init(const std::vector<KazMath::Vec3<float>*> &POS_ARRAY, int TIMER);
+	void Finalize();
 	void Update();
 	void Draw();
 

@@ -9,9 +9,6 @@
 #include <sstream>
 #pragma comment(lib, "dxcompiler.lib")
 
-#pragma comment(lib, "dxcompiler.lib")
-
-
 Shader::Shader()
 {
 	shaderBlobs.resize(SHADER_TYPE_MAX);

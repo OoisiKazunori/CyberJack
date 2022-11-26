@@ -27,6 +27,7 @@ HitEffectPattern3Emitter::HitEffectPattern3Emitter()
 	timer[3] = { 60,60 };
 
 	initFlag = false;
+	particleDrawIndex = 0;
 }
 
 void HitEffectPattern3Emitter::Init(const KazMath::Vec2<float> &POS)

@@ -8,16 +8,17 @@
 #include"../RenderTarget/GaussianBuler.h"
 #include"../RenderTarget/RenderTargetStatus.h"
 #include<memory>
-/// <summary>
-/// ?V?[???????????s?????
-/// </summary>
-class SceneManager {
+
+
+class SceneManager
+{
 public:
 	SceneManager();
 	~SceneManager();
 	void Update();
 	void Draw();
 
+	bool endGameFlag;
 private:
 	std::vector<std::unique_ptr<SceneBase>> scene;
 	ChangeScene::SceneChange change;

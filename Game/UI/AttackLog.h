@@ -6,7 +6,8 @@ class AttackLog
 {
 public:
 	AttackLog();
-	void Init();
+	void Init(const KazMath::Vec2<float> &POS, bool TIMEOVER_FLAG = true, int LOG_MAX = -1);
+	void Finalize();
 	void Update();
 	void Draw();
 
@@ -20,5 +21,9 @@ private:
 	std::array<StringData, 15>logStringArray;
 	int logArrayIndex;
 	int logDataIndex;
+	KazMath::Vec2<float>pos;
+
+	bool useTimeOverFlag;
+	int logMaxNum;
 };
 

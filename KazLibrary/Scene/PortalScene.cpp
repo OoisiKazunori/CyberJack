@@ -443,7 +443,7 @@ void PortalScene::Update()
 	//playerBox.data.transform.pos.y -= 5.0f;
 	playerBox.data.transform.scale = { 1.0f,1.0f,1.0f };
 	playerBox.data.cameraIndex = 2;
-	
+
 	warpPlayerBox.data.transform = playerBox.data.transform;
 	warpPlayerBox.data.cameraIndex = 1;
 	//warpPlayerBox.data.color = { 255,0,0,255 };
@@ -512,13 +512,13 @@ void PortalScene::Draw()
 
 
 	ImGui::Begin("Camera");
-	KazImGuiHelper::InputVec3(&baseEyePos, "Eye");
-	KazImGuiHelper::InputVec3(&baseTargetPos, "Target");
+	KazImGuiHelper::InputVec3("Eye", &baseEyePos);
+	KazImGuiHelper::InputVec3("Target", &baseTargetPos);
 	ImGui::End();
 
 
 	ImGui::Begin("Gate");
-	KazImGuiHelper::InputTransform3D(&greenPortal.data.transform);
+	KazImGuiHelper::InputTransform3D("Gate", &greenPortal.data.transform);
 	ImGui::End();
 
 }

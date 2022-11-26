@@ -9,15 +9,19 @@ class FbxModelRender :public IRender
 {
 public:
 	FbxModelRender();
-	void Draw();
+	void Draw(bool DRAW_FLAG = true);
 
+	void ReleaseSkining();
 	FbxModelData data;
+	FbxTime currentTime;
+
+	DirectX::XMMATRIX motherMat;
+	DirectX::XMMATRIX motherBoneMat;
 private:
 
 	UINT vertByte;
 	UINT indexByte;
 
-	DirectX::XMMATRIX motherMat;
 	short vertexBufferHandle;
 	short indexBufferHandle;
 
@@ -27,7 +31,8 @@ private:
 	FbxTime frameTime;
 	FbxTime startTime;
 	FbxTime endTime;
-	FbxTime currentTime;
 
+
+	bool removeSkining;
 };
 

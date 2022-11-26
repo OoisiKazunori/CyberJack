@@ -55,17 +55,25 @@ float4 CaluDistanceFog(float4 POS, float4 Color, float3 FogColor)
     return fog;
 }
 
-float4 CaluFog(float4 POS, float4 Color, float3 FogColor, float Density)
+float CaluFogFactor(float POS_DATA,float DENSITY)
 {
     //?w???t?H?O    
-    float d = POS.z * POS.w;
+    float d = POS_DATA;
     //???x
-    float density = Density;
+    float density = DENSITY;
     float e = 2.71828f;
     float fogFactor = pow(e, -d * density);
     //?t?H?O??
     fogFactor *= 1;
     fogFactor = saturate(fogFactor);
+    return fogFactor;
+}
+
+float4 CaluFog(float4 POS, float4 Color, float3 FogColor, float Density)
+{
+    //?w???t?H?O    
+    float d = POS.z * POS.w;
+    float fogFactor = CaluFogFactor(d,Density);
     
     //?t?H?O??F  
     //color...?t?H?O??K??????O??J???[

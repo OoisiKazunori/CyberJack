@@ -18,22 +18,15 @@ NormalMisileEnemy::NormalMisileEnemy()
 
 void NormalMisileEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 {
-	iEnemy_ModelRender->data.transform.pos = GENERATE_DATA.initPos;	//座標の初期化
 	lerpPos = GENERATE_DATA.initPos;	//座標の初期化
-	iEnemy_ModelRender->data.transform.scale = { 1.0f,1.0f,1.0f };
-	iEnemy_ModelRender->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "MisileEnemy/" + "Gunner_Model.obj");	//モデル読み込み
-	iEnemy_EnemyStatusData->hitBox.radius = 5.0f;	//当たり判定の大きさ変更
-	iOperationData.Init(1);							//残りロックオン数等の初期化
 
-	iEnemy_ModelRender->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX;
-	iEnemy_ModelRender->data.colorData.color.x = 255;
-	iEnemy_ModelRender->data.colorData.color.y = 255;
-	iEnemy_ModelRender->data.colorData.color.z = 255;
-	iEnemy_ModelRender->data.colorData.color.a = 1;
-	iEnemy_ModelRender->data.transform.rotation.x = 0.0f;
-	iEnemy_ModelRender->data.transform.rotation.y = 180.0f;
-	iEnemy_ModelRender->data.transform.rotation.z = 0.0f;
-
+	EnemyModelType lModelType = ENEMY_MODEL_FBX;
+	if (GENERATE_DATA.useMeshPaticleFlag)
+	{
+		lModelType = ENEMY_MODEL_MESHPARTICLE;
+	}
+	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { 1.0f,1.0f,1.0f }, { 0.0f,180.0f,0.0f }), KazFilePathName::EnemyPath + "MisileEnemy/" + "Gunner_Switch_anim.fbx", 10.0f, lModelType);
+	iOperationData.Init(1,"gw-M");							//残りロックオン数等の初期化
 
 	initShotFlag = false;
 
@@ -42,13 +35,14 @@ void NormalMisileEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_F
 
 	shotTimer = 0;
 
-	iEnemy_EnemyStatusData->startFlag = true;
-
 	disappearTimer = 0;
 	flashTimer = 0;
 	startFlag = false;
 
 	shotFlag = GENERATE_DATA.misileEnemy.isShotFlag;
+
+	iEnemy_EnemyStatusData->startFlag = true;
+	iEnemy_EnemyStatusData->radius = 10.0f;
 }
 
 void NormalMisileEnemy::Finalize()
@@ -61,22 +55,26 @@ void NormalMisileEnemy::Update()
 	{
 		//発射
 		//ゲーム内で攻撃モーションの起動
-		bool lGameShotFlag = !demoFlag && 120 <= shotTimer && !initShotFlag && iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag;
-		bool lDebugShotFlag = demoFlag && debugShotFlag;
+		bool lGameShotFlag = 120 <= shotTimer && !initShotFlag && iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag;
 
 		if (!demoFlag && 120 - 60 <= shotTimer && !initShotFlag && iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
 		{
 			startFlag = true;
 		}
 
-		if (lGameShotFlag || lDebugShotFlag)
+		if (90 <= shotTimer)
 		{
-			iEnemy_EnemyStatusData->genarateData.enemyGenerateData.initPos = iEnemy_ModelRender->data.transform.pos;
+			iEnemy_FbxModelRender->data.isPlayFlag = true;
+		}
+
+		if (lGameShotFlag)
+		{
+			iEnemy_EnemyStatusData->genarateData.enemyGenerateData.initPos = iEnemy_FbxModelRender->data.transform.pos;
 			iEnemy_EnemyStatusData->genarateData.enemyType = ENEMY_TYPE_MISILE_SPLINE;
 
 			//ノックバック
 			KazMath::Vec3<float> kockBackVel = { 0.0f,0.0f,60.0f };
-			lerpPos = iEnemy_ModelRender->data.transform.pos + kockBackVel;
+			lerpPos = iEnemy_FbxModelRender->data.transform.pos + kockBackVel;
 			//ShotSound();
 			initShotFlag = true;
 			debugShotFlag = false;
@@ -85,39 +83,53 @@ void NormalMisileEnemy::Update()
 
 		if (initShotFlag)
 		{
-			iEnemy_ModelRender->data.transform.rotation.z += 5.0f;
+			iEnemy_FbxModelRender->data.transform.rotation.z += 5.0f;
 		}
 	}
 	else
 	{
-		iEnemy_ModelRender->data.transform.rotation.z += 5.0f;
+		iEnemy_FbxModelRender->data.transform.rotation.z += 5.0f;
 	}
 
 
 	//死亡演出処理
 	//デバックキーor当たり判定内&&死亡時
-	if (!ProcessingOfDeath(DEATH_ROLL))
+	if (!ProcessingOfDeathFbx(DEATH_ROLL))
 	{
 		//登場処理
-		if (iEnemy_ModelRender->data.colorData.color.a < 255)
+		if (iEnemy_FbxModelRender->data.colorData.color.a < 255)
 		{
-			iEnemy_ModelRender->data.colorData.color.a += 5;
+			iEnemy_FbxModelRender->data.colorData.color.a += 5;
 		}
 		else
 		{
-			iEnemy_ModelRender->data.colorData.color.a = 255;
+			iEnemy_FbxModelRender->data.colorData.color.a = 255;
 		}
 
+		if (!demoFlag || debugShotFlag)
+		{
+			++shotTimer;
+		}
 
-		++shotTimer;
 		KazMath::Vec3<float> vel = { 0.0f,0.0f,-1.0f };
 		if (!demoFlag)
 		{
 			lerpPos += vel;
 		}
 	}
+	else
+	{
+		if (iEnemy_FbxModelRender->data.colorData.color.a < 255)
+		{
+			iEnemy_FbxModelRender->data.colorData.color.a += 5;
+		}
+		else
+		{
+			iEnemy_FbxModelRender->data.colorData.color.a = 255;
+		}
+	}
 
-	KazMath::Larp(lerpPos.z, &iEnemy_ModelRender->data.transform.pos.z, 0.1f);
+	KazMath::Larp(lerpPos.z, &iEnemy_FbxModelRender->data.transform.pos.z, 0.1f);
 
 
 	if (!startFlag)
@@ -127,8 +139,8 @@ void NormalMisileEnemy::Update()
 		circleFlashTimer = 0;
 	}
 
-	circleFlashR.data.transform.pos = iEnemy_ModelRender->data.transform.pos + KazMath::Vec3<float>(0.0f, 0.0f, -10.0f);
-	flashR.data.transform.pos = iEnemy_ModelRender->data.transform.pos;
+	circleFlashR.data.transform.pos = iEnemy_FbxModelRender->data.transform.pos + KazMath::Vec3<float>(0.0f, 0.0f, -10.0f);
+	flashR.data.transform.pos = iEnemy_FbxModelRender->data.transform.pos;
 
 	int lT = 0;
 	bool flashFlag = false;
@@ -176,7 +188,7 @@ void NormalMisileEnemy::Update()
 	}
 	flashR.data.transform.scale.y = lScale + (-EasingMaker(Out, Cubic, KazMath::ConvertTimerToRate(disappearTimer, 10)) * lScale);
 
-	if (iEnemy_ModelRender->data.transform.pos.z <= -50.0f)
+	if (iEnemy_FbxModelRender->data.transform.pos.z <= -50.0f)
 	{
 		iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag = false;
 		iEnemy_EnemyStatusData->outOfStageFlag = true;
@@ -185,12 +197,12 @@ void NormalMisileEnemy::Update()
 
 void NormalMisileEnemy::Draw()
 {
-	LockOnWindow(iEnemy_ModelRender->data.transform.pos);
+	LockOnWindow(iEnemy_FbxModelRender->data.transform.pos);
 
 	if (iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
 	{
-		iEnemy_ModelRender->Draw();
 		flashR.Draw();
 		circleFlashR.Draw();
 	}
+	iEnemy_FbxModelRender->Draw();
 }

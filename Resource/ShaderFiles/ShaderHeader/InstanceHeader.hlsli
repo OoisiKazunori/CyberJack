@@ -1,4 +1,4 @@
-#define INSTANCE_DATA_MAX 800
+#define INSTANCE_DATA_MAX 1
 
 struct InstanceOutPut
 {
@@ -7,6 +7,16 @@ struct InstanceOutPut
     float2 uv : TEXCOORD; //uv値
     uint id : SV_InstanceID;
 };
+
+struct InstanceDepthOutPut
+{
+    float4 svpos : SV_POSITION;
+    float3 normal : NORMAL; //法線ベクトル
+    float2 uv : TEXCOORD; //uv値
+    float4 worldPos : POSITION;
+    uint id : SV_InstanceID;
+};
+
 
 struct InstanceMat
 {
@@ -35,16 +45,15 @@ struct LineInstanceData
 };
 
 
-cbuffer instanceBuff : register(b1)
-{
-    InstanceMat matrixData[INSTANCE_DATA_MAX];
-};
+RWStructuredBuffer<InstanceMat> uavMatData : register(u1);
 
 //行列情報
 cbuffer instanceConstBuff : register(b0)
 {
     InstanceConstBufferData constData[INSTANCE_DATA_MAX];
 };
+
+RWStructuredBuffer<InstanceConstBufferData> uavMatColorData : register(u0);
 
 cbuffer instanceLineConstBuff : register(b0)
 {
@@ -71,7 +80,12 @@ struct InstancePosOut
     uint id : SV_InstanceID;
 };
 
-
+struct InstancePosNormalColorOut
+{
+    float4 svpos : SV_POSITION;
+    float3 normal : NORMAL; //法線ベクトル
+    float4 color : COLOR;
+};
 
 struct lineData
 {
@@ -82,3 +96,4 @@ cbuffer lineVertexData : register(b1)
 {
     lineData VertexLine[INSTANCE_DATA_MAX];
 };
+

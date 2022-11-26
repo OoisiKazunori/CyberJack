@@ -12,7 +12,6 @@ FbxModelResourceMgr::FbxModelResourceMgr()
 
 
 	fbxImporter = FbxImporter::Create(fbxManager, "");
-	fbxScene = FbxScene::Create(fbxManager, "fbxScene");
 	handle = std::make_unique<HandleMaker>();
 
 	errorResource = std::make_unique<FbxResourceData>();
@@ -21,14 +20,17 @@ FbxModelResourceMgr::FbxModelResourceMgr()
 FbxModelResourceMgr::~FbxModelResourceMgr()
 {
 	fbxImporter->Destroy();
-	fbxScene->Destroy();
+	for (int i = 0; i < fbxScene.size(); ++i)
+	{
+		fbxScene[i]->Destroy();
+	}
 	fbxManager->Destroy();
 
 	modelResource.shrink_to_fit();
 	modelResource.clear();
 }
 
-RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME)
+RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME, bool REV_UV_FLAG)
 {
 	for (int i = 0; i < handleName.size(); i++)
 	{
@@ -37,26 +39,28 @@ RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME)
 			return i;
 		}
 	}
+	revUvFlag = REV_UV_FLAG;
+
+	fbxScene.push_back(FbxScene::Create(fbxManager, "fbxScene"));
 
 	fbxImporter->Initialize(MODEL_NAME.c_str());
-	fbxImporter->Import(fbxScene);
+	fbxImporter->Import(fbxScene[fbxScene.size() - 1]);
 
 	FbxGeometryConverter converter(fbxManager);
 	// ポリゴンを三角形にする
-	converter.Triangulate(fbxScene, true);
+	converter.Triangulate(fbxScene[fbxScene.size() - 1], true);
 
 	//モデルの生成
 	Model *model = new Model;
 	model->name = MODEL_NAME;
 
-
 	//Fbxノードの数を取得
-	int nodeCount = fbxScene->GetNodeCount();
+	int nodeCount = fbxScene[fbxScene.size() - 1]->GetNodeCount();
 
 	//あらかじめ必要数分のメモリを確保する事でアドレスがずれるのを予防する
 	model->nodes.reserve(nodeCount);
 	//ルートノードから順に解析してモデルに流し込む
-	ParseNodeRecursive(model, fbxScene->GetRootNode());
+	ParseNodeRecursive(model, fbxScene[fbxScene.size() - 1]->GetRootNode());
 
 
 	if (model->vertices.size() == 0)
@@ -99,19 +103,23 @@ RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME)
 	modelResource[lHandle]->bone = model->bones;
 
 	modelResource[lHandle]->vertNum = static_cast<UINT>(model->vertices.size());
-	modelResource[lHandle]->mesh = model->mesh;
 
+	modelResource[lHandle]->indexData = model->indices;
+	modelResource[lHandle]->vertData = model->vertData;
+
+
+	modelResource[modelResource.size() - 1]->mesh = mesh;
 
 	//アニメーションの数を取得
 	int animaStackCount = fbxImporter->GetAnimStackCount();
 	for (int i = 0; i < animaStackCount; i++)
 	{
 		FbxAnimStack *animStack = nullptr;
-		animStack = fbxScene->GetSrcObject<FbxAnimStack>(i);
+		animStack = fbxScene[fbxScene.size() - 1]->GetSrcObject<FbxAnimStack>(i);
 
 		const char *animStackName = animStack->GetName();
-		FbxTakeInfo *takeInfo = fbxScene->GetTakeInfo(animStackName);
-		fbxScene->SetCurrentAnimationStack(animStack);
+		FbxTakeInfo *takeInfo = fbxScene[fbxScene.size() - 1]->GetTakeInfo(animStackName);
+		fbxScene[fbxScene.size() - 1]->SetCurrentAnimationStack(animStack);
 
 		modelResource[lHandle]->startTime.push_back(takeInfo->mLocalTimeSpan.GetStart());
 		modelResource[lHandle]->endTime.push_back(takeInfo->mLocalTimeSpan.GetStop());
@@ -184,6 +192,7 @@ void FbxModelResourceMgr::ParseNodeRecursive(Model *MODEL, FbxNode *FBX_NODE, No
 		if (fbxNodeAttribute->GetAttributeType() == FbxNodeAttribute::eMesh)
 		{
 			MODEL->meshNode = &node;
+			mesh = FBX_NODE->GetMesh();
 			ParseMesh(MODEL, FBX_NODE);
 		}
 	}
@@ -200,7 +209,6 @@ void FbxModelResourceMgr::ParseMesh(Model *MODEL, FbxNode *FBX_NODE)
 {
 	//ノードのメッシュを取得
 	FbxMesh *fbxMesh = FBX_NODE->GetMesh();
-	MODEL->mesh = fbxMesh;
 
 	//頂点座標読み取り
 	//ParseMeshVertices(MODEL, fbxMesh);
@@ -285,8 +293,8 @@ void FbxModelResourceMgr::ParseMeshFaces(Model *MODEL, FbxMesh *FBX_MESH)
 				//0番決め打ちで読み込み
 				if (FBX_MESH->GetPolygonVertexUV(i, j, uvNames[0], uvs, lUnmappedUV))
 				{
-					vertex.uv.x = (float)uvs[0];
-					vertex.uv.y = (float)uvs[1];
+					vertex.uv.x = static_cast<float>(uvs[0]);
+					vertex.uv.y = static_cast<float>(uvs[1]);
 				}
 			}
 
@@ -295,16 +303,16 @@ void FbxModelResourceMgr::ParseMeshFaces(Model *MODEL, FbxMesh *FBX_MESH)
 			if (j < 3)
 			{
 				//1点追加し、他の2点と三角形を構築する
-				indices.push_back(static_cast<USHORT>(index));
+				indices.push_back(static_cast<UINT>(index));
 			}
 			//4頂点目
 			else
 			{
 				//3点追加し、
 				//四角形の0,1,2,3の内,2,3,0で三角形を構築する
-				USHORT index2 = indices[indices.size() - 1];
-				USHORT index3 = static_cast<USHORT>(index);
-				USHORT index0 = indices[indices.size() - 3];
+				UINT index2 = indices[indices.size() - 1];
+				UINT index3 = static_cast<UINT>(index);
+				UINT index0 = indices[indices.size() - 3];
 				indices.push_back(index2);
 				indices.push_back(index3);
 				indices.push_back(index0);
@@ -475,6 +483,7 @@ void FbxModelResourceMgr::ParseBone(Model *MODEL, FbxMesh *FBX_MESH)
 	bones.reserve(clusterCount);
 
 
+
 	//初期姿勢行列の読み込み--------------------------------------------------
 	for (int i = 0; i < clusterCount; i++)
 	{
@@ -502,11 +511,6 @@ void FbxModelResourceMgr::ParseBone(Model *MODEL, FbxMesh *FBX_MESH)
 		//初期姿勢行列の逆行列を得る
 		bone.invInitialPose = XMMatrixInverse(nullptr, initialPose);
 	}
-
-	for (int i = 0; i < MODEL->bones.size(); ++i)
-	{
-		MODEL->bones[i].fbxSkin = static_cast<FbxSkin *>(FBX_MESH->GetDeformer(0, FbxDeformer::eSkin));
-	}
 }
 
 void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
@@ -523,25 +527,23 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 	//UVデータの数
 	const int textureUVCount = FBX_MESH->GetTextureUVCount();
 
-	//もし重複なしの頂点数なら何かに使えるかも
-	int polygonVertexNum = FBX_MESH->GetPolygonVertexCount();
-
 	//UV名リスト
 	FbxStringList uvNames;
 	FBX_MESH->GetUVSetNames(uvNames);
 
-	std::vector<KazMath::Vec3<float>>vertPos(polygonVertexNum);
-	for (int i = 0; i < polygonVertexNum; ++i)
+	//頂点座標データの数
+	const int controlPointsCount = FBX_MESH->GetControlPointsCount();
+	std::vector<DirectX::XMFLOAT4>vertPos(controlPointsCount);
+	for (int i = 0; i < controlPointsCount; ++i)
 	{
 		vertPos[i].x = (float)pCoord[i][0];
 		vertPos[i].y = (float)pCoord[i][1];
 		vertPos[i].z = (float)pCoord[i][2];
 	}
 
-
 	//重複あり頂点情報
 	std::vector<Model::VertexPosNormalUvSkin> vertices;
-	std::vector<int> indexData;
+	std::vector<UINT> indexData;
 	for (int i = 0; i < polygonCount; i++)
 	{
 		//面を構成する頂点の数を取得(3なら三角形ポリゴン)
@@ -556,6 +558,8 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 			vertex.pos.y = vertPos[index].y;
 			vertex.pos.z = vertPos[index].z;
 
+			MODEL->vertData.push_back(vertPos[index]);
+
 			//UV
 			if (textureUVCount > 0)
 			{
@@ -565,7 +569,15 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 				if (FBX_MESH->GetPolygonVertexUV(i, j, uvNames[0], uvs, lUnmappedUV))
 				{
 					vertex.uv.x = (float)uvs[0];
-					vertex.uv.y = 1.0f - (float)uvs[1];
+
+					if (revUvFlag)
+					{
+						vertex.uv.y = 1.0f - (float)uvs[1];
+					}
+					else
+					{
+						vertex.uv.y = (float)uvs[1];
+					}
 				}
 			}
 
@@ -582,9 +594,12 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 		}
 	}
 	MODEL->vertices = vertices;
+	MODEL->indices = indexData;
 
 
 	FbxSkin *fbxSkin = static_cast<FbxSkin *>(FBX_MESH->GetDeformer(0, FbxDeformer::eSkin));
+	boneSkinArray.push_back(fbxSkin);
+
 	if (fbxSkin == nullptr)return;
 
 	//スキンウェイト読み取り--------------------------------------------------
@@ -594,6 +609,7 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 	vector<list<WeightSet>> weightLists(MODEL->vertices.size());
 	//ボーンの数
 	int clusterCount = fbxSkin->GetClusterCount();
+
 	//全てのボーンについて
 	for (int i = 0; i < clusterCount; i++)
 	{
@@ -629,7 +645,7 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 		for (int i = 0; i < indexData.size(); ++i)
 		{
 			//インデックスとウェイトのインデックスが合っていない場合書き込まない
-			if (indexData[i] != weightIndex)continue;
+			if (static_cast<int>(indexData[i]) != weightIndex)continue;
 
 			//頂点のウェイトから最も大きい4つを選択
 			auto &weightList = weightLists[weightIndex];

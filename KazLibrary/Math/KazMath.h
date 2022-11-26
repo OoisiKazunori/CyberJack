@@ -1,8 +1,8 @@
 #pragma once
 #include"../DirectXCommon/Base.h"
 #include<cmath>
-#pragma warning(push)
-#pragma warning(disable:4023)
+#pragma warning(push,0)
+#pragma warning(disable: ALL_CODE_ANALYSIS_WARNINGS)
 #include"fbxsdk.h"
 #pragma warning(pop)
 #include"../Helper/DirtyFlag.h"
@@ -25,7 +25,7 @@ namespace KazMath
 
 		float Length()const
 		{
-			return sqrt(pow(x, 2) + pow(y, 2));
+			return sqrtf(powf(x, 2) + powf(y, 2));
 		};
 		float Distance(const Vec2 &To)const
 		{
@@ -55,7 +55,7 @@ namespace KazMath
 
 		Vec2<int>Int()const
 		{
-			return Vec2<int>(x, y);
+			return Vec2<int>(static_cast<int>(x), static_cast<int>(y));
 		}
 		Vec2<float>Float()const
 		{
@@ -537,6 +537,9 @@ namespace KazMath
 	{
 		Vec4<int> color;
 
+		Color() :color(255, 255, 255, 255), dirtyFlag(&color)
+		{
+		};
 		Color(int R, int G, int B, int A) :color({ R,G,B,A }), dirtyFlag(&color)
 		{};
 
@@ -856,12 +859,12 @@ namespace KazMath
 	float AngleToRadian(float ANGLE);
 
 	DirectX::XMMATRIX CaluMat(const KazMath::Transform3D &TRANSFORM, const DirectX::XMMATRIX &VIEW_MAT, const DirectX::XMMATRIX &PROJECT_MAT, const Vec3<float> &Y_VEC, const Vec3<float> &Z_VEC);
-	template<typename T>
-	DirectX::XMMATRIX CaluWorld(const KazMath::Transform3D &TRANSFORM, const Vec3<T> &Y_VEC, const Vec3<T> &Z_VEC);
+	DirectX::XMMATRIX CaluWorld(const KazMath::Transform3D &TRANSFORM, const Vec3<float> &Y_VEC, const Vec3<float> &Z_VEC);
 
 
 	void Larp(float BASE_TRANSFORM, float *TRANSFORM, float MUL);
 	void Larp(const Vec2<float> BASE_TRANSFORM, Vec2<float> *TRANSFORM, float MUL);
+	void Larp(const Vec3<float> BASE_TRANSFORM, Vec3<float> *TRANSFORM, float MUL);
 
 	template<typename T>
 	float GetSinFloat(T VALUE)

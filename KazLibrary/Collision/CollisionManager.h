@@ -80,6 +80,18 @@ struct ModiRectangle
 	KazMath::Vec3<float> p1;
 	KazMath::Vec3<float> p2;
 	KazMath::Vec3<float> p3;
+	KazMath::Vec3<float> normal;
+
+	void SetNormal()
+	{
+		KazMath::Vec3<float> p0_p1 = p1 - p0;
+		KazMath::Vec3<float> p0_p2 = p2 - p0;
+		KazMath::Vec3<float> p0_p3 = p3 - p0;
+
+		//外積により、2辺に垂直なベクトルを算出する
+		normal = p0_p1.Cross(p0_p2);
+		normal.Normalize();
+	}
 };
 
 class CollisionManager :public ISingleton<CollisionManager> {
@@ -163,6 +175,17 @@ public:
 
 	std::array<KazMath::Vec2<float>, 2> CheckCircleAndRay(const Sphere &SPHERE, const KazMath::Vec2<float> &START_POS, const KazMath::Vec2<float> &END_POS);
 
+	/// <summary>
+	/// 板ポリと線分の判定
+	/// </summary>
+	bool CheckRayAndPlane3D(const Ray &RAY, const ModiRectangle &MODI, float *DISTANCE = nullptr);
+
+
+	//線分と線分の当たり判定
+	bool IsIntersected(const KazMath::Vec3<float> &START_POS_A, const KazMath::Vec3<float> &END_POS_A, const KazMath::Vec3<float> &START_POS_B, const KazMath::Vec3<float> &END_POS_B);
+
+	// 線分と線分の交点を求める処理
+	KazMath::Vec3<float> CalIntersectPoint(const KazMath::Vec3<float> &START_POS_A, const KazMath::Vec3<float> &END_POS_A, const KazMath::Vec3<float> &START_POS_B, const KazMath::Vec3<float> &END_POS_B);
 
 	friend ISingleton<CollisionManager>;
 private:

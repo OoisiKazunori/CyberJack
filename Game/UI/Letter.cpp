@@ -7,9 +7,11 @@ Letter::Letter()
 	graphHandle[CHARA_LARGE] = TextureResourceMgr::Instance()->LoadDivGraph(KazFilePathName::UIPath + "UppercaseAlphabet.png", 26, 1, 16, 16);
 	graphHandle[CHARA_SMALL] =  TextureResourceMgr::Instance()->LoadDivGraph(KazFilePathName::UIPath + "LowercaseAlphabet.png", 26, 1, 16, 16);
 	graphHandle[CHARA_NUM] = TextureResourceMgr::Instance()->LoadDivGraph(KazFilePathName::UIPath + "Number.png", 10, 1, 16, 16);
+	graphHandle[CHARA_SPECIAL] = TextureResourceMgr::Instance()->LoadDivGraph(KazFilePathName::UIPath + "SpecialKey.png", 4, 1, 16, 16);
 	inputLogHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::UIPath + "inputLog.png");
 	inputRender.data.handleData = inputLogHandle;
-	inputRender.data.pipelineName = PIPELINE_NAME_SPRITE_Z_ALWAYS;
+	inputRender.data.transform.scale = { 1.0f,1.5f };
+	inputRender.data.pipelineName = PIPELINE_NAME_SPRITE_Z_ALWAYS_CUTALPHA;
 	initFlag = false;
 }
 
@@ -18,13 +20,14 @@ void Letter::Init(const KazMath::Vec2<float> &POS, const char &CHARACTER, float 
 	basePos = POS;
 	baseSize = { FONT_SIZE ,FONT_SIZE };
 
-	const float L_ADD_SCALE = 2.5f;
-	render.data.transform.pos = basePos + KazMath::Vec2<float>(25.0f, 25.0f);
+	const float L_ADD_SCALE = 0.3f;
+	render.data.transform.pos = basePos + KazMath::Vec2<float>(10.0f, 10.0f);
 	render.data.transform.scale = baseSize + L_ADD_SCALE;
 	render.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::UIPath + "FontTest.png");
+	render.data.pipelineName = PIPELINE_NAME_SPRITE_COLOR;
+	render.data.colorData.color = { 153,229,80,255 };
 
 	inputRender.data.transform.pos = basePos;
-	
 
 	spaceFlag = false;
 
@@ -34,7 +37,7 @@ void Letter::Init(const KazMath::Vec2<float> &POS, const char &CHARACTER, float 
 		fontType = CHARA_LARGE;
 		fontNum = CHARACTER - 65;
 	}
-	else if (CheckFontType(CHARACTER, 97, 122))
+	else if (CheckFontType(CHARACTER, 97, 123))
 	{
 		fontType = CHARA_SMALL;
 		fontNum = CHARACTER - 97;
@@ -50,16 +53,45 @@ void Letter::Init(const KazMath::Vec2<float> &POS, const char &CHARACTER, float 
 	}
 	else
 	{
-		//使えない文字が入力されました
-		assert(0);
+		//特殊なキー(必要最低限のもの)
+		switch (CHARACTER)
+		{
+		case 45:
+			fontType = CHARA_SPECIAL;
+			fontNum = 0;
+			break;
+		case 91:
+			fontType = CHARA_SPECIAL;
+			fontNum = 1;
+			break;
+		case 93:
+			fontType = CHARA_SPECIAL;
+			fontNum = 2;
+			break;
+		case 95:
+			fontType = CHARA_SPECIAL;
+			fontNum = 3;
+			break;
+		default:
+			//使えない文字が入力されました
+			assert(0);
+			break;
+		}
 	}
-	render.data.handleData = graphHandle[fontType];
-	render.data.animationHandle = fontNum;
+
+
 	changeHandleFlag = false;
 	initFlag = true;
 
 	timer = 0;
 	prevStringIndex = STRING_INDEX;
+
+	if (spaceFlag)
+	{
+		return;
+	}
+	render.data.handleData = graphHandle[fontType];
+	render.data.animationHandle = fontNum;
 }
 
 void Letter::Finalize()
@@ -93,7 +125,7 @@ void Letter::Update(float Y_POS, int INDEX)
 	KazMath::Larp(baseSize, &render.data.transform.scale, 0.3f);
 
 	++timer;
-	if (5 <= timer)
+	if (2 <= timer)
 	{
 		changeHandleFlag = true;
 	}
@@ -138,6 +170,7 @@ void String::Init(const KazMath::Vec2<float>POS, const std::string &STRING, floa
 	charaArrayNum = 0;
 
 	basePos = POS;
+
 }
 
 void String::Finalize()
@@ -151,21 +184,23 @@ void String::Finalize()
 void String::Update(int STRING_INDEX)
 {
 	//時間経過で文字を一文字ずつ出す処理ーーー
-	++timer;
 	bool lIsStringInArraySizeFlag = charaArrayNum <= logString.size()-1 && logString.size() != 0;
-	if (4 <= timer && lIsStringInArraySizeFlag && charaArrayNum < letters.size())
+	if (1 <= timer && lIsStringInArraySizeFlag && charaArrayNum < letters.size())
 	{
 		timer = 0;
 		KazMath::Vec2<float>lPos = { basePos.x + static_cast<float>(charaArrayNum) * (16.0f * fontSize), basePos.y + 20.0f * static_cast<float>(STRING_INDEX) };
 		letters[charaArrayNum].Init(lPos, logString[charaArrayNum], fontSize, STRING_INDEX);
 		++charaArrayNum;
 	}
+	++timer;
 	//時間経過で文字を一文字ずつ出す処理ーーー
 
+	float lYPos = basePos.y + 20.0f * static_cast<float>(STRING_INDEX);
 	for (int i = 0; i < letters.size(); ++i)
 	{
- 		letters[i].Update(basePos.y + 20.0f * static_cast<float>(STRING_INDEX), STRING_INDEX);
+		letters[i].Update(lYPos, STRING_INDEX);
 	}
+	stringPos = { basePos.x,lYPos };
 }
 
 void String::Draw()

@@ -21,6 +21,14 @@ enum eEnemyType
 	ENEMY_TYPE_BIKE_MISILE
 };
 
+enum EnemyModelType
+{
+	ENEMY_MODEL_NONE,
+	ENEMY_MODEL_OBJ,
+	ENEMY_MODEL_FBX,
+	ENEMY_MODEL_MESHPARTICLE
+};
+
 enum BattleShipMisileEnum
 {
 	BATTLESHIP_MISILE_SHOT_LEFT,
@@ -71,6 +79,7 @@ struct EnemyGenerateData
 	BattleShipData battleShipData;
 	PopEnemyData popEnemyData;
 	MisileEnemy misileEnemy;
+	bool useMeshPaticleFlag;
 
 	EnemyGenerateData() :speed(-1.5f)
 	{
@@ -105,6 +114,16 @@ struct GenarateOtherObjData
 	EnemyGenerateData enemyGenerateData;
 };
 
+//メッシュパーティクルに必要なデータ
+struct MeshData
+{
+	RESOURCE_HANDLE resourceHandle;
+	const DirectX::XMMATRIX *motherMat;
+	MeshData(RESOURCE_HANDLE HANDLE, const DirectX::XMMATRIX *MOTHER_MAT) :resourceHandle(HANDLE), motherMat(MOTHER_MAT)
+	{
+	};
+};
+
 /// <summary>
 /// ゲーム内に登場する敵のデータ
 /// </summary>
@@ -122,7 +141,7 @@ struct EnemyData
 		timer(1),
 		outOfStageFlag(false),
 		radius(0.0f),
-		startFlag(false)
+		startFlag(false), objFlag(false)
 	{
 	};
 
@@ -133,6 +152,11 @@ struct EnemyData
 	bool outOfStageFlag;					//ステージの範囲外に出てしまった
 	float radius;
 	bool startFlag;
+	bool objFlag;
+	int *alpha;
+
+	bool meshParticleFlag;
+	std::vector<MeshData> meshParticleData;
 };
 
 enum EnemyDeathType

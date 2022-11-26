@@ -7,7 +7,7 @@ GoalBox::GoalBox()
 {
 	model = std::make_unique<ObjModelRender>();
 	model->data.pipelineName = PIPELINE_NAME_OBJ_MULTITEX;
-	iOperationData.Init(8);
+	iOperationData.Init(8,"Network_Security");
 	prevHpNum = iOperationData.rockOnNum;
 
 	model->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::GoalPath + "goal.obj");
@@ -37,7 +37,7 @@ GoalBox::GoalBox()
 
 void GoalBox::Init(const KazMath::Vec3<float> &POS)
 {
-	iOperationData.Init(HP);
+	iOperationData.Init(HP, "Network_Security");
 	prevHpNum = iOperationData.rockOnNum;
 
 

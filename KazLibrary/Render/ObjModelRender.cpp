@@ -16,7 +16,7 @@ ObjModelRender::ObjModelRender(bool INSTANCE_FLAG, int INSTANCE_NUM, bool MATERI
 	{
 		constBufferHandle[1] = CreateConstBuffer(sizeof(ConstBufferDataB1), typeid(ConstBufferDataB1).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
 	}
-
+	data.removeMaterialFlag = MATERIAL_NONE_FALG;
 }
 
 ObjModelRender::~ObjModelRender()
@@ -114,7 +114,7 @@ void ObjModelRender::Draw()
 			//バッファをコマンドリストに積む-----------------------------------------------------------------------------------------------------
 		}
 
-		SetConstBufferOnCmdList(data.pipelineName, data.removeMaterialFlag);
+		SetConstBufferOnCmdList(data.pipelineName, data.removeMaterialFlag, demoFlag);
 
 
 		//追加のテクスチャを送る---------------------------------------------------------------

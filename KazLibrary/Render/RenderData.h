@@ -98,8 +98,15 @@ struct Sprite2DData
 
 	KazMath::Color colorData;
 	AddTextureData addHandle;
+	KazMath::Vec2<float>leftScale;
+	KazMath::Vec2<float>rightScale;
 
-	Sprite2DData() :colorData(0, 0, 0, 255), pipelineName(PIPELINE_NAME_SPRITE)
+	DirtyFlag<KazMath::Vec2<float>> leftScaleDirtyFlag;
+	DirtyFlag<KazMath::Vec2<float>> rightScaleDirtyFlag;
+
+	Sprite2DData() :colorData(0, 0, 0, 255), pipelineName(PIPELINE_NAME_SPRITE),
+		leftScale({ 1.0f,1.0f }), rightScale({ 1.0f,1.0f }),
+		leftScaleDirtyFlag(&leftScale, true), rightScaleDirtyFlag(&rightScale, true)
 	{
 	}
 
@@ -110,8 +117,37 @@ struct Sprite2DData
 		animationHandle.flag.Record();
 		flip.Record();
 		colorData.Record();
+		leftScaleDirtyFlag.Record();
+		rightScaleDirtyFlag.Record();
 	};
 };
+
+
+struct MovieData
+{
+	KazMath::Transform2D transform;
+	ResourceHandle handleData;
+	FlipData flip;
+	PipeLineNames pipelineName;
+
+	KazMath::Color colorData;
+	AddTextureData addHandle;
+
+	Microsoft::WRL::ComPtr<ID3D12Resource>buff;
+
+	MovieData() :colorData(0, 0, 0, 255), pipelineName(PIPELINE_NAME_SPRITE_NOBLEND)
+	{
+	}
+
+	void Record()
+	{
+		transform.Record();
+		handleData.flag.Record();
+		flip.Record();
+		colorData.Record();
+	};
+};
+
 
 
 struct Sprite3DData
@@ -119,6 +155,7 @@ struct Sprite3DData
 	KazMath::Transform3D transform;
 	ResourceHandle handleData;
 	ResourceHandle animationHandle;
+	AddTextureData addHandle;
 	FlipData flip;
 	bool billBoardFlag;
 	MatMotherData motherMat;
@@ -205,7 +242,7 @@ struct LineDrawData
 {
 	KazMath::Vec3<float> startPos;
 	KazMath::Vec3<float> endPos;
-	KazMath::Color color;
+	KazMath::Color colorData;
 	MatMotherData motherMat;
 	PipeLineNames pipelineName;
 	CameraIndexData cameraIndex;
@@ -213,14 +250,14 @@ struct LineDrawData
 	DirtyFlag<KazMath::Vec3<float>> startPosDirtyFlag;
 	DirtyFlag<KazMath::Vec3<float>> endPosDirtyFlag;
 
-	LineDrawData() :pipelineName(PIPELINE_NAME_LINE), color(255, 255, 255, 255), startPosDirtyFlag(&startPos), endPosDirtyFlag(&endPos)
+	LineDrawData() :pipelineName(PIPELINE_NAME_LINE), colorData(255, 255, 255, 255), startPosDirtyFlag(&startPos), endPosDirtyFlag(&endPos)
 	{
 	}
 	void Record()
 	{
 		startPosDirtyFlag.Record();
 		endPosDirtyFlag.Record();
-		color.Record();
+		colorData.Record();
 		motherMat.dirty.Record();
 		cameraIndex.dirty.Record();
 	}
@@ -234,7 +271,7 @@ struct PolygonDrawData
 	PipeLineNames pipelineName;
 	CameraIndexData cameraIndex;
 
-	PolygonDrawData():color(255, 255, 255, 255), pipelineName(PIPELINE_NAME_COLOR)
+	PolygonDrawData() :color(255, 255, 255, 255), pipelineName(PIPELINE_NAME_COLOR)
 	{
 	}
 
@@ -255,12 +292,14 @@ struct FbxModelData
 	MatMotherData motherMat;
 	bool isPlayFlag;
 	bool isReverseFlag;
+	bool stopAnimationFlag;
+	bool removeMaterialFlag;
 	int animationNumber;
 	PipeLineNames pipelineName;
 	CameraIndexData cameraIndex;
 	KazMath::Color colorData;
 
-	FbxModelData() :pipelineName(PIPELINE_NAME_FBX), animationNumber(0), isPlayFlag(false), isReverseFlag(false), colorData({ 255,255,255,255 })
+	FbxModelData() :pipelineName(PIPELINE_NAME_FBX), animationNumber(0), isPlayFlag(false), isReverseFlag(false), colorData({ 255,255,255,255 }), stopAnimationFlag(false)
 	{
 	}
 

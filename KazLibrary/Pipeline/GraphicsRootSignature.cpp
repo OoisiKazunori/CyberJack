@@ -74,6 +74,18 @@ void GraphicsRootSignature::CreateRootSignature(RootSignatureMode ROOTSIGNATURE,
 			param2++;
 			break;
 
+		case GRAPHICS_RANGE_TYPE_SRV_VIEW:
+			//ルートパラムの設定
+			rootparam[i].InitAsShaderResourceView(param1, 0, D3D12_SHADER_VISIBILITY_ALL);
+
+			//受け渡し用
+			paramD[ROOTSIGNATURE].range[i] = GRAPHICS_RANGE_TYPE_SRV;
+			paramD[ROOTSIGNATURE].paramData[i].param = ROOTSIGNATURE_DATA.paramData[i].param;
+			paramD[ROOTSIGNATURE].paramData[i].type = ROOTSIGNATURE_DATA.paramData[i].type;
+			paramD[ROOTSIGNATURE].type[i] = GRAPHICS_ROOTSIGNATURE_TYPE_VIEW;
+			param1++;
+			break;
+
 			//テスト用、即急に改良が必要
 		case GRAPHICS_RANGE_TYPE_CBV_DESC:
 			//ルートパラムの設定
@@ -89,14 +101,26 @@ void GraphicsRootSignature::CreateRootSignature(RootSignatureMode ROOTSIGNATURE,
 			param2++;
 			break;
 
-		case GRAPHICS_RANGE_TYPE_UAV:
+		case GRAPHICS_RANGE_TYPE_UAV_VIEW:
+			//ルートパラムの設定
+			rootparam[i].InitAsUnorderedAccessView(param1, 0, D3D12_SHADER_VISIBILITY_ALL);
+
+			//受け渡し用
+			paramD[ROOTSIGNATURE].range[i] = GRAPHICS_RANGE_TYPE_UAV_VIEW;
+			paramD[ROOTSIGNATURE].paramData[i].param = ROOTSIGNATURE_DATA.paramData[i].param;
+			paramD[ROOTSIGNATURE].paramData[i].type = ROOTSIGNATURE_DATA.paramData[i].type;
+			paramD[ROOTSIGNATURE].type[i] = GRAPHICS_ROOTSIGNATURE_TYPE_VIEW;
+			param1++;
+			break;
+
+		case GRAPHICS_RANGE_TYPE_UAV_DESC:
 			//ルートパラムの設定
 			descRangeSRV.push_back({});
 			descRangeSRV[descRangeSRV.size() - 1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, param2);
 			rootparam[i].InitAsDescriptorTable(1, &descRangeSRV[descRangeSRV.size() - 1], D3D12_SHADER_VISIBILITY_ALL);
 
 			//受け渡し用
-			paramD[ROOTSIGNATURE].range[i] = GRAPHICS_RANGE_TYPE_UAV;
+			paramD[ROOTSIGNATURE].range[i] = GRAPHICS_RANGE_TYPE_UAV_VIEW;
 			paramD[ROOTSIGNATURE].paramData[i].param = ROOTSIGNATURE_DATA.paramData[i].param;
 			paramD[ROOTSIGNATURE].paramData[i].type = ROOTSIGNATURE_DATA.paramData[i].type;
 			paramD[ROOTSIGNATURE].type[i] = GRAPHICS_ROOTSIGNATURE_TYPE_DESCRIPTORTABLE;
@@ -129,13 +153,19 @@ void GraphicsRootSignature::CreateRootSignature(RootSignatureMode ROOTSIGNATURE,
 		CreateMyRootSignature(ROOTSIGNATURE_DATA.sample, computeRootParameters.data(), computeRootParameters.size(), ROOTSIGNATURE);
 
 	}
-	else if (ROOTSIGNATURE == ROOTSIGNATURE_DATA_DRAW_UAB_TEX)
+	else if (ROOTSIGNATURE == ROOTSIGNATURE_DATA_UAB_UAB_UAB_CB)
 	{
-		std::array<CD3DX12_DESCRIPTOR_RANGE, 1> computeRootParametersRange;
-		std::array<CD3DX12_ROOT_PARAMETER, 2> computeRootParameters;
-		computeRootParametersRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
-		computeRootParameters[0].InitAsUnorderedAccessView(0, 0);
-		computeRootParameters[1].InitAsDescriptorTable(1, &computeRootParametersRange[0]);
+		std::array<CD3DX12_ROOT_PARAMETER, 5> computeRootParameters;
+		std::array <CD3DX12_DESCRIPTOR_RANGE, 4> ranges{};
+		ranges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0);
+		ranges[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 1);
+		ranges[2].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 2);
+		ranges[3].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 3);
+		computeRootParameters[0].InitAsDescriptorTable(1, &ranges[0]);
+		computeRootParameters[1].InitAsDescriptorTable(1, &ranges[1]);
+		computeRootParameters[2].InitAsDescriptorTable(1, &ranges[2]);
+		computeRootParameters[3].InitAsDescriptorTable(1, &ranges[3]);
+		computeRootParameters[4].InitAsConstantBufferView(0, 0);
 	
 		CreateMyRootSignature(ROOTSIGNATURE_DATA.sample, computeRootParameters.data(), computeRootParameters.size(), ROOTSIGNATURE);
 	}

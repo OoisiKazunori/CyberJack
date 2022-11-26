@@ -416,7 +416,7 @@ void Cursor::Update()
 	{
 		cursorAlpha = 255;
 		dontMoveFlag = false;
-		cursorFlameTex->data.pipelineName = PIPELINE_NAME_SPRITE_Z_ALWAYS;
+		//cursorFlameTex->data.pipelineName = PIPELINE_NAME_SPRITE_Z_ALWAYS;
 	}
 
 	numberTex->data.colorData.color.a = cursorAlpha;

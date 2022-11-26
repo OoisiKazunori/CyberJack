@@ -35,25 +35,25 @@ void MountainObject::Init(const KazMath::Transform3D &TRANSFORM, RESOURCE_HANDLE
 
 void MountainObject::Update()
 {
-	if (reversValueFlag)
-	{
-		scaleRate += 1.0f / 30.0f;
-	}
-	else
-	{
-		scaleRate += -(1.0f / 10.0f);
-	}
+	//if (reversValueFlag)
+	//{
+	//	scaleRate += 1.0f / 30.0f;
+	//}
+	//else
+	//{
+	//	scaleRate += -(1.0f / 10.0f);
+	//}
 
-	if (scaleRate <= 0.0f)
-	{
-		scaleRate = 0.0f;
-		reversValueFlag = true;
-	}
-	else if (1.0f <= scaleRate)
-	{
-		scaleRate = 1.0f;
-		reversValueFlag = false;
-	}
+	//if (scaleRate <= 0.0f)
+	//{
+	//	scaleRate = 0.0f;
+	//	reversValueFlag = true;
+	//}
+	//else if (1.0f <= scaleRate)
+	//{
+	//	scaleRate = 1.0f;
+	//	reversValueFlag = false;
+	//}
 
 
 	//ˆÚ“®—Ê

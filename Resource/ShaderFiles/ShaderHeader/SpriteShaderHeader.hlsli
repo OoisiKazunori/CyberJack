@@ -17,7 +17,6 @@ struct ClipTexOutput
     float4 screenPos : TEXCOORD; //uv’l
 };
 
-
 float4 ComputeNonStereoScreenPos(float4 pos)
 {
     float4 o = pos * 0.5f;

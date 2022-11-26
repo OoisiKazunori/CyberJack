@@ -18,9 +18,11 @@ FbxModelRender::FbxModelRender()
 		constMap->bones[i] = DirectX::XMMatrixIdentity();
 	}
 	gpuBuffer->GetBufferData(constBufferHandle[1])->Unmap(0, nullptr);
+
+	removeSkining = false;
 }
 
-void FbxModelRender::Draw()
+void FbxModelRender::Draw(bool DRAE_FLAG)
 {
 	if (data.handle.flag.Dirty())
 	{
@@ -32,27 +34,29 @@ void FbxModelRender::Draw()
 
 	if (data.handle.handle != -1)
 	{
-		if (data.isPlayFlag)
+		if (resourceData->startTime.size() != 0 && !data.stopAnimationFlag)
 		{
-			currentTime += frameTime;
-			if (currentTime > resourceData->endTime[data.animationNumber])
+			if (data.isPlayFlag)
+			{
+				currentTime += frameTime;
+				if (currentTime > resourceData->endTime[data.animationNumber])
+				{
+					currentTime = resourceData->endTime[data.animationNumber];
+				}
+			}
+			else if (data.isReverseFlag)
+			{
+				currentTime -= frameTime;
+				if (currentTime <= resourceData->startTime[data.animationNumber])
+				{
+					currentTime = resourceData->startTime[data.animationNumber];
+				}
+			}
+			else
 			{
 				currentTime = resourceData->startTime[data.animationNumber];
 			}
 		}
-		else if (data.isReverseFlag)
-		{
-			currentTime -= frameTime;
-			if (currentTime <= resourceData->startTime[data.animationNumber])
-			{
-				currentTime = resourceData->startTime[data.animationNumber];
-			}
-		}
-		else
-		{
-			currentTime = resourceData->startTime[data.animationNumber];
-		}
-
 
 		//パイプライン設定-----------------------------------------------------------------------------------------------------
 		renderData.pipelineMgr->SetPipeLineAndRootSignature(data.pipelineName);
@@ -79,6 +83,10 @@ void FbxModelRender::Draw()
 		}
 		//行列計算-----------------------------------------------------------------------------------------------------
 
+		if (!DRAE_FLAG)
+		{
+			return;
+		}
 
 		//バッファの転送-----------------------------------------------------------------------------------------------------
 		//行列
@@ -94,7 +102,7 @@ void FbxModelRender::Draw()
 		}
 
 
-		if(data.isPlayFlag)
+		if ((data.isPlayFlag || data.isReverseFlag) && !removeSkining)
 		{
 			ConstBufferDataSkin *lConstMap = nullptr;
 			gpuBuffer->GetBufferData(constBufferHandle[1])->Map(0, nullptr, (void **)&lConstMap);
@@ -103,10 +111,10 @@ void FbxModelRender::Draw()
 			{
 				for (int i = 0; i < resourceData->bone.size(); i++)
 				{
+					FbxSkin *bonePtr = FbxModelResourceMgr::Instance()->boneSkinArray[data.handle.handle];
+					FbxAMatrix lFbxCurrentPose = bonePtr->GetCluster(i)->GetLink()->EvaluateGlobalTransform(currentTime);
 					DirectX::XMMATRIX lMatCurrentPose;
-					FbxAMatrix lFbxCurrentPose = resourceData->bone[i].fbxSkin->GetCluster(i)->GetLink()->EvaluateGlobalTransform(currentTime);
 					KazMath::ConvertMatrixFromFbx(&lMatCurrentPose, lFbxCurrentPose);
-
 
 					if (resourceData->startTime.size() == 0)
 					{
@@ -118,33 +126,75 @@ void FbxModelRender::Draw()
 					}
 				}
 			}
-			else
+			else if (resourceData->bone.size() != 0)
 			{
-				for (int i = 0; i < MAX_BONES; i++)
+				for (int i = 0; i < resourceData->bone.size(); i++)
 				{
-					lConstMap->bones[i] = DirectX::XMMatrixIdentity();
+					FbxSkin *bonePtr = FbxModelResourceMgr::Instance()->boneSkinArray[data.handle.handle];
+					FbxAMatrix lFbxCurrentPose = bonePtr->GetCluster(i)->GetLink()->EvaluateGlobalTransform(currentTime);
+					DirectX::XMMATRIX lMatCurrentPose;
+					KazMath::ConvertMatrixFromFbx(&lMatCurrentPose, lFbxCurrentPose);
+
+					if (resourceData->startTime.size() == 0)
+					{
+						lConstMap->bones[i] = DirectX::XMMatrixIdentity();
+					}
+					else
+					{
+						lConstMap->bones[i] = resourceData->bone[i].invInitialPose * lMatCurrentPose;
+					}
 				}
 			}
 			gpuBuffer->GetBufferData(constBufferHandle[1])->Unmap(0, nullptr);
 		}
-
-
-		SetConstBufferOnCmdList(data.pipelineName);
-
-		for (int i = 0; i < resourceData->textureHandle.size(); i++)
+		else if (resourceData->bone.size() != 0 && !removeSkining)
 		{
-			if (resourceData->textureHandle[i] != -1)
+			ConstBufferDataSkin *lConstMap = nullptr;
+			gpuBuffer->GetBufferData(constBufferHandle[1])->Map(0, nullptr, (void **)&lConstMap);
+
+			for (int i = 0; i < resourceData->bone.size(); i++)
 			{
-				D3D12_GPU_DESCRIPTOR_HANDLE lGpuDescHandleSRV = DescriptorHeapMgr::Instance()->GetGpuDescriptorView(resourceData->textureHandle[i]);
-				int lParam = KazRenderHelper::SetBufferOnCmdList(GraphicsRootSignature::Instance()->GetRootParam(renderData.pipelineMgr->GetRootSignatureName(data.pipelineName)), GRAPHICS_RANGE_TYPE_SRV, GRAPHICS_PRAMTYPE_TEX);
-				renderData.cmdListInstance->cmdList->SetGraphicsRootDescriptorTable(lParam, lGpuDescHandleSRV);
+				DirectX::XMMATRIX lMatCurrentPose;
+				FbxAMatrix lFbxCurrentPose = resourceData->bone[i].fbxSkin->GetCluster(i)->GetLink()->EvaluateGlobalTransform(currentTime);
+				KazMath::ConvertMatrixFromFbx(&lMatCurrentPose, lFbxCurrentPose);
+				if (resourceData->startTime.size() == 0)
+				{
+					lConstMap->bones[i] = DirectX::XMMatrixIdentity();
+				}
+				else
+				{
+					lConstMap->bones[i] = resourceData->bone[i].invInitialPose * lMatCurrentPose;
+				}
+			}
+
+			gpuBuffer->GetBufferData(constBufferHandle[1])->Unmap(0, nullptr);
+		}
+
+
+		SetConstBufferOnCmdList(data.pipelineName, data.removeMaterialFlag);
+
+		if (!data.removeMaterialFlag)
+		{
+			for (int i = 0; i < resourceData->textureHandle.size(); i++)
+			{
+				if (resourceData->textureHandle[i] != -1)
+				{
+					D3D12_GPU_DESCRIPTOR_HANDLE lGpuDescHandleSRV = DescriptorHeapMgr::Instance()->GetGpuDescriptorView(resourceData->textureHandle[i]);
+					int lParam = KazRenderHelper::SetBufferOnCmdList(GraphicsRootSignature::Instance()->GetRootParam(renderData.pipelineMgr->GetRootSignatureName(data.pipelineName)), GRAPHICS_RANGE_TYPE_SRV, GRAPHICS_PRAMTYPE_TEX);
+					renderData.cmdListInstance->cmdList->SetGraphicsRootDescriptorTable(lParam, lGpuDescHandleSRV);
+				}
 			}
 		}
-	
 
 		//DrawIndexInstanceCommand(drawIndexInstanceCommandData);
 		DrawInstanceCommand(drawInstanceCommandData);
 	}
 
 	data.Record();
+}
+
+void FbxModelRender::ReleaseSkining()
+{
+	removeSkining = true;
+	Release(constBufferHandle[1]);
 }

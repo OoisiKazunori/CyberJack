@@ -75,7 +75,7 @@ bool CollisionManager::CheckRayAndPlane(const Ray &RAY, const Plane &PLANE, floa
 
 	//始点と平面の距離(平面の法線方向)
 	//面法線とレイの始点座標(位置ベクトル)の内積
-	float d2 = PLANE.normal.Dot(RAY.dir);
+	float d2 = PLANE.normal.Dot(RAY.start);
 
 	//始点と平面の距離(平面の法線方向)
 	float dist = d2 - PLANE.distance;
@@ -138,7 +138,7 @@ bool CollisionManager::CheckRayAndTriange(const Ray &RAY, const Triangle &TRIANG
 
 	//辺p1_p2について
 	KazMath::Vec3<float> pt_p1 = TRIANGLE.p1 - interPlane;
-	KazMath::Vec3<float> p1_p2 = TRIANGLE.p1 - TRIANGLE.p2;
+	KazMath::Vec3<float> p1_p2 = TRIANGLE.p2 - TRIANGLE.p1;
 	m = pt_p1.Cross(p1_p2);
 
 	//辺の外側であれば当たっていないので判定を打ち切る
@@ -150,7 +150,7 @@ bool CollisionManager::CheckRayAndTriange(const Ray &RAY, const Triangle &TRIANG
 
 	//辺p2_p0について
 	KazMath::Vec3<float> pt_p2 = TRIANGLE.p2 - interPlane;
-	KazMath::Vec3<float> p2_p0 = TRIANGLE.p2 - TRIANGLE.p0;
+	KazMath::Vec3<float> p2_p0 = TRIANGLE.p0 - TRIANGLE.p2;
 	m = pt_p2.Cross(p2_p0);
 
 	//辺の外側であれば当たっていないので判定を打ち切る
@@ -490,7 +490,7 @@ std::array<KazMath::Vec2<float>, 2> CollisionManager::CheckCircleAndRay(const Sp
 		beta = theta + phi;
 
 		//場合わけ
-		if (a *SPHERE.center->x + b * SPHERE.center->y + c > 0) {
+		if (a * SPHERE.center->x + b * SPHERE.center->y + c > 0) {
 			alpha += KazMath::PI_2F;
 			beta += KazMath::PI_2F;
 		}
@@ -509,6 +509,85 @@ std::array<KazMath::Vec2<float>, 2> CollisionManager::CheckCircleAndRay(const Sp
 
 		return resultArray;
 	}
+}
+
+bool CollisionManager::CheckRayAndPlane3D(const Ray &RAY, const ModiRectangle &MODI, float *DISTANCE)
+{
+	//三角形が載っている平面を算出
+	std::array<Triangle, 2> lTriangle;
+
+	lTriangle[0].p0 = MODI.p0;
+	lTriangle[0].p1 = MODI.p1;
+	lTriangle[0].p2 = MODI.p2;
+	lTriangle[0].ComputeNormal();
+
+	lTriangle[1].p0 = MODI.p2;
+	lTriangle[1].p1 = MODI.p3;
+	lTriangle[1].p2 = MODI.p1;
+	lTriangle[1].ComputeNormal();
+
+	//Rayと平面が当たっていなければ、当たっていない
+	if (CheckRayAndTriange(RAY, lTriangle[0], DISTANCE, nullptr) || CheckRayAndTriange(RAY, lTriangle[1], DISTANCE, nullptr))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool CollisionManager::IsIntersected(const KazMath::Vec3<float> &START_POS_A, const KazMath::Vec3<float> &END_POS_A, const KazMath::Vec3<float> &START_POS_B, const KazMath::Vec3<float> &END_POS_B)
+{
+	//--線分の外積を計算して交差判定を行う--
+	//第一回 線分Aから見たBの交差判定
+	KazMath::Vec3<float> lBuffA = END_POS_A - START_POS_A;
+	lBuffA.Normalize();
+	KazMath::Vec3<float> lBuffB = START_POS_B - START_POS_A;
+	lBuffB.Normalize();
+	KazMath::Vec3<float> lBuffC = lBuffA;
+	lBuffC.Normalize();
+	KazMath::Vec3<float> lBuffD = END_POS_B - START_POS_A;
+	lBuffD.Normalize();
+
+	KazMath::Vec3<float> lBuffE = lBuffA.Cross(lBuffB);
+	KazMath::Vec3<float> lBuffF = lBuffC.Cross(lBuffD);
+	KazMath::Vec3<float> lResult1 = lBuffE * lBuffF;
+
+	//第二回 線分Bから見たAの交差判定
+	lBuffA = END_POS_B - END_POS_A;
+	lBuffA.Normalize();
+	lBuffB = START_POS_A - START_POS_B;
+	lBuffB.Normalize();
+	lBuffC = lBuffA;
+	lBuffC.Normalize();
+	lBuffD = END_POS_A - START_POS_A;
+	lBuffD.Normalize();
+
+	lBuffE = lBuffA.Cross(lBuffB);
+	lBuffF = lBuffC.Cross(lBuffD);
+	KazMath::Vec3<float> lResult2 = lBuffE * lBuffF;
+
+	//線分が交差している時は、線分から見て交差判定したい線分の端点2つが両側にある時。
+	//外積で左右判定をすると、交差している時は値の結果が+と-になる。
+	//つまり両方の外積を掛けて結果が-になった場合のみ交差している。
+	//線分AからみてBを判定、線分BからみてAを判定と二通り判定を行う。
+	//この2つの判定結果を掛けた時に-、若しくは0の時2つの線分は交差している。
+	if (lResult1.x < 0 && lResult2.x < 0)
+	{
+		return true;
+	}
+	return false;
+}
+
+KazMath::Vec3<float> CollisionManager::CalIntersectPoint(const KazMath::Vec3<float> &START_POS_A, const KazMath::Vec3<float> &END_POS_A, const KazMath::Vec3<float> &START_POS_B, const KazMath::Vec3<float> &END_POS_B)
+{
+	//交点を求める この式は資料そのまま
+	KazMath::Vec3<float> lBuff = END_POS_B - START_POS_B;
+	double lD1 = fabs(lBuff.Cross(START_POS_A - START_POS_B).x);
+	double lD2 = fabs(lBuff.Cross(END_POS_A - START_POS_B).x);
+	double lT = lD1 / (lD1 + lD2);
+	return START_POS_A + (END_POS_A - START_POS_A) * static_cast<float>(lT);
 }
 
 void CollisionManager::ClosestPtPoint2Triangle(const KazMath::Vec3<float> &point, const Triangle &triangle, KazMath::Vec3<float> *closest)

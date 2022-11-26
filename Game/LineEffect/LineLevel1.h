@@ -40,6 +40,31 @@ enum eSurface
 	SURFACE_BUTTOM,
 };
 
+struct LineEffectData
+{
+	bool usedFlag;
+	KazMath::Vec3<float> startPos;
+	int lineIndex;
+	int enemyTypeIndex;
+	int enemyIndex;
+	int eventType;
+	bool hitFlag;
+
+	LineEffectData() :startPos({}), usedFlag(false), lineIndex(-1), enemyTypeIndex(-1), enemyIndex(-1), eventType(-1), hitFlag(false)
+	{
+	}
+
+	void Reset()
+	{
+		startPos = {};
+		usedFlag = false;
+		lineIndex = -1;
+		enemyTypeIndex = -1;
+		enemyIndex = -1;
+		eventType = -1;
+		hitFlag = false;
+	}
+};
 
 class LineLevel1
 {
@@ -84,5 +109,9 @@ private:
 	{
 		return VALUE < 0;
 	}
+
+	//§ŒÀŽžŠÔ“à‚É–Ú•W‚Ü‚Å‚½‚Ç‚è’…‚¢‚Ä‚¢‚é‚©Šm”F‚·‚é
+	int finishTimer;
+	static const int FINISH_MAX_TIME = 120;
 };
 

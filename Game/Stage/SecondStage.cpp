@@ -7,7 +7,7 @@ SecondStage::SecondStage()
 
 	for (int i = 0; i < line.size(); ++i)
 	{
-		line[i].data.color = { 255,255,255,255 };
+		line[i].data.colorData = { 255,255,255,255 };
 		line[i].data.pipelineName = PIPELINE_NAME_FOG_LINE;
 
 		fogHandle[i].handle = line[i].CreateConstBuffer(sizeof(FogData), typeid(FogData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
@@ -192,8 +192,8 @@ void SecondStage::Update()
 #pragma endregion
 	for (int i = 0; i < 4; i++)
 	{
-		line[i].data.startPos.z += -1.0f;
-		line[i].data.endPos.z += -1.0f;
+		line[i].data.startPos.z += -objectSpeed;
+		line[i].data.endPos.z += -objectSpeed;
 		if (line[i].data.startPos.z <= -150.0f)
 		{
 			line[i].data.startPos.z = 1400.0f;
@@ -203,8 +203,8 @@ void SecondStage::Update()
 
 	for (int i = 25; i < line.size(); i++)
 	{
-		line[i].data.startPos.z += -1.0f;
-		line[i].data.endPos.z += -1.0f;
+		line[i].data.startPos.z += -objectSpeed;
+		line[i].data.endPos.z += -objectSpeed;
 		if (line[i].data.startPos.z <= -150.0f)
 		{
 			line[i].data.startPos.z = 1400.0f;

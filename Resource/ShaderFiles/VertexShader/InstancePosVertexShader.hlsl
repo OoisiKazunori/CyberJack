@@ -4,7 +4,7 @@
 InstancePosOut VSmain(float4 pos : POSITION, uint id : SV_InstanceID)
 {
     InstancePosOut op;
-    op.svpos = mul(constData[id].mat, pos);
+    op.svpos = mul(uavMatColorData[id].mat, pos);
     op.id = id;
     return op;
 }
