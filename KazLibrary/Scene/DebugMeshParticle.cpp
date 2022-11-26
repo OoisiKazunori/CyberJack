@@ -106,6 +106,10 @@ DebugMeshParticleScene::DebugMeshParticleScene()
 	handle = FbxModelResourceMgr::Instance()->GetResourceData(modelHandle)->textureHandle[0];
 	//èdï°Ç†ÇËÇÃéOäpå`
 	texParticle = std::make_unique<TextureParticle>(lVertArray, 1.0f);
+
+
+
+	splineParticle = std::make_unique<SplineParticle>(FbxModelResourceMgr::Instance()->GetResourceData(modelHandle)->vertData, 1.0f);
 }
 
 DebugMeshParticleScene::~DebugMeshParticleScene()
@@ -156,6 +160,8 @@ void DebugMeshParticleScene::Update()
 	ImGui::Begin("MeshParticle");
 	ImGui::Checkbox("CheckCPUParticle", &cpuCheckParticleFlag);
 	ImGui::Checkbox("CheckGPUParticle", &gpuCheckParticleFlag);
+	ImGui::Checkbox("CheckTextureParticle", &textureParticleFlag);
+	ImGui::Checkbox("CheckSplineParticle", &splineParticleFlag);
 	ImGui::Checkbox("CheckPerlinNoise", &perlinNoizeFlag);
 	if (cpuCheckParticleFlag)
 	{
@@ -354,9 +360,14 @@ void DebugMeshParticleScene::Update()
 		KazMath::Vec3<float>vel = CurlNoise(moveNoiseBlock.data.transform.pos, 1);
 		moveNoiseBlock.data.transform.pos += vel;
 	}
-
-
-	texParticle->Update(handle);
+	else if(textureParticleFlag)
+	{
+		texParticle->Update(handle);
+	}
+	else if (splineParticleFlag)
+	{
+		splineParticle->Update(0);
+	}
 
 }
 
@@ -408,8 +419,14 @@ void DebugMeshParticleScene::Draw()
 
 		moveNoiseBlock.Draw();
 	}
-
-	texParticle->Draw();
+	else if (textureParticleFlag)
+	{
+		texParticle->Draw();
+	}
+	else if (splineParticleFlag)
+	{
+		splineParticle->Draw();
+	}
 
 	debug.Draw();
 

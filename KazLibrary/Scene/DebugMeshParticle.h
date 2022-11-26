@@ -8,6 +8,7 @@
 #include"../Game/Effect/DeadParticle.h"
 #include"../KazLibrary/Math/KazMath.h"
 #include"../Game/Effect/TextureParticle.h"
+#include"../Game/Effect/SplineParticle.h"
 
 #include"../Game/Tutorial/DirectX12MoviePlayer.h"
 
@@ -39,8 +40,9 @@ private:
 	int meshIndex,prevMeshIndex;
 	bool cpuCheckParticleFlag;
 	bool gpuCheckParticleFlag;
-	bool perlinNoizeFlag;
 	bool textureParticleFlag;
+	bool splineParticleFlag;
+	bool perlinNoizeFlag;
 
 	bool deadParticleFlag, prevDeadParticleFlag;
 
@@ -98,6 +100,12 @@ private:
 	std::unique_ptr<TextureParticle> texParticle;
 	RESOURCE_HANDLE handle;
 	//テクスチャをコンピュートシェーダーで読み込む--------------------------------------------
+
+	//スプラインパーティクル--------------------------------------------
+	std::unique_ptr<SplineParticle> splineParticle;
+
+	//スプラインパーティクル--------------------------------------------
+
 
 
 	//パーリンノイズの確認--------------------------------------------

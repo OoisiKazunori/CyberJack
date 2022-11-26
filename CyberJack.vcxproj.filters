@@ -156,6 +156,7 @@
     <ClCompile Include="Game\Effect\DeadParticle.cpp" />
     <ClCompile Include="Game\Tutorial\Gauge.cpp" />
     <ClCompile Include="Game\Effect\TextureParticle.cpp" />
+    <ClCompile Include="Game\Effect\SplineParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -327,6 +328,7 @@
     <ClInclude Include="KazLibrary\Render\KazExcuteIndirect.h" />
     <ClInclude Include="Game\Tutorial\Gauge.h" />
     <ClInclude Include="Game\Effect\TextureParticle.h" />
+    <ClInclude Include="Game\Effect\SplineParticle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -6,7 +6,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 {
 	GraphicsPipeLineMgr *lPipelineMgr = GraphicsPipeLineMgr::Instance();
 
-#pragma region InputLayOutの登録
+#pragma region InputLayOut
 	{
 		D3D12_INPUT_ELEMENT_DESC *input3DLayOut = new D3D12_INPUT_ELEMENT_DESC[3];
 
@@ -386,6 +386,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "PortalLineMoveComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_PORTALLINE_MOVE);
 	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "MeshParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_MESHPARTICLE);
 	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "BlockParticleMoveComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_BLOCKPARTICLE_MOVE);
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "InitSplineParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_SPLINEPARTICLE_INIT);
 
 	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "InitMeshParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_MESHPARTICLE_INIT);
 	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "MeshParticleMoveComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_MESHPARTICLE_UPDATE);
@@ -414,7 +415,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 
 
-	
+
 	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineFlashEffectPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_FLASHEFFECT);
 
 	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GradationPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_GRADATION);
@@ -443,9 +444,9 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 #pragma endregion
 
 
-#pragma region パイプラインの設定の登録
+#pragma region PipelineData
 
-#pragma region ブレンドの設定
+#pragma region BlendData
 	//加算合成
 	D3D12_RENDER_TARGET_BLEND_DESC addBlendDesc{};
 	addBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
@@ -1492,7 +1493,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 #pragma endregion
 
 
-#pragma region パイプラインの生成と登録
+#pragma region GeneratePipeline
 
 	//コンピュートパイプラインの作成
 	/*GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
@@ -1586,7 +1587,14 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_COMPUTE_NAME_MESHPARTICLE
 	);
 
-	
+
+	//スプライン曲線に沿ったパーティクル初期化
+	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+		SHADER_COMPUTE_SPLINEPARTICLE_INIT,
+		PIPELINE_COMPUTE_DATA_TEST,
+		ROOTSIGNATURE_DATA_UAV_UAV_CBV,
+		PIPELINE_COMPUTE_NAME_SPLINEPARTICLE_INIT
+	);
 
 
 
@@ -2191,7 +2199,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		ROOTSIGNATURE_DATA_DRAW_SKINING_DATA1,
 		PIPELINE_NAME_FOG_FBX_WIREFLAME_MULTI_TWO
 	);
-	
+
 
 	//Objパイプライン
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(

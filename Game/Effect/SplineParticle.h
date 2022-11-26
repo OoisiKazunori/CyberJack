@@ -6,10 +6,10 @@
 #include"../KazLibrary/Render/KazRender.h"
 #include"../KazLibrary/Loader/FbxModelResourceMgr.h"
 
-class TextureParticle
+class SplineParticle
 {
 public:
-	TextureParticle(std::vector<VertexUv> VERT_NUM, float PARTICLE_SCALE = 0.18f);
+	SplineParticle(std::vector<DirectX::XMFLOAT4> VERT_NUM, float PARTICLE_SCALE = 0.18f);
 	void Init();
 	void Update(RESOURCE_HANDLE HANDLE);
 	void Draw();
@@ -20,9 +20,10 @@ public:
 	}
 	int GetVertNum()
 	{
-		return constBufferData.vertMaxNum;
+		return -1;
 	}
 	bool resetSceneFlag;
+
 
 private:
 	int sceneNum;
@@ -44,8 +45,6 @@ private:
 
 
 	Microsoft::WRL::ComPtr<ID3D12CommandSignature> commandSig;
-	bool drawParticleFlag;
-	int bias, prevBias;
 	float scale;
 
 	//ïKóvèÓïÒ--------------------------------------------
@@ -61,9 +60,9 @@ private:
 	};
 	struct InitCommonData
 	{
-		DirectX::XMFLOAT4 worldPos;
-		UINT vertMaxNum;
-		UINT bias;
+		DirectX::XMFLOAT4 limitPos[10];
+		UINT limitIndexMaxNum;
+		UINT initMaxIndex;
 	};
 	InitCommonData constBufferData;
 	RESOURCE_HANDLE vertexBufferHandle, indexBufferHandle;
