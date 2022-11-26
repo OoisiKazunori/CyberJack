@@ -23,8 +23,6 @@ cbuffer RootConstants : register(b0)
     float4 pos;
     uint vertMaxNum;
     uint bias;
-    uint3 index1;
-    uint3 index2;
 };
 
 Texture2D<float4> tex : register(t2);
@@ -53,11 +51,6 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     uint index = groupThreadID.x;
     index += 1024 * groupId.x;
 
-    if(2 <= index)
-    {
-        return;
-    }
-
     //インデックス数以内なら処理する
     //三角形を構成するインデックスの指定--------------------------------------------
     uint firstVertIndex = index * 3;
@@ -67,26 +60,6 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     uint uvFirstVertIndex = firstVertIndex;
     uint uvSecondVertIndex = secondVertIndex;
     uint uvThirdVertIndex = thirdVertIndex;
-    
-    if(index == 0)
-    {
-    //    uvFirstVertIndex = index1.x;
-    //    uvSecondVertIndex = index1.y;
-    //    uvThirdVertIndex = index1.z;
-
-        uvFirstVertIndex = 2;
-        uvSecondVertIndex = 0;
-        uvThirdVertIndex = 1;
-    }
-    else
-    {
-    //       uvFirstVertIndex = index2.x;
-    //       uvSecondVertIndex = index2.y;
-    //        uvThirdVertIndex = index2.z;
-        uvFirstVertIndex = 5;
-        uvSecondVertIndex = 3;
-        uvThirdVertIndex = 4;
-    }
     //三角形を構成するインデックスの指定--------------------------------------------
 
     //頂点座標からワールド座標に変換後----------------------------------------------
@@ -123,7 +96,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
 
  
     //パーティクルの配置--------------------------------------------
-    const int PARTICLE_MAX_NUM = 10000;
+    const int PARTICLE_MAX_NUM = 50;
     const int PER_PARTICLE_MAX_NUM = PARTICLE_MAX_NUM / 3;
     for(int rayIndex = 0; rayIndex < RAY_MAX_NUM; ++rayIndex)
     {
@@ -204,6 +177,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
 
                 worldPosData[outputIndex].pos.xyz = resultPos;
                 worldPosData[outputIndex].color = tex.SampleLevel(smp,uv,0);
+                //worldPosData[outputIndex].color = float4(uv,1,1);
             }
         }
     }

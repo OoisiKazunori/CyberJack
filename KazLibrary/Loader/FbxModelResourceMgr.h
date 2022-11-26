@@ -14,6 +14,12 @@ struct WeightSet
 	float weight;
 };
 
+struct VertexUv
+{
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT2 uv;
+};
+
 
 /// <summary>
 /// ƒm[ƒhˆê‚Â•ª‚Ìî•ñ
@@ -84,6 +90,7 @@ private:
 	Node *meshNode = nullptr;
 	std::vector<VertexPosNormalUvSkin>vertices;
 	std::vector<DirectX::XMFLOAT4>vertData;
+	std::vector<VertexUv>vertUvData;
 	std::vector<UINT>indices;
 
 
@@ -117,6 +124,7 @@ public:
 
 	UINT vertNum;
 	std::vector<DirectX::XMFLOAT4>vertData;
+	std::vector<VertexUv>vertUvData;
 	std::vector<UINT>indexData;
 
 	FbxMesh *mesh;

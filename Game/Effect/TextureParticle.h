@@ -5,12 +5,7 @@
 #include<array>
 #include<vector>
 #include"../KazLibrary/Render/KazRender.h"
-
-struct VertexUv
-{
-	DirectX::XMFLOAT3 pos;
-	DirectX::XMFLOAT2 uv;
-};
+#include"../KazLibrary/Loader/FbxModelResourceMgr.h"
 
 class TextureParticle
 {
@@ -70,10 +65,6 @@ private:
 		DirectX::XMFLOAT4 worldPos;
 		UINT vertMaxNum;
 		UINT bias;
-		DirectX::XMUINT3 pad3;
-		DirectX::XMUINT3 index1;
-		float pad;
-		DirectX::XMUINT3 index2;
 	};
 	InitCommonData constBufferData;
 	RESOURCE_HANDLE vertexBufferHandle, indexBufferHandle;

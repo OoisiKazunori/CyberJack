@@ -88,11 +88,22 @@ DebugMeshParticleScene::DebugMeshParticleScene()
 	std::vector<VertexUv>lVertArray;
 	AddVert(lVertArray, vertices, lVert, 0);
 	AddVert(lVertArray, vertices, lVert, 1);
-	AddVert(lVertArray, vertices, lVert, 2);//ñ‚ëËÇÃâ”èä
 	AddVert(lVertArray, vertices, lVert, 2);
 	AddVert(lVertArray, vertices, lVert, 1);
-	AddVert(lVertArray, vertices, lVert, 3);//ñ‚ëËÇÃâ”èä
+	AddVert(lVertArray, vertices, lVert, 3);
+	AddVert(lVertArray, vertices, lVert, 2);
 
+	lVertArray[0].uv = { 1.0f,0.0f };
+	lVertArray[1].uv = { 0.0f,0.0f };
+	lVertArray[2].uv = { 0.0f,1.0f };
+
+	lVertArray[3].uv = { 1.0f,0.0f };
+	lVertArray[4].uv = { 0.0f,1.0f };
+	lVertArray[5].uv = { 1.0f,1.0f };
+
+	modelHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_Head_anim.fbx");
+	lVertArray = FbxModelResourceMgr::Instance()->GetResourceData(modelHandle)->vertUvData;
+	handle = FbxModelResourceMgr::Instance()->GetResourceData(modelHandle)->textureHandle[0];
 	//èdï°Ç†ÇËÇÃéOäpå`
 	texParticle = std::make_unique<TextureParticle>(lVertArray, 1.0f);
 }
@@ -399,6 +410,8 @@ void DebugMeshParticleScene::Draw()
 	}
 
 	texParticle->Draw();
+
+	debug.Draw();
 
 	rendertarget->Draw();
 	//debugDraw.Draw();

@@ -106,6 +106,7 @@ RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME, bo
 
 	modelResource[lHandle]->indexData = model->indices;
 	modelResource[lHandle]->vertData = model->vertData;
+	modelResource[lHandle]->vertUvData = model->vertUvData;
 
 
 	modelResource[modelResource.size() - 1]->mesh = mesh;
@@ -559,7 +560,7 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 			vertex.pos.z = vertPos[index].z;
 
 			MODEL->vertData.push_back(vertPos[index]);
-
+	
 			//UV
 			if (textureUVCount > 0)
 			{
@@ -591,6 +592,12 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 			}
 
 			indexData.push_back(index);
+
+	
+			VertexUv vertUvData;
+			vertUvData.pos = { vertPos[index].x,vertPos[index].y,vertPos[index].z };
+			vertUvData.uv = { vertex.uv.x,vertex.uv.y };
+			MODEL->vertUvData.push_back(vertUvData);
 		}
 	}
 	MODEL->vertices = vertices;

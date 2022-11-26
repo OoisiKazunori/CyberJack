@@ -140,9 +140,6 @@ TextureParticle::TextureParticle(std::vector<VertexUv> VERT_NUM, float PARTICLE_
 	scaleRotaMat = KazMath::CaluScaleMatrix({ scale,scale,scale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
 
 	drawParticleFlag = false;
-
-	constBufferData.index1 = { 0,1,2 };
-	constBufferData.index2 = { 2,1,3 };
 }
 
 void TextureParticle::Init()
@@ -151,13 +148,6 @@ void TextureParticle::Init()
 
 void TextureParticle::Update(RESOURCE_HANDLE HANDLE)
 {
-	ImGui::Begin("i");
-	KazImGuiHelper::InputXMUINT3("Index1", &constBufferData.index1);
-	KazImGuiHelper::InputXMUINT3("Index2", &constBufferData.index2);
-	ImGui::End();
-
-	buffers->TransData(initCommonHandle, &constBufferData, sizeof(InitCommonData));
-
 
 	//‰Šú‰»ˆ—--------------------------------------------
 	DescriptorHeapMgr::Instance()->SetDescriptorHeap();

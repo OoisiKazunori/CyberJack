@@ -176,5 +176,8 @@ private:
 		return a + t * (b - a);
 	}
 	//パーリンノイズの確認--------------------------------------------
+
+	RESOURCE_HANDLE modelHandle;
+	BackGroundForDebug debug;
 };
 
