@@ -42,7 +42,8 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     OutputData outputMat;
     outputMat.mat = mul(viewProjection,pMatWorld); 
     
-    outputMat.color = float4(0.96, 0.69, 0.12, alpha);
+    outputMat.color = float4(RandVec3(index*10,1,0),1);
+    //float4(0.96, 0.69, 0.12, alpha);
     matrixData[index] = outputMat;
     //èoóÕ--------------------------------------------
 }

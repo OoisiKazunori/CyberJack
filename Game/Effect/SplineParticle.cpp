@@ -79,17 +79,6 @@ SplineParticle::SplineParticle(std::vector<DirectX::XMFLOAT4> VERT_NUM, float PA
 			VERT_NUM.data(),
 			VERT_NUM.size() * sizeof(DirectX::XMFLOAT4)
 		);
-
-		constBufferData.limitPos[0] = { 0.0f,0.0f,0.0f,0.0f };
-		constBufferData.limitPos[1] = { 0.0f,0.0f,0.0f,0.0f };
-		constBufferData.limitPos[2] = { 25.0f,0.0f,50.0f,0.0f };
-		constBufferData.limitPos[3] = { -25.0f,0.0f,100.0f,0.0f };
-		constBufferData.limitPos[4] = { 25.0f,0.0f,150.0f,0.0f };
-		constBufferData.limitPos[5] = { -25.0f,0.0f,200.0f,0.0f };
-		constBufferData.initMaxIndex = 6;
-		constBufferData.limitIndexMaxNum = 6;
-
-		buffers->TransData(initCommonHandle, &constBufferData, sizeof(InitCommonData));
 	}
 
 	IndirectCommand command;
@@ -135,6 +124,15 @@ SplineParticle::SplineParticle(std::vector<DirectX::XMFLOAT4> VERT_NUM, float PA
 
 	scale = PARTICLE_SCALE;
 	scaleRotaMat = KazMath::CaluScaleMatrix({ scale,scale,scale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
+
+	constBufferData.limitPos[0] = { 0.0f,0.0f,0.0f,0.0f };
+	constBufferData.limitPos[1] = { 0.0f,0.0f,0.0f,0.0f };
+	constBufferData.limitPos[2] = { 100.0f,0.0f,200.0f,0.0f };
+	constBufferData.limitPos[3] = { -100.0f,0.0f,400.0f,0.0f };
+	constBufferData.limitPos[4] = { 100.0f,0.0f,600.0f,0.0f };
+	constBufferData.limitPos[5] = { -100.0f,0.0f,800.0f,0.0f };
+	constBufferData.initMaxIndex = 6;
+	constBufferData.limitIndexMaxNum = 6;
 }
 
 void SplineParticle::Init()
@@ -143,6 +141,16 @@ void SplineParticle::Init()
 
 void SplineParticle::Update(RESOURCE_HANDLE HANDLE)
 {
+	ImGui::Begin("Spline");
+	KazImGuiHelper::InputXMFLOAT4("1", &constBufferData.limitPos[1]);
+	KazImGuiHelper::InputXMFLOAT4("2", &constBufferData.limitPos[2]);
+	KazImGuiHelper::InputXMFLOAT4("3", &constBufferData.limitPos[3]);
+	KazImGuiHelper::InputXMFLOAT4("4", &constBufferData.limitPos[4]);
+	KazImGuiHelper::InputXMFLOAT4("5", &constBufferData.limitPos[5]);
+	ImGui::End();
+	
+
+	buffers->TransData(initCommonHandle, &constBufferData, sizeof(InitCommonData));
 
 	//‰Šú‰»ˆ—--------------------------------------------
 	DescriptorHeapMgr::Instance()->SetDescriptorHeap();

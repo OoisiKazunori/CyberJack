@@ -70,9 +70,14 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     
     //スプライン曲線上の位置を見る
     float3 basePos = SplinePosition(limitPos,startIndex,rate,limitIndexMaxNum,false);
+
+	float3 offset;
+	offset.x = cos(ConvertToRadian(RandVec3(index * 50,360,0).z)) * 50;
+	offset.y = sin(ConvertToRadian(RandVec3(index * 50,360,0).z)) * 50;
+	//offset.z = cos(ConvertToRadian(RandVec3(index * 50,360,0).z)) * RandVec3(index * 10,50,-50);
+
     //スプライン曲線に沿った位置からオフセットを足した値がパーティクルの位置
-    float3 particlePos = basePos;
-	//+ RandVec3(index,10,-10);
+    float3 particlePos = basePos + offset;
 
     worldPosData[index].pos.xyz = particlePos;
 }

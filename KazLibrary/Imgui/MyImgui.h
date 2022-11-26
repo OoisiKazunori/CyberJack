@@ -181,4 +181,18 @@ namespace KazImGuiHelper
 		VEC_3->y = static_cast<UINT>(lVec3.y);
 		VEC_3->z = static_cast<UINT>(lVec3.z);
 	};
+
+	inline void InputXMFLOAT4(const std::string &LABEL, DirectX::XMFLOAT4 *VEC_4)
+	{
+		static std::string label = "";
+		label = LABEL + "X";
+		ImGui::DragFloat(label.c_str(), &VEC_4->x);
+		label = LABEL + "Y";
+		ImGui::DragFloat(label.c_str(), &VEC_4->y);
+		label = LABEL + "Z";
+		ImGui::DragFloat(label.c_str(), &VEC_4->z);
+		label = LABEL + "W";
+		ImGui::DragFloat(label.c_str(), &VEC_4->w);
+	};
+
 };
