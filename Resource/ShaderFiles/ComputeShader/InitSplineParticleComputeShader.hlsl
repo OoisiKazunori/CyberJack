@@ -10,6 +10,7 @@ struct OutputData
 {
     uint startIndex;
     float rate;
+	float rateVel;
     float2 offset;
     float4 color;
 };
@@ -33,6 +34,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
 
     worldPosData[index].startIndex = startIndex;
 	worldPosData[index].rate = rate;
+	worldPosData[index].rateVel = RandVec3(index,0.030f,0.0f).x;
 	worldPosData[index].offset = offset;
 	worldPosData[index].color = float4(RandVec3(index * 50,1,0),1);
 }

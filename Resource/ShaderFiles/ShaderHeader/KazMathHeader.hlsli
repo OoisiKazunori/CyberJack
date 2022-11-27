@@ -110,7 +110,7 @@ uint wang_hash(uint seed)
 	return seed;
 }
 
-float3 RandVec3(uint SEED,int MAX,int MIN)
+float3 RandVec3(uint SEED,float MAX,float MIN)
 {
     uint rand = wang_hash(SEED * 1847483629);
     float3 result;

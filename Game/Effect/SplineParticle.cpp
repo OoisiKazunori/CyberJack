@@ -109,7 +109,7 @@ SplineParticle::SplineParticle(float PARTICLE_SCALE)
 	scaleRotaMat = KazMath::CaluScaleMatrix({ scale,scale,scale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
 
 
-	constBufferData.initMaxIndex = 10;
+	constBufferData.initMaxIndex = 20;
 	buffers->TransData(initCommonHandle, &constBufferData, sizeof(InitCommonData));
 
 	//‰Šú‰»ˆ—--------------------------------------------

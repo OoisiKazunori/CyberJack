@@ -17,6 +17,7 @@ struct UpdateData
 {
     uint startIndex;
     float rate;
+    float rateVel;
     float2 offset;
     float4 color;
 };
@@ -40,7 +41,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
 
 
     //ƒXƒvƒ‰ƒCƒ“‹Èü‚Ì‹““®--------------------------------------------
-    updateData[index].rate += 0.025f;
+    updateData[index].rate += updateData[index].rateVel;
     if(1.0f < updateData[index].rate)
     {
         updateData[index].rate = 0.0f;

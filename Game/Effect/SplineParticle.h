@@ -57,6 +57,7 @@ private:
 	{
 		UINT startIndex;
 		float rate;
+		float rateVel;
 		DirectX::XMFLOAT2 offset;
 		DirectX::XMFLOAT4 color;
 	};
