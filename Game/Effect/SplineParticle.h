@@ -10,8 +10,8 @@ class SplineParticle
 {
 public:
 	SplineParticle(float PARTICLE_SCALE = 0.18f);
-	void Init();
-	void Update(RESOURCE_HANDLE HANDLE);
+	void Init(const std::vector<KazMath::Vec3<float>> &LIMIT_POS_ARRAY);
+	void Update();
 	void Draw();
 
 	D3D12_GPU_VIRTUAL_ADDRESS GetAddress()
@@ -86,7 +86,7 @@ private:
 	};
 	struct UpdateLimitPosData
 	{
-		DirectX::XMFLOAT4 limitPos[10];
+		DirectX::XMFLOAT4 limitPos[20];
 		UINT limitIndexMaxNum;
 	};
 

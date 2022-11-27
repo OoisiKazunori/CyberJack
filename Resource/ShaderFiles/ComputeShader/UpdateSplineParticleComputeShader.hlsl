@@ -9,7 +9,7 @@ cbuffer RootConstants : register(b0)
 
 cbuffer LimitPosConstData : register(b1)
 {
-    float4 limitPos[10];
+    float4 limitPos[20];
     uint limitIndexMaxNum;
 };
 
@@ -40,7 +40,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
 
 
     //スプライン曲線の挙動--------------------------------------------
-    updateData[index].rate += 0.01f;
+    updateData[index].rate += 0.025f;
     if(1.0f < updateData[index].rate)
     {
         updateData[index].rate = 0.0f;
@@ -53,7 +53,17 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     //スプライン曲線の挙動--------------------------------------------
 
     //スプライン曲線上の位置を見る
-    float3 basePos = SplinePosition(limitPos,updateData[index].startIndex,updateData[index].rate,limitIndexMaxNum,false);
+    float4 splineData = SplinePosition(limitPos,updateData[index].startIndex,updateData[index].rate,limitIndexMaxNum);
+    if(splineData.w)
+    {
+        updateData[index].color.a = 0;
+    }
+    else
+    {
+        updateData[index].color.a = 1;
+    }
+
+    float3 basePos = splineData.xyz;
 	float3 offset = float3(updateData[index].offset.xy,0);
 
     //スプライン曲線に沿った位置からオフセットを足した値がパーティクルの位置

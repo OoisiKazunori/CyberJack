@@ -10,6 +10,7 @@
 #include"../KazLibrary/Imgui/MyImgui.h"
 #include"../KazLibrary/Loader/ObjResourceMgr.h"
 #include"../KazLibrary/Buffer/UavViewHandleMgr.h"
+#include<assert.h>
 
 SplineParticle::SplineParticle(float PARTICLE_SCALE)
 {
@@ -108,7 +109,7 @@ SplineParticle::SplineParticle(float PARTICLE_SCALE)
 	scaleRotaMat = KazMath::CaluScaleMatrix({ scale,scale,scale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
 
 
-	constBufferData.initMaxIndex = 6;
+	constBufferData.initMaxIndex = 10;
 	buffers->TransData(initCommonHandle, &constBufferData, sizeof(InitCommonData));
 
 	//初期化処理--------------------------------------------
@@ -119,7 +120,7 @@ SplineParticle::SplineParticle(float PARTICLE_SCALE)
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
 	//共通用バッファのデータ送信
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(1, buffers->GetGpuAddress(initCommonHandle));
-	DirectX12CmdList::Instance()->cmdList->Dispatch(100, 1, 1);
+	DirectX12CmdList::Instance()->cmdList->Dispatch(50, 1, 1);
 	//初期化処理--------------------------------------------
 
 
@@ -133,20 +134,22 @@ SplineParticle::SplineParticle(float PARTICLE_SCALE)
 	buffers->TransData(updateLimitPosDataHandle, &limitPosData, sizeof(UpdateLimitPosData));
 }
 
-void SplineParticle::Init()
+void SplineParticle::Init(const std::vector<KazMath::Vec3<float>> &LIMIT_POS_ARRAY)
 {
+	assert(LIMIT_POS_ARRAY.size() < 20);
+
+	for (int i = 0; i < LIMIT_POS_ARRAY.size(); ++i)
+	{
+		limitPosData.limitPos[1 + i] = LIMIT_POS_ARRAY[i].ConvertXMFLOAT4();
+	}
+	limitPosData.limitIndexMaxNum = static_cast<UINT>(LIMIT_POS_ARRAY.size());
+
+	buffers->TransData(updateLimitPosDataHandle, &limitPosData, sizeof(UpdateLimitPosData));
 }
 
-void SplineParticle::Update(RESOURCE_HANDLE HANDLE)
+void SplineParticle::Update()
 {
-	ImGui::Begin("Spline");
-	KazImGuiHelper::InputXMFLOAT4("1", &limitPosData.limitPos[1]);
-	KazImGuiHelper::InputXMFLOAT4("2", &limitPosData.limitPos[2]);
-	KazImGuiHelper::InputXMFLOAT4("3", &limitPosData.limitPos[3]);
-	KazImGuiHelper::InputXMFLOAT4("4", &limitPosData.limitPos[4]);
-	KazImGuiHelper::InputXMFLOAT4("5", &limitPosData.limitPos[5]);
-	ImGui::End();
-
+	limitPosData.limitIndexMaxNum = 20;
 	buffers->TransData(updateLimitPosDataHandle, &limitPosData, sizeof(UpdateLimitPosData));
 
 	DirectX::XMMATRIX lMatWorld = KazMath::CaluTransMatrix({ 0.0f,0.0f,0.0f }) * KazMath::CaluScaleMatrix({ scale,scale,scale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
@@ -162,7 +165,7 @@ void SplineParticle::Update(RESOURCE_HANDLE HANDLE)
 	buffers->TransData(updateCommonHandle, &updateCommonData, sizeof(UpdateCommonData));
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(updateCommonHandle));
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(3, buffers->GetGpuAddress(updateLimitPosDataHandle));
-	DirectX12CmdList::Instance()->cmdList->Dispatch(100, 1, 1);
+	DirectX12CmdList::Instance()->cmdList->Dispatch(150, 1, 1);
 }
 
 void SplineParticle::Draw()

@@ -229,6 +229,10 @@ namespace KazMath
 		{
 			return DirectX::XMFLOAT3(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
 		};
+		DirectX::XMFLOAT4 ConvertXMFLOAT4()const
+		{
+			return DirectX::XMFLOAT4(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), 0.0f);
+		};
 		DirectX::XMVECTOR ConvertXMVECTOR()const
 		{
 			DirectX::XMVECTOR result = { static_cast<float>(x), static_cast<float>(y), static_cast<float>(z), 0.0f };

@@ -258,6 +258,14 @@ BlockParticleStage::BlockParticleStage()
 
 	DirectX12CmdList::Instance()->cmdList->Dispatch(PARTICLE_MAX_NUM, 1, 1);
 	//パーティクル初期化処理--------------------------------------------
+
+
+	for (int i = 0; i < splineParticle.size(); ++i)
+	{
+		splineParticle[i] = std::make_unique<SplineParticle>(1.0f);
+	}
+
+	v = { 40.0f,200.0f,100.0f };
 }
 
 BlockParticleStage::~BlockParticleStage()
@@ -327,38 +335,67 @@ void BlockParticleStage::Update()
 
 
 	galacticParticle.Update();
+
+
+	ImGui::Begin("SplineInit");
+	ImGui::DragFloat("AngleOffset", &v.x);
+	ImGui::DragFloat("Radius", &v.y);
+	ImGui::DragFloat("Z", &v.z);
+	ImGui::End();
+	KazMath::Vec3<float>level = { 100.0f,300.0f,0.0f };
+	std::vector<KazMath::Vec3<float>> limitPosArray;
+	for (int i = 0; i < 19; ++i)
+	{
+		level.x = cosf(KazMath::AngleToRadian(i * static_cast<int>(v.x))) * v.y;
+		level.y = sinf(KazMath::AngleToRadian(i * static_cast<int>(v.x))) * v.y;
+		limitPosArray.push_back(KazMath::Vec3<float>(level.x, level.y, -100.0f + static_cast<float>(i) * v.z));
+	}
+	for (int i = 0; i < splineParticle.size(); ++i)
+	{
+		splineParticle[i]->Init(limitPosArray);
+	}
+
+	for (int i = 0; i < splineParticle.size(); ++i)
+	{
+		splineParticle[i]->Update();
+	}
 }
 
 void BlockParticleStage::Draw()
 {
-	GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE);
-	DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
-	DirectX12CmdList::Instance()->cmdList->IASetIndexBuffer(&indexBufferView);
+	//GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE);
+	//DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	//DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
+	//DirectX12CmdList::Instance()->cmdList->IASetIndexBuffer(&indexBufferView);
 
-	RenderTargetStatus::Instance()->ChangeBarrier(
-		buffers->GetBufferData(drawCommandHandle).Get(),
-		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT
-	);
+	//RenderTargetStatus::Instance()->ChangeBarrier(
+	//	buffers->GetBufferData(drawCommandHandle).Get(),
+	//	D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+	//	D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT
+	//);
 
-	DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
-	(
-		commandSig.Get(),
-		1,
-		buffers->GetBufferData(drawCommandHandle).Get(),
-		0,
-		nullptr,
-		0
-	);
+	//DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
+	//(
+	//	commandSig.Get(),
+	//	1,
+	//	buffers->GetBufferData(drawCommandHandle).Get(),
+	//	0,
+	//	nullptr,
+	//	0
+	//);
 
-	RenderTargetStatus::Instance()->ChangeBarrier(
-		buffers->GetBufferData(drawCommandHandle).Get(),
-		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
-		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
-	);
+	//RenderTargetStatus::Instance()->ChangeBarrier(
+	//	buffers->GetBufferData(drawCommandHandle).Get(),
+	//	D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
+	//	D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+	//);
 
 
 	galacticParticle.Draw();
+
+	for (int i = 0; i < splineParticle.size(); ++i)
+	{
+		splineParticle[i]->Draw();
+	}
 
 }

@@ -366,7 +366,7 @@ void DebugMeshParticleScene::Update()
 	}
 	else if (splineParticleFlag)
 	{
-		splineParticle->Update(0);
+		splineParticle->Update();
 	}
 
 }

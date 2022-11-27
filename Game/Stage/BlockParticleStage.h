@@ -5,6 +5,8 @@
 #include<vector>
 #include"../Game/Debug/ParameterMgr.h"
 #include"../Game/Effect/GalacticParticle.h"
+#include"../Game/Effect/TextureParticle.h"
+#include"../Game/Effect/SplineParticle.h"
 
 class BlockParticleStage :public IStage
 {
@@ -83,5 +85,12 @@ private:
 	int prepareTimer;
 
 	int flashTimer;
+
+	std::array<std::unique_ptr<TextureParticle>, 6> floorParticleModel;
+
+
+	std::array<std::unique_ptr<SplineParticle>, 6> splineParticle;
+
+	KazMath::Vec3<float>v;
 };
 
