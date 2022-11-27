@@ -55,13 +55,13 @@ private:
 	//èâä˙âª--------------------------------------------
 	struct OutputData
 	{
-		DirectX::XMFLOAT3 pos;
+		UINT startIndex;
+		float rate;
+		DirectX::XMFLOAT2 offset;
 		DirectX::XMFLOAT4 color;
 	};
 	struct InitCommonData
 	{
-		DirectX::XMFLOAT4 limitPos[10];
-		UINT limitIndexMaxNum;
 		UINT initMaxIndex;
 	};
 	InitCommonData constBufferData;
@@ -83,11 +83,15 @@ private:
 	{
 		DirectX::XMMATRIX scaleRotateBillboardMat;
 		DirectX::XMMATRIX viewProjection;
-		DirectX::XMMATRIX motherMat;
-		float alpha;
 	};
+	struct UpdateLimitPosData
+	{
+		DirectX::XMFLOAT4 limitPos[10];
+		UINT limitIndexMaxNum;
+	};
+
 	UpdateCommonData updateCommonData;
-	RESOURCE_HANDLE updateHandle, updateCommonHandle;
+	RESOURCE_HANDLE updateHandle, updateCommonHandle,updateLimitPosDataHandle;
 	RESOURCE_HANDLE updateViewHandle;
 	DirectX::XMMATRIX scaleRotaMat;
 
@@ -97,5 +101,7 @@ private:
 	//çXêVóp--------------------------------------------
 
 	RESOURCE_HANDLE drawCommandHandle;
+
+	UpdateLimitPosData limitPosData;
 };
 

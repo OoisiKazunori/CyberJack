@@ -197,3 +197,43 @@ float4 GetPos(float3 VERT_POS,float3 WORLD_POS)
 
     return float4(worldMat[0].w,worldMat[1].w,worldMat[2].w,0.0f);
 };
+
+//ÉXÉvÉâÉCÉìã»ê¸
+float3 SplinePosition(float4 LIMIT_INDEX_ARRAY[10],int START_INDEX,float RATE,int INDEX_MAX,bool LOOP_FLAG)
+{
+    if (START_INDEX < 1)
+	{
+		return LIMIT_INDEX_ARRAY[1].xyz;
+	}
+	float3 p0 = LIMIT_INDEX_ARRAY[START_INDEX - 1].xyz;
+	float3 p1 = LIMIT_INDEX_ARRAY[START_INDEX].xyz;
+	float3 p2;
+	float3 p3;
+
+	int subIndex = 3;
+	if (LOOP_FLAG)
+	{
+		if (START_INDEX > INDEX_MAX - subIndex)
+		{
+			p2 = LIMIT_INDEX_ARRAY[1].xyz;
+			p3 = LIMIT_INDEX_ARRAY[2].xyz;
+		}
+		else
+		{
+			p2 = LIMIT_INDEX_ARRAY[INDEX_MAX + 1].xyz;
+			p3 = LIMIT_INDEX_ARRAY[INDEX_MAX + 2].xyz;
+		}
+	}
+	else
+	{
+		if (START_INDEX > INDEX_MAX - 3)
+        {
+            return LIMIT_INDEX_ARRAY[INDEX_MAX - 3].xyz;
+        }
+		p2 = LIMIT_INDEX_ARRAY[START_INDEX + 1].xyz;
+		p3 = LIMIT_INDEX_ARRAY[START_INDEX + 2].xyz;
+	}
+
+    float3 resultPos = 0.5 * ((2 * p1  + (-p0 + p2) * RATE) + (2 * p0 - 5 * p1 + 4 * p2 - p3) * (RATE * RATE) + (-p0 + 3 * p1 - 3 * p2 + p3) * (RATE * RATE * RATE));
+    return resultPos;
+};

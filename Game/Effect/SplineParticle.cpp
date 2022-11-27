@@ -61,6 +61,7 @@ SplineParticle::SplineParticle(std::vector<DirectX::XMFLOAT4> VERT_NUM, float PA
 	//更新用
 	updateHandle = buffers->CreateBuffer(KazBufferHelper::SetOnlyReadStructuredBuffer((sizeof(UpdateData) * PARTICLE_MAX_NUM)));
 	updateCommonHandle = buffers->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(UpdateCommonData)));
+	updateLimitPosDataHandle = buffers->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(UpdateLimitPosData)));
 
 	//描画用
 	drawCommandHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(IndirectCommand) * DRAW_CALL));
@@ -125,31 +126,8 @@ SplineParticle::SplineParticle(std::vector<DirectX::XMFLOAT4> VERT_NUM, float PA
 	scale = PARTICLE_SCALE;
 	scaleRotaMat = KazMath::CaluScaleMatrix({ scale,scale,scale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
 
-	constBufferData.limitPos[0] = { 0.0f,0.0f,0.0f,0.0f };
-	constBufferData.limitPos[1] = { 0.0f,0.0f,0.0f,0.0f };
-	constBufferData.limitPos[2] = { 100.0f,0.0f,200.0f,0.0f };
-	constBufferData.limitPos[3] = { -100.0f,0.0f,400.0f,0.0f };
-	constBufferData.limitPos[4] = { 100.0f,0.0f,600.0f,0.0f };
-	constBufferData.limitPos[5] = { -100.0f,0.0f,800.0f,0.0f };
+
 	constBufferData.initMaxIndex = 6;
-	constBufferData.limitIndexMaxNum = 6;
-}
-
-void SplineParticle::Init()
-{
-}
-
-void SplineParticle::Update(RESOURCE_HANDLE HANDLE)
-{
-	ImGui::Begin("Spline");
-	KazImGuiHelper::InputXMFLOAT4("1", &constBufferData.limitPos[1]);
-	KazImGuiHelper::InputXMFLOAT4("2", &constBufferData.limitPos[2]);
-	KazImGuiHelper::InputXMFLOAT4("3", &constBufferData.limitPos[3]);
-	KazImGuiHelper::InputXMFLOAT4("4", &constBufferData.limitPos[4]);
-	KazImGuiHelper::InputXMFLOAT4("5", &constBufferData.limitPos[5]);
-	ImGui::End();
-	
-
 	buffers->TransData(initCommonHandle, &constBufferData, sizeof(InitCommonData));
 
 	//初期化処理--------------------------------------------
@@ -166,8 +144,34 @@ void SplineParticle::Update(RESOURCE_HANDLE HANDLE)
 	//初期化処理--------------------------------------------
 
 
+	limitPosData.limitPos[0] = { 0.0f,0.0f,0.0f,0.0f };
+	limitPosData.limitPos[1] = { 0.0f,0.0f,0.0f,0.0f };
+	limitPosData.limitPos[2] = { 100.0f,0.0f,200.0f,0.0f };
+	limitPosData.limitPos[3] = { -100.0f,0.0f,400.0f,0.0f };
+	limitPosData.limitPos[4] = { 100.0f,0.0f,600.0f,0.0f };
+	limitPosData.limitPos[5] = { -100.0f,0.0f,800.0f,0.0f };
+	limitPosData.limitIndexMaxNum = 6;
+	buffers->TransData(updateLimitPosDataHandle, &limitPosData, sizeof(UpdateLimitPosData));
+}
+
+void SplineParticle::Init()
+{
+}
+
+void SplineParticle::Update(RESOURCE_HANDLE HANDLE)
+{
+	ImGui::Begin("Spline");
+	KazImGuiHelper::InputXMFLOAT4("1", &limitPosData.limitPos[1]);
+	KazImGuiHelper::InputXMFLOAT4("2", &limitPosData.limitPos[2]);
+	KazImGuiHelper::InputXMFLOAT4("3", &limitPosData.limitPos[3]);
+	KazImGuiHelper::InputXMFLOAT4("4", &limitPosData.limitPos[4]);
+	KazImGuiHelper::InputXMFLOAT4("5", &limitPosData.limitPos[5]);
+	ImGui::End();
+
+	buffers->TransData(updateLimitPosDataHandle, &limitPosData, sizeof(UpdateLimitPosData));
+
 	DirectX::XMMATRIX lMatWorld = KazMath::CaluTransMatrix({ 0.0f,0.0f,0.0f }) * KazMath::CaluScaleMatrix({ scale,scale,scale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
-	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_MESHPARTICLE_UPDATE);
+	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_SPLINEPARTICLE_UPDATE);
 
 
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
@@ -176,10 +180,9 @@ void SplineParticle::Update(RESOURCE_HANDLE HANDLE)
 	//共通用バッファのデータ送信
 	updateCommonData.scaleRotateBillboardMat = scaleRotaMat * CameraMgr::Instance()->GetMatBillBoard();
 	updateCommonData.viewProjection = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
-	updateCommonData.motherMat = lMatWorld;
-	updateCommonData.alpha = 1.0f;
 	buffers->TransData(updateCommonHandle, &updateCommonData, sizeof(UpdateCommonData));
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(updateCommonHandle));
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(3, buffers->GetGpuAddress(updateLimitPosDataHandle));
 	DirectX12CmdList::Instance()->cmdList->Dispatch(100, 1, 1);
 }
 
