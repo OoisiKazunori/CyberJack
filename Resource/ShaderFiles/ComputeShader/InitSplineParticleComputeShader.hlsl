@@ -14,10 +14,8 @@ struct OutputData
     float4 color;
 };
 
-//XV
-RWStructuredBuffer<float4> vertciesData : register(u0);
 //o—Í
-RWStructuredBuffer<OutputData> worldPosData : register(u1);
+RWStructuredBuffer<OutputData> worldPosData : register(u0);
 
 [numthreads(1024, 1, 1)]
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 groupThreadID : SV_GroupThreadID)

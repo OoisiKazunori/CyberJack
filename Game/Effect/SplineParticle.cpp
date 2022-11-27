@@ -11,7 +11,7 @@
 #include"../KazLibrary/Loader/ObjResourceMgr.h"
 #include"../KazLibrary/Buffer/UavViewHandleMgr.h"
 
-SplineParticle::SplineParticle(std::vector<DirectX::XMFLOAT4> VERT_NUM, float PARTICLE_SCALE)
+SplineParticle::SplineParticle(float PARTICLE_SCALE)
 {
 	buffers = std::make_unique<CreateGpuBuffer>();
 
@@ -49,7 +49,6 @@ SplineParticle::SplineParticle(std::vector<DirectX::XMFLOAT4> VERT_NUM, float PA
 	//描画情報
 	vertexBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetVertexBufferData(vertBuffSize));
 	indexBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetIndexBufferData(indexBuffSize));
-	verticesDataHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(DirectX::XMFLOAT4) * static_cast<UINT>(VERT_NUM.size())));
 
 	//共通情報
 	initCommonHandle = buffers->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(InitCommonData)));
@@ -72,16 +71,6 @@ SplineParticle::SplineParticle(std::vector<DirectX::XMFLOAT4> VERT_NUM, float PA
 	buffers->TransData(vertexBufferHandle, vertices.data(), vertBuffSize);
 	buffers->TransData(indexBufferHandle, indices.data(), indexBuffSize);
 
-	{
-		//頂点情報
-		memcpy
-		(
-			buffers->GetMapAddres(verticesDataHandle),
-			VERT_NUM.data(),
-			VERT_NUM.size() * sizeof(DirectX::XMFLOAT4)
-		);
-	}
-
 	IndirectCommand command;
 	command.drawArguments.IndexCountPerInstance = static_cast<UINT>(indices.size());
 	command.drawArguments.InstanceCount = PARTICLE_MAX_NUM;
@@ -98,14 +87,6 @@ SplineParticle::SplineParticle(std::vector<DirectX::XMFLOAT4> VERT_NUM, float PA
 		outputViewHandle,
 		KazBufferHelper::SetUnorderedAccessView(sizeof(OutputData), PARTICLE_MAX_NUM),
 		buffers->GetBufferData(outputHandle).Get(),
-		nullptr
-	);
-
-	vertDataViewHandle = UavViewHandleMgr::Instance()->GetHandle();
-	DescriptorHeapMgr::Instance()->CreateBufferView(
-		vertDataViewHandle,
-		KazBufferHelper::SetUnorderedAccessView(sizeof(DirectX::XMFLOAT4), static_cast<UINT>(VERT_NUM.size())),
-		buffers->GetBufferData(verticesDataHandle).Get(),
 		nullptr
 	);
 
@@ -134,12 +115,10 @@ SplineParticle::SplineParticle(std::vector<DirectX::XMFLOAT4> VERT_NUM, float PA
 	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_SPLINEPARTICLE_INIT);
 
-	//頂点
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(vertDataViewHandle));
 	//出力
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
 	//共通用バッファのデータ送信
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(initCommonHandle));
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(1, buffers->GetGpuAddress(initCommonHandle));
 	DirectX12CmdList::Instance()->cmdList->Dispatch(100, 1, 1);
 	//初期化処理--------------------------------------------
 

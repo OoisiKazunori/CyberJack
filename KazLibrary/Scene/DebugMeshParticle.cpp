@@ -109,7 +109,7 @@ DebugMeshParticleScene::DebugMeshParticleScene()
 
 
 
-	splineParticle = std::make_unique<SplineParticle>(FbxModelResourceMgr::Instance()->GetResourceData(modelHandle)->vertData, 1.0f);
+	splineParticle = std::make_unique<SplineParticle>(1.0f);
 }
 
 DebugMeshParticleScene::~DebugMeshParticleScene()

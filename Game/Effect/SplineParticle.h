@@ -9,7 +9,7 @@
 class SplineParticle
 {
 public:
-	SplineParticle(std::vector<DirectX::XMFLOAT4> VERT_NUM, float PARTICLE_SCALE = 0.18f);
+	SplineParticle(float PARTICLE_SCALE = 0.18f);
 	void Init();
 	void Update(RESOURCE_HANDLE HANDLE);
 	void Draw();
@@ -66,11 +66,11 @@ private:
 	};
 	InitCommonData constBufferData;
 	RESOURCE_HANDLE vertexBufferHandle, indexBufferHandle;
-	RESOURCE_HANDLE verticesDataHandle, initCommonHandle;
+	RESOURCE_HANDLE initCommonHandle;
 
 	RESOURCE_HANDLE outputHandle;
 
-	RESOURCE_HANDLE outputViewHandle, vertDataViewHandle;
+	RESOURCE_HANDLE outputViewHandle;
 	//èâä˙âª--------------------------------------------
 
 	//çXêVóp--------------------------------------------
