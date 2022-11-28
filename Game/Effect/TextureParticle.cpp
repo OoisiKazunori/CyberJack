@@ -11,7 +11,7 @@
 #include"../KazLibrary/Loader/ObjResourceMgr.h"
 #include"../KazLibrary/Buffer/UavViewHandleMgr.h"
 
-TextureParticle::TextureParticle(std::vector<VertexUv> VERT_NUM, float PARTICLE_SCALE)
+TextureParticle::TextureParticle(std::vector<VertexUv> VERT_NUM, const DirectX::XMMATRIX *MOTHER_MAT, float PARTICLE_SCALE) :motherMat(MOTHER_MAT), scale(PARTICLE_SCALE)
 {
 	buffers = std::make_unique<CreateGpuBuffer>();
 
@@ -137,10 +137,11 @@ TextureParticle::TextureParticle(std::vector<VertexUv> VERT_NUM, float PARTICLE_
 
 	resetSceneFlag = false;
 
-	scale = PARTICLE_SCALE;
 	scaleRotaMat = KazMath::CaluScaleMatrix({ scale,scale,scale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
 
 	drawParticleFlag = false;
+
+
 }
 
 void TextureParticle::Init()
@@ -162,7 +163,7 @@ void TextureParticle::Update(RESOURCE_HANDLE HANDLE)
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(initCommonHandle));
 	//テクスチャ
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(3, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(HANDLE));
-	DirectX12CmdList::Instance()->cmdList->Dispatch(100, 1, 1);
+	DirectX12CmdList::Instance()->cmdList->Dispatch(PARTICLE_MAX_NUM / 1024, 1, 1);
 	//初期化処理--------------------------------------------
 
 	DirectX::XMMATRIX lMatWorld = KazMath::CaluTransMatrix({ 0.0f,0.0f,0.0f }) * KazMath::CaluScaleMatrix({ scale,scale,scale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
@@ -175,10 +176,10 @@ void TextureParticle::Update(RESOURCE_HANDLE HANDLE)
 	//共通用バッファのデータ送信
 	updateCommonData.scaleRotateBillboardMat = scaleRotaMat * CameraMgr::Instance()->GetMatBillBoard();
 	updateCommonData.viewProjection = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
-	updateCommonData.motherMat = lMatWorld;
+	updateCommonData.motherMat = *motherMat;
 	buffers->TransData(updateCommonHandle, &updateCommonData, sizeof(UpdateCommonData));
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(updateCommonHandle));
-	DirectX12CmdList::Instance()->cmdList->Dispatch(100, 1, 1);
+	DirectX12CmdList::Instance()->cmdList->Dispatch(PARTICLE_MAX_NUM / 1024, 1, 1);
 }
 
 void TextureParticle::Draw()

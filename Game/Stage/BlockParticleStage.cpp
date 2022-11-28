@@ -269,14 +269,13 @@ BlockParticleStage::BlockParticleStage()
 
 
 	floorResourceHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "road_Model.fbx");
-	for (int i = 0; i < 6; ++i)
+	for (int i = 0; i < floorParticleModel.size(); ++i)
 	{
-		floorParticleModel[i] = std::make_unique<TextureParticle>(FbxModelResourceMgr::Instance()->GetResourceData(floorResourceHandle)->vertUvData, 0.18f);
+		floorParticleModel[i] = std::make_unique<TextureParticle>(FbxModelResourceMgr::Instance()->GetResourceData(floorResourceHandle)->vertUvData, &floorParticleMotherMat[i], 0.18f);
 	}
 
 	//lModelHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "House_Model.fbx");
 	//floorParticleModel[1] = std::make_unique<TextureParticle>(FbxModelResourceMgr::Instance()->GetResourceData(lModelHandle)->vertUvData, 0.18f);
-
 }
 
 BlockParticleStage::~BlockParticleStage()
@@ -373,7 +372,10 @@ void BlockParticleStage::Update()
 
 	for (int i = 0; i < floorParticleModel.size(); ++i)
 	{
-		//floorParticleModel[i]->Update(FbxModelResourceMgr::Instance()->GetResourceData(floorResourceHandle)->textureHandle[0]);
+		//int lNum = FbxModelResourceMgr::Instance()->GetResourceData(floorResourceHandle)->textureHandle[0];
+
+		//floorParticleMotherMat[i] = floorParticleTransform[i].GetMat();
+		//floorParticleModel[i]->Update(lNum);
 	}
 }
 

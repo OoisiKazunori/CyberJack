@@ -596,6 +596,8 @@ namespace KazMath
 		DirtyFlag<KazMath::Vec4<int>> dirtyFlag;
 	};
 
+	struct Transform3D;
+	DirectX::XMMATRIX CaluWorld(const KazMath::Transform3D &TRANSFORM, const Vec3<float> &Y_VEC, const Vec3<float> &Z_VEC);
 
 	/// <summary>
 	/// 3D空間上でオブジェクトを動かす際のデータです
@@ -644,7 +646,10 @@ namespace KazMath
 			scaleDirtyFlag.Record();
 			rotationDirtyFlag.Record();
 		};
-
+		DirectX::XMMATRIX GetMat(const Vec3<float> &Y_VEC = { 0.0f,1.0f,0.0f }, const Vec3<float> &Z_VEC = { 0.0f,0.0f,1.0f })
+		{
+			return CaluWorld(*this, Y_VEC, Z_VEC);
+		}
 
 		void operator=(const KazMath::Transform3D &OBJ)
 		{
@@ -863,7 +868,6 @@ namespace KazMath
 	float AngleToRadian(float ANGLE);
 
 	DirectX::XMMATRIX CaluMat(const KazMath::Transform3D &TRANSFORM, const DirectX::XMMATRIX &VIEW_MAT, const DirectX::XMMATRIX &PROJECT_MAT, const Vec3<float> &Y_VEC, const Vec3<float> &Z_VEC);
-	DirectX::XMMATRIX CaluWorld(const KazMath::Transform3D &TRANSFORM, const Vec3<float> &Y_VEC, const Vec3<float> &Z_VEC);
 
 
 	void Larp(float BASE_TRANSFORM, float *TRANSFORM, float MUL);

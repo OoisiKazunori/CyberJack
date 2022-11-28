@@ -36,7 +36,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     pMatWorld[1][3] = worldPosColorArrayData[index].pos.y;
     pMatWorld[2][3] = worldPosColorArrayData[index].pos.z;
 
-    //pMatWorld = mul(motherMat,pMatWorld);
+    pMatWorld = mul(motherMat,pMatWorld);
     //çsóÒåvéZ-------------------------
 
     //èoóÕ--------------------------------------------

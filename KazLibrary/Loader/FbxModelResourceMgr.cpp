@@ -129,6 +129,8 @@ RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME, bo
 
 	handleName.push_back(MODEL_NAME);
 
+	SucceedCheck(MODEL_NAME + "の読み込みに成功しました\n");
+
 	delete model;
 	return lHandle;
 }

@@ -99,6 +99,8 @@ private:
 	//テクスチャをコンピュートシェーダーで読み込む--------------------------------------------
 	std::unique_ptr<TextureParticle> texParticle;
 	RESOURCE_HANDLE handle;
+	KazMath::Transform3D texTransform;
+	DirectX::XMMATRIX texMotherMat;
 	//テクスチャをコンピュートシェーダーで読み込む--------------------------------------------
 
 	//スプラインパーティクル--------------------------------------------

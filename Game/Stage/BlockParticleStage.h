@@ -86,7 +86,10 @@ private:
 
 	int flashTimer;
 
-	std::array<std::unique_ptr<TextureParticle>, 6> floorParticleModel;
+	std::array<std::unique_ptr<TextureParticle>, 1> floorParticleModel;
+	std::array<KazMath::Transform3D, 1> floorParticleTransform;
+	std::array<DirectX::XMMATRIX, 1> floorParticleMotherMat;
+	
 	std::array<std::unique_ptr<SplineParticle>, 1> splineParticle;
 
 	RESOURCE_HANDLE floorResourceHandle;

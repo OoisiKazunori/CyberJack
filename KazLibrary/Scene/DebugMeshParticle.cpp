@@ -105,7 +105,7 @@ DebugMeshParticleScene::DebugMeshParticleScene()
 	lVertArray = FbxModelResourceMgr::Instance()->GetResourceData(modelHandle)->vertUvData;
 	handle = FbxModelResourceMgr::Instance()->GetResourceData(modelHandle)->textureHandle[0];
 	//èdï°Ç†ÇËÇÃéOäpå`
-	texParticle = std::make_unique<TextureParticle>(lVertArray, 1.0f);
+	texParticle = std::make_unique<TextureParticle>(lVertArray, &texMotherMat, 1.0f);
 
 
 
@@ -204,6 +204,11 @@ void DebugMeshParticleScene::Update()
 		initNoizeFlag = ImGui::Button("Init");
 		ImGui::SliderFloat("UV_X", &uv.x, 0, 10);
 		ImGui::SliderFloat("UV_Y", &uv.y, 0, 10);
+	}
+	else if (textureParticleFlag)
+	{
+		KazImGuiHelper::InputTransform3D("Mother", &texTransform);
+		texMotherMat = texTransform.GetMat();
 	}
 	ImGui::End();
 

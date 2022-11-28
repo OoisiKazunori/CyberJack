@@ -9,7 +9,7 @@
 class TextureParticle
 {
 public:
-	TextureParticle(std::vector<VertexUv> VERT_NUM, float PARTICLE_SCALE = 0.18f);
+	TextureParticle(std::vector<VertexUv> VERT_NUM,const DirectX::XMMATRIX *MOTHER_MAT,float PARTICLE_SCALE = 0.18f);
 	void Init();
 	void Update(RESOURCE_HANDLE HANDLE);
 	void Draw();
@@ -49,7 +49,6 @@ private:
 	float scale;
 
 	//必要情報--------------------------------------------
-	KazMath::Vec3<float> *pos;
 	const DirectX::XMMATRIX *motherMat;
 	//必要情報--------------------------------------------
 
