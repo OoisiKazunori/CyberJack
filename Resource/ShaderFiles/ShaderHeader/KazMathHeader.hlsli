@@ -199,11 +199,11 @@ float4 GetPos(float3 VERT_POS,float3 WORLD_POS)
 };
 
 //ÉXÉvÉâÉCÉìã»ê¸
-float4 SplinePosition(float4 LIMIT_INDEX_ARRAY[20],int START_INDEX,float RATE,int INDEX_MAX)
+float4 SplinePosition(RWStructuredBuffer<float3> LIMIT_INDEX_ARRAY,int START_INDEX,float RATE,int INDEX_MAX)
 {
     if (START_INDEX < 1)
 	{
-		return LIMIT_INDEX_ARRAY[1];
+		return float4(LIMIT_INDEX_ARRAY[1],0);
 	}
 	float3 p0 = LIMIT_INDEX_ARRAY[START_INDEX - 1].xyz;
 	float3 p1 = LIMIT_INDEX_ARRAY[START_INDEX].xyz;

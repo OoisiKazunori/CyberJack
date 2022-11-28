@@ -146,7 +146,6 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
                 float2 uv = firstVec + secondVec + thirdVec;
 
                 worldPosData[outputIndex].pos.xyz = resultPos;
-                //worldPosData[outputIndex].color = float4(uv,1,1);
                 worldPosData[outputIndex].color = tex.SampleLevel(smp,uv,0);
             }
             else
@@ -177,7 +176,6 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
 
                 worldPosData[outputIndex].pos.xyz = resultPos;
                 worldPosData[outputIndex].color = tex.SampleLevel(smp,uv,0);
-                //worldPosData[outputIndex].color = float4(uv,1,1);
             }
         }
     }

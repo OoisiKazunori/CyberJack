@@ -9,7 +9,6 @@ cbuffer RootConstants : register(b0)
 
 cbuffer LimitPosConstData : register(b1)
 {
-    float4 limitPos[20];
     uint limitIndexMaxNum;
 };
 
@@ -33,6 +32,8 @@ RWStructuredBuffer<UpdateData> updateData : register(u0);
 //出力
 RWStructuredBuffer<OutputData> worldPosColorData : register(u1);
 
+RWStructuredBuffer<float3> LimitPosData : register(u2);
+
 [numthreads(1024, 1, 1)]
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 groupThreadID : SV_GroupThreadID)
 {
@@ -54,7 +55,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     //スプライン曲線の挙動--------------------------------------------
 
     //スプライン曲線上の位置を見る
-    float4 splineData = SplinePosition(limitPos,updateData[index].startIndex,updateData[index].rate,limitIndexMaxNum);
+    float4 splineData = SplinePosition(LimitPosData,updateData[index].startIndex,updateData[index].rate,limitIndexMaxNum);
     if(splineData.w)
     {
         updateData[index].color.a = 0;

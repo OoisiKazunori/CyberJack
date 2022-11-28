@@ -33,7 +33,9 @@ private:
 	D3D12_INDEX_BUFFER_VIEW indexBufferView;
 	//バッファ
 
-	static const int PARTICLE_MAX_NUM = 100000;
+	static const int PARTICLE_MAX_NUM = 150000;
+	static const UINT LIMITPOS_MAX_NUM = 150;
+	static const UINT INIT_LIMITPOS_MAX_NUM = 5;
 	static const int DRAW_CALL = 1;
 
 	struct IndirectCommand
@@ -85,15 +87,14 @@ private:
 		DirectX::XMMATRIX scaleRotateBillboardMat;
 		DirectX::XMMATRIX viewProjection;
 	};
-	struct UpdateLimitPosData
+	struct UpdateLimitNumData
 	{
-		DirectX::XMFLOAT4 limitPos[20];
 		UINT limitIndexMaxNum;
 	};
 
 	UpdateCommonData updateCommonData;
-	RESOURCE_HANDLE updateHandle, updateCommonHandle,updateLimitPosDataHandle;
-	RESOURCE_HANDLE updateViewHandle;
+	RESOURCE_HANDLE updateHandle, updateCommonHandle,updateLimitDataHandle,updateLimitPosDataHandle;
+	RESOURCE_HANDLE updateViewHandle,updateLimitPosViewHandle;
 	DirectX::XMMATRIX scaleRotaMat;
 
 
@@ -103,6 +104,6 @@ private:
 
 	RESOURCE_HANDLE drawCommandHandle;
 
-	UpdateLimitPosData limitPosData;
+	UpdateLimitNumData limitNumData;
 };
 

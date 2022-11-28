@@ -87,10 +87,9 @@ private:
 	int flashTimer;
 
 	std::array<std::unique_ptr<TextureParticle>, 6> floorParticleModel;
+	std::array<std::unique_ptr<SplineParticle>, 1> splineParticle;
 
-
-	std::array<std::unique_ptr<SplineParticle>, 6> splineParticle;
-
+	RESOURCE_HANDLE floorResourceHandle;
 	KazMath::Vec3<float>v;
 };
 

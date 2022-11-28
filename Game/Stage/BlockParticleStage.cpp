@@ -266,6 +266,17 @@ BlockParticleStage::BlockParticleStage()
 	}
 
 	v = { 40.0f,200.0f,100.0f };
+
+
+	floorResourceHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "road_Model.fbx");
+	for (int i = 0; i < 6; ++i)
+	{
+		floorParticleModel[i] = std::make_unique<TextureParticle>(FbxModelResourceMgr::Instance()->GetResourceData(floorResourceHandle)->vertUvData, 0.18f);
+	}
+
+	//lModelHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "House_Model.fbx");
+	//floorParticleModel[1] = std::make_unique<TextureParticle>(FbxModelResourceMgr::Instance()->GetResourceData(lModelHandle)->vertUvData, 0.18f);
+
 }
 
 BlockParticleStage::~BlockParticleStage()
@@ -344,11 +355,11 @@ void BlockParticleStage::Update()
 	ImGui::End();
 	KazMath::Vec3<float>level = { 100.0f,300.0f,0.0f };
 	std::vector<KazMath::Vec3<float>> limitPosArray;
-	for (int i = 0; i < 19; ++i)
+	for (int i = 0; i < 150; ++i)
 	{
 		level.x = cosf(KazMath::AngleToRadian(i * static_cast<int>(v.x))) * v.y;
 		level.y = sinf(KazMath::AngleToRadian(i * static_cast<int>(v.x))) * v.y;
-		limitPosArray.push_back(KazMath::Vec3<float>(level.x, level.y, -100.0f + static_cast<float>(i) * v.z));
+		limitPosArray.push_back(KazMath::Vec3<float>(level.x, level.y, -1000.0f + static_cast<float>(i) * v.z));
 	}
 	for (int i = 0; i < splineParticle.size(); ++i)
 	{
@@ -358,6 +369,11 @@ void BlockParticleStage::Update()
 	for (int i = 0; i < splineParticle.size(); ++i)
 	{
 		splineParticle[i]->Update();
+	}
+
+	for (int i = 0; i < floorParticleModel.size(); ++i)
+	{
+		//floorParticleModel[i]->Update(FbxModelResourceMgr::Instance()->GetResourceData(floorResourceHandle)->textureHandle[0]);
 	}
 }
 
@@ -397,5 +413,8 @@ void BlockParticleStage::Draw()
 	{
 		splineParticle[i]->Draw();
 	}
-
+	for (int i = 0; i < floorParticleModel.size(); ++i)
+	{
+		//floorParticleModel[i]->Draw();
+	}
 }
