@@ -42,7 +42,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     //èoóÕ--------------------------------------------
     OutputData outputMat;
     outputMat.mat = mul(viewProjection,pMatWorld);     
-    outputMat.color = worldPosColorArrayData[index].color;
+    outputMat.color = worldPosColorArrayData[index].color - float4(0.1,0.1,0.1,0);
     matrixData[index] = outputMat;
     //èoóÕ--------------------------------------------
 }

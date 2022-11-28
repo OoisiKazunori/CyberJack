@@ -11,7 +11,7 @@
 #include"../KazLibrary/Loader/ObjResourceMgr.h"
 #include"../KazLibrary/Buffer/UavViewHandleMgr.h"
 
-TextureParticle::TextureParticle(std::vector<VertexUv> VERT_NUM, const DirectX::XMMATRIX *MOTHER_MAT, float PARTICLE_SCALE) :motherMat(MOTHER_MAT), scale(PARTICLE_SCALE)
+TextureParticle::TextureParticle(std::vector<VertexUv> VERT_NUM, const DirectX::XMMATRIX *MOTHER_MAT,RESOURCE_HANDLE HANDLE ,float PARTICLE_SCALE) :motherMat(MOTHER_MAT), scale(PARTICLE_SCALE)
 {
 	buffers = std::make_unique<CreateGpuBuffer>();
 
@@ -142,15 +142,6 @@ TextureParticle::TextureParticle(std::vector<VertexUv> VERT_NUM, const DirectX::
 	drawParticleFlag = false;
 
 
-}
-
-void TextureParticle::Init()
-{
-}
-
-void TextureParticle::Update(RESOURCE_HANDLE HANDLE)
-{
-
 	//‰Šú‰»ˆ—--------------------------------------------
 	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_INIT);
@@ -165,7 +156,16 @@ void TextureParticle::Update(RESOURCE_HANDLE HANDLE)
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(3, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(HANDLE));
 	DirectX12CmdList::Instance()->cmdList->Dispatch(PARTICLE_MAX_NUM / 1024, 1, 1);
 	//‰Šú‰»ˆ—--------------------------------------------
+}
 
+void TextureParticle::Init()
+{
+}
+
+void TextureParticle::Update(RESOURCE_HANDLE HANDLE)
+{
+	RESOURCE_HANDLE a = HANDLE;
+	a = 0;
 	DirectX::XMMATRIX lMatWorld = KazMath::CaluTransMatrix({ 0.0f,0.0f,0.0f }) * KazMath::CaluScaleMatrix({ scale,scale,scale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_UPDATE);
 

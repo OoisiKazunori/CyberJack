@@ -2,6 +2,11 @@
 #include"../DirectXCommon/Base.h"
 #include"../Math/KazMath.h"
 #include"../Helper/OutPutDebugStringAndCheckResult.h"
+#include"../KazLibrary/Loader/TextureResourceMgr.h"
+#include"../KazLibrary/Loader/FbxModelResourceMgr.h"
+#include"KazRenderHelper.h"
+#include<vector>
+#include<array>
 
 namespace KazHelper
 {
@@ -60,6 +65,8 @@ namespace KazHelper
 
 
 	std::vector<char>CovertStringToChar(std::string STRING);
+
+
 
 }
 

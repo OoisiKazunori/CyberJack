@@ -119,23 +119,10 @@ SplineParticle::SplineParticle(float PARTICLE_SCALE)
 	scaleRotaMat = KazMath::CaluScaleMatrix({ scale,scale,scale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
 
 
-	constBufferData.initMaxIndex = INIT_LIMITPOS_MAX_NUM;
-	buffers->TransData(initCommonHandle, &constBufferData, sizeof(InitCommonData));
-
-	//初期化処理--------------------------------------------
-	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
-	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_SPLINEPARTICLE_INIT);
-
-	//出力
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
-	//共通用バッファのデータ送信
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(1, buffers->GetGpuAddress(initCommonHandle));
-	DirectX12CmdList::Instance()->cmdList->Dispatch(PARTICLE_MAX_NUM / 1024, 1, 1);
-	//初期化処理--------------------------------------------
 
 }
 
-void SplineParticle::Init(const std::vector<KazMath::Vec3<float>> &LIMIT_POS_ARRAY)
+void SplineParticle::Init(const std::vector<KazMath::Vec3<float>> &LIMIT_POS_ARRAY, bool APPEAR_FLAG)
 {
 	assert(LIMIT_POS_ARRAY.size() < LIMITPOS_MAX_NUM + 1);
 
@@ -147,6 +134,28 @@ void SplineParticle::Init(const std::vector<KazMath::Vec3<float>> &LIMIT_POS_ARR
 	limitNumData.limitIndexMaxNum = static_cast<UINT>(LIMIT_POS_ARRAY.size() - 1);
 
 	buffers->TransData(updateLimitPosDataHandle, lLimitPosArray.data(), sizeof(DirectX::XMFLOAT3) * LIMITPOS_MAX_NUM);
+
+	if (APPEAR_FLAG)
+	{
+		constBufferData.initMaxIndex = INIT_LIMITPOS_MAX_NUM;
+	}
+	else
+	{
+		constBufferData.initMaxIndex = static_cast<UINT>(LIMIT_POS_ARRAY.size() - 1);;
+	}
+	buffers->TransData(initCommonHandle, &constBufferData, sizeof(InitCommonData));
+
+
+	//初期化処理--------------------------------------------
+	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
+	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_SPLINEPARTICLE_INIT);
+
+	//出力
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
+	//共通用バッファのデータ送信
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(1, buffers->GetGpuAddress(initCommonHandle));
+	DirectX12CmdList::Instance()->cmdList->Dispatch(PARTICLE_MAX_NUM / 1024, 1, 1);
+	//初期化処理--------------------------------------------
 }
 
 void SplineParticle::Update()

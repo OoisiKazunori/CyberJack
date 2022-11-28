@@ -6,10 +6,11 @@
 #include"../KazLibrary/Render/KazRender.h"
 #include"../KazLibrary/Loader/FbxModelResourceMgr.h"
 
+
 class TextureParticle
 {
 public:
-	TextureParticle(std::vector<VertexUv> VERT_NUM,const DirectX::XMMATRIX *MOTHER_MAT,float PARTICLE_SCALE = 0.18f);
+	TextureParticle(std::vector<VertexUv> VERT_NUM,const DirectX::XMMATRIX *MOTHER_MAT,RESOURCE_HANDLE HANDLE,float PARTICLE_SCALE = 0.18f);
 	void Init();
 	void Update(RESOURCE_HANDLE HANDLE);
 	void Draw();
@@ -23,6 +24,7 @@ public:
 		return constBufferData.vertMaxNum;
 	}
 	bool resetSceneFlag;
+
 
 private:
 	int sceneNum;

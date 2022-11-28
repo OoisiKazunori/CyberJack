@@ -14,13 +14,6 @@
 
 #include"../KazLibrary/Input/ControllerInputManager.h"
 
-void AddVert(std::vector<VertexUv> &DATA, std::array<Vertex, 4>VERT_DATA, std::array<KazMath::Vec2<float>, 4>TEX_VERT_DATA, int INDEX)
-{
-	VertexUv lData;
-	lData.pos = { TEX_VERT_DATA[INDEX].ConvertXMFLOAT2().x,TEX_VERT_DATA[INDEX].ConvertXMFLOAT2().y,0.0f };
-	lData.uv = VERT_DATA[INDEX].uv;
-	DATA.push_back(lData);
-};
 
 DebugMeshParticleScene::DebugMeshParticleScene()
 {
@@ -86,26 +79,11 @@ DebugMeshParticleScene::DebugMeshParticleScene()
 
 
 	std::vector<VertexUv>lVertArray;
-	AddVert(lVertArray, vertices, lVert, 0);
-	AddVert(lVertArray, vertices, lVert, 1);
-	AddVert(lVertArray, vertices, lVert, 2);
-	AddVert(lVertArray, vertices, lVert, 1);
-	AddVert(lVertArray, vertices, lVert, 3);
-	AddVert(lVertArray, vertices, lVert, 2);
-
-	lVertArray[0].uv = { 1.0f,0.0f };
-	lVertArray[1].uv = { 0.0f,0.0f };
-	lVertArray[2].uv = { 0.0f,1.0f };
-
-	lVertArray[3].uv = { 1.0f,0.0f };
-	lVertArray[4].uv = { 0.0f,1.0f };
-	lVertArray[5].uv = { 1.0f,1.0f };
-
 	modelHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_Head_anim.fbx");
 	lVertArray = FbxModelResourceMgr::Instance()->GetResourceData(modelHandle)->vertUvData;
 	handle = FbxModelResourceMgr::Instance()->GetResourceData(modelHandle)->textureHandle[0];
 	//èdï°Ç†ÇËÇÃéOäpå`
-	texParticle = std::make_unique<TextureParticle>(lVertArray, &texMotherMat, 1.0f);
+	texParticle = std::make_unique<TextureParticle>(lVertArray, &texMotherMat, modelHandle, 1.0f);
 
 
 

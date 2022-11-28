@@ -10,7 +10,7 @@ class SplineParticle
 {
 public:
 	SplineParticle(float PARTICLE_SCALE = 0.18f);
-	void Init(const std::vector<KazMath::Vec3<float>> &LIMIT_POS_ARRAY);
+	void Init(const std::vector<KazMath::Vec3<float>> &LIMIT_POS_ARRAY, bool APPEAR_FLAG);
 	void Update();
 	void Draw();
 
@@ -33,7 +33,7 @@ private:
 	D3D12_INDEX_BUFFER_VIEW indexBufferView;
 	//バッファ
 
-	static const int PARTICLE_MAX_NUM = 150000;
+	static const int PARTICLE_MAX_NUM = 100000;
 	static const UINT LIMITPOS_MAX_NUM = 150;
 	static const UINT INIT_LIMITPOS_MAX_NUM = 5;
 	static const int DRAW_CALL = 1;

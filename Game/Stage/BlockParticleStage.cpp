@@ -262,20 +262,78 @@ BlockParticleStage::BlockParticleStage()
 
 	for (int i = 0; i < splineParticle.size(); ++i)
 	{
-		splineParticle[i] = std::make_unique<SplineParticle>(1.0f);
+		splineParticle[i] = std::make_unique<SplineParticle>(3.0f);
 	}
 
-	v = { 40.0f,200.0f,100.0f };
+	//大渦初期化--------------------------------------------
 
 
-	floorResourceHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "road_Model.fbx");
+	v = { 40.0f,400.0f,100.0f };
+	{
+		KazMath::Vec3<float>level = { 100.0f,300.0f,0.0f };
+		std::vector<KazMath::Vec3<float>> limitPosArray;
+		for (int i = 0; i < 150; ++i)
+		{
+			level.x = cosf(KazMath::AngleToRadian(i * static_cast<int>(v.x))) * v.y;
+			level.y = sinf(KazMath::AngleToRadian(i * static_cast<int>(v.x))) * v.y;
+			limitPosArray.push_back(KazMath::Vec3<float>(level.x, level.y, -1000.0f + static_cast<float>(i) * v.z));
+		}
+		splineParticle[0]->Init(limitPosArray, true);
+	}
+	//大渦初期化--------------------------------------------
+	{
+		for (int i = 1; i < splineParticle.size(); ++i)
+		{
+			std::vector<KazMath::Vec3<float>> limitPosArray;
+			KazMath::Vec3<float>lStartPos;
+			lStartPos.y = KazMath::Rand(5000.0f, -5000.0f);
+
+			//左から右
+			if (KazMath::Rand(3, 0) < 2)
+			{
+				lStartPos.x = KazMath::Rand(7000.0f, 2000.0f);
+			}
+			else
+			{
+				lStartPos.x = -KazMath::Rand(7000.0f, 2000.0f);
+			}
+			bool lupDownFlag = false;
+			//上に行くかどうか
+			if (KazMath::Rand(3, 0) < 2)
+			{
+				lupDownFlag = true;
+			}
+
+			for (int i = 0; i < 150; ++i)
+			{
+				lStartPos.z = -5000.0f + static_cast<float>(i) * v.z;
+				limitPosArray.push_back(lStartPos);
+			}
+			splineParticle[i]->Init(limitPosArray, false);
+		}
+	}
+
+
+
+	floorResourceHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StagePath + "lambert1_Base_color.png");
 	for (int i = 0; i < floorParticleModel.size(); ++i)
 	{
-		floorParticleModel[i] = std::make_unique<TextureParticle>(FbxModelResourceMgr::Instance()->GetResourceData(floorResourceHandle)->vertUvData, &floorParticleMotherMat[i], 0.18f);
+		floorParticleTransform[i].pos = { 0.0f,-300.0f,500.0f + static_cast<float>(i) * 700.0f };
+		floorParticleTransform[i].rotation = { 90.0f,0.0f,0.0f };
+
+		floorParticleModel[i] = std::make_unique<TextureParticle>(GetPlaneData(floorResourceHandle), &floorParticleMotherMat[i], floorResourceHandle, 5.0f);
 	}
 
-	//lModelHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "House_Model.fbx");
-	//floorParticleModel[1] = std::make_unique<TextureParticle>(FbxModelResourceMgr::Instance()->GetResourceData(lModelHandle)->vertUvData, 0.18f);
+
+	pillarHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "house/" + "House_01.png");
+	for (int i = 0; i < pillarParticleTransform.size(); ++i)
+	{
+		pillarParticleTransform[i].pos = { -1000.0f,-300.0f,500.0f + static_cast<float>(i) * 700.0f };
+		//pillarParticleTransform[i].rotation = { 90.0f,0.0f,0.0f };
+
+		RESOURCE_HANDLE lHandle = FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->textureHandle[0];
+		pillarParticleModel[i] = std::make_unique<TextureParticle>(FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->vertUvData, &pillarParticleMotherMat[i], lHandle, 5.0f);
+	}
 }
 
 BlockParticleStage::~BlockParticleStage()
@@ -287,26 +345,26 @@ BlockParticleStage::~BlockParticleStage()
 
 void BlockParticleStage::Update()
 {
-	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_BLOCKPARTICLE_MOVE);
+	//GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_BLOCKPARTICLE_MOVE);
 
-	//共通用バッファのデータ送信
-	{
-		constBufferData.viewProjectionMat = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
-		constBufferData.scaleRotateBillboardMat = KazMath::CaluScaleMatrix({ 1.0f,1.0f,1.0f }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f }) * CameraMgr::Instance()->GetMatBillBoard();
+	////共通用バッファのデータ送信
+	//{
+	//	constBufferData.viewProjectionMat = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
+	//	constBufferData.scaleRotateBillboardMat = KazMath::CaluScaleMatrix({ 1.0f,1.0f,1.0f }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f }) * CameraMgr::Instance()->GetMatBillBoard();
 
-		buffers->TransData(commonBufferHandle, &constBufferData, sizeof(CommonMoveData));
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(commonBufferHandle));
-		constBufferData.flash.y = 0;
-	}
+	//	buffers->TransData(commonBufferHandle, &constBufferData, sizeof(CommonMoveData));
+	//	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(commonBufferHandle));
+	//	constBufferData.flash.y = 0;
+	//}
 
-	{
-		//初期化値
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputInitViewHandle));
-		//結果値
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
-	}
+	//{
+	//	//初期化値
+	//	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputInitViewHandle));
+	//	//結果値
+	//	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
+	//}
 
-	DirectX12CmdList::Instance()->cmdList->Dispatch((PARTICLE_MAX_NUM * PER_USE_PARTICLE_MAX_NUM) / 1000, 1, 1);
+	//DirectX12CmdList::Instance()->cmdList->Dispatch((PARTICLE_MAX_NUM * PER_USE_PARTICLE_MAX_NUM) / 1000, 1, 1);
 
 
 	if (highFlag)
@@ -352,18 +410,18 @@ void BlockParticleStage::Update()
 	ImGui::DragFloat("Radius", &v.y);
 	ImGui::DragFloat("Z", &v.z);
 	ImGui::End();
-	KazMath::Vec3<float>level = { 100.0f,300.0f,0.0f };
-	std::vector<KazMath::Vec3<float>> limitPosArray;
-	for (int i = 0; i < 150; ++i)
-	{
-		level.x = cosf(KazMath::AngleToRadian(i * static_cast<int>(v.x))) * v.y;
-		level.y = sinf(KazMath::AngleToRadian(i * static_cast<int>(v.x))) * v.y;
-		limitPosArray.push_back(KazMath::Vec3<float>(level.x, level.y, -1000.0f + static_cast<float>(i) * v.z));
-	}
-	for (int i = 0; i < splineParticle.size(); ++i)
-	{
-		splineParticle[i]->Init(limitPosArray);
-	}
+	//KazMath::Vec3<float>level = { 100.0f,300.0f,0.0f };
+	//std::vector<KazMath::Vec3<float>> limitPosArray;
+	//for (int i = 0; i < 150; ++i)
+	//{
+	//	level.x = cosf(KazMath::AngleToRadian(i * static_cast<int>(v.x))) * v.y;
+	//	level.y = sinf(KazMath::AngleToRadian(i * static_cast<int>(v.x))) * v.y;
+	//	limitPosArray.push_back(KazMath::Vec3<float>(level.x, level.y, -1000.0f + static_cast<float>(i) * v.z));
+	//}
+	//for (int i = 0; i < splineParticle.size(); ++i)
+	//{
+	//	splineParticle[i]->Init(limitPosArray);
+	//}
 
 	for (int i = 0; i < splineParticle.size(); ++i)
 	{
@@ -372,10 +430,27 @@ void BlockParticleStage::Update()
 
 	for (int i = 0; i < floorParticleModel.size(); ++i)
 	{
-		//int lNum = FbxModelResourceMgr::Instance()->GetResourceData(floorResourceHandle)->textureHandle[0];
+		floorParticleTransform[i].pos.z += -5.0f;
+		if (floorParticleTransform[i].pos.z <= -1000.0f)
+		{
+			floorParticleTransform[i].pos.z = (500.0f + static_cast<float>(FLOOR_PARTICLE_MAX_NUM) * 700.0f) - 1200.0f;
+		}
+		floorParticleMotherMat[i] = floorParticleTransform[i].GetMat();
+		floorParticleModel[i]->Update(floorResourceHandle);
+	}
 
-		//floorParticleMotherMat[i] = floorParticleTransform[i].GetMat();
-		//floorParticleModel[i]->Update(lNum);
+
+
+	for (int i = 0; i < pillarParticleTransform.size(); ++i)
+	{
+		pillarParticleTransform[i].pos.z += -5.0f;
+		if (pillarParticleTransform[i].pos.z <= -1000.0f)
+		{
+			pillarParticleTransform[i].pos.z = (500.0f + static_cast<float>(FLOOR_PARTICLE_MAX_NUM) * 700.0f) - 1200.0f;
+		}
+
+		pillarParticleMotherMat[i] = pillarParticleTransform[i].GetMat();
+		pillarParticleModel[i]->Update(floorResourceHandle);
 	}
 }
 
@@ -417,6 +492,6 @@ void BlockParticleStage::Draw()
 	}
 	for (int i = 0; i < floorParticleModel.size(); ++i)
 	{
-		//floorParticleModel[i]->Draw();
+		floorParticleModel[i]->Draw();
 	}
 }

@@ -51,6 +51,11 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     uint index = groupThreadID.x;
     index += 1024 * groupId.x;
 
+    if(2 <= index)
+    {
+        return;
+    }
+
     //インデックス数以内なら処理する
     //三角形を構成するインデックスの指定--------------------------------------------
     uint firstVertIndex = index * 3;
@@ -96,7 +101,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
 
  
     //パーティクルの配置--------------------------------------------
-    const int PARTICLE_MAX_NUM = 50;
+    const int PARTICLE_MAX_NUM = 10000;
     const int PER_PARTICLE_MAX_NUM = PARTICLE_MAX_NUM / 3;
     for(int rayIndex = 0; rayIndex < RAY_MAX_NUM; ++rayIndex)
     {
