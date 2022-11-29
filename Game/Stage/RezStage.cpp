@@ -122,7 +122,7 @@ RezStage::RezStage()
 
 	for (int i = 0; i < searchLightArray.size(); ++i)
 	{
-		KazMath::Vec3<float>lPos = { 0.0f,-1250.0f, KazMath::Rand(10000.0f, -1000.0f) };
+		KazMath::Vec3<float>lPos = { 0.0f,-1450.0f, KazMath::Rand(10000.0f, -1000.0f) };
 		if (1 <= KazMath::Rand(2, 0))
 		{
 			lPos.x = KazMath::Rand(10000.0f, 500.0f);
