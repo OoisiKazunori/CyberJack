@@ -86,8 +86,12 @@ DebugMeshParticleScene::DebugMeshParticleScene()
 	texParticle = std::make_unique<TextureParticle>(lVertArray, &texMotherMat, modelHandle, 1.0f);
 
 
-
 	splineParticle = std::make_unique<SplineParticle>(1.0f);
+	for (int i = 0; i < 6; ++i)
+	{
+		limitPos.push_back(KazMath::Vec3<float>(0.0f, 0.0f, 0.0f + static_cast<float>(i) * 100.0f));
+	}
+
 }
 
 DebugMeshParticleScene::~DebugMeshParticleScene()
@@ -187,6 +191,14 @@ void DebugMeshParticleScene::Update()
 	{
 		KazImGuiHelper::InputTransform3D("Mother", &texTransform);
 		texMotherMat = texTransform.GetMat();
+	}
+	else if (splineParticleFlag)
+	{
+		KazImGuiHelper::InputVec3("1", &limitPos[0]);
+		KazImGuiHelper::InputVec3("2", &limitPos[1]);
+		KazImGuiHelper::InputVec3("3", &limitPos[2]);
+		KazImGuiHelper::InputVec3("4", &limitPos[3]);
+		KazImGuiHelper::InputVec3("5", &limitPos[4]);
 	}
 	ImGui::End();
 
@@ -349,6 +361,7 @@ void DebugMeshParticleScene::Update()
 	}
 	else if (splineParticleFlag)
 	{
+		splineParticle->Init(limitPos, false);
 		splineParticle->Update();
 	}
 

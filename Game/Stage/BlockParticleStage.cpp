@@ -264,7 +264,7 @@ BlockParticleStage::BlockParticleStage()
 
 	for (int i = 0; i < splineParticle.size(); ++i)
 	{
-		splineParticle[i] = std::make_unique<SplineParticle>(3.0f);
+		splineParticle[i] = std::make_unique<SplineParticle>(5.0f);
 	}
 
 	//‘å‰Q‰Šú‰»--------------------------------------------

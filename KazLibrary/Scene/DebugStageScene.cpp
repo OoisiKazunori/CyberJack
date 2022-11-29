@@ -212,11 +212,11 @@ void DebugStageScene::Draw()
 	else
 	{
 		stages[stageNum]->Draw();
-		stages[stageNum]->vaporWaveSunRender.Draw();
+		//stages[stageNum]->vaporWaveSunRender.Draw();
 	}
 
-	goalBox.Draw();
-	goalBox.lightEffect.Draw();
+	//goalBox.Draw();
+	//goalBox.lightEffect.Draw();
 
 	renderTarget[stageNum]->Draw();
 	mainRenderTarget.Draw();
