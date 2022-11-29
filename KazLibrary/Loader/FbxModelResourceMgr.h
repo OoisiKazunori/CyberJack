@@ -97,6 +97,7 @@ private:
 	DirectX::XMFLOAT3 ambient = { 1.0f,1.0f,1.0f };
 	DirectX::XMFLOAT3 diffuse = { 1.0f,1.0f,1.0f };
 	std::vector<RESOURCE_HANDLE> textureHandle;
+	UINT faceCountNum;
 public:
 	friend class FbxModelResourceMgr;
 
@@ -129,6 +130,7 @@ public:
 
 	FbxMesh *mesh;
 
+	UINT faceCountNum;
 	FbxResourceData() :indicisNum(0), ambient({ -1.0f,-1.0f,-1.0f }), diffuse({ -1.0f,-1.0f,-1.0f }), vertNum(0)
 	{
 	}

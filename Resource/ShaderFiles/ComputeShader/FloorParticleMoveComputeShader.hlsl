@@ -40,7 +40,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     }
 
     float3 outputPos = updateData[index].pos.xyz;
-    float3 outputScale = float3(4,4,4);
+    float3 outputScale = float3(10,10,10);
 
     //çsóÒåvéZ-------------------------
     matrix pMatWorld = CalucurateWorldMat(outputPos,outputScale,float3(0,0,0),billBoard);

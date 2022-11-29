@@ -10,6 +10,8 @@
 #include"../KazLibrary/Imgui/MyImgui.h"
 #include"../KazLibrary/Buffer/UavViewHandleMgr.h"
 
+const float BlockParticleStage::PILLAR_PARTICLE_INTERVAL_NUM = 1500.0f;
+
 BlockParticleStage::BlockParticleStage()
 {
 	buffers = std::make_unique<CreateGpuBuffer>();
@@ -268,7 +270,7 @@ BlockParticleStage::BlockParticleStage()
 	//ëÂâQèâä˙âª--------------------------------------------
 
 
-	v = { 40.0f,400.0f,100.0f };
+	v = { 40.0f,800.0f,100.0f };
 	{
 		KazMath::Vec3<float>level = { 100.0f,300.0f,0.0f };
 		std::vector<KazMath::Vec3<float>> limitPosArray;
@@ -321,18 +323,27 @@ BlockParticleStage::BlockParticleStage()
 		floorParticleTransform[i].pos = { 0.0f,-300.0f,500.0f + static_cast<float>(i) * 700.0f };
 		floorParticleTransform[i].rotation = { 90.0f,0.0f,0.0f };
 
-		floorParticleModel[i] = std::make_unique<TextureParticle>(GetPlaneData(floorResourceHandle), &floorParticleMotherMat[i], floorResourceHandle, 5.0f);
+		floorParticleModel[i] = std::make_unique<TextureParticle>(GetPlaneData(floorResourceHandle), &floorParticleMotherMat[i], floorResourceHandle, 5.0f, 10000, 2);
 	}
 
-
-	pillarHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "house/" + "House_01.png");
-	for (int i = 0; i < pillarParticleTransform.size(); ++i)
+	pillarHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "house/" + "House_01.fbx", true);
+	for (int i = 0; i < pillarParticleTransform.size() / 2; ++i)
 	{
-		pillarParticleTransform[i].pos = { -1000.0f,-300.0f,500.0f + static_cast<float>(i) * 700.0f };
-		//pillarParticleTransform[i].rotation = { 90.0f,0.0f,0.0f };
-
+		pillarParticleTransform[i].pos = { -1000.0f,0.0f,-1000.0f + static_cast<float>(i) * PILLAR_PARTICLE_INTERVAL_NUM };
+		pillarParticleTransform[i].scale = { 3.5f,5.0f,3.5f };
 		RESOURCE_HANDLE lHandle = FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->textureHandle[0];
-		pillarParticleModel[i] = std::make_unique<TextureParticle>(FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->vertUvData, &pillarParticleMotherMat[i], lHandle, 5.0f);
+		UINT lFaceCountNum = FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->faceCountNum;
+		pillarParticleModel[i] = std::make_unique<TextureParticle>(FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->vertUvData, &pillarParticleMotherMat[i], lHandle, 1.5f, 200, 2000);
+	}
+
+	const int L_HALF_NUM = static_cast<int>(pillarParticleTransform.size()) / 2;
+	for (int i = L_HALF_NUM; i < pillarParticleTransform.size(); ++i)
+	{
+		pillarParticleTransform[i].pos = { 1000.0f,0.0f,-1000.0f + static_cast<float>(i) * PILLAR_PARTICLE_INTERVAL_NUM - L_HALF_NUM * PILLAR_PARTICLE_INTERVAL_NUM };
+		pillarParticleTransform[i].scale = { 3.5f,5.0f,3.5f };
+		RESOURCE_HANDLE lHandle = FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->textureHandle[0];
+		UINT lFaceCountNum = FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->faceCountNum;
+		pillarParticleModel[i] = std::make_unique<TextureParticle>(FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->vertUvData, &pillarParticleMotherMat[i], lHandle, 1.5f, 200, 2000);
 	}
 }
 
@@ -444,9 +455,9 @@ void BlockParticleStage::Update()
 	for (int i = 0; i < pillarParticleTransform.size(); ++i)
 	{
 		pillarParticleTransform[i].pos.z += -5.0f;
-		if (pillarParticleTransform[i].pos.z <= -1000.0f)
+		if (pillarParticleTransform[i].pos.z <= -2000.0f)
 		{
-			pillarParticleTransform[i].pos.z = (500.0f + static_cast<float>(FLOOR_PARTICLE_MAX_NUM) * 700.0f) - 1200.0f;
+			pillarParticleTransform[i].pos.z = 12500.0f;
 		}
 
 		pillarParticleMotherMat[i] = pillarParticleTransform[i].GetMat();
@@ -483,15 +494,20 @@ void BlockParticleStage::Draw()
 	//	D3D12_RESOURCE_STATE_UNORDERED_ACCESS
 	//);
 
-
-	galacticParticle.Draw();
-
-	for (int i = 0; i < splineParticle.size(); ++i)
+	for (int i = 0; i < pillarParticleModel.size(); ++i)
 	{
-		splineParticle[i]->Draw();
+		pillarParticleModel[i]->Draw();
 	}
 	for (int i = 0; i < floorParticleModel.size(); ++i)
 	{
 		floorParticleModel[i]->Draw();
 	}
+	for (int i = 0; i < splineParticle.size(); ++i)
+	{
+		splineParticle[i]->Draw();
+	}
+
+
+	galacticParticle.Draw();
+
 }

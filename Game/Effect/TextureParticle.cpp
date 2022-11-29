@@ -11,7 +11,7 @@
 #include"../KazLibrary/Loader/ObjResourceMgr.h"
 #include"../KazLibrary/Buffer/UavViewHandleMgr.h"
 
-TextureParticle::TextureParticle(std::vector<VertexUv> VERT_NUM, const DirectX::XMMATRIX *MOTHER_MAT,RESOURCE_HANDLE HANDLE ,float PARTICLE_SCALE) :motherMat(MOTHER_MAT), scale(PARTICLE_SCALE)
+TextureParticle::TextureParticle(std::vector<VertexUv> VERT_NUM, const DirectX::XMMATRIX *MOTHER_MAT, RESOURCE_HANDLE HANDLE, float PARTICLE_SCALE, UINT PER_TRIANGLE_COUNT, UINT FACE_COUNT_NUM) :motherMat(MOTHER_MAT), scale(PARTICLE_SCALE)
 {
 	buffers = std::make_unique<CreateGpuBuffer>();
 
@@ -85,9 +85,10 @@ TextureParticle::TextureParticle(std::vector<VertexUv> VERT_NUM, const DirectX::
 		prevBias = 80;
 
 		constBufferData.worldPos = {};
-		constBufferData.vertMaxNum = static_cast<UINT>(VERT_NUM.size());
-		constBufferData.bias = bias;
-
+		constBufferData.vertDataNum.x = static_cast<UINT>(VERT_NUM.size());
+		constBufferData.vertDataNum.y = bias;
+		constBufferData.vertDataNum.z = PER_TRIANGLE_COUNT;
+		constBufferData.vertDataNum.w = FACE_COUNT_NUM;
 
 		buffers->TransData(initCommonHandle, &constBufferData, sizeof(InitCommonData));
 	}
@@ -141,6 +142,7 @@ TextureParticle::TextureParticle(std::vector<VertexUv> VERT_NUM, const DirectX::
 
 	drawParticleFlag = false;
 
+	tex = HANDLE;
 
 	//初期化処理--------------------------------------------
 	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
@@ -153,9 +155,11 @@ TextureParticle::TextureParticle(std::vector<VertexUv> VERT_NUM, const DirectX::
 	//共通用バッファのデータ送信
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(initCommonHandle));
 	//テクスチャ
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(3, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(HANDLE));
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(3, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(tex));
 	DirectX12CmdList::Instance()->cmdList->Dispatch(PARTICLE_MAX_NUM / 1024, 1, 1);
 	//初期化処理--------------------------------------------
+
+	
 }
 
 void TextureParticle::Init()

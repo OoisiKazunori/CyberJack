@@ -107,6 +107,7 @@ RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME, bo
 	modelResource[lHandle]->indexData = model->indices;
 	modelResource[lHandle]->vertData = model->vertData;
 	modelResource[lHandle]->vertUvData = model->vertUvData;
+	modelResource[lHandle]->faceCountNum = model->faceCountNum;
 
 
 	modelResource[modelResource.size() - 1]->mesh = mesh;
@@ -543,6 +544,8 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 		vertPos[i].y = (float)pCoord[i][1];
 		vertPos[i].z = (float)pCoord[i][2];
 	}
+
+	MODEL->faceCountNum = controlPointsCount;
 
 	//重複あり頂点情報
 	std::vector<Model::VertexPosNormalUvSkin> vertices;

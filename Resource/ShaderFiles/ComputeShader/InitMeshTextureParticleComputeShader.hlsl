@@ -21,8 +21,8 @@ RWStructuredBuffer<OutputData> worldPosData : register(u1);
 cbuffer RootConstants : register(b0)
 {
     float4 pos;
-    uint vertMaxNum;
-    uint bias;
+    //x vertNum, y bias,z perTriangleNum,w faceCountNum
+    uint4 TriangleData;
 };
 
 Texture2D<float4> tex : register(t2);
@@ -51,7 +51,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     uint index = groupThreadID.x;
     index += 1024 * groupId.x;
 
-    if(2 <= index)
+    if(TriangleData.w <= index)
     {
         return;
     }
@@ -101,7 +101,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
 
  
     //パーティクルの配置--------------------------------------------
-    const int PARTICLE_MAX_NUM = 10000;
+    const int PARTICLE_MAX_NUM = TriangleData.z;
     const int PER_PARTICLE_MAX_NUM = PARTICLE_MAX_NUM / 3;
     for(int rayIndex = 0; rayIndex < RAY_MAX_NUM; ++rayIndex)
     {
@@ -122,7 +122,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
             //パーティクルの配置
             float3 resultPos;
             const int PARTICLE_MAX_BIAS = 100;
-            const int RANDOM_NUMBER_BIAS = bias;
+            const int RANDOM_NUMBER_BIAS = TriangleData.y;
             
             if(RandVec3(outputIndex,PARTICLE_MAX_BIAS,0).x <= RANDOM_NUMBER_BIAS)
             {

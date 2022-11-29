@@ -10,7 +10,7 @@
 class TextureParticle
 {
 public:
-	TextureParticle(std::vector<VertexUv> VERT_NUM,const DirectX::XMMATRIX *MOTHER_MAT,RESOURCE_HANDLE HANDLE,float PARTICLE_SCALE = 0.18f);
+	TextureParticle(std::vector<VertexUv> VERT_NUM, const DirectX::XMMATRIX *MOTHER_MAT, RESOURCE_HANDLE HANDLE, float PARTICLE_SCALE = 0.18f, UINT PER_TRIANGLE_COUNT = 50, UINT FACE_COUNT_NUM = 0);
 	void Init();
 	void Update(RESOURCE_HANDLE HANDLE);
 	void Draw();
@@ -21,7 +21,7 @@ public:
 	}
 	int GetVertNum()
 	{
-		return constBufferData.vertMaxNum;
+		return constBufferData.vertDataNum.x;
 	}
 	bool resetSceneFlag;
 
@@ -50,6 +50,8 @@ private:
 	int bias, prevBias;
 	float scale;
 
+	RESOURCE_HANDLE tex;
+
 	//必要情報--------------------------------------------
 	const DirectX::XMMATRIX *motherMat;
 	//必要情報--------------------------------------------
@@ -63,8 +65,7 @@ private:
 	struct InitCommonData
 	{
 		DirectX::XMFLOAT4 worldPos;
-		UINT vertMaxNum;
-		UINT bias;
+		DirectX::XMUINT4 vertDataNum;
 	};
 	InitCommonData constBufferData;
 	RESOURCE_HANDLE vertexBufferHandle, indexBufferHandle;
