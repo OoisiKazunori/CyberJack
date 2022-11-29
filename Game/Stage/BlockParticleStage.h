@@ -98,6 +98,7 @@ private:
 	std::array<DirectX::XMMATRIX, PILLAR_PARTICLE_MAX_NUM> pillarParticleMotherMat;
 	RESOURCE_HANDLE pillarHandle;
 
+	KazMath::Vec2<float>flash;
 	
 	std::array<std::unique_ptr<SplineParticle>, 2> splineParticle;
 

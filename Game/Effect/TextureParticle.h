@@ -12,7 +12,7 @@ class TextureParticle
 public:
 	TextureParticle(std::vector<VertexUv> VERT_NUM, const DirectX::XMMATRIX *MOTHER_MAT, RESOURCE_HANDLE HANDLE, float PARTICLE_SCALE = 0.18f, UINT PER_TRIANGLE_COUNT = 50, UINT FACE_COUNT_NUM = 0);
 	void Init();
-	void Update(RESOURCE_HANDLE HANDLE);
+	void Update(bool FLAG = false);
 	void Draw();
 
 	D3D12_GPU_VIRTUAL_ADDRESS GetAddress()
@@ -26,6 +26,16 @@ public:
 	bool resetSceneFlag;
 
 
+	struct UpdateCommonFlashData
+	{
+		DirectX::XMMATRIX scaleRotateBillboardMat;
+		DirectX::XMMATRIX viewProjection;
+		DirectX::XMMATRIX motherMat;
+		DirectX::XMFLOAT2 flash;
+		DirectX::XMFLOAT2 pad;
+		float alpha;
+	};
+	UpdateCommonFlashData updateFlashCommonData;
 private:
 	int sceneNum;
 	//バッファ
@@ -89,8 +99,9 @@ private:
 		DirectX::XMMATRIX motherMat;
 		float alpha;
 	};
+
 	UpdateCommonData updateCommonData;
-	RESOURCE_HANDLE updateHandle, updateCommonHandle;
+	RESOURCE_HANDLE updateHandle, updateCommonHandle, updateFlashCommonHandle;
 	RESOURCE_HANDLE updateViewHandle;
 	DirectX::XMMATRIX scaleRotaMat;
 

@@ -10,7 +10,7 @@
 #include"../KazLibrary/Imgui/MyImgui.h"
 #include"../KazLibrary/Buffer/UavViewHandleMgr.h"
 
-const float BlockParticleStage::PILLAR_PARTICLE_INTERVAL_NUM = 1500.0f;
+const float BlockParticleStage::PILLAR_PARTICLE_INTERVAL_NUM = 15000.0f;
 
 BlockParticleStage::BlockParticleStage()
 {
@@ -329,8 +329,8 @@ BlockParticleStage::BlockParticleStage()
 	pillarHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "house/" + "House_01.fbx", true);
 	for (int i = 0; i < pillarParticleTransform.size() / 2; ++i)
 	{
-		pillarParticleTransform[i].pos = { -1000.0f,0.0f,-1000.0f + static_cast<float>(i) * PILLAR_PARTICLE_INTERVAL_NUM };
-		pillarParticleTransform[i].scale = { 3.5f,5.0f,3.5f };
+		pillarParticleTransform[i].pos = { -5000.0f,0.0f,-1000.0f + static_cast<float>(i) * PILLAR_PARTICLE_INTERVAL_NUM };
+		pillarParticleTransform[i].scale = { 23.5f,25.0f,23.5f };
 		RESOURCE_HANDLE lHandle = FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->textureHandle[0];
 		UINT lFaceCountNum = FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->faceCountNum;
 		pillarParticleModel[i] = std::make_unique<TextureParticle>(FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->vertUvData, &pillarParticleMotherMat[i], lHandle, 1.5f, 200, 2000);
@@ -339,8 +339,8 @@ BlockParticleStage::BlockParticleStage()
 	const int L_HALF_NUM = static_cast<int>(pillarParticleTransform.size()) / 2;
 	for (int i = L_HALF_NUM; i < pillarParticleTransform.size(); ++i)
 	{
-		pillarParticleTransform[i].pos = { 1000.0f,0.0f,-1000.0f + static_cast<float>(i) * PILLAR_PARTICLE_INTERVAL_NUM - L_HALF_NUM * PILLAR_PARTICLE_INTERVAL_NUM };
-		pillarParticleTransform[i].scale = { 3.5f,5.0f,3.5f };
+		pillarParticleTransform[i].pos = { 5000.0f,0.0f,-1000.0f + static_cast<float>(i) * PILLAR_PARTICLE_INTERVAL_NUM - L_HALF_NUM * PILLAR_PARTICLE_INTERVAL_NUM };
+		pillarParticleTransform[i].scale = { 23.5f,25.0f,23.5f };
 		RESOURCE_HANDLE lHandle = FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->textureHandle[0];
 		UINT lFaceCountNum = FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->faceCountNum;
 		pillarParticleModel[i] = std::make_unique<TextureParticle>(FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->vertUvData, &pillarParticleMotherMat[i], lHandle, 1.5f, 200, 2000);
@@ -447,21 +447,27 @@ void BlockParticleStage::Update()
 			floorParticleTransform[i].pos.z = (500.0f + static_cast<float>(FLOOR_PARTICLE_MAX_NUM) * 700.0f) - 1200.0f;
 		}
 		floorParticleMotherMat[i] = floorParticleTransform[i].GetMat();
-		floorParticleModel[i]->Update(floorResourceHandle);
+		floorParticleModel[i]->Update();
 	}
 
-
+	ImGui::Begin("Block");
+	KazImGuiHelper::InputVec2("Flash", &flash);
+	ImGui::End();
 
 	for (int i = 0; i < pillarParticleTransform.size(); ++i)
 	{
+		pillarParticleModel[i]->updateFlashCommonData.flash.x = flash.x;
+		pillarParticleModel[i]->updateFlashCommonData.flash.y = flash.y;
+
+
 		pillarParticleTransform[i].pos.z += -5.0f;
-		if (pillarParticleTransform[i].pos.z <= -2000.0f)
+		if (pillarParticleTransform[i].pos.z <= -10000.0f)
 		{
 			pillarParticleTransform[i].pos.z = 12500.0f;
 		}
 
 		pillarParticleMotherMat[i] = pillarParticleTransform[i].GetMat();
-		pillarParticleModel[i]->Update(floorResourceHandle);
+		pillarParticleModel[i]->Update(false);
 	}
 }
 

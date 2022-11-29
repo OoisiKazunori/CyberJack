@@ -2838,6 +2838,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "InitMeshTextureParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_TEXTUREPARTICLE_INIT);
 	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "MeshParticleUpdateInputPosColor.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_TEXTUREPARTICLE_UPDATE);
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "MeshParticleUpdateFlashColor.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_TEXTUREPARTICLE_FLASH_UPDATE);
 
 	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 		SHADER_COMPUTE_TEXTUREPARTICLE_INIT,
@@ -2851,6 +2852,13 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_COMPUTE_DATA_TEST,
 		ROOTSIGNATURE_DATA_UAV_UAV_CBV,
 		PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_UPDATE
+	);
+
+	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+		SHADER_COMPUTE_TEXTUREPARTICLE_FLASH_UPDATE,
+		PIPELINE_COMPUTE_DATA_TEST,
+		ROOTSIGNATURE_DATA_UAV_UAV_CBV,
+		PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_FLASH_UPDATE
 	);
 	//コンパイルする予定のコンピュートパイプライン------------------------------------------------------------
 }

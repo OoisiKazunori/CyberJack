@@ -61,6 +61,7 @@ TextureParticle::TextureParticle(std::vector<VertexUv> VERT_NUM, const DirectX::
 	//更新用
 	updateHandle = buffers->CreateBuffer(KazBufferHelper::SetOnlyReadStructuredBuffer((sizeof(UpdateData) * PARTICLE_MAX_NUM)));
 	updateCommonHandle = buffers->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(UpdateCommonData)));
+	updateFlashCommonHandle = buffers->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(UpdateCommonFlashData)));
 
 	//描画用
 	drawCommandHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(IndirectCommand) * DRAW_CALL));
@@ -166,23 +167,40 @@ void TextureParticle::Init()
 {
 }
 
-void TextureParticle::Update(RESOURCE_HANDLE HANDLE)
+void TextureParticle::Update(bool FLAG)
 {
-	RESOURCE_HANDLE a = HANDLE;
-	a = 0;
 	DirectX::XMMATRIX lMatWorld = KazMath::CaluTransMatrix({ 0.0f,0.0f,0.0f }) * KazMath::CaluScaleMatrix({ scale,scale,scale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
-	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_UPDATE);
+	if (FLAG)
+	{
+		GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_FLASH_UPDATE);
+	}
+	else
+	{
+		GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_UPDATE);
+	}
 
 
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(updateViewHandle));
 
-	//共通用バッファのデータ送信
-	updateCommonData.scaleRotateBillboardMat = scaleRotaMat * CameraMgr::Instance()->GetMatBillBoard();
-	updateCommonData.viewProjection = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
-	updateCommonData.motherMat = *motherMat;
-	buffers->TransData(updateCommonHandle, &updateCommonData, sizeof(UpdateCommonData));
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(updateCommonHandle));
+	if (FLAG)
+	{
+		//共通用バッファのデータ送信
+		updateFlashCommonData.scaleRotateBillboardMat = scaleRotaMat * CameraMgr::Instance()->GetMatBillBoard();
+		updateFlashCommonData.viewProjection = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
+		updateFlashCommonData.motherMat = *motherMat;
+		buffers->TransData(updateFlashCommonHandle, &updateFlashCommonData, sizeof(UpdateCommonFlashData));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(updateFlashCommonHandle));
+	}
+	else
+	{
+		//共通用バッファのデータ送信
+		updateCommonData.scaleRotateBillboardMat = scaleRotaMat * CameraMgr::Instance()->GetMatBillBoard();
+		updateCommonData.viewProjection = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
+		updateCommonData.motherMat = *motherMat;
+		buffers->TransData(updateCommonHandle, &updateCommonData, sizeof(UpdateCommonData));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(updateCommonHandle));
+	}
 	DirectX12CmdList::Instance()->cmdList->Dispatch(PARTICLE_MAX_NUM / 1024, 1, 1);
 }
 

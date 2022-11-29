@@ -345,7 +345,7 @@ void DebugMeshParticleScene::Update()
 	}
 	else if(textureParticleFlag)
 	{
-		texParticle->Update(handle);
+		texParticle->Update();
 	}
 	else if (splineParticleFlag)
 	{
