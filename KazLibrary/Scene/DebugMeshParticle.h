@@ -106,6 +106,8 @@ private:
 	//スプラインパーティクル--------------------------------------------
 	std::unique_ptr<SplineParticle> splineParticle;
 	std::vector<KazMath::Vec3<float>>limitPos;
+	std::array<BoxPolygonRender, 6> controlPointR;
+	bool initSplineFlag;
 	//スプラインパーティクル--------------------------------------------
 
 

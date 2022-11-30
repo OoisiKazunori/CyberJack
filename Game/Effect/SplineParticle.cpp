@@ -107,7 +107,7 @@ SplineParticle::SplineParticle(float PARTICLE_SCALE)
 		buffers->GetBufferData(updateLimitPosDataHandle).Get(),
 		nullptr
 	);
-	
+
 
 	vertexBufferView = KazBufferHelper::SetVertexBufferView(buffers->GetGpuAddress(vertexBufferHandle), vertBuffSize, sizeof(vertices[0]));
 	indexBufferView = KazBufferHelper::SetIndexBufferView(buffers->GetGpuAddress(indexBufferHandle), indexBuffSize);
@@ -127,21 +127,24 @@ void SplineParticle::Init(const std::vector<KazMath::Vec3<float>> &LIMIT_POS_ARR
 	assert(LIMIT_POS_ARRAY.size() < LIMITPOS_MAX_NUM + 1);
 
 	std::array<DirectX::XMFLOAT3, LIMITPOS_MAX_NUM>lLimitPosArray;
+	lLimitPosArray[0] = LIMIT_POS_ARRAY[0].ConvertXMFLOAT3();
 	for (int i = 0; i < LIMIT_POS_ARRAY.size(); ++i)
 	{
-		lLimitPosArray[i] = LIMIT_POS_ARRAY[i].ConvertXMFLOAT3();
+		lLimitPosArray[i + 1] = LIMIT_POS_ARRAY[i].ConvertXMFLOAT3();
 	}
-	limitNumData.limitIndexMaxNum = static_cast<UINT>(LIMIT_POS_ARRAY.size() - 1);
-
+	UINT lMaxIndex = static_cast<UINT>(LIMIT_POS_ARRAY.size());
+	lLimitPosArray[lMaxIndex + 1] = LIMIT_POS_ARRAY[lMaxIndex - 1].ConvertXMFLOAT3();
 	buffers->TransData(updateLimitPosDataHandle, lLimitPosArray.data(), sizeof(DirectX::XMFLOAT3) * LIMITPOS_MAX_NUM);
 
+	limitNumData.limitIndexMaxNum = static_cast<UINT>(LIMIT_POS_ARRAY.size() + 2);
+	buffers->TransData(updateLimitDataHandle, &limitNumData, sizeof(UpdateLimitNumData));
 	if (APPEAR_FLAG)
 	{
 		constBufferData.initMaxIndex = INIT_LIMITPOS_MAX_NUM;
 	}
 	else
 	{
-		constBufferData.initMaxIndex = static_cast<UINT>(LIMIT_POS_ARRAY.size() - 1);;
+		constBufferData.initMaxIndex = static_cast<UINT>(LIMIT_POS_ARRAY.size() + 2);
 	}
 	buffers->TransData(initCommonHandle, &constBufferData, sizeof(InitCommonData));
 
@@ -160,8 +163,6 @@ void SplineParticle::Init(const std::vector<KazMath::Vec3<float>> &LIMIT_POS_ARR
 
 void SplineParticle::Update()
 {
-	limitNumData.limitIndexMaxNum = LIMITPOS_MAX_NUM - 1;
-	buffers->TransData(updateLimitDataHandle, &limitNumData, sizeof(UpdateLimitNumData));
 
 	DirectX::XMMATRIX lMatWorld = KazMath::CaluTransMatrix({ 0.0f,0.0f,0.0f }) * KazMath::CaluScaleMatrix({ scale,scale,scale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_SPLINEPARTICLE_UPDATE);

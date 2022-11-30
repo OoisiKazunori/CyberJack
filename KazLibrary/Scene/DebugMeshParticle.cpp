@@ -89,7 +89,7 @@ DebugMeshParticleScene::DebugMeshParticleScene()
 	splineParticle = std::make_unique<SplineParticle>(1.0f);
 	for (int i = 0; i < 6; ++i)
 	{
-		limitPos.push_back(KazMath::Vec3<float>(0.0f, 0.0f, 0.0f + static_cast<float>(i) * 100.0f));
+		limitPos.push_back(KazMath::Vec3<float>(0.0f, 0.0f, -300.0f + static_cast<float>(i) * 400.0f));
 	}
 
 }
@@ -194,11 +194,37 @@ void DebugMeshParticleScene::Update()
 	}
 	else if (splineParticleFlag)
 	{
-		KazImGuiHelper::InputVec3("1", &limitPos[0]);
-		KazImGuiHelper::InputVec3("2", &limitPos[1]);
-		KazImGuiHelper::InputVec3("3", &limitPos[2]);
-		KazImGuiHelper::InputVec3("4", &limitPos[3]);
-		KazImGuiHelper::InputVec3("5", &limitPos[4]);
+		if (ImGui::TreeNode("ControlPoint1"))
+		{
+			KazImGuiHelper::InputVec3("ControlPointPos1", &limitPos[0]);
+			ImGui::TreePop();
+		}
+		if (ImGui::TreeNode("ControlPoint2"))
+		{
+			KazImGuiHelper::InputVec3("ControlPointPos2", &limitPos[1]);
+			ImGui::TreePop();
+		}
+		if (ImGui::TreeNode("ControlPoint3"))
+		{
+			KazImGuiHelper::InputVec3("ControlPointPos3", &limitPos[2]);
+			ImGui::TreePop();
+		}
+		if (ImGui::TreeNode("ControlPoint4"))
+		{
+			KazImGuiHelper::InputVec3("ControlPointPos4", &limitPos[3]);
+			ImGui::TreePop();
+		}
+		if (ImGui::TreeNode("ControlPoint5"))
+		{
+			KazImGuiHelper::InputVec3("ControlPointPos5", &limitPos[4]);
+			ImGui::TreePop();
+		}
+		if (ImGui::TreeNode("ControlPoint6"))
+		{
+			KazImGuiHelper::InputVec3("ControlPointPos6", &limitPos[5]);
+			ImGui::TreePop();
+		}
+		ImGui::Checkbox("Init", &initSplineFlag);
 	}
 	ImGui::End();
 
@@ -355,13 +381,21 @@ void DebugMeshParticleScene::Update()
 		KazMath::Vec3<float>vel = CurlNoise(moveNoiseBlock.data.transform.pos, 1);
 		moveNoiseBlock.data.transform.pos += vel;
 	}
-	else if(textureParticleFlag)
+	else if (textureParticleFlag)
 	{
 		texParticle->Update();
 	}
 	else if (splineParticleFlag)
 	{
-		splineParticle->Init(limitPos, false);
+		for (int i = 0; i < controlPointR.size(); ++i)
+		{
+			controlPointR[i].data.transform.pos = limitPos[i];
+			controlPointR[i].data.transform.scale = { 20.0f,20.0f,20.0f };
+		}
+		if (initSplineFlag)
+		{
+			splineParticle->Init(limitPos, false);
+		}
 		splineParticle->Update();
 	}
 
@@ -422,6 +456,11 @@ void DebugMeshParticleScene::Draw()
 	else if (splineParticleFlag)
 	{
 		splineParticle->Draw();
+
+		for (int i = 0; i < controlPointR.size(); ++i)
+		{
+			controlPointR[i].Draw();
+		}
 	}
 
 	debug.Draw();

@@ -24,17 +24,17 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     uint index = groupThreadID.x;
     index += 1024 * groupId.x;
 
-    //ランダムで曲線の範囲内で乱数で座標を決める
     int startIndex = RandVec3(index,initMaxIndex,0).x;
+    //ランダムで曲線の範囲内で乱数で座標を決める
     float rate = RandVec3(index,1,0).y;
     
 	float2 offset;
-	offset.x = cos(ConvertToRadian(RandVec3(index * 50,360,0).z)) * 50;
-	offset.y = sin(ConvertToRadian(RandVec3(index * 50,360,0).z)) * 50;
+	offset.x = cos(ConvertToRadian(RandVec3(index * 50,360,0).z)) * RandVec3(index * 50,60,10).x;
+	offset.y = sin(ConvertToRadian(RandVec3(index * 50,360,0).z)) * RandVec3(index * 150,60,10).y;
 
     worldPosData[index].startIndex = startIndex;
 	worldPosData[index].rate = rate;
-	worldPosData[index].rateVel = RandVec3(index,0.025f,0.1f).x;
+	worldPosData[index].rateVel = RandVec3(index,0.001f,0.009f).x;
 	worldPosData[index].offset = offset;
 	worldPosData[index].color = float4(RandVec3(index * 50,1,0),1);
 }
