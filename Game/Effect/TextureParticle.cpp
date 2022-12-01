@@ -160,14 +160,14 @@ TextureParticle::TextureParticle(std::vector<VertexUv> VERT_NUM, const DirectX::
 	DirectX12CmdList::Instance()->cmdList->Dispatch(PARTICLE_MAX_NUM / 1024, 1, 1);
 	//初期化処理--------------------------------------------
 
-	
+
 }
 
 void TextureParticle::Init()
 {
 }
 
-void TextureParticle::Update(bool FLAG)
+void TextureParticle::Update(bool FLAG, bool ENABLE_BILLBOARD_FLAG)
 {
 	DirectX::XMMATRIX lMatWorld = KazMath::CaluTransMatrix({ 0.0f,0.0f,0.0f }) * KazMath::CaluScaleMatrix({ scale,scale,scale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
 	if (FLAG)
@@ -183,10 +183,20 @@ void TextureParticle::Update(bool FLAG)
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(updateViewHandle));
 
+	DirectX::XMMATRIX lBillBoard;
+	if (ENABLE_BILLBOARD_FLAG)
+	{
+		lBillBoard = CameraMgr::Instance()->GetMatBillBoard();
+	}
+	else
+	{
+		lBillBoard = DirectX::XMMatrixIdentity();
+	}
+
 	if (FLAG)
 	{
 		//共通用バッファのデータ送信
-		updateFlashCommonData.scaleRotateBillboardMat = scaleRotaMat * CameraMgr::Instance()->GetMatBillBoard();
+		updateFlashCommonData.scaleRotateBillboardMat = scaleRotaMat * lBillBoard;
 		updateFlashCommonData.viewProjection = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
 		updateFlashCommonData.motherMat = *motherMat;
 		buffers->TransData(updateFlashCommonHandle, &updateFlashCommonData, sizeof(UpdateCommonFlashData));
@@ -195,7 +205,7 @@ void TextureParticle::Update(bool FLAG)
 	else
 	{
 		//共通用バッファのデータ送信
-		updateCommonData.scaleRotateBillboardMat = scaleRotaMat * CameraMgr::Instance()->GetMatBillBoard();
+		updateCommonData.scaleRotateBillboardMat = scaleRotaMat * lBillBoard;
 		updateCommonData.viewProjection = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
 		updateCommonData.motherMat = *motherMat;
 		buffers->TransData(updateCommonHandle, &updateCommonData, sizeof(UpdateCommonData));

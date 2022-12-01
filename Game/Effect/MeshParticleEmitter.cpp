@@ -182,11 +182,11 @@ void MeshParticleEmitter::Init(const DirectX::XMMATRIX *MOTHER_MAT)
 
 void MeshParticleEmitter::Update(float ALPHA)
 {
-	//ImGui::Begin("Mesh");
-	//ImGui::Checkbox("DrawParticle", &drawParticleFlag);
-	//ImGui::SliderInt("Bias", &bias, 0, 100);
-	//ImGui::DragFloat("ParticleScale", &scale);
-	//ImGui::End();
+	ImGui::Begin("Mesh");
+	ImGui::Checkbox("DrawParticle", &drawParticleFlag);
+	ImGui::SliderInt("Bias", &bias, 0, 100);
+	ImGui::DragFloat("ParticleScale", &scale);
+	ImGui::End();
 
 	if (!drawParticleFlag)
 	{

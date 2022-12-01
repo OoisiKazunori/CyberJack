@@ -34,8 +34,8 @@ private:
 	//バッファ
 
 	static const int PARTICLE_MAX_NUM = 100000;
-	static const UINT LIMITPOS_MAX_NUM = 150;
-	static const UINT INIT_LIMITPOS_MAX_NUM = 5;
+	static const UINT LIMITPOS_MAX_NUM = 152;
+	static const UINT INIT_LIMITPOS_MAX_NUM = LIMITPOS_MAX_NUM / 2;
 	static const int DRAW_CALL = 1;
 
 	struct IndirectCommand

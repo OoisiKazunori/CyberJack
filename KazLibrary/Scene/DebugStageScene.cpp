@@ -212,7 +212,7 @@ void DebugStageScene::Draw()
 	else
 	{
 		stages[stageNum]->Draw();
-		//stages[stageNum]->vaporWaveSunRender.Draw();
+		stages[stageNum]->vaporWaveSunRender.Draw();
 	}
 
 	//goalBox.Draw();
@@ -224,7 +224,7 @@ void DebugStageScene::Draw()
 	if (!toolModeFlag)
 	{
 		//stage2->Draw();
-		//cursor.Draw();
+		cursor.Draw();
 	}
 }
 

@@ -264,7 +264,7 @@ BlockParticleStage::BlockParticleStage()
 
 	for (int i = 0; i < splineParticle.size(); ++i)
 	{
-		splineParticle[i] = std::make_unique<SplineParticle>(5.0f);
+		splineParticle[i] = std::make_unique<SplineParticle>(2.5f);
 	}
 
 	//ëÂâQèâä˙âª--------------------------------------------
@@ -278,9 +278,9 @@ BlockParticleStage::BlockParticleStage()
 		{
 			level.x = cosf(KazMath::AngleToRadian(i * static_cast<int>(v.x))) * v.y;
 			level.y = sinf(KazMath::AngleToRadian(i * static_cast<int>(v.x))) * v.y;
-			limitPosArray.push_back(KazMath::Vec3<float>(level.x, level.y, -1000.0f + static_cast<float>(i) * v.z));
+			limitPosArray.push_back(KazMath::Vec3<float>(level.x, level.y, -3000.0f + static_cast<float>(i) * v.z));
 		}
-		splineParticle[0]->Init(limitPosArray, true);
+		splineParticle[0]->Init(limitPosArray, false);
 	}
 	//ëÂâQèâä˙âª--------------------------------------------
 	{
@@ -415,12 +415,6 @@ void BlockParticleStage::Update()
 
 	galacticParticle.Update();
 
-
-	ImGui::Begin("SplineInit");
-	ImGui::DragFloat("AngleOffset", &v.x);
-	ImGui::DragFloat("Radius", &v.y);
-	ImGui::DragFloat("Z", &v.z);
-	ImGui::End();
 	//KazMath::Vec3<float>level = { 100.0f,300.0f,0.0f };
 	//std::vector<KazMath::Vec3<float>> limitPosArray;
 	//for (int i = 0; i < 150; ++i)
@@ -447,12 +441,12 @@ void BlockParticleStage::Update()
 			floorParticleTransform[i].pos.z = (500.0f + static_cast<float>(FLOOR_PARTICLE_MAX_NUM) * 700.0f) - 1200.0f;
 		}
 		floorParticleMotherMat[i] = floorParticleTransform[i].GetMat();
-		floorParticleModel[i]->Update();
+		floorParticleModel[i]->Update(false, false);
 	}
 
-	ImGui::Begin("Block");
-	KazImGuiHelper::InputVec2("Flash", &flash);
-	ImGui::End();
+	//ImGui::Begin("Block");
+	//KazImGuiHelper::InputVec2("Flash", &flash);
+	//ImGui::End();
 
 	for (int i = 0; i < pillarParticleTransform.size(); ++i)
 	{

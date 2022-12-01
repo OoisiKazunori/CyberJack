@@ -100,7 +100,7 @@ private:
 
 	KazMath::Vec2<float>flash;
 	
-	std::array<std::unique_ptr<SplineParticle>, 2> splineParticle;
+	std::array<std::unique_ptr<SplineParticle>, 1> splineParticle;
 
 	RESOURCE_HANDLE floorResourceHandle;
 	KazMath::Vec3<float>v;

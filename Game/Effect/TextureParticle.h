@@ -12,7 +12,7 @@ class TextureParticle
 public:
 	TextureParticle(std::vector<VertexUv> VERT_NUM, const DirectX::XMMATRIX *MOTHER_MAT, RESOURCE_HANDLE HANDLE, float PARTICLE_SCALE = 0.18f, UINT PER_TRIANGLE_COUNT = 50, UINT FACE_COUNT_NUM = 0);
 	void Init();
-	void Update(bool FLAG = false);
+	void Update(bool FLAG = false, bool ENABLE_BILLBOARD_FLAG = true);
 	void Draw();
 
 	D3D12_GPU_VIRTUAL_ADDRESS GetAddress()

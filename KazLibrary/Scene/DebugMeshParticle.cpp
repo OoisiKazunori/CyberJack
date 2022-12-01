@@ -79,12 +79,13 @@ DebugMeshParticleScene::DebugMeshParticleScene()
 
 
 	std::vector<VertexUv>lVertArray;
-	modelHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_Head_anim.fbx");
+	modelHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "Move/" + "MoveEnemy_Model.fbx", true);
 	lVertArray = FbxModelResourceMgr::Instance()->GetResourceData(modelHandle)->vertUvData;
 	handle = FbxModelResourceMgr::Instance()->GetResourceData(modelHandle)->textureHandle[0];
 	//重複ありの三角形
-	texParticle = std::make_unique<TextureParticle>(lVertArray, &texMotherMat, modelHandle, 1.0f);
-
+	RESOURCE_HANDLE lHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StagePath + "lambert1_Base_color.png");
+	texMotherMat = texTransform.GetMat();
+	texParticle = std::make_unique<TextureParticle>(lVertArray, &texMotherMat, handle, 0.5f, 50, 500);
 
 	splineParticle = std::make_unique<SplineParticle>(1.0f);
 	for (int i = 0; i < 6; ++i)
@@ -140,6 +141,7 @@ void DebugMeshParticleScene::Update()
 
 	//デバック用のGUI
 	ImGui::Begin("MeshParticle");
+	ImGui::Checkbox("DrawGrid", &drawGridFlag);
 	ImGui::Checkbox("CheckCPUParticle", &cpuCheckParticleFlag);
 	ImGui::Checkbox("CheckGPUParticle", &gpuCheckParticleFlag);
 	ImGui::Checkbox("CheckTextureParticle", &textureParticleFlag);
@@ -177,6 +179,10 @@ void DebugMeshParticleScene::Update()
 		{
 			deadParticle.reset();
 			deadParticle = std::make_unique<DeadParticle>(meshEmitter[meshIndex]->GetAddress(), meshEmitter[meshIndex]->GetVertNum());
+
+			KazMath::Transform3D lTrans;
+			texMotherMat = lTrans.GetMat();
+			deadParticle->Init(&texMotherMat);
 			prevDeadParticleFlag = deadParticleFlag;
 		}
 
@@ -463,7 +469,10 @@ void DebugMeshParticleScene::Draw()
 		}
 	}
 
-	debug.Draw();
+	if (drawGridFlag)
+	{
+		debug.Draw();
+	}
 
 	rendertarget->Draw();
 	//debugDraw.Draw();

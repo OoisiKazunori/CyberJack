@@ -190,11 +190,10 @@ void RezStage::Draw()
 		blockMountainArray[i].Draw();
 	}
 
-	/*for (int i = 0; i < windowArray.size(); ++i)
+	for (int i = 0; i < windowArray.size(); ++i)
 	{
 		windowArray[i].Draw();
-	}*/
-
+	}
 
 	for (int i = 0; i < searchLightArray.size(); ++i)
 	{
