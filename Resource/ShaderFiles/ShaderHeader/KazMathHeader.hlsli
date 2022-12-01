@@ -110,7 +110,7 @@ uint wang_hash(uint seed)
 	return seed;
 }
 
-float3 RandVec3(uint SEED,int MAX,int MIN)
+float3 RandVec3(uint SEED,float MAX,float MIN)
 {
     uint rand = wang_hash(SEED * 1847483629);
     float3 result;
@@ -123,6 +123,18 @@ float3 RandVec3(uint SEED,int MAX,int MIN)
     result.x = (MAX + abs(MIN)) * result.x - abs(MIN);
     result.y = (MAX + abs(MIN)) * result.y - abs(MIN);
     result.z = (MAX + abs(MIN)) * result.z - abs(MIN);
+    if(result.x <= MIN)
+    {
+        result.x = MIN;        
+    }
+    if(result.y <= MIN)
+    {
+        result.y = MIN;        
+    }
+    if(result.z <= MIN)
+    {
+        result.z = MIN;        
+    }
     return result;
 }
 
@@ -184,3 +196,38 @@ float CaluDistacne(float3 POS_A, float3 POS_B)
 
 	return sqrt(lpow.x + lpow.y + lpow.z);
 }
+
+float4 GetPos(float3 VERT_POS,float3 WORLD_POS)
+{
+    float3 defaltScale = float3(1,1,1);
+    float3 defaltRota = float3(0,0,0);
+
+    matrix pMatWorld = CalucurateWorldMat(WORLD_POS,defaltScale,defaltRota);
+    matrix vertMatWorld = CalucurateWorldMat(VERT_POS,defaltScale,defaltRota);
+
+    matrix worldMat = mul(vertMatWorld,pMatWorld);
+
+    return float4(worldMat[0].w,worldMat[1].w,worldMat[2].w,0.0f);
+};
+
+//ƒXƒvƒ‰ƒCƒ“‹Èü
+float4 SplinePosition(RWStructuredBuffer<float3> LIMIT_INDEX_ARRAY,int START_INDEX,float RATE,int INDEX_MAX)
+{
+    if (START_INDEX < 1)
+	{
+		return float4(LIMIT_INDEX_ARRAY[1].xyz,0);
+	}
+    int n = INDEX_MAX - 2;
+    if(n < START_INDEX)
+    {
+        return float4(LIMIT_INDEX_ARRAY[1].xyz,0);
+    }
+	float3 p0 = LIMIT_INDEX_ARRAY[START_INDEX - 1].xyz;
+	float3 p1 = LIMIT_INDEX_ARRAY[START_INDEX].xyz;
+	float3 p2 = LIMIT_INDEX_ARRAY[START_INDEX + 1].xyz;
+	float3 p3 = LIMIT_INDEX_ARRAY[START_INDEX + 2].xyz;
+
+    float3 resultPos;
+    resultPos = 0.5 * ((2 * p1  + (-p0 + p2) * RATE) + (2 * p0 - 5 * p1 + 4 * p2 - p3) * (RATE * RATE) + (-p0 + 3 * p1 - 3 * p2 + p3) * (RATE * RATE * RATE));
+    return float4(resultPos.xyz,0);
+};

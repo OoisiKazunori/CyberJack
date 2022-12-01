@@ -215,8 +215,8 @@ void DebugStageScene::Draw()
 		stages[stageNum]->vaporWaveSunRender.Draw();
 	}
 
-	goalBox.Draw();
-	goalBox.lightEffect.Draw();
+	//goalBox.Draw();
+	//goalBox.lightEffect.Draw();
 
 	renderTarget[stageNum]->Draw();
 	mainRenderTarget.Draw();
@@ -224,7 +224,7 @@ void DebugStageScene::Draw()
 	if (!toolModeFlag)
 	{
 		//stage2->Draw();
-		//cursor.Draw();
+		cursor.Draw();
 	}
 }
 

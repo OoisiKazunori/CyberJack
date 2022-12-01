@@ -10,8 +10,10 @@
 #include"../Game/Stage/RezStage.h"
 #include<cmath>
 #include<iostream>
+#include<vector>
 
 #include"../KazLibrary/Input/ControllerInputManager.h"
+
 
 DebugMeshParticleScene::DebugMeshParticleScene()
 {
@@ -52,6 +54,45 @@ DebugMeshParticleScene::DebugMeshParticleScene()
 	model.data.removeMaterialFlag = true;
 	model.data.colorData.color = { 255,255,255,255 };
 	model.data.transform.scale = { 1.0f,1.0f,1.0f };
+
+
+	std::array<Vertex, 4>vertices;
+	std::array<USHORT, 6> indices;
+	indices = KazRenderHelper::InitIndciesForPlanePolygon();
+	KazRenderHelper::InitVerticesPos(&vertices[0].pos, &vertices[1].pos, &vertices[2].pos, &vertices[3].pos, { 0.5f,0.5f });
+	KazRenderHelper::InitUvPos(&vertices[0].uv, &vertices[1].uv, &vertices[2].uv, &vertices[3].uv);
+
+	handle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "tex.png");
+
+	KazMath::Vec2<int>lTexSize
+	(
+		static_cast<int>(TextureResourceMgr::Instance()->GetTextureSize(handle).Width),
+		static_cast<int>(TextureResourceMgr::Instance()->GetTextureSize(handle).Height))
+		;
+
+	KazMath::Vec2<float> lLeftUp, lRightDown;
+	lLeftUp = { 0.0f,0.0f };
+	lRightDown = { 1.0f,1.0f };
+	//サイズ変更
+	std::array<KazMath::Vec2<float>, 4>lVert;
+	lVert = KazRenderHelper::ChangePlaneScale(lLeftUp, lRightDown, { 1.0f,1.0f }, { 0.5f,0.5f }, lTexSize);
+
+
+	std::vector<VertexUv>lVertArray;
+	modelHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "Move/" + "MoveEnemy_Model.fbx", true);
+	lVertArray = FbxModelResourceMgr::Instance()->GetResourceData(modelHandle)->vertUvData;
+	handle = FbxModelResourceMgr::Instance()->GetResourceData(modelHandle)->textureHandle[0];
+	//重複ありの三角形
+	RESOURCE_HANDLE lHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StagePath + "lambert1_Base_color.png");
+	texMotherMat = texTransform.GetMat();
+	texParticle = std::make_unique<TextureParticle>(lVertArray, &texMotherMat, handle, 0.5f, 50, 500);
+
+	splineParticle = std::make_unique<SplineParticle>(1.0f);
+	for (int i = 0; i < 6; ++i)
+	{
+		limitPos.push_back(KazMath::Vec3<float>(0.0f, 0.0f, -300.0f + static_cast<float>(i) * 400.0f));
+	}
+
 }
 
 DebugMeshParticleScene::~DebugMeshParticleScene()
@@ -74,6 +115,8 @@ void DebugMeshParticleScene::Init()
 
 	prevDeadParticleFlag = false;
 	deadParticleFlag = false;
+
+	texParticle->Init();
 }
 
 void DebugMeshParticleScene::Finalize()
@@ -98,8 +141,11 @@ void DebugMeshParticleScene::Update()
 
 	//デバック用のGUI
 	ImGui::Begin("MeshParticle");
+	ImGui::Checkbox("DrawGrid", &drawGridFlag);
 	ImGui::Checkbox("CheckCPUParticle", &cpuCheckParticleFlag);
 	ImGui::Checkbox("CheckGPUParticle", &gpuCheckParticleFlag);
+	ImGui::Checkbox("CheckTextureParticle", &textureParticleFlag);
+	ImGui::Checkbox("CheckSplineParticle", &splineParticleFlag);
 	ImGui::Checkbox("CheckPerlinNoise", &perlinNoizeFlag);
 	if (cpuCheckParticleFlag)
 	{
@@ -133,6 +179,10 @@ void DebugMeshParticleScene::Update()
 		{
 			deadParticle.reset();
 			deadParticle = std::make_unique<DeadParticle>(meshEmitter[meshIndex]->GetAddress(), meshEmitter[meshIndex]->GetVertNum());
+
+			KazMath::Transform3D lTrans;
+			texMotherMat = lTrans.GetMat();
+			deadParticle->Init(&texMotherMat);
 			prevDeadParticleFlag = deadParticleFlag;
 		}
 
@@ -142,6 +192,45 @@ void DebugMeshParticleScene::Update()
 		initNoizeFlag = ImGui::Button("Init");
 		ImGui::SliderFloat("UV_X", &uv.x, 0, 10);
 		ImGui::SliderFloat("UV_Y", &uv.y, 0, 10);
+	}
+	else if (textureParticleFlag)
+	{
+		KazImGuiHelper::InputTransform3D("Mother", &texTransform);
+		texMotherMat = texTransform.GetMat();
+	}
+	else if (splineParticleFlag)
+	{
+		if (ImGui::TreeNode("ControlPoint1"))
+		{
+			KazImGuiHelper::InputVec3("ControlPointPos1", &limitPos[0]);
+			ImGui::TreePop();
+		}
+		if (ImGui::TreeNode("ControlPoint2"))
+		{
+			KazImGuiHelper::InputVec3("ControlPointPos2", &limitPos[1]);
+			ImGui::TreePop();
+		}
+		if (ImGui::TreeNode("ControlPoint3"))
+		{
+			KazImGuiHelper::InputVec3("ControlPointPos3", &limitPos[2]);
+			ImGui::TreePop();
+		}
+		if (ImGui::TreeNode("ControlPoint4"))
+		{
+			KazImGuiHelper::InputVec3("ControlPointPos4", &limitPos[3]);
+			ImGui::TreePop();
+		}
+		if (ImGui::TreeNode("ControlPoint5"))
+		{
+			KazImGuiHelper::InputVec3("ControlPointPos5", &limitPos[4]);
+			ImGui::TreePop();
+		}
+		if (ImGui::TreeNode("ControlPoint6"))
+		{
+			KazImGuiHelper::InputVec3("ControlPointPos6", &limitPos[5]);
+			ImGui::TreePop();
+		}
+		ImGui::Checkbox("Init", &initSplineFlag);
 	}
 	ImGui::End();
 
@@ -176,6 +265,9 @@ void DebugMeshParticleScene::Update()
 		{
 			int particleNum = 0;
 
+			float triangleArea = CalucurateTriangleArea(triangelLine[0].data.startPos, triangelLine[1].data.startPos, triangelLine[2].data.startPos);
+
+
 			//一つのレイ当たりで使用できるパーティクルを決定する
 			const int L_MAX_PARTICLE = static_cast<int>(particle.size()) / static_cast<int>(triangelPosArray.size());
 			for (int rayIndex = 0; rayIndex < triangelLine.size(); ++rayIndex)
@@ -207,6 +299,19 @@ void DebugMeshParticleScene::Update()
 						//4-2.長さの範囲で座標を決める場合は長さの値でどの場所に配置するか決める
 						particle[particleNum].data.transform.pos = lStartPos + lResultDistance * KazMath::Rand(1.0f, 0.0f);
 					}
+
+					//UV--------------------
+					float u = CalucurateUVW(triangelLine[0].data.startPos, triangelLine[0].data.endPos, particle[particleNum].data.transform.pos, triangleArea);
+					float v = CalucurateUVW(triangelLine[1].data.startPos, triangelLine[1].data.endPos, particle[particleNum].data.transform.pos, triangleArea);
+					float w = CalucurateUVW(triangelLine[2].data.startPos, triangelLine[2].data.endPos, particle[particleNum].data.transform.pos, triangleArea);
+
+					KazMath::Vec3<float> uvw;
+					KazMath::Vec2<float> uVec = KazMath::Vec2<float>(0.0f, 0.0f) * u;
+					KazMath::Vec2<float> vVec = KazMath::Vec2<float>(0.0f, 1.0f) * v;
+					KazMath::Vec2<float> wVec = KazMath::Vec2<float>(1.0f, 0.0f) * w;
+					//UV--------------------
+
+
 					particle[particleNum].data.transform.scale = { 0.1f,0.1f,0.1f };
 					++particleNum;
 				}
@@ -282,9 +387,23 @@ void DebugMeshParticleScene::Update()
 		KazMath::Vec3<float>vel = CurlNoise(moveNoiseBlock.data.transform.pos, 1);
 		moveNoiseBlock.data.transform.pos += vel;
 	}
-
-
-
+	else if (textureParticleFlag)
+	{
+		texParticle->Update();
+	}
+	else if (splineParticleFlag)
+	{
+		for (int i = 0; i < controlPointR.size(); ++i)
+		{
+			controlPointR[i].data.transform.pos = limitPos[i];
+			controlPointR[i].data.transform.scale = { 20.0f,20.0f,20.0f };
+		}
+		if (initSplineFlag)
+		{
+			splineParticle->Init(limitPos, false);
+		}
+		splineParticle->Update();
+	}
 
 }
 
@@ -336,6 +455,25 @@ void DebugMeshParticleScene::Draw()
 
 		moveNoiseBlock.Draw();
 	}
+	else if (textureParticleFlag)
+	{
+		texParticle->Draw();
+	}
+	else if (splineParticleFlag)
+	{
+		splineParticle->Draw();
+
+		for (int i = 0; i < controlPointR.size(); ++i)
+		{
+			controlPointR[i].Draw();
+		}
+	}
+
+	if (drawGridFlag)
+	{
+		debug.Draw();
+	}
+
 	rendertarget->Draw();
 	//debugDraw.Draw();
 	mainRenderTarget.Draw();

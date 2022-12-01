@@ -86,7 +86,6 @@ void GraphicsRootSignature::CreateRootSignature(RootSignatureMode ROOTSIGNATURE,
 			param1++;
 			break;
 
-			//テスト用、即急に改良が必要
 		case GRAPHICS_RANGE_TYPE_CBV_DESC:
 			//ルートパラムの設定
 			descRangeSRV.push_back({});

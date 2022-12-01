@@ -14,6 +14,12 @@ struct WeightSet
 	float weight;
 };
 
+struct VertexUv
+{
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT2 uv;
+};
+
 
 /// <summary>
 /// ÉmÅ[ÉhàÍÇ¬ï™ÇÃèÓïÒ
@@ -84,12 +90,14 @@ private:
 	Node *meshNode = nullptr;
 	std::vector<VertexPosNormalUvSkin>vertices;
 	std::vector<DirectX::XMFLOAT4>vertData;
+	std::vector<VertexUv>vertUvData;
 	std::vector<UINT>indices;
 
 
 	DirectX::XMFLOAT3 ambient = { 1.0f,1.0f,1.0f };
 	DirectX::XMFLOAT3 diffuse = { 1.0f,1.0f,1.0f };
 	std::vector<RESOURCE_HANDLE> textureHandle;
+	UINT faceCountNum;
 public:
 	friend class FbxModelResourceMgr;
 
@@ -117,10 +125,12 @@ public:
 
 	UINT vertNum;
 	std::vector<DirectX::XMFLOAT4>vertData;
+	std::vector<VertexUv>vertUvData;
 	std::vector<UINT>indexData;
 
 	FbxMesh *mesh;
 
+	UINT faceCountNum;
 	FbxResourceData() :indicisNum(0), ambient({ -1.0f,-1.0f,-1.0f }), diffuse({ -1.0f,-1.0f,-1.0f }), vertNum(0)
 	{
 	}

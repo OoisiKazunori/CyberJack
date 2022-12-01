@@ -7,7 +7,10 @@
 #include"../Game/Effect/MeshParticleEmitter.h"
 #include"../Game/Effect/DeadParticle.h"
 #include"../KazLibrary/Math/KazMath.h"
+#include"../Game/Effect/TextureParticle.h"
+#include"../Game/Effect/SplineParticle.h"
 
+#include"../Game/Tutorial/DirectX12MoviePlayer.h"
 
 class DebugMeshParticleScene :public SceneBase
 {
@@ -37,7 +40,10 @@ private:
 	int meshIndex,prevMeshIndex;
 	bool cpuCheckParticleFlag;
 	bool gpuCheckParticleFlag;
+	bool textureParticleFlag;
+	bool splineParticleFlag;
 	bool perlinNoizeFlag;
+	bool drawGridFlag;
 
 	bool deadParticleFlag, prevDeadParticleFlag;
 
@@ -60,6 +66,24 @@ private:
 	//計算
 	bool initFlag;
 	BackGroundForDebug debugDraw;
+
+	float CalucurateTriangleArea(KazMath::Vec3<float> P0, KazMath::Vec3<float> P1, KazMath::Vec3<float> P2)
+	{
+		KazMath::Vec3<float> p0p1Vec = P1 - P0;
+		KazMath::Vec3<float> p1p2Vec = P2 - P1;
+		KazMath::Vec3<float> r = p0p1Vec.Cross(p1p2Vec);
+		return r.z / 2.0f;
+	}
+
+	float CalucurateUVW(KazMath::Vec3<float> P0, KazMath::Vec3<float> P1, KazMath::Vec3<float> ATTACK_POINT, float TRIANGLE_AREA)
+	{
+		KazMath::Vec3<float> p0p1Vec = ATTACK_POINT - P0;
+		KazMath::Vec3<float> p1p2Vec = ATTACK_POINT - P1;
+		KazMath::Vec3<float> r = p0p1Vec.Cross(p1p2Vec);
+		float area = r.z / 2.0f;
+		float rate = area / TRIANGLE_AREA;
+		return rate;
+	}
 	//デバック用--------------------------------------------
 
 	//GPUでのパーティクル--------------------------------------------
@@ -71,6 +95,73 @@ private:
 
 	std::unique_ptr<GameRenderTarget>rendertarget;
 	Sprite2DRender mainRenderTarget;
+
+
+	//テクスチャをコンピュートシェーダーで読み込む--------------------------------------------
+	std::unique_ptr<TextureParticle> texParticle;
+	RESOURCE_HANDLE handle;
+	KazMath::Transform3D texTransform;
+	DirectX::XMMATRIX texMotherMat;
+	//テクスチャをコンピュートシェーダーで読み込む--------------------------------------------
+
+	//スプラインパーティクル--------------------------------------------
+	std::unique_ptr<SplineParticle> splineParticle;
+	std::vector<KazMath::Vec3<float>>limitPos;
+	std::array<BoxPolygonRender, 6> controlPointR;
+	bool initSplineFlag;
+
+	std::vector<VertexUv>GetPlaneData(RESOURCE_HANDLE HANDLE)
+	{
+		std::array<Vertex, 4>vertices;
+		std::array<USHORT, 6> indices;
+		indices = KazRenderHelper::InitIndciesForPlanePolygon();
+		KazRenderHelper::InitVerticesPos(&vertices[0].pos, &vertices[1].pos, &vertices[2].pos, &vertices[3].pos, { 0.5f,0.5f });
+		KazRenderHelper::InitUvPos(&vertices[0].uv, &vertices[1].uv, &vertices[2].uv, &vertices[3].uv);
+
+		KazMath::Vec2<int>lTexSize
+		(
+			static_cast<int>(TextureResourceMgr::Instance()->GetTextureSize(HANDLE).Width),
+			static_cast<int>(TextureResourceMgr::Instance()->GetTextureSize(HANDLE).Height)
+		);
+
+		KazMath::Vec2<float> lLeftUp, lRightDown;
+		lLeftUp = { 0.0f,0.0f };
+		lRightDown = { 1.0f,1.0f };
+		//サイズ変更
+		std::array<KazMath::Vec2<float>, 4>lVert;
+		lVert = KazRenderHelper::ChangePlaneScale(lLeftUp, lRightDown, { 1.0f,1.0f }, { 0.5f,0.5f }, lTexSize);
+
+
+		std::array<int, 6>indiData;
+		indiData[0] = 0;
+		indiData[1] = 1;
+		indiData[2] = 2;
+		indiData[3] = 1;
+		indiData[4] = 3;
+		indiData[5] = 2;
+
+
+		std::vector<VertexUv>lVertArray;
+
+		for (int i = 0; i < indices.size(); ++i)
+		{
+			int index = indiData[i];
+			VertexUv lData;
+			lData.pos = { lVert[index].ConvertXMFLOAT2().x,lVert[index].ConvertXMFLOAT2().y,0.0f };
+			lData.uv = vertices[index].uv;
+			lVertArray.push_back(lData);
+		}
+
+		lVertArray[0].uv = { 1.0f,0.0f };
+		lVertArray[1].uv = { 0.0f,0.0f };
+		lVertArray[2].uv = { 0.0f,1.0f };
+		lVertArray[3].uv = { 1.0f,0.0f };
+		lVertArray[4].uv = { 0.0f,1.0f };
+		lVertArray[5].uv = { 1.0f,1.0f };
+
+		return lVertArray;
+	}
+	//スプラインパーティクル--------------------------------------------
 
 
 
@@ -150,5 +241,8 @@ private:
 		return a + t * (b - a);
 	}
 	//パーリンノイズの確認--------------------------------------------
+
+	RESOURCE_HANDLE modelHandle;
+	BackGroundForDebug debug;
 };
 

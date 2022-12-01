@@ -1,4 +1,4 @@
-#include "MeshParticleEmitter.h"
+#include "TextureParticle.h"
 #include"../KazLibrary/DirectXCommon/DirectX12Device.h"
 #include"../KazLibrary/DirectXCommon/DirectX12CmdList.h"
 #include"../KazLibrary/Pipeline/GraphicsRootSignature.h"
@@ -11,14 +11,8 @@
 #include"../KazLibrary/Loader/ObjResourceMgr.h"
 #include"../KazLibrary/Buffer/UavViewHandleMgr.h"
 
-MeshParticleEmitter::MeshParticleEmitter(std::vector<DirectX::XMFLOAT4> VERT_NUM, float PARTICLE_SCALE)
+TextureParticle::TextureParticle(std::vector<VertexUv> VERT_NUM, const DirectX::XMMATRIX *MOTHER_MAT, RESOURCE_HANDLE HANDLE, float PARTICLE_SCALE, UINT PER_TRIANGLE_COUNT, UINT FACE_COUNT_NUM) :motherMat(MOTHER_MAT), scale(PARTICLE_SCALE)
 {
-	if (VERT_NUM.size() == 0)
-	{
-		assert(0);
-	}
-
-
 	buffers = std::make_unique<CreateGpuBuffer>();
 
 
@@ -55,7 +49,7 @@ MeshParticleEmitter::MeshParticleEmitter(std::vector<DirectX::XMFLOAT4> VERT_NUM
 	//描画情報
 	vertexBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetVertexBufferData(vertBuffSize));
 	indexBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetIndexBufferData(indexBuffSize));
-	verticesDataHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(DirectX::XMFLOAT4) * static_cast<UINT>(VERT_NUM.size())));
+	verticesDataHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(VertexUv) * static_cast<UINT>(VERT_NUM.size())));
 
 	//共通情報
 	initCommonHandle = buffers->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(InitCommonData)));
@@ -67,6 +61,7 @@ MeshParticleEmitter::MeshParticleEmitter(std::vector<DirectX::XMFLOAT4> VERT_NUM
 	//更新用
 	updateHandle = buffers->CreateBuffer(KazBufferHelper::SetOnlyReadStructuredBuffer((sizeof(UpdateData) * PARTICLE_MAX_NUM)));
 	updateCommonHandle = buffers->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(UpdateCommonData)));
+	updateFlashCommonHandle = buffers->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(UpdateCommonFlashData)));
 
 	//描画用
 	drawCommandHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(IndirectCommand) * DRAW_CALL));
@@ -83,16 +78,19 @@ MeshParticleEmitter::MeshParticleEmitter(std::vector<DirectX::XMFLOAT4> VERT_NUM
 		(
 			buffers->GetMapAddres(verticesDataHandle),
 			VERT_NUM.data(),
-			VERT_NUM.size() * sizeof(DirectX::XMFLOAT4)
+			VERT_NUM.size() * sizeof(VertexUv)
 		);
 
-		constBufferData.worldPos = {};
-		constBufferData.vertMaxNum = static_cast<UINT>(VERT_NUM.size());
-		constBufferData.bias = 80;
 
-
-		bias = 80;
+		bias = 0;
 		prevBias = 80;
+
+		constBufferData.worldPos = {};
+		constBufferData.vertDataNum.x = static_cast<UINT>(VERT_NUM.size());
+		constBufferData.vertDataNum.y = bias;
+		constBufferData.vertDataNum.z = PER_TRIANGLE_COUNT;
+		constBufferData.vertDataNum.w = FACE_COUNT_NUM;
+
 		buffers->TransData(initCommonHandle, &constBufferData, sizeof(InitCommonData));
 	}
 
@@ -118,7 +116,7 @@ MeshParticleEmitter::MeshParticleEmitter(std::vector<DirectX::XMFLOAT4> VERT_NUM
 	vertDataViewHandle = UavViewHandleMgr::Instance()->GetHandle();
 	DescriptorHeapMgr::Instance()->CreateBufferView(
 		vertDataViewHandle,
-		KazBufferHelper::SetUnorderedAccessView(sizeof(DirectX::XMFLOAT4), static_cast<UINT>(VERT_NUM.size())),
+		KazBufferHelper::SetUnorderedAccessView(sizeof(VertexUv), static_cast<UINT>(VERT_NUM.size())),
 		buffers->GetBufferData(verticesDataHandle).Get(),
 		nullptr
 	);
@@ -136,9 +134,20 @@ MeshParticleEmitter::MeshParticleEmitter(std::vector<DirectX::XMFLOAT4> VERT_NUM
 
 
 
+
+
+
+	resetSceneFlag = false;
+
+	scaleRotaMat = KazMath::CaluScaleMatrix({ scale,scale,scale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
+
+	drawParticleFlag = false;
+
+	tex = HANDLE;
+
 	//初期化処理--------------------------------------------
 	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
-	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_MESHPARTICLE_INIT);
+	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_INIT);
 
 	//頂点
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(vertDataViewHandle));
@@ -146,115 +155,67 @@ MeshParticleEmitter::MeshParticleEmitter(std::vector<DirectX::XMFLOAT4> VERT_NUM
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
 	//共通用バッファのデータ送信
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(initCommonHandle));
-
-	UINT lNum = indexNum / 1024;
-	if (lNum <= 0)
-	{
-		lNum = 1;
-	}
-	DirectX12CmdList::Instance()->cmdList->Dispatch(50, 1, 1);
+	//テクスチャ
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(3, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(tex));
+	DirectX12CmdList::Instance()->cmdList->Dispatch(PARTICLE_MAX_NUM / 1024, 1, 1);
 	//初期化処理--------------------------------------------
 
 
-
-	resetSceneFlag = false;
-
-	scale = PARTICLE_SCALE;
-	scaleRotaMat = KazMath::CaluScaleMatrix({ scale,scale,scale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
-
-	drawParticleFlag = false;
 }
 
-MeshParticleEmitter::~MeshParticleEmitter()
+void TextureParticle::Init()
 {
-	DescriptorHeapMgr::Instance()->Release(vertDataViewHandle);
-	DescriptorHeapMgr::Instance()->Release(outputViewHandle);
-	DescriptorHeapMgr::Instance()->Release(updateViewHandle);
 }
 
-void MeshParticleEmitter::Init(const DirectX::XMMATRIX *MOTHER_MAT)
+void TextureParticle::Update(bool FLAG, bool ENABLE_BILLBOARD_FLAG)
 {
-	motherMat = MOTHER_MAT;
-	sceneNum = 0;
-	resetSceneFlag = false;
-	drawParticleFlag = true;
-}
-
-void MeshParticleEmitter::Update(float ALPHA)
-{
-	ImGui::Begin("Mesh");
-	ImGui::Checkbox("DrawParticle", &drawParticleFlag);
-	ImGui::SliderInt("Bias", &bias, 0, 100);
-	ImGui::DragFloat("ParticleScale", &scale);
-	ImGui::End();
-
-	if (!drawParticleFlag)
+	DirectX::XMMATRIX lMatWorld = KazMath::CaluTransMatrix({ 0.0f,0.0f,0.0f }) * KazMath::CaluScaleMatrix({ scale,scale,scale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
+	if (FLAG)
 	{
-		return;
+		GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_FLASH_UPDATE);
 	}
-	if (ALPHA <= 0.0f)
+	else
 	{
-		drawParticleFlag = false;
+		GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_UPDATE);
 	}
 
-	float lScale = scale;
-	scaleRotaMat = KazMath::CaluScaleMatrix({ lScale,lScale,lScale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
 
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(updateViewHandle));
 
-	if (bias != prevBias)
+	DirectX::XMMATRIX lBillBoard;
+	if (ENABLE_BILLBOARD_FLAG)
 	{
-		constBufferData.bias = static_cast<UINT>(bias);
-		buffers->TransData(initCommonHandle, &constBufferData, sizeof(InitCommonData));
+		lBillBoard = CameraMgr::Instance()->GetMatBillBoard();
+	}
+	else
+	{
+		lBillBoard = DirectX::XMMatrixIdentity();
+	}
 
-		//初期化処理--------------------------------------------
-		DescriptorHeapMgr::Instance()->SetDescriptorHeap();
-		GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_MESHPARTICLE_INIT);
-
-		//頂点
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(vertDataViewHandle));
-		//出力
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
+	if (FLAG)
+	{
 		//共通用バッファのデータ送信
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(initCommonHandle));
-		DirectX12CmdList::Instance()->cmdList->Dispatch(50, 1, 1);
-		//初期化処理--------------------------------------------
-
-		prevBias = bias;
+		updateFlashCommonData.scaleRotateBillboardMat = scaleRotaMat * lBillBoard;
+		updateFlashCommonData.viewProjection = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
+		updateFlashCommonData.motherMat = *motherMat;
+		buffers->TransData(updateFlashCommonHandle, &updateFlashCommonData, sizeof(UpdateCommonFlashData));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(updateFlashCommonHandle));
 	}
-
-
-
-
-	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_MESHPARTICLE_UPDATE);
-
+	else
 	{
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(updateViewHandle));
-	}
-
-	//共通用バッファのデータ送信
-	{
-		updateCommonData.scaleRotateBillboardMat = scaleRotaMat * CameraMgr::Instance()->GetMatBillBoard();
+		//共通用バッファのデータ送信
+		updateCommonData.scaleRotateBillboardMat = scaleRotaMat * lBillBoard;
 		updateCommonData.viewProjection = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
 		updateCommonData.motherMat = *motherMat;
-		updateCommonData.alpha = ALPHA;
 		buffers->TransData(updateCommonHandle, &updateCommonData, sizeof(UpdateCommonData));
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(updateCommonHandle));
 	}
-	UINT lNum = indexNum / 1024;
-	if (lNum <= 0)
-	{
-		lNum = 1;
-	}
-	DirectX12CmdList::Instance()->cmdList->Dispatch(80, 1, 1);
+	DirectX12CmdList::Instance()->cmdList->Dispatch(PARTICLE_MAX_NUM / 1024, 1, 1);
 }
 
-void MeshParticleEmitter::Draw()
+void TextureParticle::Draw()
 {
-	if (!drawParticleFlag)
-	{
-		return;
-	}
 	GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE);
 	DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
@@ -281,6 +242,4 @@ void MeshParticleEmitter::Draw()
 		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
 	);
-
-
 }

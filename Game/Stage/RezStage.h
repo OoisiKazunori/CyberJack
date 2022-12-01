@@ -10,6 +10,7 @@
 #include"../Game/Stage/MountainObject.h"
 #include"../Game/Stage/BlockMountain.h"
 #include"../Game/Stage/WindowForAd.h"
+#include"../Game/Effect/SearchLight.h"
 
 /// <summary>
 /// Rez + vaporwave風のステージ
@@ -61,6 +62,6 @@ private:
 
 
 	std::array<BlockMountain, 2>blockMountainArray;
-
 	std::array<WindowForAd, 50> windowArray;
+	std::array<SearchLight, 50> searchLightArray;
 };

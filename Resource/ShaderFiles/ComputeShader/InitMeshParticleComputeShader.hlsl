@@ -18,19 +18,6 @@ RWStructuredBuffer<float4> vertciesData : register(u0);
 //èoóÕ
 RWStructuredBuffer<OutputData> worldPosData : register(u1);
 
-float4 GetPos(float3 VERT_POS,float3 WORLD_POS)
-{
-    float3 defaltScale = float3(1,1,1);
-    float3 defaltRota = float3(0,0,0);
-
-    matrix pMatWorld = CalucurateWorldMat(WORLD_POS,defaltScale,defaltRota);
-    matrix vertMatWorld = CalucurateWorldMat(VERT_POS,defaltScale,defaltRota);
-
-    matrix worldMat = mul(vertMatWorld,pMatWorld);
-
-    return float4(worldMat[0].w,worldMat[1].w,worldMat[2].w,0.0f);
-};
-
 [numthreads(1024, 1, 1)]
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 groupThreadID : SV_GroupThreadID)
 {

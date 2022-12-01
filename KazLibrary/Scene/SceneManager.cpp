@@ -13,8 +13,10 @@
 
 SceneManager::SceneManager()
 {
-	scene.emplace_back(std::make_unique<TitleScene>());
+	//scene.emplace_back(std::make_unique<DebugMeshParticleScene>());
+	//scene.emplace_back(std::make_unique<TitleScene>());
 	scene.emplace_back(std::make_unique<GameScene>());
+	//scene.emplace_back(std::make_unique<DebugStageScene>());
 
 
 	nowScene = 0;

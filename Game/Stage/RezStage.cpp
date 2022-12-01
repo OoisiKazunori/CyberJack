@@ -119,6 +119,21 @@ RezStage::RezStage()
 		KazMath::Vec3<float>pos(lX, KazMath::Rand(500.0f, -500.0f), KazMath::Rand(10000.0f, -10000.0f));
 		windowArray[i].Init(pos, lData);
 	}
+
+	for (int i = 0; i < searchLightArray.size(); ++i)
+	{
+		KazMath::Vec3<float>lPos = { 0.0f,-1450.0f, KazMath::Rand(10000.0f, -1000.0f) };
+		if (1 <= KazMath::Rand(2, 0))
+		{
+			lPos.x = KazMath::Rand(10000.0f, 500.0f);
+		}
+		else
+		{
+			lPos.x = -KazMath::Rand(10000.0f, 500.0f);
+		}
+		searchLightArray[i].Init(lPos, KazMath::Color(KazMath::Rand(255, 100), KazMath::Rand(255, 100), KazMath::Rand(255, 100), 255));
+	}
+
 }
 
 void RezStage::Update()
@@ -151,6 +166,11 @@ void RezStage::Update()
 	{
 		windowArray[i].Update();
 	}
+
+	for (int i = 0; i < searchLightArray.size(); ++i)
+	{
+		searchLightArray[i].Update();
+	}
 }
 
 void RezStage::Draw()
@@ -173,5 +193,10 @@ void RezStage::Draw()
 	for (int i = 0; i < windowArray.size(); ++i)
 	{
 		windowArray[i].Draw();
+	}
+
+	for (int i = 0; i < searchLightArray.size(); ++i)
+	{
+		searchLightArray[i].Draw();
 	}
 }

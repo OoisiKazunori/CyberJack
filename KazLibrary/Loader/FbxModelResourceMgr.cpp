@@ -106,6 +106,8 @@ RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME, bo
 
 	modelResource[lHandle]->indexData = model->indices;
 	modelResource[lHandle]->vertData = model->vertData;
+	modelResource[lHandle]->vertUvData = model->vertUvData;
+	modelResource[lHandle]->faceCountNum = model->faceCountNum;
 
 
 	modelResource[modelResource.size() - 1]->mesh = mesh;
@@ -127,6 +129,8 @@ RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME, bo
 
 
 	handleName.push_back(MODEL_NAME);
+
+	SucceedCheck(MODEL_NAME + "の読み込みに成功しました\n");
 
 	delete model;
 	return lHandle;
@@ -541,6 +545,8 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 		vertPos[i].z = (float)pCoord[i][2];
 	}
 
+	MODEL->faceCountNum = controlPointsCount;
+
 	//重複あり頂点情報
 	std::vector<Model::VertexPosNormalUvSkin> vertices;
 	std::vector<UINT> indexData;
@@ -559,7 +565,7 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 			vertex.pos.z = vertPos[index].z;
 
 			MODEL->vertData.push_back(vertPos[index]);
-
+	
 			//UV
 			if (textureUVCount > 0)
 			{
@@ -591,6 +597,12 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 			}
 
 			indexData.push_back(index);
+
+	
+			VertexUv vertUvData;
+			vertUvData.pos = { vertPos[index].x,vertPos[index].y,vertPos[index].z };
+			vertUvData.uv = { vertex.uv.x,vertex.uv.y };
+			MODEL->vertUvData.push_back(vertUvData);
 		}
 	}
 	MODEL->vertices = vertices;

@@ -109,12 +109,6 @@ void Sprite2DRender::Draw()
 				vertices[i].pos = { lVert[i].x,-lVert[i].y,0.0f };
 			}
 			KazRenderHelper::InitUvPos(&vertices[0].uv, &vertices[1].uv, &vertices[2].uv, &vertices[3].uv);
-
-			if (600.0f <= abs(vertices[0].pos.x))
-			{
-				bool debug = false;
-				debug = false;
-			}
 		}
 		//レンダーターゲットのテクスチャサイズ
 		else

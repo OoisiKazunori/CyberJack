@@ -1,12 +1,12 @@
-#include "PreCreateBasePipeLine.h"
+ï»¿#include "PreCreateBasePipeLine.h"
 #include"../Pipeline/GraphicsRootSignature.h"
 #include"../Helper/ResourceFilePass.h"
 
 PreCreateBasePipeLine::PreCreateBasePipeLine()
 {
-	GraphicsPipeLineMgr *pipelineMgr = GraphicsPipeLineMgr::Instance();
+	GraphicsPipeLineMgr *lPipelineMgr = GraphicsPipeLineMgr::Instance();
 
-#pragma region InputLayOut‚Ì“o˜^
+#pragma region InputLayOut
 	{
 		D3D12_INPUT_ELEMENT_DESC *input3DLayOut = new D3D12_INPUT_ELEMENT_DESC[3];
 
@@ -242,211 +242,214 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 
 #pragma region ShaderCompile
-	OutputDebugStringA("ƒVƒF[ƒ_[‚ÌƒRƒ“ƒpƒCƒ‹‚ðŠJŽn‚µ‚Ü‚·\n");
-	//FƒVƒF[ƒ_[
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "BasicVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_COLOR);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "BasicPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_COLOR);
+	OutputDebugStringA("ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã®ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã‚’é–‹å§‹ã—ã¾ã™\n");
+	//è‰²ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "BasicVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_COLOR);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "BasicPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_COLOR);
 
-	//ƒeƒNƒXƒ`ƒƒƒVƒF[ƒ_[...ƒeƒNƒXƒ`ƒƒ‰e‚ ‚è
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "TextureVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_TEXTURE);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "TexturePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_TEXTURE);
-
-
-	//ƒXƒvƒ‰ƒCƒgƒVƒF[ƒ_[...ƒeƒNƒXƒ`ƒƒ‰e–³‚µ
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "SpriteVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_SPRITE);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "SpritePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE);
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼...ãƒ†ã‚¯ã‚¹ãƒãƒ£å½±ã‚ã‚Š
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "TextureVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_TEXTURE);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "TexturePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_TEXTURE);
 
 
-	//objƒVƒF[ƒ_[
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_OBJ);
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJPortalVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_OBJ_PORTAL);
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJVertexExpantionShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_EXPANTION_OBJ);	// ’¸“_Šg’£—p
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJGetShadowMapVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_GET_SHADOWMAP);	// ƒVƒƒƒhƒEƒ}ƒbƒvŽæ“¾—p
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJDrawShadowMapVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_DRAW_SHADOWMAP);	// ƒVƒƒƒhƒEƒ}ƒbƒv‚ðŒ³‚É‰e•`‰æ—p
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJPixelExpantionShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_EXPANTION_OBJ);	// ’¸“_Šg’£—p
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJGetShadowPixcelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_GET_SHADOWMAP);	// ƒVƒƒƒhƒEƒ}ƒbƒvŽæ“¾—p
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJDrawShadowMapPixcelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_DRAW_SHADOWMAP);	// ƒVƒƒƒhƒEƒ}ƒbƒv‚ðŒ³‚É‰e•`‰æ—p
-
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstanceObjGetShadowMapVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_GET_SHADOWMAP);	// ƒVƒƒƒhƒEƒ}ƒbƒvŽæ“¾—p
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceObjGetShadowPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_GET_SHADOWMAP);	// ƒVƒƒƒhƒEƒ}ƒbƒv‚ðŒ³‚É‰e•`‰æ—p
-
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceObjExpantionPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_OBJ_EXPANTION);
+	//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã‚·ã‚§ãƒ¼ãƒ€ãƒ¼...ãƒ†ã‚¯ã‚¹ãƒãƒ£å½±ç„¡ã—
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "SpriteVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_SPRITE);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "SpritePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE);
 
 
-	//ƒ‰ƒCƒg
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "LightVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_LIGHT);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LightPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LIGHT);
+	//objã‚·ã‚§ãƒ¼ãƒ€ãƒ¼
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_OBJ);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJPortalVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_OBJ_PORTAL);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJVertexExpantionShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_EXPANTION_OBJ);	// é ‚ç‚¹æ‹¡å¼µç”¨
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJGetShadowMapVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_GET_SHADOWMAP);	// ã‚·ãƒ£ãƒ‰ã‚¦ãƒžãƒƒãƒ—å–å¾—ç”¨
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJDrawShadowMapVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_DRAW_SHADOWMAP);	// ã‚·ãƒ£ãƒ‰ã‚¦ãƒžãƒƒãƒ—ã‚’å…ƒã«å½±æç”»ç”¨
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJPixelExpantionShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_EXPANTION_OBJ);	// é ‚ç‚¹æ‹¡å¼µç”¨
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJGetShadowPixcelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_GET_SHADOWMAP);	// ã‚·ãƒ£ãƒ‰ã‚¦ãƒžãƒƒãƒ—å–å¾—ç”¨
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJDrawShadowMapPixcelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_DRAW_SHADOWMAP);	// ã‚·ãƒ£ãƒ‰ã‚¦ãƒžãƒƒãƒ—ã‚’å…ƒã«å½±æç”»ç”¨
+
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstanceObjGetShadowMapVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_GET_SHADOWMAP);	// ã‚·ãƒ£ãƒ‰ã‚¦ãƒžãƒƒãƒ—å–å¾—ç”¨
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceObjGetShadowPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_GET_SHADOWMAP);	// ã‚·ãƒ£ãƒ‰ã‚¦ãƒžãƒƒãƒ—ã‚’å…ƒã«å½±æç”»ç”¨
+
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceObjExpantionPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_OBJ_EXPANTION);
 
 
-	//‹P“x’Šo
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "LumiVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_LUMINAS);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LumiPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LUMINAS);
+	//ãƒ©ã‚¤ãƒˆ
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "LightVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_LIGHT);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LightPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LIGHT);
 
 
-	//ƒKƒEƒVƒAƒ“ƒuƒ‰[
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GaussianPixelShader.hlsl", "GaussianUpBlur", "ps_6_4", SHADER_PIXCEL_GAUSSIAN_UPBLUR);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GaussianPixelShader.hlsl", "GaussianSideBlur", "ps_6_4", SHADER_PIXCEL_GAUSSIAN_SIDEBLUR);
+	//è¼åº¦æŠ½å‡º
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "LumiVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_LUMINAS);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LumiPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LUMINAS);
+
+
+	//ã‚¬ã‚¦ã‚·ã‚¢ãƒ³ãƒ–ãƒ©ãƒ¼
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GaussianPixelShader.hlsl", "GaussianUpBlur", "ps_6_4", SHADER_PIXCEL_GAUSSIAN_UPBLUR);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GaussianPixelShader.hlsl", "GaussianSideBlur", "ps_6_4", SHADER_PIXCEL_GAUSSIAN_SIDEBLUR);
 
 
 
 	//fbx
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "FbxModelVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_FBX);
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "FbxOutPutPosVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_FBX_FOG);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FbxModelPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FBX);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "FbxModelVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_FBX);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "FbxOutPutPosVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_FBX_FOG);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FbxModelPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FBX);
 
 
 
 	//bloom
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "BloomPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_BLOOM);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "BloomPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_BLOOM);
 
 
-	//íœ—\’è
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "multipassVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_MULTIPASS);
+	//å‰Šé™¤äºˆå®š
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "multipassVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_MULTIPASS);
 
 
-	//íœ—\’è
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GoalLightPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_GOALLIGHT);
+	//å‰Šé™¤äºˆå®š
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GoalLightPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_GOALLIGHT);
 
 
 
 	//Fog
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "FogVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_FOG_COLOR);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_COLOR);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "FogVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_FOG_COLOR);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_COLOR);
 
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogObjPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_OBJ);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogObjPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_OBJ);
 
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogFbxPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_FBX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogFbxPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_FBX);
 
 
-	//‘¾‚³•Ï‚¦‚ç‚ê‚éü—pƒWƒIƒƒgƒŠ[ƒVƒF[ƒ_[
+	//å¤ªã•å¤‰ãˆã‚‰ã‚Œã‚‹ç·šç”¨ã‚¸ã‚ªãƒ¡ãƒˆãƒªãƒ¼ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼
 	//pipelineMgr->RegisterGeometoryShaderWithData(KazFilePathName::RelativeShaderPath + "LineGeometryShader.hlsl", "GSmain", "gs_5_0", SHADER_GEOMETORY_LINE);
 
 
-	//ü
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "LineVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_LINE);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LinePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE);
+	//ç·š
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "LineVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_LINE);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LinePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE);
 
 
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineTickFogPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_TICK_LINE_FOG);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineTickFogPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_TICK_LINE_FOG);
 
 
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogTexturePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_SPRITE);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogTexturePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_SPRITE);
 
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogLinePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_FOG);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogLinePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_FOG);
 
-	//íœ—\’è
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogLineForEffectBGPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_FOG_FORBG);
+	//å‰Šé™¤äºˆå®š
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogLineForEffectBGPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_FOG_FORBG);
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LuminancePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_LUMINANCE);
-
-
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "ObjLightVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_OBJ_LIGHT);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ObjLightPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ_LIGHT);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LuminancePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_LUMINANCE);
 
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceObjMultipassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_OBJ_MULTIPASS_BILL);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "ObjLightVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_OBJ_LIGHT);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ObjLightPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ_LIGHT);
+
+
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceObjMultipassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_OBJ_MULTIPASS_BILL);
 
 
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ObjMultipassLightPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ_MULTIPASS_LIGHT);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ObjMultipassLightPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ_MULTIPASS_LIGHT);
 
 
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstanceVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_OBJ);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstancePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_OBJ);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstanceVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_OBJ);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstancePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_OBJ);
 
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstancePosVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_COLOR);
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstanceObjDepthVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_OBJ_DEPTH);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_COLOR);
-
-
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstancePosNormalColorVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_COLOR_SHADING);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorShadingMultiPassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_COLOR_SHADING);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstancePosVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_COLOR);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstanceObjDepthVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_OBJ_DEPTH);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_COLOR);
 
 
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstanceColorGetShadowVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_COLOR_GET_SHADOWMAP);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorGetShadowPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_COLOR_GET_SHADOW);
-
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineUvPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_UV);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstancePosNormalColorVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_COLOR_SHADING);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorShadingMultiPassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_COLOR_SHADING);
 
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "SpriteWindowPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_WINDOW);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstanceColorGetShadowVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_COLOR_GET_SHADOWMAP);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorGetShadowPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_COLOR_GET_SHADOW);
 
-	//ƒRƒ“ƒsƒ…[ƒgƒVƒF[ƒ_[‚ÌƒRƒ“ƒpƒCƒ‹
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineUvPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_UV);
+
+
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "SpriteWindowPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_WINDOW);
+
+	//ã‚³ãƒ³ãƒ”ãƒ¥ãƒ¼ãƒˆã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã®ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«
 	//pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "TestComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_TEST);
-	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "FloorParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_FLOORPARTICLE);
-	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "FloorParticleMoveComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_FLOORPARTICLE_MOVE);
-	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "BlockParticleInitComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_BLOCKPARTICLE);
-	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "PortalLineComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_PORTALLINE);
-	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "PortalLineMoveComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_PORTALLINE_MOVE);
-	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "MeshParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_MESHPARTICLE);
-	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "BlockParticleMoveComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_BLOCKPARTICLE_MOVE);
-
-	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "InitMeshParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_MESHPARTICLE_INIT);
-	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "MeshParticleMoveComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_MESHPARTICLE_UPDATE);
-
-	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "InitDeadParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_DEADPARTICLE_INIT);
-	pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "UpdateDeadparticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_DEADPARTICLE_UPDATE);
-
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "VHSPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_WIHITENOISE);
-
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FbxTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FBX_RENDER_TWO_LIGHT);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FbxMultiPassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FBX_RENDER_TWO);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GoalEffectPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_GOAL_EFFECT);
-
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJPcMonitorPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_MONITOR_MULTITEX);
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "FloorParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_FLOORPARTICLE);
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "FloorParticleMoveComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_FLOORPARTICLE_MOVE);
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "BlockParticleInitComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_BLOCKPARTICLE);
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "PortalLineComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_PORTALLINE);
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "PortalLineMoveComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_PORTALLINE_MOVE);
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "MeshParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_MESHPARTICLE);
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "BlockParticleMoveComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_BLOCKPARTICLE_MOVE);
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "InitSplineParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_SPLINEPARTICLE_INIT);
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "UpdateSplineParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_SPLINEPARTICLE_UPDATE);
 
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ColorTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_COLOR_MULTITEX);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorMultiPassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_COLOR_MULTITEX);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "SpriteTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_MULTITEX);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ObjTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ_MULTITEX);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GoalLightTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_GOALLIGHT_MULTITEX);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogColorTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_COLOR_MULTITEX);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogMultiPassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_MULTITEX);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "MultiPassLuminancePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LUMINANCE_MULTI);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineUvMultiTexPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_UV_MULTITEX);
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "InitMeshParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_MESHPARTICLE_INIT);
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "MeshParticleMoveComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_MESHPARTICLE_UPDATE);
+
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "InitDeadParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_DEADPARTICLE_INIT);
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "UpdateDeadparticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_DEADPARTICLE_UPDATE);
+
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "VHSPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_WIHITENOISE);
+
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FbxTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FBX_RENDER_TWO_LIGHT);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FbxMultiPassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FBX_RENDER_TWO);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GoalEffectPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_GOAL_EFFECT);
+
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJPcMonitorPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_MONITOR_MULTITEX);
 
 
-
-	
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineFlashEffectPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_FLASHEFFECT);
-
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GradationPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_GRADATION);
-
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "ObjFogVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_FOG_OBJ);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GradationObjPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ_GRADATION);
-
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "GPUParticleVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_GPUPARTICLE);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GPUParticlePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_GPUPARTICLE);
-
-
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "GPUParticlePosUvVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_GPUPARTICLE_POSUV);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GPUParticleTexturePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_GPUPARTICLE_TEX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ColorTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_COLOR_MULTITEX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorMultiPassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_COLOR_MULTITEX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "SpriteTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_MULTITEX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ObjTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ_MULTITEX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GoalLightTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_GOALLIGHT_MULTITEX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogColorTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_COLOR_MULTITEX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogMultiPassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_MULTITEX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "MultiPassLuminancePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LUMINANCE_MULTI);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineUvMultiTexPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_UV_MULTITEX);
 
 
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "NoiseSignalPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_NOISE);
 
-	pipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "PortalVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_PORTAL);
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "PortalPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_PORTAL);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineFlashEffectPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_FLASHEFFECT);
+
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GradationPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_GRADATION);
+
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "ObjFogVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_FOG_OBJ);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GradationObjPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ_GRADATION);
+
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "GPUParticleVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_GPUPARTICLE);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GPUParticlePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_GPUPARTICLE);
 
 
-	pipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "SpriteColorPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_SPRITE_COLOR);
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "GPUParticlePosUvVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_GPUPARTICLE_POSUV);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GPUParticleTexturePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_GPUPARTICLE_TEX);
 
-	OutputDebugStringA("ƒVƒF[ƒ_[‚ÌƒRƒ“ƒpƒCƒ‹‚ðI—¹‚µ‚Ü‚·\n");
+
+
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "NoiseSignalPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_NOISE);
+
+	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "PortalVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_PORTAL);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "PortalPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_PORTAL);
+
+
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "SpriteColorPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_SPRITE_COLOR);
+
+	OutputDebugStringA("ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã®ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã‚’çµ‚äº†ã—ã¾ã™\n");
 #pragma endregion
 
 
-#pragma region ƒpƒCƒvƒ‰ƒCƒ“‚ÌÝ’è‚Ì“o˜^
+#pragma region PipelineData
 
-#pragma region ƒuƒŒƒ“ƒh‚ÌÝ’è
-	//‰ÁŽZ‡¬
+#pragma region BlendData
+	//åŠ ç®—åˆæˆ
 	D3D12_RENDER_TARGET_BLEND_DESC addBlendDesc{};
 	addBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 	addBlendDesc.BlendEnable = true;
@@ -458,7 +461,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	addBlendDesc.SrcBlend = D3D12_BLEND_ONE;
 	addBlendDesc.DestBlend = D3D12_BLEND_ONE;
 
-	//Œ¸ŽZ‡¬
+	//æ¸›ç®—åˆæˆ
 	D3D12_RENDER_TARGET_BLEND_DESC subBlendDesc{};
 	subBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 	subBlendDesc.BlendEnable = true;
@@ -470,7 +473,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	subBlendDesc.SrcBlend = D3D12_BLEND_ONE;
 	subBlendDesc.DestBlend = D3D12_BLEND_ONE;
 
-	//”½“]
+	//åè»¢
 	D3D12_RENDER_TARGET_BLEND_DESC revBlendDesc{};
 	revBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;;
 	revBlendDesc.BlendEnable = true;
@@ -482,7 +485,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	revBlendDesc.SrcBlend = D3D12_BLEND_INV_DEST_COLOR;
 	revBlendDesc.DestBlend = D3D12_BLEND_ZERO;
 
-	//ƒ¿
+	//Î±
 	D3D12_RENDER_TARGET_BLEND_DESC alphaBlendDesc{};
 	alphaBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 	alphaBlendDesc.BlendEnable = true;
@@ -497,263 +500,263 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 #pragma endregion
 
 
-	//ƒeƒNƒXƒ`ƒƒ—p
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ç”¨
 #pragma region PIPELINE_DATA_BACKCARING_ALPHABLEND
 	{
-		//ƒpƒCƒvƒ‰ƒCƒ“‚ÌÝ’è
+		//ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã®è¨­å®š
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		//rasterrize.CullMode = D3D12_CULL_MODE_NONE;
 		gPipeline.RasterizerState = rasterrize;
-		//ƒuƒŒƒ“ƒhƒ‚[ƒh
+		//ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰
 		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 1;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.SampleDesc.Count = 1;
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//¬‚³‚¯‚ê‚ÎOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//å°ã•ã‘ã‚Œã°OK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_BACKCARING_ALPHABLEND);
 	}
 #pragma endregion
 
 
 	{
-		//ƒpƒCƒvƒ‰ƒCƒ“‚ÌÝ’è
+		//ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã®è¨­å®š
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		gPipeline.RasterizerState = rasterrize;
-		//ƒuƒŒƒ“ƒhƒ‚[ƒh
+		//ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰
 		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
 		gPipeline.BlendState.RenderTarget[1] = alphaBlendDesc;
 		//gPipeline.BlendState.IndependentBlendEnable = true;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 2;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.SampleDesc.Count = 1;
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//¬‚³‚¯‚ê‚ÎOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//å°ã•ã‘ã‚Œã°OK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_BACKCARING_ALPHABLEND_RNEDERTARGET_SECOND);
 	}
 
 
 	{
-		//ƒpƒCƒvƒ‰ƒCƒ“‚ÌÝ’è
+		//ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã®è¨­å®š
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		rasterrize.CullMode = D3D12_CULL_MODE_NONE;
 		gPipeline.RasterizerState = rasterrize;
-		//ƒuƒŒƒ“ƒhƒ‚[ƒh
+		//ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰
 		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
 		gPipeline.BlendState.RenderTarget[1] = alphaBlendDesc;
 		//gPipeline.BlendState.IndependentBlendEnable = true;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 2;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.SampleDesc.Count = 1;
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//¬‚³‚¯‚ê‚ÎOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//å°ã•ã‘ã‚Œã°OK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_ALPHABLEND_RNEDERTARGET_SECOND);
 	}
 
 #pragma region PIPELINE_DATA_BACKCARING_ALPHABLEND_WIREFLAME
 	{
-		//ƒpƒCƒvƒ‰ƒCƒ“‚ÌÝ’è
+		//ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã®è¨­å®š
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		rasterrize.FillMode = D3D12_FILL_MODE_WIREFRAME;
 		gPipeline.RasterizerState = rasterrize;
 
-		//ƒuƒŒƒ“ƒhƒ‚[ƒh
+		//ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰
 		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 1;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.SampleDesc.Count = 1;
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//¬‚³‚¯‚ê‚ÎOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//å°ã•ã‘ã‚Œã°OK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_BACKCARING_ALPHABLEND_WIREFLAME);
 	}
 #pragma endregion
 
 #pragma region PIPELINE_DATA_NOCARING_ALPHABLEND_WIREFLAME
 	{
-		//ƒpƒCƒvƒ‰ƒCƒ“‚ÌÝ’è
+		//ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã®è¨­å®š
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		rasterrize.FillMode = D3D12_FILL_MODE_WIREFRAME;
 		rasterrize.CullMode = D3D12_CULL_MODE_NONE;
 		gPipeline.RasterizerState = rasterrize;
 
-		//ƒuƒŒƒ“ƒhƒ‚[ƒh
+		//ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰
 		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 1;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.SampleDesc.Count = 1;
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//¬‚³‚¯‚ê‚ÎOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//å°ã•ã‘ã‚Œã°OK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_ALPHABLEND_WIREFLAME);
 	}
 #pragma endregion
 
 #pragma region PIPELINE_DATA_BACKCARING_NOBLEND_WIREFLAME
 	{
-		//ƒpƒCƒvƒ‰ƒCƒ“‚ÌÝ’è
+		//ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã®è¨­å®š
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		rasterrize.FillMode = D3D12_FILL_MODE_WIREFRAME;
 		gPipeline.RasterizerState = rasterrize;
 
-		//ƒuƒŒƒ“ƒhƒ‚[ƒh
+		//ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰
 		gPipeline.BlendState.RenderTarget[0].BlendEnable = false;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 1;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.SampleDesc.Count = 1;
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//¬‚³‚¯‚ê‚ÎOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//å°ã•ã‘ã‚Œã°OK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_BACKCARING_NOBLEND_WIREFLAME);
 	}
 #pragma endregion
 
 #pragma region PIPELINE_DATA_NOCARING_NOBLEND_WIREFLAME
 	{
-		//ƒpƒCƒvƒ‰ƒCƒ“‚ÌÝ’è
+		//ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã®è¨­å®š
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		rasterrize.FillMode = D3D12_FILL_MODE_WIREFRAME;
 		rasterrize.CullMode = D3D12_CULL_MODE_NONE;
 		gPipeline.RasterizerState = rasterrize;
 
-		//ƒuƒŒƒ“ƒhƒ‚[ƒh
+		//ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰
 		gPipeline.BlendState.RenderTarget[0].BlendEnable = false;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 1;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.SampleDesc.Count = 1;
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//¬‚³‚¯‚ê‚ÎOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//å°ã•ã‘ã‚Œã°OK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_NOBLEND_WIREFLAME);
 	}
 #pragma endregion
 
 #pragma region PIPELINE_DATA_BACKCARING_ALPHABLEND_WIREFLAME_MULTITEX
 	{
-		//ƒpƒCƒvƒ‰ƒCƒ“‚ÌÝ’è
+		//ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã®è¨­å®š
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		rasterrize.FillMode = D3D12_FILL_MODE_WIREFRAME;
 		gPipeline.RasterizerState = rasterrize;
 
-		//ƒuƒŒƒ“ƒhƒ‚[ƒh
+		//ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰
 		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
 		gPipeline.BlendState.RenderTarget[1] = alphaBlendDesc;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 2;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.SampleDesc.Count = 1;
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//¬‚³‚¯‚ê‚ÎOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//å°ã•ã‘ã‚Œã°OK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_BACKCARING_ALPHABLEND_WIREFLAME_MUTITEX);
 	}
 #pragma endregion
@@ -761,49 +764,49 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 #pragma region PIPELINE_DATA_NOCARING_NOBLEND_WIREFLAME_MULTIPASS_TWO
 	{
-		//ƒpƒCƒvƒ‰ƒCƒ“‚ÌÝ’è
+		//ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã®è¨­å®š
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		rasterrize.FillMode = D3D12_FILL_MODE_WIREFRAME;
 		rasterrize.CullMode = D3D12_CULL_MODE_NONE;
 		gPipeline.RasterizerState = rasterrize;
 
-		//ƒuƒŒƒ“ƒhƒ‚[ƒh
+		//ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰
 		gPipeline.BlendState.RenderTarget[0].BlendEnable = false;
 		gPipeline.BlendState.RenderTarget[1].BlendEnable = false;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 2;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.SampleDesc.Count = 1;
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//¬‚³‚¯‚ê‚ÎOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//å°ã•ã‘ã‚Œã°OK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_NOBLEND_WIREFLAME_MULTIPASS_TWO);
 	}
 #pragma endregion
 
-	//ƒXƒvƒ‰ƒCƒg—p
+	//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆç”¨
 #pragma region PIPELINE_DATA_NOCARING_BLENDALPHA
 	{
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//ƒXƒvƒ‰ƒCƒg—p
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆç”¨
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		rasterrize.CullMode = D3D12_CULL_MODE_NONE;
 		gPipeline.RasterizerState = rasterrize;
@@ -812,203 +815,203 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
 		gPipeline.BlendState.AlphaToCoverageEnable = false;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 1;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.SampleDesc.Count = 1;
 
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_BLENDALPHA);
 	}
 #pragma endregion
 
-	//Obj—p
+	//Objç”¨
 #pragma region PIPELINE_DATA_NOCARING_NOBLEND
-	//Obj—p‚ÌƒpƒCƒvƒ‰ƒCƒ“‚ÌÝ’è
+	//Objç”¨ã®ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã®è¨­å®š
 	{
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
 		D3D12_RENDER_TARGET_BLEND_DESC blendDesc{};
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		rasterrize.CullMode = D3D12_CULL_MODE_NONE;
 		gPipeline.RasterizerState = rasterrize;
 
-		//ƒuƒŒƒ“ƒhƒ‚[ƒh
+		//ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰
 		blendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 		gPipeline.BlendState.RenderTarget[0] = blendDesc;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 1;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.SampleDesc.Count = 1;
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//¬‚³‚¯‚ê‚ÎOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//å°ã•ã‘ã‚Œã°OK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_NOBLEND);
 	}
 
 #pragma endregion
 
-	//Obj—p
+	//Objç”¨
 #pragma region PIPELINE_DATA_NOCARING_NOBLEND_R32
-	//Obj—p‚ÌƒpƒCƒvƒ‰ƒCƒ“‚ÌÝ’è
+	//Objç”¨ã®ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã®è¨­å®š
 	{
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
 		D3D12_RENDER_TARGET_BLEND_DESC blendDesc{};
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		gPipeline.RasterizerState = rasterrize;
 		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
-		//ƒuƒŒƒ“ƒhƒ‚[ƒh
+		//ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰
 		blendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 		gPipeline.BlendState.RenderTarget[0] = blendDesc;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 1;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R32_FLOAT;
 		gPipeline.SampleDesc.Count = 1;
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//¬‚³‚¯‚ê‚ÎOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//å°ã•ã‘ã‚Œã°OK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_NOBLEND_R32);
 	}
 
 #pragma endregion
 
-	//Line—p
+	//Lineç”¨
 #pragma region PIPELINE_DATA_NOCARING_ALPHABLEND_LINELIST
 	{
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
 		D3D12_RENDER_TARGET_BLEND_DESC blendDesc{};
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		gPipeline.RasterizerState = rasterrize;
 		gPipeline.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
 		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
-		//ƒuƒŒƒ“ƒhƒ‚[ƒh
+		//ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰
 		blendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 1;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.SampleDesc.Count = 1;
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//¬‚³‚¯‚ê‚ÎOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//å°ã•ã‘ã‚Œã°OK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_ALPHABLEND_LINE);
 	}
 #pragma endregion
 
-	//Line—p
+	//Lineç”¨
 #pragma region PIPELINE_DATA_NOCARING_NOBLEND_LINELIST
 	{
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
 		D3D12_RENDER_TARGET_BLEND_DESC blendDesc{};
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		gPipeline.RasterizerState = rasterrize;
 		gPipeline.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
 		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
-		//ƒuƒŒƒ“ƒhƒ‚[ƒh
+		//ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰
 		blendDesc.BlendEnable = false;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 1;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.SampleDesc.Count = 1;
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//¬‚³‚¯‚ê‚ÎOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//å°ã•ã‘ã‚Œã°OK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_NOBLEND_LINE);
 	}
 #pragma endregion
 
-	//LineDepth—p
+	//LineDepthç”¨
 #pragma region PIPELINE_DATA_NOCARING_NOBLEND_LINE_Z_ALWAYS
 	{
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
 		D3D12_RENDER_TARGET_BLEND_DESC blendDesc{};
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		gPipeline.RasterizerState = rasterrize;
 		gPipeline.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
 		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
-		//ƒuƒŒƒ“ƒhƒ‚[ƒh
+		//ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰
 		blendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
 
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 1;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.SampleDesc.Count = 1;
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;		//¬‚³‚¯‚ê‚ÎOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;		//å°ã•ã‘ã‚Œã°OK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_ALPHABLEND_LINE_Z_ALWAYS);
 	}
 #pragma endregion
@@ -1017,86 +1020,86 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	{
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
 		D3D12_RENDER_TARGET_BLEND_DESC blendDesc{};
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		gPipeline.RasterizerState = rasterrize;
 		gPipeline.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
 		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
-		//ƒuƒŒƒ“ƒhƒ‚[ƒh
+		//ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰
 		blendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
 		gPipeline.BlendState.RenderTarget[1] = alphaBlendDesc;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 2;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.SampleDesc.Count = 1;
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//¬‚³‚¯‚ê‚ÎOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//å°ã•ã‘ã‚Œã°OK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_ALPHABLEND_LINE_MULTITEX);
 	}
 #pragma endregion
 
 
-	//ƒXƒvƒ‰ƒCƒg‚Ì‰ÁŽZ‡¬—p
+	//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®åŠ ç®—åˆæˆç”¨
 #pragma region PIPELINE_DATA_NOCARING_ADDBLEND
 	{
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		gPipeline.RasterizerState = rasterrize;
 		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
-		//ƒuƒŒƒ“ƒhƒ‚[ƒh
+		//ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰
 		gPipeline.BlendState.RenderTarget[0] = addBlendDesc;
 		gPipeline.BlendState.AlphaToCoverageEnable = false;
 
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 1;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.SampleDesc.Count = 1;
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = false;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;		//¬‚³‚¯‚ê‚ÎOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = false;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;		//å°ã•ã‘ã‚Œã°OK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_ADDBLEND_CUTALPHA);
 	}
 #pragma endregion
 
 
-	//ƒXƒvƒ‰ƒCƒg—pƒ¿ƒJƒbƒg
+	//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆç”¨Î±ã‚«ãƒƒãƒˆ
 #pragma region PIPELINE_DATA_NOCARING_BLENDALPHA_CUT
 	{
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//ƒXƒvƒ‰ƒCƒg—p
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆç”¨
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		gPipeline.RasterizerState = rasterrize;
 		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
@@ -1104,21 +1107,21 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
 		gPipeline.BlendState.AlphaToCoverageEnable = true;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 1;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.SampleDesc.Count = 1;
 
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_BLENDALPHA_CUT);
 	}
 #pragma endregion
@@ -1126,12 +1129,12 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 #pragma region PIPELINE_DATA_NOCARING_BLENDALPHA_CUT_MULTITEX
 	{
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//ƒXƒvƒ‰ƒCƒg—p
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆç”¨
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		gPipeline.RasterizerState = rasterrize;
 		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
@@ -1140,37 +1143,37 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		gPipeline.BlendState.RenderTarget[1] = alphaBlendDesc;
 		gPipeline.BlendState.AlphaToCoverageEnable = true;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 2;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.SampleDesc.Count = 1;
 
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_BLENDALPHA_CUT_MULTITEX);
 	}
 #pragma endregion
 
 
-	//ƒXƒvƒ‰ƒCƒg[“x–³Œø—p
+	//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆæ·±åº¦ç„¡åŠ¹ç”¨
 #pragma region PIPELINE_DATA_NOCARING_BLENDALPHA_DEPTHOFF
 	{
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//ƒXƒvƒ‰ƒCƒg—p
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆç”¨
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		gPipeline.RasterizerState = rasterrize;
 		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
@@ -1178,58 +1181,58 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
 		gPipeline.BlendState.AlphaToCoverageEnable = false;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 1;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.SampleDesc.Count = 1;
 
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = false;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = false;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_BLENDALPHA_DEPTHOFF);
 	}
 #pragma endregion
 
 
-	//’¸“_Šg’£—p‚Ì‘O–ÊƒJƒŠƒ“ƒO
+	//é ‚ç‚¹æ‹¡å¼µç”¨ã®å‰é¢ã‚«ãƒªãƒ³ã‚°
 #pragma region PIPELINE_DATA_EXPANTION_VERTEX
 	{
 		{
 			D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
 			D3D12_RENDER_TARGET_BLEND_DESC blendDesc{};
-			//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+			//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 			gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-			//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-			//‘O–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+			//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+			//å‰é¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 			CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 			gPipeline.RasterizerState = rasterrize;
 			gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_FRONT;
 
-			//ƒuƒŒƒ“ƒhƒ‚[ƒh
+			//ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰
 			blendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 			gPipeline.BlendState.RenderTarget[0] = blendDesc;
 
-			//}Œ`‚ÌŒ`ó
+			//å›³å½¢ã®å½¢çŠ¶
 			gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
-			//‚»‚Ì‘¼Ý’è
+			//ãã®ä»–è¨­å®š
 			gPipeline.NumRenderTargets = 1;
 			gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 			gPipeline.SampleDesc.Count = 1;
 
-			//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-			gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-			gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
-			gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//¬‚³‚¯‚ê‚ÎOK
-			gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+			//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+			gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+			gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
+			gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//å°ã•ã‘ã‚Œã°OK
+			gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 			GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_EXPANTION_VERTEX);
 		}
 	}
@@ -1239,47 +1242,47 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 #pragma region PIPELINE_DATA_NOCARING_BLENDALPHA_DEPTH_ALWAYS
 	{
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//ƒXƒvƒ‰ƒCƒg—p
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆç”¨
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		gPipeline.RasterizerState = rasterrize;
 		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
 		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 1;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.SampleDesc.Count = 1;
 
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_BLENDALPHA_DEPTH_ALWAYS);
 	}
 #pragma endregion
 
-	//ƒXƒvƒ‰ƒCƒg—p
+	//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆç”¨
 #pragma region PIPELINE_DATA_NOCARING_CUTALPHA_DEPTH_ALWAYS
 	{
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//ƒXƒvƒ‰ƒCƒg—p
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆç”¨
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		gPipeline.RasterizerState = rasterrize;
 		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
@@ -1287,21 +1290,21 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
 		gPipeline.BlendState.AlphaToCoverageEnable = true;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 1;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.SampleDesc.Count = 1;
 
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_CUTALPHA_DEPTH_ALWAYS);
 	}
 #pragma endregion
@@ -1310,12 +1313,12 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 #pragma region PIPELINE_DATA_NOCARING_BLENDALPHA
 	{
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//ƒXƒvƒ‰ƒCƒg—p
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆç”¨
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		gPipeline.RasterizerState = rasterrize;
 		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
@@ -1323,21 +1326,21 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
 		gPipeline.BlendState.AlphaToCoverageEnable = false;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 1;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.SampleDesc.Count = 1;
 
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_BLENDALPHA_DEPTH_LESSEQUAL);
 	}
 #pragma endregion
@@ -1345,22 +1348,22 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 
 
-	//ƒXƒvƒ‰ƒCƒg—p
+	//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆç”¨
 #pragma region PIPELINE_DATA_NOCARING_BLENDALPHA_ZOFF
 	{
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//ƒXƒvƒ‰ƒCƒg—p
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆç”¨
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		gPipeline.RasterizerState = rasterrize;
 		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
 
-		//‰ÁŽZ‚Æƒ¿‡¬
+		//åŠ ç®—ã¨Î±åˆæˆ
 		D3D12_RENDER_TARGET_BLEND_DESC addAndAlphaBlendDesc{};
 		addAndAlphaBlendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 		addAndAlphaBlendDesc.BlendEnable = true;
@@ -1381,86 +1384,86 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		gPipeline.BlendState.RenderTarget[0] = addAndAlphaBlendDesc;
 		gPipeline.BlendState.AlphaToCoverageEnable = false;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 1;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.SampleDesc.Count = 1;
 
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_BLENDALPHA_DEPTH_OFF);
 	}
 #pragma endregion
 
 
-	//ƒXƒvƒ‰ƒCƒg‚Ì‰ÁŽZ‡¬—p ƒ¿‚ ‚è
+	//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®åŠ ç®—åˆæˆç”¨ Î±ã‚ã‚Š
 #pragma region PIPELINE_DATA_NOCARING_ADDBLEND
 	{
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		gPipeline.RasterizerState = rasterrize;
 		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
-		//ƒuƒŒƒ“ƒhƒ‚[ƒh
+		//ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰
 		gPipeline.BlendState.RenderTarget[0] = addBlendDesc;
 		gPipeline.BlendState.AlphaToCoverageEnable = false;
 
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 1;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.SampleDesc.Count = 1;
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//¬‚³‚¯‚ê‚ÎOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//å°ã•ã‘ã‚Œã°OK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_ADDBLEND);
 	}
 #pragma endregion
 
 
 
-	//ƒ}ƒ‹ƒ`ƒpƒX‚ÌƒXƒvƒ‰ƒCƒg—p
+	//ãƒžãƒ«ãƒãƒ‘ã‚¹ã®ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆç”¨
 #pragma region PIPELINE_DATA_NOCARING_BLENDALPHA_RENDERTARGET_TWO
 	{
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//ƒXƒvƒ‰ƒCƒg—p
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆç”¨
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		gPipeline.RasterizerState = rasterrize;
 		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
-		//ƒuƒŒƒ“ƒhƒ‚[ƒh
+		//ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰
 		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
 		gPipeline.BlendState.RenderTarget[1] = alphaBlendDesc;
 		//gPipeline.BlendState.IndependentBlendEnable = true;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 2;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		gPipeline.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -1468,11 +1471,11 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_BLENDALPHA_MULTIPASS_TWO);
 	}
 #pragma endregion
@@ -1483,7 +1486,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 
 
-	//ƒRƒ“ƒsƒ…[ƒgƒpƒCƒvƒ‰ƒCƒ“
+	//ã‚³ãƒ³ãƒ”ãƒ¥ãƒ¼ãƒˆãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	D3D12_COMPUTE_PIPELINE_STATE_DESC desc = {};
 	desc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
 	desc.NodeMask = 0;
@@ -1492,9 +1495,9 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 #pragma endregion
 
 
-#pragma region ƒpƒCƒvƒ‰ƒCƒ“‚Ì¶¬‚Æ“o˜^
+#pragma region GeneratePipeline
 
-	//ƒRƒ“ƒsƒ…[ƒgƒpƒCƒvƒ‰ƒCƒ“‚Ìì¬
+	//ã‚³ãƒ³ãƒ”ãƒ¥ãƒ¼ãƒˆãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã®ä½œæˆ
 	/*GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 		SHADER_COMPUTE_TEST,
 		PIPELINE_COMPUTE_DATA_TEST,
@@ -1502,7 +1505,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_COMPUTE_NAME_TEST
 	);*/
 
-	//°‚ÉŽU‚ç‚Î‚ç‚Á‚Ä‚¢‚éƒp[ƒeƒBƒNƒ‹
+	//åºŠã«æ•£ã‚‰ã°ã‚‰ã£ã¦ã„ã‚‹ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«
 	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 		SHADER_COMPUTE_FLOORPARTICLE,
 		PIPELINE_COMPUTE_DATA_TEST,
@@ -1546,14 +1549,14 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_COMPUTE_NAME_MESHPARTICLE_UPDATE
 	);
 
-	//Ž€–Sƒp[ƒeƒBƒNƒ‹‚Ì‰Šú‰»
+	//æ­»äº¡ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã®åˆæœŸåŒ–
 	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 		SHADER_COMPUTE_DEADPARTICLE_INIT,
 		PIPELINE_COMPUTE_DATA_TEST,
 		ROOTSIGNATURE_DATA_UAV_UAV,
 		PIPELINE_COMPUTE_NAME_DEADPARTICLE_INIT
 	);
-	//Ž€–Sƒp[ƒeƒBƒNƒ‹‚ÌXV
+	//æ­»äº¡ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ã®æ›´æ–°
 	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 		SHADER_COMPUTE_DEADPARTICLE_UPDATE,
 		PIPELINE_COMPUTE_DATA_TEST,
@@ -1563,20 +1566,12 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 
 
-	//ƒuƒƒbƒN‚É‚¿‚è‚Î‚ß‚ç‚ê‚éƒp[ƒeƒBƒNƒ‹
+	//ãƒ–ãƒ­ãƒƒã‚¯ã«ã¡ã‚Šã°ã‚ã‚‰ã‚Œã‚‹ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«
 	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 		SHADER_COMPUTE_BLOCKPARTICLE,
 		PIPELINE_COMPUTE_DATA_TEST,
 		ROOTSIGNATURE_DATA_DRAW_UAB_CB,
 		PIPELINE_COMPUTE_NAME_BLOCKPARTICLE
-	);
-
-	//ƒGƒ~ƒbƒ^[‚ÌêŠ‚ðŒˆ‚ß‚é
-	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-		SHADER_COMPUTE_MESHPARTICLE,
-		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_UAB_UAB_UAB_CB,
-		PIPELINE_COMPUTE_NAME_MESHPARTICLE
 	);
 
 	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
@@ -1586,8 +1581,32 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_COMPUTE_NAME_BLOCKPARTICLE_MOVE
 	);
 
+	//ã‚¨ãƒŸãƒƒã‚¿ãƒ¼ã®å ´æ‰€ã‚’æ±ºã‚ã‚‹
+	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+		SHADER_COMPUTE_MESHPARTICLE,
+		PIPELINE_COMPUTE_DATA_TEST,
+		ROOTSIGNATURE_DATA_UAB_UAB_UAB_CB,
+		PIPELINE_COMPUTE_NAME_MESHPARTICLE
+	);
 
-	//GPUƒp[ƒeƒBƒNƒ‹—p‚ÌƒpƒCƒvƒ‰ƒCƒ“
+
+	//ã‚¹ãƒ—ãƒ©ã‚¤ãƒ³æ›²ç·šã«æ²¿ã£ãŸãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«åˆæœŸåŒ–
+	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+		SHADER_COMPUTE_SPLINEPARTICLE_INIT,
+		PIPELINE_COMPUTE_DATA_TEST,
+		ROOTSIGNATURE_DATA_UAV_CBV,
+		PIPELINE_COMPUTE_NAME_SPLINEPARTICLE_INIT
+	);
+
+
+	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+		SHADER_COMPUTE_SPLINEPARTICLE_UPDATE,
+		PIPELINE_COMPUTE_DATA_TEST,
+		ROOTSIGNATURE_DATA_UAV_UAV_UAV_CBV_CBV,
+		PIPELINE_COMPUTE_NAME_SPLINEPARTICLE_UPDATE
+	);
+
+
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_GPUPARTICLE,
@@ -1597,7 +1616,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_GPUPARTICLE
 	);
 
-	//GPUƒp[ƒeƒBƒNƒ‹—p‚ÌƒpƒCƒvƒ‰ƒCƒ“
+	//GPUãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ç”¨ã®ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_GPUPARTICLE_POSUV,
@@ -1609,7 +1628,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 
 
-	//ƒ|[ƒ^ƒ‹‚ÌGPUƒp[ƒeƒBƒNƒ‹—p‚ÌƒpƒCƒvƒ‰ƒCƒ“
+	//ãƒãƒ¼ã‚¿ãƒ«ã®GPUãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«ç”¨ã®ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_GPUPARTICLE,
@@ -1622,7 +1641,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 
 
-	//FƒpƒCƒvƒ‰ƒCƒ“
+	//è‰²ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_COLOR,
@@ -1670,7 +1689,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_COLOR_NOCARING
 	);
 
-	//ƒCƒ“ƒXƒ^ƒ“ƒVƒ“ƒO•`‰æFƒpƒCƒvƒ‰ƒCƒ“‚ÉƒVƒƒƒhƒE‚ð“ü‚ê‚é
+	//ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚·ãƒ³ã‚°æç”»è‰²ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã«ã‚·ãƒ£ãƒ‰ã‚¦ã‚’å…¥ã‚Œã‚‹
 	//GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 	//	LAYOUT_POS_NORMAL_TEX,
 	//	SHADER_VERTEX_INSTANCE_COLOR_GET_SHADOWMAP,
@@ -1681,7 +1700,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	//);
 
 
-	//ƒCƒ“ƒXƒ^ƒ“ƒVƒ“ƒO•`‰æFƒpƒCƒvƒ‰ƒCƒ“
+	//ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚·ãƒ³ã‚°æç”»è‰²ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_INSTANCE_COLOR,
@@ -1701,7 +1720,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	);
 
 
-	//FƒpƒCƒvƒ‰ƒCƒ“(ƒƒCƒ„[ƒtƒŒ[ƒ€)
+	//è‰²ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³(ãƒ¯ã‚¤ãƒ¤ãƒ¼ãƒ•ãƒ¬ãƒ¼ãƒ )
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_COLOR,
@@ -1711,7 +1730,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_COLOR_WIREFLAME
 	);
 
-	//ƒXƒvƒ‰ƒCƒgƒpƒCƒvƒ‰ƒCƒ“
+	//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
@@ -1721,7 +1740,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_SPRITE
 	);
 
-	//ƒXƒvƒ‰ƒCƒgƒpƒCƒvƒ‰ƒCƒ“
+	//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
@@ -1732,7 +1751,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	);
 
 
-	//ƒXƒvƒ‰ƒCƒgƒpƒCƒvƒ‰ƒCƒ“
+	//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
@@ -1742,7 +1761,18 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_SPRITE_COLOR
 	);
 
-	//ƒXƒvƒ‰ƒCƒgƒpƒCƒvƒ‰ƒCƒ“+í‚É[“x•‰‚¯‚é
+
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS_TEX,
+		SHADER_VERTEX_SPRITE,
+		SHADER_PIXEL_SPRITE_COLOR,
+		PIPELINE_DATA_NOCARING_BLENDALPHA,
+		ROOTSIGNATURE_DATA_DRAW_TEX,
+		PIPELINE_NAME_SPRITE_COLOR_FOG
+	);
+
+
+	//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³+å¸¸ã«æ·±åº¦è² ã‘ã‚‹
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
@@ -1753,7 +1783,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	);
 
 
-	//ƒXƒvƒ‰ƒCƒg+»—’ƒpƒCƒvƒ‰ƒCƒ“
+	//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆ+ç ‚åµãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
@@ -1764,7 +1794,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	);
 
 
-	//ƒXƒvƒ‰ƒCƒgƒpƒCƒvƒ‰ƒCƒ“
+	//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
@@ -1774,7 +1804,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_SPRITE_Z_ALWAYS
 	);
 
-	//ƒXƒvƒ‰ƒCƒgƒpƒCƒvƒ‰ƒCƒ“
+	//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
@@ -1793,7 +1823,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_SPRITE_Z_ALWAYS_CUTALPHA
 	);
 
-	//ƒXƒvƒ‰ƒCƒgƒpƒCƒvƒ‰ƒCƒ“
+	//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
@@ -1804,7 +1834,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	);
 
 
-	//ƒXƒvƒ‰ƒCƒgƒpƒCƒvƒ‰ƒCƒ“
+	//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
@@ -1814,7 +1844,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_SPRITE_NOBLEND
 	);
 
-	//ƒS[ƒ‹ƒGƒtƒFƒNƒg
+	//ã‚´ãƒ¼ãƒ«ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
@@ -1825,7 +1855,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_SPRITE_GOAL_EFFECT
 	);
 
-	//ƒS[ƒ‹ƒGƒtƒFƒNƒg2
+	//ã‚´ãƒ¼ãƒ«ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ2
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
@@ -1835,7 +1865,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_SPRITE_GOAL_EFFECT_DEPTHOFF
 	);
 
-	//ObjƒpƒCƒvƒ‰ƒCƒ“
+	//Objãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX,
 		SHADER_VERTEX_OBJ,
@@ -1854,7 +1884,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_PCMONITOR_MULTITEX
 	);
 
-	//OBJƒpƒCƒvƒ‰ƒCƒ“‚ÌƒƒCƒ„[ƒtƒŒ[ƒ€
+	//OBJãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã®ãƒ¯ã‚¤ãƒ¤ãƒ¼ãƒ•ãƒ¬ãƒ¼ãƒ 
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_COLOR,
@@ -1884,7 +1914,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	);
 
 
-	//ƒCƒ“ƒXƒ^ƒ“ƒVƒ“ƒO•`‰æObjƒpƒCƒvƒ‰ƒCƒ“
+	//ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚·ãƒ³ã‚°æç”»Objãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX,
 		SHADER_VERTEX_INSTANCE_OBJ,
@@ -1894,7 +1924,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_INSTANCE_OBJ
 	);
 
-	//’¸“_Šg‘å‚ÌƒpƒCƒvƒ‰ƒCƒ“
+	//é ‚ç‚¹æ‹¡å¤§ã®ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX,
 		SHADER_VERTEX_EXPANTION_OBJ,
@@ -1904,7 +1934,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_OBJ_EXPANSION_VERTEX
 	);
 
-	////ƒCƒ“ƒXƒ^ƒ“ƒVƒ“ƒO•`‰æ’¸“_Šg‘å‚ÌƒpƒCƒvƒ‰ƒCƒ“
+	////ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚·ãƒ³ã‚°æç”»é ‚ç‚¹æ‹¡å¤§ã®ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	//GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 	//	LAYOUT_POS_NORMAL_TEX,
 	//	SHADER_VERTEX_INSTANCE_OBJ,
@@ -1914,7 +1944,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	//	PIPELINE_NAME_INSTANCE_OBJ_EXPANTION_VERTEX
 	//);
 
-	//ƒVƒƒƒhƒEƒ}ƒbƒvŽæ“¾—pƒpƒCƒvƒ‰ƒCƒ“
+	//ã‚·ãƒ£ãƒ‰ã‚¦ãƒžãƒƒãƒ—å–å¾—ç”¨ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX,
 		SHADER_VERTEX_GET_SHADOWMAP,
@@ -1924,7 +1954,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_OBJ_GET_SHADOWMAP
 	);
 
-	//ƒCƒ“ƒXƒ^ƒ“ƒVƒ“ƒO•`‰æƒVƒƒƒhƒEƒ}ƒbƒvŽæ“¾—pƒpƒCƒvƒ‰ƒCƒ“
+	//ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚·ãƒ³ã‚°æç”»ã‚·ãƒ£ãƒ‰ã‚¦ãƒžãƒƒãƒ—å–å¾—ç”¨ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	//GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 	//	LAYOUT_POS_NORMAL_TEX,
 	//	SHADER_VERTEX_INSTANCE_GET_SHADOWMAP,
@@ -1934,7 +1964,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	//	PIPELINE_NAME_INSTANCE_OBJ_GET_SHADOWMAP
 	//);
 
-	////ƒVƒƒƒhƒEƒ}ƒbƒv‚ðŒ³‚É‰e•`‰æ—pƒpƒCƒvƒ‰ƒCƒ“
+	////ã‚·ãƒ£ãƒ‰ã‚¦ãƒžãƒƒãƒ—ã‚’å…ƒã«å½±æç”»ç”¨ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	//GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 	//	LAYOUT_POS_NORMAL_TEX,
 	//	SHADER_VERTEX_DRAW_SHADOWMAP,
@@ -1944,7 +1974,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	//	PIPELINE_NAME_OBJ_DRAW_SHADOWMAP
 	//);
 
-	//LightObjƒpƒCƒvƒ‰ƒCƒ“
+	//LightObjãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX,
 		SHADER_VERTEX_OBJ_LIGHT,
@@ -1966,7 +1996,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 
 
-	//LineƒpƒCƒvƒ‰ƒCƒ“
+	//Lineãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_COLOR,
@@ -1976,7 +2006,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_LINE
 	);
 
-	//FogLineƒpƒCƒvƒ‰ƒCƒ“
+	//FogLineãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_FOG_COLOR,
@@ -1987,7 +2017,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	);
 
 
-	//FogLineƒpƒCƒvƒ‰ƒCƒ“
+	//FogLineãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_FOG_COLOR,
@@ -1998,7 +2028,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	);
 
 
-	//ƒCƒ“ƒXƒ^ƒ“ƒVƒ“ƒO•`‰æFƒpƒCƒvƒ‰ƒCƒ“
+	//ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚·ãƒ³ã‚°æç”»è‰²ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_INSTANCE_COLOR,
@@ -2009,7 +2039,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	);
 
 
-	//LineƒpƒCƒvƒ‰ƒCƒ“(uv•t‚«)
+	//Lineãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³(uvä»˜ã)
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
@@ -2029,7 +2059,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_LINE_FLASHEFFECT
 	);
 
-	//ƒ‰ƒCƒg
+	//ãƒ©ã‚¤ãƒˆ
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX,
 		SHADER_VERTEX_LIGHT,
@@ -2039,7 +2069,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_LIGHT
 	);
 
-	//ƒeƒNƒXƒ`ƒƒ
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX,
 		SHADER_VERTEX_TEXTURE,
@@ -2049,7 +2079,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_TEXTURE
 	);
 
-	//‹P“x’Šo
+	//è¼åº¦æŠ½å‡º
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_LUMINAS,
@@ -2059,7 +2089,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_LUMINANCE
 	);
 
-	//ƒKƒEƒVƒAƒ“ã‚Ú‚©‚µ—p‚Ìƒf[ƒ^
+	//ã‚¬ã‚¦ã‚·ã‚¢ãƒ³ä¸Šã¼ã‹ã—ç”¨ã®ãƒ‡ãƒ¼ã‚¿
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
@@ -2069,7 +2099,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_GAUSSIAN_UPBLUR
 	);
 
-	//ƒKƒEƒVƒAƒ“ã‚Ú‚©‚µ—p‚Ìƒf[ƒ^
+	//ã‚¬ã‚¦ã‚·ã‚¢ãƒ³ä¸Šã¼ã‹ã—ç”¨ã®ãƒ‡ãƒ¼ã‚¿
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
@@ -2079,7 +2109,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_GAUSSIAN_SIDEBLUR
 	);
 
-	//Fbx•`‰æ—pƒpƒCƒvƒ‰ƒCƒ“
+	//Fbxæç”»ç”¨ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX_BONE_WEIGHT,
 		SHADER_VERTEX_FBX,
@@ -2089,7 +2119,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_FBX
 	);
 
-	//Fbx•`‰æ—pƒpƒCƒvƒ‰ƒCƒ“
+	//Fbxæç”»ç”¨ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX_BONE_WEIGHT,
 		SHADER_VERTEX_FBX,
@@ -2108,7 +2138,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_FBX_RENDERTARGET_TWO_LIGHT
 	);
 
-	//‰ÁŽZ‡¬
+	//åŠ ç®—åˆæˆ
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
@@ -2118,7 +2148,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_ADDBLEND
 	);
 
-	//ì£Ž®ƒuƒ‹[ƒ€
+	//å·ç€¬å¼ãƒ–ãƒ«ãƒ¼ãƒ 
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
@@ -2128,7 +2158,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_BLOOM
 	);
 
-	//³‹K‰»ƒfƒoƒCƒXã‚Ì‰ÁŽZ‡¬‰æ‘œ•`‰æ
+	//æ­£è¦åŒ–ãƒ‡ãƒã‚¤ã‚¹ä¸Šã®åŠ ç®—åˆæˆç”»åƒæç”»
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_MULTIPASS,
@@ -2138,7 +2168,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_MULTIPASS
 	);
 
-	//ƒS[ƒ‹ƒ‰ƒCƒg—p
+	//ã‚´ãƒ¼ãƒ«ãƒ©ã‚¤ãƒˆç”¨
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
@@ -2159,7 +2189,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	);
 
 
-	//FogFbx•`‰æ—pƒpƒCƒvƒ‰ƒCƒ“
+	//FogFbxæç”»ç”¨ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX_BONE_WEIGHT,
 		SHADER_VERTEX_FBX,
@@ -2187,9 +2217,9 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		ROOTSIGNATURE_DATA_DRAW_SKINING_DATA1,
 		PIPELINE_NAME_FOG_FBX_WIREFLAME_MULTI_TWO
 	);
-	
 
-	//ObjƒpƒCƒvƒ‰ƒCƒ“
+
+	//Objãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX,
 		SHADER_VERTEX_OBJ,
@@ -2199,7 +2229,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_FOG_OBJ
 	);
 
-	//ü‚Ì‘¾‚³•Ï‚¦‚é
+	//ç·šã®å¤ªã•å¤‰ãˆã‚‹
 	//GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 	//	LAYOUT_POS_TICK,
 	//	SHADER_VERTEX_LINE,
@@ -2210,7 +2240,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	//	SHADER_GEOMETORY_LINE
 	//);
 
-	//ƒXƒvƒ‰ƒCƒg...ƒtƒHƒO•t‚«
+	//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆ...ãƒ•ã‚©ã‚°ä»˜ã
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
@@ -2220,7 +2250,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_FOG_SPRITE
 	);
 
-	//ü‚Ì‘¾‚³•Ï‚¦‚é...ƒtƒHƒO•t‚«
+	//ç·šã®å¤ªã•å¤‰ãˆã‚‹...ãƒ•ã‚©ã‚°ä»˜ã
 	//GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 	//	LAYOUT_POS_TICK,
 	//	SHADER_VERTEX_LINE,
@@ -2231,7 +2261,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	//	SHADER_GEOMETORY_LINE
 	//);
 
-	//ƒXƒvƒ‰ƒCƒgƒpƒCƒvƒ‰ƒCƒ“
+	//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
@@ -2243,7 +2273,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 
 
-	//FogLineForBgƒpƒCƒvƒ‰ƒCƒ“
+	//FogLineForBgãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_COLOR,
@@ -2264,7 +2294,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	);
 
 
-	//”Âƒ|ƒŠ‚ÌF•t‚«
+	//æ¿ãƒãƒªã®è‰²ä»˜ã
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
@@ -2276,18 +2306,18 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 
 
-	//ƒ}ƒ‹ƒ`ƒpƒX‚ÍuƒeƒNƒXƒ`ƒƒ—pvA
-	//Create2DPipeLine‚ÍƒXƒvƒ‰ƒCƒg
-	//CreateGetLightPipeline‚ÍƒXƒvƒ‰ƒCƒg—p
-	//basic‚ÍƒXƒvƒ‰ƒCƒg—p
-	//ƒuƒŒƒ“ƒh—p‚Ì‚Íˆê”t—pˆÓ‚·‚é•K—v‚ª‚ ‚é
+	//ãƒžãƒ«ãƒãƒ‘ã‚¹ã¯ã€Œãƒ†ã‚¯ã‚¹ãƒãƒ£ç”¨ã€ã€
+	//Create2DPipeLineã¯ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆ
+	//CreateGetLightPipelineã¯ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆç”¨
+	//basicã¯ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆç”¨
+	//ãƒ–ãƒ¬ãƒ³ãƒ‰ç”¨ã®ã¯ä¸€æ¯ç”¨æ„ã™ã‚‹å¿…è¦ãŒã‚ã‚‹
 
 
 #pragma endregion
 
 
-	//ƒ}ƒ‹ƒ`ƒeƒNƒXƒ`ƒƒ—p
-	//FƒpƒCƒvƒ‰ƒCƒ“
+	//ãƒžãƒ«ãƒãƒ†ã‚¯ã‚¹ãƒãƒ£ç”¨
+	//è‰²ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_COLOR,
@@ -2317,7 +2347,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	);
 
 
-	//ƒtƒHƒO
+	//ãƒ•ã‚©ã‚°
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_FOG_COLOR,
@@ -2327,7 +2357,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_FOG_COLOR_MULTITEX
 	);
 
-	//ƒXƒvƒ‰ƒCƒgƒpƒCƒvƒ‰ƒCƒ“
+	//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
@@ -2338,7 +2368,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	);
 
 
-	//ObjƒpƒCƒvƒ‰ƒCƒ“
+	//Objãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX,
 		SHADER_VERTEX_OBJ,
@@ -2357,7 +2387,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_OBJ_MULTITEX_LIGHT
 	);
 
-	//ƒS[ƒ‹ƒGƒtƒFƒNƒg
+	//ã‚´ãƒ¼ãƒ«ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
@@ -2367,8 +2397,8 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_SPRITE_GOAL_EFFECT_MULTITEX
 	);
 
-	//‹P“x’Šo
-	//ƒXƒvƒ‰ƒCƒgƒpƒCƒvƒ‰ƒCƒ“
+	//è¼åº¦æŠ½å‡º
+	//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
@@ -2388,7 +2418,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	);
 
 
-	//FƒpƒCƒvƒ‰ƒCƒ“(ƒƒCƒ„[ƒtƒŒ[ƒ€) MULTI
+	//è‰²ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³(ãƒ¯ã‚¤ãƒ¤ãƒ¼ãƒ•ãƒ¬ãƒ¼ãƒ ) MULTI
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_COLOR,
@@ -2399,7 +2429,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	);
 
 
-	//LineƒpƒCƒvƒ‰ƒCƒ“
+	//Lineãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_COLOR,
@@ -2409,7 +2439,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_LINE_MULTITEX
 	);
 
-	//LineƒpƒCƒvƒ‰ƒCƒ“(uv•t‚«)
+	//Lineãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³(uvä»˜ã)
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
@@ -2421,40 +2451,40 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 
 
-#pragma region ƒpƒCƒvƒ‰ƒCƒ“‚ÌÝ’è‚Ì“o˜^HDR—p
+#pragma region PipelineDataForHDR
 	DXGI_FORMAT_R32G32B32A32_FLOAT;
 
-	//‰ÁŽZƒXƒvƒ‰ƒCƒg
+	//åŠ ç®—ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆ
 #pragma region PIPELINE_DATA_NOCARING_ADDBLEND_HDR
 	{
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		gPipeline.RasterizerState = rasterrize;
 		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
-		//ƒuƒŒƒ“ƒhƒ‚[ƒh
+		//ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰
 		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
 		gPipeline.BlendState.AlphaToCoverageEnable = true;
 
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 1;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		gPipeline.SampleDesc.Count = 1;
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//¬‚³‚¯‚ê‚ÎOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//å°ã•ã‘ã‚Œã°OK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_ADDBLEND_HDR);
 	}
 #pragma endregion
@@ -2462,36 +2492,36 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 	//OBJ
 #pragma region PIPELINE_DATA_NOCARING_NOBLEND_HDR
-//Obj—p‚ÌƒpƒCƒvƒ‰ƒCƒ“‚ÌÝ’è
+//Objç”¨ã®ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã®è¨­å®š
 	{
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
 		D3D12_RENDER_TARGET_BLEND_DESC blendDesc{};
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		gPipeline.RasterizerState = rasterrize;
 		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
-		//ƒuƒŒƒ“ƒhƒ‚[ƒh
+		//ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰
 		blendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 		gPipeline.BlendState.RenderTarget[0] = blendDesc;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 1;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		gPipeline.SampleDesc.Count = 1;
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//¬‚³‚¯‚ê‚ÎOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//å°ã•ã‘ã‚Œã°OK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_NOBLEND_HDR);
 	}
 
@@ -2503,33 +2533,33 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	{
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
 		D3D12_RENDER_TARGET_BLEND_DESC blendDesc{};
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		gPipeline.RasterizerState = rasterrize;
 		gPipeline.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
 		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
-		//ƒuƒŒƒ“ƒhƒ‚[ƒh
+		//ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰
 		blendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 1;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		gPipeline.SampleDesc.Count = 1;
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//¬‚³‚¯‚ê‚ÎOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//å°ã•ã‘ã‚Œã°OK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_ALPHABLEND_LINE_HDR);
 	}
 #pragma endregion
@@ -2539,12 +2569,12 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 #pragma region PIPELINE_DATA_BACKCARING_ALPHABLEND_POINT_HDR
 	{
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//ƒXƒvƒ‰ƒCƒg—p
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆç”¨
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		gPipeline.RasterizerState = rasterrize;
 		gPipeline.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
@@ -2553,36 +2583,36 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
 		gPipeline.BlendState.AlphaToCoverageEnable = false;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
 
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 1;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		gPipeline.SampleDesc.Count = 1;
 
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_BACKCARING_ALPHABLEND_POINT_HDR);
 	}
 #pragma endregion
 
 
-	//aƒXƒvƒ‰ƒCƒg
+	//aã‚¹ãƒ—ãƒ©ã‚¤ãƒˆ
 #pragma region PIPELINE_DATA_NOCARING_BLENDALPHA_HDR
 	{
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//ƒXƒvƒ‰ƒCƒg—p
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆç”¨
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		gPipeline.RasterizerState = rasterrize;
 		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
@@ -2590,21 +2620,21 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
 		gPipeline.BlendState.AlphaToCoverageEnable = true;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 1;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		gPipeline.SampleDesc.Count = 1;
 
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_BLENDALPHA_HDR);
 	}
 #pragma endregion
@@ -2612,63 +2642,63 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 #pragma region PIPELINE_DATA_BACKCARING_ALPHABLEND_HDR
 	{
-		//ƒpƒCƒvƒ‰ƒCƒ“‚ÌÝ’è
+		//ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã®è¨­å®š
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		gPipeline.RasterizerState = rasterrize;
-		//ƒuƒŒƒ“ƒhƒ‚[ƒh
+		//ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰
 		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 1;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		gPipeline.SampleDesc.Count = 1;
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//¬‚³‚¯‚ê‚ÎOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//å°ã•ã‘ã‚Œã°OK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_BACKCARING_ALPHABLEND_HDR);
 	}
 #pragma endregion
 
 
-	//ƒeƒNƒXƒ`ƒƒ—p
+	//ãƒ†ã‚¯ã‚¹ãƒãƒ£ç”¨
 #pragma region PIPELINE_DATA_BACKCARING_NOBLEND
 	{
-		//ƒpƒCƒvƒ‰ƒCƒ“‚ÌÝ’è
+		//ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã®è¨­å®š
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//ƒTƒ“ƒvƒ‹ƒ}ƒXƒN
+		//ã‚µãƒ³ãƒ—ãƒ«ãƒžã‚¹ã‚¯
 		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
-		//ƒ‰ƒXƒ^ƒ‰ƒCƒU
-		//”w–ÊƒJƒŠƒ“ƒOA“h‚è‚Â‚Ô‚µA[“xƒNƒŠƒbƒsƒ“ƒO—LŒø
+		//ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶
+		//èƒŒé¢ã‚«ãƒªãƒ³ã‚°ã€å¡—ã‚Šã¤ã¶ã—ã€æ·±åº¦ã‚¯ãƒªãƒƒãƒ”ãƒ³ã‚°æœ‰åŠ¹
 		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
 		rasterrize.FillMode = D3D12_FILL_MODE_WIREFRAME;
 		gPipeline.RasterizerState = rasterrize;
-		//ƒuƒŒƒ“ƒhƒ‚[ƒh
+		//ãƒ–ãƒ¬ãƒ³ãƒ‰ãƒ¢ãƒ¼ãƒ‰
 		gPipeline.BlendState.RenderTarget[0] = addBlendDesc;
 
-		//}Œ`‚ÌŒ`ó
+		//å›³å½¢ã®å½¢çŠ¶
 		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
-		//‚»‚Ì‘¼Ý’è
+		//ãã®ä»–è¨­å®š
 		gPipeline.NumRenderTargets = 1;
 		gPipeline.RTVFormats[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		gPipeline.SampleDesc.Count = 1;
 
-		//ƒfƒvƒXƒXƒeƒ“ƒVƒ‹ƒXƒe[ƒg‚ÌÝ’è
-		gPipeline.DepthStencilState.DepthEnable = true;							//[“xƒeƒXƒg‚ðs‚¤
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//‘‚«ž‚Ý‹–‰Â
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//¬‚³‚¯‚ê‚ÎOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//[“x’lƒtƒH[ƒ}ƒbƒg
+		//ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã‚¹ãƒ†ãƒ¼ãƒˆã®è¨­å®š
+		gPipeline.DepthStencilState.DepthEnable = true;							//æ·±åº¦ãƒ†ã‚¹ãƒˆã‚’è¡Œã†
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//æ›¸ãè¾¼ã¿è¨±å¯
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//å°ã•ã‘ã‚Œã°OK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//æ·±åº¦å€¤ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_BACKCARING_ALPHABLEND_WIREFLAME_HDR);
 	}
 #pragma endregion
@@ -2676,7 +2706,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 
 
-#pragma region ƒpƒCƒvƒ‰ƒCƒ“‚Ì¶¬‚Æ“o˜^HDR—p
+#pragma region GeneratePipelineForHDR
 
 	//OBJ
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
@@ -2708,7 +2738,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_SPRITE_ADDBLEND_HDR
 	);
 
-	//ƒ¿SPRITE
+	//Î±SPRITE
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
@@ -2718,7 +2748,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_SPRITE_ALPHABLEND_HDR
 	);
 
-	//‚‹P“x’ŠÛ—pƒpƒCƒvƒ‰ƒCƒ“
+	//é«˜è¼åº¦æŠ½è±¡ç”¨ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
@@ -2728,7 +2758,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_LUMINANCE_HDR
 	);
 
-	//FogLineƒpƒCƒvƒ‰ƒCƒ“
+	//FogLineãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_COLOR,
@@ -2738,7 +2768,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_FOG_LINE_HDR
 	);
 
-	//F
+	//è‰²
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_COLOR,
@@ -2758,7 +2788,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_SPRITE_HDR
 	);
 
-	//ü‚Ì‘¾‚³•Ï‚¦‚é
+	//ç·šã®å¤ªã•å¤‰ãˆã‚‹
 	//GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 	//	LAYOUT_POS_TICK,
 	//	SHADER_VERTEX_LINE,
@@ -2769,7 +2799,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	//	SHADER_GEOMETORY_LINE
 	//);
 
-	//FƒpƒCƒvƒ‰ƒCƒ“(ƒƒCƒ„[ƒtƒŒ[ƒ€)
+	//è‰²ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³(ãƒ¯ã‚¤ãƒ¤ãƒ¼ãƒ•ãƒ¬ãƒ¼ãƒ )
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_COLOR,
@@ -2780,7 +2810,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	);
 
 
-	//FogLineForBgƒpƒCƒvƒ‰ƒCƒ“
+	//FogLineForBgãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_COLOR,
@@ -2791,4 +2821,55 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	);
 #pragma endregion
 
+
+
+	//ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã™ã‚‹äºˆå®šã®ã‚³ãƒ³ãƒ”ãƒ¥ãƒ¼ãƒˆãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³------------------------------------------------------------
+	//SRV
+	{
+		RootSignatureData lData;
+		lData.paramData[0].param = 0;
+		lData.paramData[0].type = GRAPHICS_PRAMTYPE_DATA;
+		lData.range[0] = GRAPHICS_RANGE_TYPE_UAV_DESC;
+
+		lData.paramData[1].param = 1;
+		lData.paramData[1].type = GRAPHICS_PRAMTYPE_DATA2;
+		lData.range[1] = GRAPHICS_RANGE_TYPE_UAV_DESC;
+
+		lData.paramData[2].param = 2;
+		lData.paramData[2].type = GRAPHICS_PRAMTYPE_DATA3;
+		lData.range[2] = GRAPHICS_RANGE_TYPE_CBV;
+
+		lData.paramData[3].param = 3;
+		lData.paramData[3].type = GRAPHICS_PRAMTYPE_TEX;
+		lData.range[3] = GRAPHICS_RANGE_TYPE_SRV;
+		lData.sample.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_UAV_UAV_CBV_SRV, lData, 4);
+	}
+
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "InitMeshTextureParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_TEXTUREPARTICLE_INIT);
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "MeshParticleUpdateInputPosColor.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_TEXTUREPARTICLE_UPDATE);
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "MeshParticleUpdateFlashColor.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_TEXTUREPARTICLE_FLASH_UPDATE);
+
+	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+		SHADER_COMPUTE_TEXTUREPARTICLE_INIT,
+		PIPELINE_COMPUTE_DATA_TEST,
+		ROOTSIGNATURE_DATA_UAV_UAV_CBV_SRV,
+		PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_INIT
+	);
+
+	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+		SHADER_COMPUTE_TEXTUREPARTICLE_UPDATE,
+		PIPELINE_COMPUTE_DATA_TEST,
+		ROOTSIGNATURE_DATA_UAV_UAV_CBV,
+		PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_UPDATE
+	);
+
+	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+		SHADER_COMPUTE_TEXTUREPARTICLE_FLASH_UPDATE,
+		PIPELINE_COMPUTE_DATA_TEST,
+		ROOTSIGNATURE_DATA_UAV_UAV_CBV,
+		PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_FLASH_UPDATE
+	);
+	//ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã™ã‚‹äºˆå®šã®ã‚³ãƒ³ãƒ”ãƒ¥ãƒ¼ãƒˆãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³------------------------------------------------------------
 }

@@ -15,9 +15,9 @@ GraphicsPipeLineMgr::~GraphicsPipeLineMgr()
 
 void GraphicsPipeLineMgr::RegisterInputLayOutWithData(InputLayOutData INPUT_LAY_OUT, InputLayOutNames NAME)
 {
-	if (IsitSafe(NAME, InputLayOutRegisterData.size()))
+	if (IsitSafe(NAME, inputLayOutRegisterData.size()))
 	{
-		InputLayOutRegisterData[NAME] = INPUT_LAY_OUT;
+		inputLayOutRegisterData[NAME] = INPUT_LAY_OUT;
 	}
 	else
 	{
@@ -27,11 +27,11 @@ void GraphicsPipeLineMgr::RegisterInputLayOutWithData(InputLayOutData INPUT_LAY_
 
 void GraphicsPipeLineMgr::RegisterVertexShaderWithData(string SHADER_FILE, LPCSTR ENTRY_POINT, LPCSTR SHADER_MODEL, VertexShaderNames NAME)
 {
-	if (IsitSafe(NAME, VertexShaderRegisterData.size()))
+	if (IsitSafe(NAME, vertexShaderRegisterData.size()))
 	{
 		Shader vsShader;
 		vsShader.CompileShader(SHADER_FILE, ENTRY_POINT, SHADER_MODEL, SHADER_TYPE_VERTEX);
-		VertexShaderRegisterData[NAME] = vsShader.GetShaderData(SHADER_TYPE_VERTEX);
+		vertexShaderRegisterData[NAME] = vsShader.GetShaderData(SHADER_TYPE_VERTEX);
 	}
 	else
 	{
@@ -41,11 +41,11 @@ void GraphicsPipeLineMgr::RegisterVertexShaderWithData(string SHADER_FILE, LPCST
 
 void GraphicsPipeLineMgr::RegisterPixcelShaderWithData(string SHADER_FILE, LPCSTR ENTRY_POINT, LPCSTR SHADER_MODEL, PixcelShaderNames NAME)
 {
-	if (IsitSafe(NAME, PixcelShaderRegisterData.size()))
+	if (IsitSafe(NAME, pixcelShaderRegisterData.size()))
 	{
 		Shader psShader;
 		psShader.CompileShader(SHADER_FILE, ENTRY_POINT, SHADER_MODEL, SHADER_TYPE_PIXEL);
-		PixcelShaderRegisterData[NAME] = psShader.GetShaderData(SHADER_TYPE_PIXEL);
+		pixcelShaderRegisterData[NAME] = psShader.GetShaderData(SHADER_TYPE_PIXEL);
 	}
 	else
 	{
@@ -55,11 +55,11 @@ void GraphicsPipeLineMgr::RegisterPixcelShaderWithData(string SHADER_FILE, LPCST
 
 void GraphicsPipeLineMgr::RegisterGeometoryShaderWithData(string SHADER_FILE, LPCSTR ENTRY_POINT, LPCSTR SHADER_MODEL, GeometoryShaderNames NAME)
 {
-	if (IsitSafe(NAME, GeometoryShaderRegisterData.size()))
+	if (IsitSafe(NAME, geometoryShaderRegisterData.size()))
 	{
 		Shader gsShader;
 		gsShader.CompileShader(SHADER_FILE, ENTRY_POINT, SHADER_MODEL, SHADER_TYPE_GEOMETORY);
-		GeometoryShaderRegisterData[NAME] = gsShader.GetShaderData(SHADER_TYPE_GEOMETORY);
+		geometoryShaderRegisterData[NAME] = gsShader.GetShaderData(SHADER_TYPE_GEOMETORY);
 	}
 	else
 	{
@@ -69,11 +69,11 @@ void GraphicsPipeLineMgr::RegisterGeometoryShaderWithData(string SHADER_FILE, LP
 
 void GraphicsPipeLineMgr::RegisterComputeShaderWithData(string SHADER_FILE, LPCSTR ENTRY_POINT, LPCSTR SHADER_MODEL, ComputeShaderNames NAME)
 {
-	if (IsitSafe(NAME, ComputeShaderRegisterData.size()))
+	if (IsitSafe(NAME, computeShaderRegisterData.size()))
 	{
 		Shader csShader;
 		csShader.CompileShader(SHADER_FILE, ENTRY_POINT, SHADER_MODEL, SHADER_TYPE_COMPUTE);
-		ComputeShaderRegisterData[NAME] = csShader.GetShaderData(SHADER_TYPE_COMPUTE);
+		computeShaderRegisterData[NAME] = csShader.GetShaderData(SHADER_TYPE_COMPUTE);
 	}
 	else
 	{
@@ -83,9 +83,9 @@ void GraphicsPipeLineMgr::RegisterComputeShaderWithData(string SHADER_FILE, LPCS
 
 void GraphicsPipeLineMgr::RegisterPipeLineDataWithData(D3D12_GRAPHICS_PIPELINE_STATE_DESC PIPELINE_DATA, PipeLineDataNames NAME)
 {
-	if (IsitSafe(NAME, PipeLineDataRegisterData.size()))
+	if (IsitSafe(NAME, pipeLineDataRegisterData.size()))
 	{
-		PipeLineDataRegisterData[NAME] = PIPELINE_DATA;
+		pipeLineDataRegisterData[NAME] = PIPELINE_DATA;
 	}
 	else
 	{
@@ -109,34 +109,34 @@ void GraphicsPipeLineMgr::CreatePipeLine(InputLayOutNames INPUT_LAYOUT_NAME, Ver
 {
 	//パイプラインデータの代入
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC grahicsPipeLine;
-	grahicsPipeLine = PipeLineDataRegisterData[PIPELINE_DATA_NAME];
+	grahicsPipeLine = pipeLineDataRegisterData[PIPELINE_DATA_NAME];
 
 
 	//インプットレイアウトの代入
-	grahicsPipeLine.InputLayout.pInputElementDescs = InputLayOutRegisterData[INPUT_LAYOUT_NAME].inputLayOut;
-	grahicsPipeLine.InputLayout.NumElements = InputLayOutRegisterData[INPUT_LAYOUT_NAME].size;
+	grahicsPipeLine.InputLayout.pInputElementDescs = inputLayOutRegisterData[INPUT_LAYOUT_NAME].inputLayOut;
+	grahicsPipeLine.InputLayout.NumElements = inputLayOutRegisterData[INPUT_LAYOUT_NAME].size;
 
 	//Shaderの代入
-	grahicsPipeLine.VS = CD3DX12_SHADER_BYTECODE(VertexShaderRegisterData[VERTEX_SHADER_NAME]->GetBufferPointer(), VertexShaderRegisterData[VERTEX_SHADER_NAME]->GetBufferSize());
-	grahicsPipeLine.PS = CD3DX12_SHADER_BYTECODE(PixcelShaderRegisterData[PIXCEL_SHADER_NAME]->GetBufferPointer(), PixcelShaderRegisterData[PIXCEL_SHADER_NAME]->GetBufferSize());
+	grahicsPipeLine.VS = CD3DX12_SHADER_BYTECODE(vertexShaderRegisterData[VERTEX_SHADER_NAME]->GetBufferPointer(), vertexShaderRegisterData[VERTEX_SHADER_NAME]->GetBufferSize());
+	grahicsPipeLine.PS = CD3DX12_SHADER_BYTECODE(pixcelShaderRegisterData[PIXCEL_SHADER_NAME]->GetBufferPointer(), pixcelShaderRegisterData[PIXCEL_SHADER_NAME]->GetBufferSize());
 
 
 
 
 	if (GEOMETORY_SHADER_NAME != SHADER_GEOMETORY_NONE)
 	{
-		grahicsPipeLine.GS = CD3DX12_SHADER_BYTECODE(GeometoryShaderRegisterData[GEOMETORY_SHADER_NAME]->GetBufferPointer(), GeometoryShaderRegisterData[GEOMETORY_SHADER_NAME]->GetBufferSize());
+		grahicsPipeLine.GS = CD3DX12_SHADER_BYTECODE(geometoryShaderRegisterData[GEOMETORY_SHADER_NAME]->GetBufferPointer(), geometoryShaderRegisterData[GEOMETORY_SHADER_NAME]->GetBufferSize());
 	}
 
 	//ルートシグネチャの設定
-	RootSignatureName[PIPELINE_NAME] = ROOTSIGNATURE;
+	rootSignatureName[PIPELINE_NAME] = ROOTSIGNATURE;
 	grahicsPipeLine.pRootSignature = GraphicsRootSignature::Instance()->GetRootSignature(ROOTSIGNATURE).Get();
 
 
 	//パイプラインの生成
-	if (IsitSafe(PIPELINE_NAME, PipeLineRegisterData.size()))
+	if (IsitSafe(PIPELINE_NAME, pipeLineRegisterData.size()))
 	{
-		HRESULT lResult = DirectX12Device::Instance()->dev->CreateGraphicsPipelineState(&grahicsPipeLine, IID_PPV_ARGS(&PipeLineRegisterData[PIPELINE_NAME]));
+		HRESULT lResult = DirectX12Device::Instance()->dev->CreateGraphicsPipelineState(&grahicsPipeLine, IID_PPV_ARGS(&pipeLineRegisterData[PIPELINE_NAME]));
 		if (lResult != S_OK)
 		{
 			assert(0);
@@ -155,7 +155,7 @@ void GraphicsPipeLineMgr::CreateComputePipeLine(ComputeShaderNames COMPUTE_SHADE
 	grahicsPipeLine = computePipeLineDataRegisterData[PIPELINE_DATA_NAME];
 
 	//Shaderの代入
-	grahicsPipeLine.CS = CD3DX12_SHADER_BYTECODE(ComputeShaderRegisterData[COMPUTE_SHADER_NAME]->GetBufferPointer(), ComputeShaderRegisterData[COMPUTE_SHADER_NAME]->GetBufferSize());
+	grahicsPipeLine.CS = CD3DX12_SHADER_BYTECODE(computeShaderRegisterData[COMPUTE_SHADER_NAME]->GetBufferPointer(), computeShaderRegisterData[COMPUTE_SHADER_NAME]->GetBufferSize());
 
 	//ルートシグネチャの設定
 	computeRootSignatureName[PIPELINE_NAME] = ROOTSIGNATURE;
@@ -163,10 +163,10 @@ void GraphicsPipeLineMgr::CreateComputePipeLine(ComputeShaderNames COMPUTE_SHADE
 
 
 	//パイプラインの生成
-	if (IsitSafe(PIPELINE_NAME, ComputePipeLineRegisterData.size()))
+	if (IsitSafe(PIPELINE_NAME, computePipeLineRegisterData.size()))
 	{
-		DirectX12Device::Instance()->dev->CreateComputePipelineState(&grahicsPipeLine, IID_PPV_ARGS(&ComputePipeLineRegisterData[PIPELINE_NAME]));
-		ComputePipeLineRegisterData[PIPELINE_NAME]->SetName(L"Compute");
+		DirectX12Device::Instance()->dev->CreateComputePipelineState(&grahicsPipeLine, IID_PPV_ARGS(&computePipeLineRegisterData[PIPELINE_NAME]));
+		computePipeLineRegisterData[PIPELINE_NAME]->SetName(L"Compute");
 	}
 	else
 	{
@@ -176,10 +176,10 @@ void GraphicsPipeLineMgr::CreateComputePipeLine(ComputeShaderNames COMPUTE_SHADE
 
 bool GraphicsPipeLineMgr::SetPipeLineAndRootSignature(PipeLineNames PIPELINE_NAME)
 {
-	if (IsitSafe(PIPELINE_NAME, PipeLineRegisterData.size()) && PipeLineRegisterData[PIPELINE_NAME].Get() != nullptr)
+	if (IsitSafe(PIPELINE_NAME, pipeLineRegisterData.size()) && pipeLineRegisterData[PIPELINE_NAME].Get() != nullptr)
 	{
-		GraphicsRootSignature::Instance()->SetRootSignature(RootSignatureName[PIPELINE_NAME]);
-		DirectX12CmdList::Instance()->cmdList->SetPipelineState(PipeLineRegisterData[PIPELINE_NAME].Get());
+		GraphicsRootSignature::Instance()->SetRootSignature(rootSignatureName[PIPELINE_NAME]);
+		DirectX12CmdList::Instance()->cmdList->SetPipelineState(pipeLineRegisterData[PIPELINE_NAME].Get());
 		DescriptorHeapMgr::Instance()->SetDescriptorHeap();
 		return true;
 	}
@@ -192,10 +192,10 @@ bool GraphicsPipeLineMgr::SetPipeLineAndRootSignature(PipeLineNames PIPELINE_NAM
 
 bool GraphicsPipeLineMgr::SetComputePipeLineAndRootSignature(ComputePipeLineNames PIPELINE_NAME)
 {
-	if (IsitSafe(PIPELINE_NAME, ComputePipeLineRegisterData.size()) && ComputePipeLineRegisterData[PIPELINE_NAME].Get() != nullptr)
+	if (IsitSafe(PIPELINE_NAME, computePipeLineRegisterData.size()) && computePipeLineRegisterData[PIPELINE_NAME].Get() != nullptr)
 	{
 		GraphicsRootSignature::Instance()->SetComputeRootSignature(computeRootSignatureName[PIPELINE_NAME]);
-		DirectX12CmdList::Instance()->cmdList->SetPipelineState(ComputePipeLineRegisterData[PIPELINE_NAME].Get());
+		DirectX12CmdList::Instance()->cmdList->SetPipelineState(computePipeLineRegisterData[PIPELINE_NAME].Get());
 		return true;
 	}
 	else
@@ -207,7 +207,7 @@ bool GraphicsPipeLineMgr::SetComputePipeLineAndRootSignature(ComputePipeLineName
 
 RootSignatureMode GraphicsPipeLineMgr::GetRootSignatureName(PipeLineNames PIPELINE_NAME)
 {
-	return RootSignatureName[PIPELINE_NAME];
+	return rootSignatureName[PIPELINE_NAME];
 }
 
 template <typename T>

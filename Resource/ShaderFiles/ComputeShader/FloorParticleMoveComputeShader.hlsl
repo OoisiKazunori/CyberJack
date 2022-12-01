@@ -40,7 +40,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     }
 
     float3 outputPos = updateData[index].pos.xyz;
-    float3 outputScale = float3(4,4,4);
+    float3 outputScale = float3(5,5,5);
 
     //行列計算-------------------------
     matrix pMatWorld = CalucurateWorldMat(outputPos,outputScale,float3(0,0,0),billBoard);
@@ -56,7 +56,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     outputMat.mat = mul(pMatWorld,outputMat.mat);
     outputMat.mat = mul(lView,    outputMat.mat);
     outputMat.mat = mul(lproj,    outputMat.mat);
-    outputMat.color = float4(0.8,0.8,0.8,0.6);
+    outputMat.color = float4(0.3,0.3,0.3,0.6);
     matrixData[index] = outputMat;
     //出力用-------------------------
 
