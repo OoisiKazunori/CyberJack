@@ -24,6 +24,7 @@ public:
 		cameraIndex = CAMERA_INDEX;
 	};
 
+	bool hitFlag;
 	bool startFlag = false;
 	Sprite3DRender vaporWaveSunRender;
 protected:

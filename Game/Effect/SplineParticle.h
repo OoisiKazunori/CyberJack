@@ -62,6 +62,8 @@ private:
 		float rateVel;
 		DirectX::XMFLOAT2 offset;
 		DirectX::XMFLOAT4 color;
+		float radius;
+		float radiusRate;
 	};
 	struct InitCommonData
 	{

@@ -25,8 +25,7 @@ public:
 	}
 	bool resetSceneFlag;
 
-
-	struct UpdateCommonFlashData
+	struct UpdateCommonData
 	{
 		DirectX::XMMATRIX scaleRotateBillboardMat;
 		DirectX::XMMATRIX viewProjection;
@@ -35,7 +34,8 @@ public:
 		DirectX::XMFLOAT2 pad;
 		float alpha;
 	};
-	UpdateCommonFlashData updateFlashCommonData;
+
+	UpdateCommonData updateCommonData;
 private:
 	int sceneNum;
 	//バッファ
@@ -93,7 +93,9 @@ private:
 		DirectX::XMMATRIX matrix;
 		DirectX::XMFLOAT4 color;
 	};
-	struct UpdateCommonData
+
+
+	struct UpdateCommonFlashData
 	{
 		DirectX::XMMATRIX scaleRotateBillboardMat;
 		DirectX::XMMATRIX viewProjection;
@@ -102,8 +104,8 @@ private:
 		DirectX::XMFLOAT2 pad;
 		float alpha;
 	};
+	UpdateCommonFlashData updateFlashCommonData;
 
-	UpdateCommonData updateCommonData;
 	RESOURCE_HANDLE updateHandle, updateCommonHandle, updateFlashCommonHandle;
 	RESOURCE_HANDLE updateViewHandle;
 	DirectX::XMMATRIX scaleRotaMat;

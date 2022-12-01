@@ -18,7 +18,9 @@ struct UpdateData
     float rate;
     float rateVel;
     float2 offset;
-    float4 color;
+    float4 color;    
+    float radius;
+    float radiusRate;
 };
 
 struct OutputData
@@ -68,8 +70,15 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     float3 basePos = splineData.xyz;
 	float3 offset = float3(updateData[index].offset.xy,0);
 
+    float sinRate = sin(3.14f / 120.0f * updateData[index].radiusRate) * -(updateData[index].radius - 10);
+    ++updateData[index].radiusRate;
+	offset.x = cos(ConvertToRadian(RandVec3(index * 50,360,0).z)) * (updateData[index].radius + sinRate);
+	offset.y = sin(ConvertToRadian(RandVec3(index * 50,360,0).z)) * (updateData[index].radius + sinRate);
+
+
     //スプライン曲線に沿った位置からオフセットを足した値がパーティクルの位置
     float3 particlePos = basePos + offset;
+
 
     //行列計算-------------------------
     matrix pMatWorld = scaleRotateBillboardMat;

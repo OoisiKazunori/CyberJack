@@ -13,6 +13,8 @@ struct OutputData
 	float rateVel;
     float2 offset;
     float4 color;
+    float radius;
+    float radiusRate;
 };
 
 //èoóÕ
@@ -37,4 +39,6 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
 	worldPosData[index].rateVel = RandVec3(index,0.001f,0.009f).x;
 	worldPosData[index].offset = offset;
 	worldPosData[index].color = float4(RandVec3(index * 50,1,0),1);
+    worldPosData[index].radiusRate = RandVec3(index * 50,1000,0).x;
+    worldPosData[index].radius = RandVec3(index * 50,50,20).y;
 }

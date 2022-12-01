@@ -441,6 +441,10 @@ void BlockParticleStage::Update()
 			floorParticleTransform[i].pos.z = (500.0f + static_cast<float>(FLOOR_PARTICLE_MAX_NUM) * 700.0f) - 1200.0f;
 		}
 		floorParticleMotherMat[i] = floorParticleTransform[i].GetMat();
+
+
+		floorParticleModel[i]->updateCommonData.flash.x = flash.x;
+		floorParticleModel[i]->updateCommonData.flash.y = flash.y;
 		floorParticleModel[i]->Update(false, true);
 	}
 
@@ -448,10 +452,24 @@ void BlockParticleStage::Update()
 	//KazImGuiHelper::InputVec2("Flash", &flash);
 	//ImGui::End();
 
+	flash.x += 200.0f;
+	if (100000.0f <= flash.x)
+	{
+		flash.x = -10000.0f;
+	}
+	if (hitFlag)
+	{
+		flash.y = 1.0f;
+	}
+	else
+	{
+		flash.y = 0.0f;
+	}
+
 	for (int i = 0; i < pillarParticleTransform.size(); ++i)
 	{
-		pillarParticleModel[i]->updateFlashCommonData.flash.x = flash.x;
-		pillarParticleModel[i]->updateFlashCommonData.flash.y = flash.y;
+		pillarParticleModel[i]->updateCommonData.flash.x = flash.x;
+		pillarParticleModel[i]->updateCommonData.flash.y = flash.y;
 
 
 		pillarParticleTransform[i].pos.z += -5.0f;
