@@ -71,8 +71,7 @@ private:
 	{
 		DirectX::XMFLOAT3 pos;
 		DirectX::XMFLOAT4 color;
-		float sinTimer;
-		float sinTimeVel;
+		DirectX::XMFLOAT4 baseColor;
 	};
 	struct InitCommonData
 	{
@@ -99,6 +98,8 @@ private:
 		DirectX::XMMATRIX scaleRotateBillboardMat;
 		DirectX::XMMATRIX viewProjection;
 		DirectX::XMMATRIX motherMat;
+		DirectX::XMFLOAT2 flash;
+		DirectX::XMFLOAT2 pad;
 		float alpha;
 	};
 

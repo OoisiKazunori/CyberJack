@@ -169,6 +169,12 @@ void TextureParticle::Init()
 
 void TextureParticle::Update(bool FLAG, bool ENABLE_BILLBOARD_FLAG)
 {
+	ImGui::Begin("Be");
+	ImGui::DragFloat("PosX", &updateCommonData.flash.x);
+	ImGui::DragFloat("PosY", &updateCommonData.flash.y);
+	ImGui::End();
+
+
 	DirectX::XMMATRIX lMatWorld = KazMath::CaluTransMatrix({ 0.0f,0.0f,0.0f }) * KazMath::CaluScaleMatrix({ scale,scale,scale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
 	if (FLAG)
 	{

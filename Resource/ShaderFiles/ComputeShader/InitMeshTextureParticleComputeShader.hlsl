@@ -5,8 +5,7 @@ struct OutputData
 {
     float3 pos;
     float4 color;
-    float sinTimer;
-    float sinTimeVel;
+    float4 baseColor;
 };
 
 struct InputData
@@ -185,10 +184,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
                 worldPosData[outputIndex].color = tex.SampleLevel(smp,uv,0);
             }
 
-            worldPosData[outputIndex].sinTimer = 0;
-            worldPosData[outputIndex].sinTimeVel = RandVec3(
-                index + rate * 100 + resultDistance.x + RandVec3(outputIndex,PARTICLE_MAX_BIAS,0).x
-                ,50,20).z;
+           worldPosData[outputIndex].baseColor = worldPosData[outputIndex].color;
         }
     }
     //パーティクルの配置--------------------------------------------
