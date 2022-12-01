@@ -186,7 +186,7 @@ void TextureParticle::Update(bool FLAG, bool ENABLE_BILLBOARD_FLAG)
 	DirectX::XMMATRIX lBillBoard;
 	if (ENABLE_BILLBOARD_FLAG)
 	{
-		lBillBoard = CameraMgr::Instance()->GetMatBillBoard();
+		lBillBoard = CameraMgr::Instance()->yBillBoardArray[0];
 	}
 	else
 	{

@@ -125,6 +125,7 @@ void CameraMgr::Camera(const KazMath::Vec3<float> &EYE_POS, const KazMath::Vec3<
 	matBillboard.r[2] = cameraAxis.z;
 	matBillboard.r[3] = DirectX::XMVectorSet(0, 0, 0, 1);
 
+	billBoardArray[CAMERA_INDEX] = matBillboard;
 #pragma region Y軸ビルボード行列
 	// カメラX軸、Y軸、Z軸
 	DirectX::XMVECTOR billCameraAxisX, billCameraAxisY, billCameraAxisZ;
@@ -137,14 +138,15 @@ void CameraMgr::Camera(const KazMath::Vec3<float> &EYE_POS, const KazMath::Vec3<
 	billCameraAxisZ = DirectX::XMVector3Cross(billCameraAxisX, billCameraAxisY);
 
 	// Y軸回りビルボード行列
-	//matBillboard.r[0] = billCameraAxisX;
-	//matBillboard.r[1] = billCameraAxisY;
-	//matBillboard.r[2] = billCameraAxisZ;
-	//matBillboard.r[3] = DirectX::XMVectorSet(0, 0, 0, 1);
+	matBillboard.r[0] = billCameraAxisX;
+	matBillboard.r[1] = billCameraAxisY;
+	matBillboard.r[2] = billCameraAxisZ;
+	matBillboard.r[3] = DirectX::XMVectorSet(0, 0, 0, 1);
+
+	yBillBoardArray[CAMERA_INDEX] = matBillboard;
 #pragma endregion
 
 	viewArray[CAMERA_INDEX] = matView;
-	billBoardArray[CAMERA_INDEX] = matBillboard;
 	//view = matView;
 	//billBoard = matBillboard;
 }

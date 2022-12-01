@@ -123,18 +123,6 @@ float3 RandVec3(uint SEED,float MAX,float MIN)
     result.x = (MAX + abs(MIN)) * result.x - abs(MIN);
     result.y = (MAX + abs(MIN)) * result.y - abs(MIN);
     result.z = (MAX + abs(MIN)) * result.z - abs(MIN);
-    if(result.x <= MIN)
-    {
-        result.x = MIN;        
-    }
-    if(result.y <= MIN)
-    {
-        result.y = MIN;        
-    }
-    if(result.z <= MIN)
-    {
-        result.z = MIN;        
-    }
     return result;
 }
 

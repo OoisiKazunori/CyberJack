@@ -71,6 +71,8 @@ private:
 	{
 		DirectX::XMFLOAT3 pos;
 		DirectX::XMFLOAT4 color;
+		float sinTimer;
+		float sinTimeVel;
 	};
 	struct InitCommonData
 	{

@@ -441,7 +441,7 @@ void BlockParticleStage::Update()
 			floorParticleTransform[i].pos.z = (500.0f + static_cast<float>(FLOOR_PARTICLE_MAX_NUM) * 700.0f) - 1200.0f;
 		}
 		floorParticleMotherMat[i] = floorParticleTransform[i].GetMat();
-		floorParticleModel[i]->Update(false, false);
+		floorParticleModel[i]->Update(false, true);
 	}
 
 	//ImGui::Begin("Block");

@@ -19,6 +19,8 @@ struct UpdateData
 {
     float3 pos;
     float4 color;
+    float sinTiemr;
+    float sinTimeVel;
 };
 
 RWStructuredBuffer<UpdateData> worldPosColorArrayData : register(u0);
@@ -30,11 +32,14 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     uint index = (groupThreadID.y * 1204) + groupThreadID.x + groupThreadID.z;
     index += 1024 * groupId.x;
 
+    ++worldPosColorArrayData[index].sinTiemr;
+    float sinRate = sin(3.14f / 120.0f * worldPosColorArrayData[index].sinTiemr) * worldPosColorArrayData[index].sinTimeVel;
+
     //行列計算-------------------------
     matrix pMatWorld = scaleRotateBillboardMat;
     pMatWorld[0][3] = worldPosColorArrayData[index].pos.x;
     pMatWorld[1][3] = worldPosColorArrayData[index].pos.y;
-    pMatWorld[2][3] = worldPosColorArrayData[index].pos.z;
+    pMatWorld[2][3] = worldPosColorArrayData[index].pos.z + sinRate;
 
     pMatWorld = mul(motherMat,pMatWorld);
     //行列計算-------------------------

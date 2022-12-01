@@ -90,6 +90,8 @@ public:
 
 	static const int CAMERA_ARRAY_NUM = 3;
 	std::array<DirectX::XMMATRIX, CAMERA_ARRAY_NUM> viewArray;
+
+	std::array<DirectX::XMMATRIX, CAMERA_ARRAY_NUM> yBillBoardArray;
 private:
 
 	DirectX::XMMATRIX view;
@@ -98,6 +100,7 @@ private:
 
 
 	std::array<DirectX::XMMATRIX, CAMERA_ARRAY_NUM> billBoardArray;
+
 	std::array<DirectX::XMMATRIX, CAMERA_ARRAY_NUM> perspectiveMatArray;
 
 	std::array<std::unique_ptr<DirtySet>, CAMERA_ARRAY_NUM> viewDirtyFlagArray;
