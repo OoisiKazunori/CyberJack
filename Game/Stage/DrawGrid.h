@@ -30,7 +30,7 @@ public:
 
 private:
 	//グリッドの描画ーーー
-	static const int LINE_MAX = 100;
+	static const int LINE_MAX = 50;
 	static const int LINE_Z_MAX = LINE_MAX / 2;
 	static const int LINE_X_MAX = LINE_MAX / 2;
 

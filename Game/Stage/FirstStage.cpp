@@ -143,7 +143,7 @@ void FirstStage::Update()
 	float lVel = -objectSpeed;
 	for (int i = 0; i < floorStage.size(); ++i)
 	{
-		floorStage[i].data.transform.pos.y = -60.0f;
+		floorStage[i].data.transform.pos.y = -30.0f;
 		floorStage[i].data.transform.pos.z += lVel;
 
 		if (floorStage[i].data.transform.pos.z <= -200.0f)

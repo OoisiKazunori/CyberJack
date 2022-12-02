@@ -161,7 +161,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	fireIndex = 0;
 	cameraWork.Init();
 
-	tutorial.Init(true);
+	tutorial.Init(false);
 	portalEffect.Init();
 
 	isGameOverFlag = false;
@@ -730,6 +730,8 @@ void Game::Update()
 						break;
 					}
 				}
+
+				stages[stageNum]->hitFlag = true;
 			}
 		}
 	}
@@ -856,6 +858,7 @@ void Game::Update()
 		goalBox.Update();
 		stageUI.Update();
 		stages[stageNum]->Update();
+		stages[stageNum]->hitFlag = false;
 		tutorialWindow.Update();
 		logoutWindow->Update();
 
@@ -1097,6 +1100,13 @@ void Game::Draw()
 			goalBox.Draw();
 		}
 
+		//中間演出までのポータル
+		if (portalEffect.IsStart() && !portalEffect.IsFinish())
+		{
+			portalEffect.portalRender.Draw();
+		}
+
+
 		stages[stageNum]->SetCamera(0);
 		stages[stageNum]->Draw();
 
@@ -1145,11 +1155,6 @@ void Game::Draw()
 		if (portalEffect.DrawNextPortal())
 		{
 			portalEffect.nextPortalRender.Draw();
-		}
-		//中間演出までのポータル
-		if (portalEffect.IsStart() && !portalEffect.IsFinish())
-		{
-			portalEffect.portalRender.Draw();
 		}
 
 		if (changeLayerLevelMaxTime[gameStageLevel] <= gameFlame)
