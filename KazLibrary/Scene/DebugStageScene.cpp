@@ -143,6 +143,14 @@ void DebugStageScene::Input()
 		stageNum = static_cast<int>(stages.size() - 1);
 	}
 
+	for (int i = 0; i < stages.size(); ++i)
+	{
+		if (stages[i] != nullptr)
+		{
+			stages[i]->startFlag = true;
+		}
+	}
+
 	if (toolModeFlag)
 	{
 		mapchipTool.Input(input->MouseInputTrigger(MOUSE_INPUT_LEFT), input->MouseInputTrigger(MOUSE_INPUT_RIGHT), input->GetMousePoint());

@@ -94,7 +94,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	const std::array<KazMath::Color, KazEnemyHelper::STAGE_NUM_MAX> &BACKGROUND_COLOR,
 	const std::array<std::array<KazEnemyHelper::ForceCameraData, 10>, KazEnemyHelper::STAGE_NUM_MAX> &CAMERA_ARRAY)
 {
-	player.Init(KazMath::Transform3D().pos, false);
+	player.Init(KazMath::Transform3D().pos, true, false);
 	cursor.Init();
 
 

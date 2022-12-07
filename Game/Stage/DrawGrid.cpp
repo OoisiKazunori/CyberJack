@@ -203,8 +203,8 @@ void DrawGrid::Update(float Y_POS, bool USE_FLASHLINE_FLAG)
 	{
 		for (int limitPointIndex = 0; limitPointIndex < lightEffectGridFloorLineStartPos[i].size(); limitPointIndex++)
 		{
-			lightEffectGridFloorLineStartPos[i][limitPointIndex] = gridFloorXLinePos[i - 50][0].pos + KazMath::Vec3<float>(0.0f, 0.0f, static_cast<float>(limitPointIndex) * -10.0f);
-			lightEffectGridFloorLineEndPos[i][limitPointIndex] = gridFloorXLinePos[i - 50][1].pos + lVel * static_cast<float>(limitPointIndex);
+			lightEffectGridFloorLineStartPos[i][limitPointIndex] = gridFloorXLinePos[i - LINE_MAX/2][0].pos + KazMath::Vec3<float>(0.0f, 0.0f, static_cast<float>(limitPointIndex) * -10.0f);
+			lightEffectGridFloorLineEndPos[i][limitPointIndex] = gridFloorXLinePos[i - LINE_MAX/2][1].pos + lVel * static_cast<float>(limitPointIndex);
 		}
 	}
 
