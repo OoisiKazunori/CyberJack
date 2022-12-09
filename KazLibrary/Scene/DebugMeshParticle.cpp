@@ -648,7 +648,7 @@ KazMath::Vec3<float> DebugMeshParticleScene::ClosestPoint(KazMath::Vec3<float> P
 	float lD5SubD6 = lD5 - lD6;
 	if (lVa <= 0.0f && 0.0f <= lD4SubD3 && 0.0f <= lD5SubD6)
 	{
-		float lW = lD4SubD3 / (lD4SubD3 - lD5SubD6);
+		float lW = lD4SubD3 / (lD4SubD3 + lD5SubD6);
 		return TRIANGLE_B_POS + (TRIANGLE_C_POS - TRIANGLE_B_POS) * lW;
 	}
 
