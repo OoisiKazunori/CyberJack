@@ -37,17 +37,18 @@ private:
 	std::array<std::unique_ptr<MeshParticleEmitter>, MESH_MAX_NUM> meshEmitter;
 	std::array<std::string, MESH_MAX_NUM>filePass;
 
-	int meshIndex,prevMeshIndex;
+	int meshIndex, prevMeshIndex;
 	bool cpuCheckParticleFlag;
 	bool gpuCheckParticleFlag;
 	bool textureParticleFlag;
 	bool splineParticleFlag;
 	bool perlinNoizeFlag;
+	bool cpuCheckHitBoxFlag;
 	bool drawGridFlag;
 
 	bool deadParticleFlag, prevDeadParticleFlag;
 
-	
+
 	std::unique_ptr<DeadParticle> deadParticle;
 
 	//デバック用--------------------------------------------
@@ -243,6 +244,19 @@ private:
 	//パーリンノイズの確認--------------------------------------------
 
 	RESOURCE_HANDLE modelHandle;
-	BackGroundForDebug debug;
+	//BackGroundForDebug debug;
+
+
+	//ボロノイ領域による当たり判定の確認--------------------------------------------
+	KazMath::Vec3<float>ClosestPoint(KazMath::Vec3<float>POINT_POS, KazMath::Vec3<float>TRIANGLE_A_POS, KazMath::Vec3<float>TRIANGLE_B_POS, KazMath::Vec3<float>TRIANGLE_C_POS);
+
+	std::array<KazMath::Vec3<float>, 3>hitBoxTrianglePosArray;
+	KazMath::Vec3<float> pointPos;
+	float pointRadius;
+
+	std::array<LineRender, 3>hitBoxTriangelLine;
+	BoxPolygonRender pointPosR;
+	BoxPolygonRender closestPointPosR;;
+	//ボロノイ領域による当たり判定の確認--------------------------------------------
 };
 

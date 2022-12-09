@@ -92,7 +92,6 @@ DebugMeshParticleScene::DebugMeshParticleScene()
 	{
 		limitPos.push_back(KazMath::Vec3<float>(0.0f, 0.0f, -300.0f + static_cast<float>(i) * 400.0f));
 	}
-
 }
 
 DebugMeshParticleScene::~DebugMeshParticleScene()
@@ -107,6 +106,11 @@ void DebugMeshParticleScene::Init()
 	triangelPosArray[1] = { 30.0f,0.0f,0.0f };
 	triangelPosArray[2] = { 0.0f,30.0f,0.0f };
 
+
+	hitBoxTrianglePosArray[0] = { -30.0f,0.0f,0.0f };
+	hitBoxTrianglePosArray[1] = { 30.0f,0.0f,0.0f };
+	hitBoxTrianglePosArray[2] = { 0.0f,30.0f,0.0f };
+	pointPosR.data.color = { 0,200,0,255 };
 
 	for (int i = 0; i < meshEmitter.size(); ++i)
 	{
@@ -147,6 +151,7 @@ void DebugMeshParticleScene::Update()
 	ImGui::Checkbox("CheckTextureParticle", &textureParticleFlag);
 	ImGui::Checkbox("CheckSplineParticle", &splineParticleFlag);
 	ImGui::Checkbox("CheckPerlinNoise", &perlinNoizeFlag);
+	ImGui::Checkbox("CheckHitBoxNoise", &cpuCheckHitBoxFlag);
 	if (cpuCheckParticleFlag)
 	{
 		if (ImGui::TreeNode("TrianglePosArray"))
@@ -231,6 +236,18 @@ void DebugMeshParticleScene::Update()
 			ImGui::TreePop();
 		}
 		ImGui::Checkbox("Init", &initSplineFlag);
+	}
+	else if (cpuCheckHitBoxFlag)
+	{
+		if (ImGui::TreeNode("TrianglePosArray"))
+		{
+			KazImGuiHelper::InputVec3("Pos1", &hitBoxTrianglePosArray[0]);
+			KazImGuiHelper::InputVec3("Pos2", &hitBoxTrianglePosArray[1]);
+			KazImGuiHelper::InputVec3("Pos3", &hitBoxTrianglePosArray[2]);
+			ImGui::TreePop();
+		}
+		KazImGuiHelper::InputVec3("PointPos", &pointPos);
+		ImGui::DragFloat("PointRadius", &pointRadius);
 	}
 	ImGui::End();
 
@@ -404,6 +421,31 @@ void DebugMeshParticleScene::Update()
 		}
 		splineParticle->Update();
 	}
+	else if (cpuCheckHitBoxFlag)
+	{
+		KazMath::Vec3<float>lClosestPos = ClosestPoint(pointPos, hitBoxTrianglePosArray[0], hitBoxTrianglePosArray[1], hitBoxTrianglePosArray[2]);
+
+		//当たり判定
+		if (lClosestPos.Distance(pointPos) <= pointRadius)
+		{
+			pointPosR.data.color = { 255,0,0,255 };
+		}
+		else
+		{
+			pointPosR.data.color = { 255,255,255,255 };
+		}
+		hitBoxTriangelLine[0].data.startPos = hitBoxTrianglePosArray[0];
+		hitBoxTriangelLine[0].data.endPos = hitBoxTrianglePosArray[1];
+		hitBoxTriangelLine[1].data.startPos = hitBoxTrianglePosArray[1];
+		hitBoxTriangelLine[1].data.endPos = hitBoxTrianglePosArray[2];
+		hitBoxTriangelLine[2].data.startPos = hitBoxTrianglePosArray[2];
+		hitBoxTriangelLine[2].data.endPos = hitBoxTrianglePosArray[0];
+
+		pointPosR.data.transform.pos = pointPos;
+		pointPosR.data.transform.scale = { pointRadius,pointRadius,pointRadius };
+
+		closestPointPosR.data.transform.pos = lClosestPos;
+	}
 
 }
 
@@ -468,10 +510,20 @@ void DebugMeshParticleScene::Draw()
 			controlPointR[i].Draw();
 		}
 	}
+	else if (cpuCheckHitBoxFlag)
+	{
+		for (int i = 0; i < hitBoxTriangelLine.size(); ++i)
+		{
+			hitBoxTriangelLine[i].Draw();
+		}
+
+		pointPosR.Draw();
+		closestPointPosR.Draw();
+	}
 
 	if (drawGridFlag)
 	{
-		debug.Draw();
+		//debug.Draw();
 	}
 
 	rendertarget->Draw();
@@ -518,4 +570,94 @@ float DebugMeshParticleScene::PerlinNoize(const KazMath::Vec2<float> UV, int SEE
 	float l2 = Larp(w01, w11, u.x);
 
 	return Larp(l1, l2, u.y);
+}
+
+KazMath::Vec3<float> DebugMeshParticleScene::ClosestPoint(KazMath::Vec3<float> POINT_POS, KazMath::Vec3<float> TRIANGLE_A_POS, KazMath::Vec3<float> TRIANGLE_B_POS, KazMath::Vec3<float> TRIANGLE_C_POS)
+{
+	//点Pが三角形Aの外側の頂点領域の中にあるか確認--------------------------------------------
+
+	KazMath::Vec3<float> lAb = TRIANGLE_B_POS - TRIANGLE_A_POS;
+	KazMath::Vec3<float> lAc = TRIANGLE_C_POS - TRIANGLE_A_POS;
+	KazMath::Vec3<float> lAp = POINT_POS - TRIANGLE_A_POS;
+
+	float lD1 = lAb.Dot(lAp);
+	float lD2 = lAc.Dot(lAp);
+
+	if (lD1 <= 0.0f && lD2 <= 0.0f)
+	{
+		return TRIANGLE_A_POS;
+	}
+
+	//点Pが三角形Aの外側の頂点領域の中にあるか確認--------------------------------------------
+
+
+
+	//点Pが三角形Bの外側の頂点領域の中にあるか確認--------------------------------------------
+
+	KazMath::Vec3<float> lBp = POINT_POS - TRIANGLE_B_POS;
+	float lD3 = lAb.Dot(lBp);
+	float lD4 = lAc.Dot(lBp);
+	if (0.0f <= lD3 && lD4 <= lD3)
+	{
+		return TRIANGLE_B_POS;
+	}
+
+	//点Pが三角形Bの外側の頂点領域の中にあるか確認--------------------------------------------
+
+
+	//点PがABの辺領域の中にあるかどうか確認し、あればPのAB上に対する射影を返す--------------------------------------------
+
+	float lVc = lD1 * lD4 - lD3 * lD2;
+	if (lVc <= 0.0f && 0.0f <= lD1 && lD3 <= 0.0f)
+	{
+		float lV = lD1 / (lD1 - lD3);
+		return TRIANGLE_A_POS + lAb * lV;
+	}
+
+	//点PがABの辺領域の中にあるかどうか確認し、あればPのAB上に対する射影を返す--------------------------------------------
+
+	//点PがCの外側の頂点領域の中にあるかどうか確認--------------------------------------------
+
+	KazMath::Vec3<float>lCp = POINT_POS - TRIANGLE_C_POS;
+	float lD5 = lAb.Dot(lCp);
+	float lD6 = lAc.Dot(lCp);
+	if (0.0f <= lD6 && lD5 <= lD6)
+	{
+		return TRIANGLE_C_POS;
+	}
+	//点PがCの外側の頂点領域の中にあるかどうか確認--------------------------------------------
+
+
+
+	//点PがACの辺領域の中にあるかどうか確認し、あればPのAC上に対する射影を返す--------------------------------------------
+
+	float lVb = lD5 * lD2 - lD1 * lD6;
+	if (lVb <= 0.0f && 0.0f <= lD2 && lD6 <= 0.0f)
+	{
+		float lW = lD2 / (lD2 - lD6);
+		return TRIANGLE_A_POS + lAc * lW;
+	}
+
+	//点PがACの辺領域の中にあるかどうか確認し、あればPのAC上に対する射影を返す--------------------------------------------
+
+
+	//点PがBCの辺領域の中にあるかどうか確認し、あればPのBC上に対する射影を返す--------------------------------------------
+
+	float lVa = lD3 * lD6 - lD5 * lD4;
+	float lD4SubD3 = lD4 - lD3;
+	float lD5SubD6 = lD5 - lD6;
+	if (lVa <= 0.0f && 0.0f <= lD4SubD3 && 0.0f <= lD5SubD6)
+	{
+		float lW = lD4SubD3 / (lD4SubD3 - lD5SubD6);
+		return TRIANGLE_B_POS + (TRIANGLE_C_POS - TRIANGLE_B_POS) * lW;
+	}
+
+	//点PがBCの辺領域の中にあるかどうか確認し、あればPのBC上に対する射影を返す--------------------------------------------
+
+
+	//点Pは面領域の中にある。Qをその重心座標(u,v,w)を用いて計算--------------------------------------------
+	float lDenom = 1.0f / (lVa + lVb + lVc);
+	float lV = lVb * lDenom;
+	float lW = lVc * lDenom;
+	return TRIANGLE_A_POS + lAb * lV + lAc * lW;;
 }
