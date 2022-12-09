@@ -96,6 +96,8 @@ float3 ClosestPoint(float3 POINT_POS, float3 TRIANGLE_A_POS, float3 TRIANGLE_B_P
 
 cbuffer RootConstants : register(b0)
 {
+    matrix scaleRotateBillboardMat;
+    matrix viewProjection;
     float4 pos;
     float radius;
     uint meshNum;
@@ -110,7 +112,15 @@ struct HitBoxData
 //三角形の情報
 RWStructuredBuffer<HitBoxData> hitBoxData : register(u0);
 //パーティクル座標
-RWStructuredBuffer<float4> particleData : register(u1);
+//RWStructuredBuffer<float4> particleData : register(u1);
+
+
+struct OutputData
+{
+    matrix mat;
+    float4 color;
+};
+RWStructuredBuffer<OutputData> outputData : register(u1);
 
 [numthreads(1024, 1, 1)]
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 groupThreadID : SV_GroupThreadID)
@@ -123,15 +133,33 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
         //最近接点の算出
         float3 pointPos = ClosestPoint(pos.xyz, hitBoxData[i].trianglePos[0], hitBoxData[i].trianglePos[1], hitBoxData[i].trianglePos[2]);
         float distanceResult = distance(pointPos,pos.xyz);
+
+        float4 hitColor;
         //当たり判定
         if(distanceResult <= radius)
         {
-            
+            hitColor = float4(1,0,0,1);
         }
         else
         {
+            hitColor = float4(1,1,1,1);
+        }
 
+        for(int trianglePosIndex = 0;trianglePosIndex < 3; ++trianglePosIndex)
+        {
+            //行列計算-------------------------
+            matrix pMatWorld = scaleRotateBillboardMat;
+            pMatWorld[0][3] = hitBoxData[i].trianglePos[trianglePosIndex].x;
+            pMatWorld[1][3] = hitBoxData[i].trianglePos[trianglePosIndex].y;
+            pMatWorld[2][3] = hitBoxData[i].trianglePos[trianglePosIndex].z;
+            //行列計算-------------------------
+
+            //出力--------------------------------------------
+            OutputData outputMat;
+            outputMat.mat = mul(viewProjection,pMatWorld);     
+            outputMat.color = hitColor;
+            outputData[i * 3 + trianglePosIndex] = outputMat;
+            //出力--------------------------------------------
         }
     }
-
 }

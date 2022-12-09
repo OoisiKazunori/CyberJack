@@ -92,6 +92,10 @@ DebugMeshParticleScene::DebugMeshParticleScene()
 	{
 		limitPos.push_back(KazMath::Vec3<float>(0.0f, 0.0f, -300.0f + static_cast<float>(i) * 400.0f));
 	}
+
+
+	RESOURCE_HANDLE lSphereHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "sphere.fbx");
+	collision = std::make_unique<GPUMeshAndSphereHitBox>(FbxModelResourceMgr::Instance()->GetResourceData(lSphereHandle)->vertData, 0.05f);
 }
 
 DebugMeshParticleScene::~DebugMeshParticleScene()
@@ -151,7 +155,8 @@ void DebugMeshParticleScene::Update()
 	ImGui::Checkbox("CheckTextureParticle", &textureParticleFlag);
 	ImGui::Checkbox("CheckSplineParticle", &splineParticleFlag);
 	ImGui::Checkbox("CheckPerlinNoise", &perlinNoizeFlag);
-	ImGui::Checkbox("CheckHitBoxNoise", &cpuCheckHitBoxFlag);
+	ImGui::Checkbox("CheckCPUHitBox", &cpuCheckHitBoxFlag);
+	ImGui::Checkbox("CheckGPUHitBox", &gpuCheckHitBoxFlag);
 	if (cpuCheckParticleFlag)
 	{
 		if (ImGui::TreeNode("TrianglePosArray"))
@@ -248,6 +253,10 @@ void DebugMeshParticleScene::Update()
 		}
 		KazImGuiHelper::InputVec3("PointPos", &pointPos);
 		ImGui::DragFloat("PointRadius", &pointRadius);
+	}
+	else if (gpuCheckHitBoxFlag)
+	{
+		collision->Update();
 	}
 	ImGui::End();
 
@@ -519,6 +528,10 @@ void DebugMeshParticleScene::Draw()
 
 		pointPosR.Draw();
 		closestPointPosR.Draw();
+	}
+	else if (gpuCheckHitBoxFlag)
+	{
+		collision->Draw();
 	}
 
 	if (drawGridFlag)

@@ -107,6 +107,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\CollisionDetection\GPUMeshAndSphereHitBox.cpp" />
     <ClCompile Include="Game\Debug\ParameterMgr.cpp" />
     <ClCompile Include="Game\Debug\WirteCpuLineData.cpp" />
     <ClCompile Include="Game\Effect\DeadParticle.cpp" />
@@ -266,6 +267,7 @@
     <ClCompile Include="KazLibrary\WinApi\WinApi.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\CollisionDetection\GPUMeshAndSphereHitBox.h" />
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
     <ClInclude Include="Game\Debug\WirteCpuLineData.h" />
     <ClInclude Include="Game\Effect\DeadParticle.h" />

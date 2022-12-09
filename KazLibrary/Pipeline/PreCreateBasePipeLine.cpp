@@ -2823,7 +2823,6 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 
 
-	//コンパイルする予定のコンピュートパイプライン------------------------------------------------------------
 	//SRV
 	{
 		RootSignatureData lData;
@@ -2851,6 +2850,9 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "MeshParticleUpdateInputPosColor.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_TEXTUREPARTICLE_UPDATE);
 	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "MeshParticleUpdateFlashColor.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_TEXTUREPARTICLE_FLASH_UPDATE);
 
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "InitTriangleCollisionData.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_HITBOX_TRIANGLE_INIT);
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "UpdateCollisionDetectionTriangleAndSphere.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_HITBOX_UPDATE);
+
 	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 		SHADER_COMPUTE_TEXTUREPARTICLE_INIT,
 		PIPELINE_COMPUTE_DATA_TEST,
@@ -2871,5 +2873,21 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		ROOTSIGNATURE_DATA_UAV_UAV_CBV,
 		PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_FLASH_UPDATE
 	);
-	//コンパイルする予定のコンピュートパイプライン------------------------------------------------------------
+
+
+
+
+	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+		SHADER_COMPUTE_HITBOX_TRIANGLE_INIT,
+		PIPELINE_COMPUTE_DATA_TEST,
+		ROOTSIGNATURE_DATA_UAV_UAV_CBV,
+		PIPELINE_COMPUTE_NAME_HITBOX_TRIANGLE_INIT
+	);
+
+	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+		SHADER_COMPUTE_HITBOX_UPDATE,
+		PIPELINE_COMPUTE_DATA_TEST,
+		ROOTSIGNATURE_DATA_UAV_UAV_CBV,
+		PIPELINE_COMPUTE_NAME_HITBOX_UPDATE
+	);
 }

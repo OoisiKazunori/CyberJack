@@ -9,6 +9,7 @@
 #include"../KazLibrary/Math/KazMath.h"
 #include"../Game/Effect/TextureParticle.h"
 #include"../Game/Effect/SplineParticle.h"
+#include"../Game/CollisionDetection/GPUMeshAndSphereHitBox.h"
 
 #include"../Game/Tutorial/DirectX12MoviePlayer.h"
 
@@ -44,6 +45,7 @@ private:
 	bool splineParticleFlag;
 	bool perlinNoizeFlag;
 	bool cpuCheckHitBoxFlag;
+	bool gpuCheckHitBoxFlag;
 	bool drawGridFlag;
 
 	bool deadParticleFlag, prevDeadParticleFlag;
@@ -256,7 +258,9 @@ private:
 
 	std::array<LineRender, 3>hitBoxTriangelLine;
 	BoxPolygonRender pointPosR;
-	BoxPolygonRender closestPointPosR;;
+	BoxPolygonRender closestPointPosR;
+
+	std::unique_ptr<GPUMeshAndSphereHitBox> collision;
 	//ボロノイ領域による当たり判定の確認--------------------------------------------
 };
 
