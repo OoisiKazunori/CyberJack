@@ -17,7 +17,7 @@
 
 DebugMeshParticleScene::DebugMeshParticleScene()
 {
-	rendertarget = std::make_unique<GameRenderTarget>(KazMath::Color(0, 0, 0, 255));
+	rendertarget = std::make_unique<GameRenderTarget>(KazMath::Color(0, 0, 150, 255));
 	mainRenderTarget.data.handleData = rendertarget->GetGameRenderTargetHandle();
 	mainRenderTarget.data.pipelineName = PIPELINE_NAME_SPRITE_NOBLEND;
 	mainRenderTarget.data.transform.pos = { WIN_X / 2.0f,WIN_Y / 2.0f };
@@ -467,7 +467,7 @@ void DebugMeshParticleScene::Update()
 void DebugMeshParticleScene::Draw()
 {
 	RenderTargetStatus::Instance()->SetDoubleBufferFlame();
-	RenderTargetStatus::Instance()->ClearDoubuleBuffer({ 0.0f,0.0f,0.0f });
+	RenderTargetStatus::Instance()->ClearDoubuleBuffer({ 0.0f,0.0f,150.0f });
 
 	rendertarget->SetRenderTarget();
 

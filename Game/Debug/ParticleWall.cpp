@@ -162,7 +162,7 @@ ParticleWall::ParticleWall()
 			{
 				int lIndex = y * 10 + x;
 
-				lData[lIndex].pos = { 0.0f,static_cast<float>(y) * 10.0f,static_cast<float>(x) * 10.0f,0.0f };
+				lData[lIndex].pos = { 0.0f,static_cast<float>(y) * 20.0f,static_cast<float>(x) * 20.0f,0.0f };
 			}
 		}
 		buffers->TransData(particleDataHandle, lData.data(), sizeof(ParticleData) * PARTICLE_MAX_NUM);

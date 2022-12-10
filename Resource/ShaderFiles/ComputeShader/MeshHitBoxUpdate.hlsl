@@ -51,4 +51,14 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
         outputData[index * 3 + trianglePosIndex] = outputMat;
         //o—Í--------------------------------------------
     }
+
+    //–@üî•ñ‚ğ“¾‚é
+    float3 abVec = hitBoxData[index].trianglePos[1] - hitBoxData[index].trianglePos[0];
+    float3 bcVec = hitBoxData[index].trianglePos[2] - hitBoxData[index].trianglePos[1];
+    float3 normal = normalize(cross(abVec,bcVec));
+    hitBoxData[index].normal = normal;
+
+    outputData[index * 3 + 0].color = float4(normal.xyz,1.0f);
+    outputData[index * 3 + 1].color = float4(normal.xyz,1.0f);
+    outputData[index * 3 + 2].color = float4(normal.xyz,1.0f);
 }

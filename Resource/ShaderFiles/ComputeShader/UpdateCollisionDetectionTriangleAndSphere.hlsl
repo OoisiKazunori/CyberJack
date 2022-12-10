@@ -147,17 +147,12 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
         //“–‚½‚è”»’è
         if(distanceResult <= radius)
         {
-            hitColor = float4(1,0,0,1);
+            hitColor.xyz = hitBoxData[i].normal;
 			hitFlag = true;
         }
         else
         {
             hitColor = float4(0.6,0.6,0.6,1);
-        }
-
-        for(int trianglePosIndex = 0;trianglePosIndex < 3; ++trianglePosIndex)
-        {
-            outputData[countIndex + trianglePosIndex].color = float4(hitColor.xyz,0.5);
         }
 		countIndex += 3;
 		particleData[index].color = hitColor;
