@@ -166,6 +166,8 @@ GPUMeshAndSphereHitBox::GPUMeshAndSphereHitBox(std::vector<DirectX::XMFLOAT4> VE
 	pointPos.data.removeMaterialFlag = true;
 
 	updateCommonData.radius = 5.0f;
+
+	hitVel = 10;
 }
 
 GPUMeshAndSphereHitBox::~GPUMeshAndSphereHitBox()
