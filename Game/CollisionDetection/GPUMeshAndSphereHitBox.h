@@ -11,7 +11,7 @@ public:
 	GPUMeshAndSphereHitBox(std::vector<DirectX::XMFLOAT4> VERT_NUM, float PARTICLE_SCALE = 0.18f);
 	~GPUMeshAndSphereHitBox();
 	void Init(const DirectX::XMMATRIX *MOTHER_MAT);
-	void Update(float ALPHA = 1.0f);
+	void Update(RESOURCE_HANDLE HANDLE);
 	void Draw();
 
 private:
@@ -46,7 +46,8 @@ private:
 	//èâä˙âª--------------------------------------------
 	struct OutputData
 	{
-		DirectX::XMFLOAT4 pos;
+		DirectX::XMFLOAT3 trianglePos[3];
+		DirectX::XMFLOAT3 normal;
 	};
 	struct InitCommonData
 	{
@@ -75,8 +76,15 @@ private:
 		float radius;
 		UINT meshNum;
 	};
+	struct MeshDrawCommonData
+	{
+		DirectX::XMMATRIX scaleRotateBillboardMat;
+		DirectX::XMMATRIX viewProjection;
+		DirectX::XMMATRIX motherMat;
+	};
 	UpdateCommonData updateCommonData;
-	RESOURCE_HANDLE updateHandle, updateCommonHandle;
+	MeshDrawCommonData drawMeshCommonData;
+	RESOURCE_HANDLE updateHandle, updateCommonHandle, drawMeshCommonHandle;
 	RESOURCE_HANDLE updateViewHandle;
 	DirectX::XMMATRIX scaleRotaMat;
 

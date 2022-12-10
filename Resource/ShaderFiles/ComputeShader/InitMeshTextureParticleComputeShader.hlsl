@@ -56,7 +56,6 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     {
         return;
     }
-
     //インデックス数以内なら処理する
     //三角形を構成するインデックスの指定--------------------------------------------
     uint firstVertIndex = index * 3;

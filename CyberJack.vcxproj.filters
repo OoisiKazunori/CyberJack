@@ -159,6 +159,7 @@
     <ClCompile Include="Game\Effect\SplineParticle.cpp" />
     <ClCompile Include="Game\Effect\SearchLight.cpp" />
     <ClCompile Include="Game\CollisionDetection\GPUMeshAndSphereHitBox.cpp" />
+    <ClCompile Include="Game\Debug\ParticleWall.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -333,6 +334,7 @@
     <ClInclude Include="Game\Effect\SplineParticle.h" />
     <ClInclude Include="Game\Effect\SearchLight.h" />
     <ClInclude Include="Game\CollisionDetection\GPUMeshAndSphereHitBox.h" />
+    <ClInclude Include="Game\Debug\ParticleWall.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

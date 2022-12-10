@@ -96,6 +96,7 @@ DebugMeshParticleScene::DebugMeshParticleScene()
 
 	RESOURCE_HANDLE lSphereHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "sphere.fbx");
 	collision = std::make_unique<GPUMeshAndSphereHitBox>(FbxModelResourceMgr::Instance()->GetResourceData(lSphereHandle)->vertData, 0.05f);
+	collision->Init(&meshMat);
 }
 
 DebugMeshParticleScene::~DebugMeshParticleScene()
@@ -256,7 +257,7 @@ void DebugMeshParticleScene::Update()
 	}
 	else if (gpuCheckHitBoxFlag)
 	{
-		collision->Update();
+		KazImGuiHelper::InputTransform3D("MeshTransform", &meshTransform);
 	}
 	ImGui::End();
 
@@ -455,7 +456,12 @@ void DebugMeshParticleScene::Update()
 
 		closestPointPosR.data.transform.pos = lClosestPos;
 	}
-
+	else if (gpuCheckHitBoxFlag)
+	{
+		meshMat = meshTransform.GetMat();
+		collision->Update(particleWall.GetHandle());
+		particleWall.Update();
+	}
 }
 
 void DebugMeshParticleScene::Draw()
@@ -532,6 +538,7 @@ void DebugMeshParticleScene::Draw()
 	else if (gpuCheckHitBoxFlag)
 	{
 		collision->Draw();
+		particleWall.Draw();
 	}
 
 	if (drawGridFlag)

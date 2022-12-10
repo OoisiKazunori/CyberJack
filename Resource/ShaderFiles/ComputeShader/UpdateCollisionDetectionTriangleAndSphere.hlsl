@@ -111,9 +111,6 @@ struct HitBoxData
 
 //三角形の情報
 RWStructuredBuffer<HitBoxData> hitBoxData : register(u0);
-//パーティクル座標
-//RWStructuredBuffer<float4> particleData : register(u1);
-
 
 struct OutputData
 {
@@ -122,17 +119,27 @@ struct OutputData
 };
 RWStructuredBuffer<OutputData> outputData : register(u1);
 
+//パーティクル座標
+struct ParticleData
+{
+	float4 pos;
+	float4 color;
+};
+RWStructuredBuffer<ParticleData> particleData : register(u2);
+
 [numthreads(1024, 1, 1)]
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 groupThreadID : SV_GroupThreadID)
 {
     uint index = groupThreadID.x;
     index += 1024 * groupId.x;
 
+	float4 particlePos = particleData[index].pos;
+
     for(int i = 0;i < meshNum; ++i)
     {
         //最近接点の算出
-        float3 pointPos = ClosestPoint(pos.xyz, hitBoxData[i].trianglePos[0], hitBoxData[i].trianglePos[1], hitBoxData[i].trianglePos[2]);
-        float distanceResult = distance(pointPos,pos.xyz);
+        float3 pointPos = ClosestPoint(particlePos.xyz, hitBoxData[i].trianglePos[0], hitBoxData[i].trianglePos[1], hitBoxData[i].trianglePos[2]);
+        float distanceResult = distance(pointPos,particlePos.xyz);
 
         float4 hitColor;
         //当たり判定
@@ -147,19 +154,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
 
         for(int trianglePosIndex = 0;trianglePosIndex < 3; ++trianglePosIndex)
         {
-            //行列計算-------------------------
-            matrix pMatWorld = scaleRotateBillboardMat;
-            pMatWorld[0][3] = hitBoxData[i].trianglePos[trianglePosIndex].x;
-            pMatWorld[1][3] = hitBoxData[i].trianglePos[trianglePosIndex].y;
-            pMatWorld[2][3] = hitBoxData[i].trianglePos[trianglePosIndex].z;
-            //行列計算-------------------------
-
-            //出力--------------------------------------------
-            OutputData outputMat;
-            outputMat.mat = mul(viewProjection,pMatWorld);     
-            outputMat.color = hitColor;
-            outputData[i * 3 + trianglePosIndex] = outputMat;
-            //出力--------------------------------------------
+            outputData[i * 3 + trianglePosIndex].color = hitColor;
         }
     }
 }

@@ -232,3 +232,11 @@ float4 SplinePosition(RWStructuredBuffer<float3> LIMIT_INDEX_ARRAY,int START_IND
     resultPos = 0.5 * ((2 * p1  + (-p0 + p2) * RATE) + (2 * p0 - 5 * p1 + 4 * p2 - p3) * (RATE * RATE) + (-p0 + 3 * p1 - 3 * p2 + p3) * (RATE * RATE * RATE));
     return float4(resultPos.xyz,0);
 };
+
+float3 Larp(float3 BASE_POS,float3 POS,float MUL)
+{
+    float3 distance = BASE_POS - POS;
+	distance *= MUL;
+    
+    return BASE_POS + distance;
+}

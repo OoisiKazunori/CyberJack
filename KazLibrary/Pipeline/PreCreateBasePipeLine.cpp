@@ -2887,7 +2887,29 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 		SHADER_COMPUTE_HITBOX_UPDATE,
 		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_UAV_UAV_CBV,
+		ROOTSIGNATURE_DATA_UAV_UAV_UAV_CBV,
 		PIPELINE_COMPUTE_NAME_HITBOX_UPDATE
 	);
+
+
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "BlockParticleHitBoxUpdate.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_PARTICLEWALL_HITBOX);
+
+	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+		SHADER_COMPUTE_PARTICLEWALL_HITBOX,
+		PIPELINE_COMPUTE_DATA_TEST,
+		ROOTSIGNATURE_DATA_UAV_UAV_CBV,
+		PIPELINE_COMPUTE_NAME_PARTICLEWALL_HITBOX
+	);
+
+
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "MeshHitBoxUpdate.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_HITBOX_MESH);
+
+	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+		SHADER_COMPUTE_HITBOX_MESH,
+		PIPELINE_COMPUTE_DATA_TEST,
+		ROOTSIGNATURE_DATA_UAV_UAV_CBV,
+		PIPELINE_COMPUTE_NAME_HITBOX_MESH
+	);
+
+	
 }

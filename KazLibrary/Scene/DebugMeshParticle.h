@@ -12,6 +12,7 @@
 #include"../Game/CollisionDetection/GPUMeshAndSphereHitBox.h"
 
 #include"../Game/Tutorial/DirectX12MoviePlayer.h"
+#include"../Game/Debug/ParticleWall.h"
 
 class DebugMeshParticleScene :public SceneBase
 {
@@ -259,8 +260,13 @@ private:
 	std::array<LineRender, 3>hitBoxTriangelLine;
 	BoxPolygonRender pointPosR;
 	BoxPolygonRender closestPointPosR;
-
-	std::unique_ptr<GPUMeshAndSphereHitBox> collision;
 	//ボロノイ領域による当たり判定の確認--------------------------------------------
+
+	//GPU上でのメッシュとパーティクルの判定--------------------------------------------
+	std::unique_ptr<GPUMeshAndSphereHitBox> collision;
+	ParticleWall particleWall;
+	KazMath::Transform3D meshTransform;
+	DirectX::XMMATRIX meshMat;
+	//GPU上でのメッシュとパーティクルの判定--------------------------------------------
 };
 
