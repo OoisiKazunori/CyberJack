@@ -62,6 +62,7 @@ GPUMeshAndSphereHitBox::GPUMeshAndSphereHitBox(std::vector<DirectX::XMFLOAT4> VE
 
 	//出力
 	outputHandle = buffers->CreateBuffer(KazBufferHelper::SetOnlyReadStructuredBuffer((sizeof(OutputData) * PARTICLE_MAX_NUM)));
+	updateHitboxHandle = buffers->CreateBuffer(KazBufferHelper::SetOnlyReadStructuredBuffer((sizeof(OutputData) * PARTICLE_MAX_NUM)));
 	//初期化用--------
 
 	//更新用
@@ -110,6 +111,14 @@ GPUMeshAndSphereHitBox::GPUMeshAndSphereHitBox(std::vector<DirectX::XMFLOAT4> VE
 		nullptr
 	);
 
+	updateHitboxViewHandle = UavViewHandleMgr::Instance()->GetHandle();
+	DescriptorHeapMgr::Instance()->CreateBufferView(
+		updateHitboxViewHandle,
+		KazBufferHelper::SetUnorderedAccessView(sizeof(OutputData), PARTICLE_MAX_NUM),
+		buffers->GetBufferData(updateHitboxHandle).Get(),
+		nullptr
+	);
+
 	vertDataViewHandle = UavViewHandleMgr::Instance()->GetHandle();
 	DescriptorHeapMgr::Instance()->CreateBufferView(
 		vertDataViewHandle,
@@ -155,6 +164,8 @@ GPUMeshAndSphereHitBox::GPUMeshAndSphereHitBox(std::vector<DirectX::XMFLOAT4> VE
 	pointPos.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "sphere.fbx");
 	pointPos.data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
 	pointPos.data.removeMaterialFlag = true;
+
+	updateCommonData.radius = 5.0f;
 }
 
 GPUMeshAndSphereHitBox::~GPUMeshAndSphereHitBox()
@@ -191,7 +202,8 @@ void GPUMeshAndSphereHitBox::Update(RESOURCE_HANDLE HANDLE)
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_HITBOX_MESH);
 	{
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(updateViewHandle));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(updateHitboxViewHandle));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(2, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(updateViewHandle));
 	}
 
 	//共通用バッファのデータ送信
@@ -200,32 +212,32 @@ void GPUMeshAndSphereHitBox::Update(RESOURCE_HANDLE HANDLE)
 		drawMeshCommonData.viewProjection = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
 		drawMeshCommonData.motherMat = *motherMat;
 		buffers->TransData(drawMeshCommonHandle, &drawMeshCommonData, sizeof(MeshDrawCommonData));
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(drawMeshCommonHandle));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(3, buffers->GetGpuAddress(drawMeshCommonHandle));
 	}
 	DirectX12CmdList::Instance()->cmdList->Dispatch(1, 1, 1);
 	//メッシュ描画用--------------------------------------------
 
 
 
-	////当たり判定用
-	//GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_HITBOX_UPDATE);
+	//当たり判定用
+	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_HITBOX_UPDATE);
 
-	//{
-	//	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
-	//	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(updateViewHandle));
-	//	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(2, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(HANDLE));
-	//}
+	{
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(updateHitboxViewHandle));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(updateViewHandle));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(2, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(HANDLE));
+	}
 
-	////共通用バッファのデータ送信
-	//{
-	//	updateCommonData.scaleRotateBillboardMat = scaleRotaMat * CameraMgr::Instance()->GetMatBillBoard();
-	//	updateCommonData.viewProjection = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
+	//共通用バッファのデータ送信
+	{
+		updateCommonData.scaleRotateBillboardMat = scaleRotaMat * CameraMgr::Instance()->GetMatBillBoard();
+		updateCommonData.viewProjection = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
 
-	//	buffers->TransData(updateCommonHandle, &updateCommonData, sizeof(UpdateCommonData));
-	//	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(3, buffers->GetGpuAddress(updateCommonHandle));
-	//}
+		buffers->TransData(updateCommonHandle, &updateCommonData, sizeof(UpdateCommonData));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(3, buffers->GetGpuAddress(updateCommonHandle));
+	}
 
-	//DirectX12CmdList::Instance()->cmdList->Dispatch(2, 1, 1);
+	DirectX12CmdList::Instance()->cmdList->Dispatch(2, 1, 1);
 
 }
 

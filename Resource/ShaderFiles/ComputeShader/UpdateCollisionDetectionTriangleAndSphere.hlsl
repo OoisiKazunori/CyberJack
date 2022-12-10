@@ -135,6 +135,8 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
 
 	float4 particlePos = particleData[index].pos;
 
+	int countIndex = 0;
+	bool hitFlag = false;
     for(int i = 0;i < meshNum; ++i)
     {
         //Å‹ßÚ“_‚ÌŽZo
@@ -146,15 +148,23 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
         if(distanceResult <= radius)
         {
             hitColor = float4(1,0,0,1);
+			hitFlag = true;
         }
         else
         {
-            hitColor = float4(1,1,1,1);
+            hitColor = float4(0.6,0.6,0.6,1);
         }
 
         for(int trianglePosIndex = 0;trianglePosIndex < 3; ++trianglePosIndex)
         {
-            outputData[i * 3 + trianglePosIndex].color = hitColor;
+            outputData[countIndex + trianglePosIndex].color = float4(hitColor.xyz,0.5);
         }
+		countIndex += 3;
+		particleData[index].color = hitColor;
+
+		if(hitFlag)
+		{
+			break;
+		}
     }
 }

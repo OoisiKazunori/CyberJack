@@ -88,6 +88,7 @@ private:
 	RESOURCE_HANDLE updateViewHandle;
 	DirectX::XMMATRIX scaleRotaMat;
 
+	RESOURCE_HANDLE updateHitboxHandle, updateHitboxViewHandle;
 
 	UINT indexNum;
 
