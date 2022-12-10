@@ -101,6 +101,7 @@ cbuffer RootConstants : register(b0)
     float4 pos;
     float radius;
     uint meshNum;
+	uint hitVel;
 };
 
 struct HitBoxData
@@ -126,6 +127,8 @@ struct ParticleData
 	float4 color;
 };
 RWStructuredBuffer<ParticleData> particleData : register(u2);
+//äÓñ{ç¿ïW
+RWStructuredBuffer<ParticleData> baseParticleData : register(u3);
 
 [numthreads(1024, 1, 1)]
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 groupThreadID : SV_GroupThreadID)
@@ -133,9 +136,8 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     uint index = groupThreadID.x;
     index += 1024 * groupId.x;
 
-	float4 particlePos = particleData[index].pos;
+	float4 particlePos = baseParticleData[index].pos;
 
-	int countIndex = 0;
 	bool hitFlag = false;
     for(int i = 0;i < meshNum; ++i)
     {
@@ -146,15 +148,15 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
         float4 hitColor;
         //ìñÇΩÇËîªíË
         if(distanceResult <= radius)
-        {
-            hitColor.xyz = hitBoxData[i].normal;
+        {		
+			particleData[index].pos.xyz += (hitBoxData[i].normal * hitVel);
+            hitColor.xyz = hitBoxData[i].normal;			
 			hitFlag = true;
         }
         else
         {
             hitColor = float4(0.6,0.6,0.6,1);
         }
-		countIndex += 3;
 		particleData[index].color = hitColor;
 
 		if(hitFlag)

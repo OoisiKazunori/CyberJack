@@ -142,6 +142,7 @@ ParticleWall::ParticleWall()
 	commonBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(CommonMoveData)));
 	particleDataHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(ParticleData) * PARTICLE_MAX_NUM));
 	outputInitBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetOnlyReadStructuredBuffer((sizeof(OutputInitData) * PER_USE_PARTICLE_MAX_NUM) * PARTICLE_MAX_NUM));
+	baseOutputInitBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetOnlyReadStructuredBuffer((sizeof(OutputInitData) * PER_USE_PARTICLE_MAX_NUM) * PARTICLE_MAX_NUM));
 	outputBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetOnlyReadStructuredBuffer((sizeof(OutputData) * PER_USE_PARTICLE_MAX_NUM) * PARTICLE_MAX_NUM));
 	drawCommandHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(IndirectCommand) * DRAW_CALL));
 	//counterBufferHandle = buffers->CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(UINT)));
@@ -190,6 +191,15 @@ ParticleWall::ParticleWall()
 		nullptr
 	);
 
+	baseOutputInitViewHandle = UavViewHandleMgr::Instance()->GetHandle();
+	DescriptorHeapMgr::Instance()->CreateBufferView(
+		baseOutputInitViewHandle,
+		KazBufferHelper::SetUnorderedAccessView(sizeof(OutputInitData), PARTICLE_MAX_NUM *PER_USE_PARTICLE_MAX_NUM),
+		buffers->GetBufferData(baseOutputInitBufferHandle).Get(),
+		nullptr
+	);
+
+
 	particleDataViewHandle = UavViewHandleMgr::Instance()->GetHandle();
 	DescriptorHeapMgr::Instance()->CreateBufferView(
 		particleDataViewHandle,
@@ -232,6 +242,33 @@ ParticleWall::ParticleWall()
 
 	DirectX12CmdList::Instance()->cmdList->Dispatch(PARTICLE_MAX_NUM, 1, 1);
 	//パーティクル初期化処理--------------------------------------------
+
+
+	RenderTargetStatus::Instance()->ChangeBarrier(
+		buffers->GetBufferData(outputInitBufferHandle).Get(),
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		D3D12_RESOURCE_STATE_COPY_SOURCE
+	);
+
+	RenderTargetStatus::Instance()->ChangeBarrier(
+		buffers->GetBufferData(baseOutputInitBufferHandle).Get(),
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		D3D12_RESOURCE_STATE_COPY_DEST
+	);
+
+	DirectX12CmdList::Instance()->cmdList->CopyResource(buffers->GetBufferData(baseOutputInitBufferHandle).Get(), buffers->GetBufferData(outputInitBufferHandle).Get());
+
+	RenderTargetStatus::Instance()->ChangeBarrier(
+		buffers->GetBufferData(outputInitBufferHandle).Get(),
+		D3D12_RESOURCE_STATE_COPY_SOURCE,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+	);
+
+	RenderTargetStatus::Instance()->ChangeBarrier(
+		buffers->GetBufferData(baseOutputInitBufferHandle).Get(),
+		D3D12_RESOURCE_STATE_COPY_DEST,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+	);
 }
 
 void ParticleWall::Update()

@@ -177,7 +177,7 @@ void GPUMeshAndSphereHitBox::Init(const DirectX::XMMATRIX *MOTHER_MAT)
 	motherMat = MOTHER_MAT;
 }
 
-void GPUMeshAndSphereHitBox::Update(RESOURCE_HANDLE HANDLE)
+void GPUMeshAndSphereHitBox::Update(RESOURCE_HANDLE BASE_HANDLE, RESOURCE_HANDLE PARTICLE_HANDLE, bool DIRTY_FLAG)
 {
 	ImGui::Begin("HitBox");
 	KazImGuiHelper::InputXMFLOAT4("PointPos", &updateCommonData.pos);
@@ -225,7 +225,8 @@ void GPUMeshAndSphereHitBox::Update(RESOURCE_HANDLE HANDLE)
 	{
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(updateHitboxViewHandle));
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(updateViewHandle));
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(2, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(HANDLE));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(2, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(PARTICLE_HANDLE));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(3, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(BASE_HANDLE));
 	}
 
 	//共通用バッファのデータ送信
@@ -233,8 +234,17 @@ void GPUMeshAndSphereHitBox::Update(RESOURCE_HANDLE HANDLE)
 		updateCommonData.scaleRotateBillboardMat = scaleRotaMat * CameraMgr::Instance()->GetMatBillBoard();
 		updateCommonData.viewProjection = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
 
+		if (DIRTY_FLAG)
+		{
+			updateCommonData.hitVel = 1;
+		}
+		else
+		{
+			updateCommonData.hitVel = 0;
+		}
+
 		buffers->TransData(updateCommonHandle, &updateCommonData, sizeof(UpdateCommonData));
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(3, buffers->GetGpuAddress(updateCommonHandle));
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(4, buffers->GetGpuAddress(updateCommonHandle));
 	}
 
 	DirectX12CmdList::Instance()->cmdList->Dispatch(2, 1, 1);

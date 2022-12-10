@@ -10,7 +10,11 @@ public:
 	void Update();
 	void Draw();
 
-	RESOURCE_HANDLE GetHandle()
+	RESOURCE_HANDLE GetBasePosHandle()
+	{
+		return baseOutputInitViewHandle;
+	};
+	RESOURCE_HANDLE GetParticleHandle()
 	{
 		return outputInitViewHandle;
 	};
@@ -18,13 +22,13 @@ private:
 	//バッファ
 	std::unique_ptr<CreateGpuBuffer> buffers;
 	RESOURCE_HANDLE vertexBufferHandle, indexBufferHandle,
-		outputInitBufferHandle, outputBufferHandle,
+		outputInitBufferHandle, baseOutputInitBufferHandle, outputBufferHandle,
 		particleDataHandle, drawCommandHandle, counterBufferHandle,
 		commonInitBufferHandle, commonBufferHandle;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 	D3D12_INDEX_BUFFER_VIEW indexBufferView;
 	BufferMemorySize computeMemSize;
-	RESOURCE_HANDLE outputInitViewHandle, outputViewHandle, particleDataViewHandle;
+	RESOURCE_HANDLE outputInitViewHandle, baseOutputInitViewHandle,outputViewHandle, particleDataViewHandle;
 	//バッファ
 
 	static const int PARTICLE_MAX_NUM = 4000;

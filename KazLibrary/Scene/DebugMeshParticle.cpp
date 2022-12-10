@@ -459,7 +459,8 @@ void DebugMeshParticleScene::Update()
 	else if (gpuCheckHitBoxFlag)
 	{
 		meshMat = meshTransform.GetMat();
-		collision->Update(particleWall.GetHandle());
+		collision->Update(particleWall.GetBasePosHandle(), particleWall.GetParticleHandle(), meshTransform.Dirty());
+		meshTransform.Record();
 		particleWall.Update();
 	}
 }
