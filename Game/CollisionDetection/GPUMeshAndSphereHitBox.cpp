@@ -182,6 +182,7 @@ void GPUMeshAndSphereHitBox::Update(RESOURCE_HANDLE BASE_HANDLE, RESOURCE_HANDLE
 	ImGui::Begin("HitBox");
 	KazImGuiHelper::InputXMFLOAT4("PointPos", &updateCommonData.pos);
 	ImGui::DragFloat("Radius", &updateCommonData.radius);
+	ImGui::DragInt("HitVel", &hitVel);
 	ImGui::End();
 
 	pointPos.data.transform.pos = { updateCommonData.pos.x,updateCommonData.pos.y,updateCommonData.pos.z };
@@ -236,7 +237,7 @@ void GPUMeshAndSphereHitBox::Update(RESOURCE_HANDLE BASE_HANDLE, RESOURCE_HANDLE
 
 		if (DIRTY_FLAG)
 		{
-			updateCommonData.hitVel = 1;
+			updateCommonData.hitVel =static_cast<UINT>(hitVel);
 		}
 		else
 		{

@@ -97,6 +97,9 @@ DebugMeshParticleScene::DebugMeshParticleScene()
 	RESOURCE_HANDLE lSphereHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "sphere.fbx");
 	collision = std::make_unique<GPUMeshAndSphereHitBox>(FbxModelResourceMgr::Instance()->GetResourceData(lSphereHandle)->vertData, 0.05f);
 	collision->Init(&meshMat);
+
+	meshTransform.scale = { 10.0f,10.0f,10.0f };
+	meshTransform.pos = { 0.0f,0.0f,-20.0f };
 }
 
 DebugMeshParticleScene::~DebugMeshParticleScene()

@@ -238,5 +238,5 @@ float3 Larp(float3 BASE_POS,float3 POS,float MUL)
     float3 distance = BASE_POS - POS;
 	distance *= MUL;
     
-    return BASE_POS + distance;
+    return POS + distance;
 }

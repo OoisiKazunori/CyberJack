@@ -23,8 +23,9 @@ cbuffer RootConstants : register(b0)
 
 //更新
 RWStructuredBuffer<UpdateData> updateData : register(u0);
+RWStructuredBuffer<UpdateData> baseUpdateData : register(u1);
 //出力
-RWStructuredBuffer<OutputData> matrixData : register(u1);
+RWStructuredBuffer<OutputData> matrixData : register(u2);
 
 static const int THREAD_MAX = 10;
 
@@ -41,7 +42,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     uint outPutIndex = index;
 
     //基本座標に戻るように補間をかける
-    //Larp(updateData[outPutIndex].pos)
+    updateData[outPutIndex].pos.xyz = Larp(baseUpdateData[outPutIndex].pos.xyz,updateData[outPutIndex].pos.xyz,0.01f);
 
     //行列計算-------------------------
     matrix pMatWorld = scaleRotateBillboardMat;

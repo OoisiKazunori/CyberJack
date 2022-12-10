@@ -98,5 +98,6 @@ private:
 	RESOURCE_HANDLE drawCommandHandle;
 
 	FbxModelRender pointPos;
+	int hitVel;
 };
 
