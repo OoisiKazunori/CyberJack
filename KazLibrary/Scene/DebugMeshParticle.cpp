@@ -98,8 +98,8 @@ DebugMeshParticleScene::DebugMeshParticleScene()
 	collision = std::make_unique<GPUMeshAndSphereHitBox>(FbxModelResourceMgr::Instance()->GetResourceData(lSphereHandle)->vertData, 0.05f);
 	collision->Init(&meshMat);
 
-	meshTransform.scale = { 10.0f,10.0f,10.0f };
-	meshTransform.pos = { 0.0f,0.0f,-20.0f };
+	meshTransform.scale = { 50.0f,50.0f,50.0f };
+	meshTransform.pos = { -100.0f,90.0f,100.0f };
 
 	particleWall = std::make_unique<ParticleWall>();
 }

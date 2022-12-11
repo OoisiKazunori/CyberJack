@@ -138,18 +138,19 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
 
 	float4 particlePos = baseParticleData[index].pos;
 
-	bool hitFlag = false;
+	bool hitFlag = false;	
+    float4 hitColor;
+
     for(int i = 0;i < meshNum; ++i)
     {
         //Å‹ßÚ“_‚ÌŽZo
         float3 pointPos = ClosestPoint(particlePos.xyz, hitBoxData[i].trianglePos[0], hitBoxData[i].trianglePos[1], hitBoxData[i].trianglePos[2]);
         float distanceResult = distance(pointPos,particlePos.xyz);
 
-        float4 hitColor;
         //“–‚½‚è”»’è
         if(distanceResult <= radius)
         {		
-			particleData[index].pos.xyz += (hitBoxData[i].normal * hitVel);
+			baseParticleData[index].pos.xyz += (hitBoxData[i].normal * hitVel);
             hitColor.xyz = hitBoxData[i].normal;			
 			hitFlag = true;
         }
@@ -157,11 +158,14 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
         {
             hitColor = float4(0.6,0.6,0.6,1);
         }
-		particleData[index].color = hitColor;
-
 		if(hitFlag)
 		{
 			break;
 		}
     }
+
+	//if(hitFlag)
+	{
+		particleData[index].color = hitColor;
+	}
 }

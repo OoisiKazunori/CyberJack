@@ -165,7 +165,7 @@ GPUMeshAndSphereHitBox::GPUMeshAndSphereHitBox(std::vector<DirectX::XMFLOAT4> VE
 	pointPos.data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
 	pointPos.data.removeMaterialFlag = true;
 
-	updateCommonData.radius = 5.0f;
+	updateCommonData.radius = 20.0f;
 
 	hitVel = 1;
 }

@@ -42,7 +42,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     uint outPutIndex = index;
 
     //基本座標に戻るように補間をかける
-    updateData[outPutIndex].pos.xyz = Larp(baseUpdateData[outPutIndex].pos.xyz,updateData[outPutIndex].pos.xyz,0.01f);
+    updateData[outPutIndex].pos.xyz = Larp(baseUpdateData[outPutIndex].pos.xyz,updateData[outPutIndex].pos.xyz,1.0f);
 
     //行列計算-------------------------
     matrix pMatWorld = scaleRotateBillboardMat;
