@@ -136,7 +136,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     uint index = groupThreadID.x;
     index += 1024 * groupId.x;
 
-	float4 particlePos = baseParticleData[index].pos;
+	float4 particlePos = particleData[index].pos;
 
 	bool hitFlag = false;	
     float4 hitColor;
@@ -150,7 +150,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
         //“–‚½‚è”»’è
         if(distanceResult <= radius)
         {		
-			baseParticleData[index].pos.xyz += (hitBoxData[i].normal * hitVel);
+			particleData[index].pos.xyz += (hitBoxData[i].normal * hitVel);
             hitColor.xyz = hitBoxData[i].normal;			
 			hitFlag = true;
         }
