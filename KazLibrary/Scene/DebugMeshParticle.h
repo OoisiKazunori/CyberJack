@@ -264,7 +264,7 @@ private:
 
 	//GPU上でのメッシュとパーティクルの判定--------------------------------------------
 	std::unique_ptr<GPUMeshAndSphereHitBox> collision;
-	ParticleWall particleWall;
+	std::unique_ptr<ParticleWall> particleWall;
 	KazMath::Transform3D meshTransform;
 	DirectX::XMMATRIX meshMat;
 	//GPU上でのメッシュとパーティクルの判定--------------------------------------------

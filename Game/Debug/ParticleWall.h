@@ -32,7 +32,7 @@ private:
 	//バッファ
 
 	static const int PARTICLE_MAX_NUM = 4000;
-	static const int PER_USE_PARTICLE_MAX_NUM = 20;
+	static const int PER_USE_PARTICLE_MAX_NUM = 200;
 	static const int DRAW_CALL = 1;
 
 	struct IndirectCommand

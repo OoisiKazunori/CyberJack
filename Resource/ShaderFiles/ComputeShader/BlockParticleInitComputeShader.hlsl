@@ -79,7 +79,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex, uint3 g
     //頂点座標の行列計算-------------------------
     }
 
-    const int PERTICLE_MAX_NUM = 20;
+    const int PERTICLE_MAX_NUM = 200;
     const int PER_PERTICLE_NUM = PERTICLE_MAX_NUM / 12;
 
     float4 outputPos[12][PER_PERTICLE_NUM];

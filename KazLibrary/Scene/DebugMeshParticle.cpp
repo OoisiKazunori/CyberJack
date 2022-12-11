@@ -100,6 +100,8 @@ DebugMeshParticleScene::DebugMeshParticleScene()
 
 	meshTransform.scale = { 10.0f,10.0f,10.0f };
 	meshTransform.pos = { 0.0f,0.0f,-20.0f };
+
+	particleWall = std::make_unique<ParticleWall>();
 }
 
 DebugMeshParticleScene::~DebugMeshParticleScene()
@@ -462,9 +464,9 @@ void DebugMeshParticleScene::Update()
 	else if (gpuCheckHitBoxFlag)
 	{
 		meshMat = meshTransform.GetMat();
-		collision->Update(particleWall.GetBasePosHandle(), particleWall.GetParticleHandle(), meshTransform.Dirty());
+		collision->Update(particleWall->GetBasePosHandle(), particleWall->GetParticleHandle(), meshTransform.Dirty());
 		meshTransform.Record();
-		particleWall.Update();
+		particleWall->Update();
 	}
 }
 
@@ -542,7 +544,7 @@ void DebugMeshParticleScene::Draw()
 	else if (gpuCheckHitBoxFlag)
 	{
 		collision->Draw();
-		particleWall.Draw();
+		particleWall->Draw();
 	}
 
 	if (drawGridFlag)

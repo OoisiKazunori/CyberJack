@@ -167,7 +167,7 @@ GPUMeshAndSphereHitBox::GPUMeshAndSphereHitBox(std::vector<DirectX::XMFLOAT4> VE
 
 	updateCommonData.radius = 5.0f;
 
-	hitVel = 10;
+	hitVel = 1;
 }
 
 GPUMeshAndSphereHitBox::~GPUMeshAndSphereHitBox()
@@ -239,7 +239,7 @@ void GPUMeshAndSphereHitBox::Update(RESOURCE_HANDLE BASE_HANDLE, RESOURCE_HANDLE
 
 		if (DIRTY_FLAG)
 		{
-			updateCommonData.hitVel =static_cast<UINT>(hitVel);
+			updateCommonData.hitVel = static_cast<UINT>(hitVel);
 		}
 		else
 		{
@@ -250,7 +250,7 @@ void GPUMeshAndSphereHitBox::Update(RESOURCE_HANDLE BASE_HANDLE, RESOURCE_HANDLE
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(4, buffers->GetGpuAddress(updateCommonHandle));
 	}
 
-	DirectX12CmdList::Instance()->cmdList->Dispatch(2, 1, 1);
+	DirectX12CmdList::Instance()->cmdList->Dispatch(20, 1, 1);
 
 }
 
