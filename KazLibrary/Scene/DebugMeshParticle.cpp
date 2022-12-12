@@ -211,6 +211,13 @@ void DebugMeshParticleScene::Init()
 	InitMeshParticle({ 0.0f,0.0f,0.0f }, particleHitBox);
 	InitMeshParticle({ 2.0f,0.0f,0.0f }, particleHitBox2);
 	//メッシュパーティクル初期化--------------------------------------------
+
+	meshPos = { 0.0f,10.0f,0.0f };
+
+
+	circleModelR.data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "sphere.fbx");
+	circleModelR.data.pipelineName = PIPELINE_NAME_COLOR_WIREFLAME;
+	circleModelR.data.removeMaterialFlag = true;
 }
 
 void DebugMeshParticleScene::Finalize()
@@ -348,7 +355,6 @@ void DebugMeshParticleScene::Update()
 	else if (cpuCheckMeshParticleAndSphereHitBoxFlag)
 	{
 		initParticleFlag = ImGui::Button("InitParticle");
-		hitParticleFlag = ImGui::Button("HitParticle");
 		ImGui::Checkbox("DrawParticle", &drawParticleFlag);
 		KazImGuiHelper::InputVec3("MeshPos", &meshPos);
 		KazImGuiHelper::InputVec3("LinePos1", &vec1->data.startPos);
@@ -576,16 +582,37 @@ void DebugMeshParticleScene::Update()
 		//座標初期化
 		if (initParticleFlag)
 		{
-			InitMeshParticle({ 0.0f,0.0f,0.0f }, particleHitBox);
-			InitMeshParticle({ 2.0f,0.0f,0.0f }, particleHitBox2);
+			blockPos = { 0.0f,0.0f,0.0f };
+			blockPos2 = { 2.0f,0.0f,0.0f };
+			InitMeshParticle(blockPos, particleHitBox);
+			InitMeshParticle(blockPos2, particleHitBox2);
 		}
 
 		//当たり判定
-		if (hitParticleFlag)
+		if (meshPos != prevMeshPos)
 		{
-			CollisionDetection(particleHitBox);
-			CollisionDetection(particleHitBox2);
+			Sphere lSphere1, lMeshSphere;
+			lMeshSphere.center = &meshPos;
+			lMeshSphere.radius = 2.0f;
+
+			lSphere1.center = &blockPos;
+			lSphere1.radius = 2.0f;
+			if (CollisionManager::Instance()->CheckSphereAndSphere(lMeshSphere, lSphere1))
+			{
+				CollisionDetection(particleHitBox);
+			}
+
+			Sphere lSphere2;
+			lSphere2.center = &blockPos2;
+			lSphere2.radius = 2.0f;
+			if (CollisionManager::Instance()->CheckSphereAndSphere(lMeshSphere, lSphere2))
+			{
+				CollisionDetection(particleHitBox2);
+			}
+			prevMeshPos = meshPos;
 		}
+		circleModelR.data.transform.pos = meshPos;
+		circleModelR.data.transform.scale = { 2.0f,2.0f,2.0f };
 	}
 }
 
@@ -683,6 +710,7 @@ void DebugMeshParticleScene::Draw()
 					particleHitBox2[surfaceIndex][i]->Draw();
 				}
 			}
+			circleModelR.Draw();
 		}
 		else
 		{

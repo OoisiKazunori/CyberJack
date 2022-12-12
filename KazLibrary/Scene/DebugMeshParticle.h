@@ -285,15 +285,18 @@ private:
 	std::vector<std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM>>particleHitBox;
 	std::vector<std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM>>particleHitBox2;
 	std::vector<std::array<int, PARTICLE_HITBOX_NUM>>particleAngle;
-	KazMath::Vec3<float>meshPos;
+	KazMath::Vec3<float>meshPos,prevMeshPos;
 
 	bool initParticleFlag;
 	bool hitParticleFlag;
 
+	KazMath::Vec3<float>blockPos, blockPos2;
 
 	LineRenderPtr vec1, vec2;
 	float angleParticle;
 	bool drawParticleFlag;
+
+	FbxModelRender circleModelR;
 	//CPU上でのメッシュとパーティクルの判定--------------------------------------------
 
 	std::array<KazMath::Vec3<float>, 36>GetSquareVertData(const KazMath::Vec3<float>&BASE_POS);
