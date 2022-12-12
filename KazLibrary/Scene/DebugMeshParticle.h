@@ -52,7 +52,6 @@ private:
 
 	bool deadParticleFlag, prevDeadParticleFlag;
 
-
 	std::unique_ptr<DeadParticle> deadParticle;
 
 	//デバック用--------------------------------------------
@@ -280,7 +279,21 @@ private:
 
 	static const int PARTICLE_HITBOX_NUM = 100;
 	void MeshParticle(std::array<TriangleLineData, 3>LINE_ARRAY_POS, std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM> &PARTICLE_DATA);
+	void CollisionDetection(std::vector<std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM>> &PARTICLE_DATA);
+
 	std::vector<std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM>>particleHitBox;
+	std::vector<std::array<int, PARTICLE_HITBOX_NUM>>particleAngle;
+	KazMath::Vec3<float>meshPos;
+
+	bool initParticleFlag;
+	bool hitParticleFlag;
+
+
+	LineRenderPtr vec1, vec2;
+	float angleParticle;
+	bool drawParticleFlag;
 	//CPU上でのメッシュとパーティクルの判定--------------------------------------------
+
+	std::array<KazMath::Vec3<float>, 36>GetSquareVertData(const KazMath::Vec3<float>&BASE_POS);
 };
 

@@ -102,6 +102,10 @@ DebugMeshParticleScene::DebugMeshParticleScene()
 	meshTransform.pos = { -100.0f,90.0f,100.0f };
 
 	particleWall = std::make_unique<ParticleWall>();
+
+	vec1 = std::make_unique<LineRender>();
+	vec2 = std::make_unique<LineRender>();
+
 }
 
 DebugMeshParticleScene::~DebugMeshParticleScene()
@@ -200,6 +204,8 @@ void DebugMeshParticleScene::Init()
 	};
 
 
+	particleAngle.resize(12);
+
 	particleHitBox.resize(12);
 	for (int i = 0; i < particleHitBox.size(); ++i)
 	{
@@ -210,7 +216,7 @@ void DebugMeshParticleScene::Init()
 		for (int lineIndex = 0; lineIndex < 3; ++lineIndex)
 		{
 			//始点設定
-			lIndicesIndex = i * 3  + lIndexOffset;
+			lIndicesIndex = i * 3 + lIndexOffset;
 			lLineDataArray[lineIndex].startPos = { lVertices[lIndices[lIndicesIndex]].pos.x,lVertices[lIndices[lIndicesIndex]].pos.y,lVertices[lIndices[lIndicesIndex]].pos.z };
 
 			//インデックスずらし
@@ -361,6 +367,16 @@ void DebugMeshParticleScene::Update()
 	else if (gpuCheckHitBoxFlag)
 	{
 		KazImGuiHelper::InputTransform3D("MeshTransform", &meshTransform);
+	}
+	else if (cpuCheckMeshParticleAndSphereHitBoxFlag)
+	{
+		initParticleFlag = ImGui::Button("InitParticle");
+		hitParticleFlag = ImGui::Button("HitParticle");
+		ImGui::Checkbox("DrawParticle", &drawParticleFlag);
+		KazImGuiHelper::InputVec3("MeshPos", &meshPos);
+		KazImGuiHelper::InputVec3("LinePos1", &vec1->data.startPos);
+		KazImGuiHelper::InputVec3("LinePos2", &vec2->data.endPos);
+		ImGui::Text("Angle%f", angleParticle);
 	}
 	ImGui::End();
 
@@ -569,6 +585,77 @@ void DebugMeshParticleScene::Update()
 	else if (cpuCheckMeshParticleAndSphereHitBoxFlag)
 	{
 
+		vec1->data.endPos = { 0.0f,0.0f,0.0f };
+		vec2->data.startPos = { 0.0f,0.0f,0.0f };
+
+		KazMath::Vec3<float>vec1Dir = vec1->data.endPos - vec1->data.startPos;
+		KazMath::Vec3<float>vec2Dir = vec2->data.endPos - vec2->data.startPos;
+
+		float lTCosf = vec1Dir.Dot(vec2Dir) / (vec1Dir.Length() * vec2Dir.Length());
+		float lTSinf = acos(lTCosf);
+
+		angleParticle = static_cast<float>(KazMath::RadianToAngle(lTSinf));
+
+		if (initParticleFlag)
+		{
+			const float lSize = 1.0f;
+
+			std::array<KazMath::Vec3<float>, 36>lVertices = GetSquareVertData({ 1.0f,0.0f,0.0f });
+
+			const unsigned short lIndices[] =
+			{
+				0,1,2,
+				2,1,3,
+
+				4,6,5,
+				6,7,5,
+
+				8,9,10,
+				10,9,11,
+
+				12,14,13,
+				13,14,15,
+
+				16,18,17,
+				17,18,19,
+
+				20,21,22,
+				22,21,23
+			};
+
+			for (int i = 0; i < particleHitBox.size(); ++i)
+			{
+				std::array<TriangleLineData, 3> lLineDataArray;
+				int lIndicesIndex = 0;
+				int lIndexOffset = 0;//0-1,1-2,2-0と言った順に三角形を繋ぐためのオフセット
+
+				for (int lineIndex = 0; lineIndex < 3; ++lineIndex)
+				{
+					lIndicesIndex = i * 3 + lIndexOffset;
+					lLineDataArray[lineIndex].startPos = lVertices[lIndices[lIndicesIndex]];
+
+					//インデックスずらし
+					++lIndexOffset;
+					if (3 <= lIndexOffset)
+					{
+						lIndexOffset = 0;
+					}
+
+					//終点設定
+					lIndicesIndex = i * 3 + lIndexOffset;
+					lLineDataArray[lineIndex].endPos = lVertices[lIndices[lIndicesIndex]];
+				}
+
+				MeshParticle(lLineDataArray, particleHitBox[i]);
+			}
+		}
+
+
+		if (hitParticleFlag)
+		{
+
+			CollisionDetection(particleHitBox);
+		}
 	}
 }
 
@@ -650,12 +737,20 @@ void DebugMeshParticleScene::Draw()
 	}
 	else if (cpuCheckMeshParticleAndSphereHitBoxFlag)
 	{
-		for (int surfaceIndex = 0; surfaceIndex < particleHitBox.size(); ++surfaceIndex)
+		if (drawParticleFlag)
 		{
-			for (int i = 0; i < particleHitBox[surfaceIndex].size(); ++i)
+			for (int surfaceIndex = 0; surfaceIndex < particleHitBox.size(); ++surfaceIndex)
 			{
-				particleHitBox[surfaceIndex][i]->Draw();
+				for (int i = 0; i < particleHitBox[surfaceIndex].size(); ++i)
+				{
+					particleHitBox[surfaceIndex][i]->Draw();
+				}
 			}
+		}
+		else
+		{
+			vec1->Draw();
+			vec2->Draw();
 		}
 	}
 	if (drawGridFlag)
@@ -816,6 +911,8 @@ void DebugMeshParticleScene::MeshParticle(std::array<TriangleLineData, 3>LINE_AR
 		//以下の項目を計算し、配置する
 		for (int i = 0; i < L_MAX_PARTICLE; ++i)
 		{
+			PARTICLE_DATA[lParticleNum].reset();
+
 			//1.レイに沿った座標を乱数で決定する
 			float lRate = KazMath::Rand(1.0f, 0.0f);
 			KazMath::Vec3<float>lStartPos = LINE_ARRAY_POS[rayIndex].startPos + lDistance * lRate;
@@ -825,7 +922,7 @@ void DebugMeshParticleScene::MeshParticle(std::array<TriangleLineData, 3>LINE_AR
 
 
 			//数が多いほどエッジ周辺に偏らせる
-			const int L_RANDOM_NUMBER_BIAS = particleBias;
+			const int L_RANDOM_NUMBER_BIAS = 100;
 
 			PARTICLE_DATA[lParticleNum] = std::make_unique<BoxPolygonRender>();
 
@@ -860,7 +957,82 @@ void DebugMeshParticleScene::MeshParticle(std::array<TriangleLineData, 3>LINE_AR
 
 	for (int i = lParticleNum; i < PARTICLE_DATA.size(); ++i)
 	{
+		PARTICLE_DATA[i].reset();
 		PARTICLE_DATA[i] = std::make_unique<BoxPolygonRender>();
 		PARTICLE_DATA[i]->data.transform.scale = { L_SCALE,L_SCALE,L_SCALE };
 	}
+}
+
+void DebugMeshParticleScene::CollisionDetection(std::vector<std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM>> &PARTICLE_DATA)
+{
+	//ブロックの中心座標とメッシュの中心座標を見る
+	KazMath::Vec3<float> lCentralToBlockDir = meshPos - KazMath::Vec3<float>(0.0f, 0.0f, 0.0f);
+
+	for (int surfaceIndex = 0; surfaceIndex < PARTICLE_DATA.size(); ++surfaceIndex)
+	{
+		for (int i = 0; i < PARTICLE_DATA[surfaceIndex].size(); ++i)
+		{
+			//パーティクル座標との中心座標を見る
+			KazMath::Vec3<float> lCentralToParticleDir = PARTICLE_DATA[surfaceIndex][i]->data.transform.pos - meshPos;
+
+			//なす角の判断
+			float lCosf = lCentralToParticleDir.Dot(lCentralToBlockDir) / (lCentralToParticleDir.Length() * lCentralToBlockDir.Length());
+			float lSinf = acos(lCosf);
+
+			//移動量算出
+			int lAngle = KazMath::RadianToAngle(lSinf) - 90;
+			float rate = static_cast<float>(lAngle) / 90.0f;
+
+			lCentralToParticleDir.Normalize();
+			//lCentralToParticleDir.x = 0.0f;
+			PARTICLE_DATA[surfaceIndex][i]->data.transform.pos += lCentralToParticleDir * (1.5f * rate);
+
+			particleAngle[surfaceIndex][i] = lAngle;
+		}
+	}
+}
+
+std::array<KazMath::Vec3<float>, 36> DebugMeshParticleScene::GetSquareVertData(const KazMath::Vec3<float> &BASE_POS)
+{
+	const float lSize = 1.0f;
+	Vertex lVertices[] =
+	{
+	{{-lSize, -lSize, -lSize},{}, {0.0f,1.0f}},
+	{{-lSize,  lSize, -lSize},{}, {0.0f,0.0f}},
+	{{ lSize, -lSize, -lSize}, {}, {1.0f,1.0f}},
+	{{ lSize,  lSize, -lSize}, {}, {1.0f,0.0f}},
+
+	{{-lSize,-lSize,  lSize}, {}, {0.0f,1.0f}},
+	{{-lSize, lSize,  lSize}, {},{0.0f,0.0f}},
+	{{ lSize,-lSize,  lSize},{},{1.0f,1.0f}},
+	{{ lSize, lSize,  lSize},{}, {1.0f,0.0f}},
+
+	{{-lSize,-lSize, -lSize},{}, {0.0f,1.0f}},
+	{{-lSize,-lSize,  lSize}, {}, {0.0f,0.0f}},
+	{{-lSize, lSize, -lSize}, {}, {1.0f,1.0f}},
+	{{-lSize, lSize,  lSize}, {}, {1.0f,0.0f}},
+
+	{{lSize,-lSize, -lSize},{}, {0.0f,1.0f}},
+	{{lSize,-lSize,  lSize}, {}, {0.0f,0.0f}},
+	{{lSize, lSize, -lSize}, {}, {1.0f,1.0f}},
+	{{lSize, lSize,  lSize}, {}, {1.0f,0.0f}},
+	{{ lSize, -lSize, lSize}, {}, {0.0f,1.0f}},
+	{{ lSize, -lSize,-lSize}, {}, {0.0f,0.0f}},
+	{{-lSize, -lSize, lSize}, {}, {1.0f,1.0f}},
+	{{-lSize, -lSize,-lSize}, {}, {1.0f,0.0f}},
+	{{ lSize, lSize, lSize}, {}, {0.0f,1.0f}},
+	{{ lSize, lSize,-lSize}, {}, {0.0f,0.0f}},
+	{{-lSize, lSize, lSize}, {}, {1.0f,1.0f}},
+	{{-lSize, lSize,-lSize}, {}, {1.0f,0.0f}}
+	};
+
+	std::array<KazMath::Vec3<float>, 36>lPosArray;
+	for (int i = 0; i < 36; ++i)
+	{
+		lPosArray[i].x = BASE_POS.x + lVertices[i].pos.x;
+		lPosArray[i].y = BASE_POS.y + lVertices[i].pos.y;
+		lPosArray[i].z = BASE_POS.z + lVertices[i].pos.z;
+	}
+
+	return lPosArray;
 }

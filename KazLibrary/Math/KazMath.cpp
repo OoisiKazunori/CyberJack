@@ -1,5 +1,5 @@
 #include "../Math/KazMath.h"
-#include<cmath>//sqrt
+#include<cmath>
 
 void KazMath::CheckIsnan(KazMath::Vec3<float> *VEC)
 {
