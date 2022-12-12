@@ -207,32 +207,9 @@ void DebugMeshParticleScene::Init()
 	particleAngle.resize(12);
 
 	particleHitBox.resize(12);
-	for (int i = 0; i < particleHitBox.size(); ++i)
-	{
-		std::array<TriangleLineData, 3> lLineDataArray;
-		int lIndicesIndex = 0;
-		int lIndexOffset = 0;//0-1,1-2,2-0と言った順に三角形を繋ぐためのオフセット
-
-		for (int lineIndex = 0; lineIndex < 3; ++lineIndex)
-		{
-			//始点設定
-			lIndicesIndex = i * 3 + lIndexOffset;
-			lLineDataArray[lineIndex].startPos = { lVertices[lIndices[lIndicesIndex]].pos.x,lVertices[lIndices[lIndicesIndex]].pos.y,lVertices[lIndices[lIndicesIndex]].pos.z };
-
-			//インデックスずらし
-			++lIndexOffset;
-			if (3 <= lIndexOffset)
-			{
-				lIndexOffset = 0;
-			}
-
-			//終点設定
-			lIndicesIndex = i * 3 + lIndexOffset;
-			lLineDataArray[lineIndex].endPos = { lVertices[lIndices[lIndicesIndex]].pos.x,lVertices[lIndices[lIndicesIndex]].pos.y,lVertices[lIndices[lIndicesIndex]].pos.z };
-		}
-
-		MeshParticle(lLineDataArray, particleHitBox[i]);
-	}
+	particleHitBox2.resize(12);
+	InitMeshParticle({ 0.0f,0.0f,0.0f }, particleHitBox);
+	InitMeshParticle({ 2.0f,0.0f,0.0f }, particleHitBox2);
 	//メッシュパーティクル初期化--------------------------------------------
 }
 
@@ -596,65 +573,18 @@ void DebugMeshParticleScene::Update()
 
 		angleParticle = static_cast<float>(KazMath::RadianToAngle(lTSinf));
 
+		//座標初期化
 		if (initParticleFlag)
 		{
-			const float lSize = 1.0f;
-
-			std::array<KazMath::Vec3<float>, 36>lVertices = GetSquareVertData({ 1.0f,0.0f,0.0f });
-
-			const unsigned short lIndices[] =
-			{
-				0,1,2,
-				2,1,3,
-
-				4,6,5,
-				6,7,5,
-
-				8,9,10,
-				10,9,11,
-
-				12,14,13,
-				13,14,15,
-
-				16,18,17,
-				17,18,19,
-
-				20,21,22,
-				22,21,23
-			};
-
-			for (int i = 0; i < particleHitBox.size(); ++i)
-			{
-				std::array<TriangleLineData, 3> lLineDataArray;
-				int lIndicesIndex = 0;
-				int lIndexOffset = 0;//0-1,1-2,2-0と言った順に三角形を繋ぐためのオフセット
-
-				for (int lineIndex = 0; lineIndex < 3; ++lineIndex)
-				{
-					lIndicesIndex = i * 3 + lIndexOffset;
-					lLineDataArray[lineIndex].startPos = lVertices[lIndices[lIndicesIndex]];
-
-					//インデックスずらし
-					++lIndexOffset;
-					if (3 <= lIndexOffset)
-					{
-						lIndexOffset = 0;
-					}
-
-					//終点設定
-					lIndicesIndex = i * 3 + lIndexOffset;
-					lLineDataArray[lineIndex].endPos = lVertices[lIndices[lIndicesIndex]];
-				}
-
-				MeshParticle(lLineDataArray, particleHitBox[i]);
-			}
+			InitMeshParticle({ 0.0f,0.0f,0.0f }, particleHitBox);
+			InitMeshParticle({ 2.0f,0.0f,0.0f }, particleHitBox2);
 		}
 
-
+		//当たり判定
 		if (hitParticleFlag)
 		{
-
 			CollisionDetection(particleHitBox);
+			CollisionDetection(particleHitBox2);
 		}
 	}
 }
@@ -744,6 +674,13 @@ void DebugMeshParticleScene::Draw()
 				for (int i = 0; i < particleHitBox[surfaceIndex].size(); ++i)
 				{
 					particleHitBox[surfaceIndex][i]->Draw();
+				}
+			}
+			for (int surfaceIndex = 0; surfaceIndex < particleHitBox2.size(); ++surfaceIndex)
+			{
+				for (int i = 0; i < particleHitBox2[surfaceIndex].size(); ++i)
+				{
+					particleHitBox2[surfaceIndex][i]->Draw();
 				}
 			}
 		}
@@ -894,7 +831,59 @@ KazMath::Vec3<float> DebugMeshParticleScene::ClosestPoint(KazMath::Vec3<float> P
 	return TRIANGLE_A_POS + lAb * lV + lAc * lW;;
 }
 
-void DebugMeshParticleScene::MeshParticle(std::array<TriangleLineData, 3>LINE_ARRAY_POS, std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM> &PARTICLE_DATA)
+void DebugMeshParticleScene::InitMeshParticle(const KazMath::Vec3<float> &BASE_POS, std::vector<std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM>> &PARTICLE_DATA)
+{
+	std::array<KazMath::Vec3<float>, 36>lVertices = GetSquareVertData(BASE_POS);
+
+	const unsigned short lIndices[] =
+	{
+		0,1,2,
+		2,1,3,
+
+		4,6,5,
+		6,7,5,
+
+		8,9,10,
+		10,9,11,
+
+		12,14,13,
+		13,14,15,
+
+		16,18,17,
+		17,18,19,
+
+		20,21,22,
+		22,21,23
+	};
+
+	for (int i = 0; i < PARTICLE_DATA.size(); ++i)
+	{
+		std::array<TriangleLineData, 3> lLineDataArray;
+		int lIndicesIndex = 0;
+		int lIndexOffset = 0;//0-1,1-2,2-0と言った順に三角形を繋ぐためのオフセット
+
+		for (int lineIndex = 0; lineIndex < 3; ++lineIndex)
+		{
+			lIndicesIndex = i * 3 + lIndexOffset;
+			lLineDataArray[lineIndex].startPos = lVertices[lIndices[lIndicesIndex]];
+
+			//インデックスずらし
+			++lIndexOffset;
+			if (3 <= lIndexOffset)
+			{
+				lIndexOffset = 0;
+			}
+
+			//終点設定
+			lIndicesIndex = i * 3 + lIndexOffset;
+			lLineDataArray[lineIndex].endPos = lVertices[lIndices[lIndicesIndex]];
+		}
+
+		SetParticle(lLineDataArray, PARTICLE_DATA[i]);
+	}
+}
+
+void DebugMeshParticleScene::SetParticle(std::array<TriangleLineData, 3>LINE_ARRAY_POS, std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM> &PARTICLE_DATA)
 {
 	int lParticleNum = 0;
 	const float L_SCALE = 0.01f;
@@ -984,7 +973,7 @@ void DebugMeshParticleScene::CollisionDetection(std::vector<std::array<BoxPolygo
 			float rate = static_cast<float>(lAngle) / 90.0f;
 
 			lCentralToParticleDir.Normalize();
-			//lCentralToParticleDir.x = 0.0f;
+			lCentralToParticleDir.x = 0.0f;
 			PARTICLE_DATA[surfaceIndex][i]->data.transform.pos += lCentralToParticleDir * (1.5f * rate);
 
 			particleAngle[surfaceIndex][i] = lAngle;
