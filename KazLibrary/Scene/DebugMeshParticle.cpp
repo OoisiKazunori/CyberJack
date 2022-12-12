@@ -131,6 +131,103 @@ void DebugMeshParticleScene::Init()
 	deadParticleFlag = false;
 
 	texParticle->Init();
+
+
+
+	//メッシュパーティクル初期化--------------------------------------------
+	const float lSize = 1.0f;
+
+	Vertex lVertices[] =
+	{
+		//x,y,z	法線	u,v
+	//前
+	{{-lSize, -lSize, -lSize},{}, {0.0f,1.0f}},		//左下
+	{{-lSize,  lSize, -lSize},{}, {0.0f,0.0f}},		//左上
+	{{ lSize, -lSize, -lSize}, {}, {1.0f,1.0f}},		//右下
+	{{ lSize,  lSize, -lSize}, {}, {1.0f,0.0f}},		//右上
+
+	//後
+	{{-lSize,-lSize,  lSize}, {}, {0.0f,1.0f}},		//左下
+	{{-lSize, lSize,  lSize}, {},{0.0f,0.0f}},		//左上
+	{{ lSize,-lSize,  lSize},{},{1.0f,1.0f}},		//右下
+	{{ lSize, lSize,  lSize},{}, {1.0f,0.0f}},		//右上
+
+	//左
+	{{-lSize,-lSize, -lSize},{}, {0.0f,1.0f}},		//左下
+	{{-lSize,-lSize,  lSize}, {}, {0.0f,0.0f}},		//左上
+	{{-lSize, lSize, -lSize}, {}, {1.0f,1.0f}},		//右下
+	{{-lSize, lSize,  lSize}, {}, {1.0f,0.0f}},		//右上
+
+	//右
+	{{lSize,-lSize, -lSize},{}, {0.0f,1.0f}},		//左下
+	{{lSize,-lSize,  lSize}, {}, {0.0f,0.0f}},		//左上
+	{{lSize, lSize, -lSize}, {}, {1.0f,1.0f}},		//右下
+	{{lSize, lSize,  lSize}, {}, {1.0f,0.0f}},		//右上
+
+	//下
+	{{ lSize, -lSize, lSize}, {}, {0.0f,1.0f}},		//左下
+	{{ lSize, -lSize,-lSize}, {}, {0.0f,0.0f}},		//左上
+	{{-lSize, -lSize, lSize}, {}, {1.0f,1.0f}},		//右下
+	{{-lSize, -lSize,-lSize}, {}, {1.0f,0.0f}},	//右上
+
+	//上
+	{{ lSize, lSize, lSize}, {}, {0.0f,1.0f}},			//左下
+	{{ lSize, lSize,-lSize}, {}, {0.0f,0.0f}},			//左上
+	{{-lSize, lSize, lSize}, {}, {1.0f,1.0f}},			//右下
+	{{-lSize, lSize,-lSize}, {}, {1.0f,0.0f}}			//右上
+	};
+
+	const unsigned short lIndices[] =
+	{
+		//前
+		0,1,2,		//三角形1つ目
+		2,1,3,		//三角形2つ目
+		//後
+		4,6,5,		//三角形3つ目
+		6,7,5,		//三角形4つ目
+		//左
+		8,9,10,		//三角形1つ目
+		10,9,11,	//三角形2つ目
+		//右
+		12,14,13,	//三角形1つ目
+		13,14,15,	//三角形2つ目
+		//下
+		16,18,17,	//三角形1つ目
+		17,18,19,	//三角形2つ目
+		//上
+		20,21,22,	//三角形3つ目
+		22,21,23	//三角形4つ目
+	};
+
+
+	particleHitBox.resize(12);
+	for (int i = 0; i < particleHitBox.size(); ++i)
+	{
+		std::array<TriangleLineData, 3> lLineDataArray;
+		int lIndicesIndex = 0;
+		int lIndexOffset = 0;//0-1,1-2,2-0と言った順に三角形を繋ぐためのオフセット
+
+		for (int lineIndex = 0; lineIndex < 3; ++lineIndex)
+		{
+			//始点設定
+			lIndicesIndex = i * 3  + lIndexOffset;
+			lLineDataArray[lineIndex].startPos = { lVertices[lIndices[lIndicesIndex]].pos.x,lVertices[lIndices[lIndicesIndex]].pos.y,lVertices[lIndices[lIndicesIndex]].pos.z };
+
+			//インデックスずらし
+			++lIndexOffset;
+			if (3 <= lIndexOffset)
+			{
+				lIndexOffset = 0;
+			}
+
+			//終点設定
+			lIndicesIndex = i * 3 + lIndexOffset;
+			lLineDataArray[lineIndex].endPos = { lVertices[lIndices[lIndicesIndex]].pos.x,lVertices[lIndices[lIndicesIndex]].pos.y,lVertices[lIndices[lIndicesIndex]].pos.z };
+		}
+
+		MeshParticle(lLineDataArray, particleHitBox[i]);
+	}
+	//メッシュパーティクル初期化--------------------------------------------
 }
 
 void DebugMeshParticleScene::Finalize()
@@ -161,7 +258,8 @@ void DebugMeshParticleScene::Update()
 	ImGui::Checkbox("CheckTextureParticle", &textureParticleFlag);
 	ImGui::Checkbox("CheckSplineParticle", &splineParticleFlag);
 	ImGui::Checkbox("CheckPerlinNoise", &perlinNoizeFlag);
-	ImGui::Checkbox("CheckCPUHitBox", &cpuCheckHitBoxFlag);
+	ImGui::Checkbox("CheckTriangleAndSphereHitBox", &cpuCheckTriangleAndSphereHitBoxFlag);
+	ImGui::Checkbox("CheckCPUMeshParticleAndSphereHitBox", &cpuCheckMeshParticleAndSphereHitBoxFlag);
 	ImGui::Checkbox("CheckGPUHitBox", &gpuCheckHitBoxFlag);
 	if (cpuCheckParticleFlag)
 	{
@@ -248,7 +346,7 @@ void DebugMeshParticleScene::Update()
 		}
 		ImGui::Checkbox("Init", &initSplineFlag);
 	}
-	else if (cpuCheckHitBoxFlag)
+	else if (cpuCheckTriangleAndSphereHitBoxFlag)
 	{
 		if (ImGui::TreeNode("TrianglePosArray"))
 		{
@@ -436,7 +534,7 @@ void DebugMeshParticleScene::Update()
 		}
 		splineParticle->Update();
 	}
-	else if (cpuCheckHitBoxFlag)
+	else if (cpuCheckTriangleAndSphereHitBoxFlag)
 	{
 		KazMath::Vec3<float>lClosestPos = ClosestPoint(pointPos, hitBoxTrianglePosArray[0], hitBoxTrianglePosArray[1], hitBoxTrianglePosArray[2]);
 
@@ -467,6 +565,10 @@ void DebugMeshParticleScene::Update()
 		collision->Update(particleWall->GetBasePosHandle(), particleWall->GetParticleHandle(), meshTransform.Dirty());
 		meshTransform.Record();
 		particleWall->Update();
+	}
+	else if (cpuCheckMeshParticleAndSphereHitBoxFlag)
+	{
+
 	}
 }
 
@@ -531,7 +633,7 @@ void DebugMeshParticleScene::Draw()
 			controlPointR[i].Draw();
 		}
 	}
-	else if (cpuCheckHitBoxFlag)
+	else if (cpuCheckTriangleAndSphereHitBoxFlag)
 	{
 		for (int i = 0; i < hitBoxTriangelLine.size(); ++i)
 		{
@@ -546,7 +648,16 @@ void DebugMeshParticleScene::Draw()
 		collision->Draw();
 		particleWall->Draw();
 	}
-
+	else if (cpuCheckMeshParticleAndSphereHitBoxFlag)
+	{
+		for (int surfaceIndex = 0; surfaceIndex < particleHitBox.size(); ++surfaceIndex)
+		{
+			for (int i = 0; i < particleHitBox[surfaceIndex].size(); ++i)
+			{
+				particleHitBox[surfaceIndex][i]->Draw();
+			}
+		}
+	}
 	if (drawGridFlag)
 	{
 		//debug.Draw();
@@ -686,4 +797,70 @@ KazMath::Vec3<float> DebugMeshParticleScene::ClosestPoint(KazMath::Vec3<float> P
 	float lV = lVb * lDenom;
 	float lW = lVc * lDenom;
 	return TRIANGLE_A_POS + lAb * lV + lAc * lW;;
+}
+
+void DebugMeshParticleScene::MeshParticle(std::array<TriangleLineData, 3>LINE_ARRAY_POS, std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM> &PARTICLE_DATA)
+{
+	int lParticleNum = 0;
+	const float L_SCALE = 0.01f;
+
+	KazMath::Vec3<float>lTriangleCentralPos = (LINE_ARRAY_POS[0].startPos + LINE_ARRAY_POS[1].startPos + LINE_ARRAY_POS[2].startPos) / 3.0f;
+	float lTriangleArea = CalucurateTriangleArea(LINE_ARRAY_POS[0].startPos, LINE_ARRAY_POS[1].startPos, LINE_ARRAY_POS[2].startPos);
+
+	//一つのレイ当たりで使用できるパーティクルを決定する
+	const int L_MAX_PARTICLE = static_cast<int>(PARTICLE_DATA.size()) / static_cast<int>(LINE_ARRAY_POS.size());
+	for (int rayIndex = 0; rayIndex < LINE_ARRAY_POS.size(); ++rayIndex)
+	{
+		KazMath::Vec3<float>lDistance = LINE_ARRAY_POS[rayIndex].endPos - LINE_ARRAY_POS[rayIndex].startPos;
+
+		//以下の項目を計算し、配置する
+		for (int i = 0; i < L_MAX_PARTICLE; ++i)
+		{
+			//1.レイに沿った座標を乱数で決定する
+			float lRate = KazMath::Rand(1.0f, 0.0f);
+			KazMath::Vec3<float>lStartPos = LINE_ARRAY_POS[rayIndex].startPos + lDistance * lRate;
+
+			//2.1で決めた座標を始点、重心座標を終点とし、その長さを求める
+			KazMath::Vec3<float>lResultDistance = lTriangleCentralPos - lStartPos;
+
+
+			//数が多いほどエッジ周辺に偏らせる
+			const int L_RANDOM_NUMBER_BIAS = particleBias;
+
+			PARTICLE_DATA[lParticleNum] = std::make_unique<BoxPolygonRender>();
+
+			//3.先程決めた長さの内、エッジ周辺にパーティクルを配置するか、長さの範囲で座標を決めるか乱数で決める
+			if (KazMath::Rand(PARTICLE_MAX_BIAS, 0) <= L_RANDOM_NUMBER_BIAS)
+			{
+				//4-1.エッジ周辺にパーティクルを配置する場合は、長さを一定値割った値から乱数でどの場所に配置するか決める
+				PARTICLE_DATA[lParticleNum]->data.transform.pos = lStartPos + lResultDistance * KazMath::Rand(0.1f, 0.0f);
+			}
+			else
+			{
+				//4-2.長さの範囲で座標を決める場合は長さの値でどの場所に配置するか決める
+				PARTICLE_DATA[lParticleNum]->data.transform.pos = lStartPos + lResultDistance * KazMath::Rand(1.0f, 0.0f);
+			}
+
+			//UV--------------------
+			float u = CalucurateUVW(LINE_ARRAY_POS[0].startPos, LINE_ARRAY_POS[0].endPos, PARTICLE_DATA[lParticleNum]->data.transform.pos, lTriangleArea);
+			float v = CalucurateUVW(LINE_ARRAY_POS[1].startPos, LINE_ARRAY_POS[1].endPos, PARTICLE_DATA[lParticleNum]->data.transform.pos, lTriangleArea);
+			float w = CalucurateUVW(LINE_ARRAY_POS[2].startPos, LINE_ARRAY_POS[2].endPos, PARTICLE_DATA[lParticleNum]->data.transform.pos, lTriangleArea);
+
+			KazMath::Vec3<float> uvw;
+			KazMath::Vec2<float> uVec = KazMath::Vec2<float>(0.0f, 0.0f) * u;
+			KazMath::Vec2<float> vVec = KazMath::Vec2<float>(0.0f, 1.0f) * v;
+			KazMath::Vec2<float> wVec = KazMath::Vec2<float>(1.0f, 0.0f) * w;
+			//UV--------------------
+
+
+			PARTICLE_DATA[lParticleNum]->data.transform.scale = { L_SCALE,L_SCALE,L_SCALE };
+			++lParticleNum;
+		}
+	}
+
+	for (int i = lParticleNum; i < PARTICLE_DATA.size(); ++i)
+	{
+		PARTICLE_DATA[i] = std::make_unique<BoxPolygonRender>();
+		PARTICLE_DATA[i]->data.transform.scale = { L_SCALE,L_SCALE,L_SCALE };
+	}
 }

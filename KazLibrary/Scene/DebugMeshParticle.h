@@ -45,7 +45,8 @@ private:
 	bool textureParticleFlag;
 	bool splineParticleFlag;
 	bool perlinNoizeFlag;
-	bool cpuCheckHitBoxFlag;
+	bool cpuCheckTriangleAndSphereHitBoxFlag;
+	bool cpuCheckMeshParticleAndSphereHitBoxFlag;
 	bool gpuCheckHitBoxFlag;
 	bool drawGridFlag;
 
@@ -268,5 +269,18 @@ private:
 	KazMath::Transform3D meshTransform;
 	DirectX::XMMATRIX meshMat;
 	//GPU上でのメッシュとパーティクルの判定--------------------------------------------
+
+
+	//CPU上でのメッシュとパーティクルの判定--------------------------------------------
+	struct TriangleLineData
+	{
+		KazMath::Vec3<float>startPos;
+		KazMath::Vec3<float>endPos;
+	};
+
+	static const int PARTICLE_HITBOX_NUM = 100;
+	void MeshParticle(std::array<TriangleLineData, 3>LINE_ARRAY_POS, std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM> &PARTICLE_DATA);
+	std::vector<std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM>>particleHitBox;
+	//CPU上でのメッシュとパーティクルの判定--------------------------------------------
 };
 
