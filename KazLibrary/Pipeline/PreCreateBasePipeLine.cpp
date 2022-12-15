@@ -2911,5 +2911,24 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_COMPUTE_NAME_HITBOX_MESH
 	);
 
-	
+
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "ComputeBB.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_HITBOX_BB);
+
+	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+		SHADER_COMPUTE_HITBOX_BB,
+		PIPELINE_COMPUTE_DATA_TEST,
+		ROOTSIGNATURE_DATA_UAV_UAV,
+		PIPELINE_COMPUTE_NAME_HITBOX_BB
+	);
+
+
+
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "BBDuringEquallyCoordinatePlace.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_HITBOX_SETHITBOX_IN_BB);
+
+	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+		SHADER_COMPUTE_HITBOX_SETHITBOX_IN_BB,
+		PIPELINE_COMPUTE_DATA_TEST,
+		ROOTSIGNATURE_DATA_UAV_UAV_UAV_CBV,
+		PIPELINE_COMPUTE_NAME_HITBOX_SETCIRCLE_IN_BB
+	);
 }

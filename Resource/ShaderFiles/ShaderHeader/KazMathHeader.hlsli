@@ -6,6 +6,10 @@ float ConvertToRadian(float ANGLE)
     return ANGLE * (PI_2 / 180.0f);
 }
 
+float RadianToAngle(float RADIAN)
+{
+	return RADIAN * (180.0f / PI_2);
+}
 
 matrix Translate(float3 VECTOR)
 {
@@ -239,4 +243,35 @@ float3 Larp(float3 BASE_POS,float3 POS,float MUL)
 	distance *= MUL;
     
     return POS + distance;
+}
+
+//スレッドの引数から0~スレッドの最大数を計算します
+uint ThreadGroupIndex(uint3 SV_GroupID, uint SV_GroupIndex,uint3 SV_GroupThreadID,int THREAD_INDEX)
+{
+    uint index = (SV_GroupThreadID.y * THREAD_INDEX) + SV_GroupThreadID.x + SV_GroupThreadID.z;
+    index += THREAD_INDEX * SV_GroupID.x;
+    return index;
+}
+
+uint ThreadGroupIndex(uint3 SV_GroupID,int X_MAX,int XY_MAX)
+{
+    return SV_GroupID.x + SV_GroupID.y * X_MAX + SV_GroupID.z * XY_MAX;
+}
+
+float3 MinFloat3(float3 NUM_1,float3 NUM_2)
+{
+    float3 num;
+    num.x = min(NUM_1.x,NUM_2.x);
+    num.y = min(NUM_1.y,NUM_2.y);
+    num.z = min(NUM_1.z,NUM_2.z);
+    return num;
+}
+
+float3 MaxFloat3(float3 NUM_1,float3 NUM_2)
+{
+    float3 num;
+    num.x = max(NUM_1.x,NUM_2.x);
+    num.y = max(NUM_1.y,NUM_2.y);
+    num.z = max(NUM_1.z,NUM_2.z);
+    return num;
 }

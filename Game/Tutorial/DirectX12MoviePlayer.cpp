@@ -117,7 +117,6 @@ void DirectX12MoviePlayer::SetMediaSource(const std::string &fileName)
 		, nullptr, GENERIC_ALL, nullptr,
 		&hSharedTexture
 	);
-
 	//ƒŠƒ\[ƒX€”õ-------------------------------------------
 }
 

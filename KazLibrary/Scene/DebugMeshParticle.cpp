@@ -218,7 +218,7 @@ void DebugMeshParticleScene::Init()
 	{
 		for (int i = 0; i < baseParticleHitBox[surfaceIndex].size(); ++i)
 		{
-			particleLarpPos[surfaceIndex][i] = baseParticleHitBox[surfaceIndex][i]->data.transform.pos;
+			//particleLarpPos[surfaceIndex][i] = baseParticleHitBox[surfaceIndex][i]->data.transform.pos;
 		}
 	}
 
@@ -226,7 +226,7 @@ void DebugMeshParticleScene::Init()
 	{
 		for (int i = 0; i < baseParticleHitBox2[surfaceIndex].size(); ++i)
 		{
-			particleLarpPos2[surfaceIndex][i] = baseParticleHitBox2[surfaceIndex][i]->data.transform.pos;
+			//particleLarpPos2[surfaceIndex][i] = baseParticleHitBox2[surfaceIndex][i]->data.transform.pos;
 		}
 	}
 
@@ -611,7 +611,7 @@ void DebugMeshParticleScene::Update()
 			{
 				for (int i = 0; i < baseParticleHitBox[surfaceIndex].size(); ++i)
 				{
-					particleLarpPos[surfaceIndex][i] = baseParticleHitBox[surfaceIndex][i]->data.transform.pos;
+					//particleLarpPos[surfaceIndex][i] = baseParticleHitBox[surfaceIndex][i]->data.transform.pos;
 				}
 			}
 
@@ -619,7 +619,7 @@ void DebugMeshParticleScene::Update()
 			{
 				for (int i = 0; i < baseParticleHitBox2[surfaceIndex].size(); ++i)
 				{
-					particleLarpPos2[surfaceIndex][i] = baseParticleHitBox2[surfaceIndex][i]->data.transform.pos;
+					//particleLarpPos2[surfaceIndex][i] = baseParticleHitBox2[surfaceIndex][i]->data.transform.pos;
 				}
 			}
 		}
@@ -641,8 +641,8 @@ void DebugMeshParticleScene::Update()
 
 			if (CollisionManager::Instance()->CheckSphereAndSphere(lMeshSphere, lSphere1) || CollisionManager::Instance()->CheckSphereAndSphere(lMeshSphere, lSphere2))
 			{
-				CollisionDetection(particleHitBox, baseParticleHitBox, particleLarpPos);
-				CollisionDetection(particleHitBox2, baseParticleHitBox2, particleLarpPos2);
+				//CollisionDetection(particleHitBox, baseParticleHitBox, particleLarpPos);
+				//CollisionDetection(particleHitBox2, baseParticleHitBox2, particleLarpPos2);
 
 				larpVel = 0.5f;
 			}
@@ -652,14 +652,14 @@ void DebugMeshParticleScene::Update()
 				{
 					for (int i = 0; i < particleHitBox[surfaceIndex].size(); ++i)
 					{
-						particleLarpPos[surfaceIndex][i] = baseParticleHitBox[surfaceIndex][i]->data.transform.pos;
+			//			particleLarpPos[surfaceIndex][i] = baseParticleHitBox[surfaceIndex][i]->data.transform.pos;
 					}
 				}
 				for (int surfaceIndex = 0; surfaceIndex < particleHitBox2.size(); ++surfaceIndex)
 				{
 					for (int i = 0; i < particleHitBox2[surfaceIndex].size(); ++i)
 					{
-						particleLarpPos2[surfaceIndex][i] = baseParticleHitBox2[surfaceIndex][i]->data.transform.pos;
+			//			particleLarpPos2[surfaceIndex][i] = baseParticleHitBox2[surfaceIndex][i]->data.transform.pos;
 					}
 				}
 
@@ -757,7 +757,7 @@ void DebugMeshParticleScene::Draw()
 			{
 				for (int i = 0; i < particleHitBox[surfaceIndex].size(); ++i)
 				{
-					KazMath::Larp(particleLarpPos[surfaceIndex][i], &particleHitBox[surfaceIndex][i]->data.transform.pos, larpVel);
+					//KazMath::Larp(particleLarpPos[surfaceIndex][i], &particleHitBox[surfaceIndex][i]->data.transform.pos, larpVel);
 
 					particleHitBox[surfaceIndex][i]->Draw();
 				}
@@ -766,7 +766,7 @@ void DebugMeshParticleScene::Draw()
 			{
 				for (int i = 0; i < particleHitBox2[surfaceIndex].size(); ++i)
 				{
-					KazMath::Larp(particleLarpPos2[surfaceIndex][i], &particleHitBox2[surfaceIndex][i]->data.transform.pos, larpVel);
+					//KazMath::Larp(particleLarpPos2[surfaceIndex][i], &particleHitBox2[surfaceIndex][i]->data.transform.pos, larpVel);
 
 					particleHitBox2[surfaceIndex][i]->Draw();
 				}
