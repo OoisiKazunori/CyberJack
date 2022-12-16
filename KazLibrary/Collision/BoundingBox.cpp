@@ -25,6 +25,13 @@ BoundingBox::BoundingBox(std::vector<DirectX::XMFLOAT4> VERT_DATA)
 
 	//BBを形成する処理用意
 	bbBufferHandle = buffers.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(BoundingBoxBufferData)));
+
+	matBufferHandle = buffers.CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(DirectX::XMMATRIX)));
+
+	DirectX::XMMATRIX lMat = KazMath::CaluWorld(KazMath::Transform3D({ 0.0f,0.0f,0.0f }, { 10.0f,10.0f,10.0f }, { 0.0f,0.0f,0.0f }), { 0.0f,1.0f,0.0f }, { 0.0f, 0.0f, 1.0f });
+	buffers.TransData(matBufferHandle, &lMat, sizeof(DirectX::XMMATRIX));
+
+	Compute();
 }
 
 BoundingBoxData BoundingBox::GetData()
@@ -35,6 +42,11 @@ BoundingBoxData BoundingBox::GetData()
 	lTmpData.minPos = { lData->minPos.x, lData->minPos.y, lData->minPos.z };
 	lTmpData.maxPos = { lData->maxPos.x, lData->maxPos.y, lData->maxPos.z };
 	return lTmpData;
+}
+
+D3D12_GPU_VIRTUAL_ADDRESS BoundingBox::GetViewHandle()
+{
+	return buffers.GetGpuAddress(bbBufferHandle);
 }
 
 void BoundingBox::Compute()
@@ -48,6 +60,12 @@ void BoundingBox::Compute()
 	//出力
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootUnorderedAccessView(1, buffers.GetGpuAddress(bbBufferHandle));
 
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers.GetGpuAddress(matBufferHandle));
+
 	DirectX12CmdList::Instance()->cmdList->Dispatch(2, 1, 1);
 	//計算処理--------------------------------------------
+}
+
+void BoundingBox::DebugDraw()
+{
 }

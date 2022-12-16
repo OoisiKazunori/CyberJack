@@ -602,6 +602,27 @@ PreCreateBaseRootSignature::PreCreateBaseRootSignature()
 		RootSignatureData lData;
 		lData.paramData[0].param = 0;
 		lData.paramData[0].type = GRAPHICS_PRAMTYPE_DATA;
+		lData.range[0] = GRAPHICS_RANGE_TYPE_UAV_VIEW;
+
+		lData.paramData[1].param = 1;
+		lData.paramData[1].type = GRAPHICS_PRAMTYPE_DATA2;
+		lData.range[1] = GRAPHICS_RANGE_TYPE_UAV_VIEW;
+
+		lData.paramData[2].param = 2;
+		lData.paramData[2].type = GRAPHICS_PRAMTYPE_DATA3;
+		lData.range[2] = GRAPHICS_RANGE_TYPE_UAV_VIEW;
+
+		lData.paramData[3].param = 3;
+		lData.paramData[3].type = GRAPHICS_PRAMTYPE_DATA4;
+		lData.range[3] = GRAPHICS_RANGE_TYPE_CBV;
+		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_UAV_UAV_UAV_CBV_ALLVIEW, lData, 4);
+	}
+
+
+	{
+		RootSignatureData lData;
+		lData.paramData[0].param = 0;
+		lData.paramData[0].type = GRAPHICS_PRAMTYPE_DATA;
 		lData.range[0] = GRAPHICS_RANGE_TYPE_UAV_DESC;
 
 		lData.paramData[1].param = 1;
@@ -612,6 +633,22 @@ PreCreateBaseRootSignature::PreCreateBaseRootSignature()
 		lData.paramData[2].type = GRAPHICS_PRAMTYPE_DATA3;
 		lData.range[2] = GRAPHICS_RANGE_TYPE_CBV;
 		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_UAV_UAV_CBV, lData, 3);
+	}
+
+	{
+		RootSignatureData lData;
+		lData.paramData[0].param = 0;
+		lData.paramData[0].type = GRAPHICS_PRAMTYPE_DATA;
+		lData.range[0] = GRAPHICS_RANGE_TYPE_UAV_VIEW;
+
+		lData.paramData[1].param = 1;
+		lData.paramData[1].type = GRAPHICS_PRAMTYPE_DATA2;
+		lData.range[1] = GRAPHICS_RANGE_TYPE_UAV_VIEW;
+
+		lData.paramData[2].param = 2;
+		lData.paramData[2].type = GRAPHICS_PRAMTYPE_DATA3;
+		lData.range[2] = GRAPHICS_RANGE_TYPE_CBV;
+		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_UAV_UAV_CBV_ALLVIEW, lData, 3);
 	}
 
 	//CBV,SRV,SRV,SRV

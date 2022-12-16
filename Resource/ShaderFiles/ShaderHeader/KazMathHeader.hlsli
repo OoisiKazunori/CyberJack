@@ -152,6 +152,14 @@ float Rand1(uint SEED,int MAX,int MIN)
     return result;
 }
 
+matrix SetPosInMat(matrix MAT,float3 POS)
+{
+    MAT[0][3] = POS.x;
+    MAT[1][3] = POS.y;
+    MAT[2][3] = POS.z;
+    return MAT;
+}
+
 matrix CalucurateWorldMat(float3 POS,float3 SCALE,float3 ROTA)
 {
     matrix pMatTrans = Translate(POS);
@@ -209,6 +217,18 @@ float4 GetPos(float3 VERT_POS,float3 WORLD_POS)
 
     matrix pMatWorld = CalucurateWorldMat(WORLD_POS,defaltScale,defaltRota);
     matrix vertMatWorld = CalucurateWorldMat(VERT_POS,defaltScale,defaltRota);
+
+    matrix worldMat = mul(vertMatWorld,pMatWorld);
+
+    return float4(worldMat[0].w,worldMat[1].w,worldMat[2].w,0.0f);
+};
+
+float4 GetPos(float3 VERT_POS,float3 WORLD_POS,matrix SCALE_ROTA_MAT)
+{
+    float3 defaltRota = float3(0,0,0);
+
+    matrix pMatWorld = SetPosInMat(SCALE_ROTA_MAT,WORLD_POS);
+    matrix vertMatWorld = SetPosInMat(SCALE_ROTA_MAT,VERT_POS);
 
     matrix worldMat = mul(vertMatWorld,pMatWorld);
 

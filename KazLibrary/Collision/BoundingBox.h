@@ -16,8 +16,11 @@ class BoundingBox
 public:
 	BoundingBox(std::vector<DirectX::XMFLOAT4> VERT_DATA);
 	BoundingBoxData GetData();
+	D3D12_GPU_VIRTUAL_ADDRESS GetViewHandle();
 
 	void Compute();
+
+	void DebugDraw();
 private:
 	CreateGpuBuffer buffers;
 
@@ -29,4 +32,5 @@ private:
 
 	RESOURCE_HANDLE vertBufferHandle;
 	RESOURCE_HANDLE bbBufferHandle;
+	RESOURCE_HANDLE matBufferHandle;
 };

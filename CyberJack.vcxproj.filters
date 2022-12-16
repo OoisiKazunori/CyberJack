@@ -161,6 +161,7 @@
     <ClCompile Include="Game\CollisionDetection\GPUMeshAndSphereHitBox.cpp" />
     <ClCompile Include="Game\Debug\ParticleWall.cpp" />
     <ClCompile Include="KazLibrary\Collision\BoundingBox.cpp" />
+    <ClCompile Include="KazLibrary\Collision\BBDuringEquallyCoordinatePlace.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -337,6 +338,7 @@
     <ClInclude Include="Game\CollisionDetection\GPUMeshAndSphereHitBox.h" />
     <ClInclude Include="Game\Debug\ParticleWall.h" />
     <ClInclude Include="KazLibrary\Collision\BoundingBox.h" />
+    <ClInclude Include="KazLibrary\Collision\BBDuringEquallyCoordinatePlace.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

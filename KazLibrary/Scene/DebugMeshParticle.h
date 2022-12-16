@@ -15,6 +15,7 @@
 #include"../Game/Debug/ParticleWall.h"
 
 #include"../KazLibrary/Collision/BoundingBox.h"
+#include"../KazLibrary/Collision/BBDuringEquallyCoordinatePlace.h"
 
 class DebugMeshParticleScene :public SceneBase
 {
@@ -305,6 +306,8 @@ private:
 	FbxModelRender circleModelR;
 
 	std::unique_ptr<BoundingBox> bb;
+	std::unique_ptr<BBDuringEquallyCoordinatePlace> bbCircle;
+	int timer;
 	//CPU上でのメッシュとパーティクルの判定--------------------------------------------
 
 	std::array<KazMath::Vec3<float>, 36>GetSquareVertData(const KazMath::Vec3<float>&BASE_POS);
