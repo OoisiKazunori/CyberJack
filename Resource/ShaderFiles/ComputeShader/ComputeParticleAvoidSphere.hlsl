@@ -47,9 +47,9 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     for(int i = 0;i < hitIndexCounter[0]; ++i)
     {
         //“–‚½‚è”»’è+ƒŠƒ“ƒN•t‚¯ž‚Ý‚Ìˆ—‚ðŽæ‚é
-        if(CheckLinkHitBox(hitIndexData[i],hitBoxData[index]))
+        if(CheckLinkHitBox(hitIndexData[i],hitBoxData[index].id))
         {
-            float3 posHitBoxVec;
+            float3 posHitBoxVec = pos;
             float3 posParticleVec = hitBoxData[index].pos - pos;
 
             //‚È‚·Šp‚Ì”»’f

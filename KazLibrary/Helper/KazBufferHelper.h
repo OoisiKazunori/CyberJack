@@ -92,7 +92,6 @@ namespace KazBufferHelper
 
 	D3D12_UNORDERED_ACCESS_VIEW_DESC SetUnorderedAccessView(BUFFER_SIZE BUFFER_SIZE, UINT NUM_ELEMENTS);
 
-
 	template<typename T>
 	T GetBufferSize(size_t BUFFER_SIZE, unsigned long long STRUCTURE_SIZE)
 	{

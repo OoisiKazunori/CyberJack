@@ -14,6 +14,8 @@
 #include"../Game/Tutorial/DirectX12MoviePlayer.h"
 #include"../Game/Debug/ParticleWall.h"
 
+#include"../KazLibrary/Collision/BoundingBox.h"
+
 class DebugMeshParticleScene :public SceneBase
 {
 public:
@@ -287,8 +289,8 @@ private:
 	std::vector<std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM>>particleHitBox2;
 	std::vector<std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM>>baseParticleHitBox2;
 	std::vector<std::array<int, PARTICLE_HITBOX_NUM>>particleAngle;
-	std::array<std::array<KazMath::Vec3<float>, PARTICLE_HITBOX_NUM>, 12>particleLarpPos;
-	std::array<std::array<KazMath::Vec3<float>, PARTICLE_HITBOX_NUM>, 12>particleLarpPos2;
+	//std::array<std::array<KazMath::Vec3<float>, PARTICLE_HITBOX_NUM>, 12>particleLarpPos;
+	//std::array<std::array<KazMath::Vec3<float>, PARTICLE_HITBOX_NUM>, 12>particleLarpPos2;
 	KazMath::Vec3<float>meshPos,prevMeshPos;
 
 	bool initParticleFlag;
@@ -301,6 +303,8 @@ private:
 	bool drawParticleFlag;
 
 	FbxModelRender circleModelR;
+
+	std::unique_ptr<BoundingBox> bb;
 	//CPU上でのメッシュとパーティクルの判定--------------------------------------------
 
 	std::array<KazMath::Vec3<float>, 36>GetSquareVertData(const KazMath::Vec3<float>&BASE_POS);
