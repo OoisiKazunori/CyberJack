@@ -33,6 +33,26 @@ BBDuringEquallyCoordinatePlace::BBDuringEquallyCoordinatePlace(D3D12_GPU_VIRTUAL
 	lData.xMax = threadNum.x;
 	lData.xyMax = threadNum.x * threadNum.y;
 	buffers.TransData(hitBoxCommonHandle, &lData, sizeof(HitBoxConstBufferData));
+
+
+
+	//デバック用の描画-------------------------------------------------------------------------------------
+	InitExcuteIndirect lInitData;
+	lInitData.elementNum = lCountNum;
+	RESOURCE_HANDLE lSphereHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "sphere.fbx");
+	lInitData.vertexBufferView = FbxModelResourceMgr::Instance()->GetResourceData(lSphereHandle)->vertexBufferView;
+	lInitData.updateView = buffers.GetGpuAddress(hitBoxHandle);
+	lInitData.rootsignatureName = ROOTSIGNATURE_DATA_DRAW_UAV;
+
+	std::array<D3D12_INDIRECT_ARGUMENT_DESC, 2> args{};
+	args[0].Type = D3D12_INDIRECT_ARGUMENT_TYPE_UNORDERED_ACCESS_VIEW;
+	args[0].UnorderedAccessView.RootParameterIndex = 0;
+	args[1].Type = D3D12_INDIRECT_ARGUMENT_TYPE_DRAW;
+
+	lInitData.argument.push_back(args[0]);
+	lInitData.argument.push_back(args[1]);
+	excuteIndirect = std::make_unique<DrawExcuteIndirect>(lInitData);
+	//デバック用の描画-------------------------------------------------------------------------------------
 }
 
 void BBDuringEquallyCoordinatePlace::Compute()
@@ -50,21 +70,11 @@ void BBDuringEquallyCoordinatePlace::Compute()
 
 	DirectX12CmdList::Instance()->cmdList->Dispatch(threadNum.x, threadNum.y, threadNum.z);
 	//計算処理--------------------------------------------
-
-
 }
 
 void BBDuringEquallyCoordinatePlace::DebugDraw()
 {
-	MeshHitBoxData *lData = (MeshHitBoxData *)buffers.GetMapAddres(hitBoxHandle);
-	for (int i = 0; i < 10; ++i)
-	{
-		hitBoxArrayR[i].data.transform.pos = { lData->pos.x,lData->pos.y,lData->pos.z };
-		hitBoxArrayR[i].data.transform.scale = { 0.01f,0.01f,0.01f };
-		hitBoxArrayR[i].Draw();
-
-		lData += sizeof(MeshHitBoxData);
-	}
+	excuteIndirect->Draw(PIPELINE_NAME_GPUPARTICLE);
 }
 
 UINT BBDuringEquallyCoordinatePlace::CalculatingDeployableNumber(float DISTANCE, float RADIUS)

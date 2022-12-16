@@ -2,7 +2,7 @@
 #include"../KazLibrary/Buffer/CreateGpuBuffer.h"
 #include"../KazLibrary/Math/KazMath.h"
 #include"BoundingBox.h"
-#include"../KazLibrary/Render/KazRender.h"
+#include"../KazLibrary/Render/DrawExcuteIndirect.h"
 
 /// <summary>
 /// BoundingBox‚Ìî•ñ‚ğŒ³‚ÉA“™ŠÔŠu‚ÉÀ•W‚ğ’u‚­
@@ -40,5 +40,5 @@ private:
 		DirectX::XMUINT3 id;
 	};
 
-	std::array<BoxPolygonRender, 320> hitBoxArrayR;
+	std::unique_ptr<DrawExcuteIndirect> excuteIndirect;
 };

@@ -4,9 +4,11 @@
 //BB‚Ì’l
 RWStructuredBuffer<BoundingBoxData> bbPosData : register(u0);
 //“–‚½‚è”»’èÀ•W
-RWStructuredBuffer<MeshHitBox> hitBoxData : register(u1);
+RWStructuredBuffer<float3> hitBoxData : register(u1);
+//“–‚½‚è”»’è‚ÌID
+RWStructuredBuffer<uint3> idData : register(u2);
 
-cbuffer RootConstants : register(b2)
+cbuffer RootConstants : register(b3)
 {
     float radius;
     uint xMax;
@@ -23,6 +25,6 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     //’[‚©‚ç‡‚É‹…‚ğ•À‚×‚é
     float3 pos = (bbPosData[0].minPos + radius) + groupId * diameter;
 
-    hitBoxData[index].pos = pos;
-    hitBoxData[index].id = groupId;
+    hitBoxData[index] = pos;
+    idData[index] = groupId;
 }

@@ -2931,4 +2931,15 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		ROOTSIGNATURE_DATA_UAV_UAV_CBV_ALLVIEW,
 		PIPELINE_COMPUTE_NAME_HITBOX_SETCIRCLE_IN_BB
 	);
+
+
+
+	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "CalucurateMatrix.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_HITBOX_CALUMAT);
+
+	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+		SHADER_COMPUTE_HITBOX_CALUMAT,
+		PIPELINE_COMPUTE_DATA_TEST,
+		ROOTSIGNATURE_DATA_UAV_UAV_CBV_ALLVIEW,
+		PIPELINE_COMPUTE_NAME_HITBOX_CALUMAT
+	);
 }
