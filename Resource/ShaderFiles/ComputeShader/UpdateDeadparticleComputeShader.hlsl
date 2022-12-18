@@ -14,7 +14,7 @@ struct MatData
     float4 color;
 };
 
-cbuffer RootConstants : register(b0)
+cbuffer RootConstants : register(b2)
 {    
     matrix scaleRotateBillboardMat;
     matrix viewProjection;
@@ -40,7 +40,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     particleData[index].pos += particleData[index].vel;
     particleData[index].color.a  += -0.01f;
     
-    //行列計算-------------------------
+    //行�?�計�?-------------------------
     matrix pMatWorld = scaleRotateBillboardMat;
     pMatWorld[0][3] = particleData[index].pos.x;
     pMatWorld[1][3] = particleData[index].pos.y;
@@ -48,7 +48,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     
     pMatWorld = mul(motherMat,pMatWorld);
 
-    //行列計算-------------------------    
+    //行�?�計�?-------------------------    
     MatData outputMat;
     outputMat.mat = mul(viewProjection,pMatWorld);
     outputMat.color = particleData[index].color;

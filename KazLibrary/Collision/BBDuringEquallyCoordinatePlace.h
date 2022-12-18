@@ -10,16 +10,15 @@
 class BBDuringEquallyCoordinatePlace
 {
 public:
-	BBDuringEquallyCoordinatePlace(D3D12_GPU_VIRTUAL_ADDRESS BB_BUFFER_HANDLE, const BoundingBoxData &DATA);
+	BBDuringEquallyCoordinatePlace(D3D12_GPU_DESCRIPTOR_HANDLE BB_BUFFER_HANDLE, const BoundingBoxData &DATA);
 
 	void Compute();
-	void DebugDraw();
 
 private:
 	CreateGpuBuffer buffers;
 
-	D3D12_GPU_VIRTUAL_ADDRESS bbViewHandle;
-	RESOURCE_HANDLE hitBoxHandle;
+	D3D12_GPU_DESCRIPTOR_HANDLE bbViewHandle;
+	RESOURCE_HANDLE hitBoxPosHandle, hitBoxIDHandle,hitBoxViewHandle, hitBoxIDViewHandle;
 	RESOURCE_HANDLE hitBoxCommonHandle;
 
 	BoundingBoxData data;
@@ -39,6 +38,4 @@ private:
 		DirectX::XMFLOAT3 pos;
 		DirectX::XMUINT3 id;
 	};
-
-	std::unique_ptr<DrawExcuteIndirect> excuteIndirect;
 };

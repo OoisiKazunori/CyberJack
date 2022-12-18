@@ -2,6 +2,7 @@
 #include"../DirectXCommon/DirectX12Device.h"
 #include"../DirectXCommon/DirectX12CmdList.h"
 #include"../KazLibrary/Helper/KazHelper.h"
+#include<assert.h>
 
 #define STR(var) #var   //引数にした変数を変数名を示す文字列リテラルとして返すマクロ関数
 
@@ -165,8 +166,21 @@ void GraphicsRootSignature::CreateRootSignature(RootSignatureMode ROOTSIGNATURE,
 		computeRootParameters[2].InitAsDescriptorTable(1, &ranges[2]);
 		computeRootParameters[3].InitAsDescriptorTable(1, &ranges[3]);
 		computeRootParameters[4].InitAsConstantBufferView(0, 0);
-	
+
 		CreateMyRootSignature(ROOTSIGNATURE_DATA.sample, computeRootParameters.data(), computeRootParameters.size(), ROOTSIGNATURE);
+	}
+	else if (ROOTSIGNATURE_DATA_UAVDESC_UAVVIEW_CBV)
+	{
+		std::array<CD3DX12_ROOT_PARAMETER, 3> computeRootParameters;
+		std::array <CD3DX12_DESCRIPTOR_RANGE, 2> ranges{};
+		ranges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0);
+		ranges[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 1);
+		computeRootParameters[0].InitAsDescriptorTable(1, &ranges[0]);
+		computeRootParameters[1].InitAsUnorderedAccessView(1, 0);
+		computeRootParameters[2].InitAsConstantBufferView(2, 0);
+
+		CreateMyRootSignature(ROOTSIGNATURE_DATA.sample, computeRootParameters.data(), computeRootParameters.size(), ROOTSIGNATURE);
+
 	}
 	else
 	{
@@ -216,11 +230,16 @@ void GraphicsRootSignature::CreateMyRootSignature(D3D12_STATIC_SAMPLER_DESC SAMP
 	//バージョン自動判定でのシリアライズ
 	Microsoft::WRL::ComPtr<ID3DBlob> rootSigBlob = nullptr;
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
-	D3DX12SerializeVersionedRootSignature(
+	HRESULT lR = D3DX12SerializeVersionedRootSignature(
 		&rootSignatureDesc,
 		D3D_ROOT_SIGNATURE_VERSION_1_0,
 		&rootSigBlob,
 		&errorBlob);
+
+	if (lR != S_OK)
+	{
+		assert(0);
+	}
 
 	//ルートシグネチャの生成
 	DirectX12Device::Instance()->dev->CreateRootSignature(

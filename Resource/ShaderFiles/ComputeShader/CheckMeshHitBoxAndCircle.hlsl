@@ -11,8 +11,10 @@ cbuffer RootConstants : register(b0)
     uint xyMax;
 };
 
-//メッシュ当たり判定座標
-RWStructuredBuffer<MeshHitBox> meshHitBoxData : register(u0);
+//メッシュ当たり判定
+RWStructuredBuffer<MeshHitBox> meshHitBoxPos : register(u0);
+RWStructuredBuffer<uint3> meshHitBoxID : register(u1);
+
 //何処の球と判定を取ったか
 AppendStructuredBuffer<uint3> hitBoxData : register(u1);
 
@@ -23,7 +25,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     uint index = ThreadGroupIndex(groupId,xMax,xyMax);
 
     CircleData meshHitBox;
-    meshHitBox.pos = meshHitBoxData[index].pos;
+    meshHitBox.pos = meshHitBoxPos[index];
     meshHitBox.radius = particleRadius;
 
     CircleData hitBox;
@@ -33,6 +35,6 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     //当たり判定が取れたら当たったインデックスを保存し、衝突後の処理に使う
     if(CheckCircleAndCircle(meshHitBox,hitBox))
     {
-        hitBoxData.Append(meshHitBoxData[index].id);
+        hitBoxData.Append(meshHitBoxID[index]);
     }
 }

@@ -1497,14 +1497,6 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 #pragma region GeneratePipeline
 
-	//コンピュートパイプラインの作成
-	/*GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-		SHADER_COMPUTE_TEST,
-		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_SRV_UAV,
-		PIPELINE_COMPUTE_NAME_TEST
-	);*/
-
 	//床に散らばらっているパーティクル
 	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 		SHADER_COMPUTE_FLOORPARTICLE,
@@ -1688,16 +1680,6 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		ROOTSIGNATURE_DATA_DRAW,
 		PIPELINE_NAME_COLOR_NOCARING
 	);
-
-	//インスタンシング描画色パイプラインにシャドウを入れる
-	//GraphicsPipeLineMgr::Instance()->CreatePipeLine(
-	//	LAYOUT_POS_NORMAL_TEX,
-	//	SHADER_VERTEX_INSTANCE_COLOR_GET_SHADOWMAP,
-	//	SHADER_PIXCEL_INSTANCE_COLOR_GET_SHADOW,
-	//	PIPELINE_DATA_NOCARING_NOBLEND_R32,
-	//	ROOTSIGNATURE_DATA_DATA1_DATA2,
-	//	PIPELINE_NAME_INSTANCE_COLOR_GET_SHADOWMAP
-	//);
 
 
 	//インスタンシング描画色パイプライン
@@ -2229,17 +2211,6 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_FOG_OBJ
 	);
 
-	//線の太さ変える
-	//GraphicsPipeLineMgr::Instance()->CreatePipeLine(
-	//	LAYOUT_POS_TICK,
-	//	SHADER_VERTEX_LINE,
-	//	SHADER_PIXCEL_LINE,
-	//	PIPELINE_DATA_NOCARING_ALPHABLEND_LINE,
-	//	ROOTSIGNATURE_MODE_LINE,
-	//	PIPELINE_NAME_LINE_TICK,
-	//	SHADER_GEOMETORY_LINE
-	//);
-
 	//スプライト...フォグ付き
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
@@ -2249,17 +2220,6 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		ROOTSIGNATURE_MODE_LIGHT,
 		PIPELINE_NAME_FOG_SPRITE
 	);
-
-	//線の太さ変える...フォグ付き
-	//GraphicsPipeLineMgr::Instance()->CreatePipeLine(
-	//	LAYOUT_POS_TICK,
-	//	SHADER_VERTEX_LINE,
-	//	SHADER_PIXCEL_TICK_LINE_FOG,
-	//	PIPELINE_DATA_NOCARING_ALPHABLEND_LINE,
-	//	ROOTSIGNATURE_MODE_LINE,
-	//	PIPELINE_NAME_FOG_LINE_TICK,
-	//	SHADER_GEOMETORY_LINE
-	//);
 
 	//スプライトパイプライン
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
@@ -2917,7 +2877,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 		SHADER_COMPUTE_HITBOX_BB,
 		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_UAV_UAV_CBV_ALLVIEW,
+		ROOTSIGNATURE_DATA_UAVVIEW_UAVDESC_CBV,
 		PIPELINE_COMPUTE_NAME_HITBOX_BB
 	);
 
@@ -2928,7 +2888,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 		SHADER_COMPUTE_HITBOX_SETHITBOX_IN_BB,
 		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_UAV_UAV_CBV_ALLVIEW,
+		ROOTSIGNATURE_DATA_UAVDESC_UAVVIEW_CBV,
 		PIPELINE_COMPUTE_NAME_HITBOX_SETCIRCLE_IN_BB
 	);
 
@@ -2939,7 +2899,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 		SHADER_COMPUTE_HITBOX_CALUMAT,
 		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_UAV_UAV_CBV_ALLVIEW,
+		ROOTSIGNATURE_DATA_UAVDESC_UAVVIEW_CBV,
 		PIPELINE_COMPUTE_NAME_HITBOX_CALUMAT
 	);
 }

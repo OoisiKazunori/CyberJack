@@ -11,7 +11,7 @@
 #include"../KazLibrary/Loader/ObjResourceMgr.h"
 #include"../KazLibrary/Buffer/UavViewHandleMgr.h"
 
-BBDuringEquallyCoordinatePlace::BBDuringEquallyCoordinatePlace(D3D12_GPU_VIRTUAL_ADDRESS BB_BUFFER_HANDLE, const BoundingBoxData &DATA) :data(DATA), bbViewHandle(BB_BUFFER_HANDLE)
+BBDuringEquallyCoordinatePlace::BBDuringEquallyCoordinatePlace(D3D12_GPU_DESCRIPTOR_HANDLE BB_BUFFER_HANDLE, const BoundingBoxData &DATA) :data(DATA), bbViewHandle(BB_BUFFER_HANDLE)
 {
 	radius = 0.1f;
 	//いくつ配置出来るか計算する
@@ -22,11 +22,13 @@ BBDuringEquallyCoordinatePlace::BBDuringEquallyCoordinatePlace(D3D12_GPU_VIRTUAL
 	threadNum.z = CalculatingDeployableNumber(lDistance.z, radius);
 
 	BUFFER_SIZE lCountNum = static_cast<BUFFER_SIZE>(threadNum.x * threadNum.y * threadNum.z);
-	BUFFER_SIZE lBufferSize = sizeof(MeshHitBoxData) * lCountNum;
+	BUFFER_SIZE lHitBoxPosBufferSize = sizeof(DirectX::XMFLOAT3) * lCountNum;
+	BUFFER_SIZE lHitBoxIDBufferSize = sizeof(DirectX::XMUINT3) * lCountNum;
 
 	//個数分の座標を確保できるようにする
-	hitBoxHandle = buffers.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(lBufferSize, "MeshCircleHitBoxBuffer"));
-	hitBoxCommonHandle = buffers.CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(HitBoxConstBufferData), ""));
+	hitBoxPosHandle = buffers.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(lHitBoxPosBufferSize, "MeshCircleHitBoxPosBuffer"));
+	hitBoxIDHandle = buffers.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(lHitBoxIDBufferSize, "MeshCircleHitBoxIDBuffer"));
+	hitBoxCommonHandle = buffers.CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(HitBoxConstBufferData), "HitBoxConstBufferData"));
 
 	HitBoxConstBufferData lData;
 	lData.radius = radius;
@@ -35,24 +37,21 @@ BBDuringEquallyCoordinatePlace::BBDuringEquallyCoordinatePlace(D3D12_GPU_VIRTUAL
 	buffers.TransData(hitBoxCommonHandle, &lData, sizeof(HitBoxConstBufferData));
 
 
+	hitBoxViewHandle = UavViewHandleMgr::Instance()->GetHandle();
+	DescriptorHeapMgr::Instance()->CreateBufferView(
+		hitBoxViewHandle,
+		KazBufferHelper::SetUnorderedAccessView(sizeof(DirectX::XMFLOAT3), lCountNum),
+		buffers.GetBufferData(hitBoxPosHandle).Get(),
+		nullptr
+	);
 
-	//デバック用の描画-------------------------------------------------------------------------------------
-	InitExcuteIndirect lInitData;
-	lInitData.elementNum = lCountNum;
-	RESOURCE_HANDLE lSphereHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "sphere.fbx");
-	lInitData.vertexBufferView = FbxModelResourceMgr::Instance()->GetResourceData(lSphereHandle)->vertexBufferView;
-	lInitData.updateView = buffers.GetGpuAddress(hitBoxHandle);
-	lInitData.rootsignatureName = ROOTSIGNATURE_DATA_DRAW_UAV;
-
-	std::array<D3D12_INDIRECT_ARGUMENT_DESC, 2> args{};
-	args[0].Type = D3D12_INDIRECT_ARGUMENT_TYPE_UNORDERED_ACCESS_VIEW;
-	args[0].UnorderedAccessView.RootParameterIndex = 0;
-	args[1].Type = D3D12_INDIRECT_ARGUMENT_TYPE_DRAW;
-
-	lInitData.argument.push_back(args[0]);
-	lInitData.argument.push_back(args[1]);
-	excuteIndirect = std::make_unique<DrawExcuteIndirect>(lInitData);
-	//デバック用の描画-------------------------------------------------------------------------------------
+	hitBoxIDViewHandle = UavViewHandleMgr::Instance()->GetHandle();
+	DescriptorHeapMgr::Instance()->CreateBufferView(
+		hitBoxIDViewHandle,
+		KazBufferHelper::SetUnorderedAccessView(sizeof(DirectX::XMUINT3), lCountNum),
+		buffers.GetBufferData(hitBoxIDHandle).Get(),
+		nullptr
+	);
 }
 
 void BBDuringEquallyCoordinatePlace::Compute()
@@ -61,20 +60,17 @@ void BBDuringEquallyCoordinatePlace::Compute()
 	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_HITBOX_SETCIRCLE_IN_BB);
 
-	//頂点情報
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootUnorderedAccessView(0, bbViewHandle);
-	//出力
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootUnorderedAccessView(1, buffers.GetGpuAddress(hitBoxHandle));
-
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers.GetGpuAddress(hitBoxCommonHandle));
+	//BB
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, bbViewHandle);
+	//当たり判定座標
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(hitBoxViewHandle));
+	//当たり判定ID
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(2, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(hitBoxIDViewHandle));
+	//共通
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(3, buffers.GetGpuAddress(hitBoxCommonHandle));
 
 	DirectX12CmdList::Instance()->cmdList->Dispatch(threadNum.x, threadNum.y, threadNum.z);
 	//計算処理--------------------------------------------
-}
-
-void BBDuringEquallyCoordinatePlace::DebugDraw()
-{
-	excuteIndirect->Draw(PIPELINE_NAME_GPUPARTICLE);
 }
 
 UINT BBDuringEquallyCoordinatePlace::CalculatingDeployableNumber(float DISTANCE, float RADIUS)

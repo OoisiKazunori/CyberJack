@@ -31,6 +31,14 @@ BoundingBox::BoundingBox(std::vector<DirectX::XMFLOAT4> VERT_DATA)
 	DirectX::XMMATRIX lMat = KazMath::CaluWorld(KazMath::Transform3D({ 0.0f,0.0f,0.0f }, { 10.0f,10.0f,10.0f }, { 0.0f,0.0f,0.0f }), { 0.0f,1.0f,0.0f }, { 0.0f, 0.0f, 1.0f });
 	buffers.TransData(matBufferHandle, &lMat, sizeof(DirectX::XMMATRIX));
 
+	bbViewHandle = UavViewHandleMgr::Instance()->GetHandle();
+	DescriptorHeapMgr::Instance()->CreateBufferView(
+		bbViewHandle,
+		KazBufferHelper::SetUnorderedAccessView(sizeof(BoundingBoxBufferData), 1),
+		buffers.GetBufferData(bbBufferHandle).Get(),
+		nullptr
+	);
+
 	Compute();
 }
 
@@ -44,9 +52,9 @@ BoundingBoxData BoundingBox::GetData()
 	return lTmpData;
 }
 
-D3D12_GPU_VIRTUAL_ADDRESS BoundingBox::GetViewHandle()
+D3D12_GPU_DESCRIPTOR_HANDLE BoundingBox::GetViewHandle()
 {
-	return buffers.GetGpuAddress(bbBufferHandle);
+	return DescriptorHeapMgr::Instance()->GetGpuDescriptorView(bbViewHandle);
 }
 
 void BoundingBox::Compute()
@@ -58,7 +66,7 @@ void BoundingBox::Compute()
 	//’¸“_î•ñ
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootUnorderedAccessView(0, buffers.GetGpuAddress(vertBufferHandle));
 	//o—Í
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootUnorderedAccessView(1, buffers.GetGpuAddress(bbBufferHandle));
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(bbViewHandle));
 
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers.GetGpuAddress(matBufferHandle));
 

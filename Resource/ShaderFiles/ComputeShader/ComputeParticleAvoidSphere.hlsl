@@ -8,7 +8,7 @@ cbuffer RootConstants : register(b0)
 };
 
 //パーティクル当たり判定
-RWStructuredBuffer<ParticleHitBoxData> hitBoxData : register(u1);
+RWStructuredBuffer<ParticleHitBoxData> hitBoxData : register(u0);
 
 //当たったインデックス
 StructuredBuffer<uint3> hitIndexData : register(u1);
