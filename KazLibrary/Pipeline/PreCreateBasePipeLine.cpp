@@ -260,13 +260,8 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	//objシェーダー
 	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_OBJ);
 	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJPortalVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_OBJ_PORTAL);
-	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJVertexExpantionShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_EXPANTION_OBJ);	// 頂点拡張用
-	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJGetShadowMapVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_GET_SHADOWMAP);	// シャドウマップ取得用
-	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJDrawShadowMapVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_DRAW_SHADOWMAP);	// シャドウマップを元に影描画用
 	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ);
 	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJPixelExpantionShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_EXPANTION_OBJ);	// 頂点拡張用
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJGetShadowPixcelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_GET_SHADOWMAP);	// シャドウマップ取得用
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJDrawShadowMapPixcelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_DRAW_SHADOWMAP);	// シャドウマップを元に影描画用
 
 	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstanceObjGetShadowMapVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_GET_SHADOWMAP);	// シャドウマップ取得用
 	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceObjGetShadowPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_GET_SHADOWMAP);	// シャドウマップを元に影描画用
@@ -379,7 +374,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 	//コンピュートシェーダーのコンパイル
 	//pipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "TestComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_TEST);
-	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "FloorParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_FLOORPARTICLE);
+	//lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "FloorParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_FLOORPARTICLE);
 	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "FloorParticleMoveComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_FLOORPARTICLE_MOVE);
 	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "BlockParticleInitComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_BLOCKPARTICLE);
 	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "PortalLineComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_PORTALLINE);
@@ -867,43 +862,6 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
 		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
 		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_NOBLEND);
-	}
-
-#pragma endregion
-
-	//Obj用
-#pragma region PIPELINE_DATA_NOCARING_NOBLEND_R32
-	//Obj用のパイプラインの設定
-	{
-		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		D3D12_RENDER_TARGET_BLEND_DESC blendDesc{};
-		//サンプルマスク
-		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
-
-		//ラスタライザ
-		//背面カリング、塗りつぶし、深度クリッピング有効
-		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
-		gPipeline.RasterizerState = rasterrize;
-		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
-
-		//ブレンドモード
-		blendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
-		gPipeline.BlendState.RenderTarget[0] = blendDesc;
-
-		//図形の形状
-		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-
-		//その他設定
-		gPipeline.NumRenderTargets = 1;
-		gPipeline.RTVFormats[0] = DXGI_FORMAT_R32_FLOAT;
-		gPipeline.SampleDesc.Count = 1;
-
-		//デプスステンシルステートの設定
-		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
-		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_NOBLEND_R32);
 	}
 
 #pragma endregion
@@ -1497,106 +1455,367 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 #pragma region GeneratePipeline
 
-	//床に散らばらっているパーティクル
-	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-		SHADER_COMPUTE_FLOORPARTICLE,
-		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_UAV,
-		PIPELINE_COMPUTE_NAME_FLOORPARTICLE
-	);
 
-	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-		SHADER_COMPUTE_FLOORPARTICLE_MOVE,
-		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_DRAW_UAB_CB,
-		PIPELINE_COMPUTE_NAME_FLOORPARTICLE_MOVE
-	);
+#pragma region ComputePipeline
 
-	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-		SHADER_COMPUTE_PORTALLINE,
-		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_DRAW_UAB_CB,
-		PIPELINE_COMPUTE_NAME_PORTALLINE
-	);
+	{
+		RootSignatureDataTest rootsignature;
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA));
 
-	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-		SHADER_COMPUTE_PORTALLINE_MOVE,
-		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_DRAW_UAB_CB,
-		PIPELINE_COMPUTE_NAME_PORTALLINE_MOVE
-	);
+		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+			ShaderOptionData(KazFilePathName::ComputeShaderPath + "FloorParticleComputeShader.hlsl", "CSmain", "cs_6_4"),
+			desc,
+			rootsignature,
+			PIPELINE_COMPUTE_NAME_FLOORPARTICLE
+		);
+	}
 
 
-	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-		SHADER_COMPUTE_MESHPARTICLE_INIT,
-		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_UAV_UAV_CBV,
-		PIPELINE_COMPUTE_NAME_MESHPARTICLE_INIT
-	);
+	{
+		RootSignatureDataTest rootsignature;
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA2));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
 
-	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-		SHADER_COMPUTE_MESHPARTICLE_UPDATE,
-		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_UAV_UAV_CBV,
-		PIPELINE_COMPUTE_NAME_MESHPARTICLE_UPDATE
-	);
+		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+			ShaderOptionData(KazFilePathName::ComputeShaderPath + "FloorParticleMoveComputeShader.hlsl", "CSmain", "cs_6_4"),
+			desc,
+			rootsignature,
+			PIPELINE_COMPUTE_NAME_FLOORPARTICLE_MOVE
+		);
+	}
 
-	//死亡パーティクルの初期化
-	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-		SHADER_COMPUTE_DEADPARTICLE_INIT,
-		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_UAV_UAV,
-		PIPELINE_COMPUTE_NAME_DEADPARTICLE_INIT
-	);
-	//死亡パーティクルの更新
-	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-		SHADER_COMPUTE_DEADPARTICLE_UPDATE,
-		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_UAV_UAV_CBV,
-		PIPELINE_COMPUTE_NAME_DEADPARTICLE_UPDATE
-	);
+	{
+		RootSignatureDataTest rootsignature;
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA2));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
 
+		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+			ShaderOptionData(KazFilePathName::ComputeShaderPath + "PortalLineComputeShader.hlsl", "CSmain", "cs_6_4"),
+			desc,
+			rootsignature,
+			PIPELINE_COMPUTE_NAME_PORTALLINE
+		);
+	}
 
+	
+	{
+		RootSignatureDataTest rootsignature;
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA2));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
+
+		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+			ShaderOptionData(KazFilePathName::ComputeShaderPath + "PortalLineMoveComputeShader.hlsl", "CSmain", "cs_6_4"),
+			desc,
+			rootsignature,
+			PIPELINE_COMPUTE_NAME_PORTALLINE_MOVE
+		);
+	}
+
+	{
+		RootSignatureDataTest rootsignature;
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
+
+		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+			ShaderOptionData(KazFilePathName::ComputeShaderPath + "InitMeshParticleComputeShader.hlsl", "CSmain", "cs_6_4"),
+			desc,
+			rootsignature,
+			PIPELINE_COMPUTE_NAME_MESHPARTICLE_INIT
+		);
+	}
+
+	{
+		RootSignatureDataTest rootsignature;
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
+
+		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+			ShaderOptionData(KazFilePathName::ComputeShaderPath + "MeshParticleMoveComputeShader.hlsl", "CSmain", "cs_6_4"),
+			desc,
+			rootsignature,
+			PIPELINE_COMPUTE_NAME_MESHPARTICLE_UPDATE
+		);
+	}
+
+	{
+		RootSignatureDataTest rootsignature;
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+
+		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+			ShaderOptionData(KazFilePathName::ComputeShaderPath + "InitDeadParticleComputeShader.hlsl", "CSmain", "cs_6_4"),
+			desc,
+			rootsignature,
+			PIPELINE_COMPUTE_NAME_DEADPARTICLE_INIT
+		);
+	}
+
+	{
+		RootSignatureDataTest rootsignature;
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
+
+		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+			ShaderOptionData(KazFilePathName::ComputeShaderPath + "UpdateDeadparticleComputeShader.hlsl", "CSmain", "cs_6_4"),
+			desc,
+			rootsignature,
+			PIPELINE_COMPUTE_NAME_DEADPARTICLE_UPDATE
+		);
+	}
 
 	//ブロックにちりばめられるパーティクル
-	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-		SHADER_COMPUTE_BLOCKPARTICLE,
-		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_DRAW_UAB_CB,
-		PIPELINE_COMPUTE_NAME_BLOCKPARTICLE
-	);
+	{
+		RootSignatureDataTest rootsignature;
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
 
-	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-		SHADER_COMPUTE_BLOCKPARTICLE_MOVE,
-		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_DRAW_UAB_CB,
-		PIPELINE_COMPUTE_NAME_BLOCKPARTICLE_MOVE
-	);
+		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+			ShaderOptionData(KazFilePathName::ComputeShaderPath + "BlockParticleInitComputeShader.hlsl", "CSmain", "cs_6_4"),
+			desc,
+			rootsignature,
+			PIPELINE_COMPUTE_NAME_BLOCKPARTICLE
+		);
+	}
+
+	{
+		RootSignatureDataTest rootsignature;
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
+
+		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+			ShaderOptionData(KazFilePathName::ComputeShaderPath + "BlockParticleMoveComputeShader.hlsl", "CSmain", "cs_6_4"),
+			desc,
+			rootsignature,
+			PIPELINE_COMPUTE_NAME_BLOCKPARTICLE_MOVE
+		);
+	}
+
 
 	//エミッターの場所を決める
-	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-		SHADER_COMPUTE_MESHPARTICLE,
-		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_UAB_UAB_UAB_CB,
-		PIPELINE_COMPUTE_NAME_MESHPARTICLE
-	);
+	{
+		RootSignatureDataTest rootsignature;
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA4));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA5));
 
+		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+			ShaderOptionData(KazFilePathName::ComputeShaderPath + "MeshParticleComputeShader.hlsl", "CSmain", "cs_6_4"),
+			desc,
+			rootsignature,
+			PIPELINE_COMPUTE_NAME_MESHPARTICLE
+		);
+	}
 
 	//スプライン曲線に沿ったパーティクル初期化
-	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-		SHADER_COMPUTE_SPLINEPARTICLE_INIT,
-		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_UAV_CBV,
-		PIPELINE_COMPUTE_NAME_SPLINEPARTICLE_INIT
-	);
+	{
+		RootSignatureDataTest rootsignature;
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA2));
+
+		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+			ShaderOptionData(KazFilePathName::ComputeShaderPath + "InitSplineParticleComputeShader.hlsl", "CSmain", "cs_6_4"),
+			desc,
+			rootsignature,
+			PIPELINE_COMPUTE_NAME_SPLINEPARTICLE_INIT
+		);
+	}
+
+	{
+		RootSignatureDataTest rootsignature;
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA5));
+
+		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+			ShaderOptionData(KazFilePathName::ComputeShaderPath + "UpdateSplineParticleComputeShader.hlsl", "CSmain", "cs_6_4"),
+			desc,
+			rootsignature,
+			PIPELINE_COMPUTE_NAME_SPLINEPARTICLE_UPDATE
+		);
+	}
 
 
-	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-		SHADER_COMPUTE_SPLINEPARTICLE_UPDATE,
-		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_UAV_UAV_UAV_CBV_CBV,
-		PIPELINE_COMPUTE_NAME_SPLINEPARTICLE_UPDATE
-	);
+
+
+	{
+		RootSignatureDataTest rootsignature;
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_SRV_DESC, GRAPHICS_PRAMTYPE_TEX));
+
+		//rootsignature.samplerArray.push_back({});
+
+		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+			ShaderOptionData(KazFilePathName::ComputeShaderPath + "InitMeshTextureParticleComputeShader.hlsl", "CSmain", "cs_6_4"),
+			desc,
+			rootsignature,
+			PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_INIT
+		);
+	}
+
+	{
+		RootSignatureDataTest rootsignature;
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_SRV_DESC, GRAPHICS_PRAMTYPE_TEX));
+
+		//rootsignature.samplerArray.push_back({});
+
+		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+			ShaderOptionData(KazFilePathName::ComputeShaderPath + "MeshParticleUpdateInputPosColor.hlsl", "CSmain", "cs_6_4"),
+			desc,
+			rootsignature,
+			PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_UPDATE
+		);
+	}
+
+	{
+		RootSignatureDataTest rootsignature;
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
+
+		//rootsignature.samplerArray.push_back({});
+
+		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+			ShaderOptionData(KazFilePathName::ComputeShaderPath + "MeshParticleUpdateFlashColor.hlsl", "CSmain", "cs_6_4"),
+			desc,
+			rootsignature,
+			PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_FLASH_UPDATE
+		);
+	}
+
+	{
+		RootSignatureDataTest rootsignature;
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
+
+		//rootsignature.samplerArray.push_back({});
+
+		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+			ShaderOptionData(KazFilePathName::ComputeShaderPath + "InitTriangleCollisionData.hlsl", "CSmain", "cs_6_4"),
+			desc,
+			rootsignature,
+			PIPELINE_COMPUTE_NAME_HITBOX_TRIANGLE_INIT
+		);
+	}
+
+	{
+		RootSignatureDataTest rootsignature;
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA4));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA5));
+
+		//rootsignature.samplerArray.push_back({});
+
+		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+			ShaderOptionData(KazFilePathName::ComputeShaderPath + "UpdateCollisionDetectionTriangleAndSphere.hlsl", "CSmain", "cs_6_4"),
+			desc,
+			rootsignature,
+			PIPELINE_COMPUTE_NAME_HITBOX_TRIANGLE_INIT
+		);
+	}
+
+	{
+		RootSignatureDataTest rootsignature;
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4));
+
+		//rootsignature.samplerArray.push_back({});
+
+		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+			ShaderOptionData(KazFilePathName::ComputeShaderPath + "BlockParticleHitBoxUpdate.hlsl", "CSmain", "cs_6_4"),
+			desc,
+			rootsignature,
+			PIPELINE_COMPUTE_NAME_PARTICLEWALL_HITBOX
+		);
+	}
+
+	{
+		RootSignatureDataTest rootsignature;
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4));
+
+		//rootsignature.samplerArray.push_back({});
+
+		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+			ShaderOptionData(KazFilePathName::ComputeShaderPath + "MeshHitBoxUpdate.hlsl", "CSmain", "cs_6_4"),
+			desc,
+			rootsignature,
+			PIPELINE_COMPUTE_NAME_HITBOX_MESH
+		);
+	}
+
+	{
+		RootSignatureDataTest rootsignature;
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
+
+		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+			ShaderOptionData(KazFilePathName::ComputeShaderPath + "ComputeBB.hlsl", "CSmain", "cs_6_4"),
+			desc,
+			rootsignature,
+			PIPELINE_COMPUTE_NAME_HITBOX_BB
+		);
+	}
+
+	{
+		RootSignatureDataTest rootsignature;
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA2));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
+
+		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+			ShaderOptionData(KazFilePathName::ComputeShaderPath + "BBDuringEquallyCoordinatePlace.hlsl", "CSmain", "cs_6_4"),
+			desc,
+			rootsignature,
+			PIPELINE_COMPUTE_NAME_HITBOX_SETCIRCLE_IN_BB
+		);
+	}
+
+	{
+		RootSignatureDataTest rootsignature;
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA2));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
+
+		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+			ShaderOptionData(KazFilePathName::ComputeShaderPath + "CalucurateMatrix.hlsl", "CSmain", "cs_6_4"),
+			desc,
+			rootsignature,
+			PIPELINE_COMPUTE_NAME_HITBOX_CALUMAT
+		);
+	}
+
+#pragma endregion
+
+
+
+
+
+
 
 
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
@@ -1618,7 +1837,14 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_GPUPARTICLE_TEX
 	);
 
-
+	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
+		LAYOUT_POS,
+		SHADER_VERTEX_COLOR,
+		SHADER_PIXCEL_COLOR,
+		PIPELINE_DATA_NOCARING_ALPHABLEND_LINE_Z_ALWAYS,
+		ROOTSIGNATURE_DATA_DRAW,
+		PIPELINE_NAME_COLOR_LINE_Z_ALWAYS
+	);
 
 	//ポータルのGPUパーティクル用のパイプライン
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
@@ -1643,14 +1869,6 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_COLOR
 	);
 
-	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
-		LAYOUT_POS,
-		SHADER_VERTEX_COLOR,
-		SHADER_PIXCEL_COLOR,
-		PIPELINE_DATA_NOCARING_ALPHABLEND_LINE_Z_ALWAYS,
-		ROOTSIGNATURE_DATA_DRAW,
-		PIPELINE_NAME_COLOR_LINE_Z_ALWAYS
-	);
 
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
@@ -1906,56 +2124,6 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_NAME_INSTANCE_OBJ
 	);
 
-	//頂点拡大のパイプライン
-	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
-		LAYOUT_POS_NORMAL_TEX,
-		SHADER_VERTEX_EXPANTION_OBJ,
-		SHADER_PIXCEL_EXPANTION_OBJ,
-		PIPELINE_DATA_EXPANTION_VERTEX,
-		ROOTSIGNATURE_DATA_DRAW_TEX_DATA1_DATA2,
-		PIPELINE_NAME_OBJ_EXPANSION_VERTEX
-	);
-
-	////インスタンシング描画頂点拡大のパイプライン
-	//GraphicsPipeLineMgr::Instance()->CreatePipeLine(
-	//	LAYOUT_POS_NORMAL_TEX,
-	//	SHADER_VERTEX_INSTANCE_OBJ,
-	//	SHADER_PIXCEL_INSTANCE_OBJ_EXPANTION,
-	//	PIPELINE_DATA_EXPANTION_VERTEX,
-	//	ROOTSIGNATURE_DATA_DATA1_DATA2_DATA3_TEX,
-	//	PIPELINE_NAME_INSTANCE_OBJ_EXPANTION_VERTEX
-	//);
-
-	//シャドウマップ取得用パイプライン
-	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
-		LAYOUT_POS_NORMAL_TEX,
-		SHADER_VERTEX_GET_SHADOWMAP,
-		SHADER_PIXCEL_GET_SHADOWMAP,
-		PIPELINE_DATA_NOCARING_NOBLEND_R32,
-		ROOTSIGNATURE_DATA_DRAW_TEX_DATA1_DATA2,
-		PIPELINE_NAME_OBJ_GET_SHADOWMAP
-	);
-
-	//インスタンシング描画シャドウマップ取得用パイプライン
-	//GraphicsPipeLineMgr::Instance()->CreatePipeLine(
-	//	LAYOUT_POS_NORMAL_TEX,
-	//	SHADER_VERTEX_INSTANCE_GET_SHADOWMAP,
-	//	SHADER_PIXCEL_INSTANCE_GET_SHADOWMAP,
-	//	PIPELINE_DATA_NOCARING_NOBLEND_R32,
-	//	ROOTSIGNATURE_DATA_DATA1_DATA2_DATA3_TEX,
-	//	PIPELINE_NAME_INSTANCE_OBJ_GET_SHADOWMAP
-	//);
-
-	////シャドウマップを元に影描画用パイプライン
-	//GraphicsPipeLineMgr::Instance()->CreatePipeLine(
-	//	LAYOUT_POS_NORMAL_TEX,
-	//	SHADER_VERTEX_DRAW_SHADOWMAP,
-	//	SHADER_PIXCEL_DRAW_SHADOWMAP,
-	//	PIPELINE_DATA_NOCARING_NOBLEND,
-	//	ROOTSIGNATURE_DATA_DRAW_TEX_TEX2_DATA1_DATA2,
-	//	PIPELINE_NAME_OBJ_DRAW_SHADOWMAP
-	//);
-
 	//LightObjパイプライン
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX,
@@ -2039,16 +2207,6 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		PIPELINE_DATA_NOCARING_ALPHABLEND_LINE_MULTITEX,
 		ROOTSIGNATURE_DATA_DRAW_DATA1,
 		PIPELINE_NAME_LINE_FLASHEFFECT
-	);
-
-	//ライト
-	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
-		LAYOUT_POS_NORMAL_TEX,
-		SHADER_VERTEX_LIGHT,
-		SHADER_PIXCEL_LIGHT,
-		PIPELINE_DATA_NOCARING_BLENDALPHA,
-		ROOTSIGNATURE_MODE_LIGHT,
-		PIPELINE_NAME_LIGHT
 	);
 
 	//テクスチャ
@@ -2273,9 +2431,6 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	//ブレンド用のは一杯用意する必要がある
 
 
-#pragma endregion
-
-
 	//マルチテクスチャ用
 	//色パイプライン
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
@@ -2408,498 +2563,5 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		ROOTSIGNATURE_DATA_DRAW_DATA1,
 		PIPELINE_NAME_LINE_UV_MULTITEX
 	);
-
-
-
-#pragma region PipelineDataForHDR
-	DXGI_FORMAT_R32G32B32A32_FLOAT;
-
-	//加算スプライト
-#pragma region PIPELINE_DATA_NOCARING_ADDBLEND_HDR
-	{
-		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//サンプルマスク
-		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
-
-		//ラスタライザ
-		//塗りつぶし、深度クリッピング有効
-		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
-		gPipeline.RasterizerState = rasterrize;
-		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
-
-		//ブレンドモード
-		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
-		gPipeline.BlendState.AlphaToCoverageEnable = true;
-
-
-		//図形の形状
-		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-
-		//その他設定
-		gPipeline.NumRenderTargets = 1;
-		gPipeline.RTVFormats[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
-		gPipeline.SampleDesc.Count = 1;
-
-		//デプスステンシルステートの設定
-		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
-		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_ADDBLEND_HDR);
-	}
 #pragma endregion
-
-
-	//OBJ
-#pragma region PIPELINE_DATA_NOCARING_NOBLEND_HDR
-//Obj用のパイプラインの設定
-	{
-		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		D3D12_RENDER_TARGET_BLEND_DESC blendDesc{};
-		//サンプルマスク
-		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
-
-		//ラスタライザ
-		//背面カリング、塗りつぶし、深度クリッピング有効
-		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
-		gPipeline.RasterizerState = rasterrize;
-		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
-
-		//ブレンドモード
-		blendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
-		gPipeline.BlendState.RenderTarget[0] = blendDesc;
-
-		//図形の形状
-		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-
-		//その他設定
-		gPipeline.NumRenderTargets = 1;
-		gPipeline.RTVFormats[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
-		gPipeline.SampleDesc.Count = 1;
-
-		//デプスステンシルステートの設定
-		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
-		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_NOBLEND_HDR);
-	}
-
-#pragma endregion
-
-
-	//LINE
-#pragma region PIPELINE_DATA_NOCARING_ALPHABLEND_LINE_HDR
-	{
-		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		D3D12_RENDER_TARGET_BLEND_DESC blendDesc{};
-		//サンプルマスク
-		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
-
-		//ラスタライザ
-		//背面カリング、塗りつぶし、深度クリッピング有効
-		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
-		gPipeline.RasterizerState = rasterrize;
-		gPipeline.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
-		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
-
-		//ブレンドモード
-		blendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
-		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
-
-		//図形の形状
-		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
-
-		//その他設定
-		gPipeline.NumRenderTargets = 1;
-		gPipeline.RTVFormats[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
-		gPipeline.SampleDesc.Count = 1;
-
-		//デプスステンシルステートの設定
-		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
-		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_ALPHABLEND_LINE_HDR);
-	}
-#pragma endregion
-
-
-	//POINT
-#pragma region PIPELINE_DATA_BACKCARING_ALPHABLEND_POINT_HDR
-	{
-		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//スプライト用
-		//サンプルマスク
-		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
-
-		//ラスタライザ
-		//背面カリング、塗りつぶし、深度クリッピング有効
-		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
-		gPipeline.RasterizerState = rasterrize;
-		gPipeline.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
-		//gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
-
-		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
-		gPipeline.BlendState.AlphaToCoverageEnable = false;
-
-		//図形の形状
-		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
-
-
-		//その他設定
-		gPipeline.NumRenderTargets = 1;
-		gPipeline.RTVFormats[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
-		gPipeline.SampleDesc.Count = 1;
-
-
-		//デプスステンシルステートの設定
-		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
-		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_BACKCARING_ALPHABLEND_POINT_HDR);
-	}
-#pragma endregion
-
-
-	//aスプライト
-#pragma region PIPELINE_DATA_NOCARING_BLENDALPHA_HDR
-	{
-		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//スプライト用
-		//サンプルマスク
-		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
-
-		//ラスタライザ
-		//背面カリング、塗りつぶし、深度クリッピング有効
-		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
-		gPipeline.RasterizerState = rasterrize;
-		gPipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
-
-		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
-		gPipeline.BlendState.AlphaToCoverageEnable = true;
-
-		//図形の形状
-		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-
-
-		//その他設定
-		gPipeline.NumRenderTargets = 1;
-		gPipeline.RTVFormats[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
-		gPipeline.SampleDesc.Count = 1;
-
-
-		//デプスステンシルステートの設定
-		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
-		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_NOCARING_BLENDALPHA_HDR);
-	}
-#pragma endregion
-
-
-#pragma region PIPELINE_DATA_BACKCARING_ALPHABLEND_HDR
-	{
-		//パイプラインの設定
-		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//サンプルマスク
-		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
-		//ラスタライザ
-		//背面カリング、塗りつぶし、深度クリッピング有効
-		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
-		gPipeline.RasterizerState = rasterrize;
-		//ブレンドモード
-		gPipeline.BlendState.RenderTarget[0] = alphaBlendDesc;
-
-		//図形の形状
-		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-
-		//その他設定
-		gPipeline.NumRenderTargets = 1;
-		gPipeline.RTVFormats[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
-		gPipeline.SampleDesc.Count = 1;
-
-		//デプスステンシルステートの設定
-		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
-		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_BACKCARING_ALPHABLEND_HDR);
-	}
-#pragma endregion
-
-
-	//テクスチャ用
-#pragma region PIPELINE_DATA_BACKCARING_NOBLEND
-	{
-		//パイプラインの設定
-		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
-		//サンプルマスク
-		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
-		//ラスタライザ
-		//背面カリング、塗りつぶし、深度クリッピング有効
-		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
-		rasterrize.FillMode = D3D12_FILL_MODE_WIREFRAME;
-		gPipeline.RasterizerState = rasterrize;
-		//ブレンドモード
-		gPipeline.BlendState.RenderTarget[0] = addBlendDesc;
-
-		//図形の形状
-		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-
-		//その他設定
-		gPipeline.NumRenderTargets = 1;
-		gPipeline.RTVFormats[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
-		gPipeline.SampleDesc.Count = 1;
-
-		//デプスステンシルステートの設定
-		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
-		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
-		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
-		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
-		GraphicsPipeLineMgr::Instance()->RegisterPipeLineDataWithData(gPipeline, PIPELINE_DATA_BACKCARING_ALPHABLEND_WIREFLAME_HDR);
-	}
-#pragma endregion
-#pragma endregion
-
-
-
-#pragma region GeneratePipelineForHDR
-
-	//OBJ
-	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
-		LAYOUT_POS_NORMAL_TEX,
-		SHADER_VERTEX_OBJ,
-		SHADER_PIXCEL_OBJ,
-		PIPELINE_DATA_NOCARING_NOBLEND_HDR,
-		ROOTSIGNATURE_DATA_DRAW_TEX_DATA1,
-		PIPELINE_NAME_OBJ_HDR
-	);
-
-	//LINE
-	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
-		LAYOUT_POS,
-		SHADER_VERTEX_COLOR,
-		SHADER_PIXCEL_COLOR,
-		PIPELINE_DATA_NOCARING_ALPHABLEND_LINE_HDR,
-		ROOTSIGNATURE_DATA_DRAW,
-		PIPELINE_NAME_LINE_HDR
-	);
-
-	//AddSPRITE
-	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
-		LAYOUT_POS_TEX,
-		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_SPRITE,
-		PIPELINE_DATA_NOCARING_ADDBLEND_HDR,
-		ROOTSIGNATURE_DATA_DRAW_TEX,
-		PIPELINE_NAME_SPRITE_ADDBLEND_HDR
-	);
-
-	//αSPRITE
-	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
-		LAYOUT_POS_TEX,
-		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_SPRITE,
-		PIPELINE_DATA_NOCARING_BLENDALPHA_HDR,
-		ROOTSIGNATURE_DATA_DRAW_TEX,
-		PIPELINE_NAME_SPRITE_ALPHABLEND_HDR
-	);
-
-	//高輝度抽象用パイプライン
-	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
-		LAYOUT_POS_TEX,
-		SHADER_VERTEX_SPRITE,
-		SHADER_PIXEL_LUMINANCE,
-		PIPELINE_DATA_NOCARING_BLENDALPHA_HDR,
-		ROOTSIGNATURE_DATA_DRAW_TEX,
-		PIPELINE_NAME_LUMINANCE_HDR
-	);
-
-	//FogLineパイプライン
-	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
-		LAYOUT_POS,
-		SHADER_VERTEX_COLOR,
-		SHADER_PIXCEL_LINE_FOG,
-		PIPELINE_DATA_NOCARING_ALPHABLEND_LINE_HDR,
-		ROOTSIGNATURE_MODE_LINE,
-		PIPELINE_NAME_FOG_LINE_HDR
-	);
-
-	//色
-	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
-		LAYOUT_POS,
-		SHADER_VERTEX_COLOR,
-		SHADER_PIXCEL_COLOR,
-		PIPELINE_DATA_BACKCARING_ALPHABLEND_HDR,
-		ROOTSIGNATURE_DATA_DRAW,
-		PIPELINE_NAME_COLOR_HDR
-	);
-
-	//Sprite
-	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
-		LAYOUT_POS_TEX,
-		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_SPRITE,
-		PIPELINE_DATA_BACKCARING_ALPHABLEND_HDR,
-		ROOTSIGNATURE_DATA_DRAW_TEX,
-		PIPELINE_NAME_SPRITE_HDR
-	);
-
-	//線の太さ変える
-	//GraphicsPipeLineMgr::Instance()->CreatePipeLine(
-	//	LAYOUT_POS_TICK,
-	//	SHADER_VERTEX_LINE,
-	//	SHADER_PIXCEL_LINE,
-	//	PIPELINE_DATA_NOCARING_ALPHABLEND_LINE_HDR,
-	//	ROOTSIGNATURE_MODE_LINE,
-	//	PIPELINE_NAME_LINE_TICK_HDR,
-	//	SHADER_GEOMETORY_LINE
-	//);
-
-	//色パイプライン(ワイヤーフレーム)
-	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
-		LAYOUT_POS,
-		SHADER_VERTEX_COLOR,
-		SHADER_PIXCEL_COLOR,
-		PIPELINE_DATA_BACKCARING_ALPHABLEND_WIREFLAME_HDR,
-		ROOTSIGNATURE_DATA_DRAW,
-		PIPELINE_NAME_COLOR_WIREFLAME_HDR
-	);
-
-
-	//FogLineForBgパイプライン
-	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
-		LAYOUT_POS,
-		SHADER_VERTEX_COLOR,
-		SHADER_PIXCEL_LINE_FOG_FORBG,
-		PIPELINE_DATA_NOCARING_ALPHABLEND_LINE_HDR,
-		ROOTSIGNATURE_MODE_LINE,
-		PIPELINE_NAME_FOG_LINE_FORBG_HDR
-	);
-#pragma endregion
-
-
-
-	//SRV
-	{
-		RootSignatureData lData;
-		lData.paramData[0].param = 0;
-		lData.paramData[0].type = GRAPHICS_PRAMTYPE_DATA;
-		lData.range[0] = GRAPHICS_RANGE_TYPE_UAV_DESC;
-
-		lData.paramData[1].param = 1;
-		lData.paramData[1].type = GRAPHICS_PRAMTYPE_DATA2;
-		lData.range[1] = GRAPHICS_RANGE_TYPE_UAV_DESC;
-
-		lData.paramData[2].param = 2;
-		lData.paramData[2].type = GRAPHICS_PRAMTYPE_DATA3;
-		lData.range[2] = GRAPHICS_RANGE_TYPE_CBV;
-
-		lData.paramData[3].param = 3;
-		lData.paramData[3].type = GRAPHICS_PRAMTYPE_TEX;
-		lData.range[3] = GRAPHICS_RANGE_TYPE_SRV;
-		lData.sample.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-
-		GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE_DATA_UAV_UAV_CBV_SRV, lData, 4);
-	}
-
-	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "InitMeshTextureParticleComputeShader.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_TEXTUREPARTICLE_INIT);
-	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "MeshParticleUpdateInputPosColor.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_TEXTUREPARTICLE_UPDATE);
-	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "MeshParticleUpdateFlashColor.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_TEXTUREPARTICLE_FLASH_UPDATE);
-
-	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "InitTriangleCollisionData.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_HITBOX_TRIANGLE_INIT);
-	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "UpdateCollisionDetectionTriangleAndSphere.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_HITBOX_UPDATE);
-
-	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-		SHADER_COMPUTE_TEXTUREPARTICLE_INIT,
-		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_UAV_UAV_CBV_SRV,
-		PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_INIT
-	);
-
-	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-		SHADER_COMPUTE_TEXTUREPARTICLE_UPDATE,
-		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_UAV_UAV_CBV,
-		PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_UPDATE
-	);
-
-	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-		SHADER_COMPUTE_TEXTUREPARTICLE_FLASH_UPDATE,
-		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_UAV_UAV_CBV,
-		PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_FLASH_UPDATE
-	);
-
-
-
-
-	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-		SHADER_COMPUTE_HITBOX_TRIANGLE_INIT,
-		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_UAV_UAV_CBV,
-		PIPELINE_COMPUTE_NAME_HITBOX_TRIANGLE_INIT
-	);
-
-	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-		SHADER_COMPUTE_HITBOX_UPDATE,
-		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_UAV_UAV_UAV_UAV_CBV,
-		PIPELINE_COMPUTE_NAME_HITBOX_UPDATE
-	);
-
-
-	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "BlockParticleHitBoxUpdate.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_PARTICLEWALL_HITBOX);
-
-	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-		SHADER_COMPUTE_PARTICLEWALL_HITBOX,
-		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_UAV_UAV_UAV_CBV,
-		PIPELINE_COMPUTE_NAME_PARTICLEWALL_HITBOX
-	);
-
-
-	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "MeshHitBoxUpdate.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_HITBOX_MESH);
-
-	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-		SHADER_COMPUTE_HITBOX_MESH,
-		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_UAV_UAV_UAV_CBV,
-		PIPELINE_COMPUTE_NAME_HITBOX_MESH
-	);
-
-
-	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "ComputeBB.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_HITBOX_BB);
-
-	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-		SHADER_COMPUTE_HITBOX_BB,
-		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_UAVVIEW_UAVDESC_CBV,
-		PIPELINE_COMPUTE_NAME_HITBOX_BB
-	);
-
-
-
-	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "BBDuringEquallyCoordinatePlace.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_HITBOX_SETHITBOX_IN_BB);
-
-	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-		SHADER_COMPUTE_HITBOX_SETHITBOX_IN_BB,
-		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_UAVDESC_UAVVIEW_CBV,
-		PIPELINE_COMPUTE_NAME_HITBOX_SETCIRCLE_IN_BB
-	);
-
-
-
-	lPipelineMgr->RegisterComputeShaderWithData(KazFilePathName::ComputeShaderPath + "CalucurateMatrix.hlsl", "CSmain", "cs_6_4", SHADER_COMPUTE_HITBOX_CALUMAT);
-
-	GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-		SHADER_COMPUTE_HITBOX_CALUMAT,
-		PIPELINE_COMPUTE_DATA_TEST,
-		ROOTSIGNATURE_DATA_UAVDESC_UAVVIEW_CBV,
-		PIPELINE_COMPUTE_NAME_HITBOX_CALUMAT
-	);
 }

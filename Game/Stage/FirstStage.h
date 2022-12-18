@@ -44,7 +44,7 @@ public:
 	{
 		MODEL->data.handle = ObjResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "house/" + "house.obj");
 		MODEL->data.pipelineName = PIPELINE_NAME_OBJ_FOG_GRADATION;
-		RESOURCE_HANDLE lHandle = MODEL->CreateConstBuffer(sizeof(FogD), typeid(FogD).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA2);
+		RESOURCE_HANDLE lHandle = MODEL->CreateConstBuffer(sizeof(FogD), typeid(FogD).name(), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA2);
 
 		FogD lD;
 		lD.rateAndFogLine.z = 100.0f;

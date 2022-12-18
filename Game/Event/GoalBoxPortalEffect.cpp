@@ -6,7 +6,7 @@
 GoalBoxPortalEffect::GoalBoxPortalEffect()
 {
 	noiseSprite = std::make_unique<Sprite3DRender>();
-	constBuffHandle = noiseSprite->CreateConstBuffer(sizeof(float), typeid(float).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+	constBuffHandle = noiseSprite->CreateConstBuffer(sizeof(float), typeid(float).name(), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA);
 
 	noiseSprite->data.pipelineName = PIPELINE_NAME_SPRITE_NOISE;
 	portalSprite.data.pipelineName = PIPELINE_NAME_PORTAL;

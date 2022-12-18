@@ -23,11 +23,11 @@ TutorialMovie::TutorialMovie(bool STOP_MOVIE_FLAG) :
 	movieRender.data.transform.scale = { 0.9f,0.9f };
 
 
-	vhsSeedHandle = outputRender.CreateConstBuffer(sizeof(float), typeid(float).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+	vhsSeedHandle = outputRender.CreateConstBuffer(sizeof(float), typeid(float).name(), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA);
 	outputRender.data.pipelineName = PIPELINE_NAME_SPRITE_VHS;
 	outputRender.data.handleData = renderTargetHandle;
 
-	noiseSeedHandle = normalRender.CreateConstBuffer(sizeof(float), typeid(float).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+	noiseSeedHandle = normalRender.CreateConstBuffer(sizeof(float), typeid(float).name(), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA);
 	normalRender.data.pipelineName = PIPELINE_NAME_SPRITE_NOISE;
 	normalRender.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::TestPath + "NormalMovie.png");
 

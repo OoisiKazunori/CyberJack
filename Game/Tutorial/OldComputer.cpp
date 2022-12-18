@@ -8,7 +8,7 @@ OldComputer::OldComputer()
 	render.data.pipelineName = PIPELINE_NAME_PCMONITOR_MULTITEX;
 
 
-	dataHandle = render.CreateConstBuffer(sizeof(Data), typeid(Data).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA2);
+	dataHandle = render.CreateConstBuffer(sizeof(Data), typeid(Data).name(), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA2);
 }
 
 void OldComputer::Init(RESOURCE_HANDLE MOVIE_HANDLE)

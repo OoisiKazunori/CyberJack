@@ -339,7 +339,7 @@ void DebugScene::Update()
 
 
 	//ComputeShader------------------------
-	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_TEST);
+	//GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_TEST);
 
 	UINT num = 0;
 	buffer->TransData(counterBufferHandle, &num, sizeof(UINT));

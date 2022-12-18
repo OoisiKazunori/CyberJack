@@ -210,6 +210,88 @@ RootSignatureMode GraphicsPipeLineMgr::GetRootSignatureName(PipeLineNames PIPELI
 	return rootSignatureName[PIPELINE_NAME];
 }
 
+void GraphicsPipeLineMgr::CreatePipeLine(
+	std::vector<D3D12_INPUT_ELEMENT_DESC> INPUT_LAYOUT_NAME,
+	const ShaderOptionData &VERTEX_SHADER_NAME,
+	const ShaderOptionData &PIXEL_SHADER_NAME,
+	const D3D12_GRAPHICS_PIPELINE_STATE_DESC &PIPELINE_DATA_NAME,
+	const RootSignatureDataTest &ROOTSIGNATURE,
+	PipeLineNames PIPELINE_NAME,
+	const ShaderOptionData &GEOMETORY_SHADER_NAME
+)
+{
+	//パイプラインデータの代入
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC grahicsPipeLine = PIPELINE_DATA_NAME;
+
+	//インプットレイアウトの代入
+	grahicsPipeLine.InputLayout.pInputElementDescs = INPUT_LAYOUT_NAME.data();
+	grahicsPipeLine.InputLayout.NumElements = static_cast<UINT>(INPUT_LAYOUT_NAME.size());
+
+	Shader lShader;
+	IDxcBlob *lVS = lShader.CompileShader(VERTEX_SHADER_NAME);
+	IDxcBlob *lPS = lShader.CompileShader(PIXEL_SHADER_NAME);
+	//Shaderの代入
+	grahicsPipeLine.VS = CD3DX12_SHADER_BYTECODE(lVS->GetBufferPointer(), lVS->GetBufferSize());
+	grahicsPipeLine.PS = CD3DX12_SHADER_BYTECODE(lPS->GetBufferPointer(), lPS->GetBufferSize());
+
+	if (GEOMETORY_SHADER_NAME.fileName != "")
+	{
+		IDxcBlob *lGS = lShader.CompileShader(GEOMETORY_SHADER_NAME);
+		grahicsPipeLine.GS = CD3DX12_SHADER_BYTECODE(lGS->GetBufferPointer(), lGS->GetBufferSize());
+	}
+
+	//ルートシグネチャの設定
+	rootSignature[PIPELINE_NAME] = GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE, ROOTSIGNATURE_GRAPHICS).Get();
+	grahicsPipeLine.pRootSignature = rootSignature[PIPELINE_NAME].Get();
+
+	//パイプラインの生成
+	if (IsitSafe(PIPELINE_NAME, pipeLineRegisterData.size()))
+	{
+		HRESULT lResult = DirectX12Device::Instance()->dev->CreateGraphicsPipelineState(&grahicsPipeLine, IID_PPV_ARGS(&pipeLineRegisterData[PIPELINE_NAME]));
+		assert(lResult == S_OK);
+	}
+	else
+	{
+		FailCheck("危険:Pipelineが登録できませんでした");
+	}
+}
+
+void GraphicsPipeLineMgr::CreateComputePipeLine(
+	const ShaderOptionData &COMPUTE_SHADER,
+	const D3D12_COMPUTE_PIPELINE_STATE_DESC &PIPELINE_DATA_NAME,
+	const RootSignatureDataTest &ROOTSIGNATURE,
+	ComputePipeLineNames PIPELINE_NAME)
+{
+	//パイプラインデータの代入
+	D3D12_COMPUTE_PIPELINE_STATE_DESC lComputePipeLine = PIPELINE_DATA_NAME;
+
+	Shader lShader;
+	IDxcBlob *lCS = lShader.CompileShader(COMPUTE_SHADER);
+	//Shaderの代入
+	lComputePipeLine.CS = CD3DX12_SHADER_BYTECODE(lCS->GetBufferPointer(), lCS->GetBufferSize());
+
+	//ルートシグネチャの設定
+	rootSignature[PIPELINE_NAME] = GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE, ROOTSIGNATURE_COMPUTE).Get();
+	lComputePipeLine.pRootSignature = rootSignature[PIPELINE_NAME].Get();
+
+
+	//パイプラインの生成
+	if (IsitSafe(PIPELINE_NAME, pipeLineRegisterData.size()))
+	{
+		HRESULT lResult = DirectX12Device::Instance()->dev->CreateComputePipelineState(&lComputePipeLine, IID_PPV_ARGS(&computePipeLineRegisterData[PIPELINE_NAME]));
+		assert(lResult == S_OK);
+	}
+	else
+	{
+		FailCheck("危険:Pipelineが登録できませんでした");
+	}
+}
+
+ID3D12RootSignature *GraphicsPipeLineMgr::GenarateRootSignature()
+{
+	return nullptr;
+}
+
 template <typename T>
 inline bool GraphicsPipeLineMgr::IsitSafe(T NAME, size_t SIZE)
 {

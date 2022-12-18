@@ -57,7 +57,7 @@ RESOURCE_HANDLE GaussianBuler::BlurImage(RESOURCE_HANDLE TEXTURE_HANDLE, RESOURC
 	
 	//renderData.constBufferMgrInstacnce->SetCBV(cbvHandle, GraphicsRootSignature::Instance()->GetRootParam(renderData.pipelineMgr->GetRootSignatureName(PIPELINE_NAME_GAUSSIAN_UPBLUR)), GRAPHICS_PRAMTYPE_DATA);
 
-	UINT rootParam = KazRenderHelper::SetBufferOnCmdList(GraphicsRootSignature::Instance()->GetRootParam(renderData.pipelineMgr->GetRootSignatureName(PIPELINE_NAME_GAUSSIAN_UPBLUR)), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+	UINT rootParam = KazRenderHelper::SetBufferOnCmdList(GraphicsRootSignature::Instance()->GetRootParam(renderData.pipelineMgr->GetRootSignatureName(PIPELINE_NAME_GAUSSIAN_UPBLUR)), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA);
 	renderData.cmdListInstance->cmdList->SetGraphicsRootConstantBufferView(rootParam, buffers->GetBufferData(cbvHandle).Get()->GetGPUVirtualAddress());
 
 

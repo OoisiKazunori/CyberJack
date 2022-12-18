@@ -102,7 +102,7 @@ GalacticParticle::GalacticParticle()
 	box = std::make_unique<BoxPolygonRender>(true, BOX_MAX_NUM);
 	box->data.pipelineName = PIPELINE_NAME_INSTANCE_COLOR_MULTITEX;
 
-	RESOURCE_HANDLE lHandle = box->CreateConstBuffer(sizeof(DirectX::XMFLOAT4), typeid(DirectX::XMFLOAT4).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA2);
+	RESOURCE_HANDLE lHandle = box->CreateConstBuffer(sizeof(DirectX::XMFLOAT4), typeid(DirectX::XMFLOAT4).name(), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA2);
 	DirectX::XMFLOAT4 lColor = { 1.0f,0.0f,0.0f,1.0f };
 	box->TransData(&lColor, lHandle, typeid(DirectX::XMFLOAT4).name());
 

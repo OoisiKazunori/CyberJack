@@ -10,7 +10,7 @@ RocketLightEffect::RocketLightEffect()
 
 
 	lightEffectRender.data.pipelineName = PIPELINE_NAME_COLOR_MULTITEX;
-	RESOURCE_HANDLE lHandle = lightEffectRender.CreateConstBuffer(sizeof(DirectX::XMFLOAT4), typeid(DirectX::XMFLOAT4).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+	RESOURCE_HANDLE lHandle = lightEffectRender.CreateConstBuffer(sizeof(DirectX::XMFLOAT4), typeid(DirectX::XMFLOAT4).name(), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA);
 	DirectX::XMFLOAT4 lColor(1.0f, 0.0, 0.0, 1.0f);
 	lightEffectRender.TransData(&lColor, lHandle, typeid(DirectX::XMFLOAT4).name());
 }

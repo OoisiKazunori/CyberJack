@@ -3,7 +3,7 @@
 
 LineFlashLight::LineFlashLight() :finishFlag(true)
 {
-	RESOURCE_HANDLE lHandle = boxR.CreateConstBuffer(sizeof(DirectX::XMFLOAT4), "XMFLOAT4", GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+	RESOURCE_HANDLE lHandle = boxR.CreateConstBuffer(sizeof(DirectX::XMFLOAT4), "XMFLOAT4", GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA);
 	DirectX::XMFLOAT4 colorData = { 1.0f,0.0f,0.0f,0.0f };
 	boxR.TransData(&colorData, lHandle, "XMFLOAT4");
 }

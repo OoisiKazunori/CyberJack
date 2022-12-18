@@ -29,7 +29,7 @@ LineRender::LineRender(int INSTANCE_NUM)
 	if (INSTANCE_NUM == 1)
 	{
 		//定数バッファ
-		constBufferHandle = CreateConstBuffer(sizeof(ConstBufferData), typeid(ConstBufferData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DRAW);
+		constBufferHandle = CreateConstBuffer(sizeof(ConstBufferData), typeid(ConstBufferData).name(), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DRAW);
 	}
 	//バッファ生成-----------------------------------------------------------------------------------------------------
 

@@ -8,7 +8,7 @@ RezStage::RezStage()
 {
 	poly = std::make_unique<BoxPolygonRender>(true, 400);
 	poly->data.pipelineName = PIPELINE_NAME_INSTANCE_COLOR;
-	lineDrawHandle = poly->CreateConstBuffer(sizeof(MatData) * 500, "MatData", GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DRAW);
+	lineDrawHandle = poly->CreateConstBuffer(sizeof(MatData) * 500, "MatData", GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DRAW);
 
 
 	for (int i = 0; i < gridRender.size(); ++i)

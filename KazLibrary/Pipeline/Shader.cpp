@@ -170,6 +170,80 @@ IDxcBlob *Shader::GetShaderData(ShaderType SHADER_TYPE)
 	return shaderBlobs[SHADER_TYPE].Get();
 }
 
+IDxcBlob *Shader::CompileShader(const ShaderOptionData &DATA)
+{
+	std::ifstream infile(DATA.fileName, std::ifstream::binary);
+	if (!infile)
+	{
+		throw std::runtime_error("failed shader compile.");
+	}
+
+	std::wstring fileName = StringToWString(DATA.fileName);
+	std::stringstream strstream;
+
+	strstream << infile.rdbuf();
+
+	std::string shaderCode = strstream.str();
+	Microsoft::WRL::ComPtr<IDxcLibrary> library;
+	CheckGenerate(DxcCreateInstance(CLSID_DxcLibrary, IID_PPV_ARGS(&library)));
+	Microsoft::WRL::ComPtr<IDxcCompiler> compiler;
+	CheckGenerate(DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&compiler)));
+	Microsoft::WRL::ComPtr<IDxcBlobEncoding> source;
+
+
+	CheckGenerate(library->CreateBlobWithEncodingFromPinned(
+		(LPBYTE)shaderCode.c_str(), (UINT32)shaderCode.size(), CP_UTF8, &source));
+	Microsoft::WRL::ComPtr<IDxcIncludeHandler> includeHandler;
+	// インクルードを使う場合には適切に設定すること.
+	CheckGenerate(library->CreateIncludeHandler(&includeHandler));
+	// コンパイルオプションの指定.
+	std::vector<LPCWSTR> arguments;
+	arguments.emplace_back(L"/Od");
+	arguments.emplace_back(L"/Zi");
+
+
+	std::array<wchar_t, 128> lEntryPoint;
+	KazHelper::ConvertStringToWchar_t(DATA.entryPoint, lEntryPoint.data(), lEntryPoint.size());
+
+
+	std::array<wchar_t, 128> lShaderModel;
+	KazHelper::ConvertStringToWchar_t(DATA.shaderModel, lShaderModel.data(), lShaderModel.size());
+
+
+	Microsoft::WRL::ComPtr<IDxcOperationResult> dxcResult;
+	CheckGenerate(compiler->Compile(
+		source.Get(),
+		fileName.c_str(),
+		lEntryPoint.data(),
+		lShaderModel.data(),
+		arguments.data(),
+		static_cast<UINT32>(arguments.size()),
+		nullptr,
+		0,
+		includeHandler.Get(),
+		&dxcResult
+	));
+
+	HRESULT lResult;
+	dxcResult->GetStatus(&lResult);
+	if (FAILED(lResult))
+	{
+		Microsoft::WRL::ComPtr<IDxcBlobEncoding> errBlob;
+		dxcResult->GetErrorBuffer(&errBlob);
+
+		wprintf(L"Compilation failed with errors:\n%hs\n",
+			static_cast<const char *>(errBlob->GetBufferPointer()));
+		// ... errBlob の内容をエラーメッセージとして表示 (省略)
+		throw std::runtime_error("failed shader compile");
+	}
+	Microsoft::WRL::ComPtr<IDxcBlob> blob;
+	dxcResult->GetResult(&blob);
+
+	shaderBlobs[SHADER_TYPE_COMPUTE] = blob.Get();
+
+	return shaderBlobs[SHADER_TYPE_COMPUTE].Get();
+}
+
 void Shader::Error()
 {
 	std::string errstr;

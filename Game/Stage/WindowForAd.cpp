@@ -10,7 +10,7 @@ WindowForAd::WindowForAd()
 	spriteRender->data.transform.scale = { 1.0f,1.0f,1.0f };
 	spriteRender->data.billBoardFlag = true;
 
-	noiseHandle = spriteRender->CreateConstBuffer(sizeof(ObjectData), typeid(ObjectData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+	noiseHandle = spriteRender->CreateConstBuffer(sizeof(ObjectData), typeid(ObjectData).name(), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA);
 	noiseMaxTimer = KazMath::ConvertSecondToFlame(2);
 	exchangeWindowFlag = false;
 

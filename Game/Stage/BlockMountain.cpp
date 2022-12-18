@@ -56,7 +56,7 @@ void BlockMountain::Init(const InitBlockMountainData &INIT_DATA)
 
 	fogColor.a = INIT_DATA.fogDesinty;
 	instanceBufferHandle = billRender->CreateConstBuffer(sizeof(MatData) * boxMaxNum, typeid(MatData).name(), GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA2);
-	objectBufferHandle = billRender->CreateConstBuffer(sizeof(ObjectData), typeid(ObjectData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+	objectBufferHandle = billRender->CreateConstBuffer(sizeof(ObjectData), typeid(ObjectData).name(), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA);
 
 	billRender->TransData(&objectData, objectBufferHandle, typeid(ObjectData).name());
 

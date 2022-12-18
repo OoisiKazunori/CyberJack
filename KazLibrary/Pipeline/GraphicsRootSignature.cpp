@@ -49,26 +49,26 @@ void GraphicsRootSignature::CreateRootSignature(RootSignatureMode ROOTSIGNATURE,
 	{
 		switch (ROOTSIGNATURE_DATA.range[i])
 		{
-		case GRAPHICS_RANGE_TYPE_CBV:
+		case GRAPHICS_RANGE_TYPE_CBV_VIEW:
 			//ルートパラムの設定
 			rootparam[i].InitAsConstantBufferView(param1, 0, D3D12_SHADER_VISIBILITY_ALL);
 
 			//受け渡し用
-			paramD[ROOTSIGNATURE].range[i] = GRAPHICS_RANGE_TYPE_CBV;
+			paramD[ROOTSIGNATURE].range[i] = GRAPHICS_RANGE_TYPE_CBV_VIEW;
 			paramD[ROOTSIGNATURE].paramData[i].param = ROOTSIGNATURE_DATA.paramData[i].param;
 			paramD[ROOTSIGNATURE].paramData[i].type = ROOTSIGNATURE_DATA.paramData[i].type;
 			paramD[ROOTSIGNATURE].type[i] = GRAPHICS_ROOTSIGNATURE_TYPE_VIEW;
 			param1++;
 			break;
 
-		case GRAPHICS_RANGE_TYPE_SRV:
+		case GRAPHICS_RANGE_TYPE_SRV_DESC:
 			//ルートパラムの設定
 			descRangeSRV.push_back({});
 			descRangeSRV[descRangeSRV.size() - 1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, param2);
 			rootparam[i].InitAsDescriptorTable(1, &descRangeSRV[descRangeSRV.size() - 1], D3D12_SHADER_VISIBILITY_ALL);
 
 			//受け渡し用
-			paramD[ROOTSIGNATURE].range[i] = GRAPHICS_RANGE_TYPE_SRV;
+			paramD[ROOTSIGNATURE].range[i] = GRAPHICS_RANGE_TYPE_SRV_DESC;
 			paramD[ROOTSIGNATURE].paramData[i].param = ROOTSIGNATURE_DATA.paramData[i].param;
 			paramD[ROOTSIGNATURE].paramData[i].type = ROOTSIGNATURE_DATA.paramData[i].type;
 			paramD[ROOTSIGNATURE].type[i] = GRAPHICS_ROOTSIGNATURE_TYPE_DESCRIPTORTABLE;
@@ -80,7 +80,7 @@ void GraphicsRootSignature::CreateRootSignature(RootSignatureMode ROOTSIGNATURE,
 			rootparam[i].InitAsShaderResourceView(param1, 0, D3D12_SHADER_VISIBILITY_ALL);
 
 			//受け渡し用
-			paramD[ROOTSIGNATURE].range[i] = GRAPHICS_RANGE_TYPE_SRV;
+			paramD[ROOTSIGNATURE].range[i] = GRAPHICS_RANGE_TYPE_SRV_DESC;
 			paramD[ROOTSIGNATURE].paramData[i].param = ROOTSIGNATURE_DATA.paramData[i].param;
 			paramD[ROOTSIGNATURE].paramData[i].type = ROOTSIGNATURE_DATA.paramData[i].type;
 			paramD[ROOTSIGNATURE].type[i] = GRAPHICS_ROOTSIGNATURE_TYPE_VIEW;
@@ -92,6 +92,7 @@ void GraphicsRootSignature::CreateRootSignature(RootSignatureMode ROOTSIGNATURE,
 			descRangeSRV.push_back({});
 			descRangeSRV[descRangeSRV.size() - 1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, param2);
 			rootparam[i].InitAsDescriptorTable(1, &descRangeSRV[descRangeSRV.size() - 1], D3D12_SHADER_VISIBILITY_ALL);
+
 
 			//受け渡し用
 			paramD[ROOTSIGNATURE].range[i] = GRAPHICS_RANGE_TYPE_CBV_DESC;
@@ -169,7 +170,7 @@ void GraphicsRootSignature::CreateRootSignature(RootSignatureMode ROOTSIGNATURE,
 
 		CreateMyRootSignature(ROOTSIGNATURE_DATA.sample, computeRootParameters.data(), computeRootParameters.size(), ROOTSIGNATURE);
 	}
-	else if (ROOTSIGNATURE_DATA_UAVDESC_UAVVIEW_CBV)
+	else if (ROOTSIGNATURE == ROOTSIGNATURE_DATA_UAVDESC_UAVVIEW_CBV)
 	{
 		std::array<CD3DX12_ROOT_PARAMETER, 3> computeRootParameters;
 		std::array <CD3DX12_DESCRIPTOR_RANGE, 2> ranges{};
@@ -283,4 +284,131 @@ void GraphicsRootSignature::CreateMyRootSignature(D3D12_STATIC_SAMPLER_DESC SAMP
 const GraphicsRootSignatureParameter GraphicsRootSignature::GetRootParam(RootSignatureMode ROOTSIGNATURE_MODE)
 {
 	return paramD[ROOTSIGNATURE_MODE];
+}
+
+Microsoft::WRL::ComPtr<ID3D12RootSignature> GraphicsRootSignature::CreateRootSignature(const RootSignatureDataTest &ROOTSIGNATURE_DATA, RootsignatureType TYPE)
+{
+	std::vector<CD3DX12_ROOT_PARAMETER> lRootparamArray(ROOTSIGNATURE_DATA.rangeArray.size());
+	std::vector<CD3DX12_DESCRIPTOR_RANGE> lDescRangeRangeArray;
+
+#pragma region ルートパラムの設定
+	int ROOTSIGNATURE = 0;
+	int lViewParam = 0;
+	int lDescriptorParam = 0;
+	UINT lDescriptorArrayNum = 0;
+	paramD[ROOTSIGNATURE].paramMax = static_cast<int>(ROOTSIGNATURE_DATA.rangeArray.size());
+	for (int i = 0; i < ROOTSIGNATURE_DATA.rangeArray.size(); i++)
+	{
+		const bool L_THIS_TYPE_IS_DESCRIPTOR_FLAG = ROOTSIGNATURE_DATA.rangeArray[i].rangeType % 2 == 0;
+		if (L_THIS_TYPE_IS_DESCRIPTOR_FLAG)
+		{
+			lDescRangeRangeArray.push_back({});
+		}
+
+		switch (ROOTSIGNATURE_DATA.rangeArray[i].rangeType)
+		{
+		case GRAPHICS_RANGE_TYPE_CBV_VIEW:
+			//ルートパラムの設定
+			lRootparamArray[i].InitAsConstantBufferView(lViewParam, 0, D3D12_SHADER_VISIBILITY_ALL);
+			break;
+
+		case GRAPHICS_RANGE_TYPE_SRV_DESC:
+			//ルートパラムの設定
+			lDescRangeRangeArray[lDescriptorArrayNum].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, lDescriptorParam);
+			lRootparamArray[i].InitAsDescriptorTable(1, &lDescRangeRangeArray[lDescriptorArrayNum], D3D12_SHADER_VISIBILITY_ALL);
+			break;
+
+		case GRAPHICS_RANGE_TYPE_SRV_VIEW:
+			//ルートパラムの設定
+			lRootparamArray[i].InitAsShaderResourceView(lViewParam, 0, D3D12_SHADER_VISIBILITY_ALL);
+			break;
+
+		case GRAPHICS_RANGE_TYPE_CBV_DESC:
+			//ルートパラムの設定
+			lDescRangeRangeArray[lDescriptorArrayNum].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, lDescriptorParam);
+			lRootparamArray[i].InitAsDescriptorTable(1, &lDescRangeRangeArray[lDescriptorArrayNum], D3D12_SHADER_VISIBILITY_ALL);
+			break;
+
+		case GRAPHICS_RANGE_TYPE_UAV_VIEW:
+			//ルートパラムの設定
+			lRootparamArray[i].InitAsUnorderedAccessView(lViewParam, 0, D3D12_SHADER_VISIBILITY_ALL);
+			break;
+
+		case GRAPHICS_RANGE_TYPE_UAV_DESC:
+			//ルートパラムの設定
+			lDescRangeRangeArray[lDescriptorArrayNum].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, lDescriptorParam);
+			lRootparamArray[i].InitAsDescriptorTable(1, &lDescRangeRangeArray[lDescriptorArrayNum], D3D12_SHADER_VISIBILITY_ALL);
+			break;
+		case -1:
+			break;
+		}
+
+		//受け渡し用
+		paramD[ROOTSIGNATURE].range[i] = ROOTSIGNATURE_DATA.rangeArray[i].rangeType;
+		paramD[ROOTSIGNATURE].paramData[i].type = ROOTSIGNATURE_DATA.rangeArray[i].dataType;
+		if (L_THIS_TYPE_IS_DESCRIPTOR_FLAG)
+		{
+			paramD[ROOTSIGNATURE].type[i] = GRAPHICS_ROOTSIGNATURE_TYPE_DESCRIPTORTABLE;
+			paramD[ROOTSIGNATURE].paramData[i].param = lDescriptorParam;
+			++lDescriptorParam;
+			++lDescriptorArrayNum;
+		}
+		else
+		{
+			paramD[ROOTSIGNATURE].type[i] = GRAPHICS_ROOTSIGNATURE_TYPE_VIEW;
+			paramD[ROOTSIGNATURE].paramData[i].param = lViewParam;
+			++lViewParam;
+		}
+	}
+#pragma endregion
+
+	D3D12_ROOT_SIGNATURE_FLAGS lRootSignatureType;
+	switch (TYPE)
+	{
+	case ROOTSIGNATURE_NONE:
+		break;
+	case ROOTSIGNATURE_GRAPHICS:
+		lRootSignatureType = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+		break;
+	case ROOTSIGNATURE_COMPUTE:
+		lRootSignatureType = D3D12_ROOT_SIGNATURE_FLAG_NONE;
+		break;
+	default:
+		break;
+	}
+
+	CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC lRootSignatureDesc;
+
+	lRootSignatureDesc.Init_1_0(
+		static_cast<UINT>(lRootparamArray.size()),
+		lRootparamArray.data(),
+		static_cast<UINT>(ROOTSIGNATURE_DATA.samplerArray.size()),
+		ROOTSIGNATURE_DATA.samplerArray.data(),
+		lRootSignatureType);
+
+	//バージョン自動判定でのシリアライズ
+	Microsoft::WRL::ComPtr<ID3DBlob> rootSigBlob = nullptr;
+	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
+	HRESULT lResult = D3DX12SerializeVersionedRootSignature(
+		&lRootSignatureDesc,
+		D3D_ROOT_SIGNATURE_VERSION_1_0,
+		&rootSigBlob,
+		&errorBlob);
+
+	if (lResult != S_OK)
+	{
+		assert(0);
+	}
+
+
+	Microsoft::WRL::ComPtr<ID3D12RootSignature> lRootSignature;
+	//ルートシグネチャの生成
+	DirectX12Device::Instance()->dev->CreateRootSignature(
+		0,
+		rootSigBlob->GetBufferPointer(),
+		rootSigBlob->GetBufferSize(),
+		IID_PPV_ARGS(&lRootSignature)
+	);
+
+	return lRootSignature;
 }

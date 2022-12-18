@@ -13,7 +13,7 @@ struct OutputData
     float4 color;
 };
 
-cbuffer RootConstants : register(b2)
+cbuffer RootConstants : register(b0)
 {
     matrix viewProjection;
     matrix scaleRotateBillboardMat;

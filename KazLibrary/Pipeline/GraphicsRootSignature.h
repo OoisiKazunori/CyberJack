@@ -4,6 +4,12 @@
 #include<vector>
 using namespace std;
 
+enum RootsignatureType
+{
+	ROOTSIGNATURE_NONE,
+	ROOTSIGNATURE_GRAPHICS,
+	ROOTSIGNATURE_COMPUTE,
+};
 
 /// <summary>
 /// ルートシグネチャーの種類
@@ -76,12 +82,12 @@ enum GraphicsRootSignatureType
 enum GraphicsRangeType
 {
 	GRAPHICS_RANGE_TYPE_NONE = -1,
-	GRAPHICS_RANGE_TYPE_SRV,
+	GRAPHICS_RANGE_TYPE_SRV_DESC,
 	GRAPHICS_RANGE_TYPE_SRV_VIEW,
-	GRAPHICS_RANGE_TYPE_UAV_VIEW,
 	GRAPHICS_RANGE_TYPE_UAV_DESC,
-	GRAPHICS_RANGE_TYPE_CBV,
+	GRAPHICS_RANGE_TYPE_UAV_VIEW,
 	GRAPHICS_RANGE_TYPE_CBV_DESC,
+	GRAPHICS_RANGE_TYPE_CBV_VIEW,
 	GRAPHICS_RANGE_TYPE_SAMPLER
 };
 
@@ -120,6 +126,41 @@ struct RootParamData
 {
 	short param;
 	GraphicsRootParamType type;
+};
+
+struct BufferRootsignature
+{
+	GraphicsRangeType rangeType;
+	GraphicsRootParamType dataType;
+	BufferRootsignature(GraphicsRangeType RANGE, GraphicsRootParamType DATA) :rangeType(RANGE), dataType(DATA)
+	{
+
+	}
+};
+
+struct RootSignatureDataTest
+{
+	std::vector<BufferRootsignature> rangeArray;
+	std::vector<D3D12_STATIC_SAMPLER_DESC> samplerArray;
+
+	RootSignatureDataTest()
+	{
+		samplerArray.push_back({});
+
+		samplerArray[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+		samplerArray[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+		samplerArray[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+		samplerArray[0].BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
+		samplerArray[0].Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
+		samplerArray[0].MaxLOD = D3D12_FLOAT32_MAX;
+		samplerArray[0].MinLOD = 0.0f;
+		samplerArray[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+		samplerArray[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+		samplerArray[0].MaxAnisotropy = 16;
+		samplerArray[0].MipLODBias = 0;
+		samplerArray[0].ShaderRegister = 0;
+		samplerArray[0].RegisterSpace = 0;
+	}
 };
 
 
@@ -219,6 +260,10 @@ public:
 	/// <returns>ルートパラメーター</returns>
 	const GraphicsRootSignatureParameter GetRootParam(RootSignatureMode ROOTSIGNATURE_MODE);
 
+
+	Microsoft::WRL::ComPtr<ID3D12RootSignature>  CreateRootSignature(const RootSignatureDataTest &ROOTSIGNATURE_DATA, RootsignatureType TYPE);
+
+
 private:
 	/*void CreateColorRootSignature();
 	void CreateTextureRootSignature();
@@ -235,13 +280,15 @@ private:
 	GraphicsRootSignatureParameter LightParam;
 	GraphicsRootSignatureParameter colorParam;*/
 
-	vector<Microsoft::WRL::ComPtr<ID3D12RootSignature>> rootSignature;
-	vector<GraphicsRootSignatureParameter> paramD;
+	std::vector<Microsoft::WRL::ComPtr<ID3D12RootSignature>> rootSignature;
+	std::vector<GraphicsRootSignatureParameter> paramD;
 	friend ISingleton<GraphicsRootSignature>;
 
 
 	void CreateMyRootSignature(D3D12_STATIC_SAMPLER_DESC SAMPLER_DATA, D3D12_ROOT_PARAMETER *ROOT_PARAM_DATA, size_t DATA_MAX, RootSignatureMode ROOTSIGNATURE);
 	void CreateMyRootSignature(D3D12_STATIC_SAMPLER_DESC SAMPLER_DATA, D3D12_ROOT_PARAMETER1 *ROOT_PARAM_DATA, size_t DATA_MAX, RootSignatureMode ROOTSIGNATURE);
+
+	void CreateMyRootSignature(std::vector<D3D12_STATIC_SAMPLER_DESC> SAMPLER_DATA, D3D12_ROOT_PARAMETER *ROOT_PARAM_DATA, size_t DATA_MAX, RootSignatureMode ROOTSIGNATURE);
 
 	RootSignatureMode CheckEnum(RootSignatureMode MODE)
 	{

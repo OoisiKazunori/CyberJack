@@ -34,7 +34,7 @@ PolygonRender::PolygonRender(const std::array<SpriteVertex, 4> &DATA)
 		KazBufferHelper::SetIndexBufferData(indexByte)
 	);
 	//定数バッファ
-	constBufferHandle = CreateConstBuffer(sizeof(ConstBufferData), typeid(ConstBufferData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DRAW);
+	constBufferHandle = CreateConstBuffer(sizeof(ConstBufferData), typeid(ConstBufferData).name(), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DRAW);
 	//バッファ生成-----------------------------------------------------------------------------------------------------
 
 

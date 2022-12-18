@@ -14,7 +14,7 @@ FirstStage::FirstStage() :firstColor(162, 38, 179, 255), endColor(73, 39, 158, 2
 		floorStage[i].data.transform.pos = { 0.0f,-23.0f,52.0f + static_cast<float>(i) * 200.0f };
 		floorStage[i].data.transform.scale = { 1.2f,1.0f,1.0f };
 		floorStage[i].data.pipelineName = PIPELINE_NAME_OBJ_FOG_GRADATION;
-		RESOURCE_HANDLE lHandle = floorStage[i].CreateConstBuffer(sizeof(FogD), typeid(FogD).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA2);
+		RESOURCE_HANDLE lHandle = floorStage[i].CreateConstBuffer(sizeof(FogD), typeid(FogD).name(), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA2);
 
 
 		FogD lD;

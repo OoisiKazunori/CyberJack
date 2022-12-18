@@ -9,14 +9,14 @@ DrawGrid::DrawGrid(const KazMath::Color &FOG_COLOR) :flashColorArray({ KazMath::
 
 		{
 			FogData lData;
-			RESOURCE_HANDLE lHandle = gridLineRender[i].CreateConstBuffer(sizeof(FogData), typeid(FogData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+			RESOURCE_HANDLE lHandle = gridLineRender[i].CreateConstBuffer(sizeof(FogData), typeid(FogData).name(), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA);
 			DirectX::XMFLOAT3 colorRate = FOG_COLOR.ConvertColorRateToXMFLOAT3();
 			lData.fogdata = { colorRate.x,colorRate.y,colorRate.z,0.0006f };
 			gridLineRender[i].TransData(&lData, lHandle, typeid(lData).name());
 		}
 
 		{
-			gridLineBloomBufferHandle[i] = gridLineRender[i].CreateConstBuffer(sizeof(BloomData), typeid(BloomData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA2);
+			gridLineBloomBufferHandle[i] = gridLineRender[i].CreateConstBuffer(sizeof(BloomData), typeid(BloomData).name(), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA2);
 			BloomData lData;
 			lData.luminanceColor = { 0.0f,0.0f,0.0f,0.0f };
 			gridLineRender[i].TransData(&lData, gridLineBloomBufferHandle[i], typeid(BloomData).name());

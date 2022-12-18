@@ -10,11 +10,11 @@ IEnemy::IEnemy() :hpDirtyFlag(&iOperationData.rockOnNum)
 	iEnemy_FbxModelRender = std::make_unique<FbxModelRender>();
 	iEnemy_FbxModelRender->data.pipelineName = PIPELINE_NAME_FBX_RENDERTARGET_TWO_LIGHT;
 
-	fbxLightHandle = iEnemy_FbxModelRender->CreateConstBuffer(sizeof(DirectX::XMFLOAT3), typeid(DirectX::XMFLOAT3).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA3);
+	fbxLightHandle = iEnemy_FbxModelRender->CreateConstBuffer(sizeof(DirectX::XMFLOAT3), typeid(DirectX::XMFLOAT3).name(), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3);
 	DirectX::XMFLOAT3 dir = { -1.0f,0.0f,0.0f };
 	iEnemy_FbxModelRender->TransData(&dir, fbxLightHandle, typeid(DirectX::XMFLOAT3).name());
 
-	objLightHandle = iEnemy_ObjModelRender->CreateConstBuffer(sizeof(DirectX::XMFLOAT3), typeid(DirectX::XMFLOAT3).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA2);
+	objLightHandle = iEnemy_ObjModelRender->CreateConstBuffer(sizeof(DirectX::XMFLOAT3), typeid(DirectX::XMFLOAT3).name(), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA2);
 	iEnemy_FbxModelRender->TransData(&dir, objLightHandle, typeid(DirectX::XMFLOAT3).name());
 	//•`‰æ‚Ì‰Šú‰»----------------------------------------------------------------
 

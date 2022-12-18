@@ -10,7 +10,7 @@ SecondStage::SecondStage()
 		line[i].data.colorData = { 255,255,255,255 };
 		line[i].data.pipelineName = PIPELINE_NAME_FOG_LINE;
 
-		fogHandle[i].handle = line[i].CreateConstBuffer(sizeof(FogData), typeid(FogData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+		fogHandle[i].handle = line[i].CreateConstBuffer(sizeof(FogData), typeid(FogData).name(), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA);
 		fogHandle[i].fogColor.fogdata = { 1.0f,1.0f,1.0f,0.0006f };
 
 		FogData tmpColor = fogHandle[i].fogColor;

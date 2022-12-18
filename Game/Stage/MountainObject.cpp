@@ -15,7 +15,7 @@ void MountainObject::Init(const KazMath::Transform3D &TRANSFORM, RESOURCE_HANDLE
 		floorObjectRender.objRender[objectIndex].data.pipelineName = PIPELINE_NAME_OBJ_WIREFLAME_FOG;
 
 		//バッファの生成
-		RESOURCE_HANDLE lHandle = floorObjectRender.objRender[objectIndex].CreateConstBuffer(sizeof(FogData), typeid(FogData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+		RESOURCE_HANDLE lHandle = floorObjectRender.objRender[objectIndex].CreateConstBuffer(sizeof(FogData), typeid(FogData).name(), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA);
 		KazMath::Color lColor(29, 19, 72, 255);
 		DirectX::XMFLOAT3 colorRate = lColor.ConvertColorRateToXMFLOAT3();
 		FogData lData;

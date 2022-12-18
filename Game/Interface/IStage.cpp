@@ -28,7 +28,7 @@ void IStage::InitBackGround(const KazMath::Color &START_COLOR, const KazMath::Co
 		for (int i = 0; i < backGround.size(); ++i)
 		{
 			backGround[i] = std::make_unique<PolygonRender>(lVert);
-			RESOURCE_HANDLE lHandle = backGround[i]->CreateConstBuffer(sizeof(GradationData), typeid(GradationData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+			RESOURCE_HANDLE lHandle = backGround[i]->CreateConstBuffer(sizeof(GradationData), typeid(GradationData).name(), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA);
 			backGround[i]->TransData(&lGradationData, lHandle, typeid(lGradationData).name());
 			backGround[i]->data.pipelineName = PIPELINE_NAME_SPRITE_GRADATION;
 		}
@@ -55,7 +55,7 @@ void IStage::InitBackGround(const KazMath::Color &START_COLOR, const KazMath::Co
 	
 		{
 			topPolygon = std::make_unique<PolygonRender>(lVert);
-			RESOURCE_HANDLE lHandle = topPolygon->CreateConstBuffer(sizeof(GradationData), typeid(GradationData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+			RESOURCE_HANDLE lHandle = topPolygon->CreateConstBuffer(sizeof(GradationData), typeid(GradationData).name(), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA);
 			topPolygon->data.pipelineName = PIPELINE_NAME_SPRITE_GRADATION;
 			GradationData lGradData;
 			lGradData.endColor = END_COLOR.ConvertColorRateToXMFLOAT4();
@@ -67,7 +67,7 @@ void IStage::InitBackGround(const KazMath::Color &START_COLOR, const KazMath::Co
 
 		{
 			buttomPolygon = std::make_unique<PolygonRender>(lVert);
-			RESOURCE_HANDLE lHandle = buttomPolygon->CreateConstBuffer(sizeof(GradationData), typeid(GradationData).name(), GRAPHICS_RANGE_TYPE_CBV, GRAPHICS_PRAMTYPE_DATA);
+			RESOURCE_HANDLE lHandle = buttomPolygon->CreateConstBuffer(sizeof(GradationData), typeid(GradationData).name(), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA);
 			buttomPolygon->data.pipelineName = PIPELINE_NAME_SPRITE_GRADATION;
 			GradationData lGradData;
 			lGradData.endColor = START_COLOR.ConvertColorRateToXMFLOAT4();

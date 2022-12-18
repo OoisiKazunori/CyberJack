@@ -6,6 +6,28 @@
 
 #include <dxcapi.h>
 
+
+struct ShaderOptionData
+{
+	std::string fileName;
+	std::string entryPoint;
+	std::string shaderModel;
+
+	ShaderOptionData(std::string FILE_NAME, std::string ENTRY_POINT, std::string SHADER_MODEL) :fileName(FILE_NAME), entryPoint(ENTRY_POINT), shaderModel(SHADER_MODEL)
+	{
+	};
+	ShaderOptionData() :fileName(""), entryPoint(""), shaderModel("")
+	{
+	};
+};
+
+struct ShaderData
+{
+	ShaderOptionData vsShader;
+	ShaderOptionData psShader;
+	ShaderOptionData gsShader;
+};
+
 enum ShaderType
 {
 	SHADER_TYPE_NONE = -1,
@@ -30,13 +52,21 @@ public:
 
 	IDxcBlob *GetShaderData(ShaderType SHADER_TYPE);
 
+	IDxcBlob *CompileShader(const ShaderOptionData &DATA);
+
 	//ÉGÉâÅ[
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob;
 
 	std::vector<char> shaderBin;
 private:
 	void Error();
-
+	void CheckGenerate(HRESULT RESULT)
+	{
+		if (RESULT != S_OK)
+		{
+			assert(0);
+		}
+	}
 
 	std::vector<Microsoft::WRL::ComPtr<IDxcBlob>> shaderBlobs;
 

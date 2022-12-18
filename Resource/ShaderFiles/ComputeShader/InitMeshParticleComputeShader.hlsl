@@ -1,7 +1,7 @@
 #include"../ShaderHeader/KazMathHeader.hlsli"
 #include"../ShaderHeader/ExcuteIndirectHeader.hlsli"
 
-cbuffer RootConstants : register(b2)
+cbuffer RootConstants : register(b0)
 {
     float4 pos;
     uint vertMaxNum;
