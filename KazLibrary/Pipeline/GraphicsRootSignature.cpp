@@ -289,7 +289,19 @@ const GraphicsRootSignatureParameter GraphicsRootSignature::GetRootParam(RootSig
 Microsoft::WRL::ComPtr<ID3D12RootSignature> GraphicsRootSignature::CreateRootSignature(const RootSignatureDataTest &ROOTSIGNATURE_DATA, RootsignatureType TYPE)
 {
 	std::vector<CD3DX12_ROOT_PARAMETER> lRootparamArray(ROOTSIGNATURE_DATA.rangeArray.size());
-	std::vector<CD3DX12_DESCRIPTOR_RANGE> lDescRangeRangeArray;
+
+	int lCountDescriptorNum = 0;
+	//デスクリプタヒープの設定が必要な数を計算する
+	for (int i = 0; i < ROOTSIGNATURE_DATA.rangeArray.size(); ++i)
+	{
+		const bool L_THIS_TYPE_IS_DESCRIPTOR_FLAG = ROOTSIGNATURE_DATA.rangeArray[i].rangeType % 2 == 0;
+		if (L_THIS_TYPE_IS_DESCRIPTOR_FLAG)
+		{
+			++lCountDescriptorNum;
+		}
+	}
+	std::vector<CD3DX12_DESCRIPTOR_RANGE> lDescRangeRangeArray(lCountDescriptorNum);
+
 
 #pragma region ルートパラメーターを設定する
 	int lViewParam = 0;
@@ -300,12 +312,6 @@ Microsoft::WRL::ComPtr<ID3D12RootSignature> GraphicsRootSignature::CreateRootSig
 	std::vector<RootSignatureParameter> lParamArrayData;
 	for (int i = 0; i < ROOTSIGNATURE_DATA.rangeArray.size(); i++)
 	{
-		const bool L_THIS_TYPE_IS_DESCRIPTOR_FLAG = ROOTSIGNATURE_DATA.rangeArray[i].rangeType % 2 == 0;
-		if (L_THIS_TYPE_IS_DESCRIPTOR_FLAG)
-		{
-			lDescRangeRangeArray.push_back({});
-		}
-
 		switch (ROOTSIGNATURE_DATA.rangeArray[i].rangeType)
 		{
 		case GRAPHICS_RANGE_TYPE_CBV_VIEW:
@@ -344,10 +350,12 @@ Microsoft::WRL::ComPtr<ID3D12RootSignature> GraphicsRootSignature::CreateRootSig
 			break;
 		}
 
-		//受け渡し用
+#pragma region ルートパラメーター自動設定を行う為の設定
 		RootSignatureParameter lData;
 		lData.range = ROOTSIGNATURE_DATA.rangeArray[i].rangeType;
 		lData.paramData.type = ROOTSIGNATURE_DATA.rangeArray[i].dataType;
+
+		const bool L_THIS_TYPE_IS_DESCRIPTOR_FLAG = ROOTSIGNATURE_DATA.rangeArray[i].rangeType % 2 == 0;
 		if (L_THIS_TYPE_IS_DESCRIPTOR_FLAG)
 		{
 			lData.type = GRAPHICS_ROOTSIGNATURE_TYPE_DESCRIPTORTABLE;
@@ -362,7 +370,9 @@ Microsoft::WRL::ComPtr<ID3D12RootSignature> GraphicsRootSignature::CreateRootSig
 			++lViewParam;
 		}
 		lParamArrayData.push_back(lData);
+#pragma endregion
 	}
+
 #pragma endregion
 
 #pragma region バージョン自動判定でのシリアライズ
@@ -381,6 +391,7 @@ Microsoft::WRL::ComPtr<ID3D12RootSignature> GraphicsRootSignature::CreateRootSig
 	default:
 		break;
 	}
+
 
 	CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC lRootSignatureDesc;
 	lRootSignatureDesc.Init_1_0(
@@ -403,6 +414,8 @@ Microsoft::WRL::ComPtr<ID3D12RootSignature> GraphicsRootSignature::CreateRootSig
 		assert(0);
 	}
 #pragma endregion
+
+
 
 
 	//ルートシグネチャの生成

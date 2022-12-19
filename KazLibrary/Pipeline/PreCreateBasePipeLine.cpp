@@ -1773,12 +1773,12 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
 		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
 
-		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+		/*GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "ComputeBB.hlsl", "CSmain", "cs_6_4"),
 			desc,
 			rootsignature,
 			PIPELINE_COMPUTE_NAME_HITBOX_BB
-		);
+		);*/
 	}
 
 	{
