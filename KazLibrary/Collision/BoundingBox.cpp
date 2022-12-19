@@ -4,8 +4,8 @@
 BoundingBox::BoundingBox(std::vector<DirectX::XMFLOAT4> VERT_DATA)
 {
 	//読み込んだモデルの情報から頂点座標を入手し、VRAMに保存する
-	bbBufferHandle = computeBuffer.CreateBuffer(sizeof(DirectX::XMFLOAT4), GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA, static_cast<BUFFER_SIZE>(VERT_DATA.size()));
-	computeBuffer.TransData(bbBufferHandle, VERT_DATA.data(), sizeof(DirectX::XMFLOAT4) * static_cast<BUFFER_SIZE>(VERT_DATA.size()));
+	vertBufferHandle = computeBuffer.CreateBuffer(sizeof(DirectX::XMFLOAT4), GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA, static_cast<BUFFER_SIZE>(VERT_DATA.size()));
+	computeBuffer.TransData(vertBufferHandle, VERT_DATA.data(), sizeof(DirectX::XMFLOAT4) * static_cast<BUFFER_SIZE>(VERT_DATA.size()));
 
 	//BBを形成する処理用意
 	bbBufferHandle = computeBuffer.CreateBuffer(sizeof(BoundingBoxBufferData), GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2, 1);

@@ -1,4 +1,5 @@
 #include "KazRenderHelper.h"
+#include"../KazLibrary/Helper/KazHelper.h"
 
 KazRenderHelper::DrawIndexInstanceCommandData KazRenderHelper::SetDrawIndexInstanceCommandData(const D3D_PRIMITIVE_TOPOLOGY &TOPOLOGY, const D3D12_VERTEX_BUFFER_VIEW &VERTEX_VIEW, const D3D12_INDEX_BUFFER_VIEW &INDEX_VIEW, UINT INDECIES_NUM, UINT INSTANCE_NUM)
 {
@@ -204,4 +205,57 @@ int KazRenderHelper::SetBufferOnCmdList(const std::vector<RootSignatureParameter
 DirectX::XMFLOAT4 KazRenderHelper::SendColorDataToGPU(DirectX::XMFLOAT4 COLOR_DATA)
 {
 	return DirectX::XMFLOAT4(COLOR_DATA.x / 255.0f, COLOR_DATA.y / 255.0f, COLOR_DATA.z / 255.0f, COLOR_DATA.w / 255.0f);
+}
+
+KazRenderHelper::ID3D12ResourceWrapper::ID3D12ResourceWrapper()
+{
+}
+
+void KazRenderHelper::ID3D12ResourceWrapper::CreateBuffer(const KazBufferHelper::BufferResourceData &BUFFER_OPTION)
+{
+	HRESULT lResult;
+	//バッファの生成
+	lResult = DirectX12Device::Instance()->dev->CreateCommittedResource(
+		&BUFFER_OPTION.heapProperties,
+		BUFFER_OPTION.heapFlags,
+		&BUFFER_OPTION.resourceDesc,
+		BUFFER_OPTION.resourceState,
+		BUFFER_OPTION.clearValue,
+		IID_PPV_ARGS(&buffer)
+	);
+
+	assert(lResult == S_OK);
+
+	const unsigned int BUFFER_SIZE = 256;
+	std::array<wchar_t, BUFFER_SIZE> string;
+	KazHelper::ConvertStringToWchar_t(BUFFER_OPTION.BufferName, string.data(), BUFFER_SIZE);
+	buffer->SetName(string.data());
+}
+
+void KazRenderHelper::ID3D12ResourceWrapper::TransData(void *DATA, const unsigned int &DATA_SIZE)
+{
+	void *dataMap = nullptr;
+	auto result = buffer->Map(0, nullptr, (void **)&dataMap);
+	if (SUCCEEDED(result))
+	{
+		memcpy(dataMap, DATA, DATA_SIZE);
+		buffer->Unmap(0, nullptr);
+	}
+}
+
+void KazRenderHelper::ID3D12ResourceWrapper::Release()
+{
+	buffer->Release();
+}
+
+D3D12_GPU_VIRTUAL_ADDRESS KazRenderHelper::ID3D12ResourceWrapper::GetGpuAddress()
+{
+	return buffer->GetGPUVirtualAddress();
+}
+
+void *KazRenderHelper::ID3D12ResourceWrapper::GetMapAddres()
+{
+	void *dataMap = nullptr;
+	auto result = buffer->Map(0, nullptr, (void **)&dataMap);;
+	return dataMap;
 }

@@ -12,6 +12,8 @@ public:
 
 	void Compute();
 
+
+	ComputeBufferHelper computeHelper;
 private:
 
 	D3D12_GPU_DESCRIPTOR_HANDLE bbViewHandle;
@@ -36,5 +38,4 @@ private:
 	};
 
 	DispatchCallData threadNumData;
-	ComputeBufferHelper computeHelper;
 };

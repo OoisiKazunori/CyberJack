@@ -18,6 +18,9 @@ public:
 	D3D12_GPU_DESCRIPTOR_HANDLE GetViewHandle();
 
 	void Compute();
+	
+	ComputeBufferHelper computeBuffer;
+	RESOURCE_HANDLE bbBufferHandle;
 private:
 	struct BoundingBoxBufferData
 	{
@@ -26,8 +29,7 @@ private:
 	};
 
 	RESOURCE_HANDLE vertBufferHandle;
-	RESOURCE_HANDLE bbBufferHandle, bbViewHandle;
+	RESOURCE_HANDLE bbViewHandle;
 	RESOURCE_HANDLE matBufferHandle;
 
-	ComputeBufferHelper computeBuffer;
 };

@@ -96,4 +96,48 @@ namespace KazRenderHelper
 
 	DirectX::XMFLOAT4 SendColorDataToGPU(DirectX::XMFLOAT4 COLOR_DATA);
 
+
+	class ID3D12ResourceWrapper
+	{
+	public:
+		ID3D12ResourceWrapper();
+
+		/// <summary>
+		/// バッファ生成
+		/// </summary>
+		/// <param name="BUFFER_OPTION">バッファを生成する為に必要な構造体</param>
+		void CreateBuffer(const KazBufferHelper::BufferResourceData &BUFFER_OPTION);
+
+		/// <summary>
+		/// データをバッファに転送します
+		/// </summary>
+		/// <param name="HANDLE">バッファのハンドル</param>
+		/// <param name="DATA">送りたいデータのアドレス</param>
+		/// <param name="DATA_SIZE">送りたいデータのサイズ</param>
+		void TransData(void *DATA, const unsigned int &DATA_SIZE);
+
+		/// <summary>
+		/// バッファを開放します
+		/// </summary>
+		/// <param name="HANDLE">開放したいバッファのハンドル</param>
+		void Release();
+
+		/// <summary>
+		/// バッファのGPUアドレスを受け取ります
+		/// </summary>
+		/// <param name="HANDLE">ハンドル</param>
+		/// <returns>バッファのGPUアドレス</returns>
+		D3D12_GPU_VIRTUAL_ADDRESS GetGpuAddress();
+
+		void *GetMapAddres();
+
+		Microsoft::WRL::ComPtr<ID3D12Resource>buffer;
+
+		void operator=(const ID3D12ResourceWrapper &rhs)
+		{
+			buffer = rhs.buffer;
+		};
+	};
+
+
 };

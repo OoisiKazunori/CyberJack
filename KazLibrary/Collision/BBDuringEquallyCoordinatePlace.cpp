@@ -24,15 +24,27 @@ BBDuringEquallyCoordinatePlace::BBDuringEquallyCoordinatePlace(D3D12_GPU_DESCRIP
 	BUFFER_SIZE lCountNum = static_cast<BUFFER_SIZE>(threadNumData.x * threadNumData.y * threadNumData.z);
 
 	//当たり判定座標の用意
-	hitBoxPosHandle = computeHelper.CreateBuffer(sizeof(DirectX::XMFLOAT3), GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA, lCountNum);
+	hitBoxPosHandle = computeHelper.CreateBuffer(
+		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(DirectX::XMFLOAT3) * lCountNum),
+		GRAPHICS_RANGE_TYPE_UAV_VIEW,
+		GRAPHICS_PRAMTYPE_DATA2,
+		sizeof(DirectX::XMFLOAT3),
+		lCountNum
+	);
 	hitBoxViewHandle = computeHelper.GetDescriptorViewHandle(hitBoxPosHandle);
 
 	//当たり判定IDの用意
-	hitBoxIDHandle = computeHelper.CreateBuffer(sizeof(DirectX::XMUINT3), GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2, lCountNum);
+	hitBoxIDHandle = computeHelper.CreateBuffer(
+		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(DirectX::XMUINT3) * lCountNum),
+		GRAPHICS_RANGE_TYPE_UAV_DESC,
+		GRAPHICS_PRAMTYPE_DATA3,
+		sizeof(DirectX::XMUINT3),
+		lCountNum
+	);
 	hitBoxIDViewHandle = computeHelper.GetDescriptorViewHandle(hitBoxIDHandle);
 
 	//事前に計算しておくもの用意
-	hitBoxCommonHandle = computeHelper.CreateBuffer(sizeof(HitBoxConstBufferData), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3, 1);
+	hitBoxCommonHandle = computeHelper.CreateBuffer(sizeof(HitBoxConstBufferData), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4, 1);
 	HitBoxConstBufferData lData;
 	lData.radius = radius;
 	lData.xMax = threadNumData.x;
