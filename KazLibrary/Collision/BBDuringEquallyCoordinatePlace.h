@@ -1,8 +1,6 @@
 #pragma once
-#include"../KazLibrary/Buffer/CreateGpuBuffer.h"
-#include"../KazLibrary/Math/KazMath.h"
+#include"../Game/Helper/ComputeBufferHelper.h"
 #include"BoundingBox.h"
-#include"../KazLibrary/Render/DrawExcuteIndirect.h"
 
 /// <summary>
 /// BoundingBoxÇÃèÓïÒÇå≥Ç…ÅAìôä‘äuÇ…ç¿ïWÇíuÇ≠
@@ -15,7 +13,6 @@ public:
 	void Compute();
 
 private:
-	CreateGpuBuffer buffers;
 
 	D3D12_GPU_DESCRIPTOR_HANDLE bbViewHandle;
 	RESOURCE_HANDLE hitBoxPosHandle, hitBoxIDHandle,hitBoxViewHandle, hitBoxIDViewHandle;
@@ -23,7 +20,6 @@ private:
 
 	BoundingBoxData data;
 	float radius;
-	KazMath::Vec3<UINT>threadNum;
 	UINT CalculatingDeployableNumber(float DISTANCE, float RADIUS);
 
 	struct HitBoxConstBufferData
@@ -38,4 +34,7 @@ private:
 		DirectX::XMFLOAT3 pos;
 		DirectX::XMUINT3 id;
 	};
+
+	DispatchCallData threadNumData;
+	ComputeBufferHelper computeHelper;
 };

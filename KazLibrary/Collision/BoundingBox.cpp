@@ -1,49 +1,10 @@
 #include "BoundingBox.h"
-#include"../KazLibrary/DirectXCommon/DirectX12Device.h"
-#include"../KazLibrary/DirectXCommon/DirectX12CmdList.h"
-#include"../KazLibrary/Pipeline/GraphicsRootSignature.h"
-#include"../KazLibrary/Pipeline/GraphicsPipeLineMgr.h"
-#include"../KazLibrary/Helper/KazRenderHelper.h"
-#include"../KazLibrary/RenderTarget/RenderTargetStatus.h"
 #include"../KazLibrary/Buffer/DescriptorHeapMgr.h"
-#include"../KazLibrary/Helper/ResourceFilePass.h"
-#include"../KazLibrary/Imgui/MyImgui.h"
-#include"../KazLibrary/Loader/ObjResourceMgr.h"
-#include"../KazLibrary/Buffer/UavViewHandleMgr.h"
 
 BoundingBox::BoundingBox(std::vector<DirectX::XMFLOAT4> VERT_DATA)
 {
-	////読み込んだモデルの情報から頂点座標を入手し、VRAMに保存する
-	//vertBufferHandle = buffers.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(DirectX::XMFLOAT4) * static_cast<BUFFER_SIZE>(VERT_DATA.size())));
-
-	//memcpy
-	//(
-	//	buffers.GetMapAddres(vertBufferHandle),
-	//	VERT_DATA.data(),
-	//	VERT_DATA.size() * sizeof(DirectX::XMFLOAT4)
-	//);
-
-	////BBを形成する処理用意
-	//bbBufferHandle = buffers.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(BoundingBoxBufferData)));
-
-	//matBufferHandle = buffers.CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(DirectX::XMMATRIX)));
-
-	//DirectX::XMMATRIX lMat = KazMath::CaluWorld(KazMath::Transform3D({ 0.0f,0.0f,0.0f }, { 10.0f,10.0f,10.0f }, { 0.0f,0.0f,0.0f }), { 0.0f,1.0f,0.0f }, { 0.0f, 0.0f, 1.0f });
-	//buffers.TransData(matBufferHandle, &lMat, sizeof(DirectX::XMMATRIX));
-
-	//bbViewHandle = UavViewHandleMgr::Instance()->GetHandle();
-	//DescriptorHeapMgr::Instance()->CreateBufferView(
-	//	bbViewHandle,
-	//	KazBufferHelper::SetUnorderedAccessView(sizeof(BoundingBoxBufferData), 1),
-	//	buffers.GetBufferData(bbBufferHandle).Get(),
-	//	nullptr
-	//);
-
-	//Compute();
-
-
 	//読み込んだモデルの情報から頂点座標を入手し、VRAMに保存する
-	bbBufferHandle = computeBuffer.CreateBuffer(sizeof(DirectX::XMFLOAT4) * static_cast<BUFFER_SIZE>(VERT_DATA.size()), GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA, static_cast<BUFFER_SIZE>(VERT_DATA.size()));
+	bbBufferHandle = computeBuffer.CreateBuffer(sizeof(DirectX::XMFLOAT4), GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA, static_cast<BUFFER_SIZE>(VERT_DATA.size()));
 	computeBuffer.TransData(bbBufferHandle, VERT_DATA.data(), sizeof(DirectX::XMFLOAT4) * static_cast<BUFFER_SIZE>(VERT_DATA.size()));
 
 	//BBを形成する処理用意
@@ -74,8 +35,4 @@ D3D12_GPU_DESCRIPTOR_HANDLE BoundingBox::GetViewHandle()
 void BoundingBox::Compute()
 {
 	computeBuffer.Compute(PIPELINE_COMPUTE_NAME_HITBOX_BB, { 2,1,1 });
-}
-
-void BoundingBox::DebugDraw()
-{
 }

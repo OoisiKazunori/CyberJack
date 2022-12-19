@@ -7,34 +7,36 @@ ComputeBufferHelper::ComputeBufferHelper()
 
 }
 
-RESOURCE_HANDLE ComputeBufferHelper::CreateBuffer(UINT TRANSMISSION_DATA, GraphicsRangeType RANGE, GraphicsRootParamType ROOTPARAM, UINT ELEMENT_NUM)
+RESOURCE_HANDLE ComputeBufferHelper::CreateBuffer(UINT STRUCTURE_BYTE_STRIDE, GraphicsRangeType RANGE, GraphicsRootParamType ROOTPARAM, UINT ELEMENT_NUM)
 {
 	RESOURCE_HANDLE lHandle = 0;
 	RESOURCE_HANDLE lViewHandle = 0;
+
+	UINT lBufferSize = STRUCTURE_BYTE_STRIDE * ELEMENT_NUM;
 	switch (RANGE)
 	{
 	case GRAPHICS_RANGE_TYPE_CBV_VIEW:
 		lHandle = buffers.CreateBuffer
 		(
-			KazBufferHelper::SetConstBufferData(TRANSMISSION_DATA)
+			KazBufferHelper::SetConstBufferData(lBufferSize)
 		);
 		break;
 	case GRAPHICS_RANGE_TYPE_UAV_VIEW:
 		lHandle = buffers.CreateBuffer
 		(
-			KazBufferHelper::SetRWStructuredBuffer(TRANSMISSION_DATA)
+			KazBufferHelper::SetRWStructuredBuffer(lBufferSize)
 		);
 		break;
 	case GRAPHICS_RANGE_TYPE_UAV_DESC:
 		lHandle = buffers.CreateBuffer
 		(
-			KazBufferHelper::SetRWStructuredBuffer(TRANSMISSION_DATA)
+			KazBufferHelper::SetRWStructuredBuffer(lBufferSize)
 		);
 
 		lViewHandle = UavViewHandleMgr::Instance()->GetHandle();
 		DescriptorHeapMgr::Instance()->CreateBufferView(
 			lViewHandle,
-			KazBufferHelper::SetUnorderedAccessView(TRANSMISSION_DATA, ELEMENT_NUM),
+			KazBufferHelper::SetUnorderedAccessView(STRUCTURE_BYTE_STRIDE, ELEMENT_NUM),
 			buffers.GetBufferData(lHandle).Get(),
 			nullptr
 		);
@@ -44,7 +46,7 @@ RESOURCE_HANDLE ComputeBufferHelper::CreateBuffer(UINT TRANSMISSION_DATA, Graphi
 	bufferArrayData.push_back({});
 	bufferArrayData[lHandle].rangeType = RANGE;
 	bufferArrayData[lHandle].rootParamType = ROOTPARAM;
-	bufferArrayData[lHandle].bufferSize = TRANSMISSION_DATA;
+	bufferArrayData[lHandle].bufferSize = lBufferSize;
 	bufferArrayData[lHandle].bufferHandle = lHandle;
 	bufferArrayData[lHandle].viewHandle = lViewHandle;
 

@@ -1,6 +1,4 @@
 #pragma once
-#include"../KazLibrary/Buffer/CreateGpuBuffer.h"
-#include"../KazLibrary/Math/KazMath.h"
 #include"../Game/Helper/ComputeBufferHelper.h"
 
 struct BoundingBoxData
@@ -20,10 +18,7 @@ public:
 	D3D12_GPU_DESCRIPTOR_HANDLE GetViewHandle();
 
 	void Compute();
-
-	void DebugDraw();
 private:
-
 	struct BoundingBoxBufferData
 	{
 		DirectX::XMFLOAT3 minPos;
@@ -33,7 +28,6 @@ private:
 	RESOURCE_HANDLE vertBufferHandle;
 	RESOURCE_HANDLE bbBufferHandle, bbViewHandle;
 	RESOURCE_HANDLE matBufferHandle;
-
 
 	ComputeBufferHelper computeBuffer;
 };
