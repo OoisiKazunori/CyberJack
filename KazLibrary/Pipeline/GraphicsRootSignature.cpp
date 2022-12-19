@@ -304,9 +304,7 @@ Microsoft::WRL::ComPtr<ID3D12RootSignature> GraphicsRootSignature::CreateRootSig
 
 
 #pragma region ルートパラメーターを設定する
-	int lViewParam = 0;
-	int lDescriptorParam = 0;
-	//lDescriptorParamで代用できるが、別の用途に使う状況になってしまうので別の変数を用意
+	ParamData lViewData;
 	UINT lDescriptorArrayNum = 0;
 
 	std::vector<RootSignatureParameter> lParamArrayData;
@@ -316,35 +314,42 @@ Microsoft::WRL::ComPtr<ID3D12RootSignature> GraphicsRootSignature::CreateRootSig
 		{
 		case GRAPHICS_RANGE_TYPE_CBV_VIEW:
 			//ルートパラムの設定
-			lRootparamArray[i].InitAsConstantBufferView(lViewParam, 0, D3D12_SHADER_VISIBILITY_ALL);
-			break;
-
-		case GRAPHICS_RANGE_TYPE_SRV_DESC:
-			//ルートパラムの設定
-			lDescRangeRangeArray[lDescriptorArrayNum].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, lDescriptorParam);
-			lRootparamArray[i].InitAsDescriptorTable(1, &lDescRangeRangeArray[lDescriptorArrayNum], D3D12_SHADER_VISIBILITY_ALL);
-			break;
-
-		case GRAPHICS_RANGE_TYPE_SRV_VIEW:
-			//ルートパラムの設定
-			lRootparamArray[i].InitAsShaderResourceView(lViewParam, 0, D3D12_SHADER_VISIBILITY_ALL);
+			lRootparamArray[i].InitAsConstantBufferView(lViewData.cbv, 0, D3D12_SHADER_VISIBILITY_ALL);
+			++lViewData.cbv;
 			break;
 
 		case GRAPHICS_RANGE_TYPE_CBV_DESC:
 			//ルートパラムの設定
-			lDescRangeRangeArray[lDescriptorArrayNum].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, lDescriptorParam);
+			lDescRangeRangeArray[lDescriptorArrayNum].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, lViewData.cbv);
 			lRootparamArray[i].InitAsDescriptorTable(1, &lDescRangeRangeArray[lDescriptorArrayNum], D3D12_SHADER_VISIBILITY_ALL);
+			++lViewData.cbv;
 			break;
+
+		case GRAPHICS_RANGE_TYPE_SRV_VIEW:
+			//ルートパラムの設定
+			lRootparamArray[i].InitAsShaderResourceView(lViewData.srv, 0, D3D12_SHADER_VISIBILITY_ALL);
+			++lViewData.srv;
+			break;
+
+		case GRAPHICS_RANGE_TYPE_SRV_DESC:
+			//ルートパラムの設定
+			lDescRangeRangeArray[lDescriptorArrayNum].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, lViewData.srv);
+			lRootparamArray[i].InitAsDescriptorTable(1, &lDescRangeRangeArray[lDescriptorArrayNum], D3D12_SHADER_VISIBILITY_ALL);
+			++lViewData.srv;
+			break;
+
 
 		case GRAPHICS_RANGE_TYPE_UAV_VIEW:
 			//ルートパラムの設定
-			lRootparamArray[i].InitAsUnorderedAccessView(lViewParam, 0, D3D12_SHADER_VISIBILITY_ALL);
+			lRootparamArray[i].InitAsUnorderedAccessView(lViewData.uav, 0, D3D12_SHADER_VISIBILITY_ALL);
+			++lViewData.uav;
 			break;
 
 		case GRAPHICS_RANGE_TYPE_UAV_DESC:
 			//ルートパラムの設定
-			lDescRangeRangeArray[lDescriptorArrayNum].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, lDescriptorParam);
+			lDescRangeRangeArray[lDescriptorArrayNum].Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, lViewData.uav);
 			lRootparamArray[i].InitAsDescriptorTable(1, &lDescRangeRangeArray[lDescriptorArrayNum], D3D12_SHADER_VISIBILITY_ALL);
+			++lViewData.uav;
 			break;
 		case -1:
 			break;
@@ -359,16 +364,13 @@ Microsoft::WRL::ComPtr<ID3D12RootSignature> GraphicsRootSignature::CreateRootSig
 		if (L_THIS_TYPE_IS_DESCRIPTOR_FLAG)
 		{
 			lData.type = GRAPHICS_ROOTSIGNATURE_TYPE_DESCRIPTORTABLE;
-			lData.paramData.param = lDescriptorParam;
-			++lDescriptorParam;
 			++lDescriptorArrayNum;
 		}
 		else
 		{
 			lData.type = GRAPHICS_ROOTSIGNATURE_TYPE_VIEW;
-			lData.paramData.param = lViewParam;
-			++lViewParam;
 		}
+		lData.paramData.param = lViewData.DirtyNum() - 1;
 		lParamArrayData.push_back(lData);
 #pragma endregion
 	}

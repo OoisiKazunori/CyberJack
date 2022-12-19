@@ -305,4 +305,41 @@ private:
 		RootSignatureMode tmp = MODE;
 		return tmp;
 	};
+
+	struct ParamData
+	{
+		UINT cbv, srv, uav;
+		ParamData() :cbv(0), srv(0), uav(0), prevCbv(cbv), prevSrv(srv), prevUav(uav)
+		{
+		};
+
+		UINT DirtyNum()
+		{
+			if (CheckNum(cbv, &prevCbv))
+			{
+				return cbv;
+			}
+			if (CheckNum(srv, &prevSrv))
+			{
+				return srv;
+			}
+			if (CheckNum(uav, &prevUav))
+			{
+				return uav;
+			}
+
+			//値が変わらないと言う事は何処かが被っている為、エラーを吐かせる
+			assert(0);
+			return 0;
+		}
+
+	private:
+		UINT prevCbv, prevSrv, prevUav;
+		bool CheckNum(UINT NUM, UINT *PREV_NUM)
+		{
+			bool dirtyFlag = NUM != *PREV_NUM;
+			*PREV_NUM = NUM;
+			return dirtyFlag;
+		}
+	};
 };

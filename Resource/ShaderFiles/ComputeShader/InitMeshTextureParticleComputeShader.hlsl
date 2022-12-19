@@ -26,7 +26,7 @@ cbuffer RootConstants : register(b0)
     uint4 TriangleData;
 };
 
-Texture2D<float4> tex : register(t2);
+Texture2D<float4> tex : register(t0);
 SamplerState smp : register(s0);
 
 

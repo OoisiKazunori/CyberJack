@@ -8,7 +8,7 @@ RWStructuredBuffer<float3> hitBoxData : register(u1);
 //“–‚½‚è”»’è‚ÌID
 RWStructuredBuffer<uint3> idData : register(u2);
 
-cbuffer RootConstants : register(b3)
+cbuffer RootConstants : register(b0)
 {
     float radius;
     uint xMax;

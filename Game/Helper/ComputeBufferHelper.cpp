@@ -2,12 +2,12 @@
 #include"../KazLibrary/Buffer/DescriptorHeapMgr.h"
 #include"../KazLibrary/Buffer/UavViewHandleMgr.h"
 
-IComputeParticle::IComputeParticle()
+ComputeBufferHelper::ComputeBufferHelper()
 {
 
 }
 
-void IComputeParticle::CreateBuffer(UINT TRANSMISSION_DATA, GraphicsRangeType RANGE, GraphicsRootParamType ROOTPARAM, UINT ELEMENT_NUM)
+void ComputeBufferHelper::CreateBuffer(UINT TRANSMISSION_DATA, GraphicsRangeType RANGE, GraphicsRootParamType ROOTPARAM, UINT ELEMENT_NUM)
 {
 	RESOURCE_HANDLE lHandle = 0;
 	RESOURCE_HANDLE lViewHandle = 0;
@@ -49,12 +49,12 @@ void IComputeParticle::CreateBuffer(UINT TRANSMISSION_DATA, GraphicsRangeType RA
 	bufferArrayData[lHandle].viewHandle = lViewHandle;
 }
 
-void IComputeParticle::TransData(RESOURCE_HANDLE HANDLE, void *TRANS_DATA, UINT TRANSMISSION_DATA_SIZE)
+void ComputeBufferHelper::TransData(RESOURCE_HANDLE HANDLE, void *TRANS_DATA, UINT TRANSMISSION_DATA_SIZE)
 {
 	buffers.TransData(HANDLE, TRANS_DATA, TRANSMISSION_DATA_SIZE);
 }
 
-void IComputeParticle::Compute(ComputePipeLineNames NAME, const DispatchCallData &DATA)
+void ComputeBufferHelper::Compute(ComputePipeLineNames NAME, const DispatchCallData &DATA)
 {
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(NAME);
 

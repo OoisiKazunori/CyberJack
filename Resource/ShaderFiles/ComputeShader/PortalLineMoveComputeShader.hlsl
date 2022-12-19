@@ -14,7 +14,7 @@ struct UpdateData
     float4 color;
 };
 
-cbuffer RootConstants : register(b2)
+cbuffer RootConstants : register(b0)
 {
     matrix view;        
     matrix projection;

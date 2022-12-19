@@ -7,10 +7,10 @@ struct DispatchCallData
 	UINT x, y, z;
 };
 
-class IComputeParticle
+class ComputeBufferHelper
 {
 public:
-	IComputeParticle();
+	ComputeBufferHelper();
 
 	void CreateBuffer(UINT TRANSMISSION_DATA, GraphicsRangeType RANGE, GraphicsRootParamType ROOTPARAM, UINT ELEMENT_NUM);
 	void TransData(RESOURCE_HANDLE HANDLE, void *TRANS_DATA, UINT TRANSMISSION_DATA_SIZE);

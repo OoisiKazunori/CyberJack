@@ -12,7 +12,7 @@ struct UpdateData
     float4 pos;
 };
 
-cbuffer RootConstants : register(b2)
+cbuffer RootConstants : register(b0)
 {
     matrix view;        
     matrix projection;
