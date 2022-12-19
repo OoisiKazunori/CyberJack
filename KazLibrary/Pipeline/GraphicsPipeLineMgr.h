@@ -387,6 +387,7 @@ public:
 	/// </summary>
 	/// <param name="PIPELINE_NAME">登録したパイプラインの名前</param>
 	bool SetComputePipeLineAndRootSignature(ComputePipeLineNames PIPELINE_NAME);
+	bool SetComputePipeLineAndRootSignature2(ComputePipeLineNames PIPELINE_NAME);
 
 
 	/// <summary>
@@ -438,5 +439,4 @@ private:
 	template <typename T>
 	bool IsitSafe(T NAME, size_t SIZE);
 
-	ID3D12RootSignature *GenarateRootSignature();
 };

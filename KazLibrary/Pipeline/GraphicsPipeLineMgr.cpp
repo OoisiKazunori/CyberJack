@@ -205,6 +205,21 @@ bool GraphicsPipeLineMgr::SetComputePipeLineAndRootSignature(ComputePipeLineName
 	}
 }
 
+bool GraphicsPipeLineMgr::SetComputePipeLineAndRootSignature2(ComputePipeLineNames PIPELINE_NAME)
+{
+	if (IsitSafe(PIPELINE_NAME, computePipeLineRegisterData.size()) && computePipeLineRegisterData[PIPELINE_NAME].Get() != nullptr)
+	{
+		DirectX12CmdList::Instance()->cmdList->SetComputeRootSignature(rootSignature[PIPELINE_NAME].Get());
+		DirectX12CmdList::Instance()->cmdList->SetPipelineState(computePipeLineRegisterData[PIPELINE_NAME].Get());
+		return true;
+	}
+	else
+	{
+		FailCheck("危険:ComputePipeLineが存在しない為、コマンドリストに積めませんでした");
+		return false;
+	}
+}
+
 RootSignatureMode GraphicsPipeLineMgr::GetRootSignatureName(PipeLineNames PIPELINE_NAME)
 {
 	return rootSignatureName[PIPELINE_NAME];
@@ -284,11 +299,6 @@ void GraphicsPipeLineMgr::CreateComputePipeLine(
 	{
 		FailCheck("危険:Pipelineが登録できませんでした");
 	}
-}
-
-ID3D12RootSignature *GraphicsPipeLineMgr::GenarateRootSignature()
-{
-	return nullptr;
 }
 
 template <typename T>

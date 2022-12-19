@@ -13,38 +13,52 @@
 
 BoundingBox::BoundingBox(std::vector<DirectX::XMFLOAT4> VERT_DATA)
 {
-	//読み込んだモデルの情報から頂点座標を入手し、VRAMに保存する
-	vertBufferHandle = buffers.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(DirectX::XMFLOAT4) * static_cast<BUFFER_SIZE>(VERT_DATA.size())));
+	////読み込んだモデルの情報から頂点座標を入手し、VRAMに保存する
+	//vertBufferHandle = buffers.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(DirectX::XMFLOAT4) * static_cast<BUFFER_SIZE>(VERT_DATA.size())));
 
-	memcpy
-	(
-		buffers.GetMapAddres(vertBufferHandle),
-		VERT_DATA.data(),
-		VERT_DATA.size() * sizeof(DirectX::XMFLOAT4)
-	);
+	//memcpy
+	//(
+	//	buffers.GetMapAddres(vertBufferHandle),
+	//	VERT_DATA.data(),
+	//	VERT_DATA.size() * sizeof(DirectX::XMFLOAT4)
+	//);
+
+	////BBを形成する処理用意
+	//bbBufferHandle = buffers.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(BoundingBoxBufferData)));
+
+	//matBufferHandle = buffers.CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(DirectX::XMMATRIX)));
+
+	//DirectX::XMMATRIX lMat = KazMath::CaluWorld(KazMath::Transform3D({ 0.0f,0.0f,0.0f }, { 10.0f,10.0f,10.0f }, { 0.0f,0.0f,0.0f }), { 0.0f,1.0f,0.0f }, { 0.0f, 0.0f, 1.0f });
+	//buffers.TransData(matBufferHandle, &lMat, sizeof(DirectX::XMMATRIX));
+
+	//bbViewHandle = UavViewHandleMgr::Instance()->GetHandle();
+	//DescriptorHeapMgr::Instance()->CreateBufferView(
+	//	bbViewHandle,
+	//	KazBufferHelper::SetUnorderedAccessView(sizeof(BoundingBoxBufferData), 1),
+	//	buffers.GetBufferData(bbBufferHandle).Get(),
+	//	nullptr
+	//);
+
+	//Compute();
+
+
+	//読み込んだモデルの情報から頂点座標を入手し、VRAMに保存する
+	bbBufferHandle = computeBuffer.CreateBuffer(sizeof(DirectX::XMFLOAT4) * static_cast<BUFFER_SIZE>(VERT_DATA.size()), GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA, static_cast<BUFFER_SIZE>(VERT_DATA.size()));
+	computeBuffer.TransData(bbBufferHandle, VERT_DATA.data(), sizeof(DirectX::XMFLOAT4) * static_cast<BUFFER_SIZE>(VERT_DATA.size()));
 
 	//BBを形成する処理用意
-	bbBufferHandle = buffers.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(BoundingBoxBufferData)));
+	bbBufferHandle = computeBuffer.CreateBuffer(sizeof(BoundingBoxBufferData), GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2, 1);
+	bbViewHandle = computeBuffer.GetDescriptorViewHandle(bbBufferHandle);
 
-	matBufferHandle = buffers.CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(DirectX::XMMATRIX)));
-
+	//モデルのTransform指定
+	matBufferHandle = computeBuffer.CreateBuffer(sizeof(DirectX::XMMATRIX), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3, 1);
 	DirectX::XMMATRIX lMat = KazMath::CaluWorld(KazMath::Transform3D({ 0.0f,0.0f,0.0f }, { 10.0f,10.0f,10.0f }, { 0.0f,0.0f,0.0f }), { 0.0f,1.0f,0.0f }, { 0.0f, 0.0f, 1.0f });
-	buffers.TransData(matBufferHandle, &lMat, sizeof(DirectX::XMMATRIX));
-
-	bbViewHandle = UavViewHandleMgr::Instance()->GetHandle();
-	DescriptorHeapMgr::Instance()->CreateBufferView(
-		bbViewHandle,
-		KazBufferHelper::SetUnorderedAccessView(sizeof(BoundingBoxBufferData), 1),
-		buffers.GetBufferData(bbBufferHandle).Get(),
-		nullptr
-	);
-
-	Compute();
+	computeBuffer.TransData(matBufferHandle, &lMat, sizeof(DirectX::XMMATRIX));
 }
 
 BoundingBoxData BoundingBox::GetData()
 {
-	BoundingBoxBufferData*lData = (BoundingBoxBufferData*)buffers.GetMapAddres(bbBufferHandle);
+	BoundingBoxBufferData *lData = (BoundingBoxBufferData *)computeBuffer.GetMapAddress(bbBufferHandle);
 
 	BoundingBoxData lTmpData;
 	lTmpData.minPos = { lData->minPos.x, lData->minPos.y, lData->minPos.z };
@@ -59,19 +73,7 @@ D3D12_GPU_DESCRIPTOR_HANDLE BoundingBox::GetViewHandle()
 
 void BoundingBox::Compute()
 {
-	//計算処理--------------------------------------------
-	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
-	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_HITBOX_BB);
-
-	//頂点情報
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootUnorderedAccessView(0, buffers.GetGpuAddress(vertBufferHandle));
-	//出力
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(bbViewHandle));
-
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers.GetGpuAddress(matBufferHandle));
-
-	DirectX12CmdList::Instance()->cmdList->Dispatch(2, 1, 1);
-	//計算処理--------------------------------------------
+	computeBuffer.Compute(PIPELINE_COMPUTE_NAME_HITBOX_BB, { 2,1,1 });
 }
 
 void BoundingBox::DebugDraw()

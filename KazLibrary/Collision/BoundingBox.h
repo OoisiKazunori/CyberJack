@@ -1,6 +1,7 @@
 #pragma once
 #include"../KazLibrary/Buffer/CreateGpuBuffer.h"
 #include"../KazLibrary/Math/KazMath.h"
+#include"../Game/Helper/ComputeBufferHelper.h"
 
 struct BoundingBoxData
 {
@@ -22,7 +23,6 @@ public:
 
 	void DebugDraw();
 private:
-	CreateGpuBuffer buffers;
 
 	struct BoundingBoxBufferData
 	{
@@ -33,4 +33,7 @@ private:
 	RESOURCE_HANDLE vertBufferHandle;
 	RESOURCE_HANDLE bbBufferHandle, bbViewHandle;
 	RESOURCE_HANDLE matBufferHandle;
+
+
+	ComputeBufferHelper computeBuffer;
 };

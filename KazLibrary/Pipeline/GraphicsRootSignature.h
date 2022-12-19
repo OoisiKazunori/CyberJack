@@ -279,7 +279,9 @@ public:
 	/// </summary>
 	/// <param name="ROOTSIGNATURE_MODE">指定のルートシグネチャー</param>
 	/// <returns>ルートパラメーター</returns>
-	const GraphicsRootSignatureParameter GetRootParam(RootSignatureMode ROOTSIGNATURE_MODE);
+	const GraphicsRootSignatureParameter &GetRootParam(RootSignatureMode ROOTSIGNATURE_MODE);
+
+	const std::vector<RootSignatureParameter> &GetRootParam(int ROOTSIGNATURE_HANDLE);
 
 
 	Microsoft::WRL::ComPtr<ID3D12RootSignature> CreateRootSignature(const RootSignatureDataTest &ROOTSIGNATURE_DATA, RootsignatureType TYPE);
@@ -331,6 +333,11 @@ private:
 			//値が変わらないと言う事は何処かが被っている為、エラーを吐かせる
 			assert(0);
 			return 0;
+		}
+
+		UINT TotalNum()
+		{
+			return cbv + srv + uav;
 		}
 
 	private:

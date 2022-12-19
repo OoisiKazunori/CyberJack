@@ -7,7 +7,7 @@ ComputeBufferHelper::ComputeBufferHelper()
 
 }
 
-void ComputeBufferHelper::CreateBuffer(UINT TRANSMISSION_DATA, GraphicsRangeType RANGE, GraphicsRootParamType ROOTPARAM, UINT ELEMENT_NUM)
+RESOURCE_HANDLE ComputeBufferHelper::CreateBuffer(UINT TRANSMISSION_DATA, GraphicsRangeType RANGE, GraphicsRootParamType ROOTPARAM, UINT ELEMENT_NUM)
 {
 	RESOURCE_HANDLE lHandle = 0;
 	RESOURCE_HANDLE lViewHandle = 0;
@@ -47,6 +47,8 @@ void ComputeBufferHelper::CreateBuffer(UINT TRANSMISSION_DATA, GraphicsRangeType
 	bufferArrayData[lHandle].bufferSize = TRANSMISSION_DATA;
 	bufferArrayData[lHandle].bufferHandle = lHandle;
 	bufferArrayData[lHandle].viewHandle = lViewHandle;
+
+	return lHandle;
 }
 
 void ComputeBufferHelper::TransData(RESOURCE_HANDLE HANDLE, void *TRANS_DATA, UINT TRANSMISSION_DATA_SIZE)
@@ -54,13 +56,25 @@ void ComputeBufferHelper::TransData(RESOURCE_HANDLE HANDLE, void *TRANS_DATA, UI
 	buffers.TransData(HANDLE, TRANS_DATA, TRANSMISSION_DATA_SIZE);
 }
 
+void *ComputeBufferHelper::GetMapAddress(RESOURCE_HANDLE HANDLE)
+{
+	return buffers.GetMapAddres(HANDLE);
+}
+
+RESOURCE_HANDLE ComputeBufferHelper::GetDescriptorViewHandle(RESOURCE_HANDLE HANDLE)
+{
+	return bufferArrayData[HANDLE].viewHandle;
+}
+
 void ComputeBufferHelper::Compute(ComputePipeLineNames NAME, const DispatchCallData &DATA)
 {
-	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(NAME);
+	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature2(NAME);
+
+	std::vector<RootSignatureParameter>lParamData = GraphicsRootSignature::Instance()->GetRootParam(static_cast<int>(NAME));
 
 	for (int i = 0; i < bufferArrayData.size(); ++i)
 	{
-		const UINT L_PARAM = KazRenderHelper::SetBufferOnCmdList({}, bufferArrayData[i].rangeType, bufferArrayData[i].rootParamType);
+		const UINT L_PARAM = KazRenderHelper::SetBufferOnCmdList(lParamData, bufferArrayData[i].rangeType, bufferArrayData[i].rootParamType);
 
 		//デスクリプタヒープにコマンドリストに積む。余りが偶数ならデスクリプタヒープだと判断する
 		if (bufferArrayData[i].rangeType % 2 == 0)

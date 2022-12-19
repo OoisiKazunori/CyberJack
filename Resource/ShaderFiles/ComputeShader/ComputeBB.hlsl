@@ -6,7 +6,7 @@ RWStructuredBuffer<float4> vertciesData : register(u0);
 //èoóÕ
 RWStructuredBuffer<BoundingBoxData> bbPosData : register(u1);
 
-cbuffer RootConstants : register(b2)
+cbuffer RootConstants : register(b0)
 {
     matrix scaleRotaMat;
 };

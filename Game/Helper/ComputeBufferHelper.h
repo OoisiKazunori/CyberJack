@@ -12,8 +12,11 @@ class ComputeBufferHelper
 public:
 	ComputeBufferHelper();
 
-	void CreateBuffer(UINT TRANSMISSION_DATA, GraphicsRangeType RANGE, GraphicsRootParamType ROOTPARAM, UINT ELEMENT_NUM);
+	RESOURCE_HANDLE CreateBuffer(UINT TRANSMISSION_DATA, GraphicsRangeType RANGE, GraphicsRootParamType ROOTPARAM, UINT ELEMENT_NUM);
 	void TransData(RESOURCE_HANDLE HANDLE, void *TRANS_DATA, UINT TRANSMISSION_DATA_SIZE);
+
+	void *GetMapAddress(RESOURCE_HANDLE HANDLE);
+	RESOURCE_HANDLE GetDescriptorViewHandle(RESOURCE_HANDLE HANDLE);
 
 	void Compute(ComputePipeLineNames NAME, const DispatchCallData &DATA);
 

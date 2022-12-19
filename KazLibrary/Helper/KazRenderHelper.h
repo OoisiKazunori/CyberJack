@@ -92,7 +92,7 @@ namespace KazRenderHelper
 
 
 	int SetBufferOnCmdList(const GraphicsRootSignatureParameter &PARAM, const GraphicsRangeType &RANGE, const GraphicsRootParamType &TYPE);
-
+	int SetBufferOnCmdList(const std::vector<RootSignatureParameter> &PARAM, const GraphicsRangeType &RANGE, const GraphicsRootParamType &TYPE);
 
 	DirectX::XMFLOAT4 SendColorDataToGPU(DirectX::XMFLOAT4 COLOR_DATA);
 

@@ -8,30 +8,12 @@
 
 GraphicsRootSignature::GraphicsRootSignature()
 {
-	/*CreateColorRootSignature();
-	CreateTextureRootSignature();
-	CreateSpriteRootSignature();
-	CreateObjRootSignature();
-	CreateMultipassRootSignature();
-	CreateLight();
-
-	paramMgr[ROOTSIGNATURE_MODE_COLOR] = colorParam;
-	paramMgr[ROOTSIGNATURE_MODE_TEXTURE] = textureParam;
-	paramMgr[ROOTSIGNATURE_MODE_SPRITE] = spriteParam;
-	paramMgr[ROOTSIGNATURE_MODE_OBJ] = objParam;
-	paramMgr[ROOTSIGNATURE_MODE_MULTIPASS] = MultiPassParam;
-	paramMgr[ROOTSIGNATURE_MODE_LIGHT] = LightParam;*/
-
 	paramD.resize(50);
 	rootSignature.resize(50);
 }
 
 GraphicsRootSignature::~GraphicsRootSignature()
 {
-	for (int i = 0; i < rootSignature.size(); i++)
-	{
-		rootSignature[i].ReleaseAndGetAddressOf();
-	}
 }
 
 void GraphicsRootSignature::CreateRootSignature(RootSignatureMode ROOTSIGNATURE, RootSignatureData ROOTSIGNATURE_DATA, short DATA_MAX)
@@ -281,9 +263,14 @@ void GraphicsRootSignature::CreateMyRootSignature(D3D12_STATIC_SAMPLER_DESC SAMP
 	);
 }
 
-const GraphicsRootSignatureParameter GraphicsRootSignature::GetRootParam(RootSignatureMode ROOTSIGNATURE_MODE)
+const GraphicsRootSignatureParameter &GraphicsRootSignature::GetRootParam(RootSignatureMode ROOTSIGNATURE_MODE)
 {
 	return paramD[ROOTSIGNATURE_MODE];
+}
+
+const std::vector<RootSignatureParameter> &GraphicsRootSignature::GetRootParam(int ROOTSIGNATURE_HANDLE)
+{
+	return computeParamArrayData[ROOTSIGNATURE_HANDLE];
 }
 
 Microsoft::WRL::ComPtr<ID3D12RootSignature> GraphicsRootSignature::CreateRootSignature(const RootSignatureDataTest &ROOTSIGNATURE_DATA, RootsignatureType TYPE)
@@ -370,7 +357,7 @@ Microsoft::WRL::ComPtr<ID3D12RootSignature> GraphicsRootSignature::CreateRootSig
 		{
 			lData.type = GRAPHICS_ROOTSIGNATURE_TYPE_VIEW;
 		}
-		lData.paramData.param = lViewData.DirtyNum() - 1;
+		lData.paramData.param = lViewData.TotalNum() - 1;
 		lParamArrayData.push_back(lData);
 #pragma endregion
 	}

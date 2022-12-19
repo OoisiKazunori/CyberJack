@@ -138,7 +138,7 @@ MeshParticleEmitter::MeshParticleEmitter(std::vector<DirectX::XMFLOAT4> VERT_NUM
 
 	//‰Šú‰»ˆ—--------------------------------------------
 	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
-	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_MESHPARTICLE_INIT);
+	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature2(PIPELINE_COMPUTE_NAME_MESHPARTICLE_INIT);
 
 	//’¸“_
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(vertDataViewHandle));

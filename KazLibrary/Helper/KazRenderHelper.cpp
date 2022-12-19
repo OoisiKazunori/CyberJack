@@ -184,6 +184,23 @@ int KazRenderHelper::SetBufferOnCmdList(const GraphicsRootSignatureParameter &PA
 	return keepParam;
 }
 
+int KazRenderHelper::SetBufferOnCmdList(const std::vector<RootSignatureParameter> &PARAM, const GraphicsRangeType &RANGE, const GraphicsRootParamType &TYPE)
+{
+	int type = -1;
+	int keepParam = -1;
+	//ƒ‹[ƒgƒpƒ‰ƒ€‚Ì”Ô†‚ğ•Û‘¶
+	for (int i = 0; i < PARAM.size(); i++)
+	{
+		if (PARAM[i].range == RANGE && PARAM[i].paramData.type == TYPE)
+		{
+			type = PARAM[i].type;
+			keepParam = PARAM[i].paramData.param;
+		}
+	}
+
+	return keepParam;
+}
+
 DirectX::XMFLOAT4 KazRenderHelper::SendColorDataToGPU(DirectX::XMFLOAT4 COLOR_DATA)
 {
 	return DirectX::XMFLOAT4(COLOR_DATA.x / 255.0f, COLOR_DATA.y / 255.0f, COLOR_DATA.z / 255.0f, COLOR_DATA.w / 255.0f);
