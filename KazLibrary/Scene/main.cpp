@@ -82,6 +82,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	RenderTargetStatus::Instance()->CreateDoubleBuffer(directX.swapchain);
 
+	long lCppVersion = __cplusplus;
+	std::cout << "現在使用しているC++:" << lCppVersion << "\n";
+
 	//もう一度繰り返さないようシングルトンにする
 	PreCreateBaseRootSignature prepareR;
 	PreCreateBasePipeLine prepareP;
@@ -91,6 +94,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	srand(static_cast<UINT>(time(NULL)));
 	SceneManager sm;
+
+
 
 	OutputDebugStringA("ゲームのメインループを開始します\n");
 	while (CheckMessageFlag)

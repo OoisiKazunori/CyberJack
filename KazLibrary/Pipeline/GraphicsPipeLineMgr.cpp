@@ -274,7 +274,6 @@ void GraphicsPipeLineMgr::CreateComputePipeLine(
 	rootSignature[PIPELINE_NAME] = GraphicsRootSignature::Instance()->CreateRootSignature(ROOTSIGNATURE, ROOTSIGNATURE_COMPUTE).Get();
 	lComputePipeLine.pRootSignature = rootSignature[PIPELINE_NAME].Get();
 
-
 	//パイプラインの生成
 	if (IsitSafe(PIPELINE_NAME, pipeLineRegisterData.size()))
 	{

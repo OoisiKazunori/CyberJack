@@ -2,6 +2,8 @@
 #include"../DirectXCommon/Base.h"
 #include"../Helper/ISinglton.h"
 #include<vector>
+#include"../KazLibrary/Helper/HandleMaker.h"
+
 using namespace std;
 
 enum RootsignatureType
@@ -189,6 +191,25 @@ struct GraphicsRootSignatureParameter
 	}
 };
 
+
+struct RootSignatureParameter
+{
+	GraphicsRangeType range;			//種類
+	RootParamData paramData;			//パラメーター
+	GraphicsRootSignatureType type;		//どのセットするか
+
+	//初期化
+	RootSignatureParameter()
+	{
+		range = GRAPHICS_RANGE_TYPE_NONE;
+		paramData.param = -1;
+		paramData.type = GRAPHICS_PRAMTYPE_NONE;
+		type = GRAPHICS_ROOTSIGNATURE_TYPE_NONE;
+	}
+};
+
+
+
 /// <summary>
 /// ルートシグネチャを生成する際に必要になるデータです
 /// </summary>
@@ -261,27 +282,16 @@ public:
 	const GraphicsRootSignatureParameter GetRootParam(RootSignatureMode ROOTSIGNATURE_MODE);
 
 
-	Microsoft::WRL::ComPtr<ID3D12RootSignature>  CreateRootSignature(const RootSignatureDataTest &ROOTSIGNATURE_DATA, RootsignatureType TYPE);
+	Microsoft::WRL::ComPtr<ID3D12RootSignature> CreateRootSignature(const RootSignatureDataTest &ROOTSIGNATURE_DATA, RootsignatureType TYPE);
 
 
 private:
-	/*void CreateColorRootSignature();
-	void CreateTextureRootSignature();
-	void CreateSpriteRootSignature();
-	void CreateObjRootSignature();
-	void CreateMultipassRootSignature();
-	void CreateLight();
-
-	GraphicsRootSignatureParameter paramMgr[10];
-	GraphicsRootSignatureParameter textureParam;
-	GraphicsRootSignatureParameter spriteParam;
-	GraphicsRootSignatureParameter objParam;
-	GraphicsRootSignatureParameter MultiPassParam;
-	GraphicsRootSignatureParameter LightParam;
-	GraphicsRootSignatureParameter colorParam;*/
 
 	std::vector<Microsoft::WRL::ComPtr<ID3D12RootSignature>> rootSignature;
 	std::vector<GraphicsRootSignatureParameter> paramD;
+
+	std::vector<std::vector<RootSignatureParameter>> computeParamArrayData;
+
 	friend ISingleton<GraphicsRootSignature>;
 
 

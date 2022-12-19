@@ -291,12 +291,13 @@ Microsoft::WRL::ComPtr<ID3D12RootSignature> GraphicsRootSignature::CreateRootSig
 	std::vector<CD3DX12_ROOT_PARAMETER> lRootparamArray(ROOTSIGNATURE_DATA.rangeArray.size());
 	std::vector<CD3DX12_DESCRIPTOR_RANGE> lDescRangeRangeArray;
 
-#pragma region ルートパラムの設定
-	int ROOTSIGNATURE = 0;
+#pragma region ルートパラメーターを設定する
 	int lViewParam = 0;
 	int lDescriptorParam = 0;
+	//lDescriptorParamで代用できるが、別の用途に使う状況になってしまうので別の変数を用意
 	UINT lDescriptorArrayNum = 0;
-	paramD[ROOTSIGNATURE].paramMax = static_cast<int>(ROOTSIGNATURE_DATA.rangeArray.size());
+
+	std::vector<RootSignatureParameter> lParamArrayData;
 	for (int i = 0; i < ROOTSIGNATURE_DATA.rangeArray.size(); i++)
 	{
 		const bool L_THIS_TYPE_IS_DESCRIPTOR_FLAG = ROOTSIGNATURE_DATA.rangeArray[i].rangeType % 2 == 0;
@@ -344,25 +345,29 @@ Microsoft::WRL::ComPtr<ID3D12RootSignature> GraphicsRootSignature::CreateRootSig
 		}
 
 		//受け渡し用
-		paramD[ROOTSIGNATURE].range[i] = ROOTSIGNATURE_DATA.rangeArray[i].rangeType;
-		paramD[ROOTSIGNATURE].paramData[i].type = ROOTSIGNATURE_DATA.rangeArray[i].dataType;
+		RootSignatureParameter lData;
+		lData.range = ROOTSIGNATURE_DATA.rangeArray[i].rangeType;
+		lData.paramData.type = ROOTSIGNATURE_DATA.rangeArray[i].dataType;
 		if (L_THIS_TYPE_IS_DESCRIPTOR_FLAG)
 		{
-			paramD[ROOTSIGNATURE].type[i] = GRAPHICS_ROOTSIGNATURE_TYPE_DESCRIPTORTABLE;
-			paramD[ROOTSIGNATURE].paramData[i].param = lDescriptorParam;
+			lData.type = GRAPHICS_ROOTSIGNATURE_TYPE_DESCRIPTORTABLE;
+			lData.paramData.param = lDescriptorParam;
 			++lDescriptorParam;
 			++lDescriptorArrayNum;
 		}
 		else
 		{
-			paramD[ROOTSIGNATURE].type[i] = GRAPHICS_ROOTSIGNATURE_TYPE_VIEW;
-			paramD[ROOTSIGNATURE].paramData[i].param = lViewParam;
+			lData.type = GRAPHICS_ROOTSIGNATURE_TYPE_VIEW;
+			lData.paramData.param = lViewParam;
 			++lViewParam;
 		}
+		lParamArrayData.push_back(lData);
 	}
 #pragma endregion
 
-	D3D12_ROOT_SIGNATURE_FLAGS lRootSignatureType;
+#pragma region バージョン自動判定でのシリアライズ
+
+	D3D12_ROOT_SIGNATURE_FLAGS lRootSignatureType = D3D12_ROOT_SIGNATURE_FLAG_NONE;
 	switch (TYPE)
 	{
 	case ROOTSIGNATURE_NONE:
@@ -371,14 +376,13 @@ Microsoft::WRL::ComPtr<ID3D12RootSignature> GraphicsRootSignature::CreateRootSig
 		lRootSignatureType = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 		break;
 	case ROOTSIGNATURE_COMPUTE:
-		lRootSignatureType = D3D12_ROOT_SIGNATURE_FLAG_NONE;
+		lRootSignatureType = D3D12_ROOT_SIGNATURE_FLAG_DENY_MESH_SHADER_ROOT_ACCESS;
 		break;
 	default:
 		break;
 	}
 
 	CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC lRootSignatureDesc;
-
 	lRootSignatureDesc.Init_1_0(
 		static_cast<UINT>(lRootparamArray.size()),
 		lRootparamArray.data(),
@@ -386,29 +390,34 @@ Microsoft::WRL::ComPtr<ID3D12RootSignature> GraphicsRootSignature::CreateRootSig
 		ROOTSIGNATURE_DATA.samplerArray.data(),
 		lRootSignatureType);
 
-	//バージョン自動判定でのシリアライズ
-	Microsoft::WRL::ComPtr<ID3DBlob> rootSigBlob = nullptr;
-	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
+	Microsoft::WRL::ComPtr<ID3DBlob> lRootSigBlob = nullptr;
+	Microsoft::WRL::ComPtr<ID3DBlob> lErrorBlob = nullptr;
 	HRESULT lResult = D3DX12SerializeVersionedRootSignature(
 		&lRootSignatureDesc,
 		D3D_ROOT_SIGNATURE_VERSION_1_0,
-		&rootSigBlob,
-		&errorBlob);
+		&lRootSigBlob,
+		&lErrorBlob);
 
 	if (lResult != S_OK)
 	{
 		assert(0);
 	}
+#pragma endregion
 
 
-	Microsoft::WRL::ComPtr<ID3D12RootSignature> lRootSignature;
 	//ルートシグネチャの生成
+	Microsoft::WRL::ComPtr<ID3D12RootSignature> lRootSignature;
 	DirectX12Device::Instance()->dev->CreateRootSignature(
 		0,
-		rootSigBlob->GetBufferPointer(),
-		rootSigBlob->GetBufferSize(),
+		lRootSigBlob->GetBufferPointer(),
+		lRootSigBlob->GetBufferSize(),
 		IID_PPV_ARGS(&lRootSignature)
 	);
 
+	//コンピュートパイプライン用のパラメーター保管
+	computeParamArrayData.push_back(lParamArrayData);
+
+
 	return lRootSignature;
 }
+
