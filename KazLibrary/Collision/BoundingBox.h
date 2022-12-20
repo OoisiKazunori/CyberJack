@@ -27,6 +27,11 @@ private:
 		DirectX::XMFLOAT3 minPos;
 		DirectX::XMFLOAT3 maxPos;
 	};
+	struct CommonData
+	{
+		DirectX::XMMATRIX scaleRotaMat;
+		UINT vertNum;
+	};
 
 	RESOURCE_HANDLE vertBufferHandle;
 	RESOURCE_HANDLE bbViewHandle;

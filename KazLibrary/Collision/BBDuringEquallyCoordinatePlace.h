@@ -11,9 +11,16 @@ public:
 	BBDuringEquallyCoordinatePlace(D3D12_GPU_DESCRIPTOR_HANDLE BB_BUFFER_HANDLE, const BoundingBoxData &DATA);
 
 	void Compute();
+	UINT MaxHitBoxPosNum()
+	{
+		return countNum;
+	}
+	const ComputeBufferHelper::BufferData GetHitBoxPosData()
+	{
+		return computeHelper->GetBufferData(hitBoxPosHandle);
+	}
 
-
-	ComputeBufferHelper computeHelper;
+	std::unique_ptr<ComputeBufferHelper> computeHelper;
 private:
 
 	D3D12_GPU_DESCRIPTOR_HANDLE bbViewHandle;
@@ -21,12 +28,12 @@ private:
 	RESOURCE_HANDLE hitBoxCommonHandle;
 
 	BoundingBoxData data;
-	float radius;
+	float diameter;
 	UINT CalculatingDeployableNumber(float DISTANCE, float RADIUS);
 
 	struct HitBoxConstBufferData
 	{
-		float radius;
+		float diameter;
 		UINT xMax;
 		UINT xyMax;
 	};
@@ -38,4 +45,5 @@ private:
 	};
 
 	DispatchCallData threadNumData;
+	UINT countNum;
 };

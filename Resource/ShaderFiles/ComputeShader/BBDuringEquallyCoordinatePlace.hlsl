@@ -10,7 +10,7 @@ RWStructuredBuffer<uint3> idData : register(u2);
 
 cbuffer RootConstants : register(b0)
 {
-    float radius;
+    float diameter;
     uint xMax;
     uint xyMax;
 };
@@ -21,9 +21,8 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
 {
     uint index = ThreadGroupIndex(groupId,xMax,xyMax);
 
-    float diameter = radius;
     //’[‚©‚ç‡‚É‹…‚ğ•À‚×‚é
-    float3 pos = (bbPosData[0].minPos + radius) + groupId * diameter;
+    float3 pos = (bbPosData[0].minPos + diameter / 2.0f) + groupId * diameter;
 
     hitBoxData[index] = pos;
     idData[index] = groupId;

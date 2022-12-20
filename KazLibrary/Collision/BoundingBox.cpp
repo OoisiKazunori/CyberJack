@@ -12,9 +12,13 @@ BoundingBox::BoundingBox(std::vector<DirectX::XMFLOAT4> VERT_DATA)
 	bbViewHandle = computeBuffer.GetDescriptorViewHandle(bbBufferHandle);
 
 	//ƒ‚ƒfƒ‹‚ÌTransformŽw’è
-	matBufferHandle = computeBuffer.CreateBuffer(sizeof(DirectX::XMMATRIX), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3, 1);
+	matBufferHandle = computeBuffer.CreateBuffer(sizeof(CommonData), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3, 1);
 	DirectX::XMMATRIX lMat = KazMath::CaluWorld(KazMath::Transform3D({ 0.0f,0.0f,0.0f }, { 10.0f,10.0f,10.0f }, { 0.0f,0.0f,0.0f }), { 0.0f,1.0f,0.0f }, { 0.0f, 0.0f, 1.0f });
-	computeBuffer.TransData(matBufferHandle, &lMat, sizeof(DirectX::XMMATRIX));
+
+	CommonData lData;
+	lData.scaleRotaMat = lMat;
+	lData.vertNum = static_cast<UINT>(VERT_DATA.size());
+	computeBuffer.TransData(matBufferHandle, &lData, sizeof(CommonData));
 }
 
 BoundingBoxData BoundingBox::GetData()
@@ -34,5 +38,5 @@ D3D12_GPU_DESCRIPTOR_HANDLE BoundingBox::GetViewHandle()
 
 void BoundingBox::Compute()
 {
-	computeBuffer.Compute(PIPELINE_COMPUTE_NAME_HITBOX_BB, { 2,1,1 });
+	computeBuffer.Compute(PIPELINE_COMPUTE_NAME_HITBOX_BB, { 3,1,1 });
 }

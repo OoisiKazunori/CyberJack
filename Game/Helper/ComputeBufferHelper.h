@@ -13,6 +13,7 @@ struct DispatchCallData
 
 class ComputeBufferHelper
 {
+public:
 	struct BufferData
 	{
 		GraphicsRangeType rangeType;
@@ -30,7 +31,7 @@ class ComputeBufferHelper
 			viewHandle = rhs.viewHandle;
 		};
 	};
-public:
+
 	ComputeBufferHelper();
 
 	RESOURCE_HANDLE CreateBuffer(UINT STRUCTURE_BYTE_STRIDE, GraphicsRangeType RANGE, GraphicsRootParamType ROOTPARAM, UINT ELEMENT_NUM);

@@ -11,25 +11,55 @@
 #include"../KazLibrary/Loader/ObjResourceMgr.h"
 #include"../KazLibrary/Buffer/UavViewHandleMgr.h"
 
-DrawHitBoxPos::DrawHitBoxPos(D3D12_GPU_VIRTUAL_ADDRESS POS_HANDLE, UINT MAX_NUM)
+DrawHitBoxPos::DrawHitBoxPos(const ComputeBufferHelper::BufferData &POS_HANDLE, UINT MAX_NUM) :countNum(MAX_NUM)
 {
-	posViewHandle = POS_HANDLE;
-	matHandle = buffers.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(OutputData), "DebugHitBoxMat"));
-	cameraHandle = buffers.CreateBuffer(KazBufferHelper::SetConstBufferData(sizeof(CameraData), "CameraData"));
+	computeHelper.SetBuffer(POS_HANDLE, GRAPHICS_PRAMTYPE_DATA);
 
+	matHandle = computeHelper.CreateBuffer(
+		KazBufferHelper::SetRWStructuredBuffer(sizeof(OutputData) * countNum, "DebugHitBoxMat"),
+		GRAPHICS_RANGE_TYPE_UAV_VIEW,
+		GRAPHICS_PRAMTYPE_DATA2,
+		sizeof(OutputData),
+		countNum
+	);
+
+	cameraHandle = computeHelper.CreateBuffer(sizeof(CameraData), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3, countNum);
+
+
+
+	std::array<Vertex, 4>lVerticesArray;
+	std::array<USHORT, 6> lIndicesArray;
+	lIndicesArray = KazRenderHelper::InitIndciesForPlanePolygon();
+	KazRenderHelper::InitVerticesPos(&lVerticesArray[0].pos, &lVerticesArray[1].pos, &lVerticesArray[2].pos, &lVerticesArray[3].pos, { 0.5f,0.5f });
+	KazRenderHelper::InitUvPos(&lVerticesArray[0].uv, &lVerticesArray[1].uv, &lVerticesArray[2].uv, &lVerticesArray[3].uv);
+
+	BUFFER_SIZE lVertBuffSize = KazBufferHelper::GetBufferSize<BUFFER_SIZE>(lVerticesArray.size(), sizeof(Vertex));
+	BUFFER_SIZE lIndexBuffSize = KazBufferHelper::GetBufferSize<BUFFER_SIZE>(lIndicesArray.size(), sizeof(UINT));
+
+
+	vertexBuffer = std::make_unique<KazRenderHelper::ID3D12ResourceWrapper>();
+	indexBuffer = std::make_unique<KazRenderHelper::ID3D12ResourceWrapper>();
+
+	vertexBuffer->CreateBuffer(KazBufferHelper::SetVertexBufferData(lVertBuffSize));
+	indexBuffer->CreateBuffer(KazBufferHelper::SetIndexBufferData(lIndexBuffSize));
+
+	vertexBuffer->TransData(lVerticesArray.data(), lVertBuffSize);
+	indexBuffer->TransData(lIndicesArray.data(), lIndexBuffSize);
 
 	//デバック用の描画-------------------------------------------------------------------------------------
-	InitExcuteIndirect lInitData;
-	lInitData.elementNum = MAX_NUM;
-	RESOURCE_HANDLE lSphereHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "sphere.fbx");
-	lInitData.vertexBufferView = FbxModelResourceMgr::Instance()->GetResourceData(lSphereHandle)->vertexBufferView;
-	lInitData.updateView = buffers.GetGpuAddress(matHandle);
+	InitDrawIndexedExcuteIndirect lInitData;
+
+	lInitData.vertexBufferView = KazBufferHelper::SetVertexBufferView(vertexBuffer->GetGpuAddress(), lVertBuffSize, sizeof(lVerticesArray[0]));
+	lInitData.indexBufferView = KazBufferHelper::SetIndexBufferView(indexBuffer->GetGpuAddress(), lIndexBuffSize);
+	lInitData.indexNum = static_cast<UINT>(lIndicesArray.size());
+	lInitData.elementNum = countNum;
+	lInitData.updateView = computeHelper.GetBufferData(matHandle).bufferWrapper.buffer->GetGPUVirtualAddress();
 	lInitData.rootsignatureName = ROOTSIGNATURE_DATA_DRAW_UAV;
 
 	std::array<D3D12_INDIRECT_ARGUMENT_DESC, 2> args{};
 	args[0].Type = D3D12_INDIRECT_ARGUMENT_TYPE_UNORDERED_ACCESS_VIEW;
 	args[0].UnorderedAccessView.RootParameterIndex = 0;
-	args[1].Type = D3D12_INDIRECT_ARGUMENT_TYPE_DRAW;
+	args[1].Type = D3D12_INDIRECT_ARGUMENT_TYPE_DRAW_INDEXED;
 
 	lInitData.argument.push_back(args[0]);
 	lInitData.argument.push_back(args[1]);
@@ -39,18 +69,19 @@ DrawHitBoxPos::DrawHitBoxPos(D3D12_GPU_VIRTUAL_ADDRESS POS_HANDLE, UINT MAX_NUM)
 
 void DrawHitBoxPos::Update()
 {
-	//計算処理--------------------------------------------
-	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
-	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_HITBOX_SETCIRCLE_IN_BB);
+	DirectX::XMMATRIX lMatWorld = KazMath::CaluTransMatrix({ 0.0f,0.0f,0.0f }) * KazMath::CaluScaleMatrix({ 0.05f,0.05f,0.05f }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
+	CameraData lData;
+	lData.scaleRotateBillboardMat = lMatWorld * CameraMgr::Instance()->GetMatBillBoard();
+	lData.viewProjection = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
+	lData.posMaxNum = countNum;
+	computeHelper.TransData(cameraHandle, &lData, sizeof(CameraData));
 
-	//当たり判定座標
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, posViewHandle);
-	//描画用
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootUnorderedAccessView(1, buffers.GetGpuAddress(matHandle));
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers.GetGpuAddress(cameraHandle));
-
-	DirectX12CmdList::Instance()->cmdList->Dispatch(1, 1, 1);
-	//計算処理--------------------------------------------
+	UINT lXthreadNum = countNum / 1024;
+	if (lXthreadNum <= 0)
+	{
+		lXthreadNum = 1;
+	}
+	computeHelper.Compute(PIPELINE_COMPUTE_NAME_HITBOX_CALUMAT, { lXthreadNum,1,1 });
 }
 
 void DrawHitBoxPos::Draw()

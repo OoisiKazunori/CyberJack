@@ -16,6 +16,7 @@
 
 #include"../KazLibrary/Collision/BoundingBox.h"
 #include"../KazLibrary/Collision/BBDuringEquallyCoordinatePlace.h"
+#include"../Game/Debug/DrawHitBoxPos.h"
 
 class DebugMeshParticleScene :public SceneBase
 {
@@ -304,9 +305,13 @@ private:
 	bool drawParticleFlag;
 
 	FbxModelRender circleModelR;
+	FbxModelRenderPtr modelHitBox;
 
 	std::unique_ptr<BoundingBox> bb;
 	std::unique_ptr<BBDuringEquallyCoordinatePlace> bbCircle;
+	std::unique_ptr<DrawHitBoxPos> bbCircleHitBox;
+
+	BoxPolygonRenderPtr minPos, maxPos;
 	int timer;
 	//CPU上でのメッシュとパーティクルの判定--------------------------------------------
 

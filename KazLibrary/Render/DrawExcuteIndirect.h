@@ -3,7 +3,7 @@
 #include"../KazLibrary/Pipeline/GraphicsPipeLineMgr.h"
 #include"../KazLibrary/Buffer/CreateGpuBuffer.h"
 
-struct InitExcuteIndirect
+struct InitDrawIndexedExcuteIndirect
 {
 	std::vector<D3D12_INDIRECT_ARGUMENT_DESC> argument;
 	D3D12_GPU_VIRTUAL_ADDRESS updateView;
@@ -14,28 +14,45 @@ struct InitExcuteIndirect
 	RootSignatureMode rootsignatureName;
 };
 
+struct InitDrawExcuteIndirect
+{
+	std::vector<D3D12_INDIRECT_ARGUMENT_DESC> argument;
+	D3D12_GPU_VIRTUAL_ADDRESS updateView;
+	UINT elementNum;
+	D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
+	UINT vertNum;
+	RootSignatureMode rootsignatureName;
+};
+
 /// <summary>
 /// ExcuteIndirectを簡単に使用する為のクラス
 /// </summary>
 class DrawExcuteIndirect
 {
 public:
-	DrawExcuteIndirect(const InitExcuteIndirect &INIT_DATA);
+	DrawExcuteIndirect(const InitDrawIndexedExcuteIndirect &INIT_DATA);
+	DrawExcuteIndirect(const InitDrawExcuteIndirect &INIT_DATA);
 	void Draw(PipeLineNames PIPELINE_NAME);
 
 private:
 
-	struct IndirectCommand
+	struct DrawIndexedIndirectCommand
 	{
 		D3D12_GPU_VIRTUAL_ADDRESS view;
 		D3D12_DRAW_INDEXED_ARGUMENTS drawArguments;
 	};
+	struct DrawIndirectCommand
+	{
+		D3D12_GPU_VIRTUAL_ADDRESS view;
+		D3D12_DRAW_ARGUMENTS drawArguments;
+	};
+
 
 	Microsoft::WRL::ComPtr<ID3D12CommandSignature> commandSig;
 	CreateGpuBuffer buffers;
 	RESOURCE_HANDLE drawCommandHandle;
 
-	InitExcuteIndirect initData;
+	InitDrawIndexedExcuteIndirect initData;
 
 	D3D12_INDIRECT_ARGUMENT_TYPE drawType;
 };

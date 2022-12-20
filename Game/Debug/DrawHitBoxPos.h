@@ -5,6 +5,7 @@
 #include<vector>
 #include"../KazLibrary/Render/KazRender.h"
 #include"../KazLibrary/Render/DrawExcuteIndirect.h"
+#include"../Game/Helper/ComputeBufferHelper.h"
 
 /// <summary>
 /// BB“à‚É”z’u‚µ‚½‹…”»’è‚Ì•`‰æ
@@ -12,15 +13,12 @@
 class DrawHitBoxPos
 {
 public:
-	DrawHitBoxPos(D3D12_GPU_VIRTUAL_ADDRESS POS_HANDLE, UINT MAX_NUM);
+	DrawHitBoxPos(const ComputeBufferHelper::BufferData &POS_HANDLE, UINT MAX_NUM);
 	void Update();
 	void Draw();
 
 private:
-	CreateGpuBuffer buffers;
 	RESOURCE_HANDLE matHandle, cameraHandle;
-	D3D12_GPU_VIRTUAL_ADDRESS posViewHandle;
-
 	struct OutputData
 	{
 		DirectX::XMMATRIX matrix;
@@ -31,8 +29,13 @@ private:
 	{
 		DirectX::XMMATRIX scaleRotateBillboardMat;
 		DirectX::XMMATRIX viewProjection;
+		UINT posMaxNum;
 	};
 
 	std::unique_ptr<DrawExcuteIndirect> excuteIndirect;
+	ComputeBufferHelper computeHelper;
+	UINT countNum;
+	RESOURCE_HANDLE vertexBufferHandle;
+	RESOURCE_HANDLE indexBufferHandle;
+	std::unique_ptr<KazRenderHelper::ID3D12ResourceWrapper> vertexBuffer, indexBuffer;
 };
-

@@ -164,6 +164,7 @@
     <ClCompile Include="KazLibrary\Collision\BBDuringEquallyCoordinatePlace.cpp" />
     <ClCompile Include="KazLibrary\Render\DrawExcuteIndirect.cpp" />
     <ClCompile Include="Game\Helper\ComputeBufferHelper.cpp" />
+    <ClCompile Include="Game\Debug\DrawHitBoxPos.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -343,6 +344,7 @@
     <ClInclude Include="KazLibrary\Collision\BBDuringEquallyCoordinatePlace.h" />
     <ClInclude Include="KazLibrary\Render\DrawExcuteIndirect.h" />
     <ClInclude Include="Game\Helper\ComputeBufferHelper.h" />
+    <ClInclude Include="Game\Debug\DrawHitBoxPos.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
