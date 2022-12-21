@@ -19,7 +19,10 @@ public:
 	{
 		return computeHelper->GetBufferData(hitBoxPosHandle);
 	}
-
+	const ComputeBufferHelper::BufferData GetHitBoxIDData()
+	{
+		return computeHelper->GetBufferData(hitBoxIDHandle);
+	}
 	std::unique_ptr<ComputeBufferHelper> computeHelper;
 private:
 

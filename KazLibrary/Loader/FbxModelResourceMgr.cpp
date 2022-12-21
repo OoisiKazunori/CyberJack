@@ -105,7 +105,8 @@ RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME, bo
 	modelResource[lHandle]->vertNum = static_cast<UINT>(model->vertices.size());
 
 	modelResource[lHandle]->indexData = model->indices;
-	modelResource[lHandle]->vertData = model->vertData;
+	modelResource[lHandle]->vertFloat4Data = model->vertFloat4Data;
+	modelResource[lHandle]->vertFloat3Data = model->vertFloat3Data;
 	modelResource[lHandle]->vertUvData = model->vertUvData;
 	modelResource[lHandle]->faceCountNum = model->faceCountNum;
 
@@ -550,6 +551,8 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 	//重複あり頂点情報
 	std::vector<Model::VertexPosNormalUvSkin> vertices;
 	std::vector<UINT> indexData;
+	std::vector<DirectX::XMFLOAT2> uvData;
+	std::vector<DirectX::XMFLOAT3> normalData;
 	for (int i = 0; i < polygonCount; i++)
 	{
 		//面を構成する頂点の数を取得(3なら三角形ポリゴン)
@@ -564,7 +567,8 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 			vertex.pos.y = vertPos[index].y;
 			vertex.pos.z = vertPos[index].z;
 
-			MODEL->vertData.push_back(vertPos[index]);
+			MODEL->vertFloat4Data.push_back(vertPos[index]);
+			MODEL->vertFloat3Data.push_back({ vertPos[index].x,vertPos[index].y,vertPos[index].z });
 	
 			//UV
 			if (textureUVCount > 0)
@@ -584,6 +588,7 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 					{
 						vertex.uv.y = (float)uvs[1];
 					}
+					uvData.push_back({ vertex.uv.x, vertex.uv.y });
 				}
 			}
 
@@ -594,6 +599,8 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 				vertex.normal.x = (float)normal[0];
 				vertex.normal.y = (float)normal[1];
 				vertex.normal.z = (float)normal[2];
+
+				normalData.push_back(vertex.normal);
 			}
 
 			indexData.push_back(index);
@@ -607,7 +614,8 @@ void FbxModelResourceMgr::ParseFaces(Model *MODEL, FbxMesh *FBX_MESH)
 	}
 	MODEL->vertices = vertices;
 	MODEL->indices = indexData;
-
+	MODEL->uvData = uvData;
+	MODEL->normalData = normalData;
 
 	FbxSkin *fbxSkin = static_cast<FbxSkin *>(FBX_MESH->GetDeformer(0, FbxDeformer::eSkin));
 	boneSkinArray.push_back(fbxSkin);

@@ -16,7 +16,9 @@
 
 #include"../KazLibrary/Collision/BoundingBox.h"
 #include"../KazLibrary/Collision/BBDuringEquallyCoordinatePlace.h"
+#include"../Game/CollisionDetection/CollisionDetectionOfMeshCircleAndParticle.h"
 #include"../Game/Debug/DrawHitBoxPos.h"
+#include"../Game/Effect/InstanceMeshParticle.h"
 
 class DebugMeshParticleScene :public SceneBase
 {
@@ -181,7 +183,7 @@ private:
 	KazMath::Vec2<float>prevUv;
 	bool initNoizeFlag;
 
-	float PerlinNoize(const KazMath::Vec2<float> UV, int SEED);
+	float PerlinNoize(const KazMath::Vec2<float> &UV, int SEED);
 
 	KazMath::Vec3<float>PNoise(const KazMath::Vec3<float> &POS)
 	{
@@ -283,8 +285,8 @@ private:
 
 	static const int PARTICLE_HITBOX_NUM = 100;
 	void InitMeshParticle(const KazMath::Vec3<float> &BASE_POS, std::vector<std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM>> &PARTICLE_DATA, std::vector<std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM>> &BASE_PARTICLE_DATA);
-	void SetParticle(std::array<TriangleLineData, 3>LINE_ARRAY_POS, std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM> &PARTICLE_DATA,std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM> &BASE_PARTICLE_DATA);
-	void CollisionDetection(std::vector<std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM>> &PARTICLE_DATA,const std::vector<std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM>>&BASE_PARTICLE_DATA, std::array<std::array<KazMath::Vec3<float>, PARTICLE_HITBOX_NUM>, 12> &LARP_POS);
+	void SetParticle(std::array<TriangleLineData, 3>LINE_ARRAY_POS, std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM> &PARTICLE_DATA, std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM> &BASE_PARTICLE_DATA);
+	void CollisionDetection(std::vector<std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM>> &PARTICLE_DATA, const std::vector<std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM>> &BASE_PARTICLE_DATA, std::array<std::array<KazMath::Vec3<float>, PARTICLE_HITBOX_NUM>, 12> &LARP_POS);
 
 	std::vector<std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM>>particleHitBox;
 	std::vector<std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM>>baseParticleHitBox;
@@ -293,7 +295,7 @@ private:
 	std::vector<std::array<int, PARTICLE_HITBOX_NUM>>particleAngle;
 	//std::array<std::array<KazMath::Vec3<float>, PARTICLE_HITBOX_NUM>, 12>particleLarpPos;
 	//std::array<std::array<KazMath::Vec3<float>, PARTICLE_HITBOX_NUM>, 12>particleLarpPos2;
-	KazMath::Vec3<float>meshPos,prevMeshPos;
+	KazMath::Vec3<float>meshPos, prevMeshPos;
 
 	bool initParticleFlag;
 	float larpVel;
@@ -307,14 +309,24 @@ private:
 	FbxModelRender circleModelR;
 	FbxModelRenderPtr modelHitBox;
 
+	//GPU上での歪み判定
+	//モデル単位でBBを作る
 	std::unique_ptr<BoundingBox> bb;
+	//BB内に均等に当たり判定座標を用意する
 	std::unique_ptr<BBDuringEquallyCoordinatePlace> bbCircle;
+	//パーティクルと当たり判定座標との判定を取る
+	std::unique_ptr<CollisionDetectionOfMeshCircleAndParticle> meshCirlceAndParticle;
+
+	//当たり判定座標の可視化
 	std::unique_ptr<DrawHitBoxPos> bbCircleHitBox;
 
 	BoxPolygonRenderPtr minPos, maxPos;
 	int timer;
+
+	std::unique_ptr<InstanceMeshParticle> instanceMeshParticle;
+	
 	//CPU上でのメッシュとパーティクルの判定--------------------------------------------
 
-	std::array<KazMath::Vec3<float>, 36>GetSquareVertData(const KazMath::Vec3<float>&BASE_POS);
+	std::array<KazMath::Vec3<float>, 36>GetSquareVertData(const KazMath::Vec3<float> &BASE_POS);
 };
 

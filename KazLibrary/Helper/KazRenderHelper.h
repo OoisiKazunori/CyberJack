@@ -115,6 +115,7 @@ namespace KazRenderHelper
 		/// <param name="DATA">送りたいデータのアドレス</param>
 		/// <param name="DATA_SIZE">送りたいデータのサイズ</param>
 		void TransData(void *DATA, const unsigned int &DATA_SIZE);
+		void TransData(void *DATA, unsigned int START_DATA_SIZE, unsigned int DATA_SIZE);
 
 		/// <summary>
 		/// バッファを開放します

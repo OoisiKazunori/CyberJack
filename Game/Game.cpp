@@ -465,7 +465,7 @@ void Game::Update()
 
 					MeshData lMeshData = enemies[enemyType][enemyCount]->GetData()->meshParticleData[i];
 
-					std::vector<DirectX::XMFLOAT4>lVertData = FbxModelResourceMgr::Instance()->GetResourceData(lMeshData.resourceHandle)->vertData;
+					std::vector<DirectX::XMFLOAT4>lVertData = FbxModelResourceMgr::Instance()->GetResourceData(lMeshData.resourceHandle)->vertFloat4Data;
 
 					float lScale = 0.18f;
 					switch (enemyType)

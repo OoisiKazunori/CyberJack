@@ -1,6 +1,7 @@
 #include "ComputeBufferHelper.h"
 #include"../KazLibrary/Buffer/DescriptorHeapMgr.h"
 #include"../KazLibrary/Buffer/UavViewHandleMgr.h"
+#include"../KazLibrary/RenderTarget/RenderTargetStatus.h"
 
 ComputeBufferHelper::ComputeBufferHelper()
 {
@@ -18,6 +19,7 @@ RESOURCE_HANDLE ComputeBufferHelper::CreateBuffer(UINT STRUCTURE_BYTE_STRIDE, Gr
 	bufferArrayData[lHandle].rootParamType = ROOTPARAM;
 	bufferArrayData[lHandle].bufferSize = lBufferSize;
 	bufferArrayData[lHandle].viewHandle = lViewHandle;
+	bufferArrayData[lHandle].elementNum = ELEMENT_NUM;
 
 	switch (RANGE)
 	{
@@ -76,6 +78,44 @@ RESOURCE_HANDLE ComputeBufferHelper::SetBuffer(const ComputeBufferHelper::Buffer
 	bufferArrayData[lHandle] = BUFFER_DATA;
 	bufferArrayData[lHandle].rootParamType = RANGE;
 	return lHandle;
+}
+
+RESOURCE_HANDLE ComputeBufferHelper::CopyBuffer(const BufferData &BUFFER_DATA, GraphicsRootParamType RANGE)
+{
+	const RESOURCE_HANDLE L_HANDLE = CreateBuffer(
+		BUFFER_DATA.bufferSize,
+		BUFFER_DATA.rangeType,
+		RANGE,
+		BUFFER_DATA.viewHandle
+	);
+
+	RenderTargetStatus::Instance()->ChangeBarrier(
+		BUFFER_DATA.bufferWrapper.buffer.Get(),
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		D3D12_RESOURCE_STATE_COPY_SOURCE
+	);
+
+	RenderTargetStatus::Instance()->ChangeBarrier(
+		bufferArrayData[L_HANDLE].bufferWrapper.buffer.Get(),
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		D3D12_RESOURCE_STATE_COPY_DEST
+	);
+
+	DirectX12CmdList::Instance()->cmdList->CopyResource(BUFFER_DATA.bufferWrapper.buffer.Get(), bufferArrayData[L_HANDLE].bufferWrapper.buffer.Get());
+
+	RenderTargetStatus::Instance()->ChangeBarrier(
+		BUFFER_DATA.bufferWrapper.buffer.Get(),
+		D3D12_RESOURCE_STATE_COPY_SOURCE,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+	);
+
+	RenderTargetStatus::Instance()->ChangeBarrier(
+		bufferArrayData[L_HANDLE].bufferWrapper.buffer.Get(),
+		D3D12_RESOURCE_STATE_COPY_DEST,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+	);
+
+	return L_HANDLE;
 }
 
 void ComputeBufferHelper::TransData(RESOURCE_HANDLE HANDLE, void *TRANS_DATA, UINT TRANSMISSION_DATA_SIZE)

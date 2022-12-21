@@ -89,7 +89,10 @@ private:
 
 	Node *meshNode = nullptr;
 	std::vector<VertexPosNormalUvSkin>vertices;
-	std::vector<DirectX::XMFLOAT4>vertData;
+	std::vector<DirectX::XMFLOAT4>vertFloat4Data;
+	std::vector<DirectX::XMFLOAT3>vertFloat3Data;
+	std::vector<DirectX::XMFLOAT2>uvData;
+	std::vector<DirectX::XMFLOAT3>normalData;
 	std::vector<VertexUv>vertUvData;
 	std::vector<UINT>indices;
 
@@ -124,7 +127,11 @@ public:
 	std::vector<FbxTime> endTime;
 
 	UINT vertNum;
-	std::vector<DirectX::XMFLOAT4>vertData;
+	std::vector<DirectX::XMFLOAT4>vertFloat4Data;
+	std::vector<DirectX::XMFLOAT3>vertFloat3Data;
+	std::vector<DirectX::XMFLOAT2>uvData;
+	std::vector<DirectX::XMFLOAT3>normalData;
+
 	std::vector<VertexUv>vertUvData;
 	std::vector<UINT>indexData;
 

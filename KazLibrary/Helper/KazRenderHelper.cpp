@@ -243,6 +243,19 @@ void KazRenderHelper::ID3D12ResourceWrapper::TransData(void *DATA, const unsigne
 	}
 }
 
+void KazRenderHelper::ID3D12ResourceWrapper::TransData(void *DATA, unsigned int START_DATA_SIZE, unsigned int DATA_SIZE)
+{
+	void *dataMap = nullptr;
+	auto result = buffer->Map(0, nullptr, (void **)&dataMap);
+
+	void *data = &dataMap + START_DATA_SIZE;
+	if (SUCCEEDED(result))
+	{
+		memcpy(data, DATA, DATA_SIZE);
+		buffer->Unmap(0, nullptr);
+	}
+}
+
 void KazRenderHelper::ID3D12ResourceWrapper::Release()
 {
 	buffer->Release();

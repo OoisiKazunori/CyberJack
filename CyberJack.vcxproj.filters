@@ -165,6 +165,10 @@
     <ClCompile Include="KazLibrary\Render\DrawExcuteIndirect.cpp" />
     <ClCompile Include="Game\Helper\ComputeBufferHelper.cpp" />
     <ClCompile Include="Game\Debug\DrawHitBoxPos.cpp" />
+    <ClCompile Include="Game\CollisionDetection\CollisionDetectionOfMeshCircleAndParticle.cpp" />
+    <ClCompile Include="Game\Effect\InstanceMeshParticle.cpp" />
+    <ClCompile Include="KazLibrary\Buffer\CreateMeshBuffer.cpp" />
+    <ClCompile Include="Game\Effect\ComputeLerp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -345,6 +349,10 @@
     <ClInclude Include="KazLibrary\Render\DrawExcuteIndirect.h" />
     <ClInclude Include="Game\Helper\ComputeBufferHelper.h" />
     <ClInclude Include="Game\Debug\DrawHitBoxPos.h" />
+    <ClInclude Include="Game\CollisionDetection\CollisionDetectionOfMeshCircleAndParticle.h" />
+    <ClInclude Include="Game\Effect\InstanceMeshParticle.h" />
+    <ClInclude Include="KazLibrary\Buffer\CreateMeshBuffer.h" />
+    <ClInclude Include="Game\Effect\ComputeLerp.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
