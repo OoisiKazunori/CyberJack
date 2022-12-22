@@ -3,7 +3,7 @@
 Texture2D<float4> tex : register(t0);
 SamplerState smp : register(s0);
 
-TwoRender PSmain(PosUvOutput input) : SV_TARGET
+TwoRender PSmain(PosUvOutput input)
 {
     TwoRender output;
     output.target0 = float4(tex.Sample(smp, input.uv));

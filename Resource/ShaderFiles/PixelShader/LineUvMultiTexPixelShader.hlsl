@@ -7,7 +7,7 @@ cbuffer lineData : register(b1)
     float4 hitColor;
 }
 
-TwoRender PSmain(VSOutput input) : SV_TARGET
+TwoRender PSmain(VSOutput input)
 {
     float4 outputColor;
     if (input.uv.y < distance.x)

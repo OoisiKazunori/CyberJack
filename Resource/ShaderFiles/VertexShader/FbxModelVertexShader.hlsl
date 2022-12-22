@@ -5,7 +5,7 @@ VSOutput VSmain(VSInput input)
 	//スキニング計算
     SkinOutPut skinned = ComputeSkin(input);
 	//法線にワールド行列によるスケーリング
-    float3 wnormal = normalize(mul(world, float4(skinned.normal, 0)));
+    float3 wnormal = normalize(mul(world, float4(skinned.normal, 0))).xyz;
     
     VSOutput op;
     //ワールド法線を次のステージに渡す

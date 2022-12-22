@@ -26,7 +26,7 @@ static const float2 LEFT_DOWN_UV =  float2(0.03f,0.38f);
 static const float2 RIGHT_UP_UV =   float2(0.979f,0.963f);
 static const float2 RIGHT_DOWN_UV = float2(0.979f,0.38f);
 
-TwoRender PSmain(ClipTexUvOutput input) : SV_TARGET
+TwoRender PSmain(ClipTexUvOutput input)
 {
 	float3 light = normalize(float3(1,-1,1));			//‰E‰º‰œŒü‚«‚Ìƒ‰ƒCƒg
 	float light_diffuse = saturate(dot(-light, input.normal));//ŠÂ‹«Œõ...diffuse‚ð[0,1]‚Ì”ÍˆÍ‚ÉClamp‚·‚é

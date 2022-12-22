@@ -9,7 +9,7 @@ cbuffer LightDirBuffer : register(b2)
     float3 lightDir;
 }
 
-TwoRender PSmain(VSOutput input) : SV_TARGET
+TwoRender PSmain(VSOutput input)
 {
     float3 light = normalize(lightDir);
     float diffuse = saturate(dot(-light, input.normal));

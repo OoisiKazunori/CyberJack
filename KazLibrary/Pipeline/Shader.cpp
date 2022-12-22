@@ -122,6 +122,7 @@ void Shader::CompileShader(std::string SHADER_FILE, std::string ENTRY_POINT, std
 	std::vector<LPCWSTR> arguments;
 	arguments.emplace_back(L"/Od");
 	arguments.emplace_back(L"/Zi");
+	arguments.emplace_back(L"/WX");
 
 
 	std::array<wchar_t, 128> lEntryPoint;

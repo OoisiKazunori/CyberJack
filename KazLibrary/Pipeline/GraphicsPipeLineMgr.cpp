@@ -192,21 +192,18 @@ bool GraphicsPipeLineMgr::SetPipeLineAndRootSignature(PipeLineNames PIPELINE_NAM
 
 bool GraphicsPipeLineMgr::SetComputePipeLineAndRootSignature(ComputePipeLineNames PIPELINE_NAME)
 {
-	if (IsitSafe(PIPELINE_NAME, computePipeLineRegisterData.size()) && computePipeLineRegisterData[PIPELINE_NAME].Get() != nullptr)
-	{
-		GraphicsRootSignature::Instance()->SetComputeRootSignature(computeRootSignatureName[PIPELINE_NAME]);
-		DirectX12CmdList::Instance()->cmdList->SetPipelineState(computePipeLineRegisterData[PIPELINE_NAME].Get());
-		return true;
-	}
-	else
-	{
-		FailCheck("危険:ComputePipeLineが存在しない為、コマンドリストに積めませんでした");
-		return false;
-	}
-}
+	//if (IsitSafe(PIPELINE_NAME, computePipeLineRegisterData.size()) && computePipeLineRegisterData[PIPELINE_NAME].Get() != nullptr)
+	//{
+	//	GraphicsRootSignature::Instance()->SetComputeRootSignature(computeRootSignatureName[PIPELINE_NAME]);
+	//	DirectX12CmdList::Instance()->cmdList->SetPipelineState(computePipeLineRegisterData[PIPELINE_NAME].Get());
+	//	return true;
+	//}
+	//else
+	//{
+	//	FailCheck("危険:ComputePipeLineが存在しない為、コマンドリストに積めませんでした");
+	//	return false;
+	//}
 
-bool GraphicsPipeLineMgr::SetComputePipeLineAndRootSignature2(ComputePipeLineNames PIPELINE_NAME)
-{
 	if (IsitSafe(PIPELINE_NAME, computePipeLineRegisterData.size()) && computePipeLineRegisterData[PIPELINE_NAME].Get() != nullptr)
 	{
 		DirectX12CmdList::Instance()->cmdList->SetComputeRootSignature(rootSignature[PIPELINE_NAME].Get());
@@ -219,6 +216,21 @@ bool GraphicsPipeLineMgr::SetComputePipeLineAndRootSignature2(ComputePipeLineNam
 		return false;
 	}
 }
+
+//bool GraphicsPipeLineMgr::SetComputePipeLineAndRootSignature2(ComputePipeLineNames PIPELINE_NAME)
+//{
+//	if (IsitSafe(PIPELINE_NAME, computePipeLineRegisterData.size()) && computePipeLineRegisterData[PIPELINE_NAME].Get() != nullptr)
+//	{
+//		DirectX12CmdList::Instance()->cmdList->SetComputeRootSignature(rootSignature[PIPELINE_NAME].Get());
+//		DirectX12CmdList::Instance()->cmdList->SetPipelineState(computePipeLineRegisterData[PIPELINE_NAME].Get());
+//		return true;
+//	}
+//	else
+//	{
+//		FailCheck("危険:ComputePipeLineが存在しない為、コマンドリストに積めませんでした");
+//		return false;
+//	}
+//}
 
 RootSignatureMode GraphicsPipeLineMgr::GetRootSignatureName(PipeLineNames PIPELINE_NAME)
 {

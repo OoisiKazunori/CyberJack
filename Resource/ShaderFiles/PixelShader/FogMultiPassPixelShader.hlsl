@@ -8,7 +8,7 @@ cbuffer BloomData : register(b2)
     float4 luminanceColor;
 }
 
-TwoRender PSmain(FogOutPut input) : SV_TARGET
+TwoRender PSmain(FogOutPut input)
 {
     TwoRender op;
     op.target0 = CaluFog(input.svpos, color, fogData.xyz, fogData.w);

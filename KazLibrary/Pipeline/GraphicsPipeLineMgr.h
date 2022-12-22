@@ -67,7 +67,6 @@ enum VertexShaderNames
 	SHADER_VERTEX_SPRITE,
 	SHADER_VERTEX_OBJ,
 	SHADER_VERTEX_OBJ_PORTAL,
-	SHADER_VERTEX_LIGHT,
 	SHADER_VERTEX_LUMINAS,
 	SHADER_VERTEX_FBX,
 	SHADER_VERTEX_FBX_FOG,
@@ -103,7 +102,6 @@ enum PixcelShaderNames
 	SHADER_PIXCEL_MONITOR_MULTITEX,
 	SHADER_PIXCEL_OBJ_MULTITEX,
 	SHADER_PIXCEL_EXPANTION_OBJ,
-	SHADER_PIXCEL_LIGHT,
 	SHADER_PIXCEL_LUMINAS,
 	SHADER_PIXCEL_LUMINANCE_MULTI,
 	SHADER_PIXCEL_GAUSSIAN_UPBLUR,
@@ -390,7 +388,7 @@ public:
 	/// </summary>
 	/// <param name="PIPELINE_NAME">登録したパイプラインの名前</param>
 	bool SetComputePipeLineAndRootSignature(ComputePipeLineNames PIPELINE_NAME);
-	bool SetComputePipeLineAndRootSignature2(ComputePipeLineNames PIPELINE_NAME);
+	//bool SetComputePipeLineAndRootSignature(ComputePipeLineNames PIPELINE_NAME);
 
 
 	/// <summary>
@@ -444,4 +442,5 @@ private:
 	template <typename T>
 	bool IsitSafe(T NAME, size_t SIZE);
 
+	friend ISingleton;
 };

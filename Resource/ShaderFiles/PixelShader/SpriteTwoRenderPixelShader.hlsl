@@ -4,7 +4,7 @@
 Texture2D<float4> tex : register(t0);
 SamplerState smp : register(s0);
 
-TwoRender PSmain(VSOutput input) : SV_TARGET
+TwoRender PSmain(VSOutput input)
 {
     TwoRender output;
     

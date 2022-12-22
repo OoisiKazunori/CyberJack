@@ -9,7 +9,7 @@ FogOutPut VSmain(VSInput input)
     FogOutPut op;
     //ワールド法線を次のステージに渡す
     op.svpos = mul(world, skinned.pos);
-    op.fogFactor = op.svpos;
+    op.fogFactor = op.svpos.xyz;
     op.svpos = mul(view, op.svpos);
     op.svpos = mul(viewproj, op.svpos);
 

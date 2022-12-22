@@ -11,7 +11,7 @@
 #include"../KazLibrary/Loader/ObjResourceMgr.h"
 #include"../KazLibrary/Buffer/UavViewHandleMgr.h"
 
-GPUMeshAndSphereHitBox::GPUMeshAndSphereHitBox(std::vector<DirectX::XMFLOAT4> VERT_NUM, float PARTICLE_SCALE)
+GPUCollisionDetectionOfMeshHitBoxAndSphere::GPUCollisionDetectionOfMeshHitBoxAndSphere(std::vector<DirectX::XMFLOAT4> VERT_NUM, float PARTICLE_SCALE)
 {
 	if (VERT_NUM.size() == 0)
 	{
@@ -142,7 +142,7 @@ GPUMeshAndSphereHitBox::GPUMeshAndSphereHitBox(std::vector<DirectX::XMFLOAT4> VE
 
 	//‰Šú‰»ˆ—--------------------------------------------
 	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
-	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature2(PIPELINE_COMPUTE_NAME_HITBOX_TRIANGLE_INIT);
+	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_HITBOX_TRIANGLE_INIT);
 
 	//’¸“_
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(vertDataViewHandle));
@@ -170,16 +170,16 @@ GPUMeshAndSphereHitBox::GPUMeshAndSphereHitBox(std::vector<DirectX::XMFLOAT4> VE
 	hitVel = 1;
 }
 
-GPUMeshAndSphereHitBox::~GPUMeshAndSphereHitBox()
+GPUCollisionDetectionOfMeshHitBoxAndSphere::~GPUCollisionDetectionOfMeshHitBoxAndSphere()
 {
 }
 
-void GPUMeshAndSphereHitBox::Init(const DirectX::XMMATRIX *MOTHER_MAT)
+void GPUCollisionDetectionOfMeshHitBoxAndSphere::Init(const DirectX::XMMATRIX *MOTHER_MAT)
 {
 	motherMat = MOTHER_MAT;
 }
 
-void GPUMeshAndSphereHitBox::Update(RESOURCE_HANDLE BASE_HANDLE, RESOURCE_HANDLE PARTICLE_HANDLE, bool DIRTY_FLAG)
+void GPUCollisionDetectionOfMeshHitBoxAndSphere::Update(RESOURCE_HANDLE BASE_HANDLE, RESOURCE_HANDLE PARTICLE_HANDLE, bool DIRTY_FLAG)
 {
 	ImGui::Begin("HitBox");
 	KazImGuiHelper::InputXMFLOAT4("PointPos", &updateCommonData.pos);
@@ -254,7 +254,7 @@ void GPUMeshAndSphereHitBox::Update(RESOURCE_HANDLE BASE_HANDLE, RESOURCE_HANDLE
 
 }
 
-void GPUMeshAndSphereHitBox::Draw()
+void GPUCollisionDetectionOfMeshHitBoxAndSphere::Draw()
 {
 	if (!drawParticleFlag)
 	{

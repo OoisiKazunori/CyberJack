@@ -15,10 +15,10 @@ struct OutputData
 };
 
 //’¸“_î•ñ
-StructuredBuffer<float3> vertciesData : register(u0);
-StructuredBuffer<float2> uvData : register(u1);
+RWStructuredBuffer<float3> vertciesData : register(u0);
+RWStructuredBuffer<float2> uvData : register(u1);
 //x vertNum, y bias,z perTriangleNum,w faceCountNum
-StructuredBuffer<uint4> commonData : register(u2);
+RWStructuredBuffer<uint4> commonData : register(u2);
 
 //o—Í
 RWStructuredBuffer<OutputData> outputData : register(u3);

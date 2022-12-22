@@ -35,7 +35,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
 
         if(CheckCircleAndCircle(meshHitBox,particleHitBox))
         {
-            particleHitBoxID = meshHitBoxID;
+            particleHitBoxID[index] = meshHitBoxID[i];
         }
     }
 }

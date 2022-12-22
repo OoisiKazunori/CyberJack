@@ -8,7 +8,7 @@ cbuffer lineData : register(b1)
     float4 effectData;
 }
 
-TwoRender PSmain(VSOutput input) : SV_TARGET
+TwoRender PSmain(VSOutput input)
 {
     TwoRender output;
     float4 outputColor = float4(0.0f,0.0f,0.0f,1.0f);

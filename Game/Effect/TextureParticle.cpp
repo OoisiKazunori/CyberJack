@@ -147,7 +147,7 @@ TextureParticle::TextureParticle(std::vector<VertexUv> VERT_NUM, const DirectX::
 
 	//‰Šú‰»ˆ—--------------------------------------------
 	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
-	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature2(PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_INIT);
+	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_INIT);
 
 	//’¸“_
 	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(vertDataViewHandle));

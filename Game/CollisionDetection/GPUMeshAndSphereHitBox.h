@@ -5,11 +5,11 @@
 #include<vector>
 #include"../KazLibrary/Render/KazRender.h"
 
-class GPUMeshAndSphereHitBox
+class GPUCollisionDetectionOfMeshHitBoxAndSphere
 {
 public:
-	GPUMeshAndSphereHitBox(std::vector<DirectX::XMFLOAT4> VERT_NUM, float PARTICLE_SCALE = 0.18f);
-	~GPUMeshAndSphereHitBox();
+	GPUCollisionDetectionOfMeshHitBoxAndSphere(std::vector<DirectX::XMFLOAT4> VERT_NUM, float PARTICLE_SCALE = 0.18f);
+	~GPUCollisionDetectionOfMeshHitBoxAndSphere();
 	void Init(const DirectX::XMMATRIX *MOTHER_MAT);
 	void Update(RESOURCE_HANDLE BASE_HANDLE, RESOURCE_HANDLE PARTICLE_HANDLE, bool DIRTY_FLAG);
 	void Draw();

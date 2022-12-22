@@ -15,12 +15,20 @@ class ComputeBufferHelper
 public:
 	struct BufferData
 	{
+		KazRenderHelper::ID3D12ResourceWrapper bufferWrapper;
 		GraphicsRangeType rangeType;
 		GraphicsRootParamType rootParamType;
 		UINT bufferSize;
-		KazRenderHelper::ID3D12ResourceWrapper bufferWrapper;
 		RESOURCE_HANDLE viewHandle;
 		UINT elementNum;
+
+		BufferData(const KazBufferHelper::BufferResourceData &BUFFER_DATA) :rangeType(GRAPHICS_RANGE_TYPE_NONE), rootParamType(GRAPHICS_PRAMTYPE_NONE), bufferSize(0), viewHandle(-1), elementNum(0)
+		{
+			bufferWrapper.CreateBuffer(BUFFER_DATA);
+		}
+		BufferData() :rangeType(GRAPHICS_RANGE_TYPE_NONE), rootParamType(GRAPHICS_PRAMTYPE_NONE), bufferSize(0), viewHandle(-1), elementNum(0)
+		{
+		}
 
 		void operator=(const BufferData &rhs)
 		{

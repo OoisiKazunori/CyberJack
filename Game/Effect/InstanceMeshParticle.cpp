@@ -97,31 +97,31 @@ InstanceMeshParticle::InstanceMeshParticle(std::vector<InitMeshParticleData> &IN
 	UINT64 lVertBufferSize = 0;
 	UINT64 lUvBufferSize = 0;
 	//初期化時のバッファをどんどんスタックしていく
-	for (int i = 0; i < INIT_DATA.size(); ++i)
-	{
-		DirectX12CmdList::Instance()->cmdList->CopyBufferRegion(
-			computeInitMeshParticle.GetBufferData(vertHandle).bufferWrapper.buffer.Get(),
-			lVertBufferSize,										//恐らくコピー先始まりの位置
-			INIT_DATA[i].vertData->bufferWrapper.buffer.Get(),
-			0,													//恐らくコピー元始まりの位置
-			INIT_DATA[i].vertData->bufferSize					//恐らくコピー元終わりの位置
-		);
-		lVertBufferSize += INIT_DATA[i].vertData->bufferSize;
+	//for (int i = 0; i < INIT_DATA.size(); ++i)
+	//{
+	//	DirectX12CmdList::Instance()->cmdList->CopyBufferRegion(
+	//		computeInitMeshParticle.GetBufferData(vertHandle).bufferWrapper.buffer.Get(),
+	//		lVertBufferSize,										//恐らくコピー先始まりの位置
+	//		INIT_DATA[i].vertData.bufferWrapper.buffer.Get(),
+	//		0,													//恐らくコピー元始まりの位置
+	//		INIT_DATA[i].vertData.bufferSize					//恐らくコピー元終わりの位置
+	//	);
+	//	lVertBufferSize += INIT_DATA[i].vertData.bufferSize;
 
 
-		DirectX12CmdList::Instance()->cmdList->CopyBufferRegion(
-			computeInitMeshParticle.GetBufferData(uvHandle).bufferWrapper.buffer.Get(),
-			lUvBufferSize,										//恐らくコピー先始まりの位置
-			INIT_DATA[i].uvData->bufferWrapper.buffer.Get(),
-			0,													//恐らくコピー元始まりの位置
-			INIT_DATA[i].uvData->bufferSize					//恐らくコピー元終わりの位置
-		);
-		lUvBufferSize += INIT_DATA[i].uvData->bufferSize;
+	//	DirectX12CmdList::Instance()->cmdList->CopyBufferRegion(
+	//		computeInitMeshParticle.GetBufferData(uvHandle).bufferWrapper.buffer.Get(),
+	//		lUvBufferSize,										//恐らくコピー先始まりの位置
+	//		INIT_DATA[i].uvData.bufferWrapper.buffer.Get(),
+	//		0,													//恐らくコピー元始まりの位置
+	//		INIT_DATA[i].uvData.bufferSize					//恐らくコピー元終わりの位置
+	//	);
+	//	lUvBufferSize += INIT_DATA[i].uvData.bufferSize;
 
-		computeInitMeshParticle.TransData(commonHandle, &INIT_DATA[i].triagnleData, 0);
+	//	computeInitMeshParticle.TransData(commonHandle, &INIT_DATA[i].triagnleData, 0);
 
-		motherMatArray.emplace_back(INIT_DATA[i].motherMat);
-	}
+	//	motherMatArray.emplace_back(INIT_DATA[i].motherMat);
+	//}
 
 	computeUpdateMeshParticle.TransData(particleMotherMatrixHandle, motherMatArray.data(), 0);
 

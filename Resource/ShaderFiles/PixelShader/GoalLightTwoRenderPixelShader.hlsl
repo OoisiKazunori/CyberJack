@@ -10,7 +10,7 @@ cbuffer uvBuffer : register(b1)
 }
 
 
-TwoRender PSmain(VSOutput input) : SV_TARGET
+TwoRender PSmain(VSOutput input)
 {
     float2 uvValue = input.uv + uv.xy;
     float4 t = float4(tex.Sample(smp, uvValue));

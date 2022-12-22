@@ -14,7 +14,7 @@ RESOURCE_HANDLE ComputeBufferHelper::CreateBuffer(UINT STRUCTURE_BYTE_STRIDE, Gr
 	RESOURCE_HANDLE lViewHandle = 0;
 	UINT lBufferSize = STRUCTURE_BYTE_STRIDE * ELEMENT_NUM;
 
-	bufferArrayData.push_back({});
+	bufferArrayData.push_back(BufferData());
 	bufferArrayData[lHandle].rangeType = RANGE;
 	bufferArrayData[lHandle].rootParamType = ROOTPARAM;
 	bufferArrayData[lHandle].bufferSize = lBufferSize;
@@ -49,7 +49,7 @@ RESOURCE_HANDLE ComputeBufferHelper::CreateBuffer(const KazBufferHelper::BufferR
 {
 	RESOURCE_HANDLE lHandle = handle.GetHandle();
 
-	bufferArrayData.push_back({});
+	bufferArrayData.push_back(BufferData());
 	bufferArrayData[lHandle].rangeType = RANGE;
 	bufferArrayData[lHandle].rootParamType = ROOTPARAM;
 	bufferArrayData[lHandle].bufferSize = STRUCTURE_BYTE_STRIDE * ELEMENT_NUM;
@@ -74,7 +74,7 @@ RESOURCE_HANDLE ComputeBufferHelper::CreateBuffer(const KazBufferHelper::BufferR
 RESOURCE_HANDLE ComputeBufferHelper::SetBuffer(const ComputeBufferHelper::BufferData &BUFFER_DATA, GraphicsRootParamType RANGE)
 {
 	RESOURCE_HANDLE lHandle = handle.GetHandle();
-	bufferArrayData.push_back({});
+	bufferArrayData.push_back(BufferData());
 	bufferArrayData[lHandle] = BUFFER_DATA;
 	bufferArrayData[lHandle].rootParamType = RANGE;
 	return lHandle;
@@ -140,7 +140,7 @@ const ComputeBufferHelper::BufferData &ComputeBufferHelper::GetBufferData(RESOUR
 
 void ComputeBufferHelper::Compute(ComputePipeLineNames NAME, const DispatchCallData &DATA)
 {
-	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature2(NAME);
+	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(NAME);
 
 	std::vector<RootSignatureParameter>lParamData = GraphicsRootSignature::Instance()->GetRootParam(static_cast<int>(NAME));
 

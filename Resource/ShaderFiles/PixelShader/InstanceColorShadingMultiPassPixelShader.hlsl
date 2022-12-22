@@ -10,7 +10,7 @@ cbuffer ObjectData : register(b1)
     float3 lightDir;
 }
 
-TwoRender PSmain(InstancePosNormalColorOut input) : SV_TARGET
+TwoRender PSmain(InstancePosNormalColorOut input)
 {
     TwoRender output;
     float3 light = normalize(lightDir);

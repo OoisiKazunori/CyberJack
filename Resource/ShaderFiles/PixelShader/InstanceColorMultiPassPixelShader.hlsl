@@ -7,7 +7,7 @@ cbuffer BloomData : register(b1)
     float4 luminanceColor;
 }
 
-TwoRender PSmain(InstancePosOut input) : SV_TARGET
+TwoRender PSmain(InstancePosOut input)
 {
     TwoRender output;
     output.target0 = uavMatColorData[input.id].color;

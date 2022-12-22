@@ -6,7 +6,7 @@ cbuffer BloomData : register(b1)
     float4 luminanceColor;
 }
 
-TwoRender PSmain(ColorOutPut input) : SV_TARGET
+TwoRender PSmain(ColorOutPut input)
 {
     TwoRender output;
     output.target0 = color;

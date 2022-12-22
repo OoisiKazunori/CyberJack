@@ -22,7 +22,7 @@ float Rand(float2 coord, float seed)
     return frac(sin(dot(coord.xy, float2(12.9898, 78.233)) + seed) * 43758.5453);
 }
 
-TwoRender PSmain(VSOutput input) : SV_TARGET
+TwoRender PSmain(VSOutput input)
 {
     float4 outputNoiseInWindow = float4(0.0f,0.0f,0.0f,0.0f);
     if(seed != -1)

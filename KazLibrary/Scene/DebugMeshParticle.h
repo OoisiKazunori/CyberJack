@@ -19,6 +19,7 @@
 #include"../Game/CollisionDetection/CollisionDetectionOfMeshCircleAndParticle.h"
 #include"../Game/Debug/DrawHitBoxPos.h"
 #include"../Game/Effect/InstanceMeshParticle.h"
+#include"../KazLibrary/Buffer/CreateMeshBuffer.h"
 
 class DebugMeshParticleScene :public SceneBase
 {
@@ -269,7 +270,7 @@ private:
 	//ボロノイ領域による当たり判定の確認--------------------------------------------
 
 	//GPU上でのメッシュとパーティクルの判定--------------------------------------------
-	std::unique_ptr<GPUMeshAndSphereHitBox> collision;
+	std::unique_ptr<GPUCollisionDetectionOfMeshHitBoxAndSphere> collision;
 	std::unique_ptr<ParticleWall> particleWall;
 	KazMath::Transform3D meshTransform;
 	DirectX::XMMATRIX meshMat;

@@ -225,7 +225,7 @@ ParticleWall::ParticleWall()
 
 	//パーティクル初期化処理--------------------------------------------
 	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
-	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature2(PIPELINE_COMPUTE_NAME_BLOCKPARTICLE);
+	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_BLOCKPARTICLE);
 
 	{
 		lConstBufferData.cameraMat = CameraMgr::Instance()->GetViewMatrix();

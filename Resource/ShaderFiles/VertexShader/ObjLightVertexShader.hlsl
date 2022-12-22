@@ -8,7 +8,7 @@ VSLightOutput VSmain(float4 pos : POSITION, float3 normal : NORMAL, float2 uv : 
     
     VSLightOutput op;
     op.svpos = mul(mat, pos);
-    op.normal = wNormal;
+    op.normal = wNormal.xyz;
     op.worldPos = wPos;
     op.uv = uv;
     return op;

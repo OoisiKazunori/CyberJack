@@ -5,16 +5,14 @@
 
 struct InitMeshParticleData
 {
-	std::unique_ptr<ComputeBufferHelper::BufferData> vertData;
-	std::unique_ptr<ComputeBufferHelper::BufferData> uvData;
+	ComputeBufferHelper::BufferData vertData;
+	ComputeBufferHelper::BufferData uvData;
 	RESOURCE_HANDLE textureViewHandle;
+	//x vertNum, y bias,z perTriangleNum,w faceCountNum
 	DirectX::XMUINT4 triagnleData;
 	const DirectX::XMMATRIX *motherMat;
 
-	InitMeshParticleData(const DirectX::XMMATRIX *MOTHER_MAT) 
-		:motherMat(MOTHER_MAT), 
-		vertData(std::make_unique<ComputeBufferHelper::BufferData>()),
-		uvData(std::make_unique<ComputeBufferHelper::BufferData>())
+	InitMeshParticleData()
 	{
 	}
 };

@@ -158,7 +158,6 @@
     <ClCompile Include="Game\Effect\TextureParticle.cpp" />
     <ClCompile Include="Game\Effect\SplineParticle.cpp" />
     <ClCompile Include="Game\Effect\SearchLight.cpp" />
-    <ClCompile Include="Game\CollisionDetection\GPUMeshAndSphereHitBox.cpp" />
     <ClCompile Include="Game\Debug\ParticleWall.cpp" />
     <ClCompile Include="KazLibrary\Collision\BoundingBox.cpp" />
     <ClCompile Include="KazLibrary\Collision\BBDuringEquallyCoordinatePlace.cpp" />
@@ -169,6 +168,7 @@
     <ClCompile Include="Game\Effect\InstanceMeshParticle.cpp" />
     <ClCompile Include="KazLibrary\Buffer\CreateMeshBuffer.cpp" />
     <ClCompile Include="Game\Effect\ComputeLerp.cpp" />
+    <ClCompile Include="Game\CollisionDetection\GPUMeshAndSphereHitBox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -342,7 +342,6 @@
     <ClInclude Include="Game\Effect\TextureParticle.h" />
     <ClInclude Include="Game\Effect\SplineParticle.h" />
     <ClInclude Include="Game\Effect\SearchLight.h" />
-    <ClInclude Include="Game\CollisionDetection\GPUMeshAndSphereHitBox.h" />
     <ClInclude Include="Game\Debug\ParticleWall.h" />
     <ClInclude Include="KazLibrary\Collision\BoundingBox.h" />
     <ClInclude Include="KazLibrary\Collision\BBDuringEquallyCoordinatePlace.h" />
@@ -353,6 +352,7 @@
     <ClInclude Include="Game\Effect\InstanceMeshParticle.h" />
     <ClInclude Include="KazLibrary\Buffer\CreateMeshBuffer.h" />
     <ClInclude Include="Game\Effect\ComputeLerp.h" />
+    <ClInclude Include="Game\CollisionDetection\GPUMeshAndSphereHitBox.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

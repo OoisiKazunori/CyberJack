@@ -14,11 +14,6 @@ CreateMeshBuffer::CreateMeshBuffer(RESOURCE_HANDLE HANDLE)
 
 	//頂点情報を書き込む--------------------------------------------
 	std::vector<DirectX::XMFLOAT3>lVertData = FbxModelResourceMgr::Instance()->GetResourceData(HANDLE)->vertFloat3Data;
-	if (lVertData.size() == 0)
-	{
-		FailCheck("頂点座標が読み込まれせんでした。");
-		assert(0);
-	}
 	bufferHandleDataArray[DATA_VERT].bufferHandle = computeHelper.CreateBuffer(
 		KazBufferHelper::GetBufferSize<BUFFER_SIZE>(lVertData.size(), sizeof(DirectX::XMFLOAT3)),
 		GRAPHICS_RANGE_TYPE_UAV_DESC,
@@ -33,12 +28,6 @@ CreateMeshBuffer::CreateMeshBuffer(RESOURCE_HANDLE HANDLE)
 
 	//UV情報を書き込む--------------------------------------------
 	std::vector<DirectX::XMFLOAT2>lUvData = FbxModelResourceMgr::Instance()->GetResourceData(HANDLE)->uvData;
-	if (lUvData.size() == 0)
-	{
-		FailCheck("UV情報が読み込まれせんでした。");
-		assert(0);
-	}
-
 	bufferHandleDataArray[DATA_UV].bufferHandle = computeHelper.CreateBuffer(
 		KazBufferHelper::GetBufferSize<BUFFER_SIZE>(lUvData.size(), sizeof(DirectX::XMFLOAT2)),
 		GRAPHICS_RANGE_TYPE_UAV_DESC,
@@ -55,11 +44,6 @@ CreateMeshBuffer::CreateMeshBuffer(RESOURCE_HANDLE HANDLE)
 
 	//法線情報を書き込む--------------------------------------------
 	std::vector<DirectX::XMFLOAT3>lNormalData = FbxModelResourceMgr::Instance()->GetResourceData(HANDLE)->normalData;
-	if (lNormalData.size() == 0)
-	{
-		FailCheck("法線情報が読み込まれせんでした。");
-		assert(0);
-	}
 	bufferHandleDataArray[DATA_NORMAL].bufferHandle = computeHelper.CreateBuffer(
 		KazBufferHelper::GetBufferSize<BUFFER_SIZE>(lNormalData.size(), sizeof(DirectX::XMFLOAT3)),
 		GRAPHICS_RANGE_TYPE_UAV_DESC,
