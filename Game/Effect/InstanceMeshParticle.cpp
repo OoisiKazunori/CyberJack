@@ -93,7 +93,14 @@ InstanceMeshParticle::InstanceMeshParticle(std::vector<InitMeshParticleData> &IN
 #pragma endregion
 
 
+	for (int i = 0; i < INIT_DATA.size(); ++i)
+	{
 
+
+
+
+		computeInitMeshParticle.Compute(PIPELINE_COMPUTE_NAME_INIT_MESHPARTICLE, { 1000,1,1 });
+	}
 	UINT64 lVertBufferSize = 0;
 	UINT64 lUvBufferSize = 0;
 	//初期化時のバッファをどんどんスタックしていく
@@ -127,7 +134,6 @@ InstanceMeshParticle::InstanceMeshParticle(std::vector<InitMeshParticleData> &IN
 
 
 
-	computeInitMeshParticle.Compute(PIPELINE_COMPUTE_NAME_INIT_MESHPARTICLE, { 1000,1,1 });
 }
 
 void InstanceMeshParticle::Compute()
