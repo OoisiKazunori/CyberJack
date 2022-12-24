@@ -29,6 +29,5 @@ private:
 	std::array<BufferHandle, DATA_MAX>bufferHandleDataArray;
 
 	ComputeBufferHelper computeHelper;
-
 };
 

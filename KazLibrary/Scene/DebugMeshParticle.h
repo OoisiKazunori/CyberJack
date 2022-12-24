@@ -325,9 +325,14 @@ private:
 	int timer;
 
 	std::unique_ptr<InstanceMeshParticle> instanceMeshParticle;
-	
+
+	DirectX::XMMATRIX enemyModelMat;
+	DirectX::XMMATRIX sphereModelMat;
+	DirectX::XMMATRIX summonModelMat;
 	//CPU上でのメッシュとパーティクルの判定--------------------------------------------
 
 	std::array<KazMath::Vec3<float>, 36>GetSquareVertData(const KazMath::Vec3<float> &BASE_POS);
+
+
 };
 

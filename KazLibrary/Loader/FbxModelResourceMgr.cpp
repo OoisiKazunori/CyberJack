@@ -110,6 +110,9 @@ RESOURCE_HANDLE FbxModelResourceMgr::LoadModel(const std::string &MODEL_NAME, bo
 	modelResource[lHandle]->vertUvData = model->vertUvData;
 	modelResource[lHandle]->faceCountNum = model->faceCountNum;
 
+	modelResource[lHandle]->uvData = model->uvData;
+	modelResource[lHandle]->normalData = model->normalData;
+
 
 	modelResource[modelResource.size() - 1]->mesh = mesh;
 

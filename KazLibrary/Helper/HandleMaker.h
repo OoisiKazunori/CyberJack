@@ -22,6 +22,7 @@ public:
 	/// </summary>
 	/// <param name="HANDLE">Žw’è‚Ìƒnƒ“ƒhƒ‹</param>
 	void DeleteHandle(RESOURCE_HANDLE HANDLE);
+	void DeleteAllHandle();
 
 
 	bool CheckHandleWasDeleteOrNot(RESOURCE_HANDLE HANDLE);

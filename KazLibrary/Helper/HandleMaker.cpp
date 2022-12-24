@@ -35,20 +35,28 @@ int HandleMaker::GetHandle()
 		return -1;
 	}
 
-    return handle;
+	return handle;
 }
 
 void HandleMaker::DeleteHandle(RESOURCE_HANDLE HANDLE)
 {
 	//ハンドルが生成された最大値の内&&削除されていない値
 	if (KazHelper::IsitInAnArray(HANDLE, setHandle) && !IsItDeleted(HANDLE))
-	{	
+	{
 		deleteHandleNumber.push_back(HANDLE);
 	}
 	else
 	{
 		ErrorCheck("危険:そのハンドルは既に削除済みか、元々無いハンドルです");
 	}
+}
+
+void HandleMaker::DeleteAllHandle()
+{
+	setHandle = 0;
+	handle = 0;
+	deleteHandleNumber.clear();
+	deleteHandleNumber.shrink_to_fit();
 }
 
 bool HandleMaker::CheckHandleWasDeleteOrNot(RESOURCE_HANDLE HANDLE)

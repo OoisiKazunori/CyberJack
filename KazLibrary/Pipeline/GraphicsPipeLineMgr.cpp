@@ -67,20 +67,6 @@ void GraphicsPipeLineMgr::RegisterGeometoryShaderWithData(string SHADER_FILE, LP
 	}
 }
 
-void GraphicsPipeLineMgr::RegisterComputeShaderWithData(string SHADER_FILE, LPCSTR ENTRY_POINT, LPCSTR SHADER_MODEL, ComputeShaderNames NAME)
-{
-	if (IsitSafe(NAME, computeShaderRegisterData.size()))
-	{
-		Shader csShader;
-		csShader.CompileShader(SHADER_FILE, ENTRY_POINT, SHADER_MODEL, SHADER_TYPE_COMPUTE);
-		computeShaderRegisterData[NAME] = csShader.GetShaderData(SHADER_TYPE_COMPUTE);
-	}
-	else
-	{
-		FailCheck("危険:ComputeShaderNamesが登録できませんでした");
-	}
-}
-
 void GraphicsPipeLineMgr::RegisterPipeLineDataWithData(D3D12_GRAPHICS_PIPELINE_STATE_DESC PIPELINE_DATA, PipeLineDataNames NAME)
 {
 	if (IsitSafe(NAME, pipeLineDataRegisterData.size()))
@@ -145,32 +131,6 @@ void GraphicsPipeLineMgr::CreatePipeLine(InputLayOutNames INPUT_LAYOUT_NAME, Ver
 	else
 	{
 		FailCheck("危険:Pipelineが登録できませんでした");
-	}
-}
-
-void GraphicsPipeLineMgr::CreateComputePipeLine(ComputeShaderNames COMPUTE_SHADER_NAME, ComputePipeLineDataNames PIPELINE_DATA_NAME, RootSignatureMode ROOTSIGNATURE, ComputePipeLineNames PIPELINE_NAME)
-{
-	//パイプラインデータの代入
-	D3D12_COMPUTE_PIPELINE_STATE_DESC grahicsPipeLine;
-	grahicsPipeLine = computePipeLineDataRegisterData[PIPELINE_DATA_NAME];
-
-	//Shaderの代入
-	grahicsPipeLine.CS = CD3DX12_SHADER_BYTECODE(computeShaderRegisterData[COMPUTE_SHADER_NAME]->GetBufferPointer(), computeShaderRegisterData[COMPUTE_SHADER_NAME]->GetBufferSize());
-
-	//ルートシグネチャの設定
-	computeRootSignatureName[PIPELINE_NAME] = ROOTSIGNATURE;
-	grahicsPipeLine.pRootSignature = GraphicsRootSignature::Instance()->GetRootSignature(ROOTSIGNATURE).Get();
-
-
-	//パイプラインの生成
-	if (IsitSafe(PIPELINE_NAME, computePipeLineRegisterData.size()))
-	{
-		DirectX12Device::Instance()->dev->CreateComputePipelineState(&grahicsPipeLine, IID_PPV_ARGS(&computePipeLineRegisterData[PIPELINE_NAME]));
-		computePipeLineRegisterData[PIPELINE_NAME]->SetName(L"Compute");
-	}
-	else
-	{
-		FailCheck("危険:ComputePipelineが登録できませんでした");
 	}
 }
 
