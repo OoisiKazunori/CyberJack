@@ -25,7 +25,7 @@ public:
 	void Compute();
 
 private:
-	ComputeBufferHelper computeInitMeshParticle[2];
+	ComputeBufferHelper computeInitMeshParticle;
 	RESOURCE_HANDLE vertHandle, uvHandle, meshDataAndColorHandle, colorHandle, meshParticleOutputHandle, meshParticleIDHandle;
 	RESOURCE_HANDLE motherMatrixHandle,particlePosHandle, particleColorHandle,particleMotherMatrixHandle;
 	RESOURCE_HANDLE scaleRotateBillboardMatHandle;
@@ -71,12 +71,12 @@ private:
 		INIT_POS_UV,
 		INIT_POS_UV_NORMAL,
 	};
-	void IsSetBuffer(const ComputeBufferHelper::BufferData &BUFFER_DATA, int I)
+	void IsSetBuffer(const ComputeBufferHelper::BufferData &BUFFER_DATA)
 	{
 		if (BUFFER_DATA.bufferWrapper.buffer)
 		{
 			GraphicsRootParamType lType = static_cast<GraphicsRootParamType>(GRAPHICS_PRAMTYPE_DATA + setCountNum);
-			computeInitMeshParticle[I].SetBuffer(BUFFER_DATA, lType);
+			computeInitMeshParticle.SetBuffer(BUFFER_DATA, lType);
 			++setCountNum;
 		}
 	};

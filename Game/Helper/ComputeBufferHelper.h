@@ -37,6 +37,7 @@ public:
 			rootParamType = rhs.rootParamType;
 			bufferSize = rhs.bufferSize;
 			bufferWrapper = rhs.bufferWrapper;
+			counterWrapper = rhs.counterWrapper;
 			viewHandle = rhs.viewHandle;
 			elementNum = rhs.elementNum;
 		};
@@ -66,8 +67,6 @@ public:
 	void InitCounterBuffer(RESOURCE_HANDLE HANDLE);
 private:
 	HandleMaker handle;
-
-
 	std::vector<BufferData>bufferArrayData;
 
 };

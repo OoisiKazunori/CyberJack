@@ -227,6 +227,7 @@
     <ClCompile Include="KazLibrary\Helper\KazRenderHelper.cpp" />
     <ClCompile Include="KazLibrary\Helper\OutPutDebugStringAndCheckResult.cpp" />
     <ClCompile Include="KazLibrary\Helper\RegisterNameWithData.cpp" />
+    <ClCompile Include="KazLibrary\Helper\ResouceBufferHelper.cpp" />
     <ClCompile Include="KazLibrary\Helper\Select.cpp" />
     <ClCompile Include="KazLibrary\Imgui\imgui.cpp" />
     <ClCompile Include="KazLibrary\Imgui\imgui_demo.cpp" />
@@ -404,6 +405,7 @@
     <ClInclude Include="KazLibrary\Helper\KazRenderHelper.h" />
     <ClInclude Include="KazLibrary\Helper\OutPutDebugStringAndCheckResult.h" />
     <ClInclude Include="KazLibrary\Helper\RegisterNameWithData.h" />
+    <ClInclude Include="KazLibrary\Helper\ResouceBufferHelper.h" />
     <ClInclude Include="KazLibrary\Helper\ResourceFilePass.h" />
     <ClInclude Include="KazLibrary\Helper\Select.h" />
     <ClInclude Include="KazLibrary\Imgui\imconfig.h" />

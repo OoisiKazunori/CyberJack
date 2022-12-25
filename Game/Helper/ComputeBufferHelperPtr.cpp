@@ -5,44 +5,58 @@
 
 ComputeBufferHelperPtr::ComputeBufferHelperPtr()
 {
+	resourceHelper = std::make_unique<ResouceBufferHelper>();
+
 	int lFloat3BufferSize = sizeof(DirectX::XMFLOAT3);
 	int lMaxNum = 10;
-	//Append
-	appendBuffer.bufferWrapper.CreateBuffer(KazBufferHelper::SetOnlyReadStructuredBuffer(lFloat3BufferSize * lMaxNum, "Append"));
-	appendBuffer.counterWrapper.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(UINT), "Counter"));
-	appendBuffer.viewHandle = UavViewHandleMgr::Instance()->GetHandle();
-	DescriptorHeapMgr::Instance()->CreateBufferView(
-		appendBuffer.viewHandle,
-		KazBufferHelper::SetUnorderedAccessView(lFloat3BufferSize, lMaxNum),
-		appendBuffer.bufferWrapper.buffer.Get(),
-		appendBuffer.counterWrapper.buffer.Get()
+	appendBuffer = resourceHelper->CreateAndGetBuffer
+	(
+		KazBufferHelper::SetOnlyReadStructuredBuffer(lFloat3BufferSize * 10),
+		GRAPHICS_RANGE_TYPE_UAV_DESC,
+		GRAPHICS_PRAMTYPE_DATA,
+		lFloat3BufferSize,
+		10,
+		true
 	);
 
 	//ëóêMóp
-	testBuffer.bufferWrapper.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(lFloat3BufferSize * 5, "Test1"));
+	testBuffer = resourceHelper->CreateAndGetBuffer
+	(
+		sizeof(lFloat3BufferSize),
+		GRAPHICS_RANGE_TYPE_UAV_VIEW,
+		GRAPHICS_PRAMTYPE_DATA,
+		5,
+		false
+	);
 
 	for (int i = 0; i < buffArray.size(); ++i)
 	{
 		buffArray[i] = { static_cast<float>(i) * 10.0f,static_cast<float>(i) * 10.0f,static_cast<float>(i) * 10.0f };
 	}
 	testBuffer.bufferWrapper.TransData(buffArray.data(), sizeof(lFloat3BufferSize) * 5);
-	testBuffer.viewHandle = UavViewHandleMgr::Instance()->GetHandle();
+	/*testBuffer.viewHandle = UavViewHandleMgr::Instance()->GetHandle();
 	DescriptorHeapMgr::Instance()->CreateBufferView(
 		testBuffer.viewHandle,
 		KazBufferHelper::SetUnorderedAccessView(lFloat3BufferSize, 5),
 		testBuffer.bufferWrapper.buffer.Get(),
 		nullptr
-	);
+	);*/
 
-	testBuffer2.bufferWrapper.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(lFloat3BufferSize * 5, "Test2"));
-	testBuffer2.bufferWrapper.TransData(buffArray.data(), sizeof(lFloat3BufferSize) * 5);
-	testBuffer2.viewHandle = UavViewHandleMgr::Instance()->GetHandle();
+	testBuffer2 = resourceHelper->CreateAndGetBuffer
+	(
+		sizeof(lFloat3BufferSize),
+		GRAPHICS_RANGE_TYPE_UAV_VIEW,
+		GRAPHICS_PRAMTYPE_DATA,
+		5,
+		false
+	);
+	/*testBuffer2.viewHandle = UavViewHandleMgr::Instance()->GetHandle();
 	DescriptorHeapMgr::Instance()->CreateBufferView(
 		testBuffer2.viewHandle,
 		KazBufferHelper::SetUnorderedAccessView(lFloat3BufferSize, 5),
 		testBuffer2.bufferWrapper.buffer.Get(),
 		nullptr
-	);
+	);*/
 
 	//ì]ëóèàóù
 	UINT lNum = 0;
@@ -53,33 +67,66 @@ ComputeBufferHelperPtr::ComputeBufferHelperPtr()
 
 void ComputeBufferHelperPtr::Compute(ComputePipeLineNames NAME, const DispatchCallData &DATA)
 {
-	UINT lNum = 0;
-	appendBuffer.counterWrapper.TransData(&lNum, sizeof(UINT));
-
 	for (int i = 0; i < buffArray.size(); ++i)
 	{
 		buffArray[i] = { static_cast<float>(i) * 10.0f,static_cast<float>(i) * 10.0f,static_cast<float>(i) * 10.0f };
 	}
 	testBuffer.bufferWrapper.TransData(buffArray.data(), sizeof(DirectX::XMFLOAT3) * 5);
-	for (int i = 5; i < buffArray.size()+5; ++i)
+	for (int i = 5; i < buffArray.size() + 5; ++i)
 	{
 		buffArray[i - 5] = { static_cast<float>(i) * 10.0f,static_cast<float>(i) * 10.0f,static_cast<float>(i) * 10.0f };
 	}
 	testBuffer2.bufferWrapper.TransData(buffArray.data(), sizeof(DirectX::XMFLOAT3) * 5);
 
 
+	ComputeBufferHelper::BufferData lCopyBuffer = appendBuffer;
+
+	buffVecArray.clear();
+	buffVecArray.shrink_to_fit();
+	SetBuffer(lCopyBuffer);
+	SetBuffer(testBuffer);
+	UINT lNum = 0;
+	buffVecArray[0].counterWrapper.TransData(&lNum, sizeof(UINT));
 	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(NAME);
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(appendBuffer.viewHandle));
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(testBuffer.viewHandle));
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(buffVecArray[0].viewHandle));
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootUnorderedAccessView(1, buffVecArray[1].bufferWrapper.buffer->GetGPUVirtualAddress());
 	DirectX12CmdList::Instance()->cmdList->Dispatch(DATA.x, DATA.y, DATA.z);
 
+	buffVecArray.clear();
+	buffVecArray.shrink_to_fit();
+	SetBuffer(lCopyBuffer);
+	SetBuffer(testBuffer2);
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(NAME);
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(appendBuffer.viewHandle));
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(testBuffer2.viewHandle));
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(buffVecArray[0].viewHandle));
+	DirectX12CmdList::Instance()->cmdList->SetComputeRootUnorderedAccessView(1, buffVecArray[1].bufferWrapper.buffer->GetGPUVirtualAddress());
 	DirectX12CmdList::Instance()->cmdList->Dispatch(DATA.x, DATA.y, DATA.z);
-
 }
+
+
+void ComputeBufferHelperPtr::SetBuffer(const ComputeBufferHelper::BufferData &BUFF)
+{
+	buffVecArray.push_back(BUFF);
+}
+
+ComputeBufferHelper::BufferData ComputeBufferHelperPtr::CreateApendBuffer()
+{
+	int lFloat3BufferSize = sizeof(DirectX::XMFLOAT3);
+	int lMaxNum = 10;
+	ComputeBufferHelper::BufferData lCopyBuffer;
+	//Append
+	lCopyBuffer.bufferWrapper.CreateBuffer(KazBufferHelper::SetOnlyReadStructuredBuffer(lFloat3BufferSize * lMaxNum, "Append"));
+	lCopyBuffer.counterWrapper.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(UINT), "Counter"));
+	lCopyBuffer.viewHandle = UavViewHandleMgr::Instance()->GetHandle();
+	DescriptorHeapMgr::Instance()->CreateBufferView(
+		lCopyBuffer.viewHandle,
+		KazBufferHelper::SetUnorderedAccessView(lFloat3BufferSize, lMaxNum),
+		lCopyBuffer.bufferWrapper.buffer.Get(),
+		lCopyBuffer.counterWrapper.buffer.Get()
+	);
+	return lCopyBuffer;
+}
+
 
 //
 //RESOURCE_HANDLE ComputeBufferHelperPtr::CreateBuffer(UINT STRUCTURE_BYTE_STRIDE, GraphicsRangeType RANGE, GraphicsRootParamType ROOTPARAM, UINT ELEMENT_NUM, bool GENERATE_COUNTER_BUFFER_FLAG)
@@ -396,4 +443,3 @@ void ComputeBufferHelperPtr::Compute(ComputePipeLineNames NAME, const DispatchCa
 //
 //	DirectX12CmdList::Instance()->cmdList->Dispatch(DATA.x, DATA.y, DATA.z);
 //}
-
