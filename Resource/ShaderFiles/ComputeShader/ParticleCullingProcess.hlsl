@@ -22,8 +22,8 @@ struct OutputColorData
     float4 color;
 };
 //“ü—Í
-ConsumeStructuredBuffer<OutputMatData> worldMatData : register(u0);
-ConsumeStructuredBuffer<OutputColorData> colorData : register(u1);
+RWStructuredBuffer<OutputMatData> worldMatData : register(u0);
+RWStructuredBuffer<OutputColorData> colorData : register(u1);
 
 AppendStructuredBuffer<OutputData>drawData:register(u2);
 
@@ -33,8 +33,8 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
 {
     uint index = ThreadGroupIndex(groupId,groupIndex,groupThreadID,1024);
         
-    OutputMatData worldMat = worldMatData.Consume();
-    OutputColorData color = colorData.Consume();
+    OutputMatData worldMat = worldMatData[index];
+    OutputColorData color = colorData[index];
 
     //ƒJƒŠƒ“ƒOˆ—‘S”Ê‚ğ‚±‚±‚É’Ç‰Á—\’è
 

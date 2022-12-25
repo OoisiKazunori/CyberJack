@@ -66,7 +66,7 @@ DrawExcuteIndirect::DrawExcuteIndirect(const InitDrawExcuteIndirect &INIT_DATA)
 	buffers.TransData(drawCommandHandle, &command, sizeof(DrawIndirectCommand));
 }
 
-void DrawExcuteIndirect::Draw(PipeLineNames PIPELINE_NAME)
+void DrawExcuteIndirect::Draw(PipeLineNames PIPELINE_NAME,const Microsoft::WRL::ComPtr<ID3D12Resource> &COUNTER_BUFFER)
 {
 	GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME);
 	DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -96,7 +96,7 @@ void DrawExcuteIndirect::Draw(PipeLineNames PIPELINE_NAME)
 		1,
 		buffers.GetBufferData(drawCommandHandle).Get(),
 		0,
-		nullptr,
+		COUNTER_BUFFER.Get(),
 		0
 	);
 

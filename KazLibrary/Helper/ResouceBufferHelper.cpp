@@ -229,6 +229,7 @@ void ResouceBufferHelper::TransData(RESOURCE_HANDLE HANDLE, void *TRANS_DATA, UI
 
 void ResouceBufferHelper::StackToCommandListAndCallDispatch(ComputePipeLineNames NAME, const DispatchCallData &DISPATCH_DATA)
 {
+	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(NAME);
 	std::vector<RootSignatureParameter>lParamData = GraphicsRootSignature::Instance()->GetRootParam(static_cast<int>(NAME));
 
 	for (int i = 0; i < bufferArrayData.size(); ++i)

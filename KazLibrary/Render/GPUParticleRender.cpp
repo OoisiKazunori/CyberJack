@@ -1,4 +1,5 @@
 #include "GPUParticleRender.h"
+#include"../KazLibrary/RenderTarget/RenderTargetStatus.h"
 
 GPUParticleRender::GPUParticleRender()
 {
@@ -29,7 +30,7 @@ GPUParticleRender::GPUParticleRender()
 	viewProjMatHandle = computeCovertWorldMatToDrawMat.CreateBuffer(
 		sizeof(DirectX::XMMATRIX),
 		GRAPHICS_RANGE_TYPE_CBV_VIEW,
-		GRAPHICS_PRAMTYPE_DATA3,
+		GRAPHICS_PRAMTYPE_DATA4,
 		1,
 		false);
 
@@ -63,8 +64,8 @@ GPUParticleRender::GPUParticleRender()
 	lInitData.vertexBufferView = KazBufferHelper::SetVertexBufferView(vertexBuffer->GetGpuAddress(), lVertBuffSize, sizeof(lVerticesArray[0]));
 	lInitData.indexBufferView = KazBufferHelper::SetIndexBufferView(indexBuffer->GetGpuAddress(), lIndexBuffSize);
 	lInitData.indexNum = static_cast<UINT>(lIndicesArray.size());
-	//lInitData.elementNum = countNum;
-	//lInitData.updateView = computeHelper.GetBufferData(matHandle).bufferWrapper.buffer->GetGPUVirtualAddress();
+	lInitData.elementNum = PARTICLE_MAX_NUM;
+	lInitData.updateView = computeCovertWorldMatToDrawMat.GetBufferData(outputHandle).bufferWrapper.buffer->GetGPUVirtualAddress();
 	lInitData.rootsignatureName = ROOTSIGNATURE_DATA_DRAW_UAV;
 
 	std::array<D3D12_INDIRECT_ARGUMENT_DESC, 2> args{};
@@ -79,10 +80,25 @@ GPUParticleRender::GPUParticleRender()
 
 void GPUParticleRender::Draw()
 {
-	computeCovertWorldMatToDrawMat.InitCounterBuffer(worldMatHandle);
-	computeCovertWorldMatToDrawMat.InitCounterBuffer(outputHandle);
-	computeCovertWorldMatToDrawMat.Compute(PIPELINE_COMPUTE_NAME_CONVERT_WORLDMAT_TO_DRAWMAT, { 100,1,1 });
-	excuteIndirect->Draw(PIPELINE_NAME_GPUPARTICLE);
+	/*viewProjMat = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
+	computeCovertWorldMatToDrawMat.TransData(viewProjMatHandle, &viewProjMat, sizeof(DirectX::XMMATRIX));
+
+	computeCovertWorldMatToDrawMat.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_CONVERT_WORLDMAT_TO_DRAWMAT, { 500,1,1 });
+
+	RenderTargetStatus::Instance()->ChangeBarrier(
+		computeCovertWorldMatToDrawMat.GetBufferData(outputHandle).counterWrapper.buffer.Get(),
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT
+	);
+
+	excuteIndirect->Draw(PIPELINE_NAME_GPUPARTICLE, computeCovertWorldMatToDrawMat.GetBufferData(outputHandle).counterWrapper.buffer.Get());
+
+	RenderTargetStatus::Instance()->ChangeBarrier(
+		computeCovertWorldMatToDrawMat.GetBufferData(outputHandle).counterWrapper.buffer.Get(),
+		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+	);
+	computeCovertWorldMatToDrawMat.InitCounterBuffer();*/
 }
 
 const ComputeBufferHelper::BufferData &GPUParticleRender::GetStackWorldMatBuffer()

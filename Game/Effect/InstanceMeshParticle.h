@@ -35,7 +35,7 @@ private:
 	ResouceBufferHelper computeConvertInitDataToUpdateData;
 
 	ComputeBufferHelper::BufferData commonAndColorBufferData;
-	ComputeBufferHelper::BufferData commonBufferData;
+	std::array<ComputeBufferHelper::BufferData,2> commonBufferData;
 	ComputeBufferHelper::BufferData meshParticleBufferData;
 	struct WorldMatData
 	{
@@ -59,7 +59,7 @@ private:
 		UINT id;
 	};
 
-	static const int PARTICLE_MAX_NUM = 3000000;
+	static const int PARTICLE_MAX_NUM = 1000000;
 	static const int VERT_BUFFER_SIZE = sizeof(DirectX::XMFLOAT3);
 	static const int UV_BUFFER_SIZE = sizeof(DirectX::XMFLOAT2);
 	static const int COMMON_BUFFER_SIZE = sizeof(CommonWithColorData);

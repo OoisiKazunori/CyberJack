@@ -21,6 +21,7 @@
 #include"../Game/Effect/InstanceMeshParticle.h"
 #include"../KazLibrary/Buffer/CreateMeshBuffer.h"
 #include"../Game/Helper/ComputeBufferHelperPtr.h"
+#include"../KazLibrary/Render/GPUParticleRender.h"
 
 class DebugMeshParticleScene :public SceneBase
 {

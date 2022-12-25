@@ -86,5 +86,5 @@ void DrawHitBoxPos::Update()
 
 void DrawHitBoxPos::Draw()
 {
-	excuteIndirect->Draw(PIPELINE_NAME_GPUPARTICLE);
+	excuteIndirect->Draw(PIPELINE_NAME_GPUPARTICLE, nullptr);
 }

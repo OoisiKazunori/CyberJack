@@ -32,7 +32,7 @@ class DrawExcuteIndirect
 public:
 	DrawExcuteIndirect(const InitDrawIndexedExcuteIndirect &INIT_DATA);
 	DrawExcuteIndirect(const InitDrawExcuteIndirect &INIT_DATA);
-	void Draw(PipeLineNames PIPELINE_NAME);
+	void Draw(PipeLineNames PIPELINE_NAME, const Microsoft::WRL::ComPtr<ID3D12Resource> &COUNTER_BUFFER);
 
 private:
 
