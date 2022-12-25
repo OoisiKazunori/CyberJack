@@ -35,7 +35,7 @@ InstanceMeshParticle::InstanceMeshParticle(std::vector<InitMeshParticleData> &IN
 	//何の情報を読み込むかでパイプラインの種類を変える
 	for (int i = 0; i < INIT_DATA.size(); ++i)
 	{
-		computeInitMeshParticle.ClearBuffer();
+		computeInitMeshParticle.DeleteAllData();
 		setCountNum = 0;
 
 		IsSetBuffer(INIT_DATA[i].vertData);
@@ -88,7 +88,8 @@ InstanceMeshParticle::InstanceMeshParticle(std::vector<InitMeshParticleData> &IN
 
 		motherMatArray.push_back(INIT_DATA[i].motherMat);
 
-		computeInitMeshParticle.Compute(lPipelineName, {10,1,1});
+		GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(lPipelineName);
+		computeInitMeshParticle.StackToCommandListAndCallDispatch(lPipelineName, {10,1,1});
 	}
 
 #pragma endregion

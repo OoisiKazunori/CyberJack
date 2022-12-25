@@ -1,5 +1,6 @@
 #pragma once
 #include"../Game/Helper/ComputeBufferHelper.h"
+#include"../KazLibrary/Helper/ResouceBufferHelper.h"
 #include"../KazLibrary/Render/DrawExcuteIndirect.h"
 #include"../KazLibrary/Helper/KazRenderHelper.h"
 
@@ -25,7 +26,7 @@ public:
 	void Compute();
 
 private:
-	ComputeBufferHelper computeInitMeshParticle;
+	ResouceBufferHelper computeInitMeshParticle;
 	RESOURCE_HANDLE vertHandle, uvHandle, meshDataAndColorHandle, colorHandle, meshParticleOutputHandle, meshParticleIDHandle;
 	RESOURCE_HANDLE motherMatrixHandle,particlePosHandle, particleColorHandle,particleMotherMatrixHandle;
 	RESOURCE_HANDLE scaleRotateBillboardMatHandle;
