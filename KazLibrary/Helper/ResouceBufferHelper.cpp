@@ -207,6 +207,80 @@ ComputeBufferHelper::BufferData ResouceBufferHelper::CreateAndGetBuffer(const Ka
 	return lBufferData;
 }
 
+RESOURCE_HANDLE ResouceBufferHelper::SetBuffer(const ComputeBufferHelper::BufferData &DATA, GraphicsRootParamType ROOTPARAM)
+{
+	RESOURCE_HANDLE lHandle = handle.GetHandle();
+	if (lHandle <= bufferArrayData.size())
+	{
+		bufferArrayData.push_back(DATA);
+	}
+	else
+	{
+		bufferArrayData[lHandle] = DATA;
+	}
+	bufferArrayData[lHandle].rootParamType = ROOTPARAM;
+	return lHandle;
+}
+
 void ResouceBufferHelper::TransData(RESOURCE_HANDLE HANDLE, void *TRANS_DATA, UINT TRANSMISSION_DATA_SIZE)
 {
+	bufferArrayData[HANDLE].bufferWrapper.TransData(TRANS_DATA, TRANSMISSION_DATA_SIZE);
+}
+
+void ResouceBufferHelper::StackToCommandListAndCallDispatch(ComputePipeLineNames NAME, const DispatchCallData &DISPATCH_DATA)
+{
+	std::vector<RootSignatureParameter>lParamData = GraphicsRootSignature::Instance()->GetRootParam(static_cast<int>(NAME));
+
+	for (int i = 0; i < bufferArrayData.size(); ++i)
+	{
+		const int L_PARAM = KazRenderHelper::SetBufferOnCmdList(lParamData, bufferArrayData[i].rangeType, bufferArrayData[i].rootParamType);
+
+		//デスクリプタヒープにコマンドリストに積む。余りが偶数ならデスクリプタヒープだと判断する
+		if (bufferArrayData[i].rangeType % 2 == 0)
+		{
+			DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(L_PARAM, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(bufferArrayData[i].viewHandle));
+			continue;
+		}
+
+		//ビューで積む際はそれぞれの種類に合わせてコマンドリストに積む
+		switch (bufferArrayData[i].rangeType)
+		{
+		case GRAPHICS_RANGE_TYPE_SRV_VIEW:
+			DirectX12CmdList::Instance()->cmdList->SetComputeRootShaderResourceView(L_PARAM, bufferArrayData[i].bufferWrapper.GetGpuAddress());
+			break;
+		case GRAPHICS_RANGE_TYPE_UAV_VIEW:
+			DirectX12CmdList::Instance()->cmdList->SetComputeRootUnorderedAccessView(L_PARAM, bufferArrayData[i].bufferWrapper.GetGpuAddress());
+			break;
+		case GRAPHICS_RANGE_TYPE_CBV_VIEW:
+			DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(L_PARAM, bufferArrayData[i].bufferWrapper.GetGpuAddress());
+			break;
+		default:
+			break;
+		}
+	}
+
+	DirectX12CmdList::Instance()->cmdList->Dispatch(DISPATCH_DATA.x, DISPATCH_DATA.y, DISPATCH_DATA.z);
+}
+
+void ResouceBufferHelper::StackToCommandList(PipeLineNames NAME)
+{
+}
+
+void ResouceBufferHelper::DeleteAllData()
+{
+	handle.DeleteAllHandle();
+	bufferArrayData.clear();
+	bufferArrayData.shrink_to_fit();
+}
+
+void ResouceBufferHelper::InitCounterBuffer()
+{
+	for (int i = 0; i < bufferArrayData.size(); ++i)
+	{
+		if (bufferArrayData[i].counterWrapper.buffer)
+		{
+			UINT lNum = 0;
+			bufferArrayData[i].counterWrapper.TransData(&lNum,sizeof(UINT));
+		}
+	}
 }

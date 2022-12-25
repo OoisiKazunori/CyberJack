@@ -43,6 +43,8 @@ private:
 	ComputeBufferHelper::BufferData testBuffer, testBuffer2;
 	ComputeBufferHelper::BufferData commonBuffer;
 
+	RESOURCE_HANDLE appendHandle, testHandle, test2Handle;
+
 
 	std::array<DirectX::XMFLOAT3, 5> buffArray;
 	std::vector<ComputeBufferHelper::BufferData> buffVecArray;

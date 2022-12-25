@@ -18,54 +18,24 @@ ComputeBufferHelperPtr::ComputeBufferHelperPtr()
 		true
 	);
 
-
 	//ëóêMóp
-	//testBuffer.bufferWrapper.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(lFloat3BufferSize * 5, "Test1"));
-
 	testBuffer = resourceHelper.CreateAndGetBuffer
 	(
 		lFloat3BufferSize,
-		GRAPHICS_RANGE_TYPE_UAV_VIEW,
+		GRAPHICS_RANGE_TYPE_UAV_DESC,
 		GRAPHICS_PRAMTYPE_DATA2,
 		5,
 		false
 	);
-
-
-	for (int i = 0; i < buffArray.size(); ++i)
-	{
-		buffArray[i] = { static_cast<float>(i) * 10.0f,static_cast<float>(i) * 10.0f,static_cast<float>(i) * 10.0f };
-	}
-	testBuffer.bufferWrapper.TransData(buffArray.data(), sizeof(lFloat3BufferSize) * 5);
-	/*testBuffer.viewHandle = UavViewHandleMgr::Instance()->GetHandle();
-	DescriptorHeapMgr::Instance()->CreateBufferView(
-		testBuffer.viewHandle,
-		KazBufferHelper::SetUnorderedAccessView(lFloat3BufferSize, 5),
-		testBuffer.bufferWrapper.buffer.Get(),
-		nullptr
-	);*/
 
 	testBuffer2 = resourceHelper.CreateAndGetBuffer
 	(
 		lFloat3BufferSize,
-		GRAPHICS_RANGE_TYPE_UAV_VIEW,
+		GRAPHICS_RANGE_TYPE_UAV_DESC,
 		GRAPHICS_PRAMTYPE_DATA2,
 		5,
 		false
 	);
-	/*testBuffer2.viewHandle = UavViewHandleMgr::Instance()->GetHandle();
-	DescriptorHeapMgr::Instance()->CreateBufferView(
-		testBuffer2.viewHandle,
-		KazBufferHelper::SetUnorderedAccessView(lFloat3BufferSize, 5),
-		testBuffer2.bufferWrapper.buffer.Get(),
-		nullptr
-	);*/
-
-	//ì]ëóèàóù
-	UINT lNum = 0;
-	appendBuffer.counterWrapper.TransData(&lNum, sizeof(UINT));
-
-
 }
 
 void ComputeBufferHelperPtr::Compute(ComputePipeLineNames NAME, const DispatchCallData &DATA)
@@ -74,36 +44,28 @@ void ComputeBufferHelperPtr::Compute(ComputePipeLineNames NAME, const DispatchCa
 	{
 		buffArray[i] = { static_cast<float>(i) * 10.0f,static_cast<float>(i) * 10.0f,static_cast<float>(i) * 10.0f };
 	}
-	testBuffer.bufferWrapper.TransData(buffArray.data(), sizeof(DirectX::XMFLOAT3) * 5);
+	UINT lNum = 0;
+	appendBuffer.counterWrapper.TransData(&lNum, sizeof(UINT));
+
+	resourceHelper.DeleteAllData();
+	resourceHelper.SetBuffer(appendBuffer, GRAPHICS_PRAMTYPE_DATA);
+	testHandle = resourceHelper.SetBuffer(testBuffer, GRAPHICS_PRAMTYPE_DATA2);
+	resourceHelper.TransData(testHandle, buffArray.data(), sizeof(DirectX::XMFLOAT3) * 5);
+	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(NAME);
+	resourceHelper.StackToCommandListAndCallDispatch(NAME, DATA);
+
+
 	for (int i = 5; i < buffArray.size() + 5; ++i)
 	{
 		buffArray[i - 5] = { static_cast<float>(i) * 10.0f,static_cast<float>(i) * 10.0f,static_cast<float>(i) * 10.0f };
 	}
-	testBuffer2.bufferWrapper.TransData(buffArray.data(), sizeof(DirectX::XMFLOAT3) * 5);
-
-
-	ComputeBufferHelper::BufferData lCopyBuffer = appendBuffer;
-
-	buffVecArray.clear();
-	buffVecArray.shrink_to_fit();
-	SetBuffer(lCopyBuffer);
-	SetBuffer(testBuffer);
-	UINT lNum = 0;
-	buffVecArray[0].counterWrapper.TransData(&lNum, sizeof(UINT));
-	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
+	resourceHelper.DeleteAllData();
+	resourceHelper.SetBuffer(appendBuffer, GRAPHICS_PRAMTYPE_DATA);
+	test2Handle = resourceHelper.SetBuffer(testBuffer2, GRAPHICS_PRAMTYPE_DATA2);
+	resourceHelper.TransData(test2Handle, buffArray.data(), sizeof(DirectX::XMFLOAT3) * 5);
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(NAME);
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(buffVecArray[0].viewHandle));
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootUnorderedAccessView(1, buffVecArray[1].bufferWrapper.buffer->GetGPUVirtualAddress());
-	DirectX12CmdList::Instance()->cmdList->Dispatch(DATA.x, DATA.y, DATA.z);
+	resourceHelper.StackToCommandListAndCallDispatch(NAME, DATA);
 
-	buffVecArray.clear();
-	buffVecArray.shrink_to_fit();
-	SetBuffer(lCopyBuffer);
-	SetBuffer(testBuffer2);
-	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(NAME);
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(buffVecArray[0].viewHandle));
-	DirectX12CmdList::Instance()->cmdList->SetComputeRootUnorderedAccessView(1, buffVecArray[1].bufferWrapper.buffer->GetGPUVirtualAddress());
-	DirectX12CmdList::Instance()->cmdList->Dispatch(DATA.x, DATA.y, DATA.z);
 }
 
 
