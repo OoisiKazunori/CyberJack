@@ -284,3 +284,8 @@ void ResouceBufferHelper::InitCounterBuffer()
 		}
 	}
 }
+
+const ComputeBufferHelper::BufferData &ResouceBufferHelper::GetBufferData(RESOURCE_HANDLE HANDLE)
+{
+	return bufferArrayData[HANDLE];
+}

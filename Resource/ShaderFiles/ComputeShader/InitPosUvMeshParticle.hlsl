@@ -158,7 +158,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
             output.pos = resultPos;
             output.color = tex.SampleLevel(smp,uv,0);
             output.id = motherMatIndex;
-            //outputData.Append(output);
+            outputData.Append(output);
         }
     }
     //パーティクルの配置--------------------------------------------

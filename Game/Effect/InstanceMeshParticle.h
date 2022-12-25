@@ -31,8 +31,8 @@ private:
 	RESOURCE_HANDLE motherMatrixHandle,particlePosHandle, particleColorHandle,particleMotherMatrixHandle;
 	RESOURCE_HANDLE scaleRotateBillboardMatHandle;
 
-	ComputeBufferHelper computeUpdateMeshParticle;
-	ComputeBufferHelper computeConvertInitDataToUpdateData;
+	ResouceBufferHelper computeUpdateMeshParticle;
+	ResouceBufferHelper computeConvertInitDataToUpdateData;
 
 	ComputeBufferHelper::BufferData commonAndColorBufferData;
 	ComputeBufferHelper::BufferData commonBufferData;
@@ -86,5 +86,7 @@ private:
 
 	DirectX::XMMATRIX scaleRotMat;
 	DirectX::XMMATRIX scaleRotBillBoardMat;
+
+	std::vector<InitMeshParticleData> initData;
 };
 

@@ -23,6 +23,7 @@ public:
 
 
 	void InitCounterBuffer();
+	const ComputeBufferHelper::BufferData &GetBufferData(RESOURCE_HANDLE HANDLE);
 private:
 	std::vector<ComputeBufferHelper::BufferData>bufferArrayData;
 	HandleMaker handle;
