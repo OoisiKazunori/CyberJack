@@ -7,11 +7,30 @@ ComputeBufferHelperPtr::ComputeBufferHelperPtr()
 {
 	int lFloat3BufferSize = sizeof(DirectX::XMFLOAT3);
 	int lMaxNum = 10;
-	appendBuffer = CreateApendBuffer();
+	//appendBuffer
+	appendBuffer = resourceHelper.CreateAndGetBuffer
+	(
+		KazBufferHelper::SetOnlyReadStructuredBuffer(lFloat3BufferSize * 10),
+		GRAPHICS_RANGE_TYPE_UAV_DESC,
+		GRAPHICS_PRAMTYPE_DATA,
+		lFloat3BufferSize,
+		10,
+		true
+	);
 
 
 	//ëóêMóp
-	testBuffer.bufferWrapper.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(lFloat3BufferSize * 5, "Test1"));
+	//testBuffer.bufferWrapper.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(lFloat3BufferSize * 5, "Test1"));
+
+	testBuffer = resourceHelper.CreateAndGetBuffer
+	(
+		lFloat3BufferSize,
+		GRAPHICS_RANGE_TYPE_UAV_VIEW,
+		GRAPHICS_PRAMTYPE_DATA2,
+		5,
+		false
+	);
+
 
 	for (int i = 0; i < buffArray.size(); ++i)
 	{
@@ -26,7 +45,14 @@ ComputeBufferHelperPtr::ComputeBufferHelperPtr()
 		nullptr
 	);*/
 
-	testBuffer2.bufferWrapper.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(lFloat3BufferSize * 5, "Test2"));
+	testBuffer2 = resourceHelper.CreateAndGetBuffer
+	(
+		lFloat3BufferSize,
+		GRAPHICS_RANGE_TYPE_UAV_VIEW,
+		GRAPHICS_PRAMTYPE_DATA2,
+		5,
+		false
+	);
 	/*testBuffer2.viewHandle = UavViewHandleMgr::Instance()->GetHandle();
 	DescriptorHeapMgr::Instance()->CreateBufferView(
 		testBuffer2.viewHandle,
