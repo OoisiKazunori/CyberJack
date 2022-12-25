@@ -50,5 +50,5 @@ private:
 	void SetBuffer(const ComputeBufferHelper::BufferData &BUFF);
 	ComputeBufferHelper::BufferData CreateApendBuffer();
 
-	std::unique_ptr<ResouceBufferHelper> resourceHelper;
+	ResouceBufferHelper resourceHelper;
 };
