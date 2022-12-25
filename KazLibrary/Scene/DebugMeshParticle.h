@@ -20,6 +20,7 @@
 #include"../Game/Debug/DrawHitBoxPos.h"
 #include"../Game/Effect/InstanceMeshParticle.h"
 #include"../KazLibrary/Buffer/CreateMeshBuffer.h"
+#include"../Game/Helper/ComputeBufferHelperPtr.h"
 
 class DebugMeshParticleScene :public SceneBase
 {
@@ -329,6 +330,8 @@ private:
 	DirectX::XMMATRIX enemyModelMat;
 	DirectX::XMMATRIX sphereModelMat;
 	DirectX::XMMATRIX summonModelMat;
+
+	ComputeBufferHelperPtr testAppend;
 	//CPU上でのメッシュとパーティクルの判定--------------------------------------------
 
 	std::array<KazMath::Vec3<float>, 36>GetSquareVertData(const KazMath::Vec3<float> &BASE_POS);

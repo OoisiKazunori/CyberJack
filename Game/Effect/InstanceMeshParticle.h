@@ -25,7 +25,7 @@ public:
 	void Compute();
 
 private:
-	ComputeBufferHelper computeInitMeshParticle;
+	ComputeBufferHelper computeInitMeshParticle[2];
 	RESOURCE_HANDLE vertHandle, uvHandle, meshDataAndColorHandle, colorHandle, meshParticleOutputHandle, meshParticleIDHandle;
 	RESOURCE_HANDLE motherMatrixHandle,particlePosHandle, particleColorHandle,particleMotherMatrixHandle;
 	RESOURCE_HANDLE scaleRotateBillboardMatHandle;
@@ -35,7 +35,7 @@ private:
 
 	ComputeBufferHelper::BufferData commonAndColorBufferData;
 	ComputeBufferHelper::BufferData commonBufferData;
-
+	ComputeBufferHelper::BufferData meshParticleBufferData;
 	struct WorldMatData
 	{
 		DirectX::XMMATRIX scaleRotateBillboardMat;
@@ -71,12 +71,12 @@ private:
 		INIT_POS_UV,
 		INIT_POS_UV_NORMAL,
 	};
-	void IsSetBuffer(const ComputeBufferHelper::BufferData &BUFFER_DATA)
+	void IsSetBuffer(const ComputeBufferHelper::BufferData &BUFFER_DATA, int I)
 	{
 		if (BUFFER_DATA.bufferWrapper.buffer)
 		{
 			GraphicsRootParamType lType = static_cast<GraphicsRootParamType>(GRAPHICS_PRAMTYPE_DATA + setCountNum);
-			computeInitMeshParticle.SetBuffer(BUFFER_DATA, lType);
+			computeInitMeshParticle[I].SetBuffer(BUFFER_DATA, lType);
 			++setCountNum;
 		}
 	};

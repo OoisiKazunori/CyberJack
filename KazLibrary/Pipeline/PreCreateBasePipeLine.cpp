@@ -1879,7 +1879,21 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 			PIPELINE_COMPUTE_NAME_CONVERT_WORLDMAT_TO_DRAWMAT
 		);
 	}
-	
+
+
+	{
+		RootSignatureDataTest rootsignature;
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+
+		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+			ShaderOptionData(KazFilePathName::ComputeShaderPath + "TestAppend.hlsl", "CSmain", "cs_6_4"),
+			desc,
+			rootsignature,
+			PIPELINE_COMPUTE_NAME_TEST_APPEND
+		);
+	}
+
 #pragma endregion
 
 

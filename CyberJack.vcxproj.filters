@@ -170,6 +170,7 @@
     <ClCompile Include="Game\Effect\ComputeLerp.cpp" />
     <ClCompile Include="Game\CollisionDetection\GPUMeshAndSphereHitBox.cpp" />
     <ClCompile Include="KazLibrary\Render\GPUParticleRender.cpp" />
+    <ClCompile Include="Game\Helper\ComputeBufferHelperPtr.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -355,6 +356,7 @@
     <ClInclude Include="Game\Effect\ComputeLerp.h" />
     <ClInclude Include="Game\CollisionDetection\GPUMeshAndSphereHitBox.h" />
     <ClInclude Include="KazLibrary\Render\GPUParticleRender.h" />
+    <ClInclude Include="Game\Helper\ComputeBufferHelperPtr.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

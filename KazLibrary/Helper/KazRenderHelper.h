@@ -136,7 +136,7 @@ namespace KazRenderHelper
 
 		void operator=(const ID3D12ResourceWrapper &rhs)
 		{
-			buffer = rhs.buffer;
+			rhs.buffer.CopyTo(&buffer);
 		};
 	};
 
