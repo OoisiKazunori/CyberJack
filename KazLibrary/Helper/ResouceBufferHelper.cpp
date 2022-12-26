@@ -3,8 +3,16 @@
 #include"../KazLibrary/Buffer/UavViewHandleMgr.h"
 #include"../KazLibrary/RenderTarget/RenderTargetStatus.h"
 
-ResouceBufferHelper::ResouceBufferHelper()
+ResouceBufferHelper::ResouceBufferHelper() :counterBufferData(
+	CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+	D3D12_HEAP_FLAG_NONE,
+	CD3DX12_RESOURCE_DESC::Buffer(sizeof(UINT)),
+	D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+	nullptr,
+	"CounterBuffer"
+)
 {
+	counterBufferData.resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
 }
 
 RESOURCE_HANDLE ResouceBufferHelper::CreateBuffer(UINT STRUCTURE_BYTE_STRIDE, GraphicsRangeType RANGE, GraphicsRootParamType ROOTPARAM, UINT ELEMENT_NUM, bool GENERATE_COUNTER_BUFFER_FLAG)
@@ -35,6 +43,8 @@ RESOURCE_HANDLE ResouceBufferHelper::CreateBuffer(UINT STRUCTURE_BYTE_STRIDE, Gr
 
 		if (GENERATE_COUNTER_BUFFER_FLAG)
 		{
+			bufferArrayData[lHandle].counterWrapper.CreateBuffer(counterBufferData);
+
 			DescriptorHeapMgr::Instance()->CreateBufferView(
 				bufferArrayData[lHandle].viewHandle,
 				KazBufferHelper::SetUnorderedAccessView(STRUCTURE_BYTE_STRIDE, ELEMENT_NUM),
@@ -74,9 +84,7 @@ RESOURCE_HANDLE ResouceBufferHelper::CreateBuffer(const KazBufferHelper::BufferR
 
 		if (GENERATE_COUNTER_BUFFER_FLAG)
 		{
-			bufferArrayData[lHandle].counterWrapper.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(UINT), "CounterBuffer"));
-			UINT lInitNum = 0;
-			bufferArrayData[lHandle].counterWrapper.TransData(&lInitNum, sizeof(UINT));
+			bufferArrayData[lHandle].counterWrapper.CreateBuffer(counterBufferData);
 
 			DescriptorHeapMgr::Instance()->CreateBufferView(
 				bufferArrayData[lHandle].viewHandle,
@@ -128,9 +136,7 @@ ComputeBufferHelper::BufferData ResouceBufferHelper::CreateAndGetBuffer(UINT STR
 
 		if (GENERATE_COUNTER_BUFFER_FLAG)
 		{
-			lBufferData.counterWrapper.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(UINT), "CounterBuffer"));
-			UINT lInitNum = 0;
-			lBufferData.counterWrapper.TransData(&lInitNum, sizeof(UINT));
+			lBufferData.counterWrapper.CreateBuffer(counterBufferData);
 
 			DescriptorHeapMgr::Instance()->CreateBufferView(
 				lBufferData.viewHandle,
@@ -181,9 +187,7 @@ ComputeBufferHelper::BufferData ResouceBufferHelper::CreateAndGetBuffer(const Ka
 
 		if (GENERATE_COUNTER_BUFFER_FLAG)
 		{
-			lBufferData.counterWrapper.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(UINT), "CounterBuffer"));
-			UINT lInitNum = 0;
-			lBufferData.counterWrapper.TransData(&lInitNum, sizeof(UINT));
+			lBufferData.counterWrapper.CreateBuffer(counterBufferData);
 
 			DescriptorHeapMgr::Instance()->CreateBufferView(
 				lBufferData.viewHandle,
@@ -281,7 +285,28 @@ void ResouceBufferHelper::InitCounterBuffer()
 		if (bufferArrayData[i].counterWrapper.buffer)
 		{
 			UINT lNum = 0;
-			bufferArrayData[i].counterWrapper.TransData(&lNum,sizeof(UINT));
+			KazRenderHelper::ID3D12ResourceWrapper lBuffer;
+			lBuffer.CreateBuffer(KazBufferHelper::SetStructureBuffer(sizeof(UINT)));
+			lBuffer.TransData(&lNum, sizeof(UINT));
+
+
+			DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
+				1,
+				&CD3DX12_RESOURCE_BARRIER::Transition(bufferArrayData[i].counterWrapper.buffer.Get(),
+					D3D12_RESOURCE_STATE_COMMON,
+					D3D12_RESOURCE_STATE_COPY_DEST
+				)
+			);
+
+			DirectX12CmdList::Instance()->cmdList->CopyResource(bufferArrayData[i].counterWrapper.buffer.Get(), lBuffer.buffer.Get());
+
+			DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
+				1,
+				&CD3DX12_RESOURCE_BARRIER::Transition(bufferArrayData[i].counterWrapper.buffer.Get(),
+					D3D12_RESOURCE_STATE_COPY_DEST,
+					D3D12_RESOURCE_STATE_GENERIC_READ
+				)
+			);
 		}
 	}
 }

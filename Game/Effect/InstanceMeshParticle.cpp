@@ -42,7 +42,45 @@ InstanceMeshParticle::InstanceMeshParticle(std::vector<InitMeshParticleData> &IN
 	}
 
 	UINT lNum = 0;
-	meshParticleBufferData.counterWrapper.TransData(&lNum, sizeof(UINT));
+	KazRenderHelper::ID3D12ResourceWrapper lBuffer;
+
+	lBuffer.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(UINT)));
+	lBuffer.TransData(&lNum, sizeof(UINT));
+
+	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
+		1,
+		&CD3DX12_RESOURCE_BARRIER::Transition(meshParticleBufferData.counterWrapper.buffer.Get(),
+			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+			D3D12_RESOURCE_STATE_COPY_DEST
+		)
+	);
+
+	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
+		1,
+		&CD3DX12_RESOURCE_BARRIER::Transition(lBuffer.buffer.Get(),
+			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+			D3D12_RESOURCE_STATE_COPY_SOURCE
+		)
+	);
+
+	DirectX12CmdList::Instance()->cmdList->CopyResource(meshParticleBufferData.counterWrapper.buffer.Get(), lBuffer.buffer.Get());
+
+	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
+		1,
+		&CD3DX12_RESOURCE_BARRIER::Transition(meshParticleBufferData.counterWrapper.buffer.Get(),
+			D3D12_RESOURCE_STATE_COPY_DEST,
+			D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+		)
+	);
+
+	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
+		1,
+		&CD3DX12_RESOURCE_BARRIER::Transition(lBuffer.buffer.Get(),
+			D3D12_RESOURCE_STATE_COPY_SOURCE,
+			D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+		)
+	);
+
 
 	//何の情報を読み込むかでパイプラインの種類を変える
 	for (int i = 0; i < initData.size(); ++i)
@@ -124,12 +162,12 @@ InstanceMeshParticle::InstanceMeshParticle(std::vector<InitMeshParticleData> &IN
 	//ワールド行列
 	computeUpdateMeshParticle.SetBuffer(GPUParticleRender::Instance()->GetStackWorldMatBuffer(), GRAPHICS_PRAMTYPE_DATA3);
 	//色
-	computeUpdateMeshParticle.SetBuffer(GPUParticleRender::Instance()->GetStackColorBuffer(), GRAPHICS_PRAMTYPE_DATA4);
+	//computeUpdateMeshParticle.SetBuffer(GPUParticleRender::Instance()->GetStackColorBuffer(), GRAPHICS_PRAMTYPE_DATA4);
 	//Transformを除いたワールド行列
 	scaleRotateBillboardMatHandle = computeUpdateMeshParticle.CreateBuffer(
 		sizeof(DirectX::XMMATRIX),
 		GRAPHICS_RANGE_TYPE_CBV_VIEW,
-		GRAPHICS_PRAMTYPE_DATA5,
+		GRAPHICS_PRAMTYPE_DATA4,
 		1,
 		false);
 

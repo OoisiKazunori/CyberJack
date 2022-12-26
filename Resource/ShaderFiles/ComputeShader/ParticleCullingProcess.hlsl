@@ -22,24 +22,24 @@ struct OutputColorData
     float4 color;
 };
 //入力
-RWStructuredBuffer<OutputMatData> worldMatData : register(u0);
-RWStructuredBuffer<OutputColorData> colorData : register(u1);
+RWStructuredBuffer<GPUParticleInput> worldMatData : register(u0);
 
-RWStructuredBuffer<OutputData>drawData:register(u2);
+RWStructuredBuffer<OutputData>drawData:register(u1);
 
 //ワールド行列の座標や色からカリング処理を行い、描画用のバッファに変換する処理
 [numthreads(1024, 1, 1)]
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 groupThreadID : SV_GroupThreadID)
 {
     uint index = ThreadGroupIndex(groupId,groupIndex,groupThreadID,1024);
-        
-    OutputMatData worldMat = worldMatData[index];
-    OutputColorData color = colorData[index];
+
+
+    matrix worldMat = worldMatData[index].worldMat;
+    float4 color = worldMatData[index].color;
 
     //カリング処理全般をここに追加予定
 
     OutputData outputMat;
-    outputMat.mat = mul(viewProjection,worldMat.worldMat);
-    outputMat.color = color.color;
+    outputMat.mat = mul(viewProjection,worldMat);
+    outputMat.color = color;
     drawData[index] = outputMat;
 }

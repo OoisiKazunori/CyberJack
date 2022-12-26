@@ -15,8 +15,7 @@ struct OutputColorData
     float4 color;
 };
 //èoóÕ
-RWStructuredBuffer<OutputMatData> worldMatData : register(u2);
-RWStructuredBuffer<OutputColorData> colorData : register(u3);
+AppendStructuredBuffer<GPUParticleInput> inputGPUParticleData : register(u2);
 
 cbuffer RootConstants : register(b0)
 {    
@@ -41,13 +40,18 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     worldMat[2][3] = particleData.pos.z;
     worldMat = mul(motherMatData[particleData.id],worldMat);
 
-    OutputMatData outputMatData;
-    outputMatData.worldMat = worldMat; 
+    //OutputMatData outputMatData;
+    //outputMatData.worldMat = worldMat; 
     //worldMatData.Append(outputMatData);
-    worldMatData[index] = outputMatData;
-
-    OutputColorData outputColorData;
-    outputColorData.color = particleData.color;
+    ////worldMatData[index] = outputMatData;
+//
+    //OutputColorData outputColorData;
+    //outputColorData.color = particleData.color;
     //colorData.Append(outputColorData);
-    colorData[index] = outputColorData;
+    //colorData[index] = outputColorData;
+
+    GPUParticleInput inputData;
+    inputData.worldMat = worldMat;
+    inputData.color = particleData.color;
+    inputGPUParticleData.Append(inputData);
 }

@@ -5,3 +5,9 @@ struct ParticleData
     float4 color;
     uint id;
 };
+
+struct GPUParticleInput
+{
+    matrix worldMat;
+    float4 color;
+};

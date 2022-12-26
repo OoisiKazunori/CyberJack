@@ -28,4 +28,7 @@ private:
 	std::vector<ComputeBufferHelper::BufferData>bufferArrayData;
 	HandleMaker handle;
 
+
+
+	KazBufferHelper::BufferResourceData counterBufferData;
 };

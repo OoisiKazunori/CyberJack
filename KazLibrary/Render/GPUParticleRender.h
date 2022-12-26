@@ -10,12 +10,19 @@ class GPUParticleRender:public ISingleton<GPUParticleRender>
 {
 public:
 	GPUParticleRender();
+
+	void InitCount();
 	void Draw();
 
 	const ComputeBufferHelper::BufferData &GetStackWorldMatBuffer();
 	const ComputeBufferHelper::BufferData &GetStackColorBuffer();
 private:
 
+	struct InputData
+	{
+		DirectX::XMMATRIX worldMat;
+		DirectX::XMFLOAT4 color;
+	};
 	struct OutputData
 	{
 		DirectX::XMMATRIX mat;

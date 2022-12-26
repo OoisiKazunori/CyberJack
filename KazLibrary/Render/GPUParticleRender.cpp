@@ -4,25 +4,25 @@
 GPUParticleRender::GPUParticleRender()
 {
 	worldMatHandle = computeCovertWorldMatToDrawMat.CreateBuffer(
-		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(DirectX::XMMATRIX) * PARTICLE_MAX_NUM),
+		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(InputData) * PARTICLE_MAX_NUM),
 		GRAPHICS_RANGE_TYPE_UAV_DESC,
 		GRAPHICS_PRAMTYPE_DATA,
-		sizeof(DirectX::XMMATRIX),
+		sizeof(InputData),
 		PARTICLE_MAX_NUM,
 		true);
 
-	colorHandle = computeCovertWorldMatToDrawMat.CreateBuffer(
-		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(DirectX::XMFLOAT4) * PARTICLE_MAX_NUM),
-		GRAPHICS_RANGE_TYPE_UAV_DESC,
-		GRAPHICS_PRAMTYPE_DATA2,
-		sizeof(DirectX::XMFLOAT4),
-		PARTICLE_MAX_NUM,
-		true);
+	//colorHandle = computeCovertWorldMatToDrawMat.CreateBuffer(
+	//	KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(DirectX::XMFLOAT4) * PARTICLE_MAX_NUM),
+	//	GRAPHICS_RANGE_TYPE_UAV_DESC,
+	//	GRAPHICS_PRAMTYPE_DATA2,
+	//	sizeof(DirectX::XMFLOAT4),
+	//	PARTICLE_MAX_NUM,
+	//	true);
 
 	outputHandle = computeCovertWorldMatToDrawMat.CreateBuffer(
 		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(OutputData) * PARTICLE_MAX_NUM),
 		GRAPHICS_RANGE_TYPE_UAV_DESC,
-		GRAPHICS_PRAMTYPE_DATA3,
+		GRAPHICS_PRAMTYPE_DATA2,
 		sizeof(OutputData),
 		PARTICLE_MAX_NUM,
 		false);
@@ -30,7 +30,7 @@ GPUParticleRender::GPUParticleRender()
 	viewProjMatHandle = computeCovertWorldMatToDrawMat.CreateBuffer(
 		sizeof(DirectX::XMMATRIX),
 		GRAPHICS_RANGE_TYPE_CBV_VIEW,
-		GRAPHICS_PRAMTYPE_DATA4,
+		GRAPHICS_PRAMTYPE_DATA3,
 		1,
 		false);
 
@@ -78,6 +78,11 @@ GPUParticleRender::GPUParticleRender()
 	excuteIndirect = std::make_unique<DrawExcuteIndirect>(lInitData);
 }
 
+void GPUParticleRender::InitCount()
+{
+	computeCovertWorldMatToDrawMat.InitCounterBuffer();
+}
+
 void GPUParticleRender::Draw()
 {
 	viewProjMat = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
@@ -98,7 +103,6 @@ void GPUParticleRender::Draw()
 		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
 	);*/
-	//computeCovertWorldMatToDrawMat.InitCounterBuffer();
 }
 
 const ComputeBufferHelper::BufferData &GPUParticleRender::GetStackWorldMatBuffer()
