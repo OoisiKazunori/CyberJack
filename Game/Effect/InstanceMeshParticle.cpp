@@ -34,7 +34,7 @@ InstanceMeshParticle::InstanceMeshParticle(std::vector<InitMeshParticleData> &IN
 		GRAPHICS_PRAMTYPE_DATA,
 		sizeof(InitOutputData),
 		PARTICLE_MAX_NUM,
-		false);
+		true);
 
 	for (int i = 0; i < initData.size(); ++i)
 	{

@@ -9,7 +9,7 @@ GPUParticleRender::GPUParticleRender()
 		GRAPHICS_PRAMTYPE_DATA,
 		sizeof(DirectX::XMMATRIX),
 		PARTICLE_MAX_NUM,
-		false);
+		true);
 
 	colorHandle = computeCovertWorldMatToDrawMat.CreateBuffer(
 		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(DirectX::XMFLOAT4) * PARTICLE_MAX_NUM),
@@ -17,7 +17,7 @@ GPUParticleRender::GPUParticleRender()
 		GRAPHICS_PRAMTYPE_DATA2,
 		sizeof(DirectX::XMFLOAT4),
 		PARTICLE_MAX_NUM,
-		false);
+		true);
 
 	outputHandle = computeCovertWorldMatToDrawMat.CreateBuffer(
 		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(OutputData) * PARTICLE_MAX_NUM),

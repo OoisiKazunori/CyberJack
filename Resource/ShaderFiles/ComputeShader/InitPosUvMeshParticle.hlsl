@@ -13,7 +13,7 @@ RWStructuredBuffer<float3> vertciesData : register(u0);
 RWStructuredBuffer<float2> uvData : register(u1);
 
 //出力
-RWStructuredBuffer<ParticleData> outputData : register(u2);
+AppendStructuredBuffer<ParticleData> outputData : register(u2);
 
 Texture2D<float4> tex : register(t0);
 SamplerState smp : register(s0);
@@ -152,12 +152,12 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
             thirdVec.y = thirdVertWorldPos.uv.y * uvw.z;
 
             float2 uv = firstVec + secondVec + thirdVec;
-            
+
             ParticleData output;
             output.pos = resultPos;
             output.color = tex.SampleLevel(smp,uv,0);
             output.id = motherMatIndex;                
-            outputData[outputIndex] = output;
+            outputData.Append(output);
     }
     }
     //パーティクルの配置--------------------------------------------

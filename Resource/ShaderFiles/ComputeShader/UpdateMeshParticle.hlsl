@@ -43,9 +43,11 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
 
     OutputMatData outputMatData;
     outputMatData.worldMat = worldMat; 
+    //worldMatData.Append(outputMatData);
     worldMatData[index] = outputMatData;
 
     OutputColorData outputColorData;
     outputColorData.color = particleData.color;
+    //colorData.Append(outputColorData);
     colorData[index] = outputColorData;
 }
