@@ -1,6 +1,6 @@
 #pragma once
 #include"../KazLibrary/Buffer/CreateGpuBuffer.h"
-#include"../Game/Helper/ComputeBufferHelper.h"
+#include"../KazLibrary/Helper/ResouceBufferHelper.h"
 
 /// <summary>
 /// ƒ‚ƒfƒ‹‚Ì’¸“_î•ñ‚ğVRAMã‚É•Û‘¶‚·‚é
@@ -28,6 +28,6 @@ public:
 private:
 	std::array<BufferHandle, DATA_MAX>bufferHandleDataArray;
 
-	ComputeBufferHelper computeHelper;
+	ResouceBufferHelper computeHelper;
 };
 

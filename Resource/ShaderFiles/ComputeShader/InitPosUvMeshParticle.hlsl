@@ -13,7 +13,7 @@ RWStructuredBuffer<float3> vertciesData : register(u0);
 RWStructuredBuffer<float2> uvData : register(u1);
 
 //出力
-AppendStructuredBuffer<ParticleData> outputData : register(u2);
+RWStructuredBuffer<ParticleData> outputData : register(u2);
 
 Texture2D<float4> tex : register(t0);
 SamplerState smp : register(s0);
@@ -52,7 +52,6 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     {
         return;
     }
-
     //インデックス数以内なら処理する
     //三角形を構成するインデックスの指定--------------------------------------------
     uint firstVertIndex = index * 3;
@@ -69,9 +68,9 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     InputData secondVertWorldPos;
     InputData thirdVertWorldPos;
 
-    firstVertWorldPos.pos = GetPos(vertciesData[firstVertIndex],float3(0,0,0));
-    secondVertWorldPos.pos = GetPos(vertciesData[secondVertIndex],float3(0,0,0));
-    thirdVertWorldPos.pos = GetPos(vertciesData[thirdVertIndex],float3(0,0,0));
+    firstVertWorldPos.pos = GetPos(vertciesData[firstVertIndex].xyz,float3(0,0,0));
+    secondVertWorldPos.pos = GetPos(vertciesData[secondVertIndex].xyz,float3(0,0,0));
+    thirdVertWorldPos.pos = GetPos(vertciesData[thirdVertIndex].xyz,float3(0,0,0));
     firstVertWorldPos.uv = uvData[uvFirstVertIndex];
     secondVertWorldPos.uv = uvData[uvSecondVertIndex];
     thirdVertWorldPos.uv = uvData[uvThirdVertIndex];
@@ -125,7 +124,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
             {
                 //エッジ周辺に偏らせる
                 rate = RandVec3(outputIndex + 1000,10,0).x / 100.0f;
-                resultPos = startPos + resultDistance * rate;              
+                resultPos = startPos + resultDistance * rate;
             }
             else
             {
@@ -138,7 +137,8 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
             float3 uvw;
             uvw.x = CalucurateUVW(firstVertWorldPos.pos.xyz,secondVertWorldPos.pos.xyz,resultPos,triangleArea);
             uvw.y = CalucurateUVW(secondVertWorldPos.pos.xyz,thirdVertWorldPos.pos.xyz,resultPos,triangleArea);
-            uvw.z = CalucurateUVW(thirdVertWorldPos.pos.xyz,firstVertWorldPos.pos.xyz,resultPos,triangleArea);
+            uvw.z = CalucurateUVW(thirdVertWorldPos.pos,firstVertWorldPos.pos,resultPos,triangleArea);
+            
             float2 firstVec;
             firstVec.x = firstVertWorldPos.uv.x * uvw.x;
             firstVec.y = firstVertWorldPos.uv.y * uvw.x;
@@ -152,14 +152,13 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
             thirdVec.y = thirdVertWorldPos.uv.y * uvw.z;
 
             float2 uv = firstVec + secondVec + thirdVec;
-
-
+            
             ParticleData output;
             output.pos = resultPos;
             output.color = tex.SampleLevel(smp,uv,0);
-            output.id = motherMatIndex;
-            outputData.Append(output);
-        }
+            output.id = motherMatIndex;                
+            outputData[outputIndex] = output;
+    }
     }
     //パーティクルの配置--------------------------------------------
 }

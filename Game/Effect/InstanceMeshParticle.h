@@ -32,7 +32,7 @@ private:
 	RESOURCE_HANDLE scaleRotateBillboardMatHandle;
 
 	ResouceBufferHelper computeUpdateMeshParticle;
-	ResouceBufferHelper computeConvertInitDataToUpdateData;
+	ResouceBufferHelper computeConvert;
 
 	ComputeBufferHelper::BufferData commonAndColorBufferData;
 	std::array<ComputeBufferHelper::BufferData,2> commonBufferData;

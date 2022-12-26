@@ -25,7 +25,7 @@ struct OutputColorData
 RWStructuredBuffer<OutputMatData> worldMatData : register(u0);
 RWStructuredBuffer<OutputColorData> colorData : register(u1);
 
-AppendStructuredBuffer<OutputData>drawData:register(u2);
+RWStructuredBuffer<OutputData>drawData:register(u2);
 
 //ワールド行列の座標や色からカリング処理を行い、描画用のバッファに変換する処理
 [numthreads(1024, 1, 1)]
@@ -41,5 +41,5 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     OutputData outputMat;
     outputMat.mat = mul(viewProjection,worldMat.worldMat);
     outputMat.color = color.color;
-    drawData.Append(outputMat);
+    drawData[index] = outputMat;
 }

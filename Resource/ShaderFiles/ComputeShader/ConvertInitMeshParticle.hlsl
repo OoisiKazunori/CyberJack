@@ -3,7 +3,7 @@
 #include"../ShaderHeader/GPUParticle.hlsli"
 
 //ì¸óÕ
-RWStructuredBuffer<ParticleData>particleInitData : register(u0);
+RWStructuredBuffer<float3>vertData : register(u0);
 //èoóÕ
 RWStructuredBuffer<ParticleData> updateParticleData : register(u1);
 
@@ -11,6 +11,9 @@ RWStructuredBuffer<ParticleData> updateParticleData : register(u1);
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 groupThreadID : SV_GroupThreadID)
 {
     uint index = ThreadGroupIndex(groupId,groupIndex,groupThreadID,1024);
-    ParticleData inputData = particleInitData[index];
+    ParticleData inputData;
+    inputData.pos = vertData[index];
+    inputData.color = float4(1,1,1,1);
+    inputData.id = 0;
     updateParticleData[index] = inputData;
 }

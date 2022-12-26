@@ -17,7 +17,7 @@ CreateMeshBuffer::CreateMeshBuffer(RESOURCE_HANDLE HANDLE)
 	if (lVertData.size() != 0)
 	{
 		bufferHandleDataArray[DATA_VERT].bufferHandle = computeHelper.CreateBuffer(
-			KazBufferHelper::GetBufferSize<BUFFER_SIZE>(lVertData.size(), sizeof(DirectX::XMFLOAT3)),
+			sizeof(DirectX::XMFLOAT3),
 			GRAPHICS_RANGE_TYPE_UAV_DESC,
 			GRAPHICS_PRAMTYPE_DATA,
 			static_cast<BUFFER_SIZE>(lVertData.size()),
@@ -26,7 +26,7 @@ CreateMeshBuffer::CreateMeshBuffer(RESOURCE_HANDLE HANDLE)
 
 		computeHelper.TransData(bufferHandleDataArray[DATA_VERT].bufferHandle, lVertData.data(), KazBufferHelper::GetBufferSize<BUFFER_SIZE>(lVertData.size(), sizeof(DirectX::XMFLOAT3)));
 
-		bufferHandleDataArray[DATA_VERT].descriptorViewHandle = computeHelper.GetDescriptorViewHandle(bufferHandleDataArray[DATA_VERT].bufferHandle);
+		bufferHandleDataArray[DATA_VERT].descriptorViewHandle = computeHelper.GetBufferData(bufferHandleDataArray[DATA_VERT].bufferHandle).viewHandle;
 	}
 	//í∏ì_èÓïÒÇèëÇ´çûÇﬁ--------------------------------------------
 
@@ -35,14 +35,14 @@ CreateMeshBuffer::CreateMeshBuffer(RESOURCE_HANDLE HANDLE)
 	if (lUvData.size() != 0 && FbxModelResourceMgr::Instance()->GetResourceData(HANDLE)->textureHandle.size() != 0)
 	{
 		bufferHandleDataArray[DATA_UV].bufferHandle = computeHelper.CreateBuffer(
-			KazBufferHelper::GetBufferSize<BUFFER_SIZE>(lUvData.size(), sizeof(DirectX::XMFLOAT2)),
+			sizeof(DirectX::XMFLOAT2),
 			GRAPHICS_RANGE_TYPE_UAV_DESC,
 			GRAPHICS_PRAMTYPE_DATA2,
 			static_cast<BUFFER_SIZE>(lUvData.size()),
 			false
 		);
 		computeHelper.TransData(bufferHandleDataArray[DATA_UV].bufferHandle, lUvData.data(), KazBufferHelper::GetBufferSize<BUFFER_SIZE>(lUvData.size(), sizeof(DirectX::XMFLOAT2)));
-		bufferHandleDataArray[DATA_UV].descriptorViewHandle = computeHelper.GetDescriptorViewHandle(bufferHandleDataArray[DATA_UV].bufferHandle);
+		bufferHandleDataArray[DATA_UV].descriptorViewHandle = computeHelper.GetBufferData(bufferHandleDataArray[DATA_UV].bufferHandle).viewHandle;
 	}
 	//UVèÓïÒÇèëÇ´çûÇﬁ--------------------------------------------
 
@@ -53,7 +53,7 @@ CreateMeshBuffer::CreateMeshBuffer(RESOURCE_HANDLE HANDLE)
 	if (lNormalData.size() != 0)
 	{
 		bufferHandleDataArray[DATA_NORMAL].bufferHandle = computeHelper.CreateBuffer(
-			KazBufferHelper::GetBufferSize<BUFFER_SIZE>(lNormalData.size(), sizeof(DirectX::XMFLOAT3)),
+			sizeof(DirectX::XMFLOAT3),
 			GRAPHICS_RANGE_TYPE_UAV_DESC,
 			GRAPHICS_PRAMTYPE_DATA3,
 			static_cast<BUFFER_SIZE>(lNormalData.size()),
@@ -62,7 +62,7 @@ CreateMeshBuffer::CreateMeshBuffer(RESOURCE_HANDLE HANDLE)
 
 		computeHelper.TransData(bufferHandleDataArray[DATA_NORMAL].bufferHandle, lNormalData.data(), KazBufferHelper::GetBufferSize<BUFFER_SIZE>(lNormalData.size(), sizeof(DirectX::XMFLOAT3)));
 
-		bufferHandleDataArray[DATA_NORMAL].descriptorViewHandle = computeHelper.GetDescriptorViewHandle(bufferHandleDataArray[DATA_NORMAL].bufferHandle);
+		bufferHandleDataArray[DATA_NORMAL].descriptorViewHandle = computeHelper.GetBufferData(bufferHandleDataArray[DATA_NORMAL].bufferHandle).viewHandle;
 	}
 	//ñ@ê¸èÓïÒÇèëÇ´çûÇﬁ--------------------------------------------
 

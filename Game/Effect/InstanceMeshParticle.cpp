@@ -34,12 +34,16 @@ InstanceMeshParticle::InstanceMeshParticle(std::vector<InitMeshParticleData> &IN
 		GRAPHICS_PRAMTYPE_DATA,
 		sizeof(InitOutputData),
 		PARTICLE_MAX_NUM,
-		true);
+		false);
 
-
+	for (int i = 0; i < initData.size(); ++i)
+	{
+		motherMatArray.push_back(initData[i].motherMat);
+	}
 
 	UINT lNum = 0;
 	meshParticleBufferData.counterWrapper.TransData(&lNum, sizeof(UINT));
+
 	//何の情報を読み込むかでパイプラインの種類を変える
 	for (int i = 0; i < initData.size(); ++i)
 	{
@@ -94,31 +98,19 @@ InstanceMeshParticle::InstanceMeshParticle(std::vector<InitMeshParticleData> &IN
 			computeInitMeshParticle.SetBuffer(lData, GRAPHICS_PRAMTYPE_TEX);
 		}
 
-		motherMatArray.push_back(initData[i].motherMat);
 
-		computeInitMeshParticle.StackToCommandListAndCallDispatch(lPipelineName, { 100,1,1 });
+		computeInitMeshParticle.StackToCommandListAndCallDispatch(lPipelineName, { 1000,1,1 });
 	}
-
 #pragma endregion
-	//変換用
-	computeConvertInitDataToUpdateData.SetBuffer(meshParticleBufferData, GRAPHICS_PRAMTYPE_DATA);
-	RESOURCE_HANDLE lOutputBuffeHandler = computeConvertInitDataToUpdateData.CreateBuffer(
-		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(InitOutputData) * PARTICLE_MAX_NUM),
-		GRAPHICS_RANGE_TYPE_UAV_DESC,
-		GRAPHICS_PRAMTYPE_DATA2,
-		sizeof(InitOutputData),
-		PARTICLE_MAX_NUM,
-		false);
-
-	meshParticleBufferData.counterWrapper.TransData(&lNum, sizeof(UINT));
-
-	computeConvertInitDataToUpdateData.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_COVERT_INITMESH_TO_UPDATEMESH, { 900,1,1 });
 
 
+	//computeConvert.SetBuffer(initData[0].vertData, GRAPHICS_PRAMTYPE_DATA);
+	//computeConvert.SetBuffer(meshParticleBufferData, GRAPHICS_PRAMTYPE_DATA2);
+	//computeConvert.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_COVERT_INITMESH_TO_UPDATEMESH, { 3,1,1 });
 
 
 	//パーティクルデータ
-	computeUpdateMeshParticle.SetBuffer(computeConvertInitDataToUpdateData.GetBufferData(lOutputBuffeHandler), GRAPHICS_PRAMTYPE_DATA);
+	computeUpdateMeshParticle.SetBuffer(meshParticleBufferData, GRAPHICS_PRAMTYPE_DATA);
 
 	//親行列
 	particleMotherMatrixHandle = computeUpdateMeshParticle.CreateBuffer(
@@ -141,7 +133,7 @@ InstanceMeshParticle::InstanceMeshParticle(std::vector<InitMeshParticleData> &IN
 		1,
 		false);
 
-	float lScale = 0.1f;
+	float lScale = 0.2f;
 	scaleRotMat = KazMath::CaluScaleMatrix({ lScale,lScale,lScale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
 }
 
@@ -156,5 +148,5 @@ void InstanceMeshParticle::Compute()
 		lMatArray[i] = *motherMatArray[i];
 	}
 	computeUpdateMeshParticle.TransData(particleMotherMatrixHandle, lMatArray.data(), sizeof(DirectX::XMMATRIX) * static_cast<int>(lMatArray.size()));
-	//computeUpdateMeshParticle.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_UPDATE_MESHPARTICLE, { 500,1,1 });
+	computeUpdateMeshParticle.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_UPDATE_MESHPARTICLE, { 1000,1,1 });
 }

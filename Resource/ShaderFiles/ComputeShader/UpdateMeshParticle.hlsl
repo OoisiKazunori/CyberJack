@@ -15,8 +15,8 @@ struct OutputColorData
     float4 color;
 };
 //èoóÕ
-AppendStructuredBuffer<OutputMatData> worldMatData : register(u2);
-AppendStructuredBuffer<OutputColorData> colorData : register(u3);
+RWStructuredBuffer<OutputMatData> worldMatData : register(u2);
+RWStructuredBuffer<OutputColorData> colorData : register(u3);
 
 cbuffer RootConstants : register(b0)
 {    
@@ -26,7 +26,13 @@ cbuffer RootConstants : register(b0)
 [numthreads(1024, 1, 1)]
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 groupThreadID : SV_GroupThreadID)
 {
-    uint index = ThreadGroupIndex(groupId,groupIndex,groupThreadID,1024);
+    uint index = groupThreadID.x;
+    index += 1024 * groupId.x;
+
+    if(1000000 < index)
+    {
+        return;
+    }
 
     ParticleData particleData = updateParticleData[index];
     matrix worldMat = scaleRotaBillBoardMat;
@@ -37,9 +43,9 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
 
     OutputMatData outputMatData;
     outputMatData.worldMat = worldMat; 
-    worldMatData.Append(outputMatData);
+    worldMatData[index] = outputMatData;
 
     OutputColorData outputColorData;
-    outputColorData.color = particleData.color; 
-    colorData.Append(outputColorData);
+    outputColorData.color = particleData.color;
+    colorData[index] = outputColorData;
 }
