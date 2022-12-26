@@ -41,46 +41,9 @@ InstanceMeshParticle::InstanceMeshParticle(std::vector<InitMeshParticleData> &IN
 		motherMatArray.push_back(initData[i].motherMat);
 	}
 
+
 	UINT lNum = 0;
-	KazRenderHelper::ID3D12ResourceWrapper lBuffer;
-
-	lBuffer.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(sizeof(UINT)));
-	lBuffer.TransData(&lNum, sizeof(UINT));
-
-	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
-		1,
-		&CD3DX12_RESOURCE_BARRIER::Transition(meshParticleBufferData.counterWrapper.buffer.Get(),
-			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-			D3D12_RESOURCE_STATE_COPY_DEST
-		)
-	);
-
-	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
-		1,
-		&CD3DX12_RESOURCE_BARRIER::Transition(lBuffer.buffer.Get(),
-			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-			D3D12_RESOURCE_STATE_COPY_SOURCE
-		)
-	);
-
-	DirectX12CmdList::Instance()->cmdList->CopyResource(meshParticleBufferData.counterWrapper.buffer.Get(), lBuffer.buffer.Get());
-
-	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
-		1,
-		&CD3DX12_RESOURCE_BARRIER::Transition(meshParticleBufferData.counterWrapper.buffer.Get(),
-			D3D12_RESOURCE_STATE_COPY_DEST,
-			D3D12_RESOURCE_STATE_UNORDERED_ACCESS
-		)
-	);
-
-	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
-		1,
-		&CD3DX12_RESOURCE_BARRIER::Transition(lBuffer.buffer.Get(),
-			D3D12_RESOURCE_STATE_COPY_SOURCE,
-			D3D12_RESOURCE_STATE_UNORDERED_ACCESS
-		)
-	);
-
+	meshParticleBufferData.counterWrapper.TransData(&lNum, sizeof(UINT));
 
 	//何の情報を読み込むかでパイプラインの種類を変える
 	for (int i = 0; i < initData.size(); ++i)
