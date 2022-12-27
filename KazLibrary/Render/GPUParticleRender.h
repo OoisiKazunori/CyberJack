@@ -14,8 +14,7 @@ public:
 	void InitCount();
 	void Draw();
 
-	const ComputeBufferHelper::BufferData &GetStackWorldMatBuffer();
-	const ComputeBufferHelper::BufferData &GetStackColorBuffer();
+	const ComputeBufferHelper::BufferData &GetStackBuffer();
 private:
 
 	struct InputData
@@ -32,7 +31,7 @@ private:
 
 	static const int PARTICLE_MAX_NUM = 3000000;
 	ResouceBufferHelper computeCovertWorldMatToDrawMat;
-	RESOURCE_HANDLE worldMatHandle, colorHandle, outputHandle, viewProjMatHandle;
+	RESOURCE_HANDLE worldMatHandle, outputHandle, viewProjMatHandle;
 
 	DirectX::XMMATRIX viewProjMat;
 

@@ -12,15 +12,7 @@ cbuffer RootConstants : register(b0)
 {    
     matrix viewProjection;
 };
-//構造体でなければシェーダーコンパイル時にメモリアクセス違反が吐かれる。先生と原因相談中。
-struct OutputMatData
-{
-    matrix worldMat;
-};
-struct OutputColorData
-{
-    float4 color;
-};
+
 //入力
 RWStructuredBuffer<GPUParticleInput> worldMatData : register(u0);
 
