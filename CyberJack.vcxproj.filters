@@ -82,7 +82,6 @@
     <ClCompile Include="KazLibrary\Render\PolygonRender.cpp" />
     <ClCompile Include="KazLibrary\Render\Sprite2DRender.cpp" />
     <ClCompile Include="KazLibrary\Render\Sprite3DRender.cpp" />
-    <ClCompile Include="KazLibrary\Scene\ClassScene.cpp" />
     <ClCompile Include="KazLibrary\Scene\DebugScene.cpp" />
     <ClCompile Include="KazLibrary\Scene\GameScene.cpp" />
     <ClCompile Include="KazLibrary\Scene\main.cpp" />
@@ -265,7 +264,6 @@
     <ClInclude Include="KazLibrary\Render\resource.h" />
     <ClInclude Include="KazLibrary\Render\Sprite2DRender.h" />
     <ClInclude Include="KazLibrary\Render\Sprite3DRender.h" />
-    <ClInclude Include="KazLibrary\Scene\ClassScene.h" />
     <ClInclude Include="KazLibrary\Scene\DebugScene.h" />
     <ClInclude Include="KazLibrary\Scene\GameScene.h" />
     <ClInclude Include="KazLibrary\Scene\PortalScene.h" />

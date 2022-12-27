@@ -5,7 +5,6 @@
 #include"../Helper/ResourceFilePass.h"
 #include"../Buffer/DescriptorHeapMgr.h"
 #include"../Fps/FPSManager.h"
-#include"../Scene/ClassScene.h"
 #include"../Scene/PortalScene.h"
 #include"../Scene/EnemyDebugScene.h"
 #include"../Scene/DebugStageScene.h"
