@@ -68,11 +68,25 @@ GPUParticleRender::GPUParticleRender()
 	lInitData.argument.push_back(args[0]);
 	lInitData.argument.push_back(args[1]);
 	excuteIndirect = std::make_unique<DrawExcuteIndirect>(lInitData);
+
+	UINT lNum = 0;
+	KazBufferHelper::BufferResourceData lBufferData
+	(
+		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		D3D12_HEAP_FLAG_NONE,
+		CD3DX12_RESOURCE_DESC::Buffer(sizeof(UINT)),
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		"CopyCounterBuffer"
+	);
+
+	copyBuffer.CreateBuffer(lBufferData);
+	copyBuffer.TransData(&lNum, sizeof(UINT));
 }
 
 void GPUParticleRender::InitCount()
 {
-	computeCovertWorldMatToDrawMat.InitCounterBuffer();
+	computeCovertWorldMatToDrawMat.InitCounterBuffer(copyBuffer.buffer.Get());
 }
 
 void GPUParticleRender::Draw()

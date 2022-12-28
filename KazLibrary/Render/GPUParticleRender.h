@@ -39,5 +39,9 @@ private:
 	RESOURCE_HANDLE vertexBufferHandle;
 	RESOURCE_HANDLE indexBufferHandle;
 	std::unique_ptr<KazRenderHelper::ID3D12ResourceWrapper> vertexBuffer, indexBuffer;
+
+
+
+	KazRenderHelper::ID3D12ResourceWrapper copyBuffer;
 };
 

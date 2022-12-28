@@ -88,5 +88,9 @@ private:
 	DirectX::XMMATRIX scaleRotBillBoardMat;
 
 	std::vector<InitMeshParticleData> initData;
+
+
+	KazRenderHelper::ID3D12ResourceWrapper copyBuffer;
+	KazRenderHelper::ID3D12ResourceWrapper motherMatrixBuffer;
 };
 

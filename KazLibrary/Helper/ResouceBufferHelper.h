@@ -22,7 +22,7 @@ public:
 	void DeleteAllData();
 
 
-	void InitCounterBuffer();
+	void InitCounterBuffer(const Microsoft::WRL::ComPtr<ID3D12Resource> &INIT_DATA);
 	const ComputeBufferHelper::BufferData &GetBufferData(RESOURCE_HANDLE HANDLE);
 private:
 	std::vector<ComputeBufferHelper::BufferData>bufferArrayData;

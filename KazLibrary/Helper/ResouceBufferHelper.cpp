@@ -12,8 +12,8 @@ ResouceBufferHelper::ResouceBufferHelper() :counterBufferData(
 	"CounterBuffer"
 )
 {
-	//counterBufferData.resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
-	counterBufferData = KazBufferHelper::SetRWStructuredBuffer(sizeof(UINT), "CounterBuffer");
+	counterBufferData.resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+	//counterBufferData = KazBufferHelper::SetRWStructuredBuffer(sizeof(UINT), "CounterBuffer");
 }
 
 RESOURCE_HANDLE ResouceBufferHelper::CreateBuffer(UINT STRUCTURE_BYTE_STRIDE, GraphicsRangeType RANGE, GraphicsRootParamType ROOTPARAM, UINT ELEMENT_NUM, bool GENERATE_COUNTER_BUFFER_FLAG)
@@ -279,14 +279,29 @@ void ResouceBufferHelper::DeleteAllData()
 	bufferArrayData.shrink_to_fit();
 }
 
-void ResouceBufferHelper::InitCounterBuffer()
+void ResouceBufferHelper::InitCounterBuffer(const Microsoft::WRL::ComPtr<ID3D12Resource> &INIT_DATA)
 {
 	for (int i = 0; i < bufferArrayData.size(); ++i)
 	{
 		if (bufferArrayData[i].counterWrapper.buffer)
 		{
-			UINT lNum = 0;
-			bufferArrayData[i].counterWrapper.TransData(&lNum, sizeof(UINT));
+			DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
+				1,
+				&CD3DX12_RESOURCE_BARRIER::Transition(bufferArrayData[i].counterWrapper.buffer.Get(),
+					D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+					D3D12_RESOURCE_STATE_COPY_DEST
+				)
+			);
+
+			DirectX12CmdList::Instance()->cmdList->CopyResource(bufferArrayData[i].counterWrapper.buffer.Get(), INIT_DATA.Get());
+
+			DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
+				1,
+				&CD3DX12_RESOURCE_BARRIER::Transition(bufferArrayData[i].counterWrapper.buffer.Get(),
+					D3D12_RESOURCE_STATE_COPY_DEST,
+					D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+				)
+			);
 		}
 	}
 }

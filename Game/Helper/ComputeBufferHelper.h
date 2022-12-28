@@ -13,6 +13,17 @@ struct DispatchCallData
 class ComputeBufferHelper
 {
 public:
+	struct CounerBufferData
+	{
+		KazRenderHelper::ID3D12ResourceWrapper counterWrapper;
+		void InitCounter();
+
+
+	private:
+		KazRenderHelper::ID3D12ResourceWrapper copyCounterWrapper;
+
+	};
+
 	struct BufferData
 	{
 		KazRenderHelper::ID3D12ResourceWrapper bufferWrapper;
