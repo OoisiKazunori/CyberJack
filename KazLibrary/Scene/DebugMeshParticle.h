@@ -58,6 +58,7 @@ private:
 	bool cpuCheckMeshParticleAndSphereHitBoxFlag;
 	bool gpuCheckHitBoxFlag;
 	bool drawInstanceMeshParticleFlag;
+	bool drawMeshHitBoxFlag;
 	bool drawGridFlag;
 
 
