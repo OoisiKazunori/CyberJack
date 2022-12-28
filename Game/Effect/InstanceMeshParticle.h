@@ -35,7 +35,7 @@ private:
 	ResouceBufferHelper computeConvert;
 
 	ComputeBufferHelper::BufferData commonAndColorBufferData;
-	std::array<ComputeBufferHelper::BufferData,2> commonBufferData;
+	std::array<ComputeBufferHelper::BufferData,20> commonBufferData;
 	ComputeBufferHelper::BufferData meshParticleBufferData;
 	struct WorldMatData
 	{

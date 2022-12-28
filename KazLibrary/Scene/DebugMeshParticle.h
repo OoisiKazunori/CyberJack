@@ -331,9 +331,9 @@ private:
 
 	std::unique_ptr<InstanceMeshParticle> instanceMeshParticle;
 
-	DirectX::XMMATRIX enemyModelMat;
+	std::array<DirectX::XMMATRIX,10> enemyModelMat;
 	DirectX::XMMATRIX sphereModelMat;
-	DirectX::XMMATRIX summonModelMat;
+	std::array<DirectX::XMMATRIX, 10> summonModelMat;
 
 	ComputeBufferHelperPtr testAppend;
 	//CPU上でのメッシュとパーティクルの判定--------------------------------------------
