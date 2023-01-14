@@ -1,13 +1,12 @@
 #pragma once
-#include"../Game/Helper/ComputeBufferHelper.h"
 #include"../KazLibrary/Helper/ResouceBufferHelper.h"
 #include"../KazLibrary/Render/DrawExcuteIndirect.h"
 #include"../KazLibrary/Helper/KazRenderHelper.h"
 
 struct InitMeshParticleData
 {
-	ComputeBufferHelper::BufferData vertData;
-	ComputeBufferHelper::BufferData uvData;
+	ResouceBufferHelper::BufferData vertData;
+	ResouceBufferHelper::BufferData uvData;
 	RESOURCE_HANDLE textureHandle;
 	//x vertNum, y bias,z perTriangleNum,w faceCountNum
 	DirectX::XMUINT4 triagnleData;
@@ -34,9 +33,9 @@ private:
 	ResouceBufferHelper computeUpdateMeshParticle;
 	ResouceBufferHelper computeConvert;
 
-	ComputeBufferHelper::BufferData commonAndColorBufferData;
-	std::array<ComputeBufferHelper::BufferData,20> commonBufferData;
-	ComputeBufferHelper::BufferData meshParticleBufferData;
+	ResouceBufferHelper::BufferData commonAndColorBufferData;
+	std::array<ResouceBufferHelper::BufferData,20> commonBufferData;
+	ResouceBufferHelper::BufferData meshParticleBufferData;
 	struct WorldMatData
 	{
 		DirectX::XMMATRIX scaleRotateBillboardMat;
@@ -72,7 +71,7 @@ private:
 		INIT_POS_UV,
 		INIT_POS_UV_NORMAL,
 	};
-	void IsSetBuffer(const ComputeBufferHelper::BufferData &BUFFER_DATA)
+	void IsSetBuffer(const ResouceBufferHelper::BufferData &BUFFER_DATA)
 	{
 		if (BUFFER_DATA.bufferWrapper.buffer)
 		{

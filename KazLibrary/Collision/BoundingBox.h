@@ -1,5 +1,5 @@
 #pragma once
-#include"../Game/Helper/ComputeBufferHelper.h"
+#include"../KazLibrary/Helper/ResouceBufferHelper.h"
 
 struct BoundingBoxData
 {
@@ -13,14 +13,14 @@ struct BoundingBoxData
 class BoundingBox
 {
 public:
-	BoundingBox(std::vector<DirectX::XMFLOAT4> VERT_DATA);
-	BoundingBoxData GetData();
-	D3D12_GPU_DESCRIPTOR_HANDLE GetViewHandle();
+	BoundingBox(const ResouceBufferHelper::BufferData &VERT_DATA, UINT VERT_MAX_NUM);
+	RESOURCE_HANDLE GetViewHandle();
 
+	const ResouceBufferHelper::BufferData &GetBBBuffer();
+	BoundingBoxData GetData();
 	void Compute();
 	
-	ComputeBufferHelper computeBuffer;
-	RESOURCE_HANDLE bbBufferHandle;
+	ResouceBufferHelper computeBuffer;
 private:
 	struct BoundingBoxBufferData
 	{
@@ -33,8 +33,9 @@ private:
 		UINT vertNum;
 	};
 
+
+	RESOURCE_HANDLE bbBufferHandle;
 	RESOURCE_HANDLE vertBufferHandle;
-	RESOURCE_HANDLE bbViewHandle;
 	RESOURCE_HANDLE matBufferHandle;
 
 };

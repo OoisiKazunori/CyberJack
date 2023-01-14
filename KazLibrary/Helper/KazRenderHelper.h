@@ -130,7 +130,7 @@ namespace KazRenderHelper
 		/// <returns>バッファのGPUアドレス</returns>
 		D3D12_GPU_VIRTUAL_ADDRESS GetGpuAddress();
 
-		void *GetMapAddres();
+		void *GetMapAddres()const;
 
 		Microsoft::WRL::ComPtr<ID3D12Resource>buffer;
 

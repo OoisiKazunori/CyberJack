@@ -22,7 +22,7 @@ RESOURCE_HANDLE ResouceBufferHelper::CreateBuffer(UINT STRUCTURE_BYTE_STRIDE, Gr
 	RESOURCE_HANDLE lViewHandle = 0;
 	UINT lBufferSize = STRUCTURE_BYTE_STRIDE * ELEMENT_NUM;
 
-	bufferArrayData.push_back(ComputeBufferHelper::BufferData());
+	bufferArrayData.push_back(ResouceBufferHelper::BufferData());
 	bufferArrayData[lHandle].rangeType = RANGE;
 	bufferArrayData[lHandle].rootParamType = ROOTPARAM;
 	bufferArrayData[lHandle].bufferSize = lBufferSize;
@@ -72,7 +72,7 @@ RESOURCE_HANDLE ResouceBufferHelper::CreateBuffer(const KazBufferHelper::BufferR
 {
 	RESOURCE_HANDLE lHandle = handle.GetHandle();
 
-	bufferArrayData.push_back(ComputeBufferHelper::BufferData());
+	bufferArrayData.push_back(ResouceBufferHelper::BufferData());
 	bufferArrayData[lHandle].rangeType = RANGE;
 	bufferArrayData[lHandle].rootParamType = ROOTPARAM;
 	bufferArrayData[lHandle].bufferSize = STRUCTURE_BYTE_STRIDE * ELEMENT_NUM;
@@ -109,9 +109,9 @@ RESOURCE_HANDLE ResouceBufferHelper::CreateBuffer(const KazBufferHelper::BufferR
 	return lHandle;
 }
 
-ComputeBufferHelper::BufferData ResouceBufferHelper::CreateAndGetBuffer(UINT STRUCTURE_BYTE_STRIDE, GraphicsRangeType RANGE, GraphicsRootParamType ROOTPARAM, UINT ELEMENT_NUM, bool GENERATE_COUNTER_BUFFER_FLAG)
+ResouceBufferHelper::BufferData ResouceBufferHelper::CreateAndGetBuffer(UINT STRUCTURE_BYTE_STRIDE, GraphicsRangeType RANGE, GraphicsRootParamType ROOTPARAM, UINT ELEMENT_NUM, bool GENERATE_COUNTER_BUFFER_FLAG)
 {
-	ComputeBufferHelper::BufferData lBufferData;
+	ResouceBufferHelper::BufferData lBufferData;
 
 	RESOURCE_HANDLE lViewHandle = -1;
 	UINT lBufferSize = STRUCTURE_BYTE_STRIDE * ELEMENT_NUM;
@@ -161,12 +161,12 @@ ComputeBufferHelper::BufferData ResouceBufferHelper::CreateAndGetBuffer(UINT STR
 	return lBufferData;
 }
 
-ComputeBufferHelper::BufferData ResouceBufferHelper::CreateAndGetBuffer(const KazBufferHelper::BufferResourceData &BUFFER_OPTION_DATA, GraphicsRangeType RANGE, GraphicsRootParamType ROOTPARAM, UINT STRUCTURE_BYTE_STRIDE, UINT ELEMENT_NUM, bool GENERATE_COUNTER_BUFFER_FLAG)
+ResouceBufferHelper::BufferData ResouceBufferHelper::CreateAndGetBuffer(const KazBufferHelper::BufferResourceData &BUFFER_OPTION_DATA, GraphicsRangeType RANGE, GraphicsRootParamType ROOTPARAM, UINT STRUCTURE_BYTE_STRIDE, UINT ELEMENT_NUM, bool GENERATE_COUNTER_BUFFER_FLAG)
 {
 	RESOURCE_HANDLE lViewHandle = 0;
 	UINT lBufferSize = STRUCTURE_BYTE_STRIDE * ELEMENT_NUM;
 
-	ComputeBufferHelper::BufferData lBufferData;
+	ResouceBufferHelper::BufferData lBufferData;
 	lBufferData.rangeType = RANGE;
 	lBufferData.rootParamType = ROOTPARAM;
 	lBufferData.bufferSize = lBufferSize;
@@ -212,7 +212,7 @@ ComputeBufferHelper::BufferData ResouceBufferHelper::CreateAndGetBuffer(const Ka
 	return lBufferData;
 }
 
-RESOURCE_HANDLE ResouceBufferHelper::SetBuffer(const ComputeBufferHelper::BufferData &DATA, GraphicsRootParamType ROOTPARAM)
+RESOURCE_HANDLE ResouceBufferHelper::SetBuffer(const ResouceBufferHelper::BufferData &DATA, GraphicsRootParamType ROOTPARAM)
 {
 	RESOURCE_HANDLE lHandle = handle.GetHandle();
 	if (lHandle <= bufferArrayData.size())
@@ -306,7 +306,12 @@ void ResouceBufferHelper::InitCounterBuffer(const Microsoft::WRL::ComPtr<ID3D12R
 	}
 }
 
-const ComputeBufferHelper::BufferData &ResouceBufferHelper::GetBufferData(RESOURCE_HANDLE HANDLE)
+const ResouceBufferHelper::BufferData &ResouceBufferHelper::GetBufferData(RESOURCE_HANDLE HANDLE)
 {
 	return bufferArrayData[HANDLE];
+}
+
+void ResouceBufferHelper::SetRootParam(RESOURCE_HANDLE HANDLE, GraphicsRootParamType ROOT_PARAM)
+{
+	bufferArrayData[HANDLE].rootParamType = ROOT_PARAM;
 }

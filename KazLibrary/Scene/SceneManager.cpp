@@ -10,7 +10,7 @@
 #include"../Scene/DebugStageScene.h"
 #include"../Scene/DebugMeshParticle.h"
 
-SceneManager::SceneManager()
+SceneManager::SceneManager() :gameFirstInitFlag(false)
 {
 	scene.emplace_back(std::make_unique<DebugMeshParticleScene>());
 	//scene.emplace_back(std::make_unique<TitleScene>());
@@ -20,7 +20,6 @@ SceneManager::SceneManager()
 
 	nowScene = 0;
 	nextScene = 0;
-	scene[nowScene]->Init();
 	itisInArrayFlag = true;
 	endGameFlag = false;
 }
@@ -38,6 +37,12 @@ void SceneManager::Update()
 	if (nextScene != nowScene)
 	{
 		change.Start();
+	}
+
+	if (!gameFirstInitFlag)
+	{
+		scene[nowScene]->Init();
+		gameFirstInitFlag = true;
 	}
 
 

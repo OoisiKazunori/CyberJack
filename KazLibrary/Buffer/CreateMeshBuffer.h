@@ -23,7 +23,7 @@ public:
 	};
 
 	CreateMeshBuffer(RESOURCE_HANDLE HANDLE);
-	const ComputeBufferHelper::BufferData &GetBufferData(MeshBufferView ENUM_VIEW);
+	const ResouceBufferHelper::BufferData &GetBufferData(MeshBufferView ENUM_VIEW);
 
 private:
 	std::array<BufferHandle, DATA_MAX>bufferHandleDataArray;

@@ -85,7 +85,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	long lCppVersion = __cplusplus;
 	std::cout << "現在使用しているC++:" << lCppVersion << "\n";
 
-	//もう一度繰り返さないようシングルトンにする
 	PreCreateBaseRootSignature prepareR;
 	PreCreateBasePipeLine prepareP;
 
@@ -95,7 +94,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	srand(static_cast<UINT>(time(NULL)));
 	SceneManager sm;
 
-
+	//GPUで処理させたい物をCPUで参照させたい時、コンストラクタで処理させてInitで参照するようにする為のフラグ
+	bool lStop1FlameFlag = false;
 
 	OutputDebugStringA("ゲームのメインループを開始します\n");
 	while (CheckMessageFlag)
@@ -104,22 +104,32 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		imgui.NewFlame();
 		KeyBoradInputManager::Instance()->InputLog();
 		ControllerInputManager::Instance()->InputLog();
-//#ifdef _DEBUG
+		//#ifdef _DEBUG
 		winApi.FPS();
-//#endif
+		//#endif
 
-		sm.Update();
-		sm.Draw();
+		if (lStop1FlameFlag)
+		{
+			sm.Update();
+			sm.Draw();
+		}
+
 
 		if (sm.endGameFlag)
 		{
 			break;
 		}
 
+
 		imgui.Set();
 		CameraMgr::Instance()->Record();
-		RenderTargetStatus::Instance()->SwapResourceBarrier();
+		if (lStop1FlameFlag)
+		{
+			RenderTargetStatus::Instance()->SwapResourceBarrier();
+		}
 		directX.ActCommand();
+
+		lStop1FlameFlag = true;
 	}
 	winApi.UnregisterWindowClass();
 

@@ -1,5 +1,5 @@
 #pragma once
-#include"../Game/Helper/ComputeBufferHelper.h"
+#include"../KazLibrary/Helper/ResouceBufferHelper.h"
 #include"BoundingBox.h"
 
 /// <summary>
@@ -8,26 +8,29 @@
 class BBDuringEquallyCoordinatePlace
 {
 public:
-	BBDuringEquallyCoordinatePlace(D3D12_GPU_DESCRIPTOR_HANDLE BB_BUFFER_HANDLE, const BoundingBoxData &DATA);
+	BBDuringEquallyCoordinatePlace(const ResouceBufferHelper::BufferData &BB_BUFFER_DATA, const BoundingBoxData &DATA);
 
 	void Compute();
 	UINT MaxHitBoxPosNum()
 	{
 		return countNum;
 	}
-	const ComputeBufferHelper::BufferData GetHitBoxPosData()
+	const ResouceBufferHelper::BufferData GetHitBoxPosData()
 	{
 		return computeHelper->GetBufferData(hitBoxPosHandle);
 	}
-	const ComputeBufferHelper::BufferData GetHitBoxIDData()
+	const ResouceBufferHelper::BufferData GetHitBoxIDData()
 	{
 		return computeHelper->GetBufferData(hitBoxIDHandle);
 	}
-	std::unique_ptr<ComputeBufferHelper> computeHelper;
+	std::unique_ptr<ResouceBufferHelper> computeHelper;
+
+	//デバック用に当たり判定を描画する用
+	void SetDebugDraw(const ResouceBufferHelper::BufferData &STACK_DRAW_DATA);
 private:
 
 	D3D12_GPU_DESCRIPTOR_HANDLE bbViewHandle;
-	RESOURCE_HANDLE hitBoxPosHandle, hitBoxIDHandle,hitBoxViewHandle, hitBoxIDViewHandle;
+	RESOURCE_HANDLE hitBoxPosHandle, hitBoxIDHandle;
 	RESOURCE_HANDLE hitBoxCommonHandle;
 
 	BoundingBoxData data;
@@ -49,4 +52,6 @@ private:
 
 	DispatchCallData threadNumData;
 	UINT countNum;
+
+	bool debugFlag;
 };

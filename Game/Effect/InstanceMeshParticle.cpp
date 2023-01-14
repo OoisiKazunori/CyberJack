@@ -121,9 +121,10 @@ InstanceMeshParticle::InstanceMeshParticle(std::vector<InitMeshParticleData> &IN
 		//テクスチャのセット
 		if (initData[i].textureHandle != -1)
 		{
-			ComputeBufferHelper::BufferData lData;
+			ResouceBufferHelper::BufferData lData;
 			lData.viewHandle = initData[i].textureHandle;
 			lData.rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
+			lData.rootParamType = GRAPHICS_PRAMTYPE_TEX;
 			computeInitMeshParticle.SetBuffer(lData, GRAPHICS_PRAMTYPE_TEX);
 		}
 

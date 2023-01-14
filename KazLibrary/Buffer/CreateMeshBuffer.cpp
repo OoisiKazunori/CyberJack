@@ -68,7 +68,7 @@ CreateMeshBuffer::CreateMeshBuffer(RESOURCE_HANDLE HANDLE)
 
 }
 
-const ComputeBufferHelper::BufferData &CreateMeshBuffer::GetBufferData(MeshBufferView ENUM_VIEW)
+const ResouceBufferHelper::BufferData &CreateMeshBuffer::GetBufferData(MeshBufferView ENUM_VIEW)
 {
 	RESOURCE_HANDLE lHandle = static_cast<RESOURCE_HANDLE>(ENUM_VIEW);
 	if (bufferHandleDataArray[lHandle].bufferHandle != -1)

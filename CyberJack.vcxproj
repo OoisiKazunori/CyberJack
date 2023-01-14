@@ -111,8 +111,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Game\CollisionDetection\CollisionDetectionOfMeshCircleAndParticle.cpp" />
+    <ClCompile Include="Game\CollisionDetection\GenerateCollisionOfParticle.cpp" />
     <ClCompile Include="Game\CollisionDetection\GPUMeshAndSphereHitBox.cpp" />
-    <ClCompile Include="Game\Debug\DrawHitBoxPos.cpp" />
+    <ClCompile Include="Game\CollisionDetection\InstanceMeshCollision.cpp" />
     <ClCompile Include="Game\Debug\ParameterMgr.cpp" />
     <ClCompile Include="Game\Debug\ParticleWall.cpp" />
     <ClCompile Include="Game\Debug\WirteCpuLineData.cpp" />
@@ -169,9 +170,7 @@
     <ClCompile Include="Game\Game.cpp" />
     <ClCompile Include="Game\GameRenderTarget.cpp" />
     <ClCompile Include="Game\Helper\CameraWork.cpp" />
-    <ClCompile Include="Game\Helper\ComputeBufferHelperPtr.cpp" />
     <ClCompile Include="Game\Helper\EnemyHelper.cpp" />
-    <ClCompile Include="Game\Helper\ComputeBufferHelper.cpp" />
     <ClCompile Include="Game\Interface\IEnemy.cpp" />
     <ClCompile Include="Game\Interface\IOperationObject.cpp" />
     <ClCompile Include="Game\Interface\IStage.cpp" />
@@ -283,8 +282,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\CollisionDetection\CollisionDetectionOfMeshCircleAndParticle.h" />
+    <ClInclude Include="Game\CollisionDetection\GenerateCollisionOfParticle.h" />
     <ClInclude Include="Game\CollisionDetection\GPUMeshAndSphereHitBox.h" />
-    <ClInclude Include="Game\Debug\DrawHitBoxPos.h" />
+    <ClInclude Include="Game\CollisionDetection\InstanceMeshCollision.h" />
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
     <ClInclude Include="Game\Debug\ParticleWall.h" />
     <ClInclude Include="Game\Debug\WirteCpuLineData.h" />
@@ -342,9 +342,7 @@
     <ClInclude Include="Game\Game.h" />
     <ClInclude Include="Game\GameRenderTarget.h" />
     <ClInclude Include="Game\Helper\CameraWork.h" />
-    <ClInclude Include="Game\Helper\ComputeBufferHelperPtr.h" />
     <ClInclude Include="Game\Helper\EnemyHelper.h" />
-    <ClInclude Include="Game\Helper\ComputeBufferHelper.h" />
     <ClInclude Include="Game\Interface\IEnemy.h" />
     <ClInclude Include="Game\Interface\IOperationObject.h" />
     <ClInclude Include="Game\Interface\IStage.h" />

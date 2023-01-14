@@ -161,16 +161,15 @@
     <ClCompile Include="KazLibrary\Collision\BoundingBox.cpp" />
     <ClCompile Include="KazLibrary\Collision\BBDuringEquallyCoordinatePlace.cpp" />
     <ClCompile Include="KazLibrary\Render\DrawExcuteIndirect.cpp" />
-    <ClCompile Include="Game\Helper\ComputeBufferHelper.cpp" />
-    <ClCompile Include="Game\Debug\DrawHitBoxPos.cpp" />
     <ClCompile Include="Game\CollisionDetection\CollisionDetectionOfMeshCircleAndParticle.cpp" />
     <ClCompile Include="Game\Effect\InstanceMeshParticle.cpp" />
     <ClCompile Include="KazLibrary\Buffer\CreateMeshBuffer.cpp" />
     <ClCompile Include="Game\Effect\ComputeLerp.cpp" />
     <ClCompile Include="Game\CollisionDetection\GPUMeshAndSphereHitBox.cpp" />
     <ClCompile Include="KazLibrary\Render\GPUParticleRender.cpp" />
-    <ClCompile Include="Game\Helper\ComputeBufferHelperPtr.cpp" />
     <ClCompile Include="KazLibrary\Helper\ResouceBufferHelper.cpp" />
+    <ClCompile Include="Game\CollisionDetection\InstanceMeshCollision.cpp" />
+    <ClCompile Include="Game\CollisionDetection\GenerateCollisionOfParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -347,16 +346,15 @@
     <ClInclude Include="KazLibrary\Collision\BoundingBox.h" />
     <ClInclude Include="KazLibrary\Collision\BBDuringEquallyCoordinatePlace.h" />
     <ClInclude Include="KazLibrary\Render\DrawExcuteIndirect.h" />
-    <ClInclude Include="Game\Helper\ComputeBufferHelper.h" />
-    <ClInclude Include="Game\Debug\DrawHitBoxPos.h" />
     <ClInclude Include="Game\CollisionDetection\CollisionDetectionOfMeshCircleAndParticle.h" />
     <ClInclude Include="Game\Effect\InstanceMeshParticle.h" />
     <ClInclude Include="KazLibrary\Buffer\CreateMeshBuffer.h" />
     <ClInclude Include="Game\Effect\ComputeLerp.h" />
     <ClInclude Include="Game\CollisionDetection\GPUMeshAndSphereHitBox.h" />
     <ClInclude Include="KazLibrary\Render\GPUParticleRender.h" />
-    <ClInclude Include="Game\Helper\ComputeBufferHelperPtr.h" />
     <ClInclude Include="KazLibrary\Helper\ResouceBufferHelper.h" />
+    <ClInclude Include="Game\CollisionDetection\InstanceMeshCollision.h" />
+    <ClInclude Include="Game\CollisionDetection\GenerateCollisionOfParticle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

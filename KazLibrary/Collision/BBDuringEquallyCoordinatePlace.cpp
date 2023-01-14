@@ -11,9 +11,9 @@
 #include"../KazLibrary/Loader/ObjResourceMgr.h"
 #include"../KazLibrary/Buffer/UavViewHandleMgr.h"
 
-BBDuringEquallyCoordinatePlace::BBDuringEquallyCoordinatePlace(D3D12_GPU_DESCRIPTOR_HANDLE BB_BUFFER_HANDLE, const BoundingBoxData &DATA) :data(DATA), bbViewHandle(BB_BUFFER_HANDLE), countNum(0)
+BBDuringEquallyCoordinatePlace::BBDuringEquallyCoordinatePlace(const ResouceBufferHelper::BufferData &BB_BUFFER_DATA, const BoundingBoxData &DATA) :data(DATA), countNum(0), debugFlag(false)
 {
-	computeHelper = std::make_unique<ComputeBufferHelper>();
+	computeHelper = std::make_unique<ResouceBufferHelper>();
 
 	diameter = 0.5f;
 	//いくつ配置出来るか計算する
@@ -25,6 +25,8 @@ BBDuringEquallyCoordinatePlace::BBDuringEquallyCoordinatePlace(D3D12_GPU_DESCRIP
 
 	countNum = static_cast<BUFFER_SIZE>(threadNumData.x * threadNumData.y * threadNumData.z);
 
+	computeHelper->SetBuffer(BB_BUFFER_DATA, GRAPHICS_PRAMTYPE_DATA);
+
 	//当たり判定座標の用意
 	hitBoxPosHandle = computeHelper->CreateBuffer(
 		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(DirectX::XMFLOAT3) * countNum),
@@ -33,7 +35,6 @@ BBDuringEquallyCoordinatePlace::BBDuringEquallyCoordinatePlace(D3D12_GPU_DESCRIP
 		sizeof(DirectX::XMFLOAT3),
 		countNum
 	);
-	hitBoxViewHandle = computeHelper->GetDescriptorViewHandle(hitBoxPosHandle);
 
 	//当たり判定IDの用意
 	hitBoxIDHandle = computeHelper->CreateBuffer(
@@ -43,7 +44,6 @@ BBDuringEquallyCoordinatePlace::BBDuringEquallyCoordinatePlace(D3D12_GPU_DESCRIP
 		sizeof(DirectX::XMUINT3),
 		countNum
 	);
-	hitBoxIDViewHandle = computeHelper->GetDescriptorViewHandle(hitBoxIDHandle);
 
 	//事前に計算しておくもの用意
 	hitBoxCommonHandle = computeHelper->CreateBuffer(sizeof(HitBoxConstBufferData), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4, 1);
@@ -56,7 +56,29 @@ BBDuringEquallyCoordinatePlace::BBDuringEquallyCoordinatePlace(D3D12_GPU_DESCRIP
 
 void BBDuringEquallyCoordinatePlace::Compute()
 {
-	computeHelper->Compute(PIPELINE_COMPUTE_NAME_HITBOX_SETCIRCLE_IN_BB, threadNumData);
+	if (debugFlag)
+	{
+		computeHelper->StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_HITBOX_SETCIRCLE_IN_BB_DEBUG, threadNumData);
+	}
+	else
+	{
+		computeHelper->StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_HITBOX_SETCIRCLE_IN_BB, threadNumData);
+	}
+}
+
+void BBDuringEquallyCoordinatePlace::SetDebugDraw(const ResouceBufferHelper::BufferData &STACK_DRAW_DATA)
+{
+	computeHelper->SetBuffer(
+		STACK_DRAW_DATA,
+		GRAPHICS_PRAMTYPE_DATA4
+	);
+
+	computeHelper->SetRootParam(
+		hitBoxCommonHandle,
+		GRAPHICS_PRAMTYPE_DATA5
+	);
+
+	debugFlag = true;
 }
 
 UINT BBDuringEquallyCoordinatePlace::CalculatingDeployableNumber(float DISTANCE, float RADIUS)

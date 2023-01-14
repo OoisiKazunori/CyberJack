@@ -1,9 +1,9 @@
 #include "CollisionDetectionOfMeshCircleAndParticle.h"
 
 CollisionDetectionOfMeshCircleAndParticle::CollisionDetectionOfMeshCircleAndParticle(
-	const ComputeBufferHelper::BufferData &MESH_HITBOX_POS,
-	const ComputeBufferHelper::BufferData &MESH_HITBOX_ID,
-	const ComputeBufferHelper::BufferData &PARTICLE_POS
+	const ResouceBufferHelper::BufferData &MESH_HITBOX_POS,
+	const ResouceBufferHelper::BufferData &MESH_HITBOX_ID,
+	const ResouceBufferHelper::BufferData &PARTICLE_POS
 )
 {
 	//ìñÇΩÇËîªíËç¿ïW
@@ -31,5 +31,5 @@ CollisionDetectionOfMeshCircleAndParticle::CollisionDetectionOfMeshCircleAndPart
 
 void CollisionDetectionOfMeshCircleAndParticle::Compute()
 {
-	computeHelper.Compute(PIPELINE_COMPUTE_NAME_HITBOX_MESHCIRCLE_PARTICLE, { 100,1,1 });
+	computeHelper.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_HITBOX_MESHCIRCLE_PARTICLE, { 100,1,1 });
 }

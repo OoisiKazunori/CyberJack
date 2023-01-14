@@ -266,7 +266,7 @@ D3D12_GPU_VIRTUAL_ADDRESS KazRenderHelper::ID3D12ResourceWrapper::GetGpuAddress(
 	return buffer->GetGPUVirtualAddress();
 }
 
-void *KazRenderHelper::ID3D12ResourceWrapper::GetMapAddres()
+void *KazRenderHelper::ID3D12ResourceWrapper::GetMapAddres()const
 {
 	void *dataMap = nullptr;
 	auto result = buffer->Map(0, nullptr, (void **)&dataMap);;

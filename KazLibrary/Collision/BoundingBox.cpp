@@ -1,29 +1,34 @@
 #include "BoundingBox.h"
 #include"../KazLibrary/Buffer/DescriptorHeapMgr.h"
 
-BoundingBox::BoundingBox(std::vector<DirectX::XMFLOAT4> VERT_DATA)
+BoundingBox::BoundingBox(const ResouceBufferHelper::BufferData &VERT_DATA, UINT VERT_MAX_NUM)
 {
-	//読み込んだモデルの情報から頂点座標を入手し、VRAMに保存する
-	vertBufferHandle = computeBuffer.CreateBuffer(sizeof(DirectX::XMFLOAT4), GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA, static_cast<BUFFER_SIZE>(VERT_DATA.size()));
-	computeBuffer.TransData(vertBufferHandle, VERT_DATA.data(), sizeof(DirectX::XMFLOAT4) * static_cast<BUFFER_SIZE>(VERT_DATA.size()));
+	computeBuffer.SetBuffer(VERT_DATA, GRAPHICS_PRAMTYPE_DATA);
 
 	//BBを形成する処理用意
-	bbBufferHandle = computeBuffer.CreateBuffer(sizeof(BoundingBoxBufferData), GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2, 1);
-	bbViewHandle = computeBuffer.GetDescriptorViewHandle(bbBufferHandle);
+	bbBufferHandle = computeBuffer.CreateBuffer(
+		sizeof(BoundingBoxBufferData),
+		GRAPHICS_RANGE_TYPE_UAV_DESC,
+		GRAPHICS_PRAMTYPE_DATA2,
+		1);
 
 	//モデルのTransform指定
-	matBufferHandle = computeBuffer.CreateBuffer(sizeof(CommonData), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3, 1);
+	matBufferHandle = computeBuffer.CreateBuffer(
+		sizeof(CommonData), 
+		GRAPHICS_RANGE_TYPE_CBV_VIEW, 
+		GRAPHICS_PRAMTYPE_DATA3, 1
+	);
 	DirectX::XMMATRIX lMat = KazMath::CaluWorld(KazMath::Transform3D({ 0.0f,0.0f,0.0f }, { 10.0f,10.0f,10.0f }, { 0.0f,0.0f,0.0f }), { 0.0f,1.0f,0.0f }, { 0.0f, 0.0f, 1.0f });
 
 	CommonData lData;
 	lData.scaleRotaMat = lMat;
-	lData.vertNum = static_cast<UINT>(VERT_DATA.size());
+	lData.vertNum = VERT_MAX_NUM;
 	computeBuffer.TransData(matBufferHandle, &lData, sizeof(CommonData));
 }
 
 BoundingBoxData BoundingBox::GetData()
 {
-	BoundingBoxBufferData *lData = (BoundingBoxBufferData *)computeBuffer.GetMapAddress(bbBufferHandle);
+	BoundingBoxBufferData *lData = (BoundingBoxBufferData *)computeBuffer.GetBufferData(bbBufferHandle).bufferWrapper.GetMapAddres();
 
 	BoundingBoxData lTmpData;
 	lTmpData.minPos = { lData->minPos.x, lData->minPos.y, lData->minPos.z };
@@ -31,12 +36,17 @@ BoundingBoxData BoundingBox::GetData()
 	return lTmpData;
 }
 
-D3D12_GPU_DESCRIPTOR_HANDLE BoundingBox::GetViewHandle()
+const ResouceBufferHelper::BufferData &BoundingBox::GetBBBuffer()
 {
-	return DescriptorHeapMgr::Instance()->GetGpuDescriptorView(bbViewHandle);
+	return computeBuffer.GetBufferData(bbBufferHandle);
+}
+
+RESOURCE_HANDLE BoundingBox::GetViewHandle()
+{
+	return computeBuffer.GetBufferData(bbBufferHandle).viewHandle;
 }
 
 void BoundingBox::Compute()
 {
-	computeBuffer.Compute(PIPELINE_COMPUTE_NAME_HITBOX_BB, { 3,1,1 });
+	computeBuffer.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_HITBOX_BB, { 3,1,1 });
 }

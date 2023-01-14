@@ -14,7 +14,7 @@ public:
 	void InitCount();
 	void Draw();
 
-	const ComputeBufferHelper::BufferData &GetStackBuffer();
+	const ResouceBufferHelper::BufferData &GetStackBuffer();
 private:
 
 	struct InputData

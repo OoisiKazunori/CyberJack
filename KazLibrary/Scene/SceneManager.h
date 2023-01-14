@@ -27,5 +27,6 @@ private:
 	bool sceneChangeFlag;
 
 	bool itisInArrayFlag;
+	bool gameFirstInitFlag;
 };
 
