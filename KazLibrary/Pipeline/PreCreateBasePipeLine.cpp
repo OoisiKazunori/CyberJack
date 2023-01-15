@@ -1856,7 +1856,6 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
 		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
 		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_SRV_DESC, GRAPHICS_PRAMTYPE_TEX));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "InitPosMeshParticle.hlsl", "CSmain", "cs_6_4"),

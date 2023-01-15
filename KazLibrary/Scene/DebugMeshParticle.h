@@ -334,8 +334,8 @@ private:
 	std::array<KazMath::Vec3<float>, 36>GetSquareVertData(const KazMath::Vec3<float> &BASE_POS);
 
 
-	CreateMeshBuffer lSphereModel;
-	CreateMeshBuffer lEnemyModel;
-	CreateMeshBuffer lSummonModel;
+	CreateMeshBuffer sphereModel;
+	CreateMeshBuffer enemyModel;
+	CreateMeshBuffer summonModel;
 };
 

@@ -6,9 +6,6 @@ RWStructuredBuffer<float3> vertciesData : register(u0);
 //o—Í
 AppendStructuredBuffer<ParticleData> outputData : register(u1);
 
-Texture2D<float4> tex : register(t0);
-SamplerState smp : register(s0);
-
 cbuffer CommonBuffer: register(b0)
 {
     //x vertNum, y bias,z perTriangleNum,w faceCountNum

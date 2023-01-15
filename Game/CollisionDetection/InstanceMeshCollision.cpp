@@ -1,23 +1,24 @@
 #include "InstanceMeshCollision.h"
 #include"../KazLibrary/Render/GPUParticleRender.h"
-InstanceMeshCollision::InstanceMeshCollision(const std::vector<ResouceBufferHelper::BufferData> &VERT_ARRAY, const std::vector<UINT> &VERT_NUM_ARRAY)
+InstanceMeshCollision::InstanceMeshCollision(const std::vector<InitMeshCollisionData> &INIT_DATA)
 {
 	//BBを作成する
-	for (int i = 0; i < VERT_ARRAY.size(); ++i)
+	for (int i = 0; i < INIT_DATA.size(); ++i)
 	{
-		bb.push_back(BoundingBox(VERT_ARRAY[i], VERT_NUM_ARRAY[i]));
-		bb[i].Compute();
+		//メッシュパーティクル生成
+		meshData.emplace_back(MeshParticleData(INIT_DATA[i].vertData, INIT_DATA[i].vertNumArray, INIT_DATA[i].meshParticleData, i));
+		//BB生成
+		meshData[i].bb.Compute();
 	}
 }
 
 void InstanceMeshCollision::Init()
 {
-
 	//メッシュパーティクルの当たり判定生成ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
-	for (int i = 0; i < bb.size(); ++i)
+	for (int i = 0; i < meshData.size(); ++i)
 	{
 		//メッシュ球生成
-		generateMeshHitBox.push_back(BBDuringEquallyCoordinatePlace(bb[i].GetBBBuffer(), bb[i].GetData()));
+		generateMeshHitBox.emplace_back(BBDuringEquallyCoordinatePlace(meshData[i].bb.GetBBBuffer(), meshData[i].bb.GetData()));
 
 #ifdef DEBUG
 		generateMeshHitBox[i].SetDebugDraw(GPUParticleRender::Instance()->GetStackBuffer());
@@ -25,7 +26,7 @@ void InstanceMeshCollision::Init()
 		generateMeshHitBox[i].Compute();
 
 		//パーティクルとリンク付け
-		//linkMeshHitBoxAndParticle.push_back(GenerateCollisionOfParticle(generateMeshHitBox[i].GetHitBoxPosData(), {}));
+		//linkMeshHitBoxAndParticle.emplace_back(GenerateCollisionOfParticle(generateMeshHitBox[i].GetHitBoxPosData(), meshData[i].meshParticle.GetBuffer()));
 		//linkMeshHitBoxAndParticle[i].Compute();
 	}
 	//メッシュパーティクルの当たり判定生成ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー

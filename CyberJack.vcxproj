@@ -121,6 +121,7 @@
     <ClCompile Include="Game\Effect\DeadParticle.cpp" />
     <ClCompile Include="Game\Effect\GalacticParticle.cpp" />
     <ClCompile Include="Game\Effect\InstanceMeshParticle.cpp" />
+    <ClCompile Include="Game\Effect\MeshParticle.cpp" />
     <ClCompile Include="Game\Effect\MeshParticleEmitter.cpp" />
     <ClCompile Include="Game\Effect\FireEffect.cpp" />
     <ClCompile Include="Game\Effect\MisileSmokeEmitter.cpp" />
@@ -292,6 +293,7 @@
     <ClInclude Include="Game\Effect\DeadParticle.h" />
     <ClInclude Include="Game\Effect\GalacticParticle.h" />
     <ClInclude Include="Game\Effect\InstanceMeshParticle.h" />
+    <ClInclude Include="Game\Effect\MeshParticle.h" />
     <ClInclude Include="Game\Effect\MeshParticleEmitter.h" />
     <ClInclude Include="Game\Effect\FireEffect.h" />
     <ClInclude Include="Game\Effect\MisileSmokeEmitter.h" />

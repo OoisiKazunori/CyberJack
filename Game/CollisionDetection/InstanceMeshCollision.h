@@ -4,6 +4,14 @@
 #include"../KazLibrary/Collision/BBDuringEquallyCoordinatePlace.h"
 #include"../KazLibrary/Helper/ResouceBufferHelper.h"
 #include"../Game/CollisionDetection/GenerateCollisionOfParticle.h"
+#include"../Game/Effect/MeshParticle.h"
+
+struct InitMeshCollisionData
+{
+	ResouceBufferHelper::BufferData vertData;
+	UINT vertNumArray;
+	InitMeshParticleData meshParticleData;
+};
 
 class InstanceMeshCollision
 {
@@ -12,14 +20,29 @@ public:
 	/// 頂点情報、メッシュパーティクル座標配列を入れてメッシュパーティクルの当たり判定を生成する。
 	/// </summary>
 	InstanceMeshCollision(
-		const std::vector<ResouceBufferHelper::BufferData> &VERT_DATA,
-		const std::vector<UINT> &VERT_NUM_ARRAY
+		const std::vector<InitMeshCollisionData> &INIT_DATA
 	);
 
 	void Init();
 	void Compute();
+
 private:
-	std::vector<BoundingBox> bb;
 	std::vector<BBDuringEquallyCoordinatePlace> generateMeshHitBox;
 	std::vector<GenerateCollisionOfParticle> linkMeshHitBoxAndParticle;
+
+	struct MeshParticleData
+	{
+		BoundingBox bb;
+		MeshParticle meshParticle;
+
+		MeshParticleData(
+			const ResouceBufferHelper::BufferData &VERT_DATA,
+			const UINT &VERT_NUM_ARRAY,
+			const InitMeshParticleData &DATA, UINT ID)
+			:bb(VERT_DATA, VERT_NUM_ARRAY),
+			meshParticle(DATA, ID)
+		{
+		};
+	};
+	std::vector<MeshParticleData>meshData;
 };
