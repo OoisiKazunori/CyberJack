@@ -5,6 +5,7 @@
 #include"../KazLibrary/Helper/ResouceBufferHelper.h"
 #include"../Game/CollisionDetection/GenerateCollisionOfParticle.h"
 #include"../Game/Effect/MeshParticle.h"
+#include"../Game/CollisionDetection/CollisionDetectionOfMeshCircleAndParticle.h"
 
 struct InitMeshCollisionData
 {

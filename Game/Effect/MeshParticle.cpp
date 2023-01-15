@@ -29,7 +29,7 @@ MeshParticle::MeshParticle(const InitMeshParticleData &DATA, UINT ID)
 	IsSetBuffer(DATA.uvData);
 
 
-	ComputePipeLineNames lPipelineName = PIPELINE_COMPUTE_NAME_NONE;
+	pipelineName = PIPELINE_COMPUTE_NAME_NONE;
 	RESOURCE_HANDLE lCommonHandle;
 	CommonWithColorData lCommonAndColorData;
 	CommonData lCommonData;
@@ -48,7 +48,7 @@ MeshParticle::MeshParticle(const InitMeshParticleData &DATA, UINT ID)
 		lCommonAndColorData.id = ID;
 		bufferHelper.TransData(lCommonHandle, &lCommonAndColorData, sizeof(CommonWithColorData));
 
-		lPipelineName = PIPELINE_COMPUTE_NAME_INIT_POS_MESHPARTICLE;
+		pipelineName = PIPELINE_COMPUTE_NAME_INIT_POS_MESHPARTICLE;
 		break;
 	case 2:
 		lCommonHandle = bufferHelper.SetBuffer(commonBufferData, GRAPHICS_PRAMTYPE_DATA4);
@@ -57,7 +57,7 @@ MeshParticle::MeshParticle(const InitMeshParticleData &DATA, UINT ID)
 		lCommonData.id = ID;
 		bufferHelper.TransData(lCommonHandle, &lCommonData, sizeof(CommonData));
 
-		lPipelineName = PIPELINE_COMPUTE_NAME_INIT_POSUV_MESHPARTICLE;
+		pipelineName = PIPELINE_COMPUTE_NAME_INIT_POSUV_MESHPARTICLE;
 		break;
 	default:
 		break;
@@ -80,13 +80,31 @@ MeshParticle::MeshParticle(const InitMeshParticleData &DATA, UINT ID)
 		lRootParam,
 		sizeof(InitOutputData),
 		PARTICLE_MAX_NUM,
-		false);
+		true);
 
 	//パーティクル情報の詰め込み
 	bufferHelper.SetBuffer(particleBuffer, lRootParam);
-
-
-	bufferHelper.StackToCommandListAndCallDispatch(lPipelineName, { 1000,1,1 });
-
 #pragma endregion
+
+
+	UINT lNum = 0;
+	KazBufferHelper::BufferResourceData lBufferData
+	(
+		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		D3D12_HEAP_FLAG_NONE,
+		CD3DX12_RESOURCE_DESC::Buffer(sizeof(UINT)),
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		"CopyCounterBuffer"
+	);
+	copyBuffer.CreateBuffer(lBufferData);
+	copyBuffer.TransData(&lNum, sizeof(UINT));
+
+	bufferHelper.InitCounterBuffer(copyBuffer.buffer);
+	bufferHelper.StackToCommandListAndCallDispatch(pipelineName, { 1000,1,1 });
+}
+
+void MeshParticle::Compute()
+{
+	bufferHelper.StackToCommandListAndCallDispatch(pipelineName, { 1000,1,1 });
 }

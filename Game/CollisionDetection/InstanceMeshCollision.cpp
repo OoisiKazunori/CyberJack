@@ -26,8 +26,8 @@ void InstanceMeshCollision::Init()
 		generateMeshHitBox[i].Compute();
 
 		//パーティクルとリンク付け
-		//linkMeshHitBoxAndParticle.emplace_back(GenerateCollisionOfParticle(generateMeshHitBox[i].GetHitBoxPosData(), meshData[i].meshParticle.GetBuffer()));
-		//linkMeshHitBoxAndParticle[i].Compute();
+		linkMeshHitBoxAndParticle.emplace_back(GenerateCollisionOfParticle(generateMeshHitBox[i].GetHitBoxPosData(), meshData[i].meshParticle.GetBuffer()));
+		linkMeshHitBoxAndParticle[i].Compute();
 	}
 	//メッシュパーティクルの当たり判定生成ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 
@@ -39,8 +39,9 @@ void InstanceMeshCollision::Compute()
 
 	//メッシュ球と対象の当たり判定
 
-
 	//衝突判定が取れたパーティクルの挙動(ここで描画クラスに渡す)
 
-	generateMeshHitBox[0].Compute();
+	//パーティクル描画
+
+	//当たり判定パーティクルの描画
 }

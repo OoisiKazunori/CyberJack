@@ -11,6 +11,8 @@ class MeshParticle
 {
 public:
 	MeshParticle(const InitMeshParticleData &DATA, UINT ID);
+
+	void Compute();
 	const ResouceBufferHelper::BufferData &GetBuffer()
 	{
 		return particleBuffer;
@@ -21,6 +23,7 @@ private:
 	ResouceBufferHelper::BufferData commonAndColorBufferData;
 	ResouceBufferHelper bufferHelper;
 
+	ComputePipeLineNames pipelineName;
 
 
 	struct WorldMatData
@@ -68,5 +71,7 @@ private:
 		}
 	};
 
-	void SetInitData();
+
+
+	KazRenderHelper::ID3D12ResourceWrapper copyBuffer;
 };

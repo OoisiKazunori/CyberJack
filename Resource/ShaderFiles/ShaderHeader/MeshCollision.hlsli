@@ -21,3 +21,9 @@ struct MeshHitBox
     uint meshID;
     uint3 id;
 };
+
+struct HitIDData
+{
+    uint meshID;
+    uint3 id;
+};

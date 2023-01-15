@@ -1,6 +1,7 @@
 #include"../ShaderHeader/KazMathHeader.hlsli"
 #include"../ShaderHeader/MeshCollision.hlsli"
 #include"../ShaderHeader/Collision.hlsli"
+#include"../ShaderHeader/GPUParticle.hlsli"
 
 cbuffer RootConstants : register(b0)
 {
@@ -13,10 +14,8 @@ cbuffer RootConstants : register(b0)
 
 //メッシュ当たり判定
 RWStructuredBuffer<MeshHitBox> meshHitBoxPos : register(u0);
-RWStructuredBuffer<uint3> meshHitBoxID : register(u1);
-
 //何処の球と判定を取ったか
-AppendStructuredBuffer<uint3> hitBoxData : register(u1);
+AppendStructuredBuffer<HitIDData> hitBoxData : register(u1);
 
 //メッシュパーティクルと球の判定
 [numthreads(1, 1, 1)]
@@ -35,6 +34,9 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     //当たり判定が取れたら当たったインデックスを保存し、衝突後の処理に使う
     if(CheckCircleAndCircle(meshHitBox,hitBox))
     {
-        hitBoxData.Append(meshHitBoxID[index]);
+        HitIDData hitData;
+        hitData.meshID = meshHitBoxPos[index].meshID;
+        hitData.id = meshHitBoxPos[index].id;
+        hitBoxData.Append(hitData);
     }
 }

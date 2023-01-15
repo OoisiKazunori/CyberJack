@@ -19,6 +19,7 @@ private:
 	{
 		DirectX::XMFLOAT3 pos;
 		DirectX::XMFLOAT4 color;
+		UINT meshID;
 		DirectX::XMUINT3 id;
 	};
 
