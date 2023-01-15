@@ -11,6 +11,8 @@
 #include"../KazLibrary/Loader/ObjResourceMgr.h"
 #include"../KazLibrary/Buffer/UavViewHandleMgr.h"
 
+int BBDuringEquallyCoordinatePlace::MeshIdNum = 0;
+
 BBDuringEquallyCoordinatePlace::BBDuringEquallyCoordinatePlace(const ResouceBufferHelper::BufferData &BB_BUFFER_DATA, const BoundingBoxData &DATA) :data(DATA), countNum(0), debugFlag(false)
 {
 	computeHelper = std::make_unique<ResouceBufferHelper>();
@@ -28,30 +30,24 @@ BBDuringEquallyCoordinatePlace::BBDuringEquallyCoordinatePlace(const ResouceBuff
 	computeHelper->SetBuffer(BB_BUFFER_DATA, GRAPHICS_PRAMTYPE_DATA);
 
 	//当たり判定座標の用意
-	hitBoxPosHandle = computeHelper->CreateBuffer(
-		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(DirectX::XMFLOAT3) * countNum),
+	hitBoxDataHandle = computeHelper->CreateBuffer(
+		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(MeshHitBoxData) * countNum),
 		GRAPHICS_RANGE_TYPE_UAV_DESC,
 		GRAPHICS_PRAMTYPE_DATA2,
-		sizeof(DirectX::XMFLOAT3),
-		countNum
-	);
-
-	//当たり判定IDの用意
-	hitBoxIDHandle = computeHelper->CreateBuffer(
-		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(DirectX::XMUINT3) * countNum),
-		GRAPHICS_RANGE_TYPE_UAV_DESC,
-		GRAPHICS_PRAMTYPE_DATA3,
-		sizeof(DirectX::XMUINT3),
+		sizeof(MeshHitBoxData),
 		countNum
 	);
 
 	//事前に計算しておくもの用意
-	hitBoxCommonHandle = computeHelper->CreateBuffer(sizeof(HitBoxConstBufferData), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4, 1);
+	hitBoxCommonHandle = computeHelper->CreateBuffer(sizeof(HitBoxConstBufferData), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3, 1);
 	HitBoxConstBufferData lData;
 	lData.diameter = diameter;
 	lData.xMax = threadNumData.x;
 	lData.xyMax = threadNumData.x * threadNumData.y;
+	lData.id = MeshIdNum;
 	computeHelper->TransData(hitBoxCommonHandle, &lData, sizeof(HitBoxConstBufferData));
+
+	++MeshIdNum;
 }
 
 void BBDuringEquallyCoordinatePlace::Compute()
@@ -70,12 +66,12 @@ void BBDuringEquallyCoordinatePlace::SetDebugDraw(const ResouceBufferHelper::Buf
 {
 	computeHelper->SetBuffer(
 		STACK_DRAW_DATA,
-		GRAPHICS_PRAMTYPE_DATA4
+		GRAPHICS_PRAMTYPE_DATA3
 	);
 
 	computeHelper->SetRootParam(
 		hitBoxCommonHandle,
-		GRAPHICS_PRAMTYPE_DATA5
+		GRAPHICS_PRAMTYPE_DATA4
 	);
 
 	debugFlag = true;

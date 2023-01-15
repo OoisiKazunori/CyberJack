@@ -11,11 +11,13 @@ struct ParticleHitBoxData
 {
     float3 pos;
     float4 color;
+    uint meshID;
     uint3 id;
 };
 
 struct MeshHitBox
 {
     float3 pos;
+    uint meshID;
     uint3 id;
 };

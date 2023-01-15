@@ -4,16 +4,15 @@
 
 //BBの値
 RWStructuredBuffer<BoundingBoxData> bbPosData : register(u0);
-//当たり判定座標
-RWStructuredBuffer<float3> hitBoxData : register(u1);
-//当たり判定のID
-RWStructuredBuffer<uint3> idData : register(u2);
+//当たり判定
+RWStructuredBuffer<MeshHitBox> hitBoxData : register(u1);
 //デバック用、当たり判定確認
-AppendStructuredBuffer<GPUParticleInput> outputData : register(u3);
+AppendStructuredBuffer<GPUParticleInput> outputData : register(u2);
 
 cbuffer RootConstants : register(b0)
 {
     float diameter;
+    uint id;
     uint xMax;
     uint xyMax;
 };
@@ -26,9 +25,9 @@ void CSmain(uint3 groupId : SV_GroupID)
 
     //端から順に球を並べる
     float3 pos = (bbPosData[0].minPos + diameter / 2.0f) + groupId * diameter;
-    hitBoxData[index] = pos;
-    idData[index] = groupId;
-
+    hitBoxData[index].pos = pos;
+    hitBoxData[index].id = groupId;
+    hitBoxData[index].meshID = id;
 }
 
 
@@ -40,9 +39,10 @@ void DebugCSmain(uint3 groupId : SV_GroupID)
 
     //端から順に球を並べる
     float3 pos = (bbPosData[0].minPos + diameter / 2.0f) + groupId * diameter;
-    hitBoxData[index] = pos;
-    idData[index] = groupId;
-
+    hitBoxData[index].pos = pos;
+    hitBoxData[index].id = groupId;
+    hitBoxData[index].meshID = id;
+    
     //BB内にきちんと配置出来ているか計算する。
     GPUParticleInput debugOutput;
     debugOutput.worldMat = CalucurateWorldMat(pos,float3(0.1f,0.1f,0.1f),float3(0.0f,0.0f,0.0f));

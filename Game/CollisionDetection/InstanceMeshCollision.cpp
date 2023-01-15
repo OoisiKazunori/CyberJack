@@ -42,4 +42,5 @@ void InstanceMeshCollision::Compute()
 
 	//衝突判定が取れたパーティクルの挙動(ここで描画クラスに渡す)
 
+	generateMeshHitBox[0].Compute();
 }

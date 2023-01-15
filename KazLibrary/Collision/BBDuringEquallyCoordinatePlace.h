@@ -17,11 +17,7 @@ public:
 	}
 	const ResouceBufferHelper::BufferData GetHitBoxPosData()
 	{
-		return computeHelper->GetBufferData(hitBoxPosHandle);
-	}
-	const ResouceBufferHelper::BufferData GetHitBoxIDData()
-	{
-		return computeHelper->GetBufferData(hitBoxIDHandle);
+		return computeHelper->GetBufferData(hitBoxDataHandle);
 	}
 	std::unique_ptr<ResouceBufferHelper> computeHelper;
 
@@ -30,7 +26,7 @@ public:
 private:
 
 	D3D12_GPU_DESCRIPTOR_HANDLE bbViewHandle;
-	RESOURCE_HANDLE hitBoxPosHandle, hitBoxIDHandle;
+	RESOURCE_HANDLE hitBoxDataHandle;
 	RESOURCE_HANDLE hitBoxCommonHandle;
 
 	BoundingBoxData data;
@@ -40,6 +36,7 @@ private:
 	struct HitBoxConstBufferData
 	{
 		float diameter;
+		UINT id;
 		UINT xMax;
 		UINT xyMax;
 	};
@@ -47,6 +44,7 @@ private:
 	struct MeshHitBoxData
 	{
 		DirectX::XMFLOAT3 pos;
+		UINT meshID;
 		DirectX::XMUINT3 id;
 	};
 
@@ -54,4 +52,6 @@ private:
 	UINT countNum;
 
 	bool debugFlag;
+
+	static int MeshIdNum;
 };

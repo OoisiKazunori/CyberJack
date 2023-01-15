@@ -17,9 +17,9 @@ GenerateCollisionOfParticle::GenerateCollisionOfParticle(const ResouceBufferHelp
 	RESOURCE_HANDLE lCommonBufferHandle = computeHelper.CreateBuffer(sizeof(CommonData), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4, 1);
 
 	CommonData lCommonData;
-	lCommonData.particleRadius = 10.0f;
-	lCommonData.meshHitBoxMaxNum = 4;
-	lCommonData.meshHitBoxRadius = 1.0f;
+	lCommonData.particleRadius = 1.0f;
+	lCommonData.meshHitBoxMaxNum = 6 * 6 * 6;
+	lCommonData.meshHitBoxRadius = 10.0f;
 	computeHelper.TransData(lCommonBufferHandle, &lCommonData, sizeof(CommonData));
 }
 

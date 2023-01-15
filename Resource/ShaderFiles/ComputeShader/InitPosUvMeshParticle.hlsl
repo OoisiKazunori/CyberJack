@@ -1,5 +1,4 @@
 #include"../ShaderHeader/KazMathHeader.hlsli"
-#include"../ShaderHeader/ExcuteIndirectHeader.hlsli"
 #include"../ShaderHeader/GPUParticle.hlsli"
 
 struct InputData

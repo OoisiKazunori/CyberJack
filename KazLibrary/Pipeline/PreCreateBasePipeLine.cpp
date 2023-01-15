@@ -1762,8 +1762,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		RootSignatureDataTest rootsignature;
 		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
 		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "BBDuringEquallyCoordinatePlace.hlsl", "CSmain", "cs_6_4"),
@@ -1778,8 +1777,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
 		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
 		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA4));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA5));
+		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "BBDuringEquallyCoordinatePlace.hlsl", "DebugCSmain", "cs_6_4"),
