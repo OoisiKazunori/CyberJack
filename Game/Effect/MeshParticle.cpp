@@ -23,7 +23,6 @@ MeshParticle::MeshParticle(const InitMeshParticleData &DATA, UINT ID)
 	);
 
 
-
 	//何の情報を読み込むかでパイプラインの種類を変える
 	IsSetBuffer(DATA.vertData);
 	IsSetBuffer(DATA.uvData);

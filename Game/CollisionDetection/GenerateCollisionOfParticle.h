@@ -9,7 +9,8 @@ class GenerateCollisionOfParticle
 public:
 	GenerateCollisionOfParticle(
 		const ResouceBufferHelper::BufferData &HITBOX_DATA,
-		const ResouceBufferHelper::BufferData &PARTICLE_DATA
+		const ResouceBufferHelper::BufferData &PARTICLE_DATA,
+		const ResouceBufferHelper::BufferData &STACK_PARTICLE_HITBOX_DATA
 	);
 	void Compute();
 

@@ -111,6 +111,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Game\CollisionDetection\CollisionDetectionOfMeshCircleAndParticle.cpp" />
+    <ClCompile Include="Game\CollisionDetection\ComputeParticleAvoidSphere.cpp" />
     <ClCompile Include="Game\CollisionDetection\GenerateCollisionOfParticle.cpp" />
     <ClCompile Include="Game\CollisionDetection\GPUMeshAndSphereHitBox.cpp" />
     <ClCompile Include="Game\CollisionDetection\InstanceMeshCollision.cpp" />
@@ -283,6 +284,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\CollisionDetection\CollisionDetectionOfMeshCircleAndParticle.h" />
+    <ClInclude Include="Game\CollisionDetection\ComputeParticleAvoidSphere.h" />
     <ClInclude Include="Game\CollisionDetection\GenerateCollisionOfParticle.h" />
     <ClInclude Include="Game\CollisionDetection\GPUMeshAndSphereHitBox.h" />
     <ClInclude Include="Game\CollisionDetection\InstanceMeshCollision.h" />

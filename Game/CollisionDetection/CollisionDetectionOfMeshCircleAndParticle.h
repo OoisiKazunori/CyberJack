@@ -14,9 +14,11 @@ public:
 	void Compute();
 
 	const ResouceBufferHelper::BufferData &GetStackMeshCircleBuffer();
+	const ResouceBufferHelper::BufferData &GetStackIDBuffer();
+
 private:
 	ResouceBufferHelper computeHelper;
-	RESOURCE_HANDLE cpuHitBoxBufferHandle,meshCircleArrayBufferHandle;
+	RESOURCE_HANDLE cpuHitBoxBufferHandle, meshCircleArrayBufferHandle, hitIdBufferHandle;
 	RESOURCE_HANDLE commonDataHandle;
 
 	struct CommonData

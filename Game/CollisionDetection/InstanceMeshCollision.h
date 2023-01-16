@@ -6,6 +6,7 @@
 #include"../Game/CollisionDetection/GenerateCollisionOfParticle.h"
 #include"../Game/Effect/MeshParticle.h"
 #include"../Game/CollisionDetection/CollisionDetectionOfMeshCircleAndParticle.h"
+#include"../Game/CollisionDetection/ComputeParticleAvoidSphere.h"
 
 struct InitMeshCollisionData
 {
@@ -33,6 +34,7 @@ private:
 	std::vector<GenerateCollisionOfParticle> linkMeshHitBoxAndParticle;
 
 	std::unique_ptr<CollisionDetectionOfMeshCircleAndCPUHitBox> cpuAndMeshCircleHitBox;
+	ComputeParticleAvoidSphere particleAvoidParticle;
 
 	struct MeshParticleData
 	{
@@ -50,5 +52,9 @@ private:
 	};
 	std::vector<MeshParticleData>meshData;
 	std::vector<Sphere>hitBoxData;
+
+
+
+	KazRenderHelper::ID3D12ResourceWrapper copyBuffer;
 
 };

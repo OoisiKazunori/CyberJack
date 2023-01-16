@@ -50,6 +50,6 @@ void DebugCSmain(uint3 groupId : SV_GroupID)
     //BB内にきちんと配置出来ているか計算する。
     GPUParticleInput debugOutput;
     debugOutput.worldMat = CalucurateWorldMat(pos,float3(0.1f,0.1f,0.1f),float3(0.0f,0.0f,0.0f));
-    debugOutput.color = float4(1,1,1,1);
+    debugOutput.color = float4(0,1,0,1);
     outputData.Append(debugOutput);
 }

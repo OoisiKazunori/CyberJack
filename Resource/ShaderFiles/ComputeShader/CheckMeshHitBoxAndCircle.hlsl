@@ -28,9 +28,18 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     uint index = groupThreadID.x;
     index += 1024 * groupId.x;
 
+    if(216 <= index)
+    {
+        return;
+    }
+
     CircleData meshHitBox;
     meshHitBox.pos = meshHitBoxArrayData[index].pos;
     meshHitBox.radius = particleRadius;
+
+    HitIDData idData;
+    idData.meshID = meshHitBoxArrayData[index].meshID;
+    idData.id = meshHitBoxArrayData[index].id;
 
     CircleData hitBox;
     for(int i = 0;i < cpuHitBoxNum; ++i)
@@ -41,10 +50,11 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
         //当たり判定が取れたら当たったインデックスを保存し、衝突後の処理に使う
         if(CheckCircleAndCircle(meshHitBox,hitBox))
         {
-            HitIDData hitData;
-            hitData.meshID = meshHitBoxArrayData[index].meshID;
-            hitData.id = meshHitBoxArrayData[index].id;
-            hitBoxAppendData.Append(hitData);
+            hitBoxAppendData.Append(idData);
+            return;
         }
     }
+    idData.meshID = -1;
+    idData.id = uint3(-1,-1,-1);
+    hitBoxAppendData.Append(idData);
 }

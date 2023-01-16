@@ -37,18 +37,19 @@ CollisionDetectionOfMeshCircleAndCPUHitBox::CollisionDetectionOfMeshCircleAndCPU
 		KazBufferHelper::BufferResourceData(
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 			D3D12_HEAP_FLAG_NONE,
-			CD3DX12_RESOURCE_DESC::Buffer(KazBufferHelper::GetBufferSize<BUFFER_SIZE>(sphereHitBoxArray.size(), sizeof(DirectX::XMMATRIX))),
+			CD3DX12_RESOURCE_DESC::Buffer(KazBufferHelper::GetBufferSize<BUFFER_SIZE>(sphereHitBoxArray.size(), sizeof(SphereData))),
 			D3D12_RESOURCE_STATE_GENERIC_READ,
 			nullptr,
 			"RAMmatData")
 	);
 
 	//当たった情報判定
-	computeHelper.CreateBuffer(
-		sizeof(HitIDData),
+	hitIdBufferHandle = computeHelper.CreateBuffer(
+		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(HitIDData) * 10000),
 		GRAPHICS_RANGE_TYPE_UAV_DESC,
 		GRAPHICS_PRAMTYPE_DATA3,
-		1000,
+		sizeof(HitIDData),
+		10000,
 		true
 	);
 
@@ -68,10 +69,9 @@ CollisionDetectionOfMeshCircleAndCPUHitBox::CollisionDetectionOfMeshCircleAndCPU
 	copyBuffer.TransData(&lNum, sizeof(UINT));
 	computeHelper.InitCounterBuffer(copyBuffer.buffer);
 
-
 	CommonData lCommonData;
 	lCommonData.cpuHitBoxNum = 1;
-	lCommonData.particleRadius = 0.5f;
+	lCommonData.particleRadius = 0.1f;
 	computeHelper.TransData(commonDataHandle, &lCommonData, sizeof(CommonData));
 }
 
@@ -84,7 +84,7 @@ void CollisionDetectionOfMeshCircleAndCPUHitBox::Compute()
 		lMatArray[i].pos = sphereHitBoxArray[i].center->ConvertXMFLOAT3();
 		lMatArray[i].radius = sphereHitBoxArray[i].radius;
 	}
-	motherMatrixBuffer.TransData(lMatArray.data(), sizeof(DirectX::XMMATRIX) * static_cast<int>(lMatArray.size()));
+	motherMatrixBuffer.TransData(lMatArray.data(), sizeof(SphereData) * static_cast<int>(lMatArray.size()));
 
 
 	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
@@ -106,7 +106,6 @@ void CollisionDetectionOfMeshCircleAndCPUHitBox::Compute()
 	);
 	//CPU当たり判定の転送ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 
-
 	computeHelper.InitCounterBuffer(copyBuffer.buffer);
 	computeHelper.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_HITBOX_MESHCIRCLE_PARTICLE, { 100,1,1 });
 }
@@ -114,4 +113,9 @@ void CollisionDetectionOfMeshCircleAndCPUHitBox::Compute()
 const ResouceBufferHelper::BufferData &CollisionDetectionOfMeshCircleAndCPUHitBox::GetStackMeshCircleBuffer()
 {
 	return computeHelper.GetBufferData(meshCircleArrayBufferHandle);
+}
+
+const ResouceBufferHelper::BufferData &CollisionDetectionOfMeshCircleAndCPUHitBox::GetStackIDBuffer()
+{
+	return computeHelper.GetBufferData(hitIdBufferHandle);
 }

@@ -171,6 +171,7 @@
     <ClCompile Include="Game\CollisionDetection\InstanceMeshCollision.cpp" />
     <ClCompile Include="Game\CollisionDetection\GenerateCollisionOfParticle.cpp" />
     <ClCompile Include="Game\Effect\MeshParticle.cpp" />
+    <ClCompile Include="Game\CollisionDetection\ComputeParticleAvoidSphere.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -357,6 +358,7 @@
     <ClInclude Include="Game\CollisionDetection\InstanceMeshCollision.h" />
     <ClInclude Include="Game\CollisionDetection\GenerateCollisionOfParticle.h" />
     <ClInclude Include="Game\Effect\MeshParticle.h" />
+    <ClInclude Include="Game\CollisionDetection\ComputeParticleAvoidSphere.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
