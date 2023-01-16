@@ -6,8 +6,10 @@
 RWStructuredBuffer<BoundingBoxData> bbPosData : register(u0);
 //当たり判定
 RWStructuredBuffer<MeshHitBox> hitBoxData : register(u1);
+//当たり判定
+AppendStructuredBuffer<MeshHitBox> stackHitBoxData : register(u2);
 //デバック用、当たり判定確認
-AppendStructuredBuffer<GPUParticleInput> outputData : register(u2);
+AppendStructuredBuffer<GPUParticleInput> outputData : register(u3);
 
 cbuffer RootConstants : register(b0)
 {
@@ -28,6 +30,7 @@ void CSmain(uint3 groupId : SV_GroupID)
     hitBoxData[index].pos = pos;
     hitBoxData[index].id = groupId;
     hitBoxData[index].meshID = id;
+    stackHitBoxData.Append(hitBoxData[index]);
 }
 
 
@@ -41,7 +44,8 @@ void DebugCSmain(uint3 groupId : SV_GroupID)
     float3 pos = (bbPosData[0].minPos + diameter / 2.0f) + groupId * diameter;
     hitBoxData[index].pos = pos;
     hitBoxData[index].id = groupId;
-    hitBoxData[index].meshID = id;
+    hitBoxData[index].meshID = id;    
+    stackHitBoxData.Append(hitBoxData[index]);
     
     //BB内にきちんと配置出来ているか計算する。
     GPUParticleInput debugOutput;

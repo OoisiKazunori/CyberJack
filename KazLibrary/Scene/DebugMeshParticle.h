@@ -321,6 +321,7 @@ private:
 	FbxModelRenderPtr modelHitBox;
 
 	//GPUè„Ç≈ÇÃòcÇ›îªíË
+	KazMath::Vec3<float>collisionPos;
 	std::unique_ptr<InstanceMeshCollision> meshCollision;
 	BoxPolygonRenderPtr minPos, maxPos;
 

@@ -12,6 +12,7 @@ struct InitMeshCollisionData
 	ResouceBufferHelper::BufferData vertData;
 	UINT vertNumArray;
 	InitMeshParticleData meshParticleData;
+	Sphere hitBox;
 };
 
 class InstanceMeshCollision
@@ -31,6 +32,8 @@ private:
 	std::vector<BBDuringEquallyCoordinatePlace> generateMeshHitBox;
 	std::vector<GenerateCollisionOfParticle> linkMeshHitBoxAndParticle;
 
+	std::unique_ptr<CollisionDetectionOfMeshCircleAndCPUHitBox> cpuAndMeshCircleHitBox;
+
 	struct MeshParticleData
 	{
 		BoundingBox bb;
@@ -46,4 +49,6 @@ private:
 		};
 	};
 	std::vector<MeshParticleData>meshData;
+	std::vector<Sphere>hitBoxData;
+
 };

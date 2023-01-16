@@ -8,7 +8,11 @@
 class BBDuringEquallyCoordinatePlace
 {
 public:
-	BBDuringEquallyCoordinatePlace(const ResouceBufferHelper::BufferData &BB_BUFFER_DATA, const BoundingBoxData &DATA);
+	BBDuringEquallyCoordinatePlace(
+		const ResouceBufferHelper::BufferData &BB_BUFFER_DATA, 
+		const BoundingBoxData &DATA,
+		const ResouceBufferHelper::BufferData &STACK_MESH_CIRCLE_DATA
+	);
 
 	void Compute();
 	UINT MaxHitBoxPosNum()

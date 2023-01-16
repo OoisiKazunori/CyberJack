@@ -9,7 +9,11 @@ InstanceMeshCollision::InstanceMeshCollision(const std::vector<InitMeshCollision
 		meshData.emplace_back(MeshParticleData(INIT_DATA[i].vertData, INIT_DATA[i].vertNumArray, INIT_DATA[i].meshParticleData, i));
 		//BB生成
 		meshData[i].bb.Compute();
+
+		hitBoxData.emplace_back(INIT_DATA[i].hitBox);
 	}
+
+	cpuAndMeshCircleHitBox = std::make_unique<CollisionDetectionOfMeshCircleAndCPUHitBox>(hitBoxData);
 }
 
 void InstanceMeshCollision::Init()
@@ -18,7 +22,7 @@ void InstanceMeshCollision::Init()
 	for (int i = 0; i < meshData.size(); ++i)
 	{
 		//メッシュ球生成
-		generateMeshHitBox.emplace_back(BBDuringEquallyCoordinatePlace(meshData[i].bb.GetBBBuffer(), meshData[i].bb.GetData()));
+		generateMeshHitBox.emplace_back(BBDuringEquallyCoordinatePlace(meshData[i].bb.GetBBBuffer(), meshData[i].bb.GetData(), cpuAndMeshCircleHitBox->GetStackMeshCircleBuffer()));
 
 #ifdef DEBUG
 		generateMeshHitBox[i].SetDebugDraw(GPUParticleRender::Instance()->GetStackBuffer());
@@ -38,10 +42,8 @@ void InstanceMeshCollision::Compute()
 	//メッシュ球とパーティクルの親子関係
 
 	//メッシュ球と対象の当たり判定
+	//cpuAndMeshCircleHitBox->Compute();
 
 	//衝突判定が取れたパーティクルの挙動(ここで描画クラスに渡す)
 
-	//パーティクル描画
-
-	//当たり判定パーティクルの描画
 }

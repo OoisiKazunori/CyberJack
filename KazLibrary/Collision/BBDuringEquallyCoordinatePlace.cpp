@@ -13,7 +13,7 @@
 
 int BBDuringEquallyCoordinatePlace::MeshIdNum = 0;
 
-BBDuringEquallyCoordinatePlace::BBDuringEquallyCoordinatePlace(const ResouceBufferHelper::BufferData &BB_BUFFER_DATA, const BoundingBoxData &DATA) :data(DATA), countNum(0), debugFlag(false)
+BBDuringEquallyCoordinatePlace::BBDuringEquallyCoordinatePlace(const ResouceBufferHelper::BufferData &BB_BUFFER_DATA, const BoundingBoxData &DATA, const ResouceBufferHelper::BufferData &STACK_MESH_CIRCLE_DATA) :data(DATA), countNum(0), debugFlag(false)
 {
 	computeHelper = std::make_unique<ResouceBufferHelper>();
 
@@ -38,8 +38,12 @@ BBDuringEquallyCoordinatePlace::BBDuringEquallyCoordinatePlace(const ResouceBuff
 		countNum
 	);
 
+	//メッシュ球のスタック情報
+	computeHelper->SetBuffer(STACK_MESH_CIRCLE_DATA, GRAPHICS_PRAMTYPE_DATA3);
+
+
 	//事前に計算しておくもの用意
-	hitBoxCommonHandle = computeHelper->CreateBuffer(sizeof(HitBoxConstBufferData), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3, 1);
+	hitBoxCommonHandle = computeHelper->CreateBuffer(sizeof(HitBoxConstBufferData), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4, 1);
 	HitBoxConstBufferData lData;
 	lData.diameter = diameter;
 	lData.xMax = threadNumData.x;
@@ -66,12 +70,12 @@ void BBDuringEquallyCoordinatePlace::SetDebugDraw(const ResouceBufferHelper::Buf
 {
 	computeHelper->SetBuffer(
 		STACK_DRAW_DATA,
-		GRAPHICS_PRAMTYPE_DATA3
+		GRAPHICS_PRAMTYPE_DATA4
 	);
 
 	computeHelper->SetRootParam(
 		hitBoxCommonHandle,
-		GRAPHICS_PRAMTYPE_DATA4
+		GRAPHICS_PRAMTYPE_DATA5
 	);
 
 	debugFlag = true;
