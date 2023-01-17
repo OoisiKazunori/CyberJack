@@ -63,8 +63,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
             float rate = angle / 90.0f;
     
             float3 vel = normalize(posParticleVec) * 5.5f * rate;
-            //vel.x = 0.0f;
-    
+   
             larpVel = 0.1f;
             basePos = hitBoxData[index].pos + vel;            
         }
