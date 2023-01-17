@@ -10,6 +10,8 @@ RWStructuredBuffer<MeshHitBox> hitIndexData : register(u1);
 //出力
 AppendStructuredBuffer<GPUParticleInput> inputGPUParticleData : register(u2);
 
+RWStructuredBuffer<float3> larpPosData : register(u3);
+
 //周りの当たり判定ともとる
 bool CheckLinkHitBox(uint3 BASE_HIT_INDEX,uint3 CHECK_HIT_INDEX)
 {
@@ -42,6 +44,8 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     particleData.color = hitBoxData[index].color;
     particleData.pos = hitBoxData[index].pos;
 
+    float larpVel = 0.01f;
+    float3 basePos = hitBoxData[index].pos;
     //同じインデックスの場合、パーティクルを動かす処理を追加する
     for(int i = 0;i < 1; ++i)
     {
@@ -59,18 +63,21 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
             float rate = angle / 90.0f;
     
             float3 vel = normalize(posParticleVec) * 5.5f * rate;
-            vel.x = 0.0f;
+            //vel.x = 0.0f;
     
-            //パーティクルの基本座標とラープ用の座標が必要
-            float3 larpPos = hitBoxData[index].pos + vel;
-            particleData.pos = larpPos;
+            larpVel = 0.1f;
+            basePos = hitBoxData[index].pos + vel;            
+        }
+        else
+        {
+            basePos = hitBoxData[index].pos;
         }
     }
+    //行列計算ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー    
+    larpPosData[index] = Larp(basePos,larpPosData[index],larpVel);
+    particleData.pos = larpPosData[index];
 
-
-    //行列計算ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
-
-    matrix worldMat = CalucurateWorldMat(float3(0,0,0),float3(0.01,0.01,0.01),float3(0,0,0));
+    matrix worldMat = CalucurateWorldMat(float3(0,0,0),float3(0.02,0.02,0.02),float3(0,0,0));
     worldMat[0][3] = particleData.pos.x;
     worldMat[1][3] = particleData.pos.y;
     worldMat[2][3] = particleData.pos.z;
