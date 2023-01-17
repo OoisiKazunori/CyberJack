@@ -45,10 +45,10 @@ CollisionDetectionOfMeshCircleAndCPUHitBox::CollisionDetectionOfMeshCircleAndCPU
 
 	//ìñÇΩÇ¡ÇΩèÓïÒîªíË
 	hitIdBufferHandle = computeHelper.CreateBuffer(
-		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(HitIDData) * 10000),
+		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(MeshHitBoxData) * 10000),
 		GRAPHICS_RANGE_TYPE_UAV_DESC,
 		GRAPHICS_PRAMTYPE_DATA3,
-		sizeof(HitIDData),
+		sizeof(MeshHitBoxData),
 		10000,
 		true
 	);

@@ -17,7 +17,7 @@ BBDuringEquallyCoordinatePlace::BBDuringEquallyCoordinatePlace(const ResouceBuff
 {
 	computeHelper = std::make_unique<ResouceBufferHelper>();
 
-	diameter = 0.5f;
+	diameter = 5.0f;
 	//いくつ配置出来るか計算する
 	KazMath::Vec3<float>lDistance = data.maxPos - data.minPos;
 
