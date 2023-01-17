@@ -1,7 +1,6 @@
 #pragma once
 #include <iostream>
 #include <string>
-#include<iostream>
 #include <fstream>
 #include<string>
 #include"../KazLibrary/Helper/ResourceFilePass.h"
