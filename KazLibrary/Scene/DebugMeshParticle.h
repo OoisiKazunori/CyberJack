@@ -338,5 +338,6 @@ private:
 	CreateMeshBuffer sphereModel;
 	CreateMeshBuffer enemyModel;
 	CreateMeshBuffer summonModel;
+	CreateMeshBuffer cubeModel;
 };
 

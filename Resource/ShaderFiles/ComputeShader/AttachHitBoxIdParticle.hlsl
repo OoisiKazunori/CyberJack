@@ -30,6 +30,11 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
 {
     uint particleIndex = ThreadGroupIndex(groupId,groupIndex,groupThreadID,1024);
 
+    if(23000 <= particleIndex)
+    {
+        return;
+    }
+
     CircleData particleHitBox;
     particleHitBox.pos = particleData[particleIndex].pos;
     particleHitBox.radius = particleRadius;

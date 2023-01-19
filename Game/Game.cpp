@@ -161,7 +161,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	fireIndex = 0;
 	cameraWork.Init();
 
-	tutorial.Init(false);
+	tutorial.Init(true);
 	portalEffect.Init();
 
 	isGameOverFlag = false;

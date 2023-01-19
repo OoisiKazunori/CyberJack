@@ -11,7 +11,7 @@ GenerateCollisionOfParticle::GenerateCollisionOfParticle(const ResouceBufferHelp
 	CommonData lCommonData;
 	lCommonData.particleRadius = 0.1f;
 	lCommonData.meshHitBoxMaxNum = 1;
-	lCommonData.meshHitBoxRadius = 5.0f;
+	lCommonData.meshHitBoxRadius = 20.0f;
 	computeHelper.TransData(lCommonBufferHandle, &lCommonData, sizeof(CommonData));
 }
 

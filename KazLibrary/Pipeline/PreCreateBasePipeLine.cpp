@@ -245,50 +245,50 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	OutputDebugStringA("シェーダーのコンパイルを開始します\n");
 	//色シェーダー
 	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "BasicVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_COLOR);
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "BasicPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_COLOR);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "BasicPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_COLOR);
 
 	//テクスチャシェーダー...テクスチャ影あり
 	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "TextureVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_TEXTURE);
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "TexturePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_TEXTURE);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "TexturePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_TEXTURE);
 
 
 	//スプライトシェーダー...テクスチャ影無し
 	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "SpriteVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_SPRITE);
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "SpritePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "SpritePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_SPRITE);
 
 
 	//objシェーダー
 	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_OBJ);
 	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "OBJPortalVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_OBJ_PORTAL);
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ);
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJPixelExpantionShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_EXPANTION_OBJ);	// 頂点拡張用
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_OBJ);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJPixelExpantionShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_EXPANTION_OBJ);	// 頂点拡張用
 
 	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstanceObjGetShadowMapVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_GET_SHADOWMAP);	// シャドウマップ取得用
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceObjGetShadowPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_GET_SHADOWMAP);	// シャドウマップを元に影描画用
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceObjGetShadowPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_INSTANCE_GET_SHADOWMAP);	// シャドウマップを元に影描画用
 
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceObjExpantionPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_OBJ_EXPANTION);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceObjExpantionPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_INSTANCE_OBJ_EXPANTION);
 
 
 	//輝度抽出
 	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "LumiVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_LUMINAS);
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LumiPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LUMINAS);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LumiPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_LUMINAS);
 
 
 	//ガウシアンブラー
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GaussianPixelShader.hlsl", "GaussianUpBlur", "ps_6_4", SHADER_PIXCEL_GAUSSIAN_UPBLUR);
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GaussianPixelShader.hlsl", "GaussianSideBlur", "ps_6_4", SHADER_PIXCEL_GAUSSIAN_SIDEBLUR);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GaussianPixelShader.hlsl", "GaussianUpBlur", "ps_6_4", SHADER_PIXEL_GAUSSIAN_UPBLUR);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GaussianPixelShader.hlsl", "GaussianSideBlur", "ps_6_4", SHADER_PIXEL_GAUSSIAN_SIDEBLUR);
 
 
 
 	//fbx
 	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "FbxModelVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_FBX);
 	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "FbxOutPutPosVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_FBX_FOG);
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FbxModelPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FBX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FbxModelPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_FBX);
 
 
 
 	//bloom
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "BloomPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_BLOOM);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "BloomPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_BLOOM);
 
 
 	//削除予定
@@ -296,19 +296,19 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 
 	//削除予定
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GoalLightPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_GOALLIGHT);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GoalLightPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_GOALLIGHT);
 
 
 
 	//Fog
 	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "FogVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_FOG_COLOR);
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_COLOR);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_FOG_COLOR);
 
 
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogObjPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_OBJ);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogObjPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_FOG_OBJ);
 
 
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogFbxPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_FBX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogFbxPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_FOG_FBX);
 
 
 	//太さ変えられる線用ジオメトリーシェーダー
@@ -317,85 +317,85 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 	//線
 	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "LineVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_LINE);
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LinePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LinePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_LINE);
 
 
 
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineTickFogPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_TICK_LINE_FOG);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineTickFogPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_TICK_LINE_FOG);
 
 
 
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogTexturePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_SPRITE);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogTexturePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_FOG_SPRITE);
 
 
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogLinePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_FOG);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogLinePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_LINE_FOG);
 
 	//削除予定
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogLineForEffectBGPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_FOG_FORBG);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogLineForEffectBGPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_LINE_FOG_FORBG);
 
 	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LuminancePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_LUMINANCE);
 
 
 	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "ObjLightVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_OBJ_LIGHT);
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ObjLightPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ_LIGHT);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ObjLightPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_OBJ_LIGHT);
 
 
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceObjMultipassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_OBJ_MULTIPASS_BILL);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceObjMultipassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_FOG_OBJ_MULTIPASS_BILL);
 
 
 
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ObjMultipassLightPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ_MULTIPASS_LIGHT);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ObjMultipassLightPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_OBJ_MULTIPASS_LIGHT);
 
 
 	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstanceVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_OBJ);
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstancePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_OBJ);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstancePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_INSTANCE_OBJ);
 
 	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstancePosVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_COLOR);
 	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstanceObjDepthVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_OBJ_DEPTH);
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_COLOR);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_INSTANCE_COLOR);
 
 
 	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstancePosNormalColorVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_COLOR_SHADING);
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorShadingMultiPassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_COLOR_SHADING);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorShadingMultiPassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_INSTANCE_COLOR_SHADING);
 
 
 	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "InstanceColorGetShadowVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_INSTANCE_COLOR_GET_SHADOWMAP);
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorGetShadowPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_COLOR_GET_SHADOW);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorGetShadowPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_INSTANCE_COLOR_GET_SHADOW);
 
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineUvPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_UV);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineUvPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_LINE_UV);
 
 
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "SpriteWindowPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_WINDOW);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "SpriteWindowPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_SPRITE_WINDOW);
 
 	
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "VHSPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_WIHITENOISE);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "VHSPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_WIHITENOISE);
 
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FbxTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FBX_RENDER_TWO_LIGHT);
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FbxMultiPassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FBX_RENDER_TWO);
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GoalEffectPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_GOAL_EFFECT);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FbxTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_FBX_RENDER_TWO_LIGHT);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FbxMultiPassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_FBX_RENDER_TWO);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GoalEffectPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_SPRITE_GOAL_EFFECT);
 
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJPcMonitorPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_MONITOR_MULTITEX);
-
-
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ColorTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_COLOR_MULTITEX);
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorMultiPassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_INSTANCE_COLOR_MULTITEX);
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "SpriteTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_MULTITEX);
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ObjTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ_MULTITEX);
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GoalLightTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_GOALLIGHT_MULTITEX);
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogColorTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_COLOR_MULTITEX);
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogMultiPassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_FOG_MULTITEX);
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "MultiPassLuminancePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LUMINANCE_MULTI);
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineUvMultiTexPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_UV_MULTITEX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "OBJPcMonitorPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_MONITOR_MULTITEX);
 
 
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ColorTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_COLOR_MULTITEX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "InstanceColorMultiPassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_INSTANCE_COLOR_MULTITEX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "SpriteTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_SPRITE_MULTITEX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "ObjTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_OBJ_MULTITEX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GoalLightTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_GOALLIGHT_MULTITEX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogColorTwoRenderPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_FOG_COLOR_MULTITEX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "FogMultiPassPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_FOG_MULTITEX);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "MultiPassLuminancePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_LUMINANCE_MULTI);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineUvMultiTexPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_LINE_UV_MULTITEX);
 
 
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineFlashEffectPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_LINE_FLASHEFFECT);
 
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GradationPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_GRADATION);
+
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "LineFlashEffectPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_LINE_FLASHEFFECT);
+
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GradationPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_SPRITE_GRADATION);
 
 	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "ObjFogVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_FOG_OBJ);
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GradationObjPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_OBJ_GRADATION);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GradationObjPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_OBJ_GRADATION);
 
 	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "GPUParticleVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_GPUPARTICLE);
 	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "GPUParticlePixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_GPUPARTICLE);
@@ -406,7 +406,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 
 
-	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "NoiseSignalPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXCEL_SPRITE_NOISE);
+	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "NoiseSignalPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_SPRITE_NOISE);
 
 	lPipelineMgr->RegisterVertexShaderWithData(KazFilePathName::VertexShaderPath + "PortalVertexShader.hlsl", "VSmain", "vs_6_4", SHADER_VERTEX_PORTAL);
 	lPipelineMgr->RegisterPixcelShaderWithData(KazFilePathName::PixelShaderPath + "PortalPixelShader.hlsl", "PSmain", "ps_6_4", SHADER_PIXEL_PORTAL);
@@ -1436,141 +1436,141 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 #pragma region ComputePipeline
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "FloorParticleComputeShader.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_FLOORPARTICLE
 		);
 	}
 
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "FloorParticleMoveComputeShader.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_FLOORPARTICLE_MOVE
 		);
 	}
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "PortalLineComputeShader.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_PORTALLINE
 		);
 	}
 
 	
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "PortalLineMoveComputeShader.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_PORTALLINE_MOVE
 		);
 	}
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "InitMeshParticleComputeShader.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_MESHPARTICLE_INIT
 		);
 	}
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "MeshParticleMoveComputeShader.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_MESHPARTICLE_UPDATE
 		);
 	}
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA2));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA2));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "InitDeadParticleComputeShader.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_DEADPARTICLE_INIT
 		);
 	}
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "UpdateDeadparticleComputeShader.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_DEADPARTICLE_UPDATE
 		);
 	}
 
 	//ブロックにちりばめられるパーティクル
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "BlockParticleInitComputeShader.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_BLOCKPARTICLE
 		);
 	}
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "BlockParticleMoveComputeShader.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_BLOCKPARTICLE_MOVE
 		);
 	}
@@ -1578,47 +1578,47 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 	//エミッターの場所を決める
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA4));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA5));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA4));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA5));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "MeshParticleComputeShader.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_MESHPARTICLE
 		);
 	}
 
 	//スプライン曲線に沿ったパーティクル初期化
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA2));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA2));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "InitSplineParticleComputeShader.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_SPLINEPARTICLE_INIT
 		);
 	}
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA5));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA5));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "UpdateSplineParticleComputeShader.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_SPLINEPARTICLE_UPDATE
 		);
 	}
@@ -1627,311 +1627,311 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_SRV_DESC, GRAPHICS_PRAMTYPE_TEX));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_SRV_DESC, GRAPHICS_PRAMTYPE_TEX));
 
-		//rootsignature.samplerArray.push_back({});
+		//lRootsignature.samplerArray.push_back({});
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "InitMeshTextureParticleComputeShader.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_INIT
 		);
 	}
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_SRV_DESC, GRAPHICS_PRAMTYPE_TEX));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_SRV_DESC, GRAPHICS_PRAMTYPE_TEX));
 
-		//rootsignature.samplerArray.push_back({});
+		//lRootsignature.samplerArray.push_back({});
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "MeshParticleUpdateInputPosColor.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_UPDATE
 		);
 	}
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
 
-		//rootsignature.samplerArray.push_back({});
+		//lRootsignature.samplerArray.push_back({});
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "MeshParticleUpdateFlashColor.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_TEXTUREPARTICLE_FLASH_UPDATE
 		);
 	}
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
 
-		//rootsignature.samplerArray.push_back({});
+		//lRootsignature.samplerArray.push_back({});
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "InitTriangleCollisionData.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_HITBOX_TRIANGLE_INIT
 		);
 	}
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA4));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA5));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA4));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA5));
 
-		//rootsignature.samplerArray.push_back({});
+		//lRootsignature.samplerArray.push_back({});
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "UpdateCollisionDetectionTriangleAndSphere.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_HITBOX_TRIANGLE_INIT
 		);
 	}
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4));
 
-		//rootsignature.samplerArray.push_back({});
+		//lRootsignature.samplerArray.push_back({});
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "BlockParticleHitBoxUpdate.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_PARTICLEWALL_HITBOX
 		);
 	}
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4));
 
-		//rootsignature.samplerArray.push_back({});
+		//lRootsignature.samplerArray.push_back({});
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "MeshHitBoxUpdate.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_HITBOX_MESH
 		);
 	}
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "ComputeBB.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_HITBOX_BB
 		);
 	}
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "BBDuringEquallyCoordinatePlace.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_HITBOX_SETCIRCLE_IN_BB
 		);
 	}
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA4));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA5));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA4));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA5));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "BBDuringEquallyCoordinatePlace.hlsl", "DebugCSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_HITBOX_SETCIRCLE_IN_BB_DEBUG
 		);
 	}
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "AttachHitBoxIdParticle.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_HITBOX_ID_ATTACH_TO_PARTICLE
 		);
 	}
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "CheckMeshHitBoxAndCircle.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_HITBOX_MESHCIRCLE_PARTICLE
 		);
 	}
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA4));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA4));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "ComputeParticleAvoidSphere.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_HITBOX_AVOID_PARTICLE
 		);
 	}
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_VIEW, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "CalucurateMatrix.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_HITBOX_CALUMAT
 		);
 	}
 
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_SRV_DESC, GRAPHICS_PRAMTYPE_TEX));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_SRV_DESC, GRAPHICS_PRAMTYPE_TEX));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "InitPosUvMeshParticle.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_INIT_POSUV_MESHPARTICLE
 		);
 	}
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "InitPosMeshParticle.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_INIT_POS_MESHPARTICLE
 		);
 	}
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "UpdateMeshParticle.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_UPDATE_MESHPARTICLE
 		);
 	}
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "ConvertInitMeshParticle.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_COVERT_INITMESH_TO_UPDATEMESH
 		);
 	}
 
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "ParticleCullingProcess.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_CONVERT_WORLDMAT_TO_DRAWMAT
 		);
 	}
 
 
 	{
-		RootSignatureDataTest rootsignature;
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		rootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "TestAppend.hlsl", "CSmain", "cs_6_4"),
 			desc,
-			rootsignature,
+			lRootsignature,
 			PIPELINE_COMPUTE_NAME_TEST_APPEND
 		);
 	}
@@ -1967,7 +1967,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_COLOR,
-		SHADER_PIXCEL_COLOR,
+		SHADER_PIXEL_COLOR,
 		PIPELINE_DATA_NOCARING_ALPHABLEND_LINE_Z_ALWAYS,
 		ROOTSIGNATURE_DATA_DRAW,
 		PIPELINE_NAME_COLOR_LINE_Z_ALWAYS
@@ -1990,7 +1990,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_COLOR,
-		SHADER_PIXCEL_COLOR,
+		SHADER_PIXEL_COLOR,
 		PIPELINE_DATA_BACKCARING_ALPHABLEND,
 		ROOTSIGNATURE_DATA_DRAW,
 		PIPELINE_NAME_COLOR
@@ -2009,7 +2009,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_COLOR,
-		SHADER_PIXCEL_COLOR,
+		SHADER_PIXEL_COLOR,
 		PIPELINE_DATA_NOCARING_ALPHABLEND_LINE,
 		ROOTSIGNATURE_DATA_DRAW,
 		PIPELINE_NAME_COLOR_LINE
@@ -2020,7 +2020,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_COLOR,
-		SHADER_PIXCEL_COLOR,
+		SHADER_PIXEL_COLOR,
 		PIPELINE_DATA_NOCARING_BLENDALPHA,
 		ROOTSIGNATURE_DATA_DRAW,
 		PIPELINE_NAME_COLOR_NOCARING
@@ -2031,7 +2031,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_INSTANCE_COLOR,
-		SHADER_PIXCEL_INSTANCE_COLOR,
+		SHADER_PIXEL_INSTANCE_COLOR,
 		PIPELINE_DATA_BACKCARING_ALPHABLEND,
 		ROOTSIGNATURE_DATA_UAV,
 		PIPELINE_NAME_INSTANCE_COLOR
@@ -2040,7 +2040,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_INSTANCE_COLOR,
-		SHADER_PIXCEL_INSTANCE_COLOR,
+		SHADER_PIXEL_INSTANCE_COLOR,
 		PIPELINE_DATA_BACKCARING_ALPHABLEND_WIREFLAME,
 		ROOTSIGNATURE_DATA_UAV,
 		PIPELINE_NAME_INSTANCE_COLOR_WIREFLAME
@@ -2051,7 +2051,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_COLOR,
-		SHADER_PIXCEL_COLOR,
+		SHADER_PIXEL_COLOR,
 		PIPELINE_DATA_NOCARING_ALPHABLEND_WIREFLAME,
 		ROOTSIGNATURE_DATA_DRAW,
 		PIPELINE_NAME_COLOR_WIREFLAME
@@ -2061,7 +2061,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_SPRITE,
+		SHADER_PIXEL_SPRITE,
 		PIPELINE_DATA_NOCARING_BLENDALPHA,
 		ROOTSIGNATURE_DATA_DRAW_TEX,
 		PIPELINE_NAME_SPRITE
@@ -2071,7 +2071,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_SPRITE_WINDOW,
+		SHADER_PIXEL_SPRITE_WINDOW,
 		PIPELINE_DATA_NOCARING_ALPHABLEND_RNEDERTARGET_SECOND,
 		ROOTSIGNATURE_DATA_DRAW_DATA1_TEX_TEX2,
 		PIPELINE_NAME_SPRITE_WINODW
@@ -2103,7 +2103,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_SPRITE,
+		SHADER_PIXEL_SPRITE,
 		PIPELINE_DATA_NOCARING_BLENDALPHA_DEPTH_LESSEQUAL,
 		ROOTSIGNATURE_DATA_DRAW_TEX,
 		PIPELINE_NAME_SPRITE_DEPTH_NOTEQUAL
@@ -2114,7 +2114,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_SPRITE_NOISE,
+		SHADER_PIXEL_SPRITE_NOISE,
 		PIPELINE_DATA_NOCARING_BLENDALPHA,
 		ROOTSIGNATURE_DATA_DRAW_TEX_DATA1,
 		PIPELINE_NAME_SPRITE_NOISE
@@ -2125,7 +2125,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_SPRITE,
+		SHADER_PIXEL_SPRITE,
 		PIPELINE_DATA_NOCARING_BLENDALPHA_DEPTH_ALWAYS,
 		ROOTSIGNATURE_DATA_DRAW_TEX,
 		PIPELINE_NAME_SPRITE_Z_ALWAYS
@@ -2135,7 +2135,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_SPRITE,
+		SHADER_PIXEL_SPRITE,
 		PIPELINE_DATA_NOCARING_BLENDALPHA_DEPTH_ALWAYS,
 		ROOTSIGNATURE_DATA_DRAW_TEX,
 		PIPELINE_NAME_SPRITE_Z_ALWAYS
@@ -2144,7 +2144,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_SPRITE,
+		SHADER_PIXEL_SPRITE,
 		PIPELINE_DATA_NOCARING_CUTALPHA_DEPTH_ALWAYS,
 		ROOTSIGNATURE_DATA_DRAW_TEX,
 		PIPELINE_NAME_SPRITE_Z_ALWAYS_CUTALPHA
@@ -2154,7 +2154,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_SPRITE,
+		SHADER_PIXEL_SPRITE,
 		PIPELINE_DATA_NOCARING_BLENDALPHA_DEPTH_OFF,
 		ROOTSIGNATURE_DATA_DRAW_TEX,
 		PIPELINE_NAME_SPRITE_Z_OFF
@@ -2165,7 +2165,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_SPRITE,
+		SHADER_PIXEL_SPRITE,
 		PIPELINE_DATA_NOCARING_NOBLEND,
 		ROOTSIGNATURE_DATA_DRAW_TEX,
 		PIPELINE_NAME_SPRITE_NOBLEND
@@ -2175,7 +2175,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_SPRITE_GOAL_EFFECT,
+		SHADER_PIXEL_SPRITE_GOAL_EFFECT,
 		//PIPELINE_DATA_NOCARING_ADDBLEND,
 		PIPELINE_DATA_NOCARING_BLENDALPHA,
 		ROOTSIGNATURE_DATA_DRAW_TEX_DATA1,
@@ -2186,7 +2186,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_SPRITE_GOAL_EFFECT,
+		SHADER_PIXEL_SPRITE_GOAL_EFFECT,
 		PIPELINE_DATA_NOCARING_BLENDALPHA_DEPTHOFF,
 		ROOTSIGNATURE_DATA_DRAW_TEX_DATA1,
 		PIPELINE_NAME_SPRITE_GOAL_EFFECT_DEPTHOFF
@@ -2196,7 +2196,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX,
 		SHADER_VERTEX_OBJ,
-		SHADER_PIXCEL_OBJ,
+		SHADER_PIXEL_OBJ,
 		PIPELINE_DATA_NOCARING_BLENDALPHA,
 		ROOTSIGNATURE_DATA_DRAW_TEX_DATA1,
 		PIPELINE_NAME_OBJ
@@ -2205,7 +2205,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX,
 		SHADER_VERTEX_OBJ_PORTAL,
-		SHADER_PIXCEL_MONITOR_MULTITEX,
+		SHADER_PIXEL_MONITOR_MULTITEX,
 		PIPELINE_DATA_NOCARING_ALPHABLEND_RNEDERTARGET_SECOND,
 		ROOTSIGNATURE_DATA_CBV_CBV_CBV_SRV_SRV_SRV,
 		PIPELINE_NAME_PCMONITOR_MULTITEX
@@ -2215,7 +2215,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_COLOR,
-		SHADER_PIXCEL_COLOR,
+		SHADER_PIXEL_COLOR,
 		PIPELINE_DATA_BACKCARING_ALPHABLEND_WIREFLAME,
 		ROOTSIGNATURE_DATA_DRAW_DATA1,
 		PIPELINE_NAME_OBJ_WIREFLAME
@@ -2225,7 +2225,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_FOG_COLOR,
-		SHADER_PIXCEL_FOG_COLOR,
+		SHADER_PIXEL_FOG_COLOR,
 		PIPELINE_DATA_NOCARING_ALPHABLEND_WIREFLAME,
 		ROOTSIGNATURE_DATA_DRAW_DATA1,
 		PIPELINE_NAME_OBJ_WIREFLAME_FOG
@@ -2234,7 +2234,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX,
 		SHADER_VERTEX_FOG_OBJ,
-		SHADER_PIXCEL_OBJ_GRADATION,
+		SHADER_PIXEL_OBJ_GRADATION,
 		PIPELINE_DATA_NOCARING_BLENDALPHA,
 		ROOTSIGNATURE_DATA_DRAW_TEX_DATA1_DATA2,
 		PIPELINE_NAME_OBJ_FOG_GRADATION
@@ -2245,7 +2245,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX,
 		SHADER_VERTEX_INSTANCE_OBJ,
-		SHADER_PIXCEL_INSTANCE_OBJ,
+		SHADER_PIXEL_INSTANCE_OBJ,
 		PIPELINE_DATA_NOCARING_BLENDALPHA,
 		ROOTSIGNATURE_DATA_DATA1_TEX,
 		PIPELINE_NAME_INSTANCE_OBJ
@@ -2255,7 +2255,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX,
 		SHADER_VERTEX_OBJ_LIGHT,
-		SHADER_PIXCEL_OBJ_LIGHT,
+		SHADER_PIXEL_OBJ_LIGHT,
 		PIPELINE_DATA_NOCARING_NOBLEND,
 		ROOTSIGNATURE_DATA_DRAW_TEX_DATA1_DATA2,
 		PIPELINE_NAME_OBJ_LIGHT
@@ -2265,7 +2265,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX,
 		SHADER_VERTEX_INSTANCE_OBJ_DEPTH,
-		SHADER_PIXCEL_FOG_OBJ_MULTIPASS_BILL,
+		SHADER_PIXEL_FOG_OBJ_MULTIPASS_BILL,
 		PIPELINE_DATA_NOCARING_BLENDALPHA_MULTIPASS_TWO,
 		ROOTSIGNATURE_DATA_DRAW_UAV_DATA_TEX,
 		PIPELINE_NAME_BILL
@@ -2277,7 +2277,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_COLOR,
-		SHADER_PIXCEL_COLOR,
+		SHADER_PIXEL_COLOR,
 		PIPELINE_DATA_NOCARING_ALPHABLEND_LINE,
 		ROOTSIGNATURE_DATA_DRAW,
 		PIPELINE_NAME_LINE
@@ -2287,7 +2287,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_FOG_COLOR,
-		SHADER_PIXCEL_FOG_COLOR,
+		SHADER_PIXEL_FOG_COLOR,
 		PIPELINE_DATA_NOCARING_ALPHABLEND_LINE,
 		ROOTSIGNATURE_DATA_DRAW_DATA1,
 		PIPELINE_NAME_FOG_LINE
@@ -2298,7 +2298,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_FOG_COLOR,
-		SHADER_PIXCEL_FOG_MULTITEX,
+		SHADER_PIXEL_FOG_MULTITEX,
 		PIPELINE_DATA_NOCARING_ALPHABLEND_LINE_MULTITEX,
 		ROOTSIGNATURE_DATA_DRAW_DATA1_DATA2,
 		PIPELINE_NAME_FOG_LINE_MULTIPASS
@@ -2309,7 +2309,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_INSTANCE_COLOR,
-		SHADER_PIXCEL_INSTANCE_COLOR,
+		SHADER_PIXEL_INSTANCE_COLOR,
 		PIPELINE_DATA_NOCARING_ALPHABLEND_LINE,
 		ROOTSIGNATURE_DATA_UAV,
 		PIPELINE_NAME_INSTANCE_COLOR_LINE
@@ -2320,7 +2320,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_LINE_UV,
+		SHADER_PIXEL_LINE_UV,
 		PIPELINE_DATA_NOCARING_ALPHABLEND_LINE,
 		ROOTSIGNATURE_DATA_DRAW_DATA1,
 		PIPELINE_NAME_LINE_UV
@@ -2330,7 +2330,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_LINE_FLASHEFFECT,
+		SHADER_PIXEL_LINE_FLASHEFFECT,
 		PIPELINE_DATA_NOCARING_ALPHABLEND_LINE_MULTITEX,
 		ROOTSIGNATURE_DATA_DRAW_DATA1,
 		PIPELINE_NAME_LINE_FLASHEFFECT
@@ -2340,7 +2340,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX,
 		SHADER_VERTEX_TEXTURE,
-		SHADER_PIXCEL_TEXTURE,
+		SHADER_PIXEL_TEXTURE,
 		PIPELINE_DATA_BACKCARING_ALPHABLEND,
 		ROOTSIGNATURE_DATA_DRAW_TEX,
 		PIPELINE_NAME_TEXTURE
@@ -2350,7 +2350,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_LUMINAS,
-		SHADER_PIXCEL_LUMINAS,
+		SHADER_PIXEL_LUMINAS,
 		PIPELINE_DATA_BACKCARING_ALPHABLEND,
 		ROOTSIGNATURE_MODE_LIGHT_BORDER,
 		PIPELINE_NAME_LUMINANCE
@@ -2360,7 +2360,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_GAUSSIAN_UPBLUR,
+		SHADER_PIXEL_GAUSSIAN_UPBLUR,
 		PIPELINE_DATA_NOCARING_NOBLEND,
 		ROOTSIGNATURE_MODE_LIGHT_BORDER,
 		PIPELINE_NAME_GAUSSIAN_UPBLUR
@@ -2370,7 +2370,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_GAUSSIAN_SIDEBLUR,
+		SHADER_PIXEL_GAUSSIAN_SIDEBLUR,
 		PIPELINE_DATA_NOCARING_NOBLEND,
 		ROOTSIGNATURE_MODE_LIGHT_BORDER,
 		PIPELINE_NAME_GAUSSIAN_SIDEBLUR
@@ -2380,7 +2380,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX_BONE_WEIGHT,
 		SHADER_VERTEX_FBX,
-		SHADER_PIXCEL_FBX,
+		SHADER_PIXEL_FBX,
 		PIPELINE_DATA_BACKCARING_ALPHABLEND,
 		ROOTSIGNATURE_DATA_DRAW_TEX_SKINING,
 		PIPELINE_NAME_FBX
@@ -2390,7 +2390,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX_BONE_WEIGHT,
 		SHADER_VERTEX_FBX,
-		SHADER_PIXCEL_FBX_RENDER_TWO,
+		SHADER_PIXEL_FBX_RENDER_TWO,
 		PIPELINE_DATA_BACKCARING_ALPHABLEND_RNEDERTARGET_SECOND,
 		ROOTSIGNATURE_DATA_DRAW_TEX_SKINING,
 		PIPELINE_NAME_FBX_RENDERTARGET_TWO
@@ -2399,7 +2399,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX_BONE_WEIGHT,
 		SHADER_VERTEX_FBX,
-		SHADER_PIXCEL_FBX_RENDER_TWO_LIGHT,
+		SHADER_PIXEL_FBX_RENDER_TWO_LIGHT,
 		PIPELINE_DATA_BACKCARING_ALPHABLEND_RNEDERTARGET_SECOND,
 		ROOTSIGNATURE_DATA_DRAW_TEX_SKINING_DATA3,
 		PIPELINE_NAME_FBX_RENDERTARGET_TWO_LIGHT
@@ -2409,7 +2409,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_SPRITE,
+		SHADER_PIXEL_SPRITE,
 		PIPELINE_DATA_NOCARING_ADDBLEND_CUTALPHA,
 		ROOTSIGNATURE_DATA_DRAW_TEX,
 		PIPELINE_NAME_ADDBLEND
@@ -2419,7 +2419,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_BLOOM,
+		SHADER_PIXEL_BLOOM,
 		PIPELINE_DATA_NOCARING_ADDBLEND_CUTALPHA,
 		ROOTSIGNATURE_DATA_DRAW_TEX4,
 		PIPELINE_NAME_BLOOM
@@ -2429,7 +2429,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_MULTIPASS,
-		SHADER_PIXCEL_SPRITE,
+		SHADER_PIXEL_SPRITE,
 		PIPELINE_DATA_NOCARING_ADDBLEND_CUTALPHA,
 		ROOTSIGNATURE_DATA_DRAW_TEX,
 		PIPELINE_NAME_MULTIPASS
@@ -2439,7 +2439,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_GOALLIGHT,
+		SHADER_PIXEL_GOALLIGHT,
 		PIPELINE_DATA_NOCARING_BLENDALPHA,
 		ROOTSIGNATURE_MODE_LIGHT,
 		PIPELINE_NAME_GOALLIGHT
@@ -2449,7 +2449,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_FOG_COLOR,
-		SHADER_PIXCEL_FOG_COLOR,
+		SHADER_PIXEL_FOG_COLOR,
 		PIPELINE_DATA_NOCARING_BLENDALPHA,
 		ROOTSIGNATURE_DATA_DRAW_DATA1,
 		PIPELINE_NAME_FOG_COLOR
@@ -2460,7 +2460,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX_BONE_WEIGHT,
 		SHADER_VERTEX_FBX,
-		SHADER_PIXCEL_FOG_FBX,
+		SHADER_PIXEL_FOG_FBX,
 		PIPELINE_DATA_BACKCARING_ALPHABLEND,
 		ROOTSIGNATURE_DATA_DRAW_TEX_SKINING_DATA1,
 		PIPELINE_NAME_FOG_FBX
@@ -2470,7 +2470,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX_BONE_WEIGHT,
 		SHADER_VERTEX_FBX_FOG,
-		SHADER_PIXCEL_FOG_COLOR,
+		SHADER_PIXEL_FOG_COLOR,
 		PIPELINE_DATA_NOCARING_NOBLEND_WIREFLAME,
 		ROOTSIGNATURE_DATA_DRAW_SKINING_DATA1,
 		PIPELINE_NAME_FOG_FBX_WIREFLAME
@@ -2479,7 +2479,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX_BONE_WEIGHT,
 		SHADER_VERTEX_FBX_FOG,
-		SHADER_PIXCEL_FOG_MULTITEX,
+		SHADER_PIXEL_FOG_MULTITEX,
 		PIPELINE_DATA_NOCARING_NOBLEND_WIREFLAME_MULTIPASS_TWO,
 		ROOTSIGNATURE_DATA_DRAW_SKINING_DATA1,
 		PIPELINE_NAME_FOG_FBX_WIREFLAME_MULTI_TWO
@@ -2490,7 +2490,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX,
 		SHADER_VERTEX_OBJ,
-		SHADER_PIXCEL_FOG_OBJ,
+		SHADER_PIXEL_FOG_OBJ,
 		PIPELINE_DATA_NOCARING_NOBLEND,
 		ROOTSIGNATURE_DATA_DRAW_DATA1_TEX_DATA2,
 		PIPELINE_NAME_FOG_OBJ
@@ -2500,7 +2500,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_FOG_SPRITE,
+		SHADER_PIXEL_FOG_SPRITE,
 		PIPELINE_DATA_NOCARING_BLENDALPHA,
 		ROOTSIGNATURE_MODE_LIGHT,
 		PIPELINE_NAME_FOG_SPRITE
@@ -2510,7 +2510,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_SPRITE,
+		SHADER_PIXEL_SPRITE,
 		PIPELINE_DATA_NOCARING_BLENDALPHA_CUT,
 		ROOTSIGNATURE_DATA_DRAW_TEX,
 		PIPELINE_NAME_SPRITE_CUTALPHA
@@ -2522,7 +2522,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_COLOR,
-		SHADER_PIXCEL_LINE_FOG_FORBG,
+		SHADER_PIXEL_LINE_FOG_FORBG,
 		PIPELINE_DATA_NOCARING_ALPHABLEND_LINE,
 		ROOTSIGNATURE_MODE_LINE,
 		PIPELINE_NAME_FOG_LINE_FORBG
@@ -2532,7 +2532,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_WIHITENOISE,
+		SHADER_PIXEL_WIHITENOISE,
 		PIPELINE_DATA_NOCARING_BLENDALPHA,
 		ROOTSIGNATURE_MODE_LIGHT_BORDER,
 		PIPELINE_NAME_SPRITE_VHS
@@ -2543,7 +2543,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_SPRITE_GRADATION,
+		SHADER_PIXEL_SPRITE_GRADATION,
 		PIPELINE_DATA_NOCARING_BLENDALPHA,
 		ROOTSIGNATURE_DATA_DRAW_DATA1,
 		PIPELINE_NAME_SPRITE_GRADATION
@@ -2563,7 +2563,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_COLOR,
-		SHADER_PIXCEL_COLOR_MULTITEX,
+		SHADER_PIXEL_COLOR_MULTITEX,
 		PIPELINE_DATA_NOCARING_ALPHABLEND_RNEDERTARGET_SECOND,
 		ROOTSIGNATURE_DATA_DRAW_DATA1,
 		PIPELINE_NAME_COLOR_MULTITEX
@@ -2572,7 +2572,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_INSTANCE_COLOR,
-		SHADER_PIXCEL_INSTANCE_COLOR_MULTITEX,
+		SHADER_PIXEL_INSTANCE_COLOR_MULTITEX,
 		PIPELINE_DATA_NOCARING_ALPHABLEND_RNEDERTARGET_SECOND,
 		ROOTSIGNATURE_DATA_UAV_CB,
 		PIPELINE_NAME_INSTANCE_COLOR_MULTITEX
@@ -2582,7 +2582,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX,
 		SHADER_VERTEX_INSTANCE_COLOR_SHADING,
-		SHADER_PIXCEL_INSTANCE_COLOR_SHADING,
+		SHADER_PIXEL_INSTANCE_COLOR_SHADING,
 		PIPELINE_DATA_NOCARING_ALPHABLEND_RNEDERTARGET_SECOND,
 		ROOTSIGNATURE_DATA_UAV_CB,
 		PIPELINE_NAME_INSTANCE_COLOR_MULTITEX_SHADING
@@ -2593,7 +2593,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_FOG_COLOR,
-		SHADER_PIXCEL_FOG_COLOR_MULTITEX,
+		SHADER_PIXEL_FOG_COLOR_MULTITEX,
 		PIPELINE_DATA_NOCARING_BLENDALPHA_MULTIPASS_TWO,
 		ROOTSIGNATURE_DATA_DRAW_DATA1,
 		PIPELINE_NAME_FOG_COLOR_MULTITEX
@@ -2603,7 +2603,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_SPRITE_MULTITEX,
+		SHADER_PIXEL_SPRITE_MULTITEX,
 		PIPELINE_DATA_NOCARING_BLENDALPHA_MULTIPASS_TWO,
 		ROOTSIGNATURE_DATA_DRAW_TEX,
 		PIPELINE_NAME_SPRITE_MULTITEX
@@ -2614,7 +2614,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX,
 		SHADER_VERTEX_OBJ,
-		SHADER_PIXCEL_OBJ_MULTITEX,
+		SHADER_PIXEL_OBJ_MULTITEX,
 		PIPELINE_DATA_BACKCARING_ALPHABLEND_RNEDERTARGET_SECOND,
 		ROOTSIGNATURE_DATA_DRAW_TEX_DATA1,
 		PIPELINE_NAME_OBJ_MULTITEX
@@ -2623,7 +2623,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_NORMAL_TEX,
 		SHADER_VERTEX_OBJ,
-		SHADER_PIXCEL_OBJ_MULTIPASS_LIGHT,
+		SHADER_PIXEL_OBJ_MULTIPASS_LIGHT,
 		PIPELINE_DATA_BACKCARING_ALPHABLEND_RNEDERTARGET_SECOND,
 		ROOTSIGNATURE_DATA_DRAW_TEX_DATA1_DATA2,
 		PIPELINE_NAME_OBJ_MULTITEX_LIGHT
@@ -2633,7 +2633,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_GOALLIGHT_MULTITEX,
+		SHADER_PIXEL_GOALLIGHT_MULTITEX,
 		PIPELINE_DATA_NOCARING_BLENDALPHA_MULTIPASS_TWO,
 		ROOTSIGNATURE_DATA_DRAW_TEX_DATA1,
 		PIPELINE_NAME_SPRITE_GOAL_EFFECT_MULTITEX
@@ -2644,7 +2644,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_LUMINANCE_MULTI,
+		SHADER_PIXEL_LUMINANCE_MULTI,
 		PIPELINE_DATA_NOCARING_BLENDALPHA,
 		ROOTSIGNATURE_DATA_DRAW_TEX_TEX2,
 		PIPELINE_NAME_SPRITE_LUMI
@@ -2653,7 +2653,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_SPRITE,
+		SHADER_PIXEL_SPRITE,
 		PIPELINE_DATA_NOCARING_BLENDALPHA_CUT_MULTITEX,
 		ROOTSIGNATURE_DATA_DRAW_TEX,
 		PIPELINE_NAME_SPRITE_CUTALPHA_MULTITEX
@@ -2664,7 +2664,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_COLOR,
-		SHADER_PIXCEL_COLOR_MULTITEX,
+		SHADER_PIXEL_COLOR_MULTITEX,
 		PIPELINE_DATA_BACKCARING_ALPHABLEND_WIREFLAME_MUTITEX,
 		ROOTSIGNATURE_DATA_DRAW_DATA1,
 		PIPELINE_NAME_COLOR_WIREFLAME_MULTITEX
@@ -2675,7 +2675,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS,
 		SHADER_VERTEX_COLOR,
-		SHADER_PIXCEL_COLOR_MULTITEX,
+		SHADER_PIXEL_COLOR_MULTITEX,
 		PIPELINE_DATA_NOCARING_ALPHABLEND_LINE_MULTITEX,
 		ROOTSIGNATURE_DATA_DRAW_DATA1,
 		PIPELINE_NAME_LINE_MULTITEX
@@ -2685,7 +2685,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	GraphicsPipeLineMgr::Instance()->CreatePipeLine(
 		LAYOUT_POS_TEX,
 		SHADER_VERTEX_SPRITE,
-		SHADER_PIXCEL_LINE_UV_MULTITEX,
+		SHADER_PIXEL_LINE_UV_MULTITEX,
 		PIPELINE_DATA_NOCARING_ALPHABLEND_LINE_MULTITEX,
 		ROOTSIGNATURE_DATA_DRAW_DATA1,
 		PIPELINE_NAME_LINE_UV_MULTITEX

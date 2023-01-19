@@ -56,13 +56,16 @@ void InstanceMeshCollision::Init()
 
 void InstanceMeshCollision::Compute()
 {
+	//meshData[0].meshParticle.Compute();
+
+	//linkMeshHitBoxAndParticle[0].Compute();
 	//メッシュ球とパーティクルの親子関係
 
 	//メッシュ球と対象の当たり判定
 	cpuAndMeshCircleHitBox->Compute();
 
 	//メッシュ球
-	generateMeshHitBox[0].Compute();
+	//generateMeshHitBox[0].Compute();
 
 	//衝突判定が取れたパーティクルの挙動(ここで描画クラスに渡す)
 	particleAvoidParticle.Compute();

@@ -44,7 +44,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     particleData.color = hitBoxData[index].color;
     particleData.pos = hitBoxData[index].pos;
 
-    float larpVel = 0.01f;
+    float larpVel = 0.1f;
     float3 basePos = hitBoxData[index].pos;
     //同じインデックスの場合、パーティクルを動かす処理を追加する
     for(int i = 0;i < 1; ++i)
