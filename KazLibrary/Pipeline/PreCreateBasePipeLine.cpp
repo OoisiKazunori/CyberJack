@@ -1512,7 +1512,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA3));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-			ShaderOptionData(KazFilePathName::ComputeShaderPath + "MeshParticleMoveComputeShader.hlsl", "CSmain", "cs_6_4"),
+			ShaderOptionData(KazFilePathName::ComputeShaderPath + "UpdateMeshParticleComputeShader.hlsl", "CSmain", "cs_6_4"),
 			desc,
 			lRootsignature,
 			PIPELINE_COMPUTE_NAME_MESHPARTICLE_UPDATE
@@ -1933,6 +1933,34 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 			desc,
 			lRootsignature,
 			PIPELINE_COMPUTE_NAME_TEST_APPEND
+		);
+	}
+
+
+	{
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+
+		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+			ShaderOptionData(KazFilePathName::ComputeShaderPath + "MeshParticleHitBoxMove.hlsl", "CSmain", "cs_6_4"),
+			desc,
+			lRootsignature,
+			PIPELINE_COMPUTE_NAME_MESHPARTICLE_MOVE
+		);
+	}
+
+	{
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
+
+		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+			ShaderOptionData(KazFilePathName::ComputeShaderPath + "MeshSphereHitBoxMove.hlsl", "CSmain", "cs_6_4"),
+			desc,
+			lRootsignature,
+			PIPELINE_COMPUTE_NAME_HITBOX_MESHCIRCLE_MOVE
 		);
 	}
 

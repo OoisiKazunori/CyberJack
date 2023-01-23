@@ -513,10 +513,7 @@ void Tutorial::Draw()
 
 	player.Draw();
 
-	for (int i = 0; i < lineLevel.size(); ++i)
-	{
-		lineLevel[i].Draw();
-	}
+
 
 	for (int tutorialNum = 0; tutorialNum < enemies.size(); ++tutorialNum)
 	{
@@ -543,6 +540,11 @@ void Tutorial::Draw()
 		//portalEffect.portalRender.Draw();
 	}
 	pc.Draw();
+
+	for (int i = 0; i < lineLevel.size(); ++i)
+	{
+		lineLevel[i].Draw();
+	}
 
 	//ブルーム系統のレンダーターゲット切り替え
 	renderTarget->Draw();

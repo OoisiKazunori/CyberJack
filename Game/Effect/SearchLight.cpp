@@ -27,6 +27,12 @@ void SearchLight::Update()
 	if (lightTextureR.data.transform.pos.z <= -5000.0f)
 	{
 		lightTextureR.data.transform.pos.z = 5000.0f;
+		lightTextureR.data.colorData.color.a = 0;
+	}
+
+	if (lightTextureR.data.colorData.color.a < 255)
+	{
+		lightTextureR.data.colorData.color.a += 5;
 	}
 }
 

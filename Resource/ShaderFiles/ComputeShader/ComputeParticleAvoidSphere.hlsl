@@ -8,7 +8,7 @@ RWStructuredBuffer<ParticleHitBoxData> hitBoxData : register(u0);
 //当たったインデックス
 RWStructuredBuffer<MeshHitBox> hitIndexData : register(u1);
 //出力
-AppendStructuredBuffer<GPUParticleInput> inputGPUParticleData : register(u2);
+AppendStructuredBuffer<ParticleData> inputGPUParticleData : register(u2);
 
 RWStructuredBuffer<float3> larpPosData : register(u3);
 
@@ -41,14 +41,20 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     uint index = ThreadGroupIndex(groupId,groupIndex,groupThreadID,1024);
 
     ParticleData particleData;
-    particleData.color = hitBoxData[index].color;
     particleData.pos = hitBoxData[index].pos;
+    particleData.color = hitBoxData[index].color;
+    particleData.id = hitBoxData[index].meshID;
 
     float larpVel = 0.1f;
     float3 basePos = hitBoxData[index].pos;
     //同じインデックスの場合、パーティクルを動かす処理を追加する
-    for(int i = 0;i < 1; ++i)
+    for(int i = 0;i < 2; ++i)
     {
+        //メッシュIDの確認
+        if(particleData.id != hitIndexData[i].meshID)
+        {
+            continue;
+        }
         //当たり判定+リンク付け込みの処理を取る
         if(CheckLinkHitBox(hitIndexData[i].id,hitBoxData[index].id))
         {
@@ -65,39 +71,29 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
             float3 vel = normalize(posParticleVec) * 5.5f * rate;
    
             larpVel = 0.1f;
-            basePos = hitBoxData[index].pos + vel;            
-        }
-        else
-        {
-            basePos = hitBoxData[index].pos;
+            basePos = hitBoxData[index].pos + vel;
+            
+            //パーティクル情報の描画,当たったかどうかも表示する
+            particleData.color = float4(1,0,0,1);
+            break;            
         }
     }
-    //行列計算ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー    
-    larpPosData[index] = Larp(basePos,larpPosData[index],larpVel);
-    particleData.pos = larpPosData[index];
-
-    matrix worldMat = CalucurateWorldMat(float3(0,0,0),float3(0.02,0.02,0.02),float3(0,0,0));
-    worldMat[0][3] = particleData.pos.x;
-    worldMat[1][3] = particleData.pos.y;
-    worldMat[2][3] = particleData.pos.z;
-    //worldMat = mul(motherMatData[particleData.id],worldMat);    
     //行列計算ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
-
-    //パーティクル情報の描画,当たったかどうかも表示する
-    GPUParticleInput inputData;    
-    inputData.worldMat = worldMat;
-    inputData.color = float4(1,1,1,1);
-
-    for(int hitIndex = 0;hitIndex < 216; ++hitIndex)
+    
+    larpPosData[index] = Larp(basePos,larpPosData[index],larpVel);
+    if(isnan(larpPosData[index].x))
     {
-        bool isHitFlag = hitIndexData[hitIndex].meshID == hitBoxData[index].meshID && hitIndexData[hitIndex].id == hitBoxData[index].id;
-        if(isHitFlag)
-        {
-            inputData.color = float4(1,0,0,1);
-            break;
-        }
+        larpPosData[index].x = particleData.pos.x;
     }
+    if(isnan(larpPosData[index].y))
+    {
+        larpPosData[index].y = particleData.pos.y;
+    }
+    if(isnan(larpPosData[index].z))
+    {
+        larpPosData[index].z = particleData.pos.z;
+    }
+    particleData.pos = hitBoxData[index].pos;
 
-    inputGPUParticleData.Append(inputData);
-    //パーティクル情報の描画,当たったかどうかも表示する
+    inputGPUParticleData.Append(particleData);
 }

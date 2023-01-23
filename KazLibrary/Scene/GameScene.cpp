@@ -23,6 +23,7 @@ void GameScene::Init()
 	int time = 60;
 	float z = 0.0f;
 
+
 #pragma region 敵の配置レベル1
 	z = 450.0f;
 	stages[layerLevel] = std::make_shared<BlockParticleStage>();

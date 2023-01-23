@@ -1,15 +1,16 @@
 #include "ComputeParticleAvoidSphere.h"
 #include"../KazLibrary/Render/GPUParticleRender.h"
+#include"../Game/Effect/InstanceMeshParticle.h"
 
 ComputeParticleAvoidSphere::ComputeParticleAvoidSphere()
 {
 	//パーティクル情報の判定
 	meshCircleArrayBufferHandle = computeHelper.CreateBuffer(
-		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(MeshHitBoxData) * 100000),
+		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(MeshHitBoxData) * PARTICLE_MAX_NUM),
 		GRAPHICS_RANGE_TYPE_UAV_DESC,
 		GRAPHICS_PRAMTYPE_DATA,
 		sizeof(MeshHitBoxData),
-		100000,
+		PARTICLE_MAX_NUM,
 		true);
 
 	UINT lNum = 0;
@@ -29,26 +30,40 @@ ComputeParticleAvoidSphere::ComputeParticleAvoidSphere()
 
 
 	computeHelper.CreateBuffer(
-		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(DirectX::XMFLOAT3) * 100000),
+		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(DirectX::XMFLOAT3) * PARTICLE_MAX_NUM),
 		GRAPHICS_RANGE_TYPE_UAV_DESC,
 		GRAPHICS_PRAMTYPE_DATA4,
 		sizeof(DirectX::XMFLOAT3),
-		100000);
+		PARTICLE_MAX_NUM);
 }
 
 void ComputeParticleAvoidSphere::SetHitIDBuffer(const ResouceBufferHelper::BufferData &HIT_ID_BUFFER)
 {
 	//何処のメッシュ球と判定を取ったか
 	computeHelper.SetBuffer(HIT_ID_BUFFER, GRAPHICS_PRAMTYPE_DATA2);
-	computeHelper.SetBuffer(GPUParticleRender::Instance()->GetStackBuffer(), GRAPHICS_PRAMTYPE_DATA3);
+
+	//座標とラープ情報を組み合わせたワールド行列
+	outputParticleBufferHandle = computeHelper.CreateBuffer(
+		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(InstanceMeshParticle::InitOutputData) * PARTICLE_MAX_NUM),
+		GRAPHICS_RANGE_TYPE_UAV_DESC,
+		GRAPHICS_PRAMTYPE_DATA3,
+		sizeof(InstanceMeshParticle::InitOutputData),
+		PARTICLE_MAX_NUM,
+		true);
 }
 
 void ComputeParticleAvoidSphere::Compute()
 {
+	computeHelper.InitCounterBuffer(copyBuffer.buffer);
 	computeHelper.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_HITBOX_AVOID_PARTICLE, { 1000,1,1 });
 }
 
 const ResouceBufferHelper::BufferData &ComputeParticleAvoidSphere::GetStackParticleHitBoxBuffer()
 {
 	return computeHelper.GetBufferData(meshCircleArrayBufferHandle);
+}
+
+const ResouceBufferHelper::BufferData &ComputeParticleAvoidSphere::GetOutputParticleData()
+{
+	return computeHelper.GetBufferData(outputParticleBufferHandle);
 }

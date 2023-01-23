@@ -197,34 +197,6 @@ void MeshParticleEmitter::Update(float ALPHA)
 		drawParticleFlag = false;
 	}
 
-	float lScale = scale;
-	scaleRotaMat = KazMath::CaluScaleMatrix({ lScale,lScale,lScale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
-
-
-	if (bias != prevBias)
-	{
-		constBufferData.bias = static_cast<UINT>(bias);
-		buffers->TransData(initCommonHandle, &constBufferData, sizeof(InitCommonData));
-
-		//初期化処理--------------------------------------------
-		DescriptorHeapMgr::Instance()->SetDescriptorHeap();
-		GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_MESHPARTICLE_INIT);
-
-		//頂点
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(0, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(vertDataViewHandle));
-		//出力
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(1, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(outputViewHandle));
-		//共通用バッファのデータ送信
-		DirectX12CmdList::Instance()->cmdList->SetComputeRootConstantBufferView(2, buffers->GetGpuAddress(initCommonHandle));
-		DirectX12CmdList::Instance()->cmdList->Dispatch(50, 1, 1);
-		//初期化処理--------------------------------------------
-
-		prevBias = bias;
-	}
-
-
-
-
 	GraphicsPipeLineMgr::Instance()->SetComputePipeLineAndRootSignature(PIPELINE_COMPUTE_NAME_MESHPARTICLE_UPDATE);
 
 	{

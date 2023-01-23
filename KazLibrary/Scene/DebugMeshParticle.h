@@ -323,11 +323,13 @@ private:
 	//GPU上での歪み判定
 	KazMath::Vec3<float>collisionPos;
 	std::unique_ptr<InstanceMeshCollision> meshCollision;
+	std::array<KazMath::Vec3<float>, 2> meshCollisionPos;
+	std::array<DirectX::XMMATRIX, 2> meshCollisionMat;
 	BoxPolygonRenderPtr minPos, maxPos;
 
 	std::unique_ptr<InstanceMeshParticle> instanceMeshParticle;
 
-	std::array<DirectX::XMMATRIX,10> enemyModelMat;
+	std::array<DirectX::XMMATRIX, 10> enemyModelMat;
 	DirectX::XMMATRIX sphereModelMat;
 	std::array<DirectX::XMMATRIX, 10> summonModelMat;
 	//CPU上でのメッシュとパーティクルの判定--------------------------------------------

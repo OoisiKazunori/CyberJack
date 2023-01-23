@@ -295,3 +295,18 @@ float3 MaxFloat3(float3 NUM_1,float3 NUM_2)
     num.z = max(NUM_1.z,NUM_2.z);
     return num;
 }
+
+float3 UpdatePos(matrix MOTHER_MAT,float3 POS)
+{
+    matrix worldMat = MatrixIdentity();
+    worldMat[0][3] = POS.x;
+    worldMat[1][3] = POS.y;
+    worldMat[2][3] = POS.z;
+    worldMat = mul(MOTHER_MAT,worldMat);
+
+    float3 resultPos;    
+    resultPos.x = worldMat[0][3];
+    resultPos.y = worldMat[1][3];
+    resultPos.z = worldMat[2][3];
+    return resultPos;
+}

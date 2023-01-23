@@ -6,7 +6,7 @@
 #include<d3d11.h>
 #include<d2d1.h>
 
-#include"DirectXTex.h"
+#include"../DirectXTex/include/DirectXTex.h"
 DirectX12::DirectX12()
 {
 	bbIndex = 0;

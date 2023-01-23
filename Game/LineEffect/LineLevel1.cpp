@@ -543,7 +543,7 @@ void LineLevel1::Update()
 		}
 		//ƒƒbƒNƒIƒ“’†‚Ì‹““®-----------------------
 
-
+		line[0]->firstFlag = true;
 		line[0]->Update();
 		for (int i = 1; i < line.size(); ++i)
 		{

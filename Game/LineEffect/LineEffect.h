@@ -6,6 +6,7 @@ struct ConstLineData
 {
 	DirectX::XMFLOAT4 distance;
 	DirectX::XMFLOAT4 color;
+	UINT firstFlag;
 };
 
 class LineEffect
@@ -30,6 +31,7 @@ public:
 	bool finishRockOnFlag;
 	bool finishReleaseFlag;
 	KazMath::Vec3<float> playerPos;
+	bool firstFlag;
 private:
 	float normalRockOnSpeed;
 	float rapidRockOnSpeed;

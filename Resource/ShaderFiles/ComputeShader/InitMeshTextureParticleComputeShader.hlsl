@@ -128,62 +128,41 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
             {
                 //エッジ周辺に偏らせる
                 rate = RandVec3(outputIndex + 1000,10,0).x / 100.0f;
-                resultPos = startPos + resultDistance * rate;
-
-                //座標からUVを取る
-                float3 uvw;
-                uvw.x = CalucurateUVW(firstVertWorldPos.pos.xyz,secondVertWorldPos.pos.xyz,resultPos,triangleArea);
-                uvw.y = CalucurateUVW(secondVertWorldPos.pos.xyz,thirdVertWorldPos.pos.xyz,resultPos,triangleArea);
-                uvw.z = CalucurateUVW(thirdVertWorldPos.pos.xyz,firstVertWorldPos.pos.xyz,resultPos,triangleArea);
-
-                float2 firstVec;
-                firstVec.x = firstVertWorldPos.uv.x * uvw.x;
-                firstVec.y = firstVertWorldPos.uv.y * uvw.x;
-
-                float2 secondVec;
-                secondVec.x = secondVertWorldPos.uv.x * uvw.y;
-                secondVec.y = secondVertWorldPos.uv.y * uvw.y;
-
-                float2 thirdVec;
-                thirdVec.x = thirdVertWorldPos.uv.x * uvw.z;
-                thirdVec.y = thirdVertWorldPos.uv.y * uvw.z;
-
-                float2 uv = firstVec + secondVec + thirdVec;
-
-                worldPosData[outputIndex].pos.xyz = resultPos;
-                worldPosData[outputIndex].color = tex.SampleLevel(smp,uv,0);
             }
             else
             {
                 //面周辺に偏らせる
                 rate = RandVec3(startPos.y * 10.0f + outputIndex + 10000,1,0).x;
-                resultPos = startPos + resultDistance * rate;
-
-                //座標からUVを取る
-                float3 uvw;
-                uvw.x = CalucurateUVW(firstVertWorldPos.pos.xyz,secondVertWorldPos.pos.xyz,resultPos,triangleArea);
-                uvw.y = CalucurateUVW(secondVertWorldPos.pos.xyz,thirdVertWorldPos.pos.xyz,resultPos,triangleArea);
-                uvw.z = CalucurateUVW(thirdVertWorldPos.pos,firstVertWorldPos.pos,resultPos,triangleArea);
-                
-                float2 firstVec;
-                firstVec.x = firstVertWorldPos.uv.x * uvw.x;
-                firstVec.y = firstVertWorldPos.uv.y * uvw.x;
-
-                float2 secondVec;
-                secondVec.x = secondVertWorldPos.uv.x * uvw.y;
-                secondVec.y = secondVertWorldPos.uv.y * uvw.y;
-
-                float2 thirdVec;
-                thirdVec.x = thirdVertWorldPos.uv.x * uvw.z;
-                thirdVec.y = thirdVertWorldPos.uv.y * uvw.z;
-
-                float2 uv = firstVec + secondVec + thirdVec;
-
-                worldPosData[outputIndex].pos.xyz = resultPos;
-                worldPosData[outputIndex].color = tex.SampleLevel(smp,uv,0);
             }
+            resultPos = startPos + resultDistance * rate;
 
-           worldPosData[outputIndex].baseColor = worldPosData[outputIndex].color;
+
+            //座標からUVを取る------------------------------------------------------------------------------------------------
+            float3 uvw;
+            uvw.x = CalucurateUVW(firstVertWorldPos.pos.xyz,secondVertWorldPos.pos.xyz,resultPos,triangleArea);
+            uvw.y = CalucurateUVW(secondVertWorldPos.pos.xyz,thirdVertWorldPos.pos.xyz,resultPos,triangleArea);
+            uvw.z = CalucurateUVW(thirdVertWorldPos.pos,firstVertWorldPos.pos,resultPos,triangleArea);
+            
+            float2 firstVec;
+            firstVec.x = firstVertWorldPos.uv.x * uvw.x;
+            firstVec.y = firstVertWorldPos.uv.y * uvw.x;
+
+            float2 secondVec;
+            secondVec.x = secondVertWorldPos.uv.x * uvw.y;
+            secondVec.y = secondVertWorldPos.uv.y * uvw.y;
+
+            float2 thirdVec;
+            thirdVec.x = thirdVertWorldPos.uv.x * uvw.z;
+            thirdVec.y = thirdVertWorldPos.uv.y * uvw.z;
+
+            float2 uv = firstVec + secondVec + thirdVec;            
+            //座標からUVを取る------------------------------------------------------------------------------------------------
+            
+            //出力------------------------------------------------------------------------------------------------
+            worldPosData[outputIndex].pos.xyz = resultPos;
+            worldPosData[outputIndex].color = tex.SampleLevel(smp,uv,0);
+            worldPosData[outputIndex].baseColor = worldPosData[outputIndex].color;
+            //出力------------------------------------------------------------------------------------------------
         }
     }
     //パーティクルの配置--------------------------------------------

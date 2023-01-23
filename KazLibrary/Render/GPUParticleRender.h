@@ -15,13 +15,15 @@ public:
 	void Draw();
 
 	const ResouceBufferHelper::BufferData &GetStackBuffer();
-private:
 
 	struct InputData
 	{
 		DirectX::XMMATRIX worldMat;
 		DirectX::XMFLOAT4 color;
 	};
+private:
+
+	
 	struct OutputData
 	{
 		DirectX::XMMATRIX mat;

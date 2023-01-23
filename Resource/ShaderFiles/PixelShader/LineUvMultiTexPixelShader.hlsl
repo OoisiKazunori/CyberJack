@@ -5,6 +5,7 @@ cbuffer lineData : register(b1)
 {
     float4 distance;
     float4 hitColor;
+    uint firstFlag;
 }
 
 TwoRender PSmain(VSOutput input)
@@ -17,6 +18,10 @@ TwoRender PSmain(VSOutput input)
     else
     {
         outputColor = color;
+    }
+    if(firstFlag)
+    {
+        outputColor.a = input.uv.y;
     }
 
     TwoRender output;

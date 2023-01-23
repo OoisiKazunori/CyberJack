@@ -24,6 +24,14 @@ public:
 	InstanceMeshParticle(std::vector<InitMeshParticleData> &INIT_DATA);
 	void Compute();
 
+
+	struct InitOutputData
+	{
+		DirectX::XMFLOAT3 pos;
+		DirectX::XMFLOAT4 color;
+		UINT id;
+	};
+
 private:
 	ResouceBufferHelper computeInitMeshParticle;
 	RESOURCE_HANDLE vertHandle, uvHandle, meshDataAndColorHandle, colorHandle, meshParticleOutputHandle, meshParticleIDHandle;
@@ -40,12 +48,7 @@ private:
 	{
 		DirectX::XMMATRIX scaleRotateBillboardMat;
 	};
-	struct InitOutputData
-	{
-		DirectX::XMFLOAT3 pos;
-		DirectX::XMFLOAT4 color;
-		UINT id;
-	};
+
 	struct CommonWithColorData
 	{
 		DirectX::XMUINT4 meshData;

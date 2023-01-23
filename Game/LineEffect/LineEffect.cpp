@@ -26,6 +26,7 @@ LineEffect::LineEffect()
 
 	finishFlag = false;
 	allFinishFlag = false;
+	firstFlag = false;
 }
 
 LineEffect::~LineEffect()
@@ -71,6 +72,8 @@ void LineEffect::RockOn(const KazMath::Vec3<float> &START_POS, const KazMath::Ve
 		rapidRockOnSpeed = SPEED * 2.0f;
 		releaseSpeed = normalRockOnSpeed;
 		lockOnSpeed = normalRockOnSpeed;
+
+		firstFlag = false;
 	}
 }
 
@@ -238,6 +241,15 @@ void LineEffect::Update()
 		{
 			allFinishFlag = true;
 		}
+	}
+
+	if (firstFlag)
+	{
+		lineData.firstFlag = 1;
+	}
+	else
+	{
+		lineData.firstFlag = 0;
 	}
 
 	line->TransData(&lineData, constBufferHandle, typeid(ConstLineData).name());

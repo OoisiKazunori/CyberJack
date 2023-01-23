@@ -132,7 +132,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
                 resultPos = startPos + resultDistance * rate;
             }
 
-            //座標からUVを取る
+            //座標からUVを取る------------------------------------------------------------------------------------------------
             float3 uvw;
             uvw.x = CalucurateUVW(firstVertWorldPos.pos.xyz,secondVertWorldPos.pos.xyz,resultPos,triangleArea);
             uvw.y = CalucurateUVW(secondVertWorldPos.pos.xyz,thirdVertWorldPos.pos.xyz,resultPos,triangleArea);
@@ -157,7 +157,8 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
             output.color = tex.SampleLevel(smp,uv,0);
             output.id = motherMatIndex;                
             outputData.Append(output);
-    }
+            //座標からUVを取る------------------------------------------------------------------------------------------------
+        }
     }
     //パーティクルの配置--------------------------------------------
 }

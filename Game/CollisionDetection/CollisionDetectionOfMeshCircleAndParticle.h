@@ -13,7 +13,7 @@ public:
 	);
 	void Compute();
 
-	const ResouceBufferHelper::BufferData &GetStackMeshCircleBuffer();
+	void SetStackMeshCircleBuffer(const ResouceBufferHelper::BufferData &BUFFER_DATA);
 	const ResouceBufferHelper::BufferData &GetStackIDBuffer();
 
 private:

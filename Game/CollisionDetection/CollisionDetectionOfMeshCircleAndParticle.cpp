@@ -4,15 +4,6 @@ CollisionDetectionOfMeshCircleAndCPUHitBox::CollisionDetectionOfMeshCircleAndCPU
 	const std::vector<Sphere> &CPU_HITBOX_DATA
 ) :sphereHitBoxArray(CPU_HITBOX_DATA)
 {
-	//BBìñÇΩÇËîªíËç¿ïW
-	meshCircleArrayBufferHandle = computeHelper.CreateBuffer(
-		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(MeshHitBoxData) * 10000),
-		GRAPHICS_RANGE_TYPE_UAV_DESC,
-		GRAPHICS_PRAMTYPE_DATA,
-		sizeof(MeshHitBoxData),
-		10000,
-		true);
-
 	//CPUîªíË
 	KazBufferHelper::BufferResourceData lData(
 		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
@@ -110,9 +101,9 @@ void CollisionDetectionOfMeshCircleAndCPUHitBox::Compute()
 	computeHelper.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_HITBOX_MESHCIRCLE_PARTICLE, { 100,1,1 });
 }
 
-const ResouceBufferHelper::BufferData &CollisionDetectionOfMeshCircleAndCPUHitBox::GetStackMeshCircleBuffer()
+void CollisionDetectionOfMeshCircleAndCPUHitBox::SetStackMeshCircleBuffer(const ResouceBufferHelper::BufferData &BUFFER_DATA)
 {
-	return computeHelper.GetBufferData(meshCircleArrayBufferHandle);
+	computeHelper.SetBuffer(BUFFER_DATA, GRAPHICS_PRAMTYPE_DATA);
 }
 
 const ResouceBufferHelper::BufferData &CollisionDetectionOfMeshCircleAndCPUHitBox::GetStackIDBuffer()

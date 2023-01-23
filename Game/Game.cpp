@@ -81,6 +81,7 @@ Game::Game() :LOG_FONT_SIZE(1.0f)
 
 	logoutWindow = std::make_unique<StringWindow>();
 
+
 }
 
 Game::~Game()
@@ -118,6 +119,8 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	//操作可能OBJを纏めて生成する処理----------------------------------------------------------------
 	KazEnemyHelper::GenerateEnemy(enemies, responeData, enemiesHandle);
 	//敵を纏めて生成する処理----------------------------------------------------------------
+
+
 
 
 
@@ -161,7 +164,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	fireIndex = 0;
 	cameraWork.Init();
 
-	tutorial.Init(true);
+	tutorial.Init(false);
 	portalEffect.Init();
 
 	isGameOverFlag = false;
@@ -1162,16 +1165,18 @@ void Game::Draw()
 			goalBox.lightEffect.Draw();
 		}
 
+
+		for (int i = 0; i < lineLevel.size(); ++i)
+		{
+			lineLevel[i].Draw();
+		}
+
+
 		stages[stageNum]->vaporWaveSunRender.Draw();
 
 		for (int i = 0; i < hitEffect.size(); ++i)
 		{
 			hitEffect[i].Draw();
-		}
-
-		for (int i = 0; i < lineLevel.size(); ++i)
-		{
-			lineLevel[i].Draw();
 		}
 
 

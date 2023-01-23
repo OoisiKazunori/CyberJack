@@ -14,6 +14,7 @@ struct InitMeshCollisionData
 	UINT vertNumArray;
 	InitMeshParticleData meshParticleData;
 	Sphere hitBox;
+	const DirectX::XMMATRIX *motherMat;
 };
 
 class InstanceMeshCollision
@@ -56,5 +57,22 @@ private:
 
 
 	KazRenderHelper::ID3D12ResourceWrapper copyBuffer;
+
+	//歪み込みのパーティクル情報を親子関係で動かす-----------------------------
+	std::vector<const DirectX::XMMATRIX*>motherMatArray;
+	ResouceBufferHelper updatePosCompute;
+	ResouceBufferHelper::BufferData motherMatrixBuffer;
+	RESOURCE_HANDLE motherMatHandle, scaleRotateBillboardMatHandle;
+	DirectX::XMMATRIX scaleRotaMat, scaleRotBillBoardMat;
+	//歪み込みのパーティクル情報を親子関係で動かす-----------------------------
+
+	ResouceBufferHelper meshMoveCompute;
+	RESOURCE_HANDLE inputMeshCircleBufferHandle, outputMeshCircleBufferHandle;
+	struct MeshHitBoxData
+	{
+		DirectX::XMFLOAT3 pos;
+		UINT meshID;
+		DirectX::XMUINT3 id;
+	};
 
 };

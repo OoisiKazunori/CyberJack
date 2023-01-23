@@ -12,6 +12,9 @@ InstanceMeshCollision::InstanceMeshCollision(const std::vector<InitMeshCollision
 		meshData[i].bb.Compute();
 
 		hitBoxData.emplace_back(INIT_DATA[i].hitBox);
+
+
+		motherMatArray.push_back(INIT_DATA[i].motherMat);
 	}
 
 	cpuAndMeshCircleHitBox = std::make_unique<CollisionDetectionOfMeshCircleAndCPUHitBox>(hitBoxData);
@@ -34,11 +37,29 @@ InstanceMeshCollision::InstanceMeshCollision(const std::vector<InitMeshCollision
 
 void InstanceMeshCollision::Init()
 {
+	inputMeshCircleBufferHandle = meshMoveCompute.CreateBuffer(
+		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(MeshHitBoxData) * 10000),
+		GRAPHICS_RANGE_TYPE_UAV_DESC,
+		GRAPHICS_PRAMTYPE_DATA,
+		sizeof(MeshHitBoxData),
+		10000,
+		true
+	);
+
+	outputMeshCircleBufferHandle = meshMoveCompute.CreateBuffer(
+		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(MeshHitBoxData) * 10000),
+		GRAPHICS_RANGE_TYPE_UAV_DESC,
+		GRAPHICS_PRAMTYPE_DATA3,
+		sizeof(MeshHitBoxData),
+		10000,
+		false
+	);
+
 	//メッシュパーティクルの当たり判定生成ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 	for (int i = 0; i < meshData.size(); ++i)
 	{
 		//メッシュ球生成
-		generateMeshHitBox.emplace_back(BBDuringEquallyCoordinatePlace(meshData[i].bb.GetBBBuffer(), meshData[i].bb.GetData(), cpuAndMeshCircleHitBox->GetStackMeshCircleBuffer()));
+		generateMeshHitBox.emplace_back(BBDuringEquallyCoordinatePlace(meshData[i].bb.GetBBBuffer(), meshData[i].bb.GetData(), meshMoveCompute.GetBufferData(inputMeshCircleBufferHandle)));
 
 #ifdef DEBUG
 		generateMeshHitBox[i].SetDebugDraw(GPUParticleRender::Instance()->GetStackBuffer());
@@ -48,24 +69,112 @@ void InstanceMeshCollision::Init()
 		//パーティクルとリンク付け
 		linkMeshHitBoxAndParticle.emplace_back(GenerateCollisionOfParticle(generateMeshHitBox[i].GetHitBoxPosData(), meshData[i].meshParticle.GetBuffer(), particleAvoidParticle.GetStackParticleHitBoxBuffer()));
 		linkMeshHitBoxAndParticle[i].Compute();
+
 	}
 	//メッシュパーティクルの当たり判定生成ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 
+	//移動後のbufferを渡す
+	cpuAndMeshCircleHitBox->SetStackMeshCircleBuffer(meshMoveCompute.GetBufferData(outputMeshCircleBufferHandle));
+
+	//何処と当たったかの情報記録
 	particleAvoidParticle.SetHitIDBuffer(cpuAndMeshCircleHitBox->GetStackIDBuffer());
+
+
+
+	updatePosCompute.SetBuffer(particleAvoidParticle.GetOutputParticleData(), GRAPHICS_PRAMTYPE_DATA);
+	motherMatHandle = updatePosCompute.CreateBuffer(
+		KazBufferHelper::SetOnlyReadStructuredBuffer(KazBufferHelper::GetBufferSize<UINT>(motherMatArray.size(), sizeof(DirectX::XMMATRIX))),
+		GRAPHICS_RANGE_TYPE_UAV_DESC,
+		GRAPHICS_PRAMTYPE_DATA2,
+		sizeof(DirectX::XMMATRIX),
+		static_cast<UINT>(motherMatArray.size())
+	);
+
+	updatePosCompute.SetBuffer(GPUParticleRender::Instance()->GetStackBuffer(), GRAPHICS_PRAMTYPE_DATA3);
+
+	scaleRotateBillboardMatHandle = updatePosCompute.CreateBuffer(
+		sizeof(DirectX::XMMATRIX),
+		GRAPHICS_RANGE_TYPE_CBV_VIEW,
+		GRAPHICS_PRAMTYPE_DATA4,
+		1,
+		false);
+
+	float lScale = 0.02f;
+	scaleRotaMat = KazMath::CaluScaleMatrix({ lScale,lScale,lScale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
+
+	//親行列転送用
+	motherMatrixBuffer.bufferWrapper.CreateBuffer(
+		KazBufferHelper::BufferResourceData(
+			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+			D3D12_HEAP_FLAG_NONE,
+			CD3DX12_RESOURCE_DESC::Buffer(KazBufferHelper::GetBufferSize<BUFFER_SIZE>(motherMatArray.size(), sizeof(DirectX::XMMATRIX))),
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			nullptr,
+			"RAMmatData")
+	);
+
+
+
+	meshMoveCompute.SetBuffer(updatePosCompute.GetBufferData(motherMatHandle), GRAPHICS_PRAMTYPE_DATA2);
+
+	//cpuAndMeshCircleHitBox
+		//particleAvoidParticle
 }
 
 void InstanceMeshCollision::Compute()
 {
-	//meshData[0].meshParticle.Compute();
+	for (int i = 0; i < meshData.size(); ++i)
+	{
+		//meshData[i].meshParticle.Compute();
 
-	//linkMeshHitBoxAndParticle[0].Compute();
-	//メッシュ球とパーティクルの親子関係
+		//メッシュ球とパーティクルの親子関係
+		//linkMeshHitBoxAndParticle[i].Compute();
+		//メッシュ球
+		//generateMeshHitBox[i].Compute();
+	}
+
+#pragma region 親行列の転送
+
+	std::vector<DirectX::XMMATRIX>lMatArray(motherMatArray.size());
+	for (int i = 0; i < lMatArray.size(); ++i)
+	{
+		lMatArray[i] = *motherMatArray[i];
+	}
+	motherMatrixBuffer.bufferWrapper.TransData(lMatArray.data(), sizeof(DirectX::XMMATRIX) * static_cast<int>(lMatArray.size()));
+
+
+
+	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
+		1,
+		&CD3DX12_RESOURCE_BARRIER::Transition(updatePosCompute.GetBufferData(motherMatHandle).bufferWrapper.buffer.Get(),
+			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+			D3D12_RESOURCE_STATE_COPY_DEST
+		)
+	);
+
+	DirectX12CmdList::Instance()->cmdList->CopyResource(updatePosCompute.GetBufferData(motherMatHandle).bufferWrapper.buffer.Get(), motherMatrixBuffer.bufferWrapper.buffer.Get());
+
+	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
+		1,
+		&CD3DX12_RESOURCE_BARRIER::Transition(updatePosCompute.GetBufferData(motherMatHandle).bufferWrapper.buffer.Get(),
+			D3D12_RESOURCE_STATE_COPY_DEST,
+			D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+		)
+	);
+#pragma endregion
+
+	scaleRotBillBoardMat = scaleRotaMat * CameraMgr::Instance()->GetMatBillBoard();
+	updatePosCompute.TransData(scaleRotateBillboardMatHandle, &scaleRotBillBoardMat, sizeof(DirectX::XMMATRIX));
+	//メッシュパーティクルの座標移動
+	updatePosCompute.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_UPDATE_MESHPARTICLE, { 1000,1,1 });
+
+
+	//メッシュ球の移動
+	meshMoveCompute.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_HITBOX_MESHCIRCLE_MOVE, { 10,1,1 });
+
 
 	//メッシュ球と対象の当たり判定
 	cpuAndMeshCircleHitBox->Compute();
-
-	//メッシュ球
-	//generateMeshHitBox[0].Compute();
 
 	//衝突判定が取れたパーティクルの挙動(ここで描画クラスに渡す)
 	particleAvoidParticle.Compute();
