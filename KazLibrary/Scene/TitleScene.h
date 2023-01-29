@@ -75,4 +75,6 @@ private:
 
 	OldComputer pc;
 	TutorialMovie movie;
+
+	Sprite2DRender onlyControllerR;
 };

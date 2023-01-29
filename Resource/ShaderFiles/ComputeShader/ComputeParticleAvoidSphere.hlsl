@@ -93,7 +93,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     {
         larpPosData[index].z = particleData.pos.z;
     }
-    particleData.pos = hitBoxData[index].pos;
+    particleData.pos = larpPosData[index];
 
     inputGPUParticleData.Append(particleData);
 }

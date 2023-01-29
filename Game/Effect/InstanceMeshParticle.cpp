@@ -193,6 +193,11 @@ InstanceMeshParticle::InstanceMeshParticle(std::vector<InitMeshParticleData> &IN
 	scaleRotMat = KazMath::CaluScaleMatrix({ lScale,lScale,lScale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
 }
 
+void InstanceMeshParticle::AddMeshData(const InitMeshParticleData &DATA)
+{
+
+}
+
 void InstanceMeshParticle::Compute()
 {
 	scaleRotBillBoardMat = scaleRotMat * CameraMgr::Instance()->GetMatBillBoard();

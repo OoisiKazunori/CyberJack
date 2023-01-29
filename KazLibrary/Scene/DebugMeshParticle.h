@@ -290,10 +290,10 @@ private:
 		KazMath::Vec3<float>endPos;
 	};
 
-	static const int PARTICLE_HITBOX_NUM = 100;
+	static const int PARTICLE_HITBOX_NUM = 20;
 	void InitMeshParticle(const KazMath::Vec3<float> &BASE_POS, std::vector<std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM>> &PARTICLE_DATA, std::vector<std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM>> &BASE_PARTICLE_DATA);
 	void SetParticle(std::array<TriangleLineData, 3>LINE_ARRAY_POS, std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM> &PARTICLE_DATA, std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM> &BASE_PARTICLE_DATA);
-	void CollisionDetection(std::vector<std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM>> &PARTICLE_DATA, std::array<std::array<KazMath::Vec3<float>, PARTICLE_HITBOX_NUM>, 12> &LARP_POS, const KazMath::Vec3<float> &MESH_POS);
+	void CollisionDetection(std::vector<std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM>> &PARTICLE_DATA, std::array<std::array<KazMath::Vec3<float>, PARTICLE_HITBOX_NUM>, 12> &LARP_POS, const KazMath::Vec3<float> &MESH_POS, const KazMath::Vec3<float> &BLOCK_POS);
 
 	std::vector<std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM>>particleHitBox;
 	std::vector<std::array<BoxPolygonRenderPtr, PARTICLE_HITBOX_NUM>>baseParticleHitBox;

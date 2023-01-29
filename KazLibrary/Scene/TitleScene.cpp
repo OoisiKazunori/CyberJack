@@ -39,6 +39,9 @@ TitleScene::TitleScene() :movie(true)
 	endGameFlag = false;
 
 	player.Init({ 0.0f,0.0f,4.5f }, false, true);
+
+	onlyControllerR.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::UIPath + "OnlyController.png");
+	onlyControllerR.data.transform.pos = { 1000.0f,380.0f };
 }
 
 TitleScene::~TitleScene()
@@ -407,6 +410,7 @@ void TitleScene::Draw()
 	{
 		titleLogoR.Draw();
 		lineLogoR.Draw();
+		onlyControllerR.Draw();
 	}
 	if (buttonFlashFlag && !pressStartButtonFlag)
 	{

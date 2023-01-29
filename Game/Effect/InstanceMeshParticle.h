@@ -22,6 +22,8 @@ class InstanceMeshParticle
 {
 public:
 	InstanceMeshParticle(std::vector<InitMeshParticleData> &INIT_DATA);
+
+	void AddMeshData(const InitMeshParticleData &DATA);
 	void Compute();
 
 
