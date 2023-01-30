@@ -31,7 +31,7 @@ private:
 	};
 
 
-	static const int PARTICLE_MAX_NUM = 3000000;
+	static const int PARTICLE_MAX_NUM = 6000000;
 	ResouceBufferHelper computeCovertWorldMatToDrawMat;
 	RESOURCE_HANDLE worldMatHandle, outputHandle, viewProjMatHandle;
 

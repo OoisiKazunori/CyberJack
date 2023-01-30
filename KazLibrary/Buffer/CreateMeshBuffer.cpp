@@ -68,6 +68,41 @@ CreateMeshBuffer::CreateMeshBuffer(RESOURCE_HANDLE HANDLE)
 
 }
 
+CreateMeshBuffer::CreateMeshBuffer(std::vector<DirectX::XMFLOAT3> VERT, std::vector<DirectX::XMFLOAT2> UV)
+{
+	//’¸“_î•ñ‚ğ‘‚«‚Ş--------------------------------------------
+	if (VERT.size() != 0)
+	{
+		bufferHandleDataArray[DATA_VERT].bufferHandle = computeHelper.CreateBuffer(
+			sizeof(DirectX::XMFLOAT3),
+			GRAPHICS_RANGE_TYPE_UAV_DESC,
+			GRAPHICS_PRAMTYPE_DATA,
+			static_cast<BUFFER_SIZE>(VERT.size()),
+			false
+		);
+
+		computeHelper.TransData(bufferHandleDataArray[DATA_VERT].bufferHandle, VERT.data(), KazBufferHelper::GetBufferSize<BUFFER_SIZE>(VERT.size(), sizeof(DirectX::XMFLOAT3)));
+
+		bufferHandleDataArray[DATA_VERT].descriptorViewHandle = computeHelper.GetBufferData(bufferHandleDataArray[DATA_VERT].bufferHandle).viewHandle;
+	}
+	//’¸“_î•ñ‚ğ‘‚«‚Ş--------------------------------------------
+
+	//UVî•ñ‚ğ‘‚«‚Ş--------------------------------------------
+	if (UV.size() != 0)
+	{
+		bufferHandleDataArray[DATA_UV].bufferHandle = computeHelper.CreateBuffer(
+			sizeof(DirectX::XMFLOAT2),
+			GRAPHICS_RANGE_TYPE_UAV_DESC,
+			GRAPHICS_PRAMTYPE_DATA2,
+			static_cast<BUFFER_SIZE>(UV.size()),
+			false
+		);
+		computeHelper.TransData(bufferHandleDataArray[DATA_UV].bufferHandle, UV.data(), KazBufferHelper::GetBufferSize<BUFFER_SIZE>(UV.size(), sizeof(DirectX::XMFLOAT2)));
+		bufferHandleDataArray[DATA_UV].descriptorViewHandle = computeHelper.GetBufferData(bufferHandleDataArray[DATA_UV].bufferHandle).viewHandle;
+	}
+	//UVî•ñ‚ğ‘‚«‚Ş--------------------------------------------
+}
+
 const ResouceBufferHelper::BufferData &CreateMeshBuffer::GetBufferData(MeshBufferView ENUM_VIEW)
 {
 	RESOURCE_HANDLE lHandle = static_cast<RESOURCE_HANDLE>(ENUM_VIEW);

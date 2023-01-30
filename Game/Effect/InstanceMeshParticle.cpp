@@ -2,31 +2,10 @@
 #include"../KazLibrary/Buffer/DescriptorHeapMgr.h"
 #include"../KazLibrary/Render/GPUParticleRender.h"
 
-InstanceMeshParticle::InstanceMeshParticle(std::vector<InitMeshParticleData> &INIT_DATA) :setCountNum(0)
+int InstanceMeshParticle::MESH_PARTICLE_GENERATE_NUM = 0;
+
+InstanceMeshParticle::InstanceMeshParticle() :setCountNum(0)
 {
-	initData = INIT_DATA;
-
-#pragma region 初期化用のバッファ生成
-
-	commonAndColorBufferData = computeInitMeshParticle.CreateAndGetBuffer(
-		COMMON_BUFFER_SIZE,
-		GRAPHICS_RANGE_TYPE_CBV_VIEW,
-		GRAPHICS_PRAMTYPE_DATA,
-		1,
-		false
-	);
-
-	for (int i = 0; i < commonBufferData.size(); ++i)
-	{
-		commonBufferData[i] = computeInitMeshParticle.CreateAndGetBuffer(
-			sizeof(CommonData),
-			GRAPHICS_RANGE_TYPE_CBV_VIEW,
-			GRAPHICS_PRAMTYPE_DATA,
-			1,
-			false
-		);
-	}
-
 	//メッシュパーティクルの初期化処理の出力情報
 	meshParticleBufferData = computeInitMeshParticle.CreateAndGetBuffer(
 		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(InitOutputData) * PARTICLE_MAX_NUM),
@@ -36,10 +15,10 @@ InstanceMeshParticle::InstanceMeshParticle(std::vector<InitMeshParticleData> &IN
 		PARTICLE_MAX_NUM,
 		true);
 
-	for (int i = 0; i < initData.size(); ++i)
-	{
-		motherMatArray.push_back(initData[i].motherMat);
-	}
+	//パーティクルデータ
+	computeUpdateMeshParticle.SetBuffer(meshParticleBufferData, GRAPHICS_PRAMTYPE_DATA);
+
+
 
 	UINT lNum = 0;
 	KazBufferHelper::BufferResourceData lBufferData
@@ -73,80 +52,14 @@ InstanceMeshParticle::InstanceMeshParticle(std::vector<InitMeshParticleData> &IN
 		)
 	);
 
-	//何の情報を読み込むかでパイプラインの種類を変える
-	for (int i = 0; i < initData.size(); ++i)
-	{
-		computeInitMeshParticle.DeleteAllData();
-		setCountNum = 0;
-
-		IsSetBuffer(initData[i].vertData);
-		IsSetBuffer(initData[i].uvData);
 
 
-		ComputePipeLineNames lPipelineName = PIPELINE_COMPUTE_NAME_NONE;
-		RESOURCE_HANDLE lCommonHandle;
-		CommonWithColorData lCommonAndColorData;
-		CommonData lCommonData;
-		switch (setCountNum)
-		{
-		case 0:
-			//メッシュパーティクルに必要な情報が何も入ってない
-			assert(0);
-			break;
-		case 1:
-			lCommonHandle = computeInitMeshParticle.SetBuffer(commonAndColorBufferData, GRAPHICS_PRAMTYPE_DATA3);
-
-			lCommonAndColorData.meshData = initData[i].triagnleData;
-			lCommonAndColorData.color = initData[i].color.ConvertXMFLOAT4();
-			lCommonAndColorData.id = static_cast<UINT>(i);
-			computeInitMeshParticle.TransData(lCommonHandle, &lCommonAndColorData, sizeof(CommonWithColorData));
-
-			lPipelineName = PIPELINE_COMPUTE_NAME_INIT_POS_MESHPARTICLE;
-			break;
-		case 2:
-			lCommonHandle = computeInitMeshParticle.SetBuffer(commonBufferData[i], GRAPHICS_PRAMTYPE_DATA4);
-
-			lCommonData.meshData = initData[i].triagnleData;
-			lCommonData.id = static_cast<UINT>(i);
-			computeInitMeshParticle.TransData(lCommonHandle, &lCommonData, sizeof(CommonData));
-
-			lPipelineName = PIPELINE_COMPUTE_NAME_INIT_POSUV_MESHPARTICLE;
-			break;
-		default:
-			break;
-		}
-
-		meshParticleOutputHandle = computeInitMeshParticle.SetBuffer(meshParticleBufferData, static_cast<GraphicsRootParamType>(GRAPHICS_PRAMTYPE_DATA + setCountNum));
-
-		//テクスチャのセット
-		if (initData[i].textureHandle != -1)
-		{
-			ResouceBufferHelper::BufferData lData;
-			lData.viewHandle = initData[i].textureHandle;
-			lData.rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
-			lData.rootParamType = GRAPHICS_PRAMTYPE_TEX;
-			computeInitMeshParticle.SetBuffer(lData, GRAPHICS_PRAMTYPE_TEX);
-		}
-
-
-		computeInitMeshParticle.StackToCommandListAndCallDispatch(lPipelineName, { 1000,1,1 });
-	}
-#pragma endregion
-
-
-	//computeConvert.SetBuffer(initData[0].vertData, GRAPHICS_PRAMTYPE_DATA);
-	//computeConvert.SetBuffer(meshParticleBufferData, GRAPHICS_PRAMTYPE_DATA2);
-	//computeConvert.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_COVERT_INITMESH_TO_UPDATEMESH, { 3,1,1 });
-
-
-	//パーティクルデータ
-	computeUpdateMeshParticle.SetBuffer(meshParticleBufferData, GRAPHICS_PRAMTYPE_DATA);
 
 
 	KazBufferHelper::BufferResourceData lData(
 		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 		D3D12_HEAP_FLAG_NONE,
-		CD3DX12_RESOURCE_DESC::Buffer(KazBufferHelper::GetBufferSize<BUFFER_SIZE>(motherMatArray.size(), sizeof(DirectX::XMMATRIX))),
+		CD3DX12_RESOURCE_DESC::Buffer(KazBufferHelper::GetBufferSize<BUFFER_SIZE>(MOTHER_MAT_MAX, sizeof(DirectX::XMMATRIX))),
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
 		nullptr,
 		"VRAMmatData"
@@ -159,7 +72,7 @@ InstanceMeshParticle::InstanceMeshParticle(std::vector<InitMeshParticleData> &IN
 		GRAPHICS_RANGE_TYPE_UAV_DESC,
 		GRAPHICS_PRAMTYPE_DATA2,
 		sizeof(DirectX::XMMATRIX),
-		static_cast<UINT>(motherMatArray.size()),
+		static_cast<UINT>(MOTHER_MAT_MAX),
 		false
 	);
 
@@ -169,7 +82,7 @@ InstanceMeshParticle::InstanceMeshParticle(std::vector<InitMeshParticleData> &IN
 		KazBufferHelper::BufferResourceData(
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 			D3D12_HEAP_FLAG_NONE,
-			CD3DX12_RESOURCE_DESC::Buffer(KazBufferHelper::GetBufferSize<BUFFER_SIZE>(motherMatArray.size(), sizeof(DirectX::XMMATRIX))),
+			CD3DX12_RESOURCE_DESC::Buffer(KazBufferHelper::GetBufferSize<BUFFER_SIZE>(MOTHER_MAT_MAX, sizeof(DirectX::XMMATRIX))),
 			D3D12_RESOURCE_STATE_GENERIC_READ,
 			nullptr,
 			"RAMmatData")
@@ -189,13 +102,97 @@ InstanceMeshParticle::InstanceMeshParticle(std::vector<InitMeshParticleData> &IN
 		1,
 		false);
 
-	float lScale = 0.2f;
+	float lScale = 1.5f;
 	scaleRotMat = KazMath::CaluScaleMatrix({ lScale,lScale,lScale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
+}
+
+void InstanceMeshParticle::Init()
+{
 }
 
 void InstanceMeshParticle::AddMeshData(const InitMeshParticleData &DATA)
 {
+#pragma region 初期化用のバッファ生成
 
+	commonAndColorBufferData = computeInitMeshParticle.CreateAndGetBuffer(
+		COMMON_BUFFER_SIZE,
+		GRAPHICS_RANGE_TYPE_CBV_VIEW,
+		GRAPHICS_PRAMTYPE_DATA,
+		1,
+		false
+	);
+
+	commonBufferData.push_back(
+		computeInitMeshParticle.CreateAndGetBuffer(
+			sizeof(CommonData),
+			GRAPHICS_RANGE_TYPE_CBV_VIEW,
+			GRAPHICS_PRAMTYPE_DATA,
+			1,
+			false
+		));
+
+
+	motherMatArray.push_back(DATA.motherMat);
+
+
+
+	//何の情報を読み込むかでパイプラインの種類を変える
+	computeInitMeshParticle.DeleteAllData();
+	setCountNum = 0;
+
+	IsSetBuffer(DATA.vertData);
+	IsSetBuffer(DATA.uvData);
+
+
+	ComputePipeLineNames lPipelineName = PIPELINE_COMPUTE_NAME_NONE;
+	RESOURCE_HANDLE lCommonHandle;
+	CommonWithColorData lCommonAndColorData;
+	CommonData lCommonData;
+	switch (setCountNum)
+	{
+	case 0:
+		//メッシュパーティクルに必要な情報が何も入ってない
+		assert(0);
+		break;
+	case 1:
+		lCommonHandle = computeInitMeshParticle.SetBuffer(commonAndColorBufferData, GRAPHICS_PRAMTYPE_DATA3);
+
+		lCommonAndColorData.meshData = DATA.triagnleData;
+		lCommonAndColorData.color = DATA.color.ConvertXMFLOAT4();
+		lCommonAndColorData.id = static_cast<UINT>(MESH_PARTICLE_GENERATE_NUM);
+		computeInitMeshParticle.TransData(lCommonHandle, &lCommonAndColorData, sizeof(CommonWithColorData));
+
+		lPipelineName = PIPELINE_COMPUTE_NAME_INIT_POS_MESHPARTICLE;
+		break;
+	case 2:
+		lCommonHandle = computeInitMeshParticle.SetBuffer(commonBufferData[MESH_PARTICLE_GENERATE_NUM], GRAPHICS_PRAMTYPE_DATA4);
+
+		lCommonData.meshData = DATA.triagnleData;
+		lCommonData.id = static_cast<UINT>(MESH_PARTICLE_GENERATE_NUM);
+		computeInitMeshParticle.TransData(lCommonHandle, &lCommonData, sizeof(CommonData));
+
+		lPipelineName = PIPELINE_COMPUTE_NAME_INIT_POSUV_MESHPARTICLE;
+		break;
+	default:
+		break;
+	}
+
+	meshParticleOutputHandle = computeInitMeshParticle.SetBuffer(meshParticleBufferData, static_cast<GraphicsRootParamType>(GRAPHICS_PRAMTYPE_DATA + setCountNum));
+
+	//テクスチャのセット
+	if (DATA.textureHandle != -1)
+	{
+		ResouceBufferHelper::BufferData lData;
+		lData.viewHandle = DATA.textureHandle;
+		lData.rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
+		lData.rootParamType = GRAPHICS_PRAMTYPE_TEX;
+		computeInitMeshParticle.SetBuffer(lData, GRAPHICS_PRAMTYPE_TEX);
+	}
+
+	computeInitMeshParticle.StackToCommandListAndCallDispatch(lPipelineName, { 1000,1,1 });
+
+	++MESH_PARTICLE_GENERATE_NUM;
+#pragma endregion
 }
 
 void InstanceMeshParticle::Compute()

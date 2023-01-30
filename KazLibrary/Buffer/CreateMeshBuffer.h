@@ -23,6 +23,7 @@ public:
 	};
 
 	CreateMeshBuffer(RESOURCE_HANDLE HANDLE);
+	CreateMeshBuffer(std::vector<DirectX::XMFLOAT3> VERT, std::vector<DirectX::XMFLOAT2> UV);
 	const ResouceBufferHelper::BufferData &GetBufferData(MeshBufferView ENUM_VIEW);
 
 private:

@@ -9,6 +9,8 @@
 #include"../KazLibrary/Helper/ResourceFilePass.h"
 #include"../KazLibrary/Imgui/MyImgui.h"
 #include"../KazLibrary/Buffer/UavViewHandleMgr.h"
+#include"../Game/Effect/InstanceMeshParticle.h"
+#include"../KazLibrary/Loader/MeshParticleLoader.h"
 
 const float BlockParticleStage::PILLAR_PARTICLE_INTERVAL_NUM = 15000.0f;
 
@@ -316,15 +318,43 @@ BlockParticleStage::BlockParticleStage()
 	}
 
 
-
 	floorResourceHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StagePath + "lambert1_Base_color.png");
+
+	std::vector<VertexUv> lV = GetPlaneData(floorResourceHandle);
+
+	std::vector<DirectX::XMFLOAT3>lPos;
+	std::vector<DirectX::XMFLOAT2>lUv;
+	for (int i = 0; i < lV.size(); ++i)
+	{
+		lPos.push_back(lV[i].pos);
+		lUv.push_back(lV[i].uv);
+	}
+
+
+	meshBuffer = std::make_unique<CreateMeshBuffer>(lPos, lUv);
+	InitMeshParticleData lFloorData;
+	lFloorData.vertData = meshBuffer->GetBufferData(CreateMeshBuffer::DATA_VERT);
+	lFloorData.uvData = meshBuffer->GetBufferData(CreateMeshBuffer::DATA_UV);
+	lFloorData.textureHandle = floorResourceHandle;
+	lFloorData.triagnleData.x = 6;
+	lFloorData.triagnleData.y = 0;
+	lFloorData.triagnleData.z = 10000;
+	lFloorData.triagnleData.w = 2;
+
 	for (int i = 0; i < floorParticleModel.size(); ++i)
 	{
 		floorParticleTransform[i].pos = { 0.0f,-300.0f,500.0f + static_cast<float>(i) * 700.0f };
 		floorParticleTransform[i].rotation = { 90.0f,0.0f,0.0f };
 
 		floorParticleModel[i] = std::make_unique<TextureParticle>(GetPlaneData(floorResourceHandle), &floorParticleMotherMat[i], floorResourceHandle, 5.0f, 10000, 2);
+
+		lFloorData.motherMat = &floorParticleMotherMat[i];
+		InstanceMeshParticle::Instance()->AddMeshData(lFloorData);
 	}
+	MeshParticleLoadData lData{};
+	lData.bias = 0;
+	lData.perTriangleNum = 100;
+	lData.faceCountNum = 250;
 
 	pillarHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "house/" + "House_01.fbx", true);
 	for (int i = 0; i < pillarParticleTransform.size() / 2; ++i)
@@ -334,6 +364,11 @@ BlockParticleStage::BlockParticleStage()
 		RESOURCE_HANDLE lHandle = FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->textureHandle[0];
 		UINT lFaceCountNum = FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->faceCountNum;
 		pillarParticleModel[i] = std::make_unique<TextureParticle>(FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->vertUvData, &pillarParticleMotherMat[i], lHandle, 1.5f, 200, 2000);
+
+
+		InstanceMeshParticle::Instance()->AddMeshData(
+			MeshParticleLoader::Instance()->Load(KazFilePathName::StagePath + "house/" + "House_01.fbx", true, &pillarParticleMotherMat[i], lData)
+		);
 	}
 
 	const int L_HALF_NUM = static_cast<int>(pillarParticleTransform.size()) / 2;
@@ -344,6 +379,10 @@ BlockParticleStage::BlockParticleStage()
 		RESOURCE_HANDLE lHandle = FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->textureHandle[0];
 		UINT lFaceCountNum = FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->faceCountNum;
 		pillarParticleModel[i] = std::make_unique<TextureParticle>(FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->vertUvData, &pillarParticleMotherMat[i], lHandle, 1.5f, 200, 2000);
+
+		InstanceMeshParticle::Instance()->AddMeshData(
+			MeshParticleLoader::Instance()->Load(KazFilePathName::StagePath + "house/" + "House_01.fbx", true, &pillarParticleMotherMat[i], lData)
+		);
 	}
 }
 
@@ -514,11 +553,11 @@ void BlockParticleStage::Draw()
 
 	for (int i = 0; i < pillarParticleModel.size(); ++i)
 	{
-		pillarParticleModel[i]->Draw();
+		//pillarParticleModel[i]->Draw();
 	}
 	for (int i = 0; i < floorParticleModel.size(); ++i)
 	{
-		floorParticleModel[i]->Draw();
+		//floorParticleModel[i]->Draw();
 	}
 	for (int i = 0; i < splineParticle.size(); ++i)
 	{

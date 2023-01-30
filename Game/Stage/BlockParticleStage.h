@@ -7,6 +7,7 @@
 #include"../Game/Effect/GalacticParticle.h"
 #include"../Game/Effect/TextureParticle.h"
 #include"../Game/Effect/SplineParticle.h"
+#include"../KazLibrary/Buffer/CreateMeshBuffer.h"
 
 class BlockParticleStage :public IStage
 {
@@ -160,5 +161,7 @@ private:
 		return lVertArray;
 	}
 
+
+	std::unique_ptr<CreateMeshBuffer> meshBuffer;
 };
 

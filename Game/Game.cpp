@@ -10,9 +10,12 @@
 #include<cmath>
 #include<iostream>
 #include"../KazLibrary/Sound/SoundManager.h"
+#include"../Game/Effect/InstanceMeshParticle.h"
+#include"../KazLibrary/Render/GPUParticleRender.h"
 
 Game::Game() :LOG_FONT_SIZE(1.0f)
 {
+	InstanceMeshParticle::Instance();
 
 	for (int i = 0; i < smokeR.size(); ++i)
 	{
@@ -164,7 +167,7 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	fireIndex = 0;
 	cameraWork.Init();
 
-	tutorial.Init(false);
+	tutorial.Init(true);
 	portalEffect.Init();
 
 	isGameOverFlag = false;
@@ -188,6 +191,10 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 			nextRenderTarget[i + 1] = std::make_unique<GameRenderTarget>(BACKGROUND_COLOR[i + 1]);
 		}
 	}
+
+
+
+	InstanceMeshParticle::Instance()->Init();
 }
 
 void Game::Finalize()
@@ -279,6 +286,8 @@ void Game::Input()
 		goalBox.Init(responeGoalBoxPos);
 		goalBox.Appear(appearGoalBoxPos[stageNum]);
 	}
+
+
 
 }
 
@@ -864,6 +873,8 @@ void Game::Update()
 		stages[stageNum]->hitFlag = false;
 		tutorialWindow.Update();
 		logoutWindow->Update();
+		InstanceMeshParticle::Instance()->Compute();
+
 
 		for (int i = 0; i < hitEffect.size(); ++i)
 		{
@@ -1052,6 +1063,8 @@ void Game::Update()
 
 void Game::Draw()
 {
+	GPUParticleRender::Instance()->InitCount();
+
 	if (tutorial.tutorialFlag)
 	{
 		tutorial.Draw();
@@ -1191,10 +1204,12 @@ void Game::Draw()
 					{
 						continue;
 					}
-					meshParticleArray[enemyType][enemyCount][particleEmittIndex]->Draw();
+					//meshParticleArray[enemyType][enemyCount][particleEmittIndex]->Draw();
 				}
 			}
 		}
+		GPUParticleRender::Instance()->Draw();
+
 
 		for (int enemyType = 0; enemyType < deadParticleArray.size(); ++enemyType)
 		{

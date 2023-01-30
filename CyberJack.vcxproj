@@ -241,6 +241,7 @@
     <ClCompile Include="KazLibrary\Input\ControllerInputManager.cpp" />
     <ClCompile Include="KazLibrary\Input\KeyBoradInputManager.cpp" />
     <ClCompile Include="KazLibrary\Loader\FbxModelResourceMgr.cpp" />
+    <ClCompile Include="KazLibrary\Loader\MeshParticleLoader.cpp" />
     <ClCompile Include="KazLibrary\Loader\ObjResourceMgr.cpp" />
     <ClCompile Include="KazLibrary\Loader\TextureResourceMgr.cpp" />
     <ClCompile Include="KazLibrary\Math\KazMath.cpp" />
@@ -422,6 +423,7 @@
     <ClInclude Include="KazLibrary\Input\IInputManager.h" />
     <ClInclude Include="KazLibrary\Input\KeyBoradInputManager.h" />
     <ClInclude Include="KazLibrary\Loader\FbxModelResourceMgr.h" />
+    <ClInclude Include="KazLibrary\Loader\MeshParticleLoader.h" />
     <ClInclude Include="KazLibrary\Loader\ObjResourceMgr.h" />
     <ClInclude Include="KazLibrary\Loader\TextureResourceMgr.h" />
     <ClInclude Include="KazLibrary\Math\KazMath.h" />

@@ -327,8 +327,6 @@ private:
 	std::array<DirectX::XMMATRIX, 2> meshCollisionMat;
 	BoxPolygonRenderPtr minPos, maxPos;
 
-	std::unique_ptr<InstanceMeshParticle> instanceMeshParticle;
-
 	std::array<DirectX::XMMATRIX, 10> enemyModelMat;
 	DirectX::XMMATRIX sphereModelMat;
 	std::array<DirectX::XMMATRIX, 10> summonModelMat;

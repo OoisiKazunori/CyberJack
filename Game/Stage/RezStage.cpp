@@ -133,7 +133,6 @@ RezStage::RezStage()
 		}
 		searchLightArray[i].Init(lPos, KazMath::Color(KazMath::Rand(255, 100), KazMath::Rand(255, 100), KazMath::Rand(255, 100), 255));
 	}
-
 }
 
 void RezStage::Update()

@@ -2,6 +2,7 @@
 #include"../KazLibrary/Helper/ResouceBufferHelper.h"
 #include"../KazLibrary/Render/DrawExcuteIndirect.h"
 #include"../KazLibrary/Helper/KazRenderHelper.h"
+#include"../KazLibrary/Helper/ISinglton.h"
 
 struct InitMeshParticleData
 {
@@ -18,11 +19,12 @@ struct InitMeshParticleData
 	}
 };
 
-class InstanceMeshParticle
+class InstanceMeshParticle:public ISingleton<InstanceMeshParticle>
 {
 public:
-	InstanceMeshParticle(std::vector<InitMeshParticleData> &INIT_DATA);
+	InstanceMeshParticle();
 
+	void Init();
 	void AddMeshData(const InitMeshParticleData &DATA);
 	void Compute();
 
@@ -35,6 +37,8 @@ public:
 	};
 
 private:
+
+
 	ResouceBufferHelper computeInitMeshParticle;
 	RESOURCE_HANDLE vertHandle, uvHandle, meshDataAndColorHandle, colorHandle, meshParticleOutputHandle, meshParticleIDHandle;
 	RESOURCE_HANDLE motherMatrixHandle,particlePosHandle, particleColorHandle,particleMotherMatrixHandle;
@@ -44,7 +48,7 @@ private:
 	ResouceBufferHelper computeConvert;
 
 	ResouceBufferHelper::BufferData commonAndColorBufferData;
-	std::array<ResouceBufferHelper::BufferData,20> commonBufferData;
+	std::vector<ResouceBufferHelper::BufferData> commonBufferData;
 	ResouceBufferHelper::BufferData meshParticleBufferData;
 	struct WorldMatData
 	{
@@ -63,10 +67,13 @@ private:
 		UINT id;
 	};
 
-	static const int PARTICLE_MAX_NUM = 1000000;
+	static const int PARTICLE_MAX_NUM = 2000000;
 	static const int VERT_BUFFER_SIZE = sizeof(DirectX::XMFLOAT3);
 	static const int UV_BUFFER_SIZE = sizeof(DirectX::XMFLOAT2);
 	static const int COMMON_BUFFER_SIZE = sizeof(CommonWithColorData);
+	static const int MOTHER_MAT_MAX = 100;
+
+	static int MESH_PARTICLE_GENERATE_NUM;
 
 	std::vector<const DirectX::XMMATRIX *>motherMatArray;
 
