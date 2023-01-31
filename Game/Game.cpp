@@ -96,7 +96,8 @@ Game::~Game()
 void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> &RESPONE_DATA,
 	const std::array<std::shared_ptr<IStage>, KazEnemyHelper::STAGE_NUM_MAX> &STAGE_ARRAY,
 	const std::array<KazMath::Color, KazEnemyHelper::STAGE_NUM_MAX> &BACKGROUND_COLOR,
-	const std::array<std::array<KazEnemyHelper::ForceCameraData, 10>, KazEnemyHelper::STAGE_NUM_MAX> &CAMERA_ARRAY)
+	const std::array<std::array<KazEnemyHelper::ForceCameraData, 10>, KazEnemyHelper::STAGE_NUM_MAX> &CAMERA_ARRAY,
+	bool SKIP_FLAG)
 {
 	player.Init(KazMath::Transform3D().pos, true, false);
 	cursor.Init();
@@ -205,15 +206,21 @@ void Game::Finalize()
 void Game::Input()
 {
 
-	if (tutorial.tutorialFlag)
-	{
-		tutorial.Input();
-		//return;
-	}
-
 
 	KeyBoradInputManager *input = KeyBoradInputManager::Instance();
 	ControllerInputManager *inputController = ControllerInputManager::Instance();
+
+
+	if (tutorial.tutorialFlag)
+	{
+		tutorial.Input();
+
+		if (inputController->InputTrigger(XINPUT_GAMEPAD_START))
+		{
+			sceneNum = -3;
+		}
+	}
+
 
 	bool upFlag = false;
 	bool downFlag = false;
@@ -1303,6 +1310,5 @@ int Game::SceneChange()
 		sceneNum = -1;
 		return tmp;
 	}
-
 	return SCENE_NONE;
 }

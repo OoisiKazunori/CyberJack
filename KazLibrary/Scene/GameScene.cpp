@@ -9,7 +9,7 @@
 
 GameScene::GameScene()
 {
-
+	skipTurtorialFlag = false;
 }
 
 GameScene::~GameScene()
@@ -353,7 +353,8 @@ void GameScene::Init()
 
 
 	game = std::make_unique<Game>();
-	game->Init(responeData, stages, backGroundColorArray, cameraMoveArray);
+	game->Init(responeData, stages, backGroundColorArray, cameraMoveArray, skipTurtorialFlag);
+	skipTurtorialFlag = false;
 }
 
 void GameScene::Finalize()
@@ -382,13 +383,15 @@ void GameScene::Draw()
 
 int GameScene::SceneChange()
 {
-	if (game->SceneChange() == 0)
+	int lNum = game->SceneChange();
+	if (lNum == 0)
 	{
 		return 0;
 	}
-	else if (ControllerInputManager::Instance()->InputTrigger(XINPUT_GAMEPAD_START))
+	else if (lNum == -3)
 	{
-		//return -2;
+		skipTurtorialFlag = true;
+		return -2;
 	}
 	else if (ControllerInputManager::Instance()->InputTrigger(XINPUT_GAMEPAD_BACK))
 	{
