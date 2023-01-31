@@ -55,6 +55,12 @@ void NormalEnemy::Update()
 		iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag = false;
 		iEnemy_EnemyStatusData->outOfStageFlag = true;
 	}
+
+	if (!iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
+	{
+		iEnemy_FbxModelRender->data.transform.pos.x = -10000.0f;
+		iEnemy_FbxModelRender->CaluMat();
+	}
 }
 
 void NormalEnemy::Draw()

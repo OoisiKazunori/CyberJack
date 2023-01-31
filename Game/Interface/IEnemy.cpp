@@ -124,6 +124,7 @@ bool IEnemy::ProcessingOfDeathFbx(EnemyDeathType TYPE)
 			iEnemy_FbxModelRender->ReleaseSkining();
 		}
 
+
 		switch (TYPE)
 		{
 		case DEATH_ROLL:

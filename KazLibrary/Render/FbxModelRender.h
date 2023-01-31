@@ -10,6 +10,7 @@ class FbxModelRender :public IRender
 public:
 	FbxModelRender();
 	void Draw(bool DRAW_FLAG = true);
+	void CaluMat();
 
 	void ReleaseSkining();
 	FbxModelData data;

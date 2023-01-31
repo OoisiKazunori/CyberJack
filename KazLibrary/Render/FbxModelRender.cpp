@@ -66,20 +66,7 @@ void FbxModelRender::Draw(bool DRAE_FLAG)
 		//行列計算-----------------------------------------------------------------------------------------------------
 		if (data.transform.Dirty() || data.motherMat.dirty.Dirty())
 		{
-			baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
-			baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
-			baseMatWorldData.matTrans = KazMath::CaluTransMatrix(data.transform.pos);
-			baseMatWorldData.matRota = KazMath::CaluRotaMatrix(data.transform.rotation);
-
-			//ワールド行列の計算
-			baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
-			baseMatWorldData.matWorld *= baseMatWorldData.matScale;
-			baseMatWorldData.matWorld *= baseMatWorldData.matRota;
-			baseMatWorldData.matWorld *= baseMatWorldData.matTrans;
-			baseMatWorldData.matWorld *= data.motherMat.mat;
-
-			//親行列を掛ける
-			motherMat = baseMatWorldData.matWorld;
+			CaluMat();
 		}
 		//行列計算-----------------------------------------------------------------------------------------------------
 
@@ -191,6 +178,23 @@ void FbxModelRender::Draw(bool DRAE_FLAG)
 	}
 
 	data.Record();
+}
+
+void FbxModelRender::CaluMat()
+{
+	baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
+	baseMatWorldData.matScale = KazMath::CaluScaleMatrix(data.transform.scale);
+	baseMatWorldData.matTrans = KazMath::CaluTransMatrix(data.transform.pos);
+	baseMatWorldData.matRota = KazMath::CaluRotaMatrix(data.transform.rotation);
+
+	baseMatWorldData.matWorld = DirectX::XMMatrixIdentity();
+	baseMatWorldData.matWorld *= baseMatWorldData.matScale;
+	baseMatWorldData.matWorld *= baseMatWorldData.matRota;
+	baseMatWorldData.matWorld *= baseMatWorldData.matTrans;
+	baseMatWorldData.matWorld *= data.motherMat.mat;
+
+	//親行列を掛ける
+	motherMat = baseMatWorldData.matWorld;
 }
 
 void FbxModelRender::ReleaseSkining()
