@@ -161,8 +161,7 @@ DebugMeshParticleScene::DebugMeshParticleScene() :
 
 
 
-	std::vector<InitMeshParticleData>lInitData;
-	for (int i = 0; i < 10; ++i)
+	/*for (int i = 0; i < 10; ++i)
 	{
 		enemyModelMat[i] = KazMath::CaluWorld(KazMath::Transform3D(KazMath::Vec3<float>(10.0f, 0.0f, 0.0f + 10.0f * static_cast<float>(i)), { 0.1f,0.1f,0.1f }, { 0.0f,0.0f,0.0f }), { 0.0f,1.0f,0.0f }, { 0.0f,0.0f,1.0f });
 		summonModelMat[i] = KazMath::CaluWorld(KazMath::Transform3D(KazMath::Vec3<float>(-10.0f, 0.0f, 0.0f + 10.0f * static_cast<float>(i)), { 0.1f,0.1f,0.1f }, { 0.0f,0.0f,0.0f }), { 0.0f,1.0f,0.0f }, { 0.0f,0.0f,1.0f });
@@ -176,8 +175,19 @@ DebugMeshParticleScene::DebugMeshParticleScene() :
 		lInitData.emplace_back(MeshParticleLoader::Instance()->Load(filePass[3], false, &summonModelMat[i], lData));
 
 		InstanceMeshParticle::Instance()->AddMeshData(lInitData[i]);
-		InstanceMeshParticle::Instance()->AddMeshData(lInitData[i + 1]);
 	}
+*/
+
+	std::vector<InitMeshParticleData>lInitData;
+	MeshParticleLoadData lData;
+	lData.bias = 70;
+	lData.faceCountNum = 20000;
+	lData.perTriangleNum = 20000;
+	
+	enemyModelMat[0] = KazMath::CaluWorld(KazMath::Transform3D(KazMath::Vec3<float>(10.0f, 0.0f, 0.0f + 10.0f * static_cast<float>(0)), { 0.1f,0.1f,0.1f }, { 0.0f,0.0f,0.0f }), { 0.0f,1.0f,0.0f }, { 0.0f,0.0f,1.0f });
+	lInitData.emplace_back(MeshParticleLoader::Instance()->Load(KazFilePathName::StagePath + "Dungeon_Wall.fbx", false, &enemyModelMat[0], lData));
+	lInitData[0].color = { 55,55,55,255 };
+	InstanceMeshParticle::Instance()->AddMeshData(lInitData[0]);
 	//initData.emplace_back(lSphereMeshData);
 
 	drawInstanceMeshParticleFlag = false;

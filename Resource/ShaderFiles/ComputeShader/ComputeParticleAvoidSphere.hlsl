@@ -57,18 +57,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
         }
         //当たり判定+リンク付け込みの処理を取る
         if(CheckLinkHitBox(hitIndexData[i].id,hitBoxData[index].id))
-        {
-            //パーティクル座標を当たり判定用に変換
-            //float3 particleHitPos = hitBoxData[index].pos - hitIndexData[i].meshPos;
-            ////対象座標を当たり判定用に変換
-            //float3 circleHitPos = hitIndexData[i].circlePos - hitIndexData[i].meshPos;
-
-
-            ////パーティクル当たり判定座標と対象当たり判定座標の距離
-            //float3 posParticleVec = circleHitPos - particleHitPos;
-            ////メッシュ球座標と対象当たり判定座標の距離
-            //float3 posHitBoxVec = circleHitPos - hitIndexData[i].meshPos;
-    
+        {    
             float3 posHitBoxVec = hitIndexData[i].circlePos - hitIndexData[i].meshPos;
             float3 particleHitPos = hitBoxData[index].pos - hitIndexData[i].meshPos;
             float3 posParticleVec = posHitBoxVec - particleHitPos;
@@ -84,7 +73,6 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
             float3 vel = normalize(posParticleVec) * 5.5f * rate;
             larpVel = 0.1f;
             basePos = hitBoxData[index].pos + vel;
-            //basePos = hitIndexData[i].meshPos + vel;
             
             //パーティクル情報の描画,当たったかどうかも表示する
             particleData.color = float4(1,0,0,1);
