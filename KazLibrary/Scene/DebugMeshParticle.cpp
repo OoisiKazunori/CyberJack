@@ -753,8 +753,8 @@ void DebugMeshParticleScene::Update()
 		//座標初期化
 		if (initParticleFlag)
 		{
-			blockPos = { 10.0f,20.0f,0.0f };
-			blockPos2 = { 12.0f,20.0f,0.0f };
+			blockPos = { -10.0f,0.0f,0.0f };
+			blockPos2 = { -12.0f,0.0f,0.0f };
 			InitMeshParticle(blockPos, particleHitBox, baseParticleHitBox);
 			InitMeshParticle(blockPos2, particleHitBox2, baseParticleHitBox2);
 

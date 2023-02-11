@@ -39,19 +39,13 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     particleHitBox.pos = particleData[particleIndex].pos;
     particleHitBox.radius = particleRadius;
 
-    bool4 blackColorFlag;
-    blackColorFlag.x = particleData[particleIndex].color.x == 0.0f;
-    blackColorFlag.y = particleData[particleIndex].color.y == 0.0f;
-    blackColorFlag.z = particleData[particleIndex].color.z == 0.0f;
-    blackColorFlag.w = particleData[particleIndex].color.w == 0.0f;
 
     bool3 particle0Flag;
     particle0Flag.x = particleHitBox.pos.x == 0.0f;
     particle0Flag.y = particleHitBox.pos.y == 0.0f;
     particle0Flag.z = particleHitBox.pos.z == 0.0f;
 
-    if(blackColorFlag.x && blackColorFlag.y && blackColorFlag.z && blackColorFlag.w
-        && particle0Flag.x && particle0Flag.y && particle0Flag.z)
+    if(particle0Flag.x && particle0Flag.y && particle0Flag.z)
     {
         return;
     }

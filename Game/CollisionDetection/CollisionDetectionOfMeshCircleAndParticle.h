@@ -39,9 +39,10 @@ private:
 
 	struct MeshHitBoxData
 	{
-		DirectX::XMFLOAT3 pos;
+		DirectX::XMFLOAT3 meshPos;
 		UINT meshID;
 		DirectX::XMUINT3 id;
+		DirectX::XMFLOAT3 circlePos;
 	};
 	std::vector<Sphere>sphereHitBoxArray;
 

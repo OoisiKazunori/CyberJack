@@ -19,7 +19,7 @@ RWStructuredBuffer<MeshHitBox> meshHitBoxArrayData : register(u0);
 //CPU当たり判定
 RWStructuredBuffer<CPUHitBoxData> cpuHitBoxArrayData : register(u1);
 //何処の球と判定を取ったか
-AppendStructuredBuffer<MeshHitBox> hitBoxAppendData : register(u2);
+AppendStructuredBuffer<MeshSphereHitData> hitBoxAppendData : register(u2);
 
 //メッシュパーティクルと球の判定
 [numthreads(1024, 1, 1)]
@@ -37,20 +37,21 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     meshHitBox.pos = meshHitBoxArrayData[index].pos;
     meshHitBox.radius = particleRadius;
 
-    MeshHitBox idData;
+    MeshSphereHitData idData;
     idData.meshID = meshHitBoxArrayData[index].meshID;
     idData.id = meshHitBoxArrayData[index].id;
 
     CircleData hitBox;
     for(int i = 0;i < cpuHitBoxNum; ++i)
     {
-        hitBox.pos = cpuHitBoxArrayData[i].pos;
+        hitBox.pos = cpuHitBoxArrayData[i].pos;    
         hitBox.radius = cpuHitBoxArrayData[i].radius;
 
-        idData.pos = hitBox.pos;
         //当たり判定が取れたら当たったインデックスを保存し、衝突後の処理に使う
         if(CheckCircleAndCircle(meshHitBox,hitBox))
-        {
+        {            
+            idData.meshPos = meshHitBox.pos;
+            idData.circlePos = hitBox.pos;
             hitBoxAppendData.Append(idData);
             return;
         }

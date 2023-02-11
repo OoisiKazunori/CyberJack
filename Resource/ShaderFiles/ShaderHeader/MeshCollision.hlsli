@@ -22,6 +22,15 @@ struct MeshHitBox
     uint3 id;
 };
 
+struct MeshSphereHitData
+{
+    float3 meshPos;
+    uint meshID;
+    uint3 id;
+    //‘ÎÛ‹…‚ÌÀ•W
+    float3 circlePos;
+};
+
 struct HitIDData
 {
     uint meshID;

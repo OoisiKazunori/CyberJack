@@ -102,7 +102,7 @@ InstanceMeshParticle::InstanceMeshParticle() :setCountNum(0)
 		1,
 		false);
 
-	float lScale = 1.5f;
+	float lScale = 0.2f;
 	scaleRotMat = KazMath::CaluScaleMatrix({ lScale,lScale,lScale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
 }
 
