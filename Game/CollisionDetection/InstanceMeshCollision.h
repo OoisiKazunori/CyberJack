@@ -31,7 +31,7 @@ public:
 	void Compute();
 
 private:
-	static const int PARTICLE_NUM = 100000;
+	static const int PARTICLE_NUM = 200000;
 
 	std::vector<BBDuringEquallyCoordinatePlace> generateMeshHitBox;
 	std::vector<GenerateCollisionOfParticle> linkMeshHitBoxAndParticle;

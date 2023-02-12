@@ -26,7 +26,7 @@ private:
 	};
 	KazRenderHelper::ID3D12ResourceWrapper copyBuffer;
 
-	static const int PARTICLE_MAX_NUM = 100000;
+	static const int PARTICLE_MAX_NUM = 200000;
 
 };
 

@@ -5,6 +5,8 @@
 RWStructuredBuffer<float3> vertciesData : register(u0);
 //出力
 AppendStructuredBuffer<ParticleData> outputData : register(u1);
+//RWStructuredBuffer<ParticleData> outputData : register(u1);
+
 
 cbuffer CommonBuffer: register(b0)
 {
@@ -124,7 +126,8 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
             output.pos = resultPos;
             output.color = color;
             output.id = motherMatIndex;
-            outputData.Append(output);
+            outputData.Append(output);            
+            //outputData[outputIndex] = output;
         }
     }
     //パーティクルの配置--------------------------------------------

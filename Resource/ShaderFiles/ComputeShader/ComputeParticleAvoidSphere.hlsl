@@ -84,15 +84,15 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     larpPosData[index] = Larp(basePos,larpPosData[index],larpVel);
     if(isnan(larpPosData[index].x))
     {
-    ///    larpPosData[index].x = particleData.pos.x;
+        larpPosData[index].x = particleData.pos.x;
     }
     if(isnan(larpPosData[index].y))
     {
-    //    larpPosData[index].y = particleData.pos.y;
+        larpPosData[index].y = particleData.pos.y;
     }
     if(isnan(larpPosData[index].z))
     {
-    //    larpPosData[index].z = particleData.pos.z;
+        larpPosData[index].z = particleData.pos.z;
     }
     //particleData.pos = larpPosData[index];
     particleData.pos = basePos;

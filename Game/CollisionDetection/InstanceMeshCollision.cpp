@@ -56,7 +56,7 @@ void InstanceMeshCollision::Init()
 	//メッシュパーティクルの当たり判定生成ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 	for (int i = 0; i < meshData.size(); ++i)
 	{
-		float lRadius = 300.0f;
+		float lRadius = 1000.0f;
 		//メッシュ球生成
 		generateMeshHitBox.emplace_back(BBDuringEquallyCoordinatePlace(meshData[i].bb.GetBBBuffer(), meshData[i].bb.GetData(), meshMoveCompute.GetBufferData(inputMeshCircleBufferHandle), lRadius));
 
@@ -107,7 +107,7 @@ void InstanceMeshCollision::Init()
 		1,
 		false);
 
-	float lScale = 0.5f;
+	float lScale = 0.25f;
 	scaleRotaMat = KazMath::CaluScaleMatrix({ lScale,lScale,lScale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
 
 	//親行列転送用
@@ -126,6 +126,7 @@ void InstanceMeshCollision::Init()
 
 void InstanceMeshCollision::Compute()
 {
+
 	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "TransMotherMat");
 #pragma region 親行列の転送
 
@@ -157,7 +158,6 @@ void InstanceMeshCollision::Compute()
 	);
 #pragma endregion
 	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
-
 
 	//メッシュパーティクルの座標移動
 	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "MoveMeshParticle");

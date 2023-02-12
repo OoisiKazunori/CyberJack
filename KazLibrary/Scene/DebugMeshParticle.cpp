@@ -181,14 +181,15 @@ DebugMeshParticleScene::DebugMeshParticleScene() :
 	std::vector<InitMeshParticleData>lInitData;
 	MeshParticleLoadData lData;
 	lData.bias = 70;
-	lData.faceCountNum = 25000;
-	lData.perTriangleNum = 25000;
+	lData.faceCountNum = 21935;
+	lData.perTriangleNum = 50;
 
 	enemyModelMat[0] = KazMath::CaluWorld(KazMath::Transform3D(KazMath::Vec3<float>(10.0f, 0.0f, 0.0f + 10.0f * static_cast<float>(0)), { 0.1f,0.1f,0.1f }, { 0.0f,0.0f,0.0f }), { 0.0f,1.0f,0.0f }, { 0.0f,0.0f,1.0f });
 
 	InitMeshParticleData lStageMeshParticleData = MeshParticleLoader::Instance()->Load(KazFilePathName::StagePath + "Dungeon_Wall.fbx", false, &enemyModelMat[0], lData);
 	lInitData.emplace_back(lStageMeshParticleData);
 	lInitData[0].color = { 55,55,55,255 };
+
 	InstanceMeshParticle::Instance()->AddMeshData(lInitData[0]);
 
 	drawInstanceMeshParticleFlag = false;
@@ -198,7 +199,7 @@ DebugMeshParticleScene::DebugMeshParticleScene() :
 	lVertArrayData.emplace_back(sphereModel.GetBufferData(CreateMeshBuffer::DATA_VERT));
 	lVertNumArrayData.emplace_back(FbxModelResourceMgr::Instance()->GetResourceData(lSummonHandle)->vertNum);
 
-
+	lStageMeshParticleData.color = { 55,55,55,255 };
 	{
 		RESOURCE_HANDLE lHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "Dungeon_Wall.fbx");
 

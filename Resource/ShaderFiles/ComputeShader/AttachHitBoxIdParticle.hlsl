@@ -23,17 +23,19 @@ RWStructuredBuffer<MeshHitBox> hitBoxData : register(u0);
 RWStructuredBuffer<ParticleData> particleData : register(u1);
 //パーティクル当たり判定情報
 AppendStructuredBuffer<ParticleHitBoxData> particleHitBoxData : register(u2);
+//RWStructuredBuffer<ParticleHitBoxData> particleHitBoxData : register(u2);
 
 //球の当たり判定とパーティクルの当たり判定を取って、球と同じIDをパーティクルに付与する
 [numthreads(1024, 1, 1)]
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 groupThreadID : SV_GroupThreadID)
 {
-    uint particleIndex = ThreadGroupIndex(groupId,groupIndex,groupThreadID,1024);
+    uint particleIndex = ThreadGroupIndex(groupId,groupIndex,groupThreadID,1024);  
 
-    if(23000 <= particleIndex)
+
+    if(2000000 < particleIndex)
     {
         return;
-    }    
+    }
 
     CircleData particleHitBox;
     particleHitBox.pos = particleData[particleIndex].pos;
@@ -50,6 +52,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
         return;
     }
 
+  
 
     //球の判定とパーティクルの判定を確かめる
     for(int i = 0; i < MeshHitBoxMaxNum;++i)
@@ -67,8 +70,17 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
             appendData.color = particleData[particleIndex].color;            
             appendData.meshID = hitBoxData[i].meshID;
             appendData.id = hitBoxData[i].id;
-            particleHitBoxData.Append(appendData);
+            particleHitBoxData.Append(appendData);            
+            //particleHitBoxData[particleIndex] = appendData;
             return;
         }
     }
+
+
+    //ParticleHitBoxData appendData;
+    //appendData.pos = particleData[particleIndex].pos;
+    //appendData.color = particleData[particleIndex].color;            
+    //appendData.meshID = hitBoxData[0].meshID;
+    //appendData.id = hitBoxData[0].id;
+    //particleHitBoxData[particleIndex] = appendData;
 }
