@@ -23,7 +23,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     }
     float3 worldPos = GetPos(vertciesData[index].xyz,float3(0,0,0)).xyz;
 
-    float vertPos = 1.5f;
+    float vertPos = 100.0f;
     //最小値計算
     bbPosData[0].minPos = MinFloat3(-float3(vertPos,vertPos,vertPos), worldPos);
     //最大値計算

@@ -23,6 +23,7 @@ public:
 	{
 		return computeHelper->GetBufferData(hitBoxDataHandle);
 	}
+
 	std::unique_ptr<ResouceBufferHelper> computeHelper;
 
 	//デバック用に当たり判定を描画する用

@@ -183,12 +183,13 @@ DebugMeshParticleScene::DebugMeshParticleScene() :
 	lData.bias = 70;
 	lData.faceCountNum = 20000;
 	lData.perTriangleNum = 20000;
-	
+
 	enemyModelMat[0] = KazMath::CaluWorld(KazMath::Transform3D(KazMath::Vec3<float>(10.0f, 0.0f, 0.0f + 10.0f * static_cast<float>(0)), { 0.1f,0.1f,0.1f }, { 0.0f,0.0f,0.0f }), { 0.0f,1.0f,0.0f }, { 0.0f,0.0f,1.0f });
-	lInitData.emplace_back(MeshParticleLoader::Instance()->Load(KazFilePathName::StagePath + "Dungeon_Wall.fbx", false, &enemyModelMat[0], lData));
+
+	InitMeshParticleData lStageMeshParticleData = MeshParticleLoader::Instance()->Load(KazFilePathName::StagePath + "Dungeon_Wall.fbx", false, &enemyModelMat[0], lData);
+	lInitData.emplace_back(lStageMeshParticleData);
 	lInitData[0].color = { 55,55,55,255 };
 	InstanceMeshParticle::Instance()->AddMeshData(lInitData[0]);
-	//initData.emplace_back(lSphereMeshData);
 
 	drawInstanceMeshParticleFlag = false;
 
@@ -199,33 +200,33 @@ DebugMeshParticleScene::DebugMeshParticleScene() :
 
 
 	{
-		RESOURCE_HANDLE lHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "testCube.fbx");
+		RESOURCE_HANDLE lHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "Dungeon_Wall.fbx");
 
 		InitMeshParticleData lData;
-		lData.vertData = cubeModel.GetBufferData(CreateMeshBuffer::DATA_VERT);
+		lData.vertData = lStageMeshParticleData.vertData;
 		lData.triagnleData =
 		{
 			FbxModelResourceMgr::Instance()->GetResourceData(lHandle)->vertNum,
-			100,
-			100,
-			100
+			70,
+			20000,
+			20000
 		};
 		lData.color = { 255,255,255,255 };
 
 		std::vector<InitMeshCollisionData> lInitCollisionData;
 		lInitCollisionData.push_back(InitMeshCollisionData());
-		lInitCollisionData[0].vertData = cubeModel.GetBufferData(CreateMeshBuffer::DATA_VERT);
+		lInitCollisionData[0].vertData = lStageMeshParticleData.vertData;
 		lInitCollisionData[0].vertNumArray = FbxModelResourceMgr::Instance()->GetResourceData(lHandle)->vertNum;
 		lInitCollisionData[0].meshParticleData = lData;
 		lInitCollisionData[0].hitBox = Sphere(&collisionPos, 5.0f);
 		lInitCollisionData[0].motherMat = &meshCollisionMat[0];
 
-		lInitCollisionData.push_back(InitMeshCollisionData());
+		/*lInitCollisionData.push_back(InitMeshCollisionData());
 		lInitCollisionData[1].vertData = cubeModel.GetBufferData(CreateMeshBuffer::DATA_VERT);
 		lInitCollisionData[1].vertNumArray = FbxModelResourceMgr::Instance()->GetResourceData(lHandle)->vertNum;
 		lInitCollisionData[1].meshParticleData = lData;
 		lInitCollisionData[1].hitBox = Sphere(&collisionPos, 5.0f);
-		lInitCollisionData[1].motherMat = &meshCollisionMat[1];
+		lInitCollisionData[1].motherMat = &meshCollisionMat[1];*/
 
 		meshCollision = std::make_unique<InstanceMeshCollision>(lInitCollisionData);
 	}
