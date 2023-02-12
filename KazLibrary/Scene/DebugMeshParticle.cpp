@@ -181,8 +181,8 @@ DebugMeshParticleScene::DebugMeshParticleScene() :
 	std::vector<InitMeshParticleData>lInitData;
 	MeshParticleLoadData lData;
 	lData.bias = 70;
-	lData.faceCountNum = 20000;
-	lData.perTriangleNum = 20000;
+	lData.faceCountNum = 25000;
+	lData.perTriangleNum = 25000;
 
 	enemyModelMat[0] = KazMath::CaluWorld(KazMath::Transform3D(KazMath::Vec3<float>(10.0f, 0.0f, 0.0f + 10.0f * static_cast<float>(0)), { 0.1f,0.1f,0.1f }, { 0.0f,0.0f,0.0f }), { 0.0f,1.0f,0.0f }, { 0.0f,0.0f,1.0f });
 
@@ -202,24 +202,13 @@ DebugMeshParticleScene::DebugMeshParticleScene() :
 	{
 		RESOURCE_HANDLE lHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "Dungeon_Wall.fbx");
 
-		InitMeshParticleData lData;
-		lData.vertData = lStageMeshParticleData.vertData;
-		lData.triagnleData =
-		{
-			FbxModelResourceMgr::Instance()->GetResourceData(lHandle)->vertNum,
-			70,
-			20000,
-			20000
-		};
-		lData.color = { 255,255,255,255 };
-
 		std::vector<InitMeshCollisionData> lInitCollisionData;
 		lInitCollisionData.push_back(InitMeshCollisionData());
 		lInitCollisionData[0].vertData = lStageMeshParticleData.vertData;
 		lInitCollisionData[0].vertNumArray = FbxModelResourceMgr::Instance()->GetResourceData(lHandle)->vertNum;
-		lInitCollisionData[0].meshParticleData = lData;
+		lInitCollisionData[0].meshParticleData = lStageMeshParticleData;
 		lInitCollisionData[0].hitBox = Sphere(&collisionPos, 5.0f);
-		lInitCollisionData[0].motherMat = &meshCollisionMat[0];
+		lInitCollisionData[0].motherMat = &enemyModelMat[0];
 
 		/*lInitCollisionData.push_back(InitMeshCollisionData());
 		lInitCollisionData[1].vertData = cubeModel.GetBufferData(CreateMeshBuffer::DATA_VERT);

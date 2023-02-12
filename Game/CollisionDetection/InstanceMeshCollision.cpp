@@ -56,8 +56,9 @@ void InstanceMeshCollision::Init()
 	//メッシュパーティクルの当たり判定生成ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 	for (int i = 0; i < meshData.size(); ++i)
 	{
+		float lRadius = 300.0f;
 		//メッシュ球生成
-		generateMeshHitBox.emplace_back(BBDuringEquallyCoordinatePlace(meshData[i].bb.GetBBBuffer(), meshData[i].bb.GetData(), meshMoveCompute.GetBufferData(inputMeshCircleBufferHandle)));
+		generateMeshHitBox.emplace_back(BBDuringEquallyCoordinatePlace(meshData[i].bb.GetBBBuffer(), meshData[i].bb.GetData(), meshMoveCompute.GetBufferData(inputMeshCircleBufferHandle), lRadius));
 
 #ifdef DEBUG
 		generateMeshHitBox[i].SetDebugDraw(GPUParticleRender::Instance()->GetStackBuffer());
@@ -70,7 +71,7 @@ void InstanceMeshCollision::Init()
 			meshData[i].meshParticle.GetBuffer(),
 			particleAvoidParticle.GetStackParticleHitBoxBuffer(),
 			0.1f,
-			5.0f,
+			lRadius,
 			generateMeshHitBox[i].MaxHitBoxPosNum()
 		);
 
@@ -106,7 +107,7 @@ void InstanceMeshCollision::Init()
 		1,
 		false);
 
-	float lScale = 1.0f;
+	float lScale = 0.5f;
 	scaleRotaMat = KazMath::CaluScaleMatrix({ lScale,lScale,lScale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
 
 	//親行列転送用
@@ -120,27 +121,11 @@ void InstanceMeshCollision::Init()
 			"RAMmatData")
 	);
 
-
-
 	meshMoveCompute.SetBuffer(updatePosCompute.GetBufferData(motherMatHandle), GRAPHICS_PRAMTYPE_DATA2);
-
-	//cpuAndMeshCircleHitBox
-		//particleAvoidParticle
 }
 
 void InstanceMeshCollision::Compute()
 {
-	for (int i = 0; i < meshData.size(); ++i)
-	{
-		//meshData[i].meshParticle.Compute();
-
-		//メッシュ球とパーティクルの親子関係
-		//linkMeshHitBoxAndParticle[i].Compute();
-		//メッシュ球
-		//generateMeshHitBox[i].Compute();
-	}
-
-
 	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "TransMotherMat");
 #pragma region 親行列の転送
 
@@ -184,7 +169,7 @@ void InstanceMeshCollision::Compute()
 	
 	//メッシュ球の移動
 	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "MoveMeshHitBox");
-	meshMoveCompute.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_HITBOX_MESHCIRCLE_MOVE, { 10,1,1 });
+	meshMoveCompute.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_HITBOX_MESHCIRCLE_MOVE, { 1000,1,1 });
 	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
 

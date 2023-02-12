@@ -96,5 +96,6 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     }
     //particleData.pos = larpPosData[index];
     particleData.pos = basePos;
+    particleData.color = float4(1,1,1,1);
     inputGPUParticleData.Append(particleData);
 }

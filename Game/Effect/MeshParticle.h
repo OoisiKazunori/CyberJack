@@ -48,7 +48,7 @@ private:
 		UINT id;
 	};
 
-	static const int PARTICLE_MAX_NUM = 1000000;
+	static const int PARTICLE_MAX_NUM = 2000000;
 	static const int COMMON_BUFFER_SIZE = sizeof(CommonWithColorData);
 
 	std::vector<const DirectX::XMMATRIX *>motherMatArray;

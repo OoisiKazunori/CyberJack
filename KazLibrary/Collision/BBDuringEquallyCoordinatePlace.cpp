@@ -13,11 +13,10 @@
 
 int BBDuringEquallyCoordinatePlace::MeshIdNum = 0;
 
-BBDuringEquallyCoordinatePlace::BBDuringEquallyCoordinatePlace(const ResouceBufferHelper::BufferData &BB_BUFFER_DATA, const BoundingBoxData &DATA, const ResouceBufferHelper::BufferData &STACK_MESH_CIRCLE_DATA) :data(DATA), countNum(0), debugFlag(false)
+BBDuringEquallyCoordinatePlace::BBDuringEquallyCoordinatePlace(const ResouceBufferHelper::BufferData &BB_BUFFER_DATA, const BoundingBoxData &DATA, const ResouceBufferHelper::BufferData &STACK_MESH_CIRCLE_DATA, float MESH_HITBOX_RADIUS) :data(DATA), countNum(0), debugFlag(false),diameter(MESH_HITBOX_RADIUS)
 {
 	computeHelper = std::make_unique<ResouceBufferHelper>();
 
-	diameter = 5.0f;
 	//いくつ配置出来るか計算する
 	KazMath::Vec3<float>lDistance = data.maxPos - data.minPos;
 
