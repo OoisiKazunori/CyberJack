@@ -72,7 +72,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
             appendData.id = hitBoxData[i].id;
             particleHitBoxData.Append(appendData);            
             //particleHitBoxData[particleIndex] = appendData;
-            return;
+            break;
         }
     }
 

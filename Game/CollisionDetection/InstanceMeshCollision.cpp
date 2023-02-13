@@ -70,7 +70,7 @@ void InstanceMeshCollision::Init()
 			meshData[i].meshParticle.GetBuffer(),
 			particleAvoidParticle.GetStackParticleHitBoxBuffer(),
 			0.1f,
-			lRadius,
+			lRadius / 2.0f,
 			generateMeshHitBox[i].MaxHitBoxPosNum()
 		);
 		//パーティクルとリンク付け
@@ -79,7 +79,7 @@ void InstanceMeshCollision::Init()
 	}
 	//メッシュパーティクルの当たり判定生成ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 
-	cpuAndMeshCircleHitBox = std::make_unique<CollisionDetectionOfMeshCircleAndCPUHitBox>(hitBoxData, lRadius);
+	cpuAndMeshCircleHitBox = std::make_unique<CollisionDetectionOfMeshCircleAndCPUHitBox>(hitBoxData, lRadius / 2.0f, generateMeshHitBox[0].MaxHitBoxPosNum());
 
 	//移動後のbufferを渡す
 	cpuAndMeshCircleHitBox->SetStackMeshCircleBuffer(meshMoveCompute.GetBufferData(outputMeshCircleBufferHandle));

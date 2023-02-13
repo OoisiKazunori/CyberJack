@@ -12,19 +12,30 @@ AppendStructuredBuffer<ParticleData> inputGPUParticleData : register(u2);
 
 RWStructuredBuffer<float3> larpPosData : register(u3);
 
+bool BoolUint3(uint3 A,uint3 B)
+{
+    return A.x == B.x && A.y == B.y && A.z == B.z;
+}
+
+
 //周りの当たり判定ともとる
 bool CheckLinkHitBox(uint3 BASE_HIT_INDEX,uint3 CHECK_HIT_INDEX)
 {
     bool linkHitFlagArray[7];
-    linkHitFlagArray[0] = (bool)(CHECK_HIT_INDEX == BASE_HIT_INDEX);                    //真ん中
-    linkHitFlagArray[1] = (bool)(CHECK_HIT_INDEX == (BASE_HIT_INDEX + float3(0,1,0)));  //上
-    linkHitFlagArray[2] = (bool)(CHECK_HIT_INDEX == (BASE_HIT_INDEX + float3(0,-1,0))); //下
-    linkHitFlagArray[3] = (bool)(CHECK_HIT_INDEX == (BASE_HIT_INDEX + float3(-1,0,0))); //左
-    linkHitFlagArray[4] = (bool)(CHECK_HIT_INDEX == (BASE_HIT_INDEX + float3(1,0,0)));  //右
-    linkHitFlagArray[5] = (bool)(CHECK_HIT_INDEX == (BASE_HIT_INDEX + float3(0,0,1)));  //前
-    linkHitFlagArray[6] = (bool)(CHECK_HIT_INDEX == (BASE_HIT_INDEX + float3(0,0,-1))); //後
+    linkHitFlagArray[0] = BoolUint3(CHECK_HIT_INDEX, BASE_HIT_INDEX);                    //真ん中
+    linkHitFlagArray[1] = BoolUint3(CHECK_HIT_INDEX, BASE_HIT_INDEX + uint3(0,1,0));  //上
+    linkHitFlagArray[2] = BoolUint3(CHECK_HIT_INDEX, BASE_HIT_INDEX + uint3(0,-1,0)); //下
+    linkHitFlagArray[3] = BoolUint3(CHECK_HIT_INDEX, BASE_HIT_INDEX + uint3(-1,0,0)); //左
+    linkHitFlagArray[4] = BoolUint3(CHECK_HIT_INDEX, BASE_HIT_INDEX + uint3(1,0,0));  //右
+    linkHitFlagArray[5] = BoolUint3(CHECK_HIT_INDEX, BASE_HIT_INDEX + uint3(0,0,1));  //前
+    linkHitFlagArray[6] = BoolUint3(CHECK_HIT_INDEX, BASE_HIT_INDEX + uint3(0,0,-1)); //後
 
-    for(int i = 0;i < 1;++i)
+    //uint3 hit = uint3(3,2,1);
+    //bool hitFlag = BASE_HIT_INDEX.x == hit.x && BASE_HIT_INDEX.y == hit.y && BASE_HIT_INDEX.z == hit.z;
+    //bool hitParticleFlag = CHECK_HIT_INDEX.x == hit.x && CHECK_HIT_INDEX.y == hit.y && CHECK_HIT_INDEX.z == hit.z;
+    //return hitFlag && hitParticleFlag;
+
+    for(int i = 0;i < 1; ++i)
     {
         if(linkHitFlagArray[i])
         {

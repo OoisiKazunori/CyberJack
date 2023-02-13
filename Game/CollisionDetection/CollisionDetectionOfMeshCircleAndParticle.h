@@ -10,7 +10,8 @@ class CollisionDetectionOfMeshCircleAndCPUHitBox
 public:
 	CollisionDetectionOfMeshCircleAndCPUHitBox(
 		const std::vector<Sphere> &CPU_HITBOX_DATA,
-		float MESH_CIRCLE_RADIUS
+		float MESH_CIRCLE_RADIUS,
+		int MESH_CIRCLE_NUM
 	);
 	void Compute();
 
@@ -26,6 +27,7 @@ private:
 	{
 		UINT cpuHitBoxNum;
 		float particleRadius;
+		UINT meshCircleNum;
 	};
 	struct HitIDData
 	{
