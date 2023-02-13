@@ -1,7 +1,7 @@
 #include "CollisionDetectionOfMeshCircleAndParticle.h"
 
 CollisionDetectionOfMeshCircleAndCPUHitBox::CollisionDetectionOfMeshCircleAndCPUHitBox(
-	const std::vector<Sphere> &CPU_HITBOX_DATA
+	const std::vector<Sphere> &CPU_HITBOX_DATA, float MESH_CIRCLE_RADIUS
 ) :sphereHitBoxArray(CPU_HITBOX_DATA)
 {
 	//CPU”»’è
@@ -61,8 +61,8 @@ CollisionDetectionOfMeshCircleAndCPUHitBox::CollisionDetectionOfMeshCircleAndCPU
 	computeHelper.InitCounterBuffer(copyBuffer.buffer);
 
 	CommonData lCommonData;
-	lCommonData.cpuHitBoxNum = 1;
-	lCommonData.particleRadius = 0.1f;
+	lCommonData.cpuHitBoxNum = static_cast<UINT>(sphereHitBoxArray.size());
+	lCommonData.particleRadius = MESH_CIRCLE_RADIUS;
 	computeHelper.TransData(commonDataHandle, &lCommonData, sizeof(CommonData));
 }
 

@@ -45,11 +45,11 @@ void DebugCSmain(uint3 groupId : SV_GroupID)
     hitBoxData[index].pos = pos;
     hitBoxData[index].id = groupId;
     hitBoxData[index].meshID = id;    
-    stackHitBoxData.Append(hitBoxData[index]);
+    //stackHitBoxData.Append(hitBoxData[index]);
     
     //BB内にきちんと配置出来ているか計算する。
     GPUParticleInput debugOutput;
-    debugOutput.worldMat = CalucurateWorldMat(pos,float3(0.1f,0.1f,0.1f),float3(0.0f,0.0f,0.0f));
+    debugOutput.worldMat = CalucurateWorldMat(pos,float3(1.0f,1.0f,1.0f),float3(0.0f,0.0f,0.0f));
     debugOutput.color = float4(0,1,0,1);
     outputData.Append(debugOutput);
 }

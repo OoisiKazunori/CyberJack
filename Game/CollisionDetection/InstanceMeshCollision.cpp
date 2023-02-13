@@ -15,8 +15,6 @@ InstanceMeshCollision::InstanceMeshCollision(const std::vector<InitMeshCollision
 		motherMatArray.emplace_back(INIT_DATA[i].motherMat);
 	}
 
-	cpuAndMeshCircleHitBox = std::make_unique<CollisionDetectionOfMeshCircleAndCPUHitBox>(hitBoxData);
-
 
 	UINT lNum = 0;
 	KazBufferHelper::BufferResourceData lBufferData
@@ -53,10 +51,10 @@ void InstanceMeshCollision::Init()
 		false
 	);
 
+	float lRadius = 50.0f;
 	//メッシュパーティクルの当たり判定生成ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 	for (int i = 0; i < meshData.size(); ++i)
 	{
-		float lRadius = 1000.0f;
 		//メッシュ球生成
 		generateMeshHitBox.emplace_back(BBDuringEquallyCoordinatePlace(meshData[i].bb.GetBBBuffer(), meshData[i].bb.GetData(), meshMoveCompute.GetBufferData(inputMeshCircleBufferHandle), lRadius));
 
@@ -64,6 +62,7 @@ void InstanceMeshCollision::Init()
 		generateMeshHitBox[i].SetDebugDraw(GPUParticleRender::Instance()->GetStackBuffer());
 #endif
 		generateMeshHitBox[i].Compute();
+
 
 		InitCollisionOfParticleData lInitData
 		(
@@ -74,12 +73,13 @@ void InstanceMeshCollision::Init()
 			lRadius,
 			generateMeshHitBox[i].MaxHitBoxPosNum()
 		);
-
 		//パーティクルとリンク付け
 		linkMeshHitBoxAndParticle.emplace_back(GenerateCollisionOfParticle(lInitData));
 		linkMeshHitBoxAndParticle[i].Compute();
 	}
 	//メッシュパーティクルの当たり判定生成ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+
+	cpuAndMeshCircleHitBox = std::make_unique<CollisionDetectionOfMeshCircleAndCPUHitBox>(hitBoxData, lRadius);
 
 	//移動後のbufferを渡す
 	cpuAndMeshCircleHitBox->SetStackMeshCircleBuffer(meshMoveCompute.GetBufferData(outputMeshCircleBufferHandle));
@@ -126,6 +126,9 @@ void InstanceMeshCollision::Init()
 
 void InstanceMeshCollision::Compute()
 {
+#ifdef DEBUG
+	generateMeshHitBox[0].DebugCompute();
+#endif
 
 	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "TransMotherMat");
 #pragma region 親行列の転送

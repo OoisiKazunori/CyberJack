@@ -9,7 +9,8 @@ class CollisionDetectionOfMeshCircleAndCPUHitBox
 {
 public:
 	CollisionDetectionOfMeshCircleAndCPUHitBox(
-		const std::vector<Sphere> &CPU_HITBOX_DATA
+		const std::vector<Sphere> &CPU_HITBOX_DATA,
+		float MESH_CIRCLE_RADIUS
 	);
 	void Compute();
 

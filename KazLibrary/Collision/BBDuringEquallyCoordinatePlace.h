@@ -16,6 +16,7 @@ public:
 	);
 
 	void Compute();
+	void DebugCompute();
 	UINT MaxHitBoxPosNum()
 	{
 		return countNum;
@@ -26,6 +27,7 @@ public:
 	}
 
 	std::unique_ptr<ResouceBufferHelper> computeHelper;
+	ResouceBufferHelper debugComputeHelper;
 
 	//デバック用に当たり判定を描画する用
 	void SetDebugDraw(const ResouceBufferHelper::BufferData &STACK_DRAW_DATA);

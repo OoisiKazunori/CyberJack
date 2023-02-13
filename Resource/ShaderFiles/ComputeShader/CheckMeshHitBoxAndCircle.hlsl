@@ -28,7 +28,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     uint index = groupThreadID.x;
     index += 1024 * groupId.x;
 
-    if(2 <= index)
+    if(64 <= index)
     {
         return;
     }

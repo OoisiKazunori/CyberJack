@@ -13,7 +13,7 @@
 
 int BBDuringEquallyCoordinatePlace::MeshIdNum = 0;
 
-BBDuringEquallyCoordinatePlace::BBDuringEquallyCoordinatePlace(const ResouceBufferHelper::BufferData &BB_BUFFER_DATA, const BoundingBoxData &DATA, const ResouceBufferHelper::BufferData &STACK_MESH_CIRCLE_DATA, float MESH_HITBOX_RADIUS) :data(DATA), countNum(0), debugFlag(false),diameter(MESH_HITBOX_RADIUS)
+BBDuringEquallyCoordinatePlace::BBDuringEquallyCoordinatePlace(const ResouceBufferHelper::BufferData &BB_BUFFER_DATA, const BoundingBoxData &DATA, const ResouceBufferHelper::BufferData &STACK_MESH_CIRCLE_DATA, float MESH_HITBOX_RADIUS) :data(DATA), countNum(0), debugFlag(false), diameter(MESH_HITBOX_RADIUS)
 {
 	computeHelper = std::make_unique<ResouceBufferHelper>();
 
@@ -42,37 +42,51 @@ BBDuringEquallyCoordinatePlace::BBDuringEquallyCoordinatePlace(const ResouceBuff
 
 
 	//事前に計算しておくもの用意
-	hitBoxCommonHandle = computeHelper->CreateBuffer(sizeof(HitBoxConstBufferData), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4, 1);
-	HitBoxConstBufferData lData;
-	lData.diameter = diameter;
-	lData.xMax = threadNumData.x;
-	lData.xyMax = threadNumData.x * threadNumData.y;
-	lData.id = MeshIdNum;
-	computeHelper->TransData(hitBoxCommonHandle, &lData, sizeof(HitBoxConstBufferData));
-
+	{
+		RESOURCE_HANDLE lHandle = computeHelper->CreateBuffer(sizeof(HitBoxConstBufferData), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4, 1);
+		HitBoxConstBufferData lData;
+		lData.diameter = diameter;
+		lData.xMax = threadNumData.x;
+		lData.xyMax = threadNumData.x * threadNumData.y;
+		lData.id = MeshIdNum;
+		computeHelper->TransData(lHandle, &lData, sizeof(HitBoxConstBufferData));
+	}
 	++MeshIdNum;
+
+
+	//デバック描画
+	{
+		debugComputeHelper.SetBuffer(BB_BUFFER_DATA, GRAPHICS_PRAMTYPE_DATA);
+		debugComputeHelper.SetBuffer(computeHelper->GetBufferData(hitBoxDataHandle), GRAPHICS_PRAMTYPE_DATA2);
+		debugComputeHelper.SetBuffer(STACK_MESH_CIRCLE_DATA, GRAPHICS_PRAMTYPE_DATA3);
+		hitBoxCommonHandle = debugComputeHelper.CreateBuffer(sizeof(HitBoxConstBufferData), GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA4, 1);
+		HitBoxConstBufferData lData;
+		lData.diameter = diameter;
+		lData.xMax = threadNumData.x;
+		lData.xyMax = threadNumData.x * threadNumData.y;
+		lData.id = MeshIdNum;
+		debugComputeHelper.TransData(hitBoxCommonHandle, &lData, sizeof(HitBoxConstBufferData));
+	}
 }
 
 void BBDuringEquallyCoordinatePlace::Compute()
 {
-	if (debugFlag)
-	{
-		computeHelper->StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_HITBOX_SETCIRCLE_IN_BB_DEBUG, threadNumData);
-	}
-	else
-	{
-		computeHelper->StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_HITBOX_SETCIRCLE_IN_BB, threadNumData);
-	}
+	computeHelper->StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_HITBOX_SETCIRCLE_IN_BB, threadNumData);
+}
+
+void BBDuringEquallyCoordinatePlace::DebugCompute()
+{
+	debugComputeHelper.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_HITBOX_SETCIRCLE_IN_BB_DEBUG, threadNumData);
 }
 
 void BBDuringEquallyCoordinatePlace::SetDebugDraw(const ResouceBufferHelper::BufferData &STACK_DRAW_DATA)
 {
-	computeHelper->SetBuffer(
+	debugComputeHelper.SetBuffer(
 		STACK_DRAW_DATA,
 		GRAPHICS_PRAMTYPE_DATA4
 	);
 
-	computeHelper->SetRootParam(
+	debugComputeHelper.SetRootParam(
 		hitBoxCommonHandle,
 		GRAPHICS_PRAMTYPE_DATA5
 	);

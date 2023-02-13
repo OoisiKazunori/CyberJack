@@ -24,7 +24,7 @@ bool CheckLinkHitBox(uint3 BASE_HIT_INDEX,uint3 CHECK_HIT_INDEX)
     linkHitFlagArray[5] = (bool)(CHECK_HIT_INDEX == (BASE_HIT_INDEX + float3(0,0,1)));  //前
     linkHitFlagArray[6] = (bool)(CHECK_HIT_INDEX == (BASE_HIT_INDEX + float3(0,0,-1))); //後
 
-    for(int i = 0;i < 7;++i)
+    for(int i = 0;i < 1;++i)
     {
         if(linkHitFlagArray[i])
         {
@@ -48,7 +48,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     float larpVel = 0.1f;
     float3 basePos = hitBoxData[index].pos;
     //同じインデックスの場合、パーティクルを動かす処理を追加する
-    for(int i = 0;i < 2; ++i)
+    for(int i = 0;i < 64; ++i)
     {
         //メッシュIDの確認
         if(particleData.id != hitIndexData[i].meshID)
@@ -84,18 +84,17 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     larpPosData[index] = Larp(basePos,larpPosData[index],larpVel);
     if(isnan(larpPosData[index].x))
     {
-        larpPosData[index].x = particleData.pos.x;
+    //    larpPosData[index].x = particleData.pos.x;
     }
     if(isnan(larpPosData[index].y))
     {
-        larpPosData[index].y = particleData.pos.y;
+    //    larpPosData[index].y = particleData.pos.y;
     }
     if(isnan(larpPosData[index].z))
     {
-        larpPosData[index].z = particleData.pos.z;
+    //    larpPosData[index].z = particleData.pos.z;
     }
     //particleData.pos = larpPosData[index];
-    particleData.pos = basePos;
-    particleData.color = float4(1,1,1,1);
+    particleData.pos = hitBoxData[index].pos;
     inputGPUParticleData.Append(particleData);
 }
