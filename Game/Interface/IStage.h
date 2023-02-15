@@ -2,6 +2,8 @@
 #include"../KazLibrary/Render/KazRender.h"
 #include<array>
 #include<memory>
+#include"../Game/CollisionDetection/InstanceMeshCollision.h"
+#include"../KazLibrary/Loader/MeshParticleLoader.h"
 
 /// <summary>
 /// ステージの抽象クラス
@@ -23,6 +25,11 @@ public:
 	{
 		cameraIndex = CAMERA_INDEX;
 	};
+
+
+
+	std::vector<InitMeshCollisionData> collisionArrrayData;
+
 
 	bool hitFlag = false;
 	bool startFlag = false;

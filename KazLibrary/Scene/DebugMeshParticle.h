@@ -183,13 +183,6 @@ private:
 
 
 	//パーリンノイズの確認--------------------------------------------
-	std::array<std::array<BoxPolygonRender, 10>, 10>perlinDebugBox;
-	std::array<std::array<KazMath::Vec2<float>, 10>, 10>noiseData;
-	BoxPolygonRender moveNoiseBlock;
-	KazMath::Vec2<float>uv;
-	KazMath::Vec2<float>prevUv;
-	bool initNoizeFlag;
-
 	float PerlinNoize(const KazMath::Vec2<float> &UV, int SEED);
 
 	KazMath::Vec3<float>PNoise(const KazMath::Vec3<float> &POS)
@@ -333,6 +326,10 @@ private:
 	//CPU上でのメッシュとパーティクルの判定--------------------------------------------
 
 	std::array<KazMath::Vec3<float>, 36>GetSquareVertData(const KazMath::Vec3<float> &BASE_POS);
+
+	std::vector<const ColorData *>colorArrayData;
+	std::vector<Sphere>hitBoxArray;
+	ColorData color1, color2;
 
 
 	CreateMeshBuffer sphereModel;

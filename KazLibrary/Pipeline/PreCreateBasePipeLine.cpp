@@ -1898,6 +1898,23 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		RootSignatureDataTest lRootsignature;
 		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
 		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA4));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA5));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA6));
+
+		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
+			ShaderOptionData(KazFilePathName::ComputeShaderPath + "UpdateStageParticle.hlsl", "CSmain", "cs_6_4"),
+			desc,
+			lRootsignature,
+			PIPELINE_COMPUTE_NAME_UPDATE_STAGE_MESHPARTICLE
+		);
+	}
+
+	{
+		RootSignatureDataTest lRootsignature;
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "ConvertInitMeshParticle.hlsl", "CSmain", "cs_6_4"),

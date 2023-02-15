@@ -1,7 +1,7 @@
 #include "InstanceMeshCollision.h"
 #include"../KazLibrary/Render/GPUParticleRender.h"
 
-InstanceMeshCollision::InstanceMeshCollision(const std::vector<InitMeshCollisionData> &INIT_DATA)
+InstanceMeshCollision::InstanceMeshCollision(const std::vector<InitMeshCollisionData> &INIT_DATA, const std::vector<Sphere> &HITBOX_ARRAY_DATA)
 {
 	//BBÇçÏê¨Ç∑ÇÈ
 	for (int i = 0; i < INIT_DATA.size(); ++i)
@@ -11,8 +11,9 @@ InstanceMeshCollision::InstanceMeshCollision(const std::vector<InitMeshCollision
 		//BBê∂ê¨
 		meshData[i].bb.Compute();
 
-		hitBoxData.emplace_back(INIT_DATA[i].hitBox);
+		hitBoxData.emplace_back(HITBOX_ARRAY_DATA[i]);
 		motherMatArray.emplace_back(INIT_DATA[i].motherMat);
+		colorDataArray.emplace_back(INIT_DATA[i].colorData);
 	}
 
 
@@ -101,12 +102,12 @@ void InstanceMeshCollision::Init()
 		static_cast<UINT>(motherMatArray.size())
 	);
 
-	updatePosCompute.SetBuffer(GPUParticleRender::Instance()->GetStackBuffer(), GRAPHICS_PRAMTYPE_DATA3);
+	updatePosCompute.SetBuffer(GPUParticleRender::Instance()->GetStackBuffer(), GRAPHICS_PRAMTYPE_DATA5);
 
 	scaleRotateBillboardMatHandle = updatePosCompute.CreateBuffer(
 		sizeof(DirectX::XMMATRIX),
 		GRAPHICS_RANGE_TYPE_CBV_VIEW,
-		GRAPHICS_PRAMTYPE_DATA4,
+		GRAPHICS_PRAMTYPE_DATA6,
 		1,
 		false);
 
@@ -125,6 +126,35 @@ void InstanceMeshCollision::Init()
 	);
 
 	meshMoveCompute.SetBuffer(updatePosCompute.GetBufferData(motherMatHandle), GRAPHICS_PRAMTYPE_DATA2);
+
+
+
+	colorDataBuffer.bufferWrapper.CreateBuffer(
+		KazBufferHelper::BufferResourceData(
+			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+			D3D12_HEAP_FLAG_NONE,
+			CD3DX12_RESOURCE_DESC::Buffer(KazBufferHelper::GetBufferSize<BUFFER_SIZE>(motherMatArray.size(), sizeof(ColorData))),
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			nullptr,
+			"RAMColorData")
+	);
+
+	colorDataHandle = updatePosCompute.CreateBuffer(
+		KazBufferHelper::SetOnlyReadStructuredBuffer(KazBufferHelper::GetBufferSize<UINT>(motherMatArray.size(), sizeof(ColorData))),
+		GRAPHICS_RANGE_TYPE_UAV_DESC,
+		GRAPHICS_PRAMTYPE_DATA4,
+		sizeof(ColorData),
+		static_cast<UINT>(motherMatArray.size())
+	);
+
+
+	updatePosCompute.CreateBuffer(
+		KazBufferHelper::SetOnlyReadStructuredBuffer(KazBufferHelper::GetBufferSize<UINT>(PARTICLE_NUM, sizeof(DirectX::XMFLOAT4))),
+		GRAPHICS_RANGE_TYPE_UAV_DESC,
+		GRAPHICS_PRAMTYPE_DATA3,
+		sizeof(DirectX::XMFLOAT4),
+		PARTICLE_NUM
+	);
 }
 
 void InstanceMeshCollision::Compute()
@@ -166,6 +196,36 @@ void InstanceMeshCollision::Compute()
 		)
 	);
 #pragma endregion
+
+#pragma region êFèÓïÒÇÃì]ëó
+
+	std::vector<ColorData>lColorArray(colorDataArray.size());
+	for (int i = 0; i < lColorArray.size(); ++i)
+	{
+		lColorArray[i] = *colorDataArray[i];
+	}
+	colorDataBuffer.bufferWrapper.TransData(lColorArray.data(), sizeof(ColorData) * static_cast<int>(lColorArray.size()));
+
+
+
+	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
+		1,
+		&CD3DX12_RESOURCE_BARRIER::Transition(updatePosCompute.GetBufferData(colorDataHandle).bufferWrapper.buffer.Get(),
+			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+			D3D12_RESOURCE_STATE_COPY_DEST
+		)
+	);
+
+	DirectX12CmdList::Instance()->cmdList->CopyResource(updatePosCompute.GetBufferData(colorDataHandle).bufferWrapper.buffer.Get(), colorDataBuffer.bufferWrapper.buffer.Get());
+
+	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
+		1,
+		&CD3DX12_RESOURCE_BARRIER::Transition(updatePosCompute.GetBufferData(colorDataHandle).bufferWrapper.buffer.Get(),
+			D3D12_RESOURCE_STATE_COPY_DEST,
+			D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+		)
+	);
+#pragma endregion
 	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
 
@@ -190,7 +250,7 @@ void InstanceMeshCollision::Compute()
 	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "MoveMeshParticle");
 	scaleRotBillBoardMat = scaleRotaMat * CameraMgr::Instance()->GetMatBillBoard();
 	updatePosCompute.TransData(scaleRotateBillboardMatHandle, &scaleRotBillBoardMat, sizeof(DirectX::XMMATRIX));
-	updatePosCompute.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_UPDATE_MESHPARTICLE, { 1000,1,1 });
+	updatePosCompute.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_UPDATE_STAGE_MESHPARTICLE, { 1000,1,1 });
 	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
 }

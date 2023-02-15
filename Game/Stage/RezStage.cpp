@@ -133,6 +133,24 @@ RezStage::RezStage()
 		}
 		searchLightArray[i].Init(lPos, KazMath::Color(KazMath::Rand(255, 100), KazMath::Rand(255, 100), KazMath::Rand(255, 100), 255));
 	}
+
+
+	/*InitMeshParticleData lStageMeshParticleData = MeshParticleLoader::Instance()->Load(KazFilePathName::StagePath + "Dungeon_Wall.fbx", false, &enemyModelMat[0], lData);
+	RESOURCE_HANDLE lHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "Dungeon_Wall.fbx");
+
+	collisionArrrayData.push_back(InitMeshCollisionData());
+	collisionArrrayData[0].vertData = lStageMeshParticleData.vertData;
+	collisionArrrayData[0].vertNumArray = FbxModelResourceMgr::Instance()->GetResourceData(lHandle)->vertNum;
+	collisionArrrayData[0].meshParticleData = lStageMeshParticleData;
+	collisionArrrayData[0].motherMat = &transformArrayData[0].GetMat();
+	collisionArrrayData[0].colorData = &colorArrayData[0];
+
+	collisionArrrayData.push_back(InitMeshCollisionData());
+	collisionArrrayData[1].vertData = lStageMeshParticleData.vertData;
+	collisionArrrayData[1].vertNumArray = FbxModelResourceMgr::Instance()->GetResourceData(lHandle)->vertNum;
+	collisionArrrayData[1].meshParticleData = lStageMeshParticleData;
+	collisionArrrayData[1].motherMat = &transformArrayData[1].GetMat();
+	collisionArrrayData[1].colorData = &colorArrayData[1];*/
 }
 
 void RezStage::Update()

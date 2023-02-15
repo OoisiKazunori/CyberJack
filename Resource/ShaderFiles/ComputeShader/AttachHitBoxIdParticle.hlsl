@@ -23,7 +23,6 @@ RWStructuredBuffer<MeshHitBox> hitBoxData : register(u0);
 RWStructuredBuffer<ParticleData> particleData : register(u1);
 //パーティクル当たり判定情報
 AppendStructuredBuffer<ParticleHitBoxData> particleHitBoxData : register(u2);
-//RWStructuredBuffer<ParticleHitBoxData> particleHitBoxData : register(u2);
 
 //球の当たり判定とパーティクルの当たり判定を取って、球と同じIDをパーティクルに付与する
 [numthreads(1024, 1, 1)]

@@ -1,19 +1,25 @@
 #include"../ShaderHeader/KazMathHeader.hlsli"
 #include"../ShaderHeader/GPUParticle.hlsli"
 
+struct ColorData
+{
+    //X...一括光らせ、Y...高さで光らせる
+    int2 lightData;
+    float alpha;
+};
+
 //入力
 RWStructuredBuffer<ParticleData> updateParticleData : register(u0);
 RWStructuredBuffer<matrix> motherMatData : register(u1);
 RWStructuredBuffer<float4> larpColorData : register(u2);
+RWStructuredBuffer<ColorData> colorLightData : register(u3);
+
 //出力
-AppendStructuredBuffer<GPUParticleInput> inputGPUParticleData : register(u3);
+AppendStructuredBuffer<GPUParticleInput> inputGPUParticleData : register(u4);
 
 cbuffer RootConstants : register(b0)
-{    
+{
     matrix scaleRotaBillBoardMat;
-    //X...一括光らせ、Y...高さで光らせる
-    uint2 lightData;
-    float alpha;
 };
 
 [numthreads(1024, 1, 1)]
@@ -31,24 +37,23 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     ParticleData particleData = updateParticleData[index];
     float4 color = particleData.color;
 
+    ColorData colorData = colorLightData[particleData.id];
     //色出力------------------------------------------------------------------
-    bool TopFlag = particleData.pos.x <= lightData.y + 2.0f;
-    bool ButtonFlag = lightData.y - 2.0f <= particleData.pos.x;
+    bool TopFlag = particleData.pos.y <= colorData.lightData.y + 2.0f;
+    bool ButtonFlag = colorData.lightData.y - 2.0f <= particleData.pos.y;
     //高さによる光らせ
     if(TopFlag && ButtonFlag)
     {
         color = float4(1,1,1,1);
     }
     //一括で光らせる
-    else if(lightData.x)
+    else if(colorData.lightData.x)
     {
         color = float4(1,1,1,1);
     }
-    else
-    {
-        color = float4(0.5,0.5,0.5,1.0);
-    }
-    color.a = alpha;
+    color.a = colorData.alpha;
+
+    larpColorData[index] = Larp(color,larpColorData[index],0.1f);
     //色出力------------------------------------------------------------------
 
 
@@ -61,8 +66,6 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
 
     GPUParticleInput inputData;
     inputData.worldMat = worldMat;
-
-    larpColorData[index] = Larp(color,larpColorData[index],0.1f);
     inputData.color = larpColorData[index];
     inputGPUParticleData.Append(inputData);
 }

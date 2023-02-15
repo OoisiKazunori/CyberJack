@@ -195,7 +195,13 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 
 
 
+	std::vector<InitMeshCollisionData> lInitCollisionData = stages[0]->collisionArrrayData;
+	//meshCollision = std::make_unique<InstanceMeshCollision>(lInitCollisionData);
+	meshCollision->Init();
+
+
 	InstanceMeshParticle::Instance()->Init();
+
 }
 
 void Game::Finalize()

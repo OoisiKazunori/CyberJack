@@ -40,6 +40,8 @@
 #include"Tutorial.h"
 #include"../Game/UI/StringWindow.h"
 
+#include"../Game/CollisionDetection/InstanceMeshCollision.h"
+
 
 class Game
 {
@@ -185,7 +187,7 @@ private:
 	CircleRender circle;
 
 	bool smokeFlag;
-	std::array<Sprite2DRender,4> smokeR;
+	std::array<Sprite2DRender, 4> smokeR;
 
 	int emittNum;
 	std::array<std::array<std::vector<std::unique_ptr<MeshParticleEmitter>>, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> meshParticleArray;
@@ -216,4 +218,7 @@ private:
 	bool prepareToClearFlag;
 	bool initEndLogFlag;
 	int gameClearTimer;
+
+
+	std::unique_ptr<InstanceMeshCollision> meshCollision;
 };

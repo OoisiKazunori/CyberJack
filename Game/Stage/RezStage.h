@@ -64,4 +64,8 @@ private:
 	std::array<BlockMountain, 2>blockMountainArray;
 	std::array<WindowForAd, 50> windowArray;
 	std::array<SearchLight, 50> searchLightArray;
+
+
+	std::vector<ColorData>colorArrayData;
+	std::vector<KazMath::Transform3D>transformArrayData;
 };

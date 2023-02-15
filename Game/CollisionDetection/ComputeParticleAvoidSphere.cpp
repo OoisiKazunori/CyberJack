@@ -28,7 +28,7 @@ ComputeParticleAvoidSphere::ComputeParticleAvoidSphere()
 
 	computeHelper.InitCounterBuffer(copyBuffer.buffer);
 
-
+	//À•W‚Ìƒ‰[ƒvˆ—
 	computeHelper.CreateBuffer(
 		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(DirectX::XMFLOAT3) * PARTICLE_MAX_NUM),
 		GRAPHICS_RANGE_TYPE_UAV_DESC,

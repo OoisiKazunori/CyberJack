@@ -8,13 +8,19 @@
 #include"../Game/CollisionDetection/CollisionDetectionOfMeshCircleAndParticle.h"
 #include"../Game/CollisionDetection/ComputeParticleAvoidSphere.h"
 
+struct ColorData
+{
+	DirectX::XMINT2 lightData;
+	float alpha;
+};
+
 struct InitMeshCollisionData
 {
 	ResouceBufferHelper::BufferData vertData;
 	UINT vertNumArray;
 	InitMeshParticleData meshParticleData;
-	Sphere hitBox;
 	const DirectX::XMMATRIX *motherMat;
+	const ColorData *colorData;
 };
 
 class InstanceMeshCollision
@@ -24,7 +30,8 @@ public:
 	/// 頂点情報、メッシュパーティクル座標配列を入れてメッシュパーティクルの当たり判定を生成する。
 	/// </summary>
 	InstanceMeshCollision(
-		const std::vector<InitMeshCollisionData> &INIT_DATA
+		const std::vector<InitMeshCollisionData> &INIT_DATA,
+		const std::vector<Sphere> &HITBOX_ARRAY_DATA
 	);
 
 	void Init();
@@ -60,13 +67,18 @@ private:
 
 	KazRenderHelper::ID3D12ResourceWrapper copyBuffer;
 
+
 	//歪み込みのパーティクル情報を親子関係で動かす-----------------------------
 	std::vector<const DirectX::XMMATRIX*>motherMatArray;
+	std::vector<const ColorData*>colorDataArray;
 	ResouceBufferHelper updatePosCompute;
 	ResouceBufferHelper::BufferData motherMatrixBuffer;
+	ResouceBufferHelper::BufferData colorDataBuffer;
 	RESOURCE_HANDLE motherMatHandle, scaleRotateBillboardMatHandle;
 	DirectX::XMMATRIX scaleRotaMat, scaleRotBillBoardMat;
 	//歪み込みのパーティクル情報を親子関係で動かす-----------------------------
+
+	RESOURCE_HANDLE colorDataHandle;
 
 	ResouceBufferHelper meshMoveCompute;
 	RESOURCE_HANDLE inputMeshCircleBufferHandle, outputMeshCircleBufferHandle;

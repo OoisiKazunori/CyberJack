@@ -196,7 +196,19 @@ DebugMeshParticleScene::DebugMeshParticleScene() :
 	lVertArrayData.emplace_back(sphereModel.GetBufferData(CreateMeshBuffer::DATA_VERT));
 	lVertNumArrayData.emplace_back(FbxModelResourceMgr::Instance()->GetResourceData(lSummonHandle)->vertNum);
 
-	lStageMeshParticleData.color = { 55,55,55,255 };
+	lStageMeshParticleData.color = { 0.2f,0.2f,0.2f,1.0f };
+
+	color1.lightData.x = 0;
+	color1.lightData.y = -100;
+	color1.alpha = 1.0f;
+
+	color2.lightData.x = 0;
+	color2.lightData.y = -100;
+	color2.alpha = 0.5f;
+
+	colorArrayData.emplace_back(&color1);
+	colorArrayData.emplace_back(&color2);
+
 	{
 		RESOURCE_HANDLE lHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "Dungeon_Wall.fbx");
 
@@ -205,17 +217,20 @@ DebugMeshParticleScene::DebugMeshParticleScene() :
 		lInitCollisionData[0].vertData = lStageMeshParticleData.vertData;
 		lInitCollisionData[0].vertNumArray = FbxModelResourceMgr::Instance()->GetResourceData(lHandle)->vertNum;
 		lInitCollisionData[0].meshParticleData = lStageMeshParticleData;
-		lInitCollisionData[0].hitBox = Sphere(&collisionPos, 5.0f);
 		lInitCollisionData[0].motherMat = &enemyModelMat[0];
+		lInitCollisionData[0].colorData = colorArrayData[0];
 
 		lInitCollisionData.push_back(InitMeshCollisionData());
 		lInitCollisionData[1].vertData = lStageMeshParticleData.vertData;
 		lInitCollisionData[1].vertNumArray = FbxModelResourceMgr::Instance()->GetResourceData(lHandle)->vertNum;
 		lInitCollisionData[1].meshParticleData = lStageMeshParticleData;
-		lInitCollisionData[1].hitBox = Sphere(&collisionPos, 5.0f);
 		lInitCollisionData[1].motherMat = &enemyModelMat[1];
+		lInitCollisionData[1].colorData = colorArrayData[1];
 
-		meshCollision = std::make_unique<InstanceMeshCollision>(lInitCollisionData);
+		hitBoxArray.push_back(Sphere(&collisionPos, 5.0f));
+		hitBoxArray.push_back(Sphere(&collisionPos, 5.0f));
+
+		meshCollision = std::make_unique<InstanceMeshCollision>(lInitCollisionData, hitBoxArray);
 	}
 }
 
@@ -452,9 +467,6 @@ void DebugMeshParticleScene::Update()
 	}
 	else if (perlinNoizeFlag)
 	{
-		initNoizeFlag = ImGui::Button("Init");
-		ImGui::SliderFloat("UV_X", &uv.x, 0, 10);
-		ImGui::SliderFloat("UV_Y", &uv.y, 0, 10);
 	}
 	else if (textureParticleFlag)
 	{
@@ -526,6 +538,10 @@ void DebugMeshParticleScene::Update()
 		KazImGuiHelper::InputVec3("CPUMeshPos", &collisionPos);
 		KazImGuiHelper::InputVec3("MeshCollisonPos1", &meshCollisionPos[0]);
 		KazImGuiHelper::InputVec3("MeshCollsionPos2", &meshCollisionPos[1]);
+		ImGui::DragInt("LightX1", &color1.lightData.x);
+		ImGui::DragInt("LightY1", &color1.lightData.y);
+		ImGui::DragInt("LightX2", &color2.lightData.x);
+		ImGui::DragInt("LightY2", &color2.lightData.y);
 	}
 	ImGui::End();
 
@@ -636,51 +652,6 @@ void DebugMeshParticleScene::Update()
 	}
 	else if (perlinNoizeFlag)
 	{
-		if (initNoizeFlag)
-		{
-			for (int x = 0; x < perlinDebugBox.size(); ++x)
-			{
-				for (int y = 0; y < perlinDebugBox[x].size(); ++y)
-				{
-					float lX = static_cast<float>(x);
-					float lZ = static_cast<float>(y);
-					float lY = PerlinNoize({ lX / 10.0f,lZ / 10.0f }, 1) * 0.5f + 0.5f;
-					perlinDebugBox[y][x].data.transform.pos =
-					{
-						lY * 3.0f,
-						0.0f,
-						lY * 3.0f };
-
-					noiseData[y][x].x = lY;
-					noiseData[y][x].y = lY;
-
-					perlinDebugBox[y][x].data.color.color =
-					{
-						static_cast<int>(lY * 255.0f),
-						static_cast<int>(lY * 255.0f),
-						static_cast<int>(lY * 255.0f),
-						255
-					};
-				}
-			}
-			initNoizeFlag = false;
-		}
-
-		if (uv.x != prevUv.x ||
-			uv.y != prevUv.y)
-		{
-			KazMath::Vec2<float>lUV = { uv.x / 10.0f,uv.y / 10.0f };
-			float lX = PerlinNoize(lUV, 1) * 0.5f + 0.5f;
-			float lY = PerlinNoize(lUV, 1) * 0.5f + 0.5f;
-
-			moveNoiseBlock.data.transform.pos = {};
-			moveNoiseBlock.data.transform.pos.x = lX * 100.0f;
-			moveNoiseBlock.data.transform.pos.y = 5.0f;
-			moveNoiseBlock.data.transform.pos.z = lY * 100.0f;
-			prevUv = uv;
-		}
-		KazMath::Vec3<float>vel = CurlNoise(moveNoiseBlock.data.transform.pos, 1);
-		moveNoiseBlock.data.transform.pos += vel;
 	}
 	else if (textureParticleFlag)
 	{
@@ -883,8 +854,8 @@ void DebugMeshParticleScene::Update()
 	{
 		GPUParticleRender::Instance()->InitCount();
 
-		InstanceMeshParticle::Instance()->Compute();
 		meshCollision->Compute();
+		InstanceMeshParticle::Instance()->Compute();
 
 
 		modelHitBox->data.transform.pos = collisionPos;
@@ -935,15 +906,6 @@ void DebugMeshParticleScene::Draw()
 	}
 	else if (perlinNoizeFlag)
 	{
-		for (int x = 0; x < perlinDebugBox.size(); ++x)
-		{
-			for (int y = 0; y < perlinDebugBox[x].size(); ++y)
-			{
-				perlinDebugBox[y][x].Draw();
-			}
-		}
-
-		moveNoiseBlock.Draw();
 	}
 	else if (textureParticleFlag)
 	{

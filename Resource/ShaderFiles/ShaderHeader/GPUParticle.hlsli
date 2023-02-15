@@ -6,6 +6,15 @@ struct ParticleData
     uint id;
 };
 
+struct ParticleHitData
+{
+    float3 pos;
+    float4 color;
+    uint id;
+    uint hitFlag;
+};
+
+
 struct GPUParticleInput
 {
     matrix worldMat;
