@@ -35,7 +35,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     const float4 FLASH_COLOR = float4(1,1,1,1);
     const float4 NORMAL_COLOR = float4(0.6,0.6,0.6,0.6);
 
-     //色出力------------------------------------------------------------------
+    //色出力------------------------------------------------------------------
     bool TopFlag = worldPosColorArrayData[index].pos.x <= flash.r + 2.0f;
     bool ButtonFlag = flash.r - 2.0f <= worldPosColorArrayData[index].pos.x;
     //高さによる色

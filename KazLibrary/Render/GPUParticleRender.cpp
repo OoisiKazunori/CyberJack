@@ -94,7 +94,7 @@ void GPUParticleRender::Draw()
 	viewProjMat = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
 	computeCovertWorldMatToDrawMat.TransData(viewProjMatHandle, &viewProjMat, sizeof(DirectX::XMMATRIX));
 
-	computeCovertWorldMatToDrawMat.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_CONVERT_WORLDMAT_TO_DRAWMAT, { 1000,1,1 });
+	computeCovertWorldMatToDrawMat.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_CONVERT_WORLDMAT_TO_DRAWMAT, { 3000,1,1 });
 
 	excuteIndirect->Draw(PIPELINE_NAME_GPUPARTICLE, nullptr);
 }

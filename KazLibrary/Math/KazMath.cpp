@@ -272,9 +272,9 @@ KazMath::Vec3<float> KazMath::CaluTargetPosForDebug(const Vec3<float> &EYE_POS, 
 	float rad = ANGLE * 3.14f / 180.0f;
 
 	Vec3<float> target;
-	target.x = EYE_POS.x + static_cast<float>(5.0f * sin(rad));
+	target.x = EYE_POS.x + static_cast<float>(20.0f * sin(rad));
 	target.y = EYE_POS.y;
-	target.z = EYE_POS.z + static_cast<float>(5.0f * cos(rad));
+	target.z = EYE_POS.z + static_cast<float>(20.0f * cos(rad));
 
 	return target;
 }

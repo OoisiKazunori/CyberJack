@@ -161,14 +161,15 @@ DebugMeshParticleScene::DebugMeshParticleScene() :
 
 
 
-	/*for (int i = 0; i < 10; ++i)
+	std::vector<InitMeshParticleData>lInitData;
+	for (int i = 0; i < 10; ++i)
 	{
 		enemyModelMat[i] = KazMath::CaluWorld(KazMath::Transform3D(KazMath::Vec3<float>(10.0f, 0.0f, 0.0f + 10.0f * static_cast<float>(i)), { 0.1f,0.1f,0.1f }, { 0.0f,0.0f,0.0f }), { 0.0f,1.0f,0.0f }, { 0.0f,0.0f,1.0f });
 		summonModelMat[i] = KazMath::CaluWorld(KazMath::Transform3D(KazMath::Vec3<float>(-10.0f, 0.0f, 0.0f + 10.0f * static_cast<float>(i)), { 0.1f,0.1f,0.1f }, { 0.0f,0.0f,0.0f }), { 0.0f,1.0f,0.0f }, { 0.0f,0.0f,1.0f });
 
 		MeshParticleLoadData lData;
 		lData.bias = 70;
-		lData.faceCountNum = 100;
+		lData.faceCountNum = 1000;
 		lData.perTriangleNum = 50;
 
 		lInitData.emplace_back(MeshParticleLoader::Instance()->Load(KazFilePathName::EnemyPath + "Move/" + "MoveEnemy_Model.fbx", true, &enemyModelMat[i], lData));
@@ -176,21 +177,17 @@ DebugMeshParticleScene::DebugMeshParticleScene() :
 
 		InstanceMeshParticle::Instance()->AddMeshData(lInitData[i]);
 	}
-*/
 
-	std::vector<InitMeshParticleData>lInitData;
+
 	MeshParticleLoadData lData;
 	lData.bias = 70;
 	lData.faceCountNum = 21935;
-	lData.perTriangleNum = 50;
+	lData.perTriangleNum = 5;
 
-	enemyModelMat[0] = KazMath::CaluWorld(KazMath::Transform3D(KazMath::Vec3<float>(10.0f, 0.0f, 0.0f + 10.0f * static_cast<float>(0)), { 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f }), { 0.0f,1.0f,0.0f }, { 0.0f,0.0f,1.0f });
+	enemyModelMat[0] = KazMath::CaluWorld(KazMath::Transform3D(KazMath::Vec3<float>(10.0f, 0.0f, 0.0f), { 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f }), { 0.0f,1.0f,0.0f }, { 0.0f,0.0f,1.0f });
+	enemyModelMat[1] = KazMath::CaluWorld(KazMath::Transform3D(KazMath::Vec3<float>(10.0f, 0.0f, 500.0f), { 1.0f,1.0f,1.0f }, { 0.0f,0.0f,0.0f }), { 0.0f,1.0f,0.0f }, { 0.0f,0.0f,1.0f });
 
 	InitMeshParticleData lStageMeshParticleData = MeshParticleLoader::Instance()->Load(KazFilePathName::StagePath + "Dungeon_Wall.fbx", false, &enemyModelMat[0], lData);
-	lInitData.emplace_back(lStageMeshParticleData);
-	lInitData[0].color = { 55,55,55,255 };
-
-	InstanceMeshParticle::Instance()->AddMeshData(lInitData[0]);
 
 	drawInstanceMeshParticleFlag = false;
 
@@ -211,18 +208,15 @@ DebugMeshParticleScene::DebugMeshParticleScene() :
 		lInitCollisionData[0].hitBox = Sphere(&collisionPos, 5.0f);
 		lInitCollisionData[0].motherMat = &enemyModelMat[0];
 
-		/*lInitCollisionData.push_back(InitMeshCollisionData());
-		lInitCollisionData[1].vertData = cubeModel.GetBufferData(CreateMeshBuffer::DATA_VERT);
+		lInitCollisionData.push_back(InitMeshCollisionData());
+		lInitCollisionData[1].vertData = lStageMeshParticleData.vertData;
 		lInitCollisionData[1].vertNumArray = FbxModelResourceMgr::Instance()->GetResourceData(lHandle)->vertNum;
-		lInitCollisionData[1].meshParticleData = lData;
+		lInitCollisionData[1].meshParticleData = lStageMeshParticleData;
 		lInitCollisionData[1].hitBox = Sphere(&collisionPos, 5.0f);
-		lInitCollisionData[1].motherMat = &meshCollisionMat[1];*/
+		lInitCollisionData[1].motherMat = &enemyModelMat[1];
 
 		meshCollision = std::make_unique<InstanceMeshCollision>(lInitCollisionData);
 	}
-
-
-	meshCollision;
 }
 
 DebugMeshParticleScene::~DebugMeshParticleScene()
@@ -884,12 +878,15 @@ void DebugMeshParticleScene::Update()
 	else if (drawInstanceMeshParticleFlag)
 	{
 		GPUParticleRender::Instance()->InitCount();
-		InstanceMeshParticle::Instance()->Compute();
 	}
 	else if (drawMeshHitBoxFlag)
 	{
 		GPUParticleRender::Instance()->InitCount();
+
+		InstanceMeshParticle::Instance()->Compute();
 		meshCollision->Compute();
+
+
 		modelHitBox->data.transform.pos = collisionPos;
 		modelHitBox->data.transform.scale = { 1.0f,1.0f,1.0f };
 

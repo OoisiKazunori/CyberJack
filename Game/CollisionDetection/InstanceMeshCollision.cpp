@@ -51,7 +51,8 @@ void InstanceMeshCollision::Init()
 		false
 	);
 
-	float lRadius = 50.0f;
+	float lRadius = 30.0f;
+	UINT meshCircleNum = 0;
 	//メッシュパーティクルの当たり判定生成ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 	for (int i = 0; i < meshData.size(); ++i)
 	{
@@ -70,16 +71,18 @@ void InstanceMeshCollision::Init()
 			meshData[i].meshParticle.GetBuffer(),
 			particleAvoidParticle.GetStackParticleHitBoxBuffer(),
 			0.1f,
-			lRadius / 2.0f,
+			lRadius,
 			generateMeshHitBox[i].MaxHitBoxPosNum()
 		);
 		//パーティクルとリンク付け
 		linkMeshHitBoxAndParticle.emplace_back(GenerateCollisionOfParticle(lInitData));
 		linkMeshHitBoxAndParticle[i].Compute();
+
+		meshCircleNum += generateMeshHitBox[i].MaxHitBoxPosNum();
 	}
 	//メッシュパーティクルの当たり判定生成ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 
-	cpuAndMeshCircleHitBox = std::make_unique<CollisionDetectionOfMeshCircleAndCPUHitBox>(hitBoxData, lRadius / 2.0f, generateMeshHitBox[0].MaxHitBoxPosNum());
+	cpuAndMeshCircleHitBox = std::make_unique<CollisionDetectionOfMeshCircleAndCPUHitBox>(hitBoxData, lRadius / 2.0f, meshCircleNum);
 
 	//移動後のbufferを渡す
 	cpuAndMeshCircleHitBox->SetStackMeshCircleBuffer(meshMoveCompute.GetBufferData(outputMeshCircleBufferHandle));
@@ -127,7 +130,10 @@ void InstanceMeshCollision::Init()
 void InstanceMeshCollision::Compute()
 {
 #ifdef DEBUG
-	generateMeshHitBox[0].DebugCompute();
+	for (int i = 0; i < generateMeshHitBox.size(); ++i)
+	{
+		generateMeshHitBox[i].DebugCompute();
+	}
 #endif
 
 	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "TransMotherMat");
@@ -162,14 +168,7 @@ void InstanceMeshCollision::Compute()
 #pragma endregion
 	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
-	//メッシュパーティクルの座標移動
-	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "MoveMeshParticle");
-	scaleRotBillBoardMat = scaleRotaMat * CameraMgr::Instance()->GetMatBillBoard();
-	updatePosCompute.TransData(scaleRotateBillboardMatHandle, &scaleRotBillBoardMat, sizeof(DirectX::XMMATRIX));
-	updatePosCompute.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_UPDATE_MESHPARTICLE, { 1000,1,1 });
-	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
-	
 	//メッシュ球の移動
 	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "MoveMeshHitBox");
 	meshMoveCompute.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_HITBOX_MESHCIRCLE_MOVE, { 1000,1,1 });
@@ -185,6 +184,13 @@ void InstanceMeshCollision::Compute()
 	//衝突判定が取れたパーティクルの挙動(ここで描画クラスに渡す)
 	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "AvoidMeshParticle");
 	particleAvoidParticle.Compute();
+	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
+
+	//メッシュパーティクルの座標移動
+	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "MoveMeshParticle");
+	scaleRotBillBoardMat = scaleRotaMat * CameraMgr::Instance()->GetMatBillBoard();
+	updatePosCompute.TransData(scaleRotateBillboardMatHandle, &scaleRotBillBoardMat, sizeof(DirectX::XMMATRIX));
+	updatePosCompute.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_UPDATE_MESHPARTICLE, { 1000,1,1 });
 	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
 }

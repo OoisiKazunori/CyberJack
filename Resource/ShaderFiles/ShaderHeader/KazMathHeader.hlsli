@@ -265,6 +265,14 @@ float3 Larp(float3 BASE_POS,float3 POS,float MUL)
     return POS + distance;
 }
 
+float4 Larp(float4 BASE_POS,float4 POS,float MUL)
+{
+    float4 distance = BASE_POS - POS;
+	distance *= MUL;
+    
+    return POS + distance;
+}
+
 //スレッドの引数から0~スレッドの最大数を計算します
 uint ThreadGroupIndex(uint3 SV_GroupID, uint SV_GroupIndex,uint3 SV_GroupThreadID,int THREAD_INDEX)
 {

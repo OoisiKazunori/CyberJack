@@ -17,7 +17,6 @@ bool BoolUint3(uint3 A,uint3 B)
     return A.x == B.x && A.y == B.y && A.z == B.z;
 }
 
-
 //周りの当たり判定ともとる
 bool CheckLinkHitBox(uint3 BASE_HIT_INDEX,uint3 CHECK_HIT_INDEX)
 {
@@ -30,12 +29,7 @@ bool CheckLinkHitBox(uint3 BASE_HIT_INDEX,uint3 CHECK_HIT_INDEX)
     linkHitFlagArray[5] = BoolUint3(CHECK_HIT_INDEX, BASE_HIT_INDEX + uint3(0,0,1));  //前
     linkHitFlagArray[6] = BoolUint3(CHECK_HIT_INDEX, BASE_HIT_INDEX + uint3(0,0,-1)); //後
 
-    //uint3 hit = uint3(3,2,1);
-    //bool hitFlag = BASE_HIT_INDEX.x == hit.x && BASE_HIT_INDEX.y == hit.y && BASE_HIT_INDEX.z == hit.z;
-    //bool hitParticleFlag = CHECK_HIT_INDEX.x == hit.x && CHECK_HIT_INDEX.y == hit.y && CHECK_HIT_INDEX.z == hit.z;
-    //return hitFlag && hitParticleFlag;
-
-    for(int i = 0;i < 1; ++i)
+    for(int i = 0;i < 7; ++i)
     {
         if(linkHitFlagArray[i])
         {
@@ -58,8 +52,9 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
 
     float larpVel = 0.1f;
     float3 basePos = hitBoxData[index].pos;
+
     //同じインデックスの場合、パーティクルを動かす処理を追加する
-    for(int i = 0;i < 64; ++i)
+    for(int i = 0;i < 630 * 2; ++i)
     {
         //メッシュIDの確認
         if(particleData.id != hitIndexData[i].meshID)
@@ -87,25 +82,26 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
             
             //パーティクル情報の描画,当たったかどうかも表示する
             particleData.color = float4(1,0,0,1);
-            break;            
+            break;
         }
     }
     //行列計算ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
     
     larpPosData[index] = Larp(basePos,larpPosData[index],larpVel);
+
+
     if(isnan(larpPosData[index].x))
     {
-    //    larpPosData[index].x = particleData.pos.x;
+        larpPosData[index].x = particleData.pos.x;
     }
     if(isnan(larpPosData[index].y))
     {
-    //    larpPosData[index].y = particleData.pos.y;
+        larpPosData[index].y = particleData.pos.y;
     }
     if(isnan(larpPosData[index].z))
     {
-    //    larpPosData[index].z = particleData.pos.z;
+        larpPosData[index].z = particleData.pos.z;
     }
-    //particleData.pos = larpPosData[index];
-    particleData.pos = hitBoxData[index].pos;
+    particleData.pos = larpPosData[index];
     inputGPUParticleData.Append(particleData);
 }

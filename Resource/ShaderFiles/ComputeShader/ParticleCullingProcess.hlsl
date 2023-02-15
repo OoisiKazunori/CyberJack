@@ -22,8 +22,8 @@ RWStructuredBuffer<OutputData>drawData:register(u1);
 [numthreads(1024, 1, 1)]
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 groupThreadID : SV_GroupThreadID)
 {
-    uint index = ThreadGroupIndex(groupId,groupIndex,groupThreadID,1024);
-
+    uint index = groupThreadID.x;
+    index += 1024 * groupId.x;
 
     matrix worldMat = worldMatData[index].worldMat;
     float4 color = worldMatData[index].color;

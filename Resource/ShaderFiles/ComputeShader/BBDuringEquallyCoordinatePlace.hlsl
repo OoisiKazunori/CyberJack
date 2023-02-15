@@ -26,7 +26,7 @@ void CSmain(uint3 groupId : SV_GroupID)
     uint index = ThreadGroupIndex(groupId,xMax,xyMax);
 
     //’[‚©‚ç‡‚É‹…‚ğ•À‚×‚é
-    float3 pos = (bbPosData[0].minPos + diameter / 2.0f) + groupId * diameter;
+    float3 pos = (bbPosData[0].minPos) + groupId * diameter;
     hitBoxData[index].pos = pos;
     hitBoxData[index].id = groupId;
     hitBoxData[index].meshID = id;
