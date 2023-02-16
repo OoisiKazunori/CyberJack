@@ -230,5 +230,5 @@ void GalacticParticle::Draw()
 	);
 
 
-	box->Draw();
+	//box->Draw();
 }

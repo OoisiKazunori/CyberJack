@@ -11,11 +11,14 @@ InstanceMeshCollision::InstanceMeshCollision(const std::vector<InitMeshCollision
 		//BB¶¬
 		meshData[i].bb.Compute();
 
-		hitBoxData.emplace_back(HITBOX_ARRAY_DATA[i]);
 		motherMatArray.emplace_back(INIT_DATA[i].motherMat);
 		colorDataArray.emplace_back(INIT_DATA[i].colorData);
 	}
 
+	for (int i = 0; i < HITBOX_ARRAY_DATA.size(); ++i)
+	{
+		hitBoxData.emplace_back(HITBOX_ARRAY_DATA[i]);
+	}
 
 	UINT lNum = 0;
 	KazBufferHelper::BufferResourceData lBufferData

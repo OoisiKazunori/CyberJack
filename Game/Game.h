@@ -50,13 +50,12 @@ public:
 	//íËêî--------------------------
 
 
-	Game();
-	~Game();
-	void Init(
-		const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> &RESPONE_DATA,
+	Game(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> &RESPONE_DATA,
 		const std::array<std::shared_ptr<IStage>, KazEnemyHelper::STAGE_NUM_MAX> &STAGE_ARRAY,
 		const std::array<KazMath::Color, KazEnemyHelper::STAGE_NUM_MAX> &BACKGROUND_COLOR,
-		const std::array<std::array<KazEnemyHelper::ForceCameraData, 10>, KazEnemyHelper::STAGE_NUM_MAX> &CAMERA_ARRAY,
+		const std::array<std::array<KazEnemyHelper::ForceCameraData, 10>, KazEnemyHelper::STAGE_NUM_MAX> &CAMERA_ARRAY);
+	~Game();
+	void Init(
 		bool SKIP_FLAG
 	);
 	void Finalize();
@@ -219,6 +218,8 @@ private:
 	bool initEndLogFlag;
 	int gameClearTimer;
 
-
+	KazMath::Vec3<float>p1;
+	Sphere t1;
+	std::vector<Sphere>enemyHitBoxArray;
 	std::unique_ptr<InstanceMeshCollision> meshCollision;
 };

@@ -80,7 +80,7 @@ private:
 	ParameterMgr blockFileMgr;
 
 
-	GalacticParticle galacticParticle;
+	std::unique_ptr<GalacticParticle> galacticParticle;
 
 	bool highFlag, prepareFlag;
 	int prepareTimer;
@@ -100,7 +100,7 @@ private:
 	RESOURCE_HANDLE pillarHandle;
 
 	KazMath::Vec2<float>flash;
-	
+
 	std::array<std::unique_ptr<SplineParticle>, 1> splineParticle;
 
 	RESOURCE_HANDLE floorResourceHandle;
@@ -163,5 +163,10 @@ private:
 
 
 	std::unique_ptr<CreateMeshBuffer> meshBuffer;
+
+
+	std::array<ColorData, 2>colorArrayData;
+	std::array<KazMath::Transform3D, 2>transformArrayData;
+	std::array<DirectX::XMMATRIX, 2>transformMatArray;
 };
 

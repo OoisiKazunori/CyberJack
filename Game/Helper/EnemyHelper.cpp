@@ -60,6 +60,68 @@ void KazEnemyHelper::GenerateEnemy(std::array<std::array<std::unique_ptr<IEnemy>
 	}
 }
 
+void KazEnemyHelper::GenerateEnemy(std::array<std::array<std::unique_ptr<IEnemy>, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> &ENEMIES, std::array<std::array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> RESPONE_DATA, std::array<int, 10> &ENEMISE_HANDLE, std::vector<Sphere> &ENEMISE_HITBOX)
+
+{
+	for (int enemyType = 0; enemyType < RESPONE_DATA.size(); ++enemyType)
+	{
+		for (int enemyCount = 0; enemyCount < RESPONE_DATA[enemyType].size(); ++enemyCount)
+		{
+			if (RESPONE_DATA[enemyType][enemyCount].layerLevel != -1)
+			{
+				switch (enemyType)
+				{
+				case ENEMY_TYPE_NORMAL:
+					ENEMIES[enemyType][enemyCount] = std::make_unique<NormalEnemy>();
+					ENEMISE_HITBOX.emplace_back(ENEMIES[enemyType][enemyCount]->GetData()->hitBox);
+					break;
+
+				case ENEMY_TYPE_MOTHER:
+					ENEMIES[enemyType][enemyCount] = std::make_unique<SummonEnemy>();
+					//子敵の生成(テスト用)
+					for (int i = 0; i < 8; ++i)
+					{
+						int index = ENEMISE_HANDLE[ENEMY_TYPE_POP];
+						ENEMIES[ENEMY_TYPE_POP][index] = std::make_unique<PopEnemy>();
+						++ENEMISE_HANDLE[ENEMY_TYPE_POP];
+					}
+					break;
+
+				case ENEMY_TYPE_MISILE:
+					ENEMIES[enemyType][enemyCount] = std::make_unique<NormalMisileEnemy>();
+					ENEMIES[ENEMY_TYPE_MISILE_SPLINE][ENEMISE_HANDLE[ENEMY_TYPE_MISILE_SPLINE]] = std::make_unique<SplineMisile>();
+					++ENEMISE_HANDLE[ENEMY_TYPE_MISILE_SPLINE];
+					break;
+
+				case ENEMY_TYPE_BATTLESHIP:
+					ENEMIES[enemyType][enemyCount] = std::make_unique<BattleshipEnemy>();
+					for (int i = 0; i < 8; ++i)
+					{
+						int index = ENEMISE_HANDLE[ENEMY_TYPE_BATTLESHIP_MISILE];
+						ENEMIES[ENEMY_TYPE_BATTLESHIP_MISILE][index] = std::make_unique<SplineMisileForBattleShip>();
+						++ENEMISE_HANDLE[ENEMY_TYPE_BATTLESHIP_MISILE];
+					}
+					break;
+
+				case ENEMY_TYPE_BIKE:
+					ENEMIES[enemyType][enemyCount] = std::make_unique<BikeEnemy>();
+					for (int i = 0; i < 2; ++i)
+					{
+						int index = ENEMISE_HANDLE[ENEMY_TYPE_BIKE_MISILE];
+						ENEMIES[ENEMY_TYPE_BIKE_MISILE][index] = std::make_unique<SplineMisileForBikeEnemy>();
+						++ENEMISE_HANDLE[ENEMY_TYPE_BIKE_MISILE];
+					}
+					break;
+
+				default:
+					break;
+				}
+				++ENEMISE_HANDLE[enemyType];
+			}
+		}
+	}
+}
+
 void KazEnemyHelper::AddEnemy(const std::array<std::array<std::unique_ptr<IEnemy>, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> &ENEMIES, std::array<std::array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> &RESPONE_DATA, std::array<int, 10> &ADD_ENEMISE_HANDLE, int GAME_FLAME, int GAME_STAGE_LEVEL)
 {
 	for (int enemyType = 0; enemyType < ENEMIES.size(); ++enemyType)

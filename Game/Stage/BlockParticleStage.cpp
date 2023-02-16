@@ -384,6 +384,46 @@ BlockParticleStage::BlockParticleStage()
 			MeshParticleLoader::Instance()->Load(KazFilePathName::StagePath + "house/" + "House_01.fbx", true, &pillarParticleMotherMat[i], lData)
 		);
 	}
+
+
+
+
+	MeshParticleLoadData lParticleData;
+	lParticleData.bias = 70;
+	lParticleData.faceCountNum = 21935;
+	lParticleData.perTriangleNum = 5;
+
+	InitMeshParticleData lStageMeshParticleData = MeshParticleLoader::Instance()->Load(KazFilePathName::StagePath + "Dungeon_Wall.fbx", false, &transformArrayData[0].GetMat(), lParticleData);
+	RESOURCE_HANDLE lHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "Dungeon_Wall.fbx");
+	lStageMeshParticleData.color = { 0.2f,0.2f,0.2f,1.0f };
+
+
+	collisionArrrayData.emplace_back(InitMeshCollisionData());
+	collisionArrrayData[0].vertData = lStageMeshParticleData.vertData;
+	collisionArrrayData[0].vertNumArray = FbxModelResourceMgr::Instance()->GetResourceData(lHandle)->vertNum;
+	collisionArrrayData[0].meshParticleData = lStageMeshParticleData;
+	collisionArrrayData[0].motherMat = &transformMatArray[0];
+	collisionArrrayData[0].colorData = &colorArrayData[0];
+
+	collisionArrrayData.emplace_back(InitMeshCollisionData());
+	collisionArrrayData[1].vertData = lStageMeshParticleData.vertData;
+	collisionArrrayData[1].vertNumArray = FbxModelResourceMgr::Instance()->GetResourceData(lHandle)->vertNum;
+	collisionArrrayData[1].meshParticleData = lStageMeshParticleData;
+	collisionArrrayData[1].motherMat = &transformMatArray[1];
+	collisionArrrayData[1].colorData = &colorArrayData[1];
+
+	for (int i = 0; i < colorArrayData.size(); ++i)
+	{
+		colorArrayData[i].alpha = 1.0f;
+		colorArrayData[i].lightData = { 0,0 };
+	}
+
+	for (int i = 0; i < transformArrayData.size(); ++i)
+	{
+		transformArrayData[i].pos = { 0.0f,0.0f,static_cast<float>(i) * 500.0f + 0.0f };
+	}
+
+	galacticParticle = std::make_unique<GalacticParticle>();
 }
 
 BlockParticleStage::~BlockParticleStage()
@@ -452,7 +492,7 @@ void BlockParticleStage::Update()
 	}
 
 
-	galacticParticle.Update();
+	galacticParticle->Update();
 
 	//KazMath::Vec3<float>level = { 100.0f,300.0f,0.0f };
 	//std::vector<KazMath::Vec3<float>> limitPosArray;
@@ -520,6 +560,37 @@ void BlockParticleStage::Update()
 		pillarParticleMotherMat[i] = pillarParticleTransform[i].GetMat();
 		pillarParticleModel[i]->Update(false);
 	}
+
+
+	for (int i = 0; i < transformArrayData.size(); ++i)
+	{
+		transformArrayData[i].pos.z += -0.5f;
+		transformMatArray[i] = transformArrayData[i].GetMat();
+
+		//一定の座標になったら透明になる。それ以外は実体化させる
+		if (transformArrayData[i].pos.z <= -100.0f)
+		{
+			colorArrayData[i].alpha += -0.01f;
+		}
+		else
+		{
+			colorArrayData[i].alpha += 0.01f;
+		}
+
+		//透明になったらループさせる
+		if (colorArrayData[i].alpha <= 0.0f)
+		{
+			transformArrayData[i].pos.z = 500.0f;
+		}
+		//アルファ固定
+		if (1.0f <= colorArrayData[i].alpha)
+		{
+			colorArrayData[i].alpha = 1.0f;
+		}
+	}
+
+
+
 }
 
 void BlockParticleStage::Draw()
@@ -561,10 +632,10 @@ void BlockParticleStage::Draw()
 	}
 	for (int i = 0; i < splineParticle.size(); ++i)
 	{
-		splineParticle[i]->Draw();
+		//splineParticle[i]->Draw();
 	}
 
 
-	galacticParticle.Draw();
+	galacticParticle->Draw();
 
 }

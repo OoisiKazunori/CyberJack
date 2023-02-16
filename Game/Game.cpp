@@ -13,7 +13,12 @@
 #include"../Game/Effect/InstanceMeshParticle.h"
 #include"../KazLibrary/Render/GPUParticleRender.h"
 
-Game::Game() :LOG_FONT_SIZE(1.0f)
+Game::Game(
+	const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> &RESPONE_DATA,
+	const std::array<std::shared_ptr<IStage>, KazEnemyHelper::STAGE_NUM_MAX> &STAGE_ARRAY,
+	const std::array<KazMath::Color, KazEnemyHelper::STAGE_NUM_MAX> &BACKGROUND_COLOR,
+	const std::array<std::array<KazEnemyHelper::ForceCameraData, 10>, KazEnemyHelper::STAGE_NUM_MAX> &CAMERA_ARRAY
+) :LOG_FONT_SIZE(1.0f)
 {
 	InstanceMeshParticle::Instance();
 
@@ -85,6 +90,33 @@ Game::Game() :LOG_FONT_SIZE(1.0f)
 	logoutWindow = std::make_unique<StringWindow>();
 
 
+
+	responeData = RESPONE_DATA;
+	cameraMoveArray = CAMERA_ARRAY;
+	stages = STAGE_ARRAY;
+
+	//操作可能OBJを纏めて生成する処理----------------------------------------------------------------
+	KazEnemyHelper::GenerateEnemy(enemies, responeData, enemiesHandle, enemyHitBoxArray);
+	//敵を纏めて生成する処理----------------------------------------------------------------
+
+	for (int i = 0; i < BACKGROUND_COLOR.size(); ++i)
+	{
+		renderTarget[i] = std::make_unique<GameRenderTarget>(BACKGROUND_COLOR[i]);
+
+		if (i + 1 < BACKGROUND_COLOR.size())
+		{
+			nextRenderTarget[i + 1] = std::make_unique<GameRenderTarget>(BACKGROUND_COLOR[i + 1]);
+		}
+	}
+
+	std::vector<InitMeshCollisionData> lInitCollisionData = stages[0]->collisionArrrayData;
+
+	p1 = { -1000.0f,0.0f,0.0f };
+	t1.center = &p1;
+
+	//enemyHitBoxArray.emplace_back(t1);
+	meshCollision = std::make_unique<InstanceMeshCollision>(lInitCollisionData, enemyHitBoxArray);
+
 }
 
 Game::~Game()
@@ -93,11 +125,7 @@ Game::~Game()
 	SoundManager::Instance()->StopSoundMem(bgmSoundHandle);
 }
 
-void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> &RESPONE_DATA,
-	const std::array<std::shared_ptr<IStage>, KazEnemyHelper::STAGE_NUM_MAX> &STAGE_ARRAY,
-	const std::array<KazMath::Color, KazEnemyHelper::STAGE_NUM_MAX> &BACKGROUND_COLOR,
-	const std::array<std::array<KazEnemyHelper::ForceCameraData, 10>, KazEnemyHelper::STAGE_NUM_MAX> &CAMERA_ARRAY,
-	bool SKIP_FLAG)
+void Game::Init(bool SKIP_FLAG)
 {
 	player.Init(KazMath::Transform3D().pos, true, false);
 	cursor.Init();
@@ -116,13 +144,6 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	enemySize.startSize = KazEnemyHelper::ENEMY_NUM_MAX;
 	enemySize.endSize = KazEnemyHelper::ENEMY_NUM_MAX + 50;
 
-	responeData = RESPONE_DATA;
-	cameraMoveArray = CAMERA_ARRAY;
-	stages = STAGE_ARRAY;
-
-	//操作可能OBJを纏めて生成する処理----------------------------------------------------------------
-	KazEnemyHelper::GenerateEnemy(enemies, responeData, enemiesHandle);
-	//敵を纏めて生成する処理----------------------------------------------------------------
 
 
 
@@ -183,20 +204,9 @@ void Game::Init(const std::array<std::array<ResponeData, KazEnemyHelper::ENEMY_N
 	initEndLogFlag = false;
 	gameClearTimer = 0;
 
-	for (int i = 0; i < BACKGROUND_COLOR.size(); ++i)
-	{
-		renderTarget[i] = std::make_unique<GameRenderTarget>(BACKGROUND_COLOR[i]);
-
-		if (i + 1 < BACKGROUND_COLOR.size())
-		{
-			nextRenderTarget[i + 1] = std::make_unique<GameRenderTarget>(BACKGROUND_COLOR[i + 1]);
-		}
-	}
 
 
 
-	std::vector<InitMeshCollisionData> lInitCollisionData = stages[0]->collisionArrrayData;
-	//meshCollision = std::make_unique<InstanceMeshCollision>(lInitCollisionData);
 	meshCollision->Init();
 
 
@@ -887,7 +897,7 @@ void Game::Update()
 		tutorialWindow.Update();
 		logoutWindow->Update();
 		InstanceMeshParticle::Instance()->Compute();
-
+		meshCollision->Compute();
 
 		for (int i = 0; i < hitEffect.size(); ++i)
 		{

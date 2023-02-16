@@ -9,15 +9,6 @@
 
 GameScene::GameScene()
 {
-	skipTurtorialFlag = false;
-}
-
-GameScene::~GameScene()
-{
-}
-
-void GameScene::Init()
-{
 	int respoineIndex = 0;
 	int layerLevel = 0;
 	int time = 60;
@@ -352,8 +343,18 @@ void GameScene::Init()
 	++layerLevel;
 
 
-	game = std::make_unique<Game>();
-	game->Init(responeData, stages, backGroundColorArray, cameraMoveArray, skipTurtorialFlag);
+
+	skipTurtorialFlag = false;
+	game = std::make_unique<Game>(responeData, stages, backGroundColorArray, cameraMoveArray);
+}
+
+GameScene::~GameScene()
+{
+}
+
+void GameScene::Init()
+{
+	game->Init(skipTurtorialFlag);
 	skipTurtorialFlag = false;
 }
 

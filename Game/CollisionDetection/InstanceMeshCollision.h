@@ -7,6 +7,7 @@
 #include"../Game/Effect/MeshParticle.h"
 #include"../Game/CollisionDetection/CollisionDetectionOfMeshCircleAndParticle.h"
 #include"../Game/CollisionDetection/ComputeParticleAvoidSphere.h"
+#include"../KazLibrary/Collision/CollisionManager.h"
 
 struct ColorData
 {
