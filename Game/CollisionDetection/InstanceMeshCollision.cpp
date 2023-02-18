@@ -1,7 +1,8 @@
 #include "InstanceMeshCollision.h"
 #include"../KazLibrary/Render/GPUParticleRender.h"
 
-InstanceMeshCollision::InstanceMeshCollision(const std::vector<InitMeshCollisionData> &INIT_DATA, const std::vector<Sphere> &HITBOX_ARRAY_DATA)
+InstanceMeshCollision::InstanceMeshCollision(const std::vector<InitMeshCollisionData> &INIT_DATA, const std::vector<Sphere *> &HITBOX_ARRAY_DATA)
+	:hitBoxData(HITBOX_ARRAY_DATA)
 {
 	//BBÇçÏê¨Ç∑ÇÈ
 	for (int i = 0; i < INIT_DATA.size(); ++i)
@@ -13,11 +14,6 @@ InstanceMeshCollision::InstanceMeshCollision(const std::vector<InitMeshCollision
 
 		motherMatArray.emplace_back(INIT_DATA[i].motherMat);
 		colorDataArray.emplace_back(INIT_DATA[i].colorData);
-	}
-
-	for (int i = 0; i < HITBOX_ARRAY_DATA.size(); ++i)
-	{
-		hitBoxData.emplace_back(HITBOX_ARRAY_DATA[i]);
 	}
 
 	UINT lNum = 0;

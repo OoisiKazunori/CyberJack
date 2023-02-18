@@ -227,8 +227,13 @@ DebugMeshParticleScene::DebugMeshParticleScene() :
 		lInitCollisionData[1].motherMat = &enemyModelMat[1];
 		lInitCollisionData[1].colorData = colorArrayData[1];
 
-		hitBoxArray.push_back(Sphere(&collisionPos, 5.0f));
-		hitBoxArray.push_back(Sphere(&collisionPos, 5.0f));
+		s1 = Sphere(&collisionPos, 5.0f);
+		s2 = Sphere(&collisionPos2, 5.0f);
+		s3 = Sphere(&collisionPos3, 5.0f);
+
+		hitBoxArray.push_back(&s1);
+		hitBoxArray.push_back(&s2);
+		hitBoxArray.push_back(&s3);
 
 		meshCollision = std::make_unique<InstanceMeshCollision>(lInitCollisionData, hitBoxArray);
 	}
@@ -536,6 +541,8 @@ void DebugMeshParticleScene::Update()
 	else if (drawMeshHitBoxFlag)
 	{
 		KazImGuiHelper::InputVec3("CPUMeshPos", &collisionPos);
+		KazImGuiHelper::InputVec3("CPUMeshPos2", &collisionPos2);
+		KazImGuiHelper::InputVec3("CPUMeshPos3", &collisionPos3);
 		KazImGuiHelper::InputVec3("MeshCollisonPos1", &meshCollisionPos[0]);
 		KazImGuiHelper::InputVec3("MeshCollsionPos2", &meshCollisionPos[1]);
 		ImGui::DragInt("LightX1", &color1.lightData.x);

@@ -32,7 +32,7 @@ public:
 	/// </summary>
 	InstanceMeshCollision(
 		const std::vector<InitMeshCollisionData> &INIT_DATA,
-		const std::vector<Sphere> &HITBOX_ARRAY_DATA
+		const std::vector<Sphere*> &HITBOX_ARRAY_DATA
 	);
 
 	void Init();
@@ -62,7 +62,7 @@ private:
 		};
 	};
 	std::vector<MeshParticleData>meshData;
-	std::vector<Sphere>hitBoxData;
+	std::vector<Sphere*> hitBoxData;
 
 
 

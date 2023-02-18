@@ -44,6 +44,12 @@ struct Sphere
 	{};
 	Sphere(KazMath::Vec3<float> *CENTER_POS, float RADIUS) :center(CENTER_POS), radius(RADIUS)
 	{};
+
+	void operator=(const Sphere &rhs)
+	{
+		center = rhs.center;
+		radius = rhs.radius;
+	};
 };
 
 struct Plane

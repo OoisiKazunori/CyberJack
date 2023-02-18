@@ -480,11 +480,11 @@ void BlockParticleStage::Update()
 		}
 	}
 
-	++flashTimer;
+	//++flashTimer;
 	if (!highFlag && 360 <= flashTimer)
 	{
 		constBufferData.flash.y = 1;
-		flashTimer = 0;
+		//flashTimer = 0;
 	}
 	else
 	{
@@ -586,6 +586,24 @@ void BlockParticleStage::Update()
 		if (1.0f <= colorArrayData[i].alpha)
 		{
 			colorArrayData[i].alpha = 1.0f;
+		}
+
+
+		colorArrayData[i].lightData.y++;
+		if (100 <= colorArrayData[i].lightData.y)
+		{
+			colorArrayData[i].lightData.y = -100;
+		}
+
+		if (KazMath::ConvertSecondToFlame(5) <= flashTimer)
+		{
+			colorArrayData[i].lightData.x = 1;
+			flashTimer = 0;
+		}
+		else
+		{
+			++flashTimer;
+			colorArrayData[i].lightData.x = 0;
 		}
 	}
 

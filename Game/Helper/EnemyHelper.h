@@ -31,7 +31,7 @@ namespace KazEnemyHelper
 		std::array<std::array<std::unique_ptr<IEnemy>, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> &ENEMIES,
 		std::array<std::array<ResponeData, ENEMY_NUM_MAX>, LAYER_LEVEL_MAX> RESPONE_DATA,
 		std::array<int, 10> &ENEMISE_HANDLE,
-		std::vector<Sphere> &ENEMISE_HITBOX
+		std::vector<Sphere*> &ENEMISE_HITBOX
 	);
 
 	void AddEnemy(

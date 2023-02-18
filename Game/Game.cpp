@@ -113,8 +113,13 @@ Game::Game(
 
 	p1 = { -1000.0f,0.0f,0.0f };
 	t1.center = &p1;
+	//enemyHitBoxArray.emplace_back(&t1);
+	p1.x = 1.0f;
 
-	//enemyHitBoxArray.emplace_back(t1);
+	for (int i = 0; i < enemyHitBoxArray.size(); ++i)
+	{
+		enemyHitBoxArray[i]->radius = 5.0f;
+	}
 	meshCollision = std::make_unique<InstanceMeshCollision>(lInitCollisionData, enemyHitBoxArray);
 
 }

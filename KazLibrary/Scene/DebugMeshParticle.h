@@ -315,6 +315,8 @@ private:
 
 	//GPUè„Ç≈ÇÃòcÇ›îªíË
 	KazMath::Vec3<float>collisionPos;
+	KazMath::Vec3<float>collisionPos2;
+	KazMath::Vec3<float>collisionPos3;
 	std::unique_ptr<InstanceMeshCollision> meshCollision;
 	std::array<KazMath::Vec3<float>, 2> meshCollisionPos;
 	std::array<DirectX::XMMATRIX, 2> meshCollisionMat;
@@ -328,7 +330,8 @@ private:
 	std::array<KazMath::Vec3<float>, 36>GetSquareVertData(const KazMath::Vec3<float> &BASE_POS);
 
 	std::vector<const ColorData *>colorArrayData;
-	std::vector<Sphere>hitBoxArray;
+	std::vector<Sphere*>hitBoxArray;
+	Sphere s1, s2, s3;
 	ColorData color1, color2;
 
 

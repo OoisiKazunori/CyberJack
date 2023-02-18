@@ -164,7 +164,6 @@ private:
 
 	std::unique_ptr<CreateMeshBuffer> meshBuffer;
 
-
 	std::array<ColorData, 2>colorArrayData;
 	std::array<KazMath::Transform3D, 2>transformArrayData;
 	std::array<DirectX::XMMATRIX, 2>transformMatArray;

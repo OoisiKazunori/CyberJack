@@ -9,7 +9,7 @@ class CollisionDetectionOfMeshCircleAndCPUHitBox
 {
 public:
 	CollisionDetectionOfMeshCircleAndCPUHitBox(
-		const std::vector<Sphere> &CPU_HITBOX_DATA,
+		const std::vector<Sphere*> &CPU_HITBOX_DATA,
 		float MESH_CIRCLE_RADIUS,
 		int MESH_CIRCLE_NUM
 	);
@@ -47,7 +47,7 @@ private:
 		DirectX::XMUINT3 id;
 		DirectX::XMFLOAT3 circlePos;
 	};
-	std::vector<Sphere>sphereHitBoxArray;
+	const std::vector<Sphere*> &sphereHitBoxArray;
 
 	KazRenderHelper::ID3D12ResourceWrapper motherMatrixBuffer;
 

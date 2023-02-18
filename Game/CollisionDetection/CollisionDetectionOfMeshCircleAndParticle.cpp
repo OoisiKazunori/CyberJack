@@ -1,7 +1,7 @@
 #include "CollisionDetectionOfMeshCircleAndParticle.h"
 
 CollisionDetectionOfMeshCircleAndCPUHitBox::CollisionDetectionOfMeshCircleAndCPUHitBox(
-	const std::vector<Sphere> &CPU_HITBOX_DATA, float MESH_CIRCLE_RADIUS, int MESH_CIRCLE_NUM
+	const std::vector<Sphere *> &CPU_HITBOX_DATA, float MESH_CIRCLE_RADIUS, int MESH_CIRCLE_NUM
 ) :sphereHitBoxArray(CPU_HITBOX_DATA)
 {
 	//CPU”»’è
@@ -73,8 +73,8 @@ void CollisionDetectionOfMeshCircleAndCPUHitBox::Compute()
 	std::vector<SphereData>lMatArray(sphereHitBoxArray.size());
 	for (int i = 0; i < lMatArray.size(); ++i)
 	{
-		lMatArray[i].pos = sphereHitBoxArray[i].center->ConvertXMFLOAT3();
-		lMatArray[i].radius = sphereHitBoxArray[i].radius;
+		lMatArray[i].pos = sphereHitBoxArray[i]->center->ConvertXMFLOAT3();
+		lMatArray[i].radius = sphereHitBoxArray[i]->radius;
 	}
 	motherMatrixBuffer.TransData(lMatArray.data(), sizeof(SphereData) * static_cast<int>(lMatArray.size()));
 
