@@ -13,6 +13,7 @@
 SceneManager::SceneManager() :gameFirstInitFlag(false)
 {
 	scene.emplace_back(std::make_unique<DebugMeshParticleScene>());
+	//scene.emplace_back(std::make_unique<DebugStageScene>());
 	//scene.emplace_back(std::make_unique<TitleScene>());
 	//scene.emplace_back(std::make_unique<GameScene>());
 

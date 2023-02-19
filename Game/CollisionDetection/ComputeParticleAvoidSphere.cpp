@@ -44,12 +44,25 @@ void ComputeParticleAvoidSphere::SetHitIDBuffer(const ResouceBufferHelper::Buffe
 
 	//座標とラープ情報を組み合わせたワールド行列
 	outputParticleBufferHandle = computeHelper.CreateBuffer(
-		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(InstanceMeshParticle::InitOutputData) * PARTICLE_MAX_NUM),
+		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(InitOutputData) * PARTICLE_MAX_NUM),
 		GRAPHICS_RANGE_TYPE_UAV_DESC,
 		GRAPHICS_PRAMTYPE_DATA3,
-		sizeof(InstanceMeshParticle::InitOutputData),
+		sizeof(InitOutputData),
 		PARTICLE_MAX_NUM,
-		true);
+		false);
+}
+
+void ComputeParticleAvoidSphere::GenerateHitNum(UINT NUM)
+{
+	RESOURCE_HANDLE lHandle = computeHelper.CreateBuffer(
+		sizeof(UINT),
+		GRAPHICS_RANGE_TYPE_CBV_VIEW,
+		GRAPHICS_PRAMTYPE_DATA5,
+		1,
+		false);
+
+	UINT lNum = static_cast<UINT>(NUM);
+	computeHelper.TransData(lHandle, &lNum, sizeof(UINT));
 }
 
 void ComputeParticleAvoidSphere::Compute()

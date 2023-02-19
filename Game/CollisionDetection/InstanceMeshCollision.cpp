@@ -81,6 +81,8 @@ void InstanceMeshCollision::Init()
 		meshCircleNum += generateMeshHitBox[i].MaxHitBoxPosNum();
 	}
 	//メッシュパーティクルの当たり判定生成ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
+	
+	particleAvoidParticle.GenerateHitNum(generateMeshHitBox[0].MaxHitBoxPosNum() * 2);
 
 	cpuAndMeshCircleHitBox = std::make_unique<CollisionDetectionOfMeshCircleAndCPUHitBox>(hitBoxData, lRadius / 2.0f, meshCircleNum);
 

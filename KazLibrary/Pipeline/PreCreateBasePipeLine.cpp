@@ -1825,6 +1825,7 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
 		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
 		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA4));
+		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA5));
 
 		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
 			ShaderOptionData(KazFilePathName::ComputeShaderPath + "ComputeParticleAvoidSphere.hlsl", "CSmain", "cs_6_4"),

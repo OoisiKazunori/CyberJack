@@ -6,6 +6,7 @@ class ComputeParticleAvoidSphere
 public:
 	ComputeParticleAvoidSphere();
 	void SetHitIDBuffer(const ResouceBufferHelper::BufferData &HIT_ID_BUFFER);
+	void GenerateHitNum(UINT NUM);
 	void Compute();
 
 	const ResouceBufferHelper::BufferData &GetStackParticleHitBoxBuffer();
@@ -23,6 +24,15 @@ private:
 		DirectX::XMUINT3 id;
 		DirectX::XMFLOAT3 circlePos;
 
+	};
+
+	struct InitOutputData
+	{
+		DirectX::XMFLOAT3 pos;
+		DirectX::XMFLOAT4 color;
+		UINT id;
+		UINT hitFlag;
+		UINT hitTimer;
 	};
 	KazRenderHelper::ID3D12ResourceWrapper copyBuffer;
 

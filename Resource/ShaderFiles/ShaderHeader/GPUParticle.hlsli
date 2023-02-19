@@ -12,6 +12,7 @@ struct ParticleHitData
     float4 color;
     uint id;
     uint hitFlag;
+    uint hitTimer;
 };
 
 

@@ -8,9 +8,14 @@ RWStructuredBuffer<ParticleHitBoxData> hitBoxData : register(u0);
 //当たったインデックス
 RWStructuredBuffer<MeshSphereHitData> hitIndexData : register(u1);
 //出力
-AppendStructuredBuffer<ParticleData> inputGPUParticleData : register(u2);
+RWStructuredBuffer<ParticleHitData> inputGPUParticleData : register(u2);
 
 RWStructuredBuffer<float3> larpPosData : register(u3);
+
+cbuffer RootConstants : register(b0)
+{
+    uint hitMaxNum;
+};
 
 bool BoolUint3(uint3 A,uint3 B)
 {
@@ -45,16 +50,20 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
 {
     uint index = ThreadGroupIndex(groupId,groupIndex,groupThreadID,1024);
 
-    ParticleData particleData;
+    ParticleHitData particleData;
     particleData.pos = hitBoxData[index].pos;
     particleData.color = hitBoxData[index].color;
     particleData.id = hitBoxData[index].meshID;
+
+
+    particleData.hitFlag = inputGPUParticleData[index].hitFlag;
+    particleData.hitTimer = inputGPUParticleData[index].hitTimer;
 
     float larpVel = 0.1f;
     float3 basePos = hitBoxData[index].pos;
 
     //同じインデックスの場合、パーティクルを動かす処理を追加する
-    for(int i = 0;i < 630 * 2; ++i)
+    for(int i = 0;i < hitMaxNum; ++i)
     {
         //メッシュIDの確認
         if(particleData.id != hitIndexData[i].meshID)
@@ -81,13 +90,27 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
             basePos = hitBoxData[index].pos + vel;
             
             //パーティクル情報の描画,当たったかどうかも表示する
-            particleData.color = float4(1,0,0,1);
+            //particleData.color = float4(0.89, 0.50, 0.07,1);
+            particleData.hitFlag = 1;
+            particleData.hitTimer = 0;
             break;
         }
     }
     //行列計算ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
     
     larpPosData[index] = Larp(basePos,larpPosData[index],larpVel);
+
+    //あたり判定の光らせ
+    if(particleData.hitFlag)
+    {
+        particleData.color = float4(0.89, 0.50, 0.07,1);
+        particleData.hitTimer += 1;
+        if(1 <= particleData.hitTimer)
+        {
+            particleData.hitFlag = 0;
+            particleData.hitTimer = 0;
+        }
+    }
 
 
     if(isnan(larpPosData[index].x))
@@ -102,6 +125,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     {
         larpPosData[index].z = particleData.pos.z;
     }
+
     particleData.pos = larpPosData[index];
-    inputGPUParticleData.Append(particleData);
+    inputGPUParticleData[index] = particleData;
 }

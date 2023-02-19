@@ -654,6 +654,6 @@ void BlockParticleStage::Draw()
 	}
 
 
-	galacticParticle->Draw();
+	//galacticParticle->Draw();
 
 }

@@ -9,7 +9,7 @@ struct ColorData
 };
 
 //ì¸óÕ
-RWStructuredBuffer<ParticleData> updateParticleData : register(u0);
+RWStructuredBuffer<ParticleHitData> updateParticleData : register(u0);
 RWStructuredBuffer<matrix> motherMatData : register(u1);
 RWStructuredBuffer<float4> larpColorData : register(u2);
 RWStructuredBuffer<ColorData> colorLightData : register(u3);
@@ -34,13 +34,13 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     }
 
 
-    ParticleData particleData = updateParticleData[index];
+    ParticleHitData particleData = updateParticleData[index];
     float4 color = particleData.color;
 
     ColorData colorData = colorLightData[particleData.id];
     //êFèoóÕ------------------------------------------------------------------
-    bool TopFlag = particleData.pos.y <= colorData.lightData.y + 2.0f;
-    bool ButtonFlag = colorData.lightData.y - 2.0f <= particleData.pos.y;
+    bool TopFlag = particleData.pos.y <= colorData.lightData.y + 15.0f;
+    bool ButtonFlag = colorData.lightData.y - 15.0f <= particleData.pos.y;
     //çÇÇ≥Ç…ÇÊÇÈåıÇÁÇπ
     if(TopFlag && ButtonFlag)
     {
