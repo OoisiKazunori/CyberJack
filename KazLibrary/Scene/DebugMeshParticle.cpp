@@ -113,6 +113,11 @@ DebugMeshParticleScene::DebugMeshParticleScene() :
 
 
 
+	particleRender = std::make_unique<GPUParticleRender>();
+	meshParticle = std::make_unique<InstanceMeshParticle>(particleRender.get());
+
+
+
 
 	RESOURCE_HANDLE lEnemyHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "Move/" + "MoveEnemy_Model.fbx", true);
 	RESOURCE_HANDLE lSummonHandle = FbxModelResourceMgr::Instance()->LoadModel(filePass[3]);
@@ -160,7 +165,7 @@ DebugMeshParticleScene::DebugMeshParticleScene() :
 	};
 
 
-
+	al = 1.0f;
 	std::vector<InitMeshParticleData>lInitData;
 	for (int i = 0; i < 10; ++i)
 	{
@@ -175,7 +180,8 @@ DebugMeshParticleScene::DebugMeshParticleScene() :
 		lInitData.emplace_back(MeshParticleLoader::Instance()->Load(KazFilePathName::EnemyPath + "Move/" + "MoveEnemy_Model.fbx", true, &enemyModelMat[i], lData));
 		lInitData.emplace_back(MeshParticleLoader::Instance()->Load(filePass[3], false, &summonModelMat[i], lData));
 
-		InstanceMeshParticle::Instance()->AddMeshData(lInitData[i]);
+		lInitData[i].alpha = &al;
+		meshParticle->AddMeshData(lInitData[i]);
 	}
 
 
@@ -390,7 +396,7 @@ void DebugMeshParticleScene::Init()
 	maxPos->data.color.color = { 0,255,0,255 };
 
 
-	meshCollision->Init();
+	meshCollision->Init(particleRender.get());
 
 
 
@@ -855,14 +861,14 @@ void DebugMeshParticleScene::Update()
 	}
 	else if (drawInstanceMeshParticleFlag)
 	{
-		GPUParticleRender::Instance()->InitCount();
+		particleRender->InitCount();
 	}
 	else if (drawMeshHitBoxFlag)
 	{
-		GPUParticleRender::Instance()->InitCount();
+		particleRender->InitCount();
 
 		meshCollision->Compute();
-		InstanceMeshParticle::Instance()->Compute();
+		meshParticle->Compute();
 
 
 		modelHitBox->data.transform.pos = collisionPos;
@@ -975,12 +981,12 @@ void DebugMeshParticleScene::Draw()
 	}
 	else if (drawInstanceMeshParticleFlag)
 	{
-		GPUParticleRender::Instance()->Draw();
+		particleRender->Draw();
 	}
 	else if (drawMeshHitBoxFlag)
 	{
 		modelHitBox->Draw();
-		GPUParticleRender::Instance()->Draw();
+		particleRender->Draw();
 	}
 	if (drawGridFlag)
 	{

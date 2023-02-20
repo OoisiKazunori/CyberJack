@@ -3,6 +3,7 @@
 #include"../KazLibrary/Render/DrawExcuteIndirect.h"
 #include"../KazLibrary/Helper/KazRenderHelper.h"
 #include"../KazLibrary/Helper/ISinglton.h"
+#include"../KazLibrary/Render/GPUParticleRender.h"
 
 struct InitMeshParticleData
 {
@@ -13,16 +14,16 @@ struct InitMeshParticleData
 	DirectX::XMUINT4 triagnleData;
 	const DirectX::XMMATRIX *motherMat;
 	KazMath::Vec4<float>color;
-
+	const float *alpha;
 	InitMeshParticleData() :textureHandle(-1)
 	{
 	}
 };
 
-class InstanceMeshParticle:public ISingleton<InstanceMeshParticle>
+class InstanceMeshParticle
 {
 public:
-	InstanceMeshParticle();
+	InstanceMeshParticle(const GPUParticleRender *RENDER_PTR);
 
 	void Init();
 	void AddMeshData(const InitMeshParticleData &DATA);
@@ -41,7 +42,7 @@ private:
 
 	ResouceBufferHelper computeInitMeshParticle;
 	RESOURCE_HANDLE vertHandle, uvHandle, meshDataAndColorHandle, colorHandle, meshParticleOutputHandle, meshParticleIDHandle;
-	RESOURCE_HANDLE motherMatrixHandle,particlePosHandle, particleColorHandle,particleMotherMatrixHandle;
+	RESOURCE_HANDLE motherMatrixHandle,particlePosHandle, particleColorHandle,particleMotherMatrixHandle, colorMotherMatrixHandle;
 	RESOURCE_HANDLE scaleRotateBillboardMatHandle;
 
 	ResouceBufferHelper computeUpdateMeshParticle;
@@ -75,7 +76,17 @@ private:
 
 	static int MESH_PARTICLE_GENERATE_NUM;
 
-	std::vector<const DirectX::XMMATRIX *>motherMatArray;
+	struct MotherData
+	{
+		const DirectX::XMMATRIX *motherMat;
+		const float *alpha;
+		MotherData(const DirectX::XMMATRIX *M_MAT, const float *ALPHA) :
+			motherMat(M_MAT), alpha(ALPHA)
+		{
+		}
+	};
+
+	std::vector<MotherData>motherMatArray;
 
 	enum InitPipelineType
 	{
@@ -100,8 +111,8 @@ private:
 
 	std::vector<InitMeshParticleData> initData;
 
-
 	KazRenderHelper::ID3D12ResourceWrapper copyBuffer;
 	KazRenderHelper::ID3D12ResourceWrapper motherMatrixBuffer;
+	KazRenderHelper::ID3D12ResourceWrapper colorBuffer;
 };
 

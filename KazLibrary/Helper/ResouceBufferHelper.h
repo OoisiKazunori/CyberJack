@@ -1,6 +1,7 @@
 #pragma once
 #include"../KazLibrary/DirectXCommon/Base.h"
 #include"../KazLibrary/Helper/KazRenderHelper.h"
+#include"../KazLibrary/Buffer/DescriptorHeapMgr.h"
 
 struct DispatchCallData
 {
@@ -61,7 +62,7 @@ public:
 
 
 	void InitCounterBuffer(const Microsoft::WRL::ComPtr<ID3D12Resource> &INIT_DATA);
-	const ResouceBufferHelper::BufferData &GetBufferData(RESOURCE_HANDLE HANDLE);
+	const ResouceBufferHelper::BufferData &GetBufferData(RESOURCE_HANDLE HANDLE)const;
 	void SetRootParam(RESOURCE_HANDLE HANDLE, GraphicsRootParamType ROOT_PARAM);
 
 private:

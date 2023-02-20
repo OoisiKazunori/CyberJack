@@ -107,7 +107,7 @@ void GPUParticleRender::Draw()
 	excuteIndirect->Draw(PIPELINE_NAME_GPUPARTICLE, nullptr);
 }
 
-const ResouceBufferHelper::BufferData &GPUParticleRender::GetStackBuffer()
+const ResouceBufferHelper::BufferData &GPUParticleRender::GetStackBuffer()const
 {
 	return computeCovertWorldMatToDrawMat.GetBufferData(worldMatHandle);
 }

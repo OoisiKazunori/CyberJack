@@ -12,7 +12,8 @@ public:
 		const ResouceBufferHelper::BufferData &BB_BUFFER_DATA, 
 		const BoundingBoxData &DATA,
 		const ResouceBufferHelper::BufferData &STACK_MESH_CIRCLE_DATA,
-		float MESH_HITBOX_RADIUS
+		float MESH_HITBOX_RADIUS,
+		UINT MESH_ID
 	);
 
 	void Compute();
@@ -60,6 +61,4 @@ private:
 	UINT countNum;
 
 	bool debugFlag;
-
-	static int MeshIdNum;
 };

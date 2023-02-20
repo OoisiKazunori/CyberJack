@@ -8,6 +8,7 @@
 #include"../Game/CollisionDetection/CollisionDetectionOfMeshCircleAndParticle.h"
 #include"../Game/CollisionDetection/ComputeParticleAvoidSphere.h"
 #include"../KazLibrary/Collision/CollisionManager.h"
+#include"../KazLibrary/Render/GPUParticleRender.h"
 
 struct ColorData
 {
@@ -35,7 +36,7 @@ public:
 		const std::vector<Sphere*> &HITBOX_ARRAY_DATA
 	);
 
-	void Init();
+	void Init(const GPUParticleRender *RENDER_PTR);
 	void Compute();
 
 private:

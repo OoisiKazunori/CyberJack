@@ -220,6 +220,9 @@ private:
 
 	KazMath::Vec3<float>p1;
 	Sphere t1;
-	std::vector<Sphere*>enemyHitBoxArray;
+	std::vector<Sphere *>enemyHitBoxArray;
 	std::unique_ptr<InstanceMeshCollision> meshCollision;
+	std::unique_ptr<InstanceMeshParticle>meshParticle;
+	std::unique_ptr<GPUParticleRender>particleRender;
+
 };

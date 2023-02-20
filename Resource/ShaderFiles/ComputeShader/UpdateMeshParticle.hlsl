@@ -4,9 +4,9 @@
 //ì¸óÕ
 RWStructuredBuffer<ParticleData> updateParticleData : register(u0);
 RWStructuredBuffer<matrix> motherMatData : register(u1);
-
+RWStructuredBuffer<float> alphaData : register(u2);
 //èoóÕ
-AppendStructuredBuffer<GPUParticleInput> inputGPUParticleData : register(u2);
+AppendStructuredBuffer<GPUParticleInput> inputGPUParticleData : register(u3);
 
 cbuffer RootConstants : register(b0)
 {    
@@ -34,5 +34,6 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     GPUParticleInput inputData;
     inputData.worldMat = worldMat;
     inputData.color = particleData.color;
+    inputData.color.a = alphaData[particleData.id];
     inputGPUParticleData.Append(inputData);
 }

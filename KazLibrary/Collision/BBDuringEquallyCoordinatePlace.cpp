@@ -11,9 +11,7 @@
 #include"../KazLibrary/Loader/ObjResourceMgr.h"
 #include"../KazLibrary/Buffer/UavViewHandleMgr.h"
 
-int BBDuringEquallyCoordinatePlace::MeshIdNum = 0;
-
-BBDuringEquallyCoordinatePlace::BBDuringEquallyCoordinatePlace(const ResouceBufferHelper::BufferData &BB_BUFFER_DATA, const BoundingBoxData &DATA, const ResouceBufferHelper::BufferData &STACK_MESH_CIRCLE_DATA, float MESH_HITBOX_RADIUS) :data(DATA), countNum(0), debugFlag(false), diameter(MESH_HITBOX_RADIUS)
+BBDuringEquallyCoordinatePlace::BBDuringEquallyCoordinatePlace(const ResouceBufferHelper::BufferData &BB_BUFFER_DATA, const BoundingBoxData &DATA, const ResouceBufferHelper::BufferData &STACK_MESH_CIRCLE_DATA, float MESH_HITBOX_RADIUS,UINT MESH_ID) :data(DATA), countNum(0), debugFlag(false), diameter(MESH_HITBOX_RADIUS)
 {
 	computeHelper = std::make_unique<ResouceBufferHelper>();
 
@@ -48,10 +46,9 @@ BBDuringEquallyCoordinatePlace::BBDuringEquallyCoordinatePlace(const ResouceBuff
 		lData.diameter = diameter;
 		lData.xMax = threadNumData.x;
 		lData.xyMax = threadNumData.x * threadNumData.y;
-		lData.id = MeshIdNum;
+		lData.id = MESH_ID;
 		computeHelper->TransData(lHandle, &lData, sizeof(HitBoxConstBufferData));
 	}
-	++MeshIdNum;
 
 
 	//デバック描画
@@ -64,7 +61,7 @@ BBDuringEquallyCoordinatePlace::BBDuringEquallyCoordinatePlace(const ResouceBuff
 		lData.diameter = diameter;
 		lData.xMax = threadNumData.x;
 		lData.xyMax = threadNumData.x * threadNumData.y;
-		lData.id = MeshIdNum;
+		lData.id = MESH_ID;
 		debugComputeHelper.TransData(hitBoxCommonHandle, &lData, sizeof(HitBoxConstBufferData));
 	}
 }

@@ -2,6 +2,8 @@
 #include"../Game/Interface/IOperationObject.h"
 #include"../KazLibrary/Collision/CollisionManager.h"
 #include"../KazLibrary/Math/KazMath.h"
+#include"../KazLibrary/Loader/MeshParticleLoader.h"
+
 
 /// <summary>
 /// “G‚ÌŽí—Þ
@@ -119,6 +121,8 @@ struct MeshData
 {
 	RESOURCE_HANDLE resourceHandle;
 	const DirectX::XMMATRIX *motherMat;
+	InitMeshParticleData meshParticleData;
+
 	MeshData(RESOURCE_HANDLE HANDLE, const DirectX::XMMATRIX *MOTHER_MAT) :resourceHandle(HANDLE), motherMat(MOTHER_MAT)
 	{
 	};
@@ -141,7 +145,8 @@ struct EnemyData
 		timer(1),
 		outOfStageFlag(false),
 		radius(0.0f),
-		startFlag(false), objFlag(false)
+		startFlag(false), objFlag(false),
+		meshParticleFlag(false)
 	{
 	};
 

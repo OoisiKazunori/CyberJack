@@ -15,6 +15,7 @@ public:
 	~GameScene();
 
 	void Init();
+	void PostInit();
 	void Finalize();
 	void Input();
 	void Update();

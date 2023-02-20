@@ -17,11 +17,11 @@ SceneManager::SceneManager() :gameFirstInitFlag(false)
 	//scene.emplace_back(std::make_unique<TitleScene>());
 	scene.emplace_back(std::make_unique<GameScene>());
 
-
 	nowScene = 0;
 	nextScene = 0;
 	itisInArrayFlag = true;
 	endGameFlag = false;
+	initGameFlag = false;
 }
 
 SceneManager::~SceneManager()
@@ -43,24 +43,15 @@ void SceneManager::Update()
 	{
 		scene[nowScene]->Init();
 		gameFirstInitFlag = true;
+		initGameFlag = false;
 	}
 
 
 	const int RESTART_NUM = -2;
 
-	//ゲーム画面が隠された判定
-	if (change.AllHiden())
+	//画面が完全に隠れてから1F分ずらす
+	if (initGameFlag)
 	{
-		scene[nowScene]->Finalize();
-		if (nextScene != RESTART_NUM)
-		{
-			nowScene = nextScene;
-		}
-		else if (nextScene == RESTART_NUM)
-		{
-			nextScene = nowScene;
-		}
-
 		if (KazHelper::IsitInAnArray(nowScene, scene.size()))
 		{
 			scene[nowScene]->Init();
@@ -70,10 +61,29 @@ void SceneManager::Update()
 		{
 			itisInArrayFlag = false;
 		}
+		initGameFlag = false;
+	}
+
+	//ゲーム画面が隠された判定
+	if (change.AllHiden())
+	{
+		scene[nowScene]->Finalize();
+
+		if (nextScene != RESTART_NUM)
+		{
+			nowScene = nextScene;
+		}
+		else if (nextScene == RESTART_NUM)
+		{
+			nextScene = nowScene;
+		}
+
+		scene[nextScene]->PostInit();
+		initGameFlag = true;
 	}
 
 	//更新処理
-	if (itisInArrayFlag)
+	if (itisInArrayFlag && !initGameFlag)
 	{
 		scene[nowScene]->Input();
 		scene[nowScene]->Update();

@@ -9,6 +9,22 @@
 
 GameScene::GameScene()
 {
+	skipTurtorialFlag = true;
+	PostInit();
+}
+
+GameScene::~GameScene()
+{
+}
+
+void GameScene::Init()
+{
+	game->Init(skipTurtorialFlag);
+	skipTurtorialFlag = false;
+}
+
+void GameScene::PostInit()
+{
 	int respoineIndex = 0;
 	int layerLevel = 0;
 	int time = 60;
@@ -289,20 +305,7 @@ GameScene::GameScene()
 #pragma endregion
 	++layerLevel;
 
-
-
-	skipTurtorialFlag = false;
 	game = std::make_unique<Game>(responeData, stages, backGroundColorArray, cameraMoveArray);
-}
-
-GameScene::~GameScene()
-{
-}
-
-void GameScene::Init()
-{
-	game->Init(skipTurtorialFlag);
-	skipTurtorialFlag = false;
 }
 
 void GameScene::Finalize()

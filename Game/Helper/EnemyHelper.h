@@ -13,6 +13,7 @@
 #include"../Game/Enemy/PopEnemy.h"
 #include"../Game/UI/Cursor.h"
 #include"../Game/UI/AttackLog.h"
+#include"../Game/Effect/InstanceMeshParticle.h"
 
 
 namespace KazEnemyHelper

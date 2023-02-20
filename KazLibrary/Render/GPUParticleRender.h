@@ -6,7 +6,7 @@
 #include"../KazLibrary/Helper/ISinglton.h"
 
 //演出で使われている全てのパーティクルの情報をスタックして一気に描画するクラスです
-class GPUParticleRender:public ISingleton<GPUParticleRender>
+class GPUParticleRender
 {
 public:
 	GPUParticleRender();
@@ -14,7 +14,7 @@ public:
 	void InitCount();
 	void Draw();
 
-	const ResouceBufferHelper::BufferData &GetStackBuffer();
+	const ResouceBufferHelper::BufferData &GetStackBuffer()const;
 
 	struct InputData
 	{

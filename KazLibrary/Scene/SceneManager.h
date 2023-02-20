@@ -23,6 +23,7 @@ private:
 	std::vector<std::unique_ptr<SceneBase>> scene;
 	ChangeScene::SceneChange change;
 	int nowScene, nextScene;
+	bool initGameFlag;
 
 	bool sceneChangeFlag;
 

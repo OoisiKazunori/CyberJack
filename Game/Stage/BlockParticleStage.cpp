@@ -351,7 +351,7 @@ BlockParticleStage::BlockParticleStage()
 		floorParticleModel[i] = std::make_unique<TextureParticle>(GetPlaneData(floorResourceHandle), &floorParticleMotherMat[i], floorResourceHandle, 5.0f, 10000, 2);
 
 		lFloorData.motherMat = &floorParticleMotherMat[i];
-		InstanceMeshParticle::Instance()->AddMeshData(lFloorData);
+		//InstanceMeshParticle::Instance()->AddMeshData(lFloorData);
 	}
 	MeshParticleLoadData lData{};
 	lData.bias = 0;
@@ -368,9 +368,9 @@ BlockParticleStage::BlockParticleStage()
 		pillarParticleModel[i] = std::make_unique<TextureParticle>(FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->vertUvData, &pillarParticleMotherMat[i], lHandle, 1.5f, 200, 2000);
 
 
-		InstanceMeshParticle::Instance()->AddMeshData(
-			MeshParticleLoader::Instance()->Load(KazFilePathName::StagePath + "house/" + "House_01.fbx", true, &pillarParticleMotherMat[i], lData)
-		);
+		//InstanceMeshParticle::Instance()->AddMeshData(
+		//	MeshParticleLoader::Instance()->Load(KazFilePathName::StagePath + "house/" + "House_01.fbx", true, &pillarParticleMotherMat[i], lData)
+		//);
 	}
 
 	const int L_HALF_NUM = static_cast<int>(pillarParticleTransform.size()) / 2;
@@ -382,9 +382,9 @@ BlockParticleStage::BlockParticleStage()
 		UINT lFaceCountNum = FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->faceCountNum;
 		pillarParticleModel[i] = std::make_unique<TextureParticle>(FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->vertUvData, &pillarParticleMotherMat[i], lHandle, 1.5f, 200, 2000);
 
-		InstanceMeshParticle::Instance()->AddMeshData(
+	/*	InstanceMeshParticle::Instance()->AddMeshData(
 			MeshParticleLoader::Instance()->Load(KazFilePathName::StagePath + "house/" + "House_01.fbx", true, &pillarParticleMotherMat[i], lData)
-		);
+		);*/
 	}
 
 
@@ -659,10 +659,6 @@ void BlockParticleStage::Draw()
 	//}
 
 
-	galacticParticle->Draw();
-
-
-
-	GPUParticleRender::Instance()->Draw();
+	//galacticParticle->Draw();
 
 }

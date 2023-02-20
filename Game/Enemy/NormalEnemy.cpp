@@ -5,6 +5,21 @@
 
 NormalEnemy::NormalEnemy()
 {
+	MeshParticleLoadData lData;
+	lData.bias = 70;
+	lData.faceCountNum = 100;
+	lData.perTriangleNum = 50;
+
+	iEnemy_EnemyStatusData->meshParticleData.emplace_back(MeshData(0, &iEnemy_FbxModelRender->motherMat));
+	iEnemy_EnemyStatusData->meshParticleData[0].meshParticleData =
+		MeshParticleLoader::Instance()->Load(
+			KazFilePathName::EnemyPath + "Move/" + "MoveEnemy_Model.fbx",
+			true, 
+			&iEnemy_FbxModelRender->motherMat,
+			lData
+		);
+	iEnemy_EnemyStatusData->meshParticleData[0].meshParticleData.alpha = &alpha;
+	iEnemy_EnemyStatusData->meshParticleFlag = true;
 }
 
 void NormalEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
@@ -31,7 +46,7 @@ void NormalEnemy::Update()
 {
 	++iEnemy_FbxModelRender->data.transform.rotation.z;
 	//ˆÚ“®
-	if (!demoFlag)
+	if (!demoFlag && iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
 	{
 		iEnemy_FbxModelRender->data.transform.pos.z += speed;
 	}
@@ -58,9 +73,12 @@ void NormalEnemy::Update()
 
 	if (!iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
 	{
-		iEnemy_FbxModelRender->data.transform.pos.x = -10000.0f;
+		iEnemy_FbxModelRender->data.colorData.color.a = 0;
+		iEnemy_EnemyStatusData->hitBox.radius = 0.0f;
 		iEnemy_FbxModelRender->CaluMat();
 	}
+
+	alpha = static_cast<float>(iEnemy_FbxModelRender->data.colorData.color.a) / 255;
 }
 
 void NormalEnemy::Draw()

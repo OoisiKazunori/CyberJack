@@ -1,7 +1,6 @@
 #include "IEnemy.h"
 #include"../KazLibrary/Helper/ResourceFilePass.h"
 #include"../Game/Effect/InstanceMeshParticle.h"
-#include"../KazLibrary/Loader/MeshParticleLoader.h"
 
 IEnemy::IEnemy() :hpDirtyFlag(&iOperationData.rockOnNum)
 {
@@ -224,9 +223,9 @@ void IEnemy::InitModel(const KazMath::Transform3D &TRANSFORM, const std::string 
 			lData.bias = 70;
 			lData.faceCountNum = 100;
 			lData.perTriangleNum = 50;
-			InstanceMeshParticle::Instance()->AddMeshData(
-				MeshParticleLoader::Instance()->Load(MODEL_FILEPASS, REV_UV_FLAG, iEnemy_EnemyStatusData->meshParticleData[0].motherMat, lData)
-			);
+
+			iEnemy_EnemyStatusData->meshParticleData[0].meshParticleData =
+				MeshParticleLoader::Instance()->Load(MODEL_FILEPASS, REV_UV_FLAG, iEnemy_EnemyStatusData->meshParticleData[0].motherMat, lData);
 		}
 
 		break;

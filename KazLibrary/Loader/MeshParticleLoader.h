@@ -14,11 +14,12 @@ class MeshParticleLoader :public ISingleton<MeshParticleLoader>
 {
 public:
 	MeshParticleLoader();
-	InitMeshParticleData Load(const std::string &MODEL_NAME, bool REV_FLAG, const DirectX::XMMATRIX *MOTHER_MAT, const MeshParticleLoadData &MESH_PARTICLE_DATA, RESOURCE_HANDLE TEX_HANDLE = -1);
+	const InitMeshParticleData &Load(const std::string &MODEL_NAME, bool REV_FLAG, const DirectX::XMMATRIX *MOTHER_MAT, const MeshParticleLoadData &MESH_PARTICLE_DATA, RESOURCE_HANDLE TEX_HANDLE = -1);
 
 private:
 	HandleMaker handle;
 	std::vector<CreateMeshBuffer> meshBuffer;
+	std::vector<std::unique_ptr<InitMeshParticleData>> meshParticleDataArray;
 
 	std::vector<std::string>handleNameArray;
 };

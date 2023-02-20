@@ -1,5 +1,4 @@
 #include "InstanceMeshCollision.h"
-#include"../KazLibrary/Render/GPUParticleRender.h"
 
 InstanceMeshCollision::InstanceMeshCollision(const std::vector<InitMeshCollisionData> &INIT_DATA, const std::vector<Sphere *> &HITBOX_ARRAY_DATA)
 	:hitBoxData(HITBOX_ARRAY_DATA)
@@ -31,7 +30,7 @@ InstanceMeshCollision::InstanceMeshCollision(const std::vector<InitMeshCollision
 	copyBuffer.TransData(&lNum, sizeof(UINT));
 }
 
-void InstanceMeshCollision::Init()
+void InstanceMeshCollision::Init(const GPUParticleRender *RENDER_PTR)
 {
 	inputMeshCircleBufferHandle = meshMoveCompute.CreateBuffer(
 		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(MeshHitBoxData) * PARTICLE_NUM),
@@ -57,10 +56,10 @@ void InstanceMeshCollision::Init()
 	for (int i = 0; i < meshData.size(); ++i)
 	{
 		//ƒƒbƒVƒ…‹…¶¬
-		generateMeshHitBox.emplace_back(BBDuringEquallyCoordinatePlace(meshData[i].bb.GetBBBuffer(), meshData[i].bb.GetData(), meshMoveCompute.GetBufferData(inputMeshCircleBufferHandle), lRadius));
+		generateMeshHitBox.emplace_back(BBDuringEquallyCoordinatePlace(meshData[i].bb.GetBBBuffer(), meshData[i].bb.GetData(), meshMoveCompute.GetBufferData(inputMeshCircleBufferHandle), lRadius, i));
 
 #ifdef DEBUG
-		generateMeshHitBox[i].SetDebugDraw(GPUParticleRender::Instance()->GetStackBuffer());
+		generateMeshHitBox[i].SetDebugDraw(RENDER_PTR->GetStackBuffer());
 #endif
 		generateMeshHitBox[i].Compute();
 
@@ -103,7 +102,7 @@ void InstanceMeshCollision::Init()
 		static_cast<UINT>(motherMatArray.size())
 	);
 
-	updatePosCompute.SetBuffer(GPUParticleRender::Instance()->GetStackBuffer(), GRAPHICS_PRAMTYPE_DATA5);
+	updatePosCompute.SetBuffer(RENDER_PTR->GetStackBuffer(), GRAPHICS_PRAMTYPE_DATA5);
 
 	scaleRotateBillboardMatHandle = updatePosCompute.CreateBuffer(
 		sizeof(DirectX::XMMATRIX),

@@ -22,7 +22,7 @@ RESOURCE_HANDLE ResouceBufferHelper::CreateBuffer(UINT STRUCTURE_BYTE_STRIDE, Gr
 	RESOURCE_HANDLE lViewHandle = 0;
 	UINT lBufferSize = STRUCTURE_BYTE_STRIDE * ELEMENT_NUM;
 
-	bufferArrayData.push_back(ResouceBufferHelper::BufferData());
+	bufferArrayData.emplace_back(ResouceBufferHelper::BufferData());
 	bufferArrayData[lHandle].rangeType = RANGE;
 	bufferArrayData[lHandle].rootParamType = ROOTPARAM;
 	bufferArrayData[lHandle].bufferSize = lBufferSize;
@@ -306,7 +306,7 @@ void ResouceBufferHelper::InitCounterBuffer(const Microsoft::WRL::ComPtr<ID3D12R
 	}
 }
 
-const ResouceBufferHelper::BufferData &ResouceBufferHelper::GetBufferData(RESOURCE_HANDLE HANDLE)
+const ResouceBufferHelper::BufferData &ResouceBufferHelper::GetBufferData(RESOURCE_HANDLE HANDLE)const
 {
 	return bufferArrayData[HANDLE];
 }

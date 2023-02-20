@@ -20,7 +20,6 @@ Game::Game(
 	const std::array<std::array<KazEnemyHelper::ForceCameraData, 10>, KazEnemyHelper::STAGE_NUM_MAX> &CAMERA_ARRAY
 ) :LOG_FONT_SIZE(1.0f)
 {
-	InstanceMeshParticle::Instance();
 
 	for (int i = 0; i < smokeR.size(); ++i)
 	{
@@ -122,6 +121,28 @@ Game::Game(
 	}
 	meshCollision = std::make_unique<InstanceMeshCollision>(lInitCollisionData, enemyHitBoxArray);
 
+
+	particleRender = std::make_unique<GPUParticleRender>();
+	meshParticle = std::make_unique<InstanceMeshParticle>(particleRender.get());
+
+
+	for (int enemyType = 0; enemyType < responeData.size(); ++enemyType)
+	{
+		for (int enemyCount = 0; enemyCount < responeData[enemyType].size(); ++enemyCount)
+		{
+			if (enemies[enemyType][enemyCount] == nullptr)
+			{
+				continue;
+			}
+			EnemyData lData = *enemies[enemyType][enemyCount]->GetData();
+			if (!lData.meshParticleFlag)
+			{
+				continue;
+			}
+
+			meshParticle->AddMeshData(lData.meshParticleData[0].meshParticleData);
+		}
+	}
 }
 
 Game::~Game()
@@ -194,7 +215,7 @@ void Game::Init(bool SKIP_FLAG)
 	fireIndex = 0;
 	cameraWork.Init();
 
-	tutorial.Init(true);
+	tutorial.Init(SKIP_FLAG);
 	portalEffect.Init();
 
 	isGameOverFlag = false;
@@ -212,10 +233,8 @@ void Game::Init(bool SKIP_FLAG)
 
 
 
-	meshCollision->Init();
-
-
-	InstanceMeshParticle::Instance()->Init();
+	meshCollision->Init(particleRender.get());
+	meshParticle->Init();
 
 }
 
@@ -290,7 +309,7 @@ void Game::Input()
 
 	if (input->InputTrigger(DIK_O))
 	{
-		sceneNum = 0;
+		sceneNum = -3;
 	}
 
 
@@ -490,7 +509,6 @@ void Game::Update()
 
 				enemies[enemyType][enemyCount]->OnInit(responeData[enemyType][enemyCount].generateData.useMeshPaticleFlag);
 				enemies[enemyType][enemyCount]->Init(responeData[enemyType][enemyCount].generateData, false);
-
 
 				//メッシュパーティクルの付与
 				for (int i = 0; i < enemies[enemyType][enemyCount]->GetData()->meshParticleData.size(); ++i)
@@ -901,7 +919,7 @@ void Game::Update()
 		stages[stageNum]->hitFlag = false;
 		tutorialWindow.Update();
 		logoutWindow->Update();
-		InstanceMeshParticle::Instance()->Compute();
+		meshParticle->Compute();
 		meshCollision->Compute();
 
 		for (int i = 0; i < hitEffect.size(); ++i)
@@ -1091,7 +1109,7 @@ void Game::Update()
 
 void Game::Draw()
 {
-	GPUParticleRender::Instance()->InitCount();
+	particleRender->InitCount();
 
 	if (tutorial.tutorialFlag)
 	{
@@ -1153,7 +1171,7 @@ void Game::Draw()
 
 		stages[stageNum]->SetCamera(0);
 		stages[stageNum]->Draw();
-
+		particleRender->Draw();
 
 		PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "Enemy");
 		//敵の描画処理----------------------------------------------------------------

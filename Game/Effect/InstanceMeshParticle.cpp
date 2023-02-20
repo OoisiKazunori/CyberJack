@@ -1,10 +1,9 @@
 #include "InstanceMeshParticle.h"
 #include"../KazLibrary/Buffer/DescriptorHeapMgr.h"
-#include"../KazLibrary/Render/GPUParticleRender.h"
 
 int InstanceMeshParticle::MESH_PARTICLE_GENERATE_NUM = 0;
 
-InstanceMeshParticle::InstanceMeshParticle() :setCountNum(0)
+InstanceMeshParticle::InstanceMeshParticle(const GPUParticleRender *RENDER_PTR) :setCountNum(0)
 {
 	//メッシュパーティクルの初期化処理の出力情報
 	meshParticleBufferData = computeInitMeshParticle.CreateAndGetBuffer(
@@ -34,76 +33,30 @@ InstanceMeshParticle::InstanceMeshParticle() :setCountNum(0)
 	copyBuffer.CreateBuffer(lBufferData);
 	copyBuffer.TransData(&lNum, sizeof(UINT));
 
-	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
-		1,
-		&CD3DX12_RESOURCE_BARRIER::Transition(meshParticleBufferData.counterWrapper.buffer.Get(),
-			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-			D3D12_RESOURCE_STATE_COPY_DEST
-		)
-	);
 
-	DirectX12CmdList::Instance()->cmdList->CopyResource(meshParticleBufferData.counterWrapper.buffer.Get(), copyBuffer.buffer.Get());
-
-	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
-		1,
-		&CD3DX12_RESOURCE_BARRIER::Transition(meshParticleBufferData.counterWrapper.buffer.Get(),
-			D3D12_RESOURCE_STATE_COPY_DEST,
-			D3D12_RESOURCE_STATE_UNORDERED_ACCESS
-		)
-	);
-
-
-
-
-
-	KazBufferHelper::BufferResourceData lData(
-		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
-		D3D12_HEAP_FLAG_NONE,
-		CD3DX12_RESOURCE_DESC::Buffer(KazBufferHelper::GetBufferSize<BUFFER_SIZE>(MOTHER_MAT_MAX, sizeof(DirectX::XMMATRIX))),
+	meshParticleBufferData.counterWrapper.CopyBuffer(
+		copyBuffer.buffer.Get(),
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-		nullptr,
-		"VRAMmatData"
+		D3D12_RESOURCE_STATE_COPY_DEST
 	);
-	lData.resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
-
-	//親行列
-	particleMotherMatrixHandle = computeUpdateMeshParticle.CreateBuffer(
-		lData,
-		GRAPHICS_RANGE_TYPE_UAV_DESC,
-		GRAPHICS_PRAMTYPE_DATA2,
-		sizeof(DirectX::XMMATRIX),
-		static_cast<UINT>(MOTHER_MAT_MAX),
-		false
-	);
-
-
-
-	motherMatrixBuffer.CreateBuffer(
-		KazBufferHelper::BufferResourceData(
-			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-			D3D12_HEAP_FLAG_NONE,
-			CD3DX12_RESOURCE_DESC::Buffer(KazBufferHelper::GetBufferSize<BUFFER_SIZE>(MOTHER_MAT_MAX, sizeof(DirectX::XMMATRIX))),
-			D3D12_RESOURCE_STATE_GENERIC_READ,
-			nullptr,
-			"RAMmatData")
-	);
-
 
 
 	//ワールド行列
-	computeUpdateMeshParticle.SetBuffer(GPUParticleRender::Instance()->GetStackBuffer(), GRAPHICS_PRAMTYPE_DATA3);
+	computeUpdateMeshParticle.SetBuffer(RENDER_PTR->GetStackBuffer(), GRAPHICS_PRAMTYPE_DATA4);
 	//色
 	//computeUpdateMeshParticle.SetBuffer(GPUParticleRender::Instance()->GetStackColorBuffer(), GRAPHICS_PRAMTYPE_DATA4);
 	//Transformを除いたワールド行列
 	scaleRotateBillboardMatHandle = computeUpdateMeshParticle.CreateBuffer(
 		sizeof(DirectX::XMMATRIX),
 		GRAPHICS_RANGE_TYPE_CBV_VIEW,
-		GRAPHICS_PRAMTYPE_DATA4,
+		GRAPHICS_PRAMTYPE_DATA5,
 		1,
 		false);
 
 	float lScale = 0.1f;
 	scaleRotMat = KazMath::CaluScaleMatrix({ lScale,lScale,lScale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
+
+	MESH_PARTICLE_GENERATE_NUM = 0;
 }
 
 void InstanceMeshParticle::Init()
@@ -132,7 +85,8 @@ void InstanceMeshParticle::AddMeshData(const InitMeshParticleData &DATA)
 		));
 
 
-	motherMatArray.push_back(DATA.motherMat);
+
+	motherMatArray.emplace_back(MotherData(DATA.motherMat, DATA.alpha));
 
 
 
@@ -193,6 +147,72 @@ void InstanceMeshParticle::AddMeshData(const InitMeshParticleData &DATA)
 
 	++MESH_PARTICLE_GENERATE_NUM;
 #pragma endregion
+
+
+
+
+	motherMatrixBuffer.CreateBuffer(
+		KazBufferHelper::BufferResourceData(
+			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+			D3D12_HEAP_FLAG_NONE,
+			CD3DX12_RESOURCE_DESC::Buffer(KazBufferHelper::GetBufferSize<BUFFER_SIZE>(motherMatArray.size(), sizeof(DirectX::XMMATRIX))),
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			nullptr,
+			"RAMmatData")
+	);
+
+	colorBuffer.CreateBuffer(
+		KazBufferHelper::BufferResourceData(
+			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+			D3D12_HEAP_FLAG_NONE,
+			CD3DX12_RESOURCE_DESC::Buffer(KazBufferHelper::GetBufferSize<BUFFER_SIZE>(motherMatArray.size(), sizeof(float))),
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			nullptr,
+			"RAMColorData")
+	);
+
+	{
+		KazBufferHelper::BufferResourceData lData(
+			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+			D3D12_HEAP_FLAG_NONE,
+			CD3DX12_RESOURCE_DESC::Buffer(KazBufferHelper::GetBufferSize<BUFFER_SIZE>(motherMatArray.size(), sizeof(DirectX::XMMATRIX))),
+			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+			nullptr,
+			"VRAMmatData"
+		);
+		lData.resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+
+		//親行列
+		particleMotherMatrixHandle = computeUpdateMeshParticle.CreateBuffer(
+			lData,
+			GRAPHICS_RANGE_TYPE_UAV_DESC,
+			GRAPHICS_PRAMTYPE_DATA2,
+			sizeof(DirectX::XMMATRIX),
+			static_cast<UINT>(motherMatArray.size()),
+			false
+		);
+	}
+
+	{
+		KazBufferHelper::BufferResourceData lData(
+			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+			D3D12_HEAP_FLAG_NONE,
+			CD3DX12_RESOURCE_DESC::Buffer(KazBufferHelper::GetBufferSize<BUFFER_SIZE>(motherMatArray.size(), sizeof(float))),
+			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+			nullptr,
+			"VRAMColorData"
+		);
+		lData.resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+
+		colorMotherMatrixHandle = computeUpdateMeshParticle.CreateBuffer(
+			lData,
+			GRAPHICS_RANGE_TYPE_UAV_DESC,
+			GRAPHICS_PRAMTYPE_DATA3,
+			sizeof(float),
+			static_cast<UINT>(motherMatArray.size()),
+			false
+		);
+	}
 }
 
 void InstanceMeshParticle::Compute()
@@ -201,31 +221,31 @@ void InstanceMeshParticle::Compute()
 	computeUpdateMeshParticle.TransData(scaleRotateBillboardMatHandle, &scaleRotBillBoardMat, sizeof(DirectX::XMMATRIX));
 
 	std::vector<DirectX::XMMATRIX>lMatArray(motherMatArray.size());
+	std::vector<float>lColorArray(motherMatArray.size());
 	for (int i = 0; i < lMatArray.size(); ++i)
 	{
-		lMatArray[i] = *motherMatArray[i];
+		lMatArray[i] = *motherMatArray[i].motherMat;
+		lColorArray[i] = *motherMatArray[i].alpha;
 	}
 	motherMatrixBuffer.TransData(lMatArray.data(), sizeof(DirectX::XMMATRIX) * static_cast<int>(lMatArray.size()));
+	colorBuffer.TransData(lColorArray.data(), sizeof(float) * static_cast<int>(lMatArray.size()));
 
 
 
-	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
-		1,
-		&CD3DX12_RESOURCE_BARRIER::Transition(computeUpdateMeshParticle.GetBufferData(particleMotherMatrixHandle).bufferWrapper.buffer.Get(),
-			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-			D3D12_RESOURCE_STATE_COPY_DEST
-		)
+	computeUpdateMeshParticle.GetBufferData(particleMotherMatrixHandle).bufferWrapper.CopyBuffer(
+		motherMatrixBuffer.buffer.Get(),
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		D3D12_RESOURCE_STATE_COPY_DEST
 	);
 
-	DirectX12CmdList::Instance()->cmdList->CopyResource(computeUpdateMeshParticle.GetBufferData(particleMotherMatrixHandle).bufferWrapper.buffer.Get(), motherMatrixBuffer.buffer.Get());
-
-	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
-		1,
-		&CD3DX12_RESOURCE_BARRIER::Transition(computeUpdateMeshParticle.GetBufferData(particleMotherMatrixHandle).bufferWrapper.buffer.Get(),
-			D3D12_RESOURCE_STATE_COPY_DEST,
-			D3D12_RESOURCE_STATE_UNORDERED_ACCESS
-		)
+	computeUpdateMeshParticle.GetBufferData(colorMotherMatrixHandle).bufferWrapper.CopyBuffer(
+		colorBuffer.buffer.Get(),
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		D3D12_RESOURCE_STATE_COPY_DEST
 	);
+
+
+
 
 	computeUpdateMeshParticle.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_UPDATE_MESHPARTICLE, { 1000,1,1 });
 }

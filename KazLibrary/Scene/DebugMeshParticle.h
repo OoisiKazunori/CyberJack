@@ -334,10 +334,14 @@ private:
 	Sphere s1, s2, s3;
 	ColorData color1, color2;
 
+	std::unique_ptr<InstanceMeshParticle> meshParticle;
+	std::unique_ptr<GPUParticleRender> particleRender;
 
 	CreateMeshBuffer sphereModel;
 	CreateMeshBuffer enemyModel;
 	CreateMeshBuffer summonModel;
 	CreateMeshBuffer cubeModel;
+
+	float al = 0.5f;
 };
 
