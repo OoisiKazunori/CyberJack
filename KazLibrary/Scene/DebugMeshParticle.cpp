@@ -227,9 +227,9 @@ DebugMeshParticleScene::DebugMeshParticleScene() :
 		lInitCollisionData[1].motherMat = &enemyModelMat[1];
 		lInitCollisionData[1].colorData = colorArrayData[1];
 
-		s1 = Sphere(&collisionPos, 5.0f);
-		s2 = Sphere(&collisionPos2, 5.0f);
-		s3 = Sphere(&collisionPos3, 5.0f);
+		s1 = Sphere(&collisionPos, 15.0f);
+		s2 = Sphere(&collisionPos2, 15.0f);
+		s3 = Sphere(&collisionPos3, 15.0f);
 
 		hitBoxArray.push_back(&s1);
 		hitBoxArray.push_back(&s2);

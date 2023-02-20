@@ -132,6 +132,34 @@ namespace KazRenderHelper
 
 		void *GetMapAddres()const;
 
+		void CopyBuffer(
+			const Microsoft::WRL::ComPtr<ID3D12Resource> &SRC_BUFFER,
+			D3D12_RESOURCE_STATES BEFORE_STATE,
+			D3D12_RESOURCE_STATES AFTER_STATE
+		)const
+		{
+
+			DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
+				1,
+				&CD3DX12_RESOURCE_BARRIER::Transition(buffer.Get(),
+					BEFORE_STATE,
+					AFTER_STATE
+				)
+			);
+
+			DirectX12CmdList::Instance()->cmdList->CopyResource(buffer.Get(), SRC_BUFFER.Get());
+
+			DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
+				1,
+				&CD3DX12_RESOURCE_BARRIER::Transition(buffer.Get(),
+					AFTER_STATE,
+					BEFORE_STATE
+				)
+			);
+		}
+
+
+
 		Microsoft::WRL::ComPtr<ID3D12Resource>buffer;
 
 		void operator=(const ID3D12ResourceWrapper &rhs)

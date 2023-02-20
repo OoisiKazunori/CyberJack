@@ -39,6 +39,7 @@ public:
 			viewHandle = rhs.viewHandle;
 			elementNum = rhs.elementNum;
 		};
+
 	};
 
 	ResouceBufferHelper();

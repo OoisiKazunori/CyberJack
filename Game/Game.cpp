@@ -1236,7 +1236,6 @@ void Game::Draw()
 				}
 			}
 		}
-		GPUParticleRender::Instance()->Draw();
 
 
 		for (int enemyType = 0; enemyType < deadParticleArray.size(); ++enemyType)

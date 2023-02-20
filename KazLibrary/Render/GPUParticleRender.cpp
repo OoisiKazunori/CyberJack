@@ -44,17 +44,25 @@ GPUParticleRender::GPUParticleRender()
 	vertexBuffer = std::make_unique<KazRenderHelper::ID3D12ResourceWrapper>();
 	indexBuffer = std::make_unique<KazRenderHelper::ID3D12ResourceWrapper>();
 
+
 	vertexBuffer->CreateBuffer(KazBufferHelper::SetVertexBufferData(lVertBuffSize));
 	indexBuffer->CreateBuffer(KazBufferHelper::SetIndexBufferData(lIndexBuffSize));
+
+	gpuVertexBuffer.CreateBuffer(KazBufferHelper::SetGPUBufferData(lVertBuffSize));
+	gpuIndexBuffer.CreateBuffer(KazBufferHelper::SetGPUBufferData(lIndexBuffSize));
 
 	vertexBuffer->TransData(lVerticesArray.data(), lVertBuffSize);
 	indexBuffer->TransData(lIndicesArray.data(), lIndexBuffSize);
 
+	gpuVertexBuffer.CopyBuffer(vertexBuffer->buffer, D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_COPY_DEST);
+	gpuIndexBuffer.CopyBuffer(indexBuffer->buffer, D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_COPY_DEST);
+
+
 
 
 	InitDrawIndexedExcuteIndirect lInitData;
-	lInitData.vertexBufferView = KazBufferHelper::SetVertexBufferView(vertexBuffer->GetGpuAddress(), lVertBuffSize, sizeof(lVerticesArray[0]));
-	lInitData.indexBufferView = KazBufferHelper::SetIndexBufferView(indexBuffer->GetGpuAddress(), lIndexBuffSize);
+	lInitData.vertexBufferView = KazBufferHelper::SetVertexBufferView(gpuVertexBuffer.GetGpuAddress(), lVertBuffSize, sizeof(lVerticesArray[0]));
+	lInitData.indexBufferView = KazBufferHelper::SetIndexBufferView(gpuIndexBuffer.GetGpuAddress(), lIndexBuffSize);
 	lInitData.indexNum = static_cast<UINT>(lIndicesArray.size());
 	lInitData.elementNum = PARTICLE_MAX_NUM;
 	lInitData.updateView = computeCovertWorldMatToDrawMat.GetBufferData(outputHandle).bufferWrapper.buffer->GetGPUVirtualAddress();

@@ -12,6 +12,8 @@
 #include"../Game/Effect/InstanceMeshParticle.h"
 #include"../KazLibrary/Loader/MeshParticleLoader.h"
 
+#include"../KazLibrary/Render/GPUParticleRender.h"
+
 const float BlockParticleStage::PILLAR_PARTICLE_INTERVAL_NUM = 15000.0f;
 
 BlockParticleStage::BlockParticleStage()
@@ -507,25 +509,25 @@ void BlockParticleStage::Update()
 	//	splineParticle[i]->Init(limitPosArray);
 	//}
 
-	for (int i = 0; i < splineParticle.size(); ++i)
+	/*for (int i = 0; i < splineParticle.size(); ++i)
 	{
 		splineParticle[i]->Update();
-	}
+	}*/
 
-	for (int i = 0; i < floorParticleModel.size(); ++i)
-	{
-		floorParticleTransform[i].pos.z += -5.0f;
-		if (floorParticleTransform[i].pos.z <= -1000.0f)
-		{
-			floorParticleTransform[i].pos.z = (500.0f + static_cast<float>(FLOOR_PARTICLE_MAX_NUM) * 700.0f) - 1200.0f;
-		}
-		floorParticleMotherMat[i] = floorParticleTransform[i].GetMat();
+	//for (int i = 0; i < floorParticleModel.size(); ++i)
+	//{
+	//	floorParticleTransform[i].pos.z += -5.0f;
+	//	if (floorParticleTransform[i].pos.z <= -1000.0f)
+	//	{
+	//		floorParticleTransform[i].pos.z = (500.0f + static_cast<float>(FLOOR_PARTICLE_MAX_NUM) * 700.0f) - 1200.0f;
+	//	}
+	//	floorParticleMotherMat[i] = floorParticleTransform[i].GetMat();
 
 
-		floorParticleModel[i]->updateCommonData.flash.x = flash.x;
-		floorParticleModel[i]->updateCommonData.flash.y = flash.y;
-		floorParticleModel[i]->Update(false, true);
-	}
+	//	floorParticleModel[i]->updateCommonData.flash.x = flash.x;
+	//	floorParticleModel[i]->updateCommonData.flash.y = flash.y;
+	//	floorParticleModel[i]->Update(false, true);
+	//}
 
 	//ImGui::Begin("Block");
 	//KazImGuiHelper::InputVec2("Flash", &flash);
@@ -545,23 +547,26 @@ void BlockParticleStage::Update()
 		flash.y = 0.0f;
 	}
 
-	for (int i = 0; i < pillarParticleTransform.size(); ++i)
-	{
-		pillarParticleModel[i]->updateCommonData.flash.x = flash.x;
-		pillarParticleModel[i]->updateCommonData.flash.y = flash.y;
+	//for (int i = 0; i < pillarParticleTransform.size(); ++i)
+	//{
+	//	pillarParticleModel[i]->updateCommonData.flash.x = flash.x;
+	//	pillarParticleModel[i]->updateCommonData.flash.y = flash.y;
 
 
-		pillarParticleTransform[i].pos.z += -5.0f;
-		if (pillarParticleTransform[i].pos.z <= -10000.0f)
-		{
-			pillarParticleTransform[i].pos.z = 12500.0f;
-		}
+	//	pillarParticleTransform[i].pos.z += -5.0f;
+	//	if (pillarParticleTransform[i].pos.z <= -10000.0f)
+	//	{
+	//		pillarParticleTransform[i].pos.z = 12500.0f;
+	//	}
 
-		pillarParticleMotherMat[i] = pillarParticleTransform[i].GetMat();
-		pillarParticleModel[i]->Update(false);
-	}
+	//	pillarParticleMotherMat[i] = pillarParticleTransform[i].GetMat();
+	//	pillarParticleModel[i]->Update(false);
+	//}
 
 
+
+
+	//パーティクルステージの挙動
 	for (int i = 0; i < transformArrayData.size(); ++i)
 	{
 		transformArrayData[i].pos.z += -0.5f;
@@ -580,7 +585,7 @@ void BlockParticleStage::Update()
 		//透明になったらループさせる
 		if (colorArrayData[i].alpha <= 0.0f)
 		{
-			transformArrayData[i].pos.z = 500.0f;
+			transformArrayData[i].pos.z = 800.0f;
 		}
 		//アルファ固定
 		if (1.0f <= colorArrayData[i].alpha)
@@ -640,20 +645,24 @@ void BlockParticleStage::Draw()
 	//	D3D12_RESOURCE_STATE_UNORDERED_ACCESS
 	//);
 
-	for (int i = 0; i < pillarParticleModel.size(); ++i)
-	{
-		//pillarParticleModel[i]->Draw();
-	}
-	for (int i = 0; i < floorParticleModel.size(); ++i)
-	{
-		//floorParticleModel[i]->Draw();
-	}
-	for (int i = 0; i < splineParticle.size(); ++i)
-	{
-		//splineParticle[i]->Draw();
-	}
+	//for (int i = 0; i < pillarParticleModel.size(); ++i)
+	//{
+	//	//pillarParticleModel[i]->Draw();
+	//}
+	//for (int i = 0; i < floorParticleModel.size(); ++i)
+	//{
+	//	//floorParticleModel[i]->Draw();
+	//}
+	//for (int i = 0; i < splineParticle.size(); ++i)
+	//{
+	//	//splineParticle[i]->Draw();
+	//}
 
 
-	//galacticParticle->Draw();
+	galacticParticle->Draw();
+
+
+
+	GPUParticleRender::Instance()->Draw();
 
 }

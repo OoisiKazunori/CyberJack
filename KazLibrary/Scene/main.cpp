@@ -104,9 +104,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		imgui.NewFlame();
 		KeyBoradInputManager::Instance()->InputLog();
 		ControllerInputManager::Instance()->InputLog();
-		#ifdef _DEBUG
+		//#ifdef _DEBUG
 		winApi.FPS();
-		#endif
+		//#endif
 
 		if (lStop1FlameFlag)
 		{

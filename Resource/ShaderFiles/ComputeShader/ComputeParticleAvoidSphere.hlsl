@@ -34,7 +34,7 @@ bool CheckLinkHitBox(uint3 BASE_HIT_INDEX,uint3 CHECK_HIT_INDEX)
     linkHitFlagArray[5] = BoolUint3(CHECK_HIT_INDEX, BASE_HIT_INDEX + uint3(0,0,1));  //‘O
     linkHitFlagArray[6] = BoolUint3(CHECK_HIT_INDEX, BASE_HIT_INDEX + uint3(0,0,-1)); //Œã
 
-    for(int i = 0;i < 7; ++i)
+    for(int i = 0;i < 1; ++i)
     {
         if(linkHitFlagArray[i])
         {
@@ -111,21 +111,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
             particleData.hitTimer = 0;
         }
     }
-
-
-    if(isnan(larpPosData[index].x))
-    {
-        larpPosData[index].x = particleData.pos.x;
-    }
-    if(isnan(larpPosData[index].y))
-    {
-        larpPosData[index].y = particleData.pos.y;
-    }
-    if(isnan(larpPosData[index].z))
-    {
-        larpPosData[index].z = particleData.pos.z;
-    }
-
+    
     particleData.pos = larpPosData[index];
     inputGPUParticleData[index] = particleData;
 }

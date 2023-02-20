@@ -51,7 +51,7 @@ void InstanceMeshCollision::Init()
 		false
 	);
 
-	float lRadius = 30.0f;
+	float lRadius = 50.0f;
 	UINT meshCircleNum = 0;
 	//メッシュパーティクルの当たり判定生成ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 	for (int i = 0; i < meshData.size(); ++i)
@@ -82,7 +82,7 @@ void InstanceMeshCollision::Init()
 	}
 	//メッシュパーティクルの当たり判定生成ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 	
-	particleAvoidParticle.GenerateHitNum(generateMeshHitBox[0].MaxHitBoxPosNum() * 2);
+	particleAvoidParticle.GenerateHitNum(generateMeshHitBox[0].MaxHitBoxPosNum());
 
 	cpuAndMeshCircleHitBox = std::make_unique<CollisionDetectionOfMeshCircleAndCPUHitBox>(hitBoxData, lRadius / 2.0f, meshCircleNum);
 
@@ -177,25 +177,8 @@ void InstanceMeshCollision::Compute()
 	}
 	motherMatrixBuffer.bufferWrapper.TransData(lMatArray.data(), sizeof(DirectX::XMMATRIX) * static_cast<int>(lMatArray.size()));
 
+	updatePosCompute.GetBufferData(motherMatHandle).bufferWrapper.CopyBuffer(motherMatrixBuffer.bufferWrapper.buffer, D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_COPY_DEST);
 
-
-	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
-		1,
-		&CD3DX12_RESOURCE_BARRIER::Transition(updatePosCompute.GetBufferData(motherMatHandle).bufferWrapper.buffer.Get(),
-			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-			D3D12_RESOURCE_STATE_COPY_DEST
-		)
-	);
-
-	DirectX12CmdList::Instance()->cmdList->CopyResource(updatePosCompute.GetBufferData(motherMatHandle).bufferWrapper.buffer.Get(), motherMatrixBuffer.bufferWrapper.buffer.Get());
-
-	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
-		1,
-		&CD3DX12_RESOURCE_BARRIER::Transition(updatePosCompute.GetBufferData(motherMatHandle).bufferWrapper.buffer.Get(),
-			D3D12_RESOURCE_STATE_COPY_DEST,
-			D3D12_RESOURCE_STATE_UNORDERED_ACCESS
-		)
-	);
 #pragma endregion
 
 #pragma region 色情報の転送
@@ -253,5 +236,4 @@ void InstanceMeshCollision::Compute()
 	updatePosCompute.TransData(scaleRotateBillboardMatHandle, &scaleRotBillBoardMat, sizeof(DirectX::XMMATRIX));
 	updatePosCompute.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_UPDATE_STAGE_MESHPARTICLE, { 1000,1,1 });
 	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
-
 }

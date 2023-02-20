@@ -99,7 +99,7 @@ void CollisionDetectionOfMeshCircleAndCPUHitBox::Compute()
 	//CPU当たり判定の転送ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 
 	computeHelper.InitCounterBuffer(copyBuffer.buffer);
-	computeHelper.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_HITBOX_MESHCIRCLE_PARTICLE, { 100,1,1 });
+	computeHelper.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_HITBOX_MESHCIRCLE_PARTICLE, { 10,1,1 });
 }
 
 void CollisionDetectionOfMeshCircleAndCPUHitBox::SetStackMeshCircleBuffer(const ResouceBufferHelper::BufferData &BUFFER_DATA)

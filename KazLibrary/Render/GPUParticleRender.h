@@ -31,7 +31,7 @@ private:
 	};
 
 
-	static const int PARTICLE_MAX_NUM = 5000000;
+	static const int PARTICLE_MAX_NUM = 3000000;
 	ResouceBufferHelper computeCovertWorldMatToDrawMat;
 	RESOURCE_HANDLE worldMatHandle, outputHandle, viewProjMatHandle;
 
@@ -41,6 +41,7 @@ private:
 	RESOURCE_HANDLE vertexBufferHandle;
 	RESOURCE_HANDLE indexBufferHandle;
 	std::unique_ptr<KazRenderHelper::ID3D12ResourceWrapper> vertexBuffer, indexBuffer;
+	KazRenderHelper::ID3D12ResourceWrapper gpuVertexBuffer, gpuIndexBuffer;
 
 
 

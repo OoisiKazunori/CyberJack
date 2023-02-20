@@ -167,3 +167,19 @@ D3D12_UNORDERED_ACCESS_VIEW_DESC KazBufferHelper::SetUnorderedAccessView(BUFFER_
 	uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
 	return uavDesc;
 }
+
+KazBufferHelper::BufferResourceData KazBufferHelper::SetGPUBufferData(BUFFER_SIZE BUFFER_SIZE, const std::string &BUFFER_NAME)
+{
+	D3D12_RESOURCE_DESC lDesc = CD3DX12_RESOURCE_DESC::Buffer(BUFFER_SIZE, D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
+
+	KazBufferHelper::BufferResourceData lData
+	(
+		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+		D3D12_HEAP_FLAG_NONE,
+		lDesc,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		nullptr,
+		BUFFER_NAME
+	);
+	return lData;
+}

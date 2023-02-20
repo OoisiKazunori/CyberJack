@@ -1,5 +1,7 @@
 #pragma once
 #include"../DirectXCommon/Base.h"
+#include"../KazLibrary/DirectXCommon/DirectX12CmdList.h"
+#include"../KazLibrary/DirectXCommon/DirectX12Device.h"
 
 struct BufferMemorySize
 {
@@ -92,11 +94,15 @@ namespace KazBufferHelper
 
 	D3D12_UNORDERED_ACCESS_VIEW_DESC SetUnorderedAccessView(BUFFER_SIZE STRUCTURE_BYTE_SIZE, UINT NUM_ELEMENTS);
 
+	KazBufferHelper::BufferResourceData SetGPUBufferData(BUFFER_SIZE BUFFER_SIZE, const std::string &BUFFER_NAME = "IndexBuffer");
+
+
 	template<typename T>
 	T GetBufferSize(size_t BUFFER_SIZE, unsigned long long STRUCTURE_SIZE)
 	{
 		return static_cast<T>(BUFFER_SIZE * static_cast<int>(STRUCTURE_SIZE));
 	};
+
 
 }
 
