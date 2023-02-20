@@ -111,7 +111,7 @@ void InstanceMeshCollision::Init(const GPUParticleRender *RENDER_PTR)
 		1,
 		false);
 
-	float lScale = 0.25f;
+	float lScale = 0.2f;
 	scaleRotaMat = KazMath::CaluScaleMatrix({ lScale,lScale,lScale }) * KazMath::CaluRotaMatrix({ 0.0f,0.0f,0.0f });
 
 	//êeçsóÒì]ëóóp

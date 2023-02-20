@@ -333,26 +333,36 @@ BlockParticleStage::BlockParticleStage()
 	}
 
 
-	meshBuffer = std::make_unique<CreateMeshBuffer>(lPos, lUv);
-	InitMeshParticleData lFloorData;
-	lFloorData.vertData = meshBuffer->GetBufferData(CreateMeshBuffer::DATA_VERT);
-	lFloorData.uvData = meshBuffer->GetBufferData(CreateMeshBuffer::DATA_UV);
-	lFloorData.textureHandle = floorResourceHandle;
-	lFloorData.triagnleData.x = 6;
-	lFloorData.triagnleData.y = 0;
-	lFloorData.triagnleData.z = 10000;
-	lFloorData.triagnleData.w = 2;
 
-	for (int i = 0; i < floorParticleModel.size(); ++i)
+	meshBuffer = std::make_unique<CreateMeshBuffer>(lPos, lUv);
+	floorAlpha = 1.0f;
+	
+
+	for (int i = 0; i < floorParticleTransform.size(); ++i)
 	{
-		floorParticleTransform[i].pos = { 0.0f,-300.0f,500.0f + static_cast<float>(i) * 700.0f };
+		floorParticleTransform[i].pos = { 0.0f,-450.0f,500.0f + static_cast<float>(i) * 700.0f };
 		floorParticleTransform[i].rotation = { 90.0f,0.0f,0.0f };
 
-		floorParticleModel[i] = std::make_unique<TextureParticle>(GetPlaneData(floorResourceHandle), &floorParticleMotherMat[i], floorResourceHandle, 5.0f, 10000, 2);
-
+		InitMeshParticleData lFloorData;
+		lFloorData.vertData = meshBuffer->GetBufferData(CreateMeshBuffer::DATA_VERT);
+		lFloorData.uvData = meshBuffer->GetBufferData(CreateMeshBuffer::DATA_UV);
+		lFloorData.alpha = &floorAlpha;
+		lFloorData.textureHandle = floorResourceHandle;
+		lFloorData.triagnleData.x = 6;
+		lFloorData.triagnleData.y = 0;
+		lFloorData.triagnleData.z = 10000;
+		lFloorData.triagnleData.w = 2;
 		lFloorData.motherMat = &floorParticleMotherMat[i];
-		//InstanceMeshParticle::Instance()->AddMeshData(lFloorData);
+		particleArrrayData.emplace_back(lFloorData);
 	}
+
+	for (int i = 0; i < floorParticleTransform.size(); ++i)
+	{
+		particleArrrayData[i].alpha = &floorAlpha;
+		particleArrrayData[i].particleScale = { 0.1f,0.1f,0.1f };
+		particleArrrayData[i].billboardFlag = false;
+	}
+
 	MeshParticleLoadData lData{};
 	lData.bias = 0;
 	lData.perTriangleNum = 100;
@@ -365,7 +375,6 @@ BlockParticleStage::BlockParticleStage()
 		pillarParticleTransform[i].scale = { 23.5f,25.0f,23.5f };
 		RESOURCE_HANDLE lHandle = FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->textureHandle[0];
 		UINT lFaceCountNum = FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->faceCountNum;
-		pillarParticleModel[i] = std::make_unique<TextureParticle>(FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->vertUvData, &pillarParticleMotherMat[i], lHandle, 1.5f, 200, 2000);
 
 
 		//InstanceMeshParticle::Instance()->AddMeshData(
@@ -380,11 +389,10 @@ BlockParticleStage::BlockParticleStage()
 		pillarParticleTransform[i].scale = { 23.5f,25.0f,23.5f };
 		RESOURCE_HANDLE lHandle = FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->textureHandle[0];
 		UINT lFaceCountNum = FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->faceCountNum;
-		pillarParticleModel[i] = std::make_unique<TextureParticle>(FbxModelResourceMgr::Instance()->GetResourceData(pillarHandle)->vertUvData, &pillarParticleMotherMat[i], lHandle, 1.5f, 200, 2000);
 
-	/*	InstanceMeshParticle::Instance()->AddMeshData(
-			MeshParticleLoader::Instance()->Load(KazFilePathName::StagePath + "house/" + "House_01.fbx", true, &pillarParticleMotherMat[i], lData)
-		);*/
+		/*	InstanceMeshParticle::Instance()->AddMeshData(
+				MeshParticleLoader::Instance()->Load(KazFilePathName::StagePath + "house/" + "House_01.fbx", true, &pillarParticleMotherMat[i], lData)
+			);*/
 	}
 
 
@@ -397,7 +405,7 @@ BlockParticleStage::BlockParticleStage()
 
 	InitMeshParticleData lStageMeshParticleData = MeshParticleLoader::Instance()->Load(KazFilePathName::StagePath + "Dungeon_Wall.fbx", false, &transformArrayData[0].GetMat(), lParticleData);
 	RESOURCE_HANDLE lHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "Dungeon_Wall.fbx");
-	lStageMeshParticleData.color = { 0.2f,0.2f,0.2f,1.0f };
+	lStageMeshParticleData.color = { 0.3f,0.3f,0.3f,1.0f };
 
 
 	collisionArrrayData.emplace_back(InitMeshCollisionData());
@@ -514,20 +522,15 @@ void BlockParticleStage::Update()
 		splineParticle[i]->Update();
 	}*/
 
-	//for (int i = 0; i < floorParticleModel.size(); ++i)
-	//{
-	//	floorParticleTransform[i].pos.z += -5.0f;
-	//	if (floorParticleTransform[i].pos.z <= -1000.0f)
-	//	{
-	//		floorParticleTransform[i].pos.z = (500.0f + static_cast<float>(FLOOR_PARTICLE_MAX_NUM) * 700.0f) - 1200.0f;
-	//	}
-	//	floorParticleMotherMat[i] = floorParticleTransform[i].GetMat();
-
-
-	//	floorParticleModel[i]->updateCommonData.flash.x = flash.x;
-	//	floorParticleModel[i]->updateCommonData.flash.y = flash.y;
-	//	floorParticleModel[i]->Update(false, true);
-	//}
+	for (int i = 0; i < floorParticleTransform.size(); ++i)
+	{
+		floorParticleTransform[i].pos.z += -5.0f;
+		if (floorParticleTransform[i].pos.z <= -1000.0f)
+		{
+			floorParticleTransform[i].pos.z = (500.0f + static_cast<float>(FLOOR_PARTICLE_MAX_NUM) * 700.0f) - 1200.0f;
+		}
+		floorParticleMotherMat[i] = floorParticleTransform[i].GetMat();
+	}
 
 	//ImGui::Begin("Block");
 	//KazImGuiHelper::InputVec2("Flash", &flash);
@@ -659,6 +662,6 @@ void BlockParticleStage::Draw()
 	//}
 
 
-	//galacticParticle->Draw();
+	galacticParticle->Draw();
 
 }

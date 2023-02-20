@@ -199,36 +199,36 @@ void GalacticParticle::Update()
 
 void GalacticParticle::Draw()
 {
-	GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE_TEX);
-	DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
-	DirectX12CmdList::Instance()->cmdList->IASetIndexBuffer(&indexBufferView);
+	//GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE_TEX);
+	//DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	//DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
+	//DirectX12CmdList::Instance()->cmdList->IASetIndexBuffer(&indexBufferView);
 
-	TextureResourceMgr::Instance()->SetSRV(texHandle, GraphicsRootSignature::Instance()->GetRootParam(ROOTSIGNATURE_DATA_DRAW_UAB_TEX), GRAPHICS_PRAMTYPE_TEX);
-
-
-	RenderTargetStatus::Instance()->ChangeBarrier(
-		buffers->GetBufferData(drawCommandHandle).Get(),
-		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT
-	);
-
-	DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
-	(
-		commandSig.Get(),
-		1,
-		buffers->GetBufferData(drawCommandHandle).Get(),
-		0,
-		nullptr,
-		0
-	);
-
-	RenderTargetStatus::Instance()->ChangeBarrier(
-		buffers->GetBufferData(drawCommandHandle).Get(),
-		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
-		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
-	);
+	//TextureResourceMgr::Instance()->SetSRV(texHandle, GraphicsRootSignature::Instance()->GetRootParam(ROOTSIGNATURE_DATA_DRAW_UAB_TEX), GRAPHICS_PRAMTYPE_TEX);
 
 
-	//box->Draw();
+	//RenderTargetStatus::Instance()->ChangeBarrier(
+	//	buffers->GetBufferData(drawCommandHandle).Get(),
+	//	D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+	//	D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT
+	//);
+
+	//DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
+	//(
+	//	commandSig.Get(),
+	//	1,
+	//	buffers->GetBufferData(drawCommandHandle).Get(),
+	//	0,
+	//	nullptr,
+	//	0
+	//);
+
+	//RenderTargetStatus::Instance()->ChangeBarrier(
+	//	buffers->GetBufferData(drawCommandHandle).Get(),
+	//	D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
+	//	D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+	//);
+
+
+	box->Draw();
 }

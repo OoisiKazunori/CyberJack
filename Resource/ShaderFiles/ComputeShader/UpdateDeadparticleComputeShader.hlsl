@@ -31,6 +31,11 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     uint index = groupThreadID.x;
     index += 1024 * groupId.x;
 
+    if(53000 <= index)
+    {
+        return;
+    }
+
     bool zeroParticeFlag = particleData[index].pos.x == 0.0f && particleData[index].pos.y== 0.0f && particleData[index].pos.z == 0.0f;
 
     if(particleData[index].color.a <= 0.0f || zeroParticeFlag)
@@ -52,5 +57,5 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     MatData outputMat;
     outputMat.mat = mul(viewProjection,pMatWorld);
     outputMat.color = particleData[index].color;
-    outputParticleData[index] = outputMat;
+    outputParticleData[index] = outputMat;    
 }

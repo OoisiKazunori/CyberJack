@@ -85,7 +85,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
             float rate = angle / 90.0f;
 
             posParticleVec.x = 0.0f;
-            float3 vel = normalize(posParticleVec) * 5.5f * rate;
+            float3 vel = normalize(posParticleVec) * 8.5f * rate;
             larpVel = 0.1f;
             basePos = hitBoxData[index].pos + vel;
             
@@ -103,7 +103,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     //‚ ‚½‚è”»’è‚ÌŒõ‚ç‚¹
     if(particleData.hitFlag)
     {
-        particleData.color = float4(0.89, 0.50, 0.07,1);
+        particleData.color = float4(0.15, 0.22, 0.95,1.0);
         particleData.hitTimer += 1;
         if(1 <= particleData.hitTimer)
         {

@@ -110,15 +110,15 @@ Game::Game(
 
 	std::vector<InitMeshCollisionData> lInitCollisionData = stages[0]->collisionArrrayData;
 
-	p1 = { -1000.0f,0.0f,0.0f };
-	t1.center = &p1;
-	//enemyHitBoxArray.emplace_back(&t1);
-	p1.x = 1.0f;
 
 	for (int i = 0; i < enemyHitBoxArray.size(); ++i)
 	{
 		enemyHitBoxArray[i]->radius = 5.0f;
 	}
+	p1 = { 0.0f,0.0f,0.0f };
+	t1.center = &p1;
+	enemyHitBoxArray.emplace_back(&t1);
+
 	meshCollision = std::make_unique<InstanceMeshCollision>(lInitCollisionData, enemyHitBoxArray);
 
 
@@ -134,14 +134,17 @@ Game::Game(
 			{
 				continue;
 			}
-			EnemyData lData = *enemies[enemyType][enemyCount]->GetData();
-			if (!lData.meshParticleFlag)
+			if (!enemies[enemyType][enemyCount]->GetData()->meshParticleFlag)
 			{
 				continue;
 			}
-
-			meshParticle->AddMeshData(lData.meshParticleData[0].meshParticleData);
+			meshParticle->AddMeshData(enemies[enemyType][enemyCount]->GetData()->meshParticleData[0]->meshParticleData);
 		}
+	}
+
+	for (int i = 0; i < stages[0]->particleArrrayData.size(); ++i)
+	{
+		meshParticle->AddMeshData(stages[0]->particleArrrayData[i]);
 	}
 }
 
@@ -521,7 +524,7 @@ void Game::Update()
 						continue;
 					}
 
-					MeshData lMeshData = enemies[enemyType][enemyCount]->GetData()->meshParticleData[i];
+					MeshData lMeshData = *enemies[enemyType][enemyCount]->GetData()->meshParticleData[i];
 
 					std::vector<DirectX::XMFLOAT4>lVertData = FbxModelResourceMgr::Instance()->GetResourceData(lMeshData.resourceHandle)->vertFloat4Data;
 
@@ -775,7 +778,7 @@ void Game::Update()
 				enemies[enemyTypeIndex][enemyIndex]->Dead();
 				for (int deadParticleIndex = 0; deadParticleIndex < deadParticleArray[enemyTypeIndex][enemyIndex].size(); ++deadParticleIndex)
 				{
-					deadParticleArray[enemyTypeIndex][enemyIndex][deadParticleIndex]->Init(enemies[enemyTypeIndex][enemyIndex]->GetData()->meshParticleData[deadParticleIndex].motherMat);
+					deadParticleArray[enemyTypeIndex][enemyIndex][deadParticleIndex]->Init(enemies[enemyTypeIndex][enemyIndex]->GetData()->meshParticleData[deadParticleIndex]->motherMat);
 				}
 				lineEffectArrayData[i].hitFlag = true;
 

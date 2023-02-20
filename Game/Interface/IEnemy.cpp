@@ -187,11 +187,6 @@ void IEnemy::InitModel(const KazMath::Transform3D &TRANSFORM, const std::string 
 		iEnemy_ObjModelRender->data.colorData.color.z = 255;
 		iEnemy_ObjModelRender->data.colorData.color.a = 1;
 
-		iEnemy_EnemyStatusData->meshParticleData.push_back(
-			{
-				iEnemy_ObjModelRender->data.handle.handle,
-				iEnemy_ObjModelRender->GetMotherMatrixPtr()
-			});
 		break;
 	case ENEMY_MODEL_FBX:
 		iEnemy_FbxModelRender->data.handle = FbxModelResourceMgr::Instance()->LoadModel(MODEL_FILEPASS, REV_UV_FLAG);	//ƒ‚ƒfƒ‹“Ç‚Ýž‚Ý
@@ -208,25 +203,8 @@ void IEnemy::InitModel(const KazMath::Transform3D &TRANSFORM, const std::string 
 
 		iEnemy_FbxModelRender->data.isPlayFlag = false;
 
-		iEnemy_EnemyStatusData->meshParticleData.push_back(
-			{
-				iEnemy_FbxModelRender->data.handle.handle,
-				&iEnemy_FbxModelRender->motherMat
-			});
-
 		iEnemy_EnemyStatusData->alpha = &iEnemy_FbxModelRender->data.colorData.color.a;
 
-
-		if (iEnemy_EnemyStatusData->meshParticleFlag)
-		{
-			MeshParticleLoadData lData;
-			lData.bias = 70;
-			lData.faceCountNum = 100;
-			lData.perTriangleNum = 50;
-
-			iEnemy_EnemyStatusData->meshParticleData[0].meshParticleData =
-				MeshParticleLoader::Instance()->Load(MODEL_FILEPASS, REV_UV_FLAG, iEnemy_EnemyStatusData->meshParticleData[0].motherMat, lData);
-		}
 
 		break;
 	case ENEMY_MODEL_MESHPARTICLE:

@@ -29,6 +29,7 @@ public:
 
 
 	std::vector<InitMeshCollisionData> collisionArrrayData;
+	std::vector<InitMeshParticleData> particleArrrayData;
 
 
 	bool hitFlag = false;

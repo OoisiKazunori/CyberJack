@@ -88,13 +88,13 @@ private:
 	int flashTimer;
 
 	static const int FLOOR_PARTICLE_MAX_NUM = 20;
-	std::array<std::unique_ptr<TextureParticle>, FLOOR_PARTICLE_MAX_NUM> floorParticleModel;
 	std::array<KazMath::Transform3D, FLOOR_PARTICLE_MAX_NUM> floorParticleTransform;
 	std::array<DirectX::XMMATRIX, FLOOR_PARTICLE_MAX_NUM> floorParticleMotherMat;
+	float floorAlpha;
+
 
 	static const int PILLAR_PARTICLE_MAX_NUM = 20;
 	static const float PILLAR_PARTICLE_INTERVAL_NUM;
-	std::array<std::unique_ptr<TextureParticle>, PILLAR_PARTICLE_MAX_NUM> pillarParticleModel;
 	std::array<KazMath::Transform3D, PILLAR_PARTICLE_MAX_NUM> pillarParticleTransform;
 	std::array<DirectX::XMMATRIX, PILLAR_PARTICLE_MAX_NUM> pillarParticleMotherMat;
 	RESOURCE_HANDLE pillarHandle;

@@ -4,14 +4,10 @@
 //ì¸óÕ
 RWStructuredBuffer<ParticleData> updateParticleData : register(u0);
 RWStructuredBuffer<matrix> motherMatData : register(u1);
-RWStructuredBuffer<float> alphaData : register(u2);
+RWStructuredBuffer<matrix> scaleRotaMatData : register(u2);
+RWStructuredBuffer<float> alphaData : register(u3);
 //èoóÕ
-AppendStructuredBuffer<GPUParticleInput> inputGPUParticleData : register(u3);
-
-cbuffer RootConstants : register(b0)
-{    
-    matrix scaleRotaBillBoardMat;
-};
+AppendStructuredBuffer<GPUParticleInput> inputGPUParticleData : register(u4);
 
 [numthreads(1024, 1, 1)]
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 groupThreadID : SV_GroupThreadID)
@@ -25,7 +21,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     }
 
     ParticleData particleData = updateParticleData[index];
-    matrix worldMat = scaleRotaBillBoardMat;
+    matrix worldMat = scaleRotaMatData[particleData.id];
     worldMat[0][3] = particleData.pos.x;
     worldMat[1][3] = particleData.pos.y;
     worldMat[2][3] = particleData.pos.z;

@@ -14,8 +14,11 @@ struct InitMeshParticleData
 	DirectX::XMUINT4 triagnleData;
 	const DirectX::XMMATRIX *motherMat;
 	KazMath::Vec4<float>color;
+	KazMath::Vec3<float>particleScale;
+	bool billboardFlag;
 	const float *alpha;
-	InitMeshParticleData() :textureHandle(-1)
+
+	InitMeshParticleData() :textureHandle(-1), billboardFlag(false)
 	{
 	}
 };
@@ -50,6 +53,7 @@ private:
 
 	ResouceBufferHelper::BufferData commonAndColorBufferData;
 	std::vector<ResouceBufferHelper::BufferData> commonBufferData;
+	std::vector<ResouceBufferHelper::BufferData> commonColorBufferData;
 	ResouceBufferHelper::BufferData meshParticleBufferData;
 	struct WorldMatData
 	{
@@ -107,12 +111,22 @@ private:
 
 
 	DirectX::XMMATRIX scaleRotMat;
-	DirectX::XMMATRIX scaleRotBillBoardMat;
 
 	std::vector<InitMeshParticleData> initData;
 
 	KazRenderHelper::ID3D12ResourceWrapper copyBuffer;
 	KazRenderHelper::ID3D12ResourceWrapper motherMatrixBuffer;
 	KazRenderHelper::ID3D12ResourceWrapper colorBuffer;
+	KazRenderHelper::ID3D12ResourceWrapper scaleRotaBuffer;
+
+	struct ScaleRotaBillData
+	{
+		DirectX::XMMATRIX scaleRotaMata;
+		bool billboardFlag;
+		ScaleRotaBillData(const DirectX::XMMATRIX &MAT, bool BILLBOARD_FLAG) :
+			scaleRotaMata(MAT), billboardFlag(BILLBOARD_FLAG)
+		{};
+	};
+	std::vector<ScaleRotaBillData> scaleRotaMatArray;
 };
 

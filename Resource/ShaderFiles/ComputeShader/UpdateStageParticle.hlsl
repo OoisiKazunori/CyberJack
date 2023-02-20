@@ -41,15 +41,17 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     //êFèoóÕ------------------------------------------------------------------
     bool TopFlag = particleData.pos.y <= colorData.lightData.y + 15.0f;
     bool ButtonFlag = colorData.lightData.y - 15.0f <= particleData.pos.y;
+
+    const float4 LIGHT_COLOR = float4(0.6,0.6,0.6,1.0);
     //çÇÇ≥Ç…ÇÊÇÈåıÇÁÇπ
     if(TopFlag && ButtonFlag)
     {
-        color = float4(1,1,1,1);
+        color = LIGHT_COLOR;
     }
     //àÍäáÇ≈åıÇÁÇπÇÈ
     else if(colorData.lightData.x)
     {
-        color = float4(1,1,1,1);
+        color = LIGHT_COLOR;
     }
     color.a = colorData.alpha;
 

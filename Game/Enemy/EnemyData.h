@@ -161,7 +161,7 @@ struct EnemyData
 	int *alpha;
 
 	bool meshParticleFlag;
-	std::vector<MeshData> meshParticleData;
+	std::vector<std::shared_ptr<MeshData>> meshParticleData;
 };
 
 enum EnemyDeathType
