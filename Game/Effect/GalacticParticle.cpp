@@ -123,11 +123,11 @@ GalacticParticle::GalacticParticle()
 		{
 			if (3 <= KazMath::Rand(6, 0))
 			{
-				boxDataArray[i].transform.pos.x = -KazMath::Rand(700.0f, 10000.0f);
+				boxDataArray[i].transform.pos.x = -KazMath::Rand(700.0f, 500.0f);
 			}
 			else
 			{
-				boxDataArray[i].transform.pos.x = KazMath::Rand(700.0f, 10000.0f);
+				boxDataArray[i].transform.pos.x = KazMath::Rand(700.0f, 500.0f);
 			}
 		}
 		else
@@ -138,8 +138,9 @@ GalacticParticle::GalacticParticle()
 		boxDataArray[i].transform.scale = { KazMath::Rand(50.0f,10.0f),KazMath::Rand(50.0f,10.0f),KazMath::Rand(50.0f,10.0f) };
 		boxDataArray[i].rotaVel = KazMath::Vec3<float>(KazMath::Rand(5.0f, 1.0f), KazMath::Rand(5.0f, 1.0f), KazMath::Rand(5.0f, 1.0f));
 		boxDataArray[i].color = { KazMath::Rand(255,155),KazMath::Rand(255,155),KazMath::Rand(255,155),255 };
-	}
 
+		blockHitBox.emplace_back(Sphere(&boxDataArray[i].transform.pos, 10.0f));
+	}
 
 
 	texHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StagePath + "Circle.png");
@@ -177,7 +178,17 @@ void GalacticParticle::Update()
 	std::array<MatData, BOX_MAX_NUM> lData;
 	for (int i = 0; i < boxDataArray.size(); ++i)
 	{
-		boxDataArray[i].transform.pos += -KazMath::Vec3<float>(0.0f, 0.0f, 5.0f);
+		KazMath::Vec3<float>lVel;
+		if (25 <= i)
+		{
+			lVel = { 0.0f, 0.0f, -5.0f };
+		}
+		else
+		{
+			lVel = { 5.0f, 0.0f, 0.0f };
+		}
+
+		boxDataArray[i].transform.pos += lVel;
 		if (boxDataArray[i].transform.pos.z <= -100.0f)
 		{
 			boxDataArray[i].transform.pos.z = 10000.0f;

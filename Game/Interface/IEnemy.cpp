@@ -204,8 +204,27 @@ void IEnemy::InitModel(const KazMath::Transform3D &TRANSFORM, const std::string 
 		iEnemy_FbxModelRender->data.isPlayFlag = false;
 
 		iEnemy_EnemyStatusData->alpha = &iEnemy_FbxModelRender->data.colorData.color.a;
+		iEnemy_EnemyStatusData->motherMat = &iEnemy_FbxModelRender->motherMat;
 
 
+
+		MeshParticleLoadData lData;
+		lData.bias = 70;
+		lData.faceCountNum = 100;
+		lData.perTriangleNum = 50;
+
+		iEnemy_EnemyStatusData->meshParticleData.push_back(std::make_shared<MeshData>(0, &iEnemy_FbxModelRender->motherMat));
+		iEnemy_EnemyStatusData->meshParticleData[0]->meshParticleData =
+			MeshParticleLoader::Instance()->Load(
+				MODEL_FILEPASS,
+				REV_UV_FLAG,
+				&iEnemy_FbxModelRender->motherMat,
+				lData
+			);
+
+		iEnemy_EnemyStatusData->deadParticleData.motherMat = iEnemy_EnemyStatusData->meshParticleData[0]->meshParticleData.motherMat;
+		iEnemy_EnemyStatusData->deadParticleData.startFlag = &iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag;
+		iEnemy_EnemyStatusData->deadParticleData.meshParticleData = iEnemy_EnemyStatusData->meshParticleData[0]->meshParticleData;
 		break;
 	case ENEMY_MODEL_MESHPARTICLE:
 		//RESOURCE_HANDLE lHandle = FbxModelResourceMgr::Instance()->LoadModel(MODEL_FILEPASS, REV_UV_FLAG);	//ƒ‚ƒfƒ‹“Ç‚İ‚İ)

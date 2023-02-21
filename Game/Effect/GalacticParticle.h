@@ -13,6 +13,8 @@ public:
 	void Update();
 	void Draw();
 
+	std::vector<Sphere> blockHitBox;
+
 private:
 	//バッファ
 	std::unique_ptr<CreateGpuBuffer> buffers;

@@ -19,20 +19,11 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     uint index = groupThreadID.x;
     index += 1024 * groupId.x;
 
-    if(53000 <= index)
+    if(400 <= index)
     {
-        return;
+    //    return;
     }
-    
-    bool3 particle0Flag;
-    particle0Flag.x = particleData[index].x == 0.0f;
-    particle0Flag.y = particleData[index].y == 0.0f;
-    particle0Flag.z = particleData[index].z == 0.0f;
-    if(particle0Flag.x &&particle0Flag.y&&particle0Flag.z)
-    {
-        return;
-    }
-    
+
     initParticleData[index].pos = particleData[index];
     initParticleData[index].color = float4(1,1,1,1);
     initParticleData[index].vel.xyz = RandVec3(index,2,-2) * 0.1f;

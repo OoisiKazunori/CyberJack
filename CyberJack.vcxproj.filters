@@ -173,6 +173,7 @@
     <ClCompile Include="Game\Effect\MeshParticle.cpp" />
     <ClCompile Include="Game\CollisionDetection\ComputeParticleAvoidSphere.cpp" />
     <ClCompile Include="KazLibrary\Loader\MeshParticleLoader.cpp" />
+    <ClCompile Include="Game\Effect\InstanceDeadParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -361,6 +362,7 @@
     <ClInclude Include="Game\Effect\MeshParticle.h" />
     <ClInclude Include="Game\CollisionDetection\ComputeParticleAvoidSphere.h" />
     <ClInclude Include="KazLibrary\Loader\MeshParticleLoader.h" />
+    <ClInclude Include="Game\Effect\InstanceDeadParticle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

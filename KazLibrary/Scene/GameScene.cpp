@@ -37,16 +37,16 @@ void GameScene::PostInit()
 	backGroundColorArray[layerLevel] = KazMath::Color(0, 0, 0, 255);
 
 	//2-----------------------------------------------------------------
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 10;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 20.0f,10.0f,z };
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.useMeshPaticleFlag = true;
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].layerLevel = layerLevel;
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].flame = time * 10;
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].generateData.initPos = { 50.0f,10.0f,z };
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].generateData.useMeshPaticleFlag = false;
 	++respoineIndex;
 
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 10;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 60.0f,10.0f,z };
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.useMeshPaticleFlag = true;
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].layerLevel = layerLevel;
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].flame = time * 10;
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].generateData.initPos = { 90.0f,10.0f,z };
+	responeData[ENEMY_TYPE_MISILE][respoineIndex].generateData.useMeshPaticleFlag = false;
 	++respoineIndex;
 	//2-----------------------------------------------------------------
 
@@ -55,14 +55,14 @@ void GameScene::PostInit()
 	//2-----------------------------------------------------------------
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 16;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -20.0f,10.0f,z };
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -50.0f,10.0f,z };
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.useMeshPaticleFlag = true;
 	++respoineIndex;
 
 
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 16;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -60.0f,10.0f,z };
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -90.0f,10.0f,z };
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.useMeshPaticleFlag = true;
 	++respoineIndex;
 	//2-----------------------------------------------------------------
@@ -72,14 +72,14 @@ void GameScene::PostInit()
 
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 19;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 20.0f,10.0f,z };
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 50.0f,10.0f,z };
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.useMeshPaticleFlag = true;
 	++respoineIndex;
 
 
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 19;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 60.0f,10.0f,z };
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 90.0f,10.0f,z };
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.useMeshPaticleFlag = true;
 	++respoineIndex;
 
@@ -94,14 +94,14 @@ void GameScene::PostInit()
 
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 21;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -20.0f,10.0f,z };
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -50.0f,10.0f,z };
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.useMeshPaticleFlag = true;
 	++respoineIndex;
 
 
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 21;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -60.0f,10.0f,z };
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -90.0f,10.0f,z };
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.useMeshPaticleFlag = true;
 	++respoineIndex;
 
@@ -112,14 +112,14 @@ void GameScene::PostInit()
 
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 24;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 20.0f,10.0f,z };
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 50.0f,10.0f,z };
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.useMeshPaticleFlag = true;
 	++respoineIndex;
 
 
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 24;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 60.0f,10.0f,z };
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 90.0f,10.0f,z };
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.useMeshPaticleFlag = true;
 	++respoineIndex;
 	//4-----------------------------------------------------------------
@@ -129,14 +129,14 @@ void GameScene::PostInit()
 
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 27;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -20.0f,10.0f,z };
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -50.0f,10.0f,z };
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.useMeshPaticleFlag = true;
 	++respoineIndex;
 
 
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 27;
-	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -60.0f,10.0f,z };
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { -90.0f,10.0f,z };
 	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.useMeshPaticleFlag = true;
 	++respoineIndex;
 

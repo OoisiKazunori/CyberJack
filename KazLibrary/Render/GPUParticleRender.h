@@ -9,10 +9,10 @@
 class GPUParticleRender
 {
 public:
-	GPUParticleRender();
+	GPUParticleRender(int MAXNUM = 3000000);
 
 	void InitCount();
-	void Draw();
+	void Draw(const DirectX::XMUINT3 &NUM = { 3000,1,1 });
 
 	const ResouceBufferHelper::BufferData &GetStackBuffer()const;
 
@@ -31,7 +31,7 @@ private:
 	};
 
 
-	static const int PARTICLE_MAX_NUM = 3000000;
+	int particleMaxNum = 3000000;
 	ResouceBufferHelper computeCovertWorldMatToDrawMat;
 	RESOURCE_HANDLE worldMatHandle, outputHandle, viewProjMatHandle;
 

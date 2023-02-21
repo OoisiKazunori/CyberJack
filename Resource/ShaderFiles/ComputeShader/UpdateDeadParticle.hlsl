@@ -1,31 +1,23 @@
 #include"../ShaderHeader/KazMathHeader.hlsli"
 #include"../ShaderHeader/ExcuteIndirectHeader.hlsli"
 #include"../ShaderHeader/GPUParticle.hlsli"
-
-struct InitData
-{
-    float4 pos;
-    float4 color;
-    float4 vel;
-};
-
-struct MatData
-{
-    matrix mat;
-    float4 color;
-};
+#include"../ShaderHeader/DeadParticleData.hlsli"
 
 cbuffer RootConstants : register(b0)
 {    
     matrix scaleRotateBillboardMat;
-    matrix viewProjection;
-    matrix motherMat;
 };
 
-//Êõ¥Êñ∞
+struct MotherData
+{
+    matrix motherMat;
+    uint startFlag;
+};
+
 RWStructuredBuffer<InitData> particleData : register(u0);
+RWStructuredBuffer<MotherData> motherMatData : register(u1);
 //èoóÕ
-AppendStructuredBuffer<GPUParticleInput> inputGPUParticleData : register(u1);
+AppendStructuredBuffer<GPUParticleInput> inputGPUParticleData : register(u2);
 
 [numthreads(1024, 1, 1)]
 void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 groupThreadID : SV_GroupThreadID)
@@ -33,19 +25,14 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     uint index = groupThreadID.x;
     index += 1024 * groupId.x;
 
-    if(1000 <= index)
-    {
-       return;
-    }
-
     particleData[index].pos += particleData[index].vel;
     particleData[index].color.a  += -0.01f;
 
-    if(particleData[index].color.a <= 0.0f)
+    uint id = particleData[index].meshID;
+    if(!motherMatData[id].startFlag)
     {
-       particleData[index].pos.x = 100000.0f;
+        return;
     }
-
     
     //Ë°åÂ?óË®àÁÆ?-------------------------
     matrix pMatWorld = scaleRotateBillboardMat;
@@ -53,11 +40,11 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     pMatWorld[1][3] = particleData[index].pos.y;
     pMatWorld[2][3] = particleData[index].pos.z;
     
-    pMatWorld = mul(motherMat,pMatWorld);
+    pMatWorld = mul(motherMatData[id].motherMat,pMatWorld);
 
     //Ë°åÂ?óË®àÁÆ?-------------------------    
     GPUParticleInput outputMat;
     outputMat.worldMat = pMatWorld;
-    outputMat.color = particleData[index].color.a;
+    outputMat.color = particleData[index].color;
     inputGPUParticleData.Append(outputMat);
 }

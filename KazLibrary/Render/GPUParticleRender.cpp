@@ -1,22 +1,24 @@
 #include "GPUParticleRender.h"
 #include"../KazLibrary/RenderTarget/RenderTargetStatus.h"
 
-GPUParticleRender::GPUParticleRender()
+GPUParticleRender::GPUParticleRender(int MAXNUM)
 {
+	particleMaxNum = MAXNUM;
+
 	worldMatHandle = computeCovertWorldMatToDrawMat.CreateBuffer(
-		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(InputData) * PARTICLE_MAX_NUM),
+		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(InputData) * particleMaxNum),
 		GRAPHICS_RANGE_TYPE_UAV_DESC,
 		GRAPHICS_PRAMTYPE_DATA,
 		sizeof(InputData),
-		PARTICLE_MAX_NUM,
+		particleMaxNum,
 		true);
 
 	outputHandle = computeCovertWorldMatToDrawMat.CreateBuffer(
-		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(OutputData) * PARTICLE_MAX_NUM),
+		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(OutputData) * particleMaxNum),
 		GRAPHICS_RANGE_TYPE_UAV_DESC,
 		GRAPHICS_PRAMTYPE_DATA2,
 		sizeof(OutputData),
-		PARTICLE_MAX_NUM,
+		particleMaxNum,
 		false);
 
 	viewProjMatHandle = computeCovertWorldMatToDrawMat.CreateBuffer(
@@ -59,12 +61,11 @@ GPUParticleRender::GPUParticleRender()
 
 
 
-
 	InitDrawIndexedExcuteIndirect lInitData;
 	lInitData.vertexBufferView = KazBufferHelper::SetVertexBufferView(gpuVertexBuffer.GetGpuAddress(), lVertBuffSize, sizeof(lVerticesArray[0]));
 	lInitData.indexBufferView = KazBufferHelper::SetIndexBufferView(gpuIndexBuffer.GetGpuAddress(), lIndexBuffSize);
 	lInitData.indexNum = static_cast<UINT>(lIndicesArray.size());
-	lInitData.elementNum = PARTICLE_MAX_NUM;
+	lInitData.elementNum = particleMaxNum;
 	lInitData.updateView = computeCovertWorldMatToDrawMat.GetBufferData(outputHandle).bufferWrapper.buffer->GetGPUVirtualAddress();
 	lInitData.rootsignatureName = ROOTSIGNATURE_DATA_DRAW_UAV;
 
@@ -97,12 +98,12 @@ void GPUParticleRender::InitCount()
 	computeCovertWorldMatToDrawMat.InitCounterBuffer(copyBuffer.buffer.Get());
 }
 
-void GPUParticleRender::Draw()
+void GPUParticleRender::Draw(const DirectX::XMUINT3 &NUM)
 {
 	viewProjMat = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
 	computeCovertWorldMatToDrawMat.TransData(viewProjMatHandle, &viewProjMat, sizeof(DirectX::XMMATRIX));
 
-	computeCovertWorldMatToDrawMat.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_CONVERT_WORLDMAT_TO_DRAWMAT, { 3000,1,1 });
+	computeCovertWorldMatToDrawMat.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_CONVERT_WORLDMAT_TO_DRAWMAT, { NUM.x,NUM.y,NUM.z });
 
 	excuteIndirect->Draw(PIPELINE_NAME_GPUPARTICLE, nullptr);
 }

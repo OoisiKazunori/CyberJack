@@ -1,5 +1,6 @@
 #pragma once
 #include"../Game/Interface/IOperationObject.h"
+#include"../Game/Effect/InstanceDeadParticle.h"
 #include"../KazLibrary/Collision/CollisionManager.h"
 #include"../KazLibrary/Math/KazMath.h"
 #include"../KazLibrary/Loader/MeshParticleLoader.h"
@@ -159,9 +160,13 @@ struct EnemyData
 	bool startFlag;
 	bool objFlag;
 	int *alpha;
+	float *fAlpha;
 
 	bool meshParticleFlag;
+	const DirectX::XMMATRIX *motherMat;
 	std::vector<std::shared_ptr<MeshData>> meshParticleData;
+
+	InitDeadParticleData deadParticleData;
 };
 
 enum EnemyDeathType

@@ -467,7 +467,7 @@ void DebugMeshParticleScene::Update()
 		if (deadParticleFlag != prevDeadParticleFlag)
 		{
 			deadParticle.reset();
-			deadParticle = std::make_unique<DeadParticle>(meshEmitter[meshIndex]->GetAddress(), meshEmitter[meshIndex]->GetVertNum());
+			//deadParticle = std::make_unique<DeadParticle>(meshEmitter[meshIndex]->GetAddress(), meshEmitter[meshIndex]->GetVertNum());
 
 			KazMath::Transform3D lTrans;
 			texMotherMat = lTrans.GetMat();
@@ -862,13 +862,13 @@ void DebugMeshParticleScene::Update()
 	else if (drawInstanceMeshParticleFlag)
 	{
 		particleRender->InitCount();
+		meshParticle->Compute();
 	}
 	else if (drawMeshHitBoxFlag)
 	{
 		particleRender->InitCount();
 
 		meshCollision->Compute();
-		meshParticle->Compute();
 
 
 		modelHitBox->data.transform.pos = collisionPos;

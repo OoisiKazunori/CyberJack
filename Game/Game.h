@@ -41,6 +41,7 @@
 #include"../Game/UI/StringWindow.h"
 
 #include"../Game/CollisionDetection/InstanceMeshCollision.h"
+#include"../Game/Effect/InstanceDeadParticle.h"
 
 
 class Game
@@ -189,8 +190,7 @@ private:
 	std::array<Sprite2DRender, 4> smokeR;
 
 	int emittNum;
-	std::array<std::array<std::vector<std::unique_ptr<MeshParticleEmitter>>, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> meshParticleArray;
-	std::array<std::array<std::vector<std::unique_ptr<DeadParticle>>, KazEnemyHelper::ENEMY_NUM_MAX>, KazEnemyHelper::LAYER_LEVEL_MAX> deadParticleArray;
+	std::array<std::vector<std::unique_ptr<DeadParticle>>, KazEnemyHelper::LAYER_LEVEL_MAX> deadParticleArray;
 
 
 	//エフェクト--------------------------------------
@@ -223,6 +223,7 @@ private:
 	std::vector<Sphere *>enemyHitBoxArray;
 	std::unique_ptr<InstanceMeshCollision> meshCollision;
 	std::unique_ptr<InstanceMeshParticle>meshParticle;
+	std::unique_ptr<InstanceDeadParticle>deadParticle;
 	std::unique_ptr<GPUParticleRender>particleRender;
-
+	std::unique_ptr<GPUParticleRender>deadParticleRender;
 };

@@ -30,6 +30,7 @@ public:
 
 	std::vector<InitMeshCollisionData> collisionArrrayData;
 	std::vector<InitMeshParticleData> particleArrrayData;
+	std::vector<Sphere*> blockHitBox;
 
 
 	bool hitFlag = false;

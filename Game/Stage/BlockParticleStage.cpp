@@ -340,7 +340,7 @@ BlockParticleStage::BlockParticleStage()
 
 	for (int i = 0; i < floorParticleTransform.size(); ++i)
 	{
-		floorParticleTransform[i].pos = { 0.0f,-450.0f,500.0f + static_cast<float>(i) * 700.0f };
+		floorParticleTransform[i].pos = { 0.0f,-700.0f,500.0f + static_cast<float>(i) * 700.0f };
 		floorParticleTransform[i].rotation = { 90.0f,0.0f,0.0f };
 
 		InitMeshParticleData lFloorData;
@@ -359,7 +359,7 @@ BlockParticleStage::BlockParticleStage()
 	for (int i = 0; i < floorParticleTransform.size(); ++i)
 	{
 		particleArrrayData[i].alpha = &floorAlpha;
-		particleArrrayData[i].particleScale = { 0.1f,0.1f,0.1f };
+		particleArrrayData[i].particleScale = { 2.0f,2.0f,2.0f };
 		particleArrrayData[i].billboardFlag = false;
 	}
 
@@ -434,6 +434,11 @@ BlockParticleStage::BlockParticleStage()
 	}
 
 	galacticParticle = std::make_unique<GalacticParticle>();
+
+	for (int i = 0; i < galacticParticle->blockHitBox.size(); ++i)
+	{
+		blockHitBox.emplace_back(&galacticParticle->blockHitBox[i]);
+	}
 }
 
 BlockParticleStage::~BlockParticleStage()
