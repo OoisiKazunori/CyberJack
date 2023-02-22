@@ -167,7 +167,7 @@ void IEnemy::ShotSound()
 	SoundManager::Instance()->PlaySoundMem(shotSoundHandle, 1);
 }
 
-void IEnemy::InitModel(const KazMath::Transform3D &TRANSFORM, const std::string &MODEL_FILEPASS, float HITBOX_RADIUS, EnemyModelType MODEL_TYPE, bool REV_UV_FLAG)
+void IEnemy::InitModel(const KazMath::Transform3D &TRANSFORM, const std::string &MODEL_FILEPASS, float HITBOX_RADIUS, EnemyModelType MODEL_TYPE, bool REV_UV_FLAG, bool GENERATE_PARTICLE_FLAG)
 {
 	modelType = MODEL_TYPE;
 	switch (MODEL_TYPE)
@@ -207,6 +207,10 @@ void IEnemy::InitModel(const KazMath::Transform3D &TRANSFORM, const std::string 
 		iEnemy_EnemyStatusData->motherMat = &iEnemy_FbxModelRender->motherMat;
 
 
+		if (!GENERATE_PARTICLE_FLAG)
+		{
+			return;
+		}
 
 		MeshParticleLoadData lData;
 		lData.bias = 70;

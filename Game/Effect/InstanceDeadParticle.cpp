@@ -7,11 +7,33 @@ InstanceDeadParticle::InstanceDeadParticle(const GPUParticleRender *RENDER_PTR)
 	appendParticleBufferHandle = initComputeHelper.CreateBuffer(
 		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(DeadparticleData) * PARTICLE_MAX_NUM),
 		GRAPHICS_RANGE_TYPE_UAV_DESC,
-		GRAPHICS_PRAMTYPE_DATA,
+		GRAPHICS_PRAMTYPE_DATA2,
 		sizeof(DeadparticleData),
 		PARTICLE_MAX_NUM,
 		true
 	);
+
+	UINT lNum = 0;
+
+
+	copyBuffer.CreateBuffer(KazBufferHelper::BufferResourceData
+	(
+		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		D3D12_HEAP_FLAG_NONE,
+		CD3DX12_RESOURCE_DESC::Buffer(sizeof(UINT)),
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		"CopyCounterBuffer"
+	));
+	copyBuffer.TransData(&lNum, sizeof(UINT));
+
+	initComputeHelper.GetBufferData(appendParticleBufferHandle).counterWrapper.CopyBuffer(
+		copyBuffer.buffer.Get(),
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		D3D12_RESOURCE_STATE_COPY_DEST
+	);
+
+
 
 	meshIdNum = 0;
 
@@ -78,7 +100,10 @@ void InstanceDeadParticle::AddData(const InitDeadParticleData &INIT_DATA)
 	initComputeHelper.TransData(lHandle, &lData, sizeof(CommonData));
 
 
-	initComputeHelper.SetBuffer(meshParticleData[meshParticleData.size() - 1].GetBuffer(), GRAPHICS_PRAMTYPE_DATA2);
+	initComputeHelper.SetBuffer(meshParticleData[meshParticleData.size() - 1].GetBuffer(), GRAPHICS_PRAMTYPE_DATA);
+	initComputeHelper.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_DEAD_PARTICLE_INIT, { 100,1,1 });
+
+
 
 	matArray.emplace_back(MotherData(INIT_DATA.motherMat, INIT_DATA.startFlag));
 	++meshIdNum;
@@ -94,7 +119,7 @@ void InstanceDeadParticle::Compute()
 	for (int i = 0; i < matArray.size(); ++i)
 	{
 		lMatArray[i].motherMat = *matArray[i].motherMat;
-		lMatArray[i].startFlag = *matArray[i].startFlag;
+		lMatArray[i].startFlag = static_cast<UINT>(*matArray[i].startFlag);
 	}
 	motherMatBuffer.TransData(lMatArray.data(), sizeof(MotherBufferData) * static_cast<int>(lMatArray.size()));
 
@@ -104,11 +129,6 @@ void InstanceDeadParticle::Compute()
 		D3D12_RESOURCE_STATE_COPY_DEST
 	);
 
-	if (meshParticleData.size() != 0)
-	{
-		meshParticleData[0].Compute();
-	}
-	initComputeHelper.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_DEAD_PARTICLE_INIT, { 100,1,1 });
 
 	updateComputeHelper.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_DEAD_PARTICLE_UPDATE, { 100,1,1 });
 }

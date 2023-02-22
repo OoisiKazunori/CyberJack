@@ -61,5 +61,8 @@ private:
 		UINT startFlag;
 	};
 	std::vector<MotherData>matArray;
+
+
+	KazRenderHelper::ID3D12ResourceWrapper copyBuffer;
 };
 

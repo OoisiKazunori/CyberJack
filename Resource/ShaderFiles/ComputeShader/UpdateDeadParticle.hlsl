@@ -27,6 +27,11 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
 
     particleData[index].pos += particleData[index].vel;
     particleData[index].color.a  += -0.01f;
+    if(particleData[index].color.a <= 0.0f)
+    {
+        particleData[index].color.a = 0.0f;
+        motherMatData[index].startFlag = true;
+    }
 
     uint id = particleData[index].meshID;
     if(!motherMatData[id].startFlag)
@@ -40,7 +45,8 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     pMatWorld[1][3] = particleData[index].pos.y;
     pMatWorld[2][3] = particleData[index].pos.z;
     
-    pMatWorld = mul(motherMatData[id].motherMat,pMatWorld);
+
+    pMatWorld = mul(CalucurateWorldMat(float3(0,0,50),float3(1,1,1),float3(0,0,0)),pMatWorld);
 
     //è¡Œå?—è¨ˆç®?-------------------------    
     GPUParticleInput outputMat;

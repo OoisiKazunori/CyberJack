@@ -25,12 +25,17 @@ NormalEnemy::NormalEnemy()
 	iEnemy_EnemyStatusData->meshParticleData[0]->meshParticleData.billboardFlag = true;
 	iEnemy_EnemyStatusData->meshParticleData[0]->meshParticleData.particleScale = { 0.1f,0.1f,0.1f };
 	iEnemy_EnemyStatusData->meshParticleFlag = true;
+
+	iEnemy_EnemyStatusData->deadParticleData.motherMat = iEnemy_EnemyStatusData->meshParticleData[0]->meshParticleData.motherMat;
+	iEnemy_EnemyStatusData->deadParticleData.startFlag = &iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag;
+	iEnemy_EnemyStatusData->deadParticleData.meshParticleData = iEnemy_EnemyStatusData->meshParticleData[0]->meshParticleData;
+
 }
 
 void NormalEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)
 {
 	EnemyModelType lModelType = ENEMY_MODEL_FBX;
-	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { 1.0f,1.0f,1.0f }, { 0.0f,180.0f,0.0f }), KazFilePathName::EnemyPath + "Move/" + "MoveEnemy_Model.fbx", 15.0f, lModelType, true);
+	InitModel(KazMath::Transform3D(GENERATE_DATA.initPos, { 1.0f,1.0f,1.0f }, { 0.0f,180.0f,0.0f }), KazFilePathName::EnemyPath + "Move/" + "MoveEnemy_Model.fbx", 15.0f, lModelType, true, false);
 	iOperationData.Init(1, "gw-1");							//残りロックオン数等の初期化
 
 

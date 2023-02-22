@@ -36,5 +36,5 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     outputData.vel = RandVec3(index,2,-2) * 0.1f;
     outputData.meshID = meshID;
 
-    //initParticleData.Append(outputData);
+    initParticleData.Append(outputData);
 }

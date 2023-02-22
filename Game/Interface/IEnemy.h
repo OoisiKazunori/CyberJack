@@ -22,11 +22,6 @@ public:
 	/// </summary>
 	virtual ~IEnemy()
 	{
-		bool lF = iEnemy_EnemyStatusData->outOfStageFlag;
-		if (lF)
-		{
-			lF = false;
-		}
 	};
 
 	/// <summary>
@@ -68,7 +63,7 @@ public:
 
 	void DeadSound();
 	void ShotSound();
-	void InitModel(const KazMath::Transform3D &TRANSFORM, const std::string &MODEL_FILEPASS, float HITBOX_RADIUS, EnemyModelType MODEL_TYPE, bool REV_UV_FLAG = false);
+	void InitModel(const KazMath::Transform3D &TRANSFORM, const std::string &MODEL_FILEPASS, float HITBOX_RADIUS, EnemyModelType MODEL_TYPE, bool REV_UV_FLAG = false, bool GENERATE_PARTICLE_FLAG = true);
 
 	//çUåÇÇämîFÇ∑ÇÈópÇÃä÷êî
 	virtual void DebugShot() { debugShotFlag = true; };
