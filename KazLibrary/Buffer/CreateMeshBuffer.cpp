@@ -26,7 +26,7 @@ CreateMeshBuffer::CreateMeshBuffer(RESOURCE_HANDLE HANDLE)
 
 		computeHelper.TransData(bufferHandleDataArray[DATA_VERT].bufferHandle, lVertData.data(), KazBufferHelper::GetBufferSize<BUFFER_SIZE>(lVertData.size(), sizeof(DirectX::XMFLOAT3)));
 
-		bufferHandleDataArray[DATA_VERT].descriptorViewHandle = computeHelper.GetBufferData(bufferHandleDataArray[DATA_VERT].bufferHandle).viewHandle;
+		bufferHandleDataArray[DATA_VERT].descriptorViewHandle = computeHelper.GetBufferData(bufferHandleDataArray[DATA_VERT].bufferHandle).GetViewHandle();
 	}
 	//’¸“_î•ñ‚ğ‘‚«‚Ş--------------------------------------------
 
@@ -42,7 +42,7 @@ CreateMeshBuffer::CreateMeshBuffer(RESOURCE_HANDLE HANDLE)
 			false
 		);
 		computeHelper.TransData(bufferHandleDataArray[DATA_UV].bufferHandle, lUvData.data(), KazBufferHelper::GetBufferSize<BUFFER_SIZE>(lUvData.size(), sizeof(DirectX::XMFLOAT2)));
-		bufferHandleDataArray[DATA_UV].descriptorViewHandle = computeHelper.GetBufferData(bufferHandleDataArray[DATA_UV].bufferHandle).viewHandle;
+		bufferHandleDataArray[DATA_UV].descriptorViewHandle = computeHelper.GetBufferData(bufferHandleDataArray[DATA_UV].bufferHandle).GetViewHandle();
 	}
 	//UVî•ñ‚ğ‘‚«‚Ş--------------------------------------------
 
@@ -62,7 +62,7 @@ CreateMeshBuffer::CreateMeshBuffer(RESOURCE_HANDLE HANDLE)
 
 		computeHelper.TransData(bufferHandleDataArray[DATA_NORMAL].bufferHandle, lNormalData.data(), KazBufferHelper::GetBufferSize<BUFFER_SIZE>(lNormalData.size(), sizeof(DirectX::XMFLOAT3)));
 
-		bufferHandleDataArray[DATA_NORMAL].descriptorViewHandle = computeHelper.GetBufferData(bufferHandleDataArray[DATA_NORMAL].bufferHandle).viewHandle;
+		bufferHandleDataArray[DATA_NORMAL].descriptorViewHandle = computeHelper.GetBufferData(bufferHandleDataArray[DATA_NORMAL].bufferHandle).GetViewHandle();
 	}
 	//–@üî•ñ‚ğ‘‚«‚Ş--------------------------------------------
 
@@ -83,7 +83,7 @@ CreateMeshBuffer::CreateMeshBuffer(std::vector<DirectX::XMFLOAT3> VERT, std::vec
 
 		computeHelper.TransData(bufferHandleDataArray[DATA_VERT].bufferHandle, VERT.data(), KazBufferHelper::GetBufferSize<BUFFER_SIZE>(VERT.size(), sizeof(DirectX::XMFLOAT3)));
 
-		bufferHandleDataArray[DATA_VERT].descriptorViewHandle = computeHelper.GetBufferData(bufferHandleDataArray[DATA_VERT].bufferHandle).viewHandle;
+		bufferHandleDataArray[DATA_VERT].descriptorViewHandle = computeHelper.GetBufferData(bufferHandleDataArray[DATA_VERT].bufferHandle).GetViewHandle();
 	}
 	//’¸“_î•ñ‚ğ‘‚«‚Ş--------------------------------------------
 
@@ -98,7 +98,7 @@ CreateMeshBuffer::CreateMeshBuffer(std::vector<DirectX::XMFLOAT3> VERT, std::vec
 			false
 		);
 		computeHelper.TransData(bufferHandleDataArray[DATA_UV].bufferHandle, UV.data(), KazBufferHelper::GetBufferSize<BUFFER_SIZE>(UV.size(), sizeof(DirectX::XMFLOAT2)));
-		bufferHandleDataArray[DATA_UV].descriptorViewHandle = computeHelper.GetBufferData(bufferHandleDataArray[DATA_UV].bufferHandle).viewHandle;
+		bufferHandleDataArray[DATA_UV].descriptorViewHandle = computeHelper.GetBufferData(bufferHandleDataArray[DATA_UV].bufferHandle).GetViewHandle();
 	}
 	//UVî•ñ‚ğ‘‚«‚Ş--------------------------------------------
 }

@@ -26,7 +26,6 @@ RESOURCE_HANDLE ResouceBufferHelper::CreateBuffer(UINT STRUCTURE_BYTE_STRIDE, Gr
 	bufferArrayData[lHandle].rangeType = RANGE;
 	bufferArrayData[lHandle].rootParamType = ROOTPARAM;
 	bufferArrayData[lHandle].bufferSize = lBufferSize;
-	bufferArrayData[lHandle].viewHandle = lViewHandle;
 	bufferArrayData[lHandle].elementNum = ELEMENT_NUM;
 
 	switch (RANGE)
@@ -40,27 +39,33 @@ RESOURCE_HANDLE ResouceBufferHelper::CreateBuffer(UINT STRUCTURE_BYTE_STRIDE, Gr
 	case GRAPHICS_RANGE_TYPE_UAV_DESC:
 		bufferArrayData[lHandle].bufferWrapper.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(lBufferSize));
 
-		bufferArrayData[lHandle].viewHandle = UavViewHandleMgr::Instance()->GetHandle();
 
-		if (GENERATE_COUNTER_BUFFER_FLAG)
+		std::vector<RESOURCE_HANDLE>lViewHandleArray;
+		for (int i = 0; i < RenderTargetStatus::Instance()->SWAPCHAIN_MAX_NUM; ++i)
 		{
-			bufferArrayData[lHandle].counterWrapper.CreateBuffer(counterBufferData);
+			lViewHandleArray.emplace_back(UavViewHandleMgr::Instance()->GetHandle());
+			bufferArrayData[lHandle].CreateViewHandle(lViewHandleArray[i]);
 
-			DescriptorHeapMgr::Instance()->CreateBufferView(
-				bufferArrayData[lHandle].viewHandle,
-				KazBufferHelper::SetUnorderedAccessView(STRUCTURE_BYTE_STRIDE, ELEMENT_NUM),
-				bufferArrayData[lHandle].bufferWrapper.buffer.Get(),
-				bufferArrayData[lHandle].counterWrapper.buffer.Get()
-			);
-		}
-		else
-		{
-			DescriptorHeapMgr::Instance()->CreateBufferView(
-				bufferArrayData[lHandle].viewHandle,
-				KazBufferHelper::SetUnorderedAccessView(STRUCTURE_BYTE_STRIDE, ELEMENT_NUM),
-				bufferArrayData[lHandle].bufferWrapper.buffer.Get(),
-				nullptr
-			);
+			if (GENERATE_COUNTER_BUFFER_FLAG)
+			{
+				bufferArrayData[lHandle].counterWrapper.CreateBuffer(counterBufferData);
+
+				DescriptorHeapMgr::Instance()->CreateBufferView(
+					lViewHandleArray[i],
+					KazBufferHelper::SetUnorderedAccessView(STRUCTURE_BYTE_STRIDE, ELEMENT_NUM),
+					bufferArrayData[lHandle].bufferWrapper.GetBuffer(i).Get(),
+					bufferArrayData[lHandle].counterWrapper.GetBuffer(i).Get()
+				);
+			}
+			else
+			{
+				DescriptorHeapMgr::Instance()->CreateBufferView(
+					lViewHandleArray[i],
+					KazBufferHelper::SetUnorderedAccessView(STRUCTURE_BYTE_STRIDE, ELEMENT_NUM),
+					bufferArrayData[lHandle].bufferWrapper.GetBuffer(i).Get(),
+					nullptr
+				);
+			}
 		}
 		break;
 	}
@@ -81,27 +86,32 @@ RESOURCE_HANDLE ResouceBufferHelper::CreateBuffer(const KazBufferHelper::BufferR
 	switch (RANGE)
 	{
 	case GRAPHICS_RANGE_TYPE_UAV_DESC:
-		bufferArrayData[lHandle].viewHandle = UavViewHandleMgr::Instance()->GetHandle();
-
-		if (GENERATE_COUNTER_BUFFER_FLAG)
+		std::vector<RESOURCE_HANDLE>lViewHandleArray;
+		for (int i = 0; i < RenderTargetStatus::Instance()->SWAPCHAIN_MAX_NUM; ++i)
 		{
-			bufferArrayData[lHandle].counterWrapper.CreateBuffer(counterBufferData);
+			lViewHandleArray.emplace_back(UavViewHandleMgr::Instance()->GetHandle());
+			bufferArrayData[lHandle].CreateViewHandle(lViewHandleArray[i]);
 
-			DescriptorHeapMgr::Instance()->CreateBufferView(
-				bufferArrayData[lHandle].viewHandle,
-				KazBufferHelper::SetUnorderedAccessView(STRUCTURE_BYTE_STRIDE, ELEMENT_NUM),
-				bufferArrayData[lHandle].bufferWrapper.buffer.Get(),
-				bufferArrayData[lHandle].counterWrapper.buffer.Get()
-			);
-		}
-		else
-		{
-			DescriptorHeapMgr::Instance()->CreateBufferView(
-				bufferArrayData[lHandle].viewHandle,
-				KazBufferHelper::SetUnorderedAccessView(STRUCTURE_BYTE_STRIDE, ELEMENT_NUM),
-				bufferArrayData[lHandle].bufferWrapper.buffer.Get(),
-				nullptr
-			);
+			if (GENERATE_COUNTER_BUFFER_FLAG)
+			{
+				bufferArrayData[lHandle].counterWrapper.CreateBuffer(counterBufferData);
+
+				DescriptorHeapMgr::Instance()->CreateBufferView(
+					lViewHandleArray[i],
+					KazBufferHelper::SetUnorderedAccessView(STRUCTURE_BYTE_STRIDE, ELEMENT_NUM),
+					bufferArrayData[lHandle].bufferWrapper.GetBuffer(i).Get(),
+					bufferArrayData[lHandle].counterWrapper.GetBuffer(i).Get()
+				);
+			}
+			else
+			{
+				DescriptorHeapMgr::Instance()->CreateBufferView(
+					lViewHandleArray[i],
+					KazBufferHelper::SetUnorderedAccessView(STRUCTURE_BYTE_STRIDE, ELEMENT_NUM),
+					bufferArrayData[lHandle].bufferWrapper.GetBuffer(i).Get(),
+					nullptr
+				);
+			}
 		}
 		break;
 	}
@@ -119,7 +129,6 @@ ResouceBufferHelper::BufferData ResouceBufferHelper::CreateAndGetBuffer(UINT STR
 	lBufferData.rangeType = RANGE;
 	lBufferData.rootParamType = ROOTPARAM;
 	lBufferData.bufferSize = lBufferSize;
-	lBufferData.viewHandle = lViewHandle;
 	lBufferData.elementNum = ELEMENT_NUM;
 
 	switch (RANGE)
@@ -133,28 +142,34 @@ ResouceBufferHelper::BufferData ResouceBufferHelper::CreateAndGetBuffer(UINT STR
 	case GRAPHICS_RANGE_TYPE_UAV_DESC:
 		lBufferData.bufferWrapper.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(lBufferSize));
 
-		lBufferData.viewHandle = UavViewHandleMgr::Instance()->GetHandle();
-
-		if (GENERATE_COUNTER_BUFFER_FLAG)
+		std::vector<RESOURCE_HANDLE>lViewHandleArray;
+		for (int i = 0; i < RenderTargetStatus::Instance()->SWAPCHAIN_MAX_NUM; ++i)
 		{
-			lBufferData.counterWrapper.CreateBuffer(counterBufferData);
+			lViewHandleArray.emplace_back(UavViewHandleMgr::Instance()->GetHandle());
+			lBufferData.CreateViewHandle(lViewHandleArray[i]);
 
-			DescriptorHeapMgr::Instance()->CreateBufferView(
-				lBufferData.viewHandle,
-				KazBufferHelper::SetUnorderedAccessView(STRUCTURE_BYTE_STRIDE, ELEMENT_NUM),
-				lBufferData.bufferWrapper.buffer.Get(),
-				lBufferData.counterWrapper.buffer.Get()
-			);
+			if (GENERATE_COUNTER_BUFFER_FLAG)
+			{
+				lBufferData.counterWrapper.CreateBuffer(counterBufferData);
+
+				DescriptorHeapMgr::Instance()->CreateBufferView(
+					lViewHandleArray[i],
+					KazBufferHelper::SetUnorderedAccessView(STRUCTURE_BYTE_STRIDE, ELEMENT_NUM),
+					lBufferData.bufferWrapper.GetBuffer(i).Get(),
+					lBufferData.counterWrapper.GetBuffer(i).Get()
+				);
+			}
+			else
+			{
+				DescriptorHeapMgr::Instance()->CreateBufferView(
+					lViewHandleArray[i],
+					KazBufferHelper::SetUnorderedAccessView(STRUCTURE_BYTE_STRIDE, ELEMENT_NUM),
+					lBufferData.bufferWrapper.GetBuffer(i).Get(),
+					nullptr
+				);
+			}
 		}
-		else
-		{
-			DescriptorHeapMgr::Instance()->CreateBufferView(
-				lBufferData.viewHandle,
-				KazBufferHelper::SetUnorderedAccessView(STRUCTURE_BYTE_STRIDE, ELEMENT_NUM),
-				lBufferData.bufferWrapper.buffer.Get(),
-				nullptr
-			);
-		}
+
 		break;
 	}
 
@@ -170,7 +185,6 @@ ResouceBufferHelper::BufferData ResouceBufferHelper::CreateAndGetBuffer(const Ka
 	lBufferData.rangeType = RANGE;
 	lBufferData.rootParamType = ROOTPARAM;
 	lBufferData.bufferSize = lBufferSize;
-	lBufferData.viewHandle = lViewHandle;
 	lBufferData.elementNum = ELEMENT_NUM;
 
 	switch (RANGE)
@@ -184,27 +198,32 @@ ResouceBufferHelper::BufferData ResouceBufferHelper::CreateAndGetBuffer(const Ka
 	case GRAPHICS_RANGE_TYPE_UAV_DESC:
 		lBufferData.bufferWrapper.CreateBuffer(KazBufferHelper::SetRWStructuredBuffer(lBufferSize));
 
-		lBufferData.viewHandle = UavViewHandleMgr::Instance()->GetHandle();
-
-		if (GENERATE_COUNTER_BUFFER_FLAG)
+		std::vector<RESOURCE_HANDLE>lViewHandleArray;
+		for (int i = 0; i < RenderTargetStatus::Instance()->SWAPCHAIN_MAX_NUM; ++i)
 		{
-			lBufferData.counterWrapper.CreateBuffer(counterBufferData);
+			lViewHandleArray.emplace_back(UavViewHandleMgr::Instance()->GetHandle());
+			lBufferData.CreateViewHandle(lViewHandleArray[i]);
 
-			DescriptorHeapMgr::Instance()->CreateBufferView(
-				lBufferData.viewHandle,
-				KazBufferHelper::SetUnorderedAccessView(STRUCTURE_BYTE_STRIDE, ELEMENT_NUM),
-				lBufferData.bufferWrapper.buffer.Get(),
-				lBufferData.counterWrapper.buffer.Get()
-			);
-		}
-		else
-		{
-			DescriptorHeapMgr::Instance()->CreateBufferView(
-				lBufferData.viewHandle,
-				KazBufferHelper::SetUnorderedAccessView(STRUCTURE_BYTE_STRIDE, ELEMENT_NUM),
-				lBufferData.bufferWrapper.buffer.Get(),
-				nullptr
-			);
+			if (GENERATE_COUNTER_BUFFER_FLAG)
+			{
+				lBufferData.counterWrapper.CreateBuffer(counterBufferData);
+
+				DescriptorHeapMgr::Instance()->CreateBufferView(
+					lViewHandleArray[i],
+					KazBufferHelper::SetUnorderedAccessView(STRUCTURE_BYTE_STRIDE, ELEMENT_NUM),
+					lBufferData.bufferWrapper.GetBuffer(i).Get(),
+					lBufferData.counterWrapper.GetBuffer(i).Get()
+				);
+			}
+			else
+			{
+				DescriptorHeapMgr::Instance()->CreateBufferView(
+					lViewHandleArray[i],
+					KazBufferHelper::SetUnorderedAccessView(STRUCTURE_BYTE_STRIDE, ELEMENT_NUM),
+					lBufferData.bufferWrapper.GetBuffer(i).Get(),
+					nullptr
+				);
+			}
 		}
 		break;
 	}
@@ -244,7 +263,7 @@ void ResouceBufferHelper::StackToCommandListAndCallDispatch(ComputePipeLineNames
 		//デスクリプタヒープにコマンドリストに積む。余りが偶数ならデスクリプタヒープだと判断する
 		if (bufferArrayData[i].rangeType % 2 == 0)
 		{
-			DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(L_PARAM, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(bufferArrayData[i].viewHandle));
+			DirectX12CmdList::Instance()->cmdList->SetComputeRootDescriptorTable(L_PARAM, DescriptorHeapMgr::Instance()->GetGpuDescriptorView(bufferArrayData[i].GetViewHandle()));
 			continue;
 		}
 
@@ -283,21 +302,21 @@ void ResouceBufferHelper::InitCounterBuffer(const Microsoft::WRL::ComPtr<ID3D12R
 {
 	for (int i = 0; i < bufferArrayData.size(); ++i)
 	{
-		if (bufferArrayData[i].counterWrapper.buffer)
+		if (bufferArrayData[i].counterWrapper.GetBuffer())
 		{
 			DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
 				1,
-				&CD3DX12_RESOURCE_BARRIER::Transition(bufferArrayData[i].counterWrapper.buffer.Get(),
+				&CD3DX12_RESOURCE_BARRIER::Transition(bufferArrayData[i].counterWrapper.GetBuffer().Get(),
 					D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
 					D3D12_RESOURCE_STATE_COPY_DEST
 				)
 			);
 
-			DirectX12CmdList::Instance()->cmdList->CopyResource(bufferArrayData[i].counterWrapper.buffer.Get(), INIT_DATA.Get());
+			DirectX12CmdList::Instance()->cmdList->CopyResource(bufferArrayData[i].counterWrapper.GetBuffer().Get(), INIT_DATA.Get());
 
 			DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
 				1,
-				&CD3DX12_RESOURCE_BARRIER::Transition(bufferArrayData[i].counterWrapper.buffer.Get(),
+				&CD3DX12_RESOURCE_BARRIER::Transition(bufferArrayData[i].counterWrapper.GetBuffer().Get(),
 					D3D12_RESOURCE_STATE_COPY_DEST,
 					D3D12_RESOURCE_STATE_UNORDERED_ACCESS
 				)

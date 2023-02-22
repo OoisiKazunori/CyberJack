@@ -94,6 +94,8 @@ public:
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtvHeaps;
 	D3D12_DESCRIPTOR_HEAP_DESC heapDesc{};
 	Microsoft::WRL::ComPtr<IDXGISwapChain4> copySwapchain;
+
+	static const int SWAPCHAIN_MAX_NUM = 2;
 private:
 
 

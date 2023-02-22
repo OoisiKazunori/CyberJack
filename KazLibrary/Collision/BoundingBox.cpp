@@ -43,7 +43,7 @@ const ResouceBufferHelper::BufferData &BoundingBox::GetBBBuffer()
 
 RESOURCE_HANDLE BoundingBox::GetViewHandle()
 {
-	return computeBuffer.GetBufferData(bbBufferHandle).viewHandle;
+	return computeBuffer.GetBufferData(bbBufferHandle).GetViewHandle();
 }
 
 void BoundingBox::Compute()

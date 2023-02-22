@@ -20,13 +20,13 @@ void RenderTargetStatus::CreateDoubleBuffer(Microsoft::WRL::ComPtr<IDXGISwapChai
 	//ダブルバッファリング用
 	HRESULT result;
 	heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;	//レンダーターゲットビュー
-	heapDesc.NumDescriptors = 2;					//最大二枚
+	heapDesc.NumDescriptors = SWAPCHAIN_MAX_NUM;	//最大二枚
 	DirectX12Device::Instance()->dev->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&rtvHeaps));
 
 
 	//裏表の二つ分
-	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> backBuffer(2);
-	for (int i = 0; i < 2; i++)
+	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> backBuffer(SWAPCHAIN_MAX_NUM);
+	for (int i = 0; i < SWAPCHAIN_MAX_NUM; i++)
 	{
 		//スワップチェーンからバッファを取得
 		result = SWAPCHAIN->GetBuffer(i, IID_PPV_ARGS(&backBuffer[i]));

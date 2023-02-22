@@ -28,7 +28,7 @@ InstanceDeadParticle::InstanceDeadParticle(const GPUParticleRender *RENDER_PTR)
 	copyBuffer.TransData(&lNum, sizeof(UINT));
 
 	initComputeHelper.GetBufferData(appendParticleBufferHandle).counterWrapper.CopyBuffer(
-		copyBuffer.buffer.Get(),
+		copyBuffer.GetBuffer().Get(),
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
 		D3D12_RESOURCE_STATE_COPY_DEST
 	);
@@ -124,11 +124,11 @@ void InstanceDeadParticle::Compute()
 	motherMatBuffer.TransData(lMatArray.data(), sizeof(MotherBufferData) * static_cast<int>(lMatArray.size()));
 
 	updateComputeHelper.GetBufferData(motherMatHandle).bufferWrapper.CopyBuffer(
-		motherMatBuffer.buffer.Get(),
+		motherMatBuffer.GetBuffer().Get(),
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
 		D3D12_RESOURCE_STATE_COPY_DEST
 	);
 
 
-	updateComputeHelper.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_DEAD_PARTICLE_UPDATE, { 100,1,1 });
+	//updateComputeHelper.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_DEAD_PARTICLE_UPDATE, { 100,1,1 });
 }

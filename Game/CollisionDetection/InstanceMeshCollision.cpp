@@ -176,7 +176,7 @@ void InstanceMeshCollision::Compute()
 	}
 	motherMatrixBuffer.bufferWrapper.TransData(lMatArray.data(), sizeof(DirectX::XMMATRIX) * static_cast<int>(lMatArray.size()));
 
-	updatePosCompute.GetBufferData(motherMatHandle).bufferWrapper.CopyBuffer(motherMatrixBuffer.bufferWrapper.buffer, D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_COPY_DEST);
+	updatePosCompute.GetBufferData(motherMatHandle).bufferWrapper.CopyBuffer(motherMatrixBuffer.bufferWrapper.GetBuffer().Get(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_COPY_DEST);
 
 #pragma endregion
 
@@ -193,17 +193,17 @@ void InstanceMeshCollision::Compute()
 
 	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
 		1,
-		&CD3DX12_RESOURCE_BARRIER::Transition(updatePosCompute.GetBufferData(colorDataHandle).bufferWrapper.buffer.Get(),
+		&CD3DX12_RESOURCE_BARRIER::Transition(updatePosCompute.GetBufferData(colorDataHandle).bufferWrapper.GetBuffer().Get(),
 			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
 			D3D12_RESOURCE_STATE_COPY_DEST
 		)
 	);
 
-	DirectX12CmdList::Instance()->cmdList->CopyResource(updatePosCompute.GetBufferData(colorDataHandle).bufferWrapper.buffer.Get(), colorDataBuffer.bufferWrapper.buffer.Get());
+	DirectX12CmdList::Instance()->cmdList->CopyResource(updatePosCompute.GetBufferData(colorDataHandle).bufferWrapper.GetBuffer().Get(), colorDataBuffer.bufferWrapper.GetBuffer().Get());
 
 	DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
 		1,
-		&CD3DX12_RESOURCE_BARRIER::Transition(updatePosCompute.GetBufferData(colorDataHandle).bufferWrapper.buffer.Get(),
+		&CD3DX12_RESOURCE_BARRIER::Transition(updatePosCompute.GetBufferData(colorDataHandle).bufferWrapper.GetBuffer().Get(),
 			D3D12_RESOURCE_STATE_COPY_DEST,
 			D3D12_RESOURCE_STATE_UNORDERED_ACCESS
 		)

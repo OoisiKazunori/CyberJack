@@ -7,6 +7,7 @@
 #include"../DirectXCommon/DirectX12Device.h"
 #include"../DirectXCommon/DirectX12CmdList.h"
 #include"../Math/KazMath.h"
+#include"../KazLibrary/RenderTarget/RenderTargetStatus.h"
 
 namespace KazRenderHelper
 {
@@ -138,34 +139,48 @@ namespace KazRenderHelper
 			D3D12_RESOURCE_STATES AFTER_STATE
 		)const
 		{
-
+			UINT lIndexNum = RenderTargetStatus::Instance()->bbIndex;
 			DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
 				1,
-				&CD3DX12_RESOURCE_BARRIER::Transition(buffer.Get(),
+				&CD3DX12_RESOURCE_BARRIER::Transition(buffer[lIndexNum].Get(),
 					BEFORE_STATE,
 					AFTER_STATE
 				)
 			);
 
-			DirectX12CmdList::Instance()->cmdList->CopyResource(buffer.Get(), SRC_BUFFER.Get());
+			DirectX12CmdList::Instance()->cmdList->CopyResource(buffer[lIndexNum].Get(), SRC_BUFFER.Get());
 
 			DirectX12CmdList::Instance()->cmdList->ResourceBarrier(
 				1,
-				&CD3DX12_RESOURCE_BARRIER::Transition(buffer.Get(),
+				&CD3DX12_RESOURCE_BARRIER::Transition(buffer[lIndexNum].Get(),
 					AFTER_STATE,
 					BEFORE_STATE
 				)
 			);
 		}
 
-
-
-		Microsoft::WRL::ComPtr<ID3D12Resource>buffer;
+		const Microsoft::WRL::ComPtr<ID3D12Resource> &GetBuffer(int INDEX = -1) const
+		{
+			if (INDEX == -1)
+			{
+				return buffer[RenderTargetStatus::Instance()->bbIndex];
+			}
+			else
+			{
+				return buffer[INDEX];
+			}
+		}
 
 		void operator=(const ID3D12ResourceWrapper &rhs)
 		{
-			rhs.buffer.CopyTo(&buffer);
+			for (int i = 0; i < 2; ++i)
+			{
+				rhs.buffer[i].CopyTo(&buffer[i]);
+			}
 		};
+		
+	private:
+		std::array<Microsoft::WRL::ComPtr<ID3D12Resource>, 2>buffer;
 	};
 
 

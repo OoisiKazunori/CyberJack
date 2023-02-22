@@ -19,15 +19,27 @@ public:
 		GraphicsRangeType rangeType;
 		GraphicsRootParamType rootParamType;
 		UINT bufferSize;
-		RESOURCE_HANDLE viewHandle;
 		UINT elementNum;
 
-		BufferData(const KazBufferHelper::BufferResourceData &BUFFER_DATA) :rangeType(GRAPHICS_RANGE_TYPE_NONE), rootParamType(GRAPHICS_PRAMTYPE_NONE), bufferSize(0), viewHandle(-1), elementNum(0)
+		BufferData(const KazBufferHelper::BufferResourceData &BUFFER_DATA) :rangeType(GRAPHICS_RANGE_TYPE_NONE), rootParamType(GRAPHICS_PRAMTYPE_NONE), bufferSize(0), elementNum(0)
 		{
 			bufferWrapper.CreateBuffer(BUFFER_DATA);
 		}
-		BufferData() :rangeType(GRAPHICS_RANGE_TYPE_NONE), rootParamType(GRAPHICS_PRAMTYPE_NONE), bufferSize(0), viewHandle(-1), elementNum(0)
+		BufferData() :rangeType(GRAPHICS_RANGE_TYPE_NONE), rootParamType(GRAPHICS_PRAMTYPE_NONE), bufferSize(0), elementNum(0)
 		{
+		}
+
+		void CreateViewHandle(std::vector<RESOURCE_HANDLE>HANDLE_ARRAY)
+		{
+			viewHandle = HANDLE_ARRAY;
+		}
+		void CreateViewHandle(RESOURCE_HANDLE HANDLE)
+		{
+			viewHandle.emplace_back(HANDLE);
+		}
+		const RESOURCE_HANDLE &GetViewHandle()const
+		{
+			return viewHandle[RenderTargetStatus::Instance()->bbIndex];
 		}
 
 		void operator=(const BufferData &rhs)
@@ -40,6 +52,9 @@ public:
 			viewHandle = rhs.viewHandle;
 			elementNum = rhs.elementNum;
 		};
+
+	private:
+		std::vector<RESOURCE_HANDLE> viewHandle;
 	};
 
 	ResouceBufferHelper();

@@ -100,7 +100,7 @@ private:
 	};
 	void IsSetBuffer(const ResouceBufferHelper::BufferData &BUFFER_DATA)
 	{
-		if (BUFFER_DATA.bufferWrapper.buffer)
+		if (BUFFER_DATA.bufferWrapper.GetBuffer())
 		{
 			GraphicsRootParamType lType = static_cast<GraphicsRootParamType>(GRAPHICS_PRAMTYPE_DATA + setCountNum);
 			computeInitMeshParticle.SetBuffer(BUFFER_DATA, lType);

@@ -26,7 +26,7 @@ ComputeParticleAvoidSphere::ComputeParticleAvoidSphere()
 	copyBuffer.CreateBuffer(lBufferData);
 	copyBuffer.TransData(&lNum, sizeof(UINT));
 
-	computeHelper.InitCounterBuffer(copyBuffer.buffer);
+	computeHelper.InitCounterBuffer(copyBuffer.GetBuffer());
 
 	//ç¿ïWÇÃÉâÅ[Évèàóù
 	computeHelper.CreateBuffer(
@@ -67,7 +67,7 @@ void ComputeParticleAvoidSphere::GenerateHitNum(UINT NUM)
 
 void ComputeParticleAvoidSphere::Compute()
 {
-	computeHelper.InitCounterBuffer(copyBuffer.buffer);
+	computeHelper.InitCounterBuffer(copyBuffer.GetBuffer());
 	computeHelper.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_HITBOX_AVOID_PARTICLE, { 1000,1,1 });
 }
 

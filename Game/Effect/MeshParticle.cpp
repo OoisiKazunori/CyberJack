@@ -66,7 +66,7 @@ MeshParticle::MeshParticle(const InitMeshParticleData &DATA, UINT ID)
 	if (DATA.textureHandle != -1)
 	{
 		ResouceBufferHelper::BufferData lData;
-		lData.viewHandle = DATA.textureHandle;
+		lData.CreateViewHandle(DATA.textureHandle);
 		lData.rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
 		lData.rootParamType = GRAPHICS_PRAMTYPE_TEX;
 		bufferHelper.SetBuffer(lData, GRAPHICS_PRAMTYPE_TEX);
@@ -99,7 +99,7 @@ MeshParticle::MeshParticle(const InitMeshParticleData &DATA, UINT ID)
 	copyBuffer.CreateBuffer(lBufferData);
 	copyBuffer.TransData(&lNum, sizeof(UINT));
 
-	bufferHelper.InitCounterBuffer(copyBuffer.buffer);
+	bufferHelper.InitCounterBuffer(copyBuffer.GetBuffer());
 	bufferHelper.StackToCommandListAndCallDispatch(pipelineName, { 1000,1,1 });
 }
 

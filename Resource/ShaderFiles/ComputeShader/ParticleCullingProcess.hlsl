@@ -29,9 +29,9 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     float4 color = worldMatData[index].color;
 
     //ƒJƒŠƒ“ƒOˆ—‘S”Ê‚ğ‚±‚±‚É’Ç‰Á—\’è
-    if(color.a <= 0.0f || 3000000 <= index)
+    if(color.a <= 0.0f)
     {
-        return;
+    //    return;
     }
 
     OutputData outputMat;

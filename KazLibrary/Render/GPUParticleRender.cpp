@@ -56,8 +56,8 @@ GPUParticleRender::GPUParticleRender(int MAXNUM)
 	vertexBuffer->TransData(lVerticesArray.data(), lVertBuffSize);
 	indexBuffer->TransData(lIndicesArray.data(), lIndexBuffSize);
 
-	gpuVertexBuffer.CopyBuffer(vertexBuffer->buffer, D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_COPY_DEST);
-	gpuIndexBuffer.CopyBuffer(indexBuffer->buffer, D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_COPY_DEST);
+	gpuVertexBuffer.CopyBuffer(vertexBuffer->GetBuffer(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_COPY_DEST);
+	gpuIndexBuffer.CopyBuffer(indexBuffer->GetBuffer(), D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_COPY_DEST);
 
 
 
@@ -66,7 +66,7 @@ GPUParticleRender::GPUParticleRender(int MAXNUM)
 	lInitData.indexBufferView = KazBufferHelper::SetIndexBufferView(gpuIndexBuffer.GetGpuAddress(), lIndexBuffSize);
 	lInitData.indexNum = static_cast<UINT>(lIndicesArray.size());
 	lInitData.elementNum = particleMaxNum;
-	lInitData.updateView = computeCovertWorldMatToDrawMat.GetBufferData(outputHandle).bufferWrapper.buffer->GetGPUVirtualAddress();
+	lInitData.updateView = computeCovertWorldMatToDrawMat.GetBufferData(outputHandle).bufferWrapper.GetBuffer()->GetGPUVirtualAddress();
 	lInitData.rootsignatureName = ROOTSIGNATURE_DATA_DRAW_UAV;
 
 	std::array<D3D12_INDIRECT_ARGUMENT_DESC, 2> args{};
@@ -95,7 +95,7 @@ GPUParticleRender::GPUParticleRender(int MAXNUM)
 
 void GPUParticleRender::InitCount()
 {
-	computeCovertWorldMatToDrawMat.InitCounterBuffer(copyBuffer.buffer.Get());
+	computeCovertWorldMatToDrawMat.InitCounterBuffer(copyBuffer.GetBuffer());
 }
 
 void GPUParticleRender::Draw(const DirectX::XMUINT3 &NUM)

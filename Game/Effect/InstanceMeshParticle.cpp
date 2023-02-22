@@ -35,7 +35,7 @@ InstanceMeshParticle::InstanceMeshParticle(const GPUParticleRender *RENDER_PTR) 
 
 
 	meshParticleBufferData.counterWrapper.CopyBuffer(
-		copyBuffer.buffer.Get(),
+		copyBuffer.GetBuffer().Get(),
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
 		D3D12_RESOURCE_STATE_COPY_DEST
 	);
@@ -228,7 +228,7 @@ void InstanceMeshParticle::AddMeshData(const InitMeshParticleData &DATA)
 	if (DATA.textureHandle != -1)
 	{
 		ResouceBufferHelper::BufferData lData;
-		lData.viewHandle = DATA.textureHandle;
+		lData.CreateViewHandle(DATA.textureHandle);
 		lData.rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
 		lData.rootParamType = GRAPHICS_PRAMTYPE_TEX;
 		computeInitMeshParticle.SetBuffer(lData, GRAPHICS_PRAMTYPE_TEX);
@@ -268,24 +268,22 @@ void InstanceMeshParticle::Compute()
 	scaleRotaBuffer.TransData(lScaleMatArray.data(), sizeof(DirectX::XMMATRIX) * static_cast<int>(scaleRotaMatArray.size()));
 
 	computeUpdateMeshParticle.GetBufferData(particleMotherMatrixHandle).bufferWrapper.CopyBuffer(
-		motherMatrixBuffer.buffer.Get(),
+		motherMatrixBuffer.GetBuffer().Get(),
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
 		D3D12_RESOURCE_STATE_COPY_DEST
 	);
 
 	computeUpdateMeshParticle.GetBufferData(colorMotherMatrixHandle).bufferWrapper.CopyBuffer(
-		colorBuffer.buffer.Get(),
+		colorBuffer.GetBuffer().Get(),
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
 		D3D12_RESOURCE_STATE_COPY_DEST
 	);
 
 	computeUpdateMeshParticle.GetBufferData(scaleRotateBillboardMatHandle).bufferWrapper.CopyBuffer(
-		scaleRotaBuffer.buffer.Get(),
+		scaleRotaBuffer.GetBuffer().Get(),
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
 		D3D12_RESOURCE_STATE_COPY_DEST
 	);
-
-
 
 	computeUpdateMeshParticle.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_UPDATE_MESHPARTICLE, { 1000,1,1 });
 }

@@ -213,62 +213,72 @@ KazRenderHelper::ID3D12ResourceWrapper::ID3D12ResourceWrapper()
 
 void KazRenderHelper::ID3D12ResourceWrapper::CreateBuffer(const KazBufferHelper::BufferResourceData &BUFFER_OPTION)
 {
-	HRESULT lResult;
-	//バッファの生成
-	lResult = DirectX12Device::Instance()->dev->CreateCommittedResource(
-		&BUFFER_OPTION.heapProperties,
-		BUFFER_OPTION.heapFlags,
-		&BUFFER_OPTION.resourceDesc,
-		BUFFER_OPTION.resourceState,
-		BUFFER_OPTION.clearValue,
-		IID_PPV_ARGS(&buffer)
-	);
+	for (int i = 0; i < RenderTargetStatus::Instance()->SWAPCHAIN_MAX_NUM; ++i)
+	{
+		HRESULT lResult;
+		//バッファの生成
+		lResult = DirectX12Device::Instance()->dev->CreateCommittedResource(
+			&BUFFER_OPTION.heapProperties,
+			BUFFER_OPTION.heapFlags,
+			&BUFFER_OPTION.resourceDesc,
+			BUFFER_OPTION.resourceState,
+			BUFFER_OPTION.clearValue,
+			IID_PPV_ARGS(&buffer[i])
+		);
 
-	assert(lResult == S_OK);
+		assert(lResult == S_OK);
 
-	const unsigned int BUFFER_SIZE = 256;
-	std::array<wchar_t, BUFFER_SIZE> string;
-	KazHelper::ConvertStringToWchar_t(BUFFER_OPTION.BufferName, string.data(), BUFFER_SIZE);
-	buffer->SetName(string.data());
+		const unsigned int BUFFER_SIZE = 256;
+		std::array<wchar_t, BUFFER_SIZE> string;
+		KazHelper::ConvertStringToWchar_t(BUFFER_OPTION.BufferName, string.data(), BUFFER_SIZE);
+		buffer[i]->SetName(string.data());
+	}
 }
 
 void KazRenderHelper::ID3D12ResourceWrapper::TransData(void *DATA, const unsigned int &DATA_SIZE)
 {
+	UINT lIndex = RenderTargetStatus::Instance()->bbIndex;
+
 	void *dataMap = nullptr;
-	auto result = buffer->Map(0, nullptr, (void **)&dataMap);
+	auto result = buffer[lIndex]->Map(0, nullptr, (void **)&dataMap);
 	if (SUCCEEDED(result))
 	{
 		memcpy(dataMap, DATA, DATA_SIZE);
-		buffer->Unmap(0, nullptr);
+		buffer[lIndex]->Unmap(0, nullptr);
 	}
 }
 
 void KazRenderHelper::ID3D12ResourceWrapper::TransData(void *DATA, unsigned int START_DATA_SIZE, unsigned int DATA_SIZE)
 {
+	UINT lIndex = RenderTargetStatus::Instance()->bbIndex;
+
 	void *dataMap = nullptr;
-	auto result = buffer->Map(0, nullptr, (void **)&dataMap);
+	auto result = buffer[lIndex]->Map(0, nullptr, (void **)&dataMap);
 
 	void *data = &dataMap + START_DATA_SIZE;
 	if (SUCCEEDED(result))
 	{
 		memcpy(data, DATA, DATA_SIZE);
-		buffer->Unmap(0, nullptr);
+		buffer[lIndex]->Unmap(0, nullptr);
 	}
 }
 
 void KazRenderHelper::ID3D12ResourceWrapper::Release()
 {
-	buffer->Release();
+	for (int i = 0; i < buffer.size(); ++i)
+	{
+		buffer[i]->Release();
+	}
 }
 
 D3D12_GPU_VIRTUAL_ADDRESS KazRenderHelper::ID3D12ResourceWrapper::GetGpuAddress()
 {
-	return buffer->GetGPUVirtualAddress();
+	return buffer[RenderTargetStatus::Instance()->bbIndex]->GetGPUVirtualAddress();
 }
 
 void *KazRenderHelper::ID3D12ResourceWrapper::GetMapAddres()const
 {
 	void *dataMap = nullptr;
-	auto result = buffer->Map(0, nullptr, (void **)&dataMap);;
+	auto result = buffer[RenderTargetStatus::Instance()->bbIndex]->Map(0, nullptr, (void **)&dataMap);;
 	return dataMap;
 }
