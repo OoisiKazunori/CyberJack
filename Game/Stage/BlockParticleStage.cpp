@@ -336,11 +336,18 @@ BlockParticleStage::BlockParticleStage()
 
 	meshBuffer = std::make_unique<CreateMeshBuffer>(lPos, lUv);
 	floorAlpha = 1.0f;
-	
+
 
 	for (int i = 0; i < floorParticleTransform.size(); ++i)
 	{
-		floorParticleTransform[i].pos = { 0.0f,-700.0f,500.0f + static_cast<float>(i) * 700.0f };
+		if (i < 20)
+		{
+			floorParticleTransform[i].pos = { 0.0f,700.0f,500.0f + static_cast<float>(i) * 700.0f };
+		}
+		else
+		{
+			floorParticleTransform[i].pos = { 0.0f,-700.0f,500.0f + static_cast<float>(i - 20) * 700.0f };
+		}
 		floorParticleTransform[i].rotation = { 90.0f,0.0f,0.0f };
 
 		InitMeshParticleData lFloorData;
@@ -405,7 +412,7 @@ BlockParticleStage::BlockParticleStage()
 
 	InitMeshParticleData lStageMeshParticleData = MeshParticleLoader::Instance()->Load(KazFilePathName::StagePath + "Dungeon_Wall.fbx", false, &transformArrayData[0].GetMat(), lParticleData);
 	RESOURCE_HANDLE lHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "Dungeon_Wall.fbx");
-	lStageMeshParticleData.color = { 0.3f,0.3f,0.3f,1.0f };
+	lStageMeshParticleData.color = { 0.5f,0.5f,0.5f,1.0f };
 
 
 	collisionArrrayData.emplace_back(InitMeshCollisionData());
@@ -532,7 +539,7 @@ void BlockParticleStage::Update()
 		floorParticleTransform[i].pos.z += -5.0f;
 		if (floorParticleTransform[i].pos.z <= -1000.0f)
 		{
-			floorParticleTransform[i].pos.z = (500.0f + static_cast<float>(FLOOR_PARTICLE_MAX_NUM) * 700.0f) - 1200.0f;
+			floorParticleTransform[i].pos.z = (500.0f + static_cast<float>(FLOOR_PARTICLE_MAX_NUM / 2) * 700.0f) - 1200.0f;
 		}
 		floorParticleMotherMat[i] = floorParticleTransform[i].GetMat();
 	}

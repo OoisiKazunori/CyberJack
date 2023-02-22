@@ -87,7 +87,7 @@ private:
 
 	int flashTimer;
 
-	static const int FLOOR_PARTICLE_MAX_NUM = 20;
+	static const int FLOOR_PARTICLE_MAX_NUM = 40;
 	std::array<KazMath::Transform3D, FLOOR_PARTICLE_MAX_NUM> floorParticleTransform;
 	std::array<DirectX::XMMATRIX, FLOOR_PARTICLE_MAX_NUM> floorParticleMotherMat;
 	float floorAlpha;

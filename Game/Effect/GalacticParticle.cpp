@@ -139,12 +139,39 @@ GalacticParticle::GalacticParticle()
 		boxDataArray[i].rotaVel = KazMath::Vec3<float>(KazMath::Rand(5.0f, 1.0f), KazMath::Rand(5.0f, 1.0f), KazMath::Rand(5.0f, 1.0f));
 		boxDataArray[i].color = { KazMath::Rand(255,155),KazMath::Rand(255,155),KazMath::Rand(255,155),255 };
 
-		blockHitBox.emplace_back(Sphere(&boxDataArray[i].transform.pos, 10.0f));
+	}
+
+	for (int i = 0; i < hitStageArray.size(); ++i)
+	{
+		hitStageArray[i].transform.pos =
+		{
+			0.0f,
+			KazMath::Rand(50.0f,-50.0f),
+			KazMath::Rand(500.0f, -100.0f)
+		};
+
+		if (3 <= KazMath::Rand(6, 0))
+		{
+			hitStageArray[i].transform.pos.x = -KazMath::Rand(100.0f, 80.0f);
+			hitStageArray[i].vel.x = 0.1f;
+		}
+		else
+		{
+			hitStageArray[i].transform.pos.x = KazMath::Rand(100.0f, 80.0f);
+			hitStageArray[i].vel.x = -0.1f;
+		}
+		hitStageArray[i].rotaVel = KazMath::Vec3<float>(KazMath::Rand(5.0f, 1.0f), KazMath::Rand(5.0f, 1.0f), KazMath::Rand(5.0f, 1.0f));
+
+
+		float lScale = 0.1f;
+		hitStageArray[i].transform.scale = { lScale,lScale,lScale };
+		blockHitBox.emplace_back(Sphere(&hitStageArray[i].transform.pos, 1.0f));
+
 	}
 
 
-	texHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StagePath + "Circle.png");
 
+	texHandle = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::StagePath + "Circle.png");
 }
 
 GalacticParticle::~GalacticParticle()
@@ -206,40 +233,57 @@ void GalacticParticle::Update()
 		instanceBufferHandle,
 		typeid(MatData).name()
 	);
+
+	for (int i = 0; i < hitStageArray.size(); ++i)
+	{
+		hitStageArray[i].transform.pos += hitStageArray[i].vel;
+		if (100.0f <= abs(hitStageArray[i].transform.pos.x))
+		{
+			hitStageArray[i].vel *= -1.0f;
+		}
+		hitStageArray[i].transform.rotation += hitStageArray[i].rotaVel;
+
+		hitRender[i].data.transform = hitStageArray[i].transform;
+	}
 }
 
 void GalacticParticle::Draw()
 {
-	//GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE_TEX);
-	//DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	//DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
-	//DirectX12CmdList::Instance()->cmdList->IASetIndexBuffer(&indexBufferView);
+	GraphicsPipeLineMgr::Instance()->SetPipeLineAndRootSignature(PIPELINE_NAME_GPUPARTICLE_TEX);
+	DirectX12CmdList::Instance()->cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	DirectX12CmdList::Instance()->cmdList->IASetVertexBuffers(0, 1, &vertexBufferView);
+	DirectX12CmdList::Instance()->cmdList->IASetIndexBuffer(&indexBufferView);
 
-	//TextureResourceMgr::Instance()->SetSRV(texHandle, GraphicsRootSignature::Instance()->GetRootParam(ROOTSIGNATURE_DATA_DRAW_UAB_TEX), GRAPHICS_PRAMTYPE_TEX);
+	TextureResourceMgr::Instance()->SetSRV(texHandle, GraphicsRootSignature::Instance()->GetRootParam(ROOTSIGNATURE_DATA_DRAW_UAB_TEX), GRAPHICS_PRAMTYPE_TEX);
 
 
-	//RenderTargetStatus::Instance()->ChangeBarrier(
-	//	buffers->GetBufferData(drawCommandHandle).Get(),
-	//	D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-	//	D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT
-	//);
+	RenderTargetStatus::Instance()->ChangeBarrier(
+		buffers->GetBufferData(drawCommandHandle).Get(),
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT
+	);
 
-	//DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
-	//(
-	//	commandSig.Get(),
-	//	1,
-	//	buffers->GetBufferData(drawCommandHandle).Get(),
-	//	0,
-	//	nullptr,
-	//	0
-	//);
+	DirectX12CmdList::Instance()->cmdList->ExecuteIndirect
+	(
+		commandSig.Get(),
+		1,
+		buffers->GetBufferData(drawCommandHandle).Get(),
+		0,
+		nullptr,
+		0
+	);
 
-	//RenderTargetStatus::Instance()->ChangeBarrier(
-	//	buffers->GetBufferData(drawCommandHandle).Get(),
-	//	D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
-	//	D3D12_RESOURCE_STATE_UNORDERED_ACCESS
-	//);
+	RenderTargetStatus::Instance()->ChangeBarrier(
+		buffers->GetBufferData(drawCommandHandle).Get(),
+		D3D12_RESOURCE_STATE_INDIRECT_ARGUMENT,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS
+	);
 
+
+	for (int i = 0; i < hitRender.size(); ++i)
+	{
+		hitRender[i].Draw();
+	}
 
 	box->Draw();
 }

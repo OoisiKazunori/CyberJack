@@ -50,7 +50,7 @@ void InstanceMeshCollision::Init(const GPUParticleRender *RENDER_PTR)
 		false
 	);
 
-	float lRadius = 50.0f;
+	float lRadius = 30.0f;
 	UINT meshCircleNum = 0;
 	//メッシュパーティクルの当たり判定生成ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
 	for (int i = 0; i < meshData.size(); ++i)

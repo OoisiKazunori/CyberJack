@@ -16,7 +16,7 @@ cbuffer RootConstants : register(b0)
 //入力
 RWStructuredBuffer<GPUParticleInput> worldMatData : register(u0);
 
-RWStructuredBuffer<OutputData>drawData:register(u1);
+AppendStructuredBuffer<OutputData>drawData:register(u1);
 
 //ワールド行列の座標や色からカリング処理を行い、描画用のバッファに変換する処理
 [numthreads(1024, 1, 1)]
@@ -29,9 +29,13 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     float4 color = worldMatData[index].color;
 
     //カリング処理全般をここに追加予定
+    if(color.a <= 0)
+    {
+        return;
+    }
 
     OutputData outputMat;
     outputMat.mat = mul(viewProjection,worldMat);
     outputMat.color = color;
-    drawData[index] = outputMat;
+    drawData.Append(outputMat);
 }

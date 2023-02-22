@@ -24,7 +24,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     
     float3 worldPos = GetPos(vertciesData[index].xyz,float3(0,0,0)).xyz;
 
-    float3 vertPos = float3(100.0f,50.0f,220.0f);
+    float3 vertPos = float3(80.0f,50.0f,220.0f);
 
     //ç≈è¨ílåvéZ
     bbPosData[0].minPos = MinFloat3(-vertPos, worldPos);

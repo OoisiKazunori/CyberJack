@@ -64,16 +64,17 @@ private:
 
 	BoxPolygonRenderPtr box;
 	RESOURCE_HANDLE instanceBufferHandle;
+
 	struct BoxData
 	{
 		KazMath::Transform3D transform;
+		KazMath::Vec3<float> vel;
 		KazMath::Vec3<float> rotaVel;
 		KazMath::Color color;
 
 		BoxData() :color(255, 255, 255, 255)
 		{};
 	};
-
 	static const int BOX_MAX_NUM = 50;
 	std::array<BoxData, BOX_MAX_NUM> boxDataArray;
 
@@ -84,5 +85,12 @@ private:
 	};
 
 	RESOURCE_HANDLE texHandle;
+
+
+
+
+	static const int HITBOX_MAX_NUM = 25;
+	std::array<BoxData, HITBOX_MAX_NUM> hitStageArray;
+	std::array<BoxPolygonRender, HITBOX_MAX_NUM>hitRender;
 };
 

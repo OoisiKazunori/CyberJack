@@ -48,7 +48,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
         hitBox.pos = cpuHitBoxArrayData[i].pos;    
         hitBox.radius = cpuHitBoxArrayData[i].radius;
 
-        if(hitBox.radius == 0.0f)
+        if(hitBox.radius <= 0.0f)
         {
             continue;
         }

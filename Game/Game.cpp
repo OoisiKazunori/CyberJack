@@ -117,7 +117,7 @@ Game::Game(
 	}
 	p1 = { 0.0f,0.0f,0.0f };
 	t1.center = &p1;
-	enemyHitBoxArray.emplace_back(&t1);
+	//enemyHitBoxArray.emplace_back(&t1);
 
 	meshCollision = std::make_unique<InstanceMeshCollision>(lInitCollisionData, enemyHitBoxArray);
 
@@ -1228,7 +1228,7 @@ void Game::Draw()
 		}
 
 
-		stages[stageNum]->vaporWaveSunRender.Draw();
+		//stages[stageNum]->vaporWaveSunRender.Draw();
 
 		for (int i = 0; i < hitEffect.size(); ++i)
 		{

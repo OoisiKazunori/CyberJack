@@ -19,7 +19,7 @@ GPUParticleRender::GPUParticleRender(int MAXNUM)
 		GRAPHICS_PRAMTYPE_DATA2,
 		sizeof(OutputData),
 		particleMaxNum,
-		false);
+		true);
 
 	viewProjMatHandle = computeCovertWorldMatToDrawMat.CreateBuffer(
 		sizeof(DirectX::XMMATRIX),

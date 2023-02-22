@@ -42,7 +42,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     bool TopFlag = particleData.pos.y <= colorData.lightData.y + 15.0f;
     bool ButtonFlag = colorData.lightData.y - 15.0f <= particleData.pos.y;
 
-    const float4 LIGHT_COLOR = float4(0.6,0.6,0.6,1.0);
+    const float4 LIGHT_COLOR = float4(0.7,0.7,0.7,1.0);
     //‚‚³‚É‚æ‚éŒõ‚ç‚¹
     if(TopFlag && ButtonFlag)
     {

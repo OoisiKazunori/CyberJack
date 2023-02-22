@@ -34,7 +34,7 @@ bool CheckLinkHitBox(uint3 BASE_HIT_INDEX,uint3 CHECK_HIT_INDEX)
     linkHitFlagArray[5] = BoolUint3(CHECK_HIT_INDEX, BASE_HIT_INDEX + uint3(0,0,1));  //前
     linkHitFlagArray[6] = BoolUint3(CHECK_HIT_INDEX, BASE_HIT_INDEX + uint3(0,0,-1)); //後
 
-    for(int i = 0;i < 1; ++i)
+    for(int i = 0;i < 7; ++i)
     {
         if(linkHitFlagArray[i])
         {
@@ -59,7 +59,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     particleData.hitFlag = inputGPUParticleData[index].hitFlag;
     particleData.hitTimer = inputGPUParticleData[index].hitTimer;
 
-    float larpVel = 0.1f;
+    float larpVel = 0.01f;
     float3 basePos = hitBoxData[index].pos;
 
     //同じインデックスの場合、パーティクルを動かす処理を追加する
@@ -85,9 +85,10 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
             float rate = angle / 90.0f;
 
             posParticleVec.x = 0.0f;
-            float3 vel = normalize(posParticleVec) * 8.5f * rate;
+            float3 vel = normalize(posParticleVec) * rate;
+            float3 mulVel = float3(0.0f,15.5f,15.5f);
             larpVel = 0.1f;
-            basePos = hitBoxData[index].pos + vel;
+            basePos = hitBoxData[index].pos + vel * mulVel;
             
             //パーティクル情報の描画,当たったかどうかも表示する
             //particleData.color = float4(0.89, 0.50, 0.07,1);

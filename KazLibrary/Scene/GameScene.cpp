@@ -37,16 +37,16 @@ void GameScene::PostInit()
 	backGroundColorArray[layerLevel] = KazMath::Color(0, 0, 0, 255);
 
 	//2-----------------------------------------------------------------
-	responeData[ENEMY_TYPE_MISILE][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_MISILE][respoineIndex].flame = time * 10;
-	responeData[ENEMY_TYPE_MISILE][respoineIndex].generateData.initPos = { 50.0f,10.0f,z };
-	responeData[ENEMY_TYPE_MISILE][respoineIndex].generateData.useMeshPaticleFlag = false;
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 10;
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 50.0f,10.0f,z };
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.useMeshPaticleFlag = true;
 	++respoineIndex;
 
-	responeData[ENEMY_TYPE_MISILE][respoineIndex].layerLevel = layerLevel;
-	responeData[ENEMY_TYPE_MISILE][respoineIndex].flame = time * 10;
-	responeData[ENEMY_TYPE_MISILE][respoineIndex].generateData.initPos = { 90.0f,10.0f,z };
-	responeData[ENEMY_TYPE_MISILE][respoineIndex].generateData.useMeshPaticleFlag = false;
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].layerLevel = layerLevel;
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].flame = time * 10;
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.initPos = { 90.0f,10.0f,z };
+	responeData[ENEMY_TYPE_NORMAL][respoineIndex].generateData.useMeshPaticleFlag = true;
 	++respoineIndex;
 	//2-----------------------------------------------------------------
 
