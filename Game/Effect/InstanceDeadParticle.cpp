@@ -65,7 +65,6 @@ void InstanceDeadParticle::AddData(const InitDeadParticleData &INIT_DATA)
 			false
 		));
 
-
 	meshParticleData.emplace_back
 	(
 		MeshParticle(INIT_DATA.meshParticleData, meshIdNum)
@@ -81,7 +80,6 @@ void InstanceDeadParticle::AddData(const InitDeadParticleData &INIT_DATA)
 
 	initComputeHelper.SetBuffer(meshParticleData[meshParticleData.size() - 1].GetBuffer(), GRAPHICS_PRAMTYPE_DATA2);
 
-	initComputeHelper.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_DEAD_PARTICLE_INIT, { 100,1,1 });
 	matArray.emplace_back(MotherData(INIT_DATA.motherMat, INIT_DATA.startFlag));
 	++meshIdNum;
 }
@@ -105,6 +103,12 @@ void InstanceDeadParticle::Compute()
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
 		D3D12_RESOURCE_STATE_COPY_DEST
 	);
+
+	if (meshParticleData.size() != 0)
+	{
+		meshParticleData[0].Compute();
+	}
+	initComputeHelper.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_DEAD_PARTICLE_INIT, { 100,1,1 });
 
 	updateComputeHelper.StackToCommandListAndCallDispatch(PIPELINE_COMPUTE_NAME_DEAD_PARTICLE_UPDATE, { 100,1,1 });
 }

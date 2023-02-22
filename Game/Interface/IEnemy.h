@@ -20,7 +20,14 @@ public:
 	/// <summary>
 	/// 仮想デストラクタ
 	/// </summary>
-	virtual ~IEnemy() {};
+	virtual ~IEnemy()
+	{
+		bool lF = iEnemy_EnemyStatusData->outOfStageFlag;
+		if (lF)
+		{
+			lF = false;
+		}
+	};
 
 	/// <summary>
 	/// 初期化処理

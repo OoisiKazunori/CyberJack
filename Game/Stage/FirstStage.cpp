@@ -106,7 +106,7 @@ FirstStage::FirstStage() :firstColor(162, 38, 179, 255), endColor(73, 39, 158, 2
 
 
 
-	//InitBackGround(firstColor, endColor, 650.0f, 400.0f);
+	InitBackGround(firstColor, endColor, 650.0f, 400.0f);
 	t = 0.0f;
 
 }

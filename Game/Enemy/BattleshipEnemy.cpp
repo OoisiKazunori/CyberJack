@@ -25,8 +25,8 @@ void BattleshipEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLA
 	topModel->data.pipelineName = PIPELINE_NAME_FBX_RENDERTARGET_TWO_LIGHT;
 	topModel->data.handle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "BattleShip/" + "BattleshipEnemy_Head_anim.fbx");	//ƒ‚ƒfƒ‹“Ç‚Ýž‚Ý
 
-	iEnemy_EnemyStatusData->meshParticleData.push_back(
-		MeshData
+	iEnemy_EnemyStatusData->meshParticleData.emplace_back(
+		std::make_shared<MeshData>
 		(
 			topModel->data.handle.handle,
 			&topModel->baseMatWorldData.matWorld

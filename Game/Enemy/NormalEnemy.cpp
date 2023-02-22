@@ -10,7 +10,7 @@ NormalEnemy::NormalEnemy()
 	lData.faceCountNum = 100;
 	lData.perTriangleNum = 50;
 
-	iEnemy_EnemyStatusData->meshParticleData.push_back(std::make_shared<MeshData>(0, &iEnemy_FbxModelRender->motherMat));
+	iEnemy_EnemyStatusData->meshParticleData.emplace_back(std::make_shared<MeshData>(0, &iEnemy_FbxModelRender->motherMat));
 	iEnemy_EnemyStatusData->meshParticleData[0]->meshParticleData =
 		MeshParticleLoader::Instance()->Load(
 			KazFilePathName::EnemyPath + "Move/" + "MoveEnemy_Model.fbx",
@@ -22,10 +22,9 @@ NormalEnemy::NormalEnemy()
 	iEnemy_EnemyStatusData->meshParticleData[0]->meshParticleData.textureHandle = -1;
 	iEnemy_EnemyStatusData->meshParticleData[0]->meshParticleData.uvData = {};
 	iEnemy_EnemyStatusData->meshParticleData[0]->meshParticleData.color = { 0.89f, 0.5f, 0.07f,1.0f };
-	iEnemy_EnemyStatusData->meshParticleFlag = true;
 	iEnemy_EnemyStatusData->meshParticleData[0]->meshParticleData.billboardFlag = true;
-
 	iEnemy_EnemyStatusData->meshParticleData[0]->meshParticleData.particleScale = { 0.1f,0.1f,0.1f };
+	iEnemy_EnemyStatusData->meshParticleFlag = true;
 }
 
 void NormalEnemy::Init(const EnemyGenerateData &GENERATE_DATA, bool DEMO_FLAG)

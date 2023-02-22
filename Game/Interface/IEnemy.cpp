@@ -213,7 +213,9 @@ void IEnemy::InitModel(const KazMath::Transform3D &TRANSFORM, const std::string 
 		lData.faceCountNum = 100;
 		lData.perTriangleNum = 50;
 
-		iEnemy_EnemyStatusData->meshParticleData.push_back(std::make_shared<MeshData>(0, &iEnemy_FbxModelRender->motherMat));
+		iEnemy_EnemyStatusData->meshParticleData.emplace_back(
+			std::make_shared<MeshData>(0, &iEnemy_FbxModelRender->motherMat)
+		);
 		iEnemy_EnemyStatusData->meshParticleData[0]->meshParticleData =
 			MeshParticleLoader::Instance()->Load(
 				MODEL_FILEPASS,
