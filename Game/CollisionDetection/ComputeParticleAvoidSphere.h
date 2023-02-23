@@ -12,6 +12,7 @@ public:
 	const ResouceBufferHelper::BufferData &GetStackParticleHitBoxBuffer();
 	const ResouceBufferHelper::BufferData &GetOutputParticleData();
 
+
 private:
 	ResouceBufferHelper computeHelper;
 	RESOURCE_HANDLE meshCircleArrayBufferHandle, outputParticleBufferHandle;

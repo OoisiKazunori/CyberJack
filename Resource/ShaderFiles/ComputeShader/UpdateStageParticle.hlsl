@@ -66,6 +66,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     worldMat = mul(motherMatData[particleData.id],worldMat);
 
 
+
     GPUParticleInput inputData;
     inputData.worldMat = worldMat;
     inputData.color = larpColorData[index];

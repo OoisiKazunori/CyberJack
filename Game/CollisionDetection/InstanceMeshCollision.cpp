@@ -10,7 +10,7 @@ InstanceMeshCollision::InstanceMeshCollision(const std::vector<InitMeshCollision
 		meshData.emplace_back(MeshParticleData(INIT_DATA[i].vertData, INIT_DATA[i].vertNumArray, INIT_DATA[i].meshParticleData, i));
 		//BB生成
 		meshData[i].bb.Compute();
-
+		meshData[i].bb.GetData();
 		motherMatArray.emplace_back(INIT_DATA[i].motherMat);
 		colorDataArray.emplace_back(INIT_DATA[i].colorData);
 	}
@@ -80,7 +80,7 @@ void InstanceMeshCollision::Init(const GPUParticleRender *RENDER_PTR)
 		meshCircleNum += generateMeshHitBox[i].MaxHitBoxPosNum();
 	}
 	//メッシュパーティクルの当たり判定生成ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
-	
+
 	particleAvoidParticle.GenerateHitNum(generateMeshHitBox[0].MaxHitBoxPosNum());
 
 	cpuAndMeshCircleHitBox = std::make_unique<CollisionDetectionOfMeshCircleAndCPUHitBox>(hitBoxData, lRadius / 2.0f, meshCircleNum);
@@ -165,6 +165,7 @@ void InstanceMeshCollision::Compute()
 		generateMeshHitBox[i].DebugCompute();
 	}
 #endif
+
 
 	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "TransMotherMat");
 #pragma region 親行列の転送

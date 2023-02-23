@@ -16,7 +16,7 @@ SceneManager::SceneManager() :gameFirstInitFlag(false)
 	//scene.emplace_back(std::make_unique<DebugStageScene>());
 	//scene.emplace_back(std::make_unique<TitleScene>());
 	scene.emplace_back(std::make_unique<GameScene>());
-
+	
 	nowScene = 0;
 	nextScene = 0;
 	itisInArrayFlag = true;
@@ -78,7 +78,11 @@ void SceneManager::Update()
 			nextScene = nowScene;
 		}
 
-		scene[nextScene]->PostInit();
+		if (!scene[nextScene]->firstGenerateFlag)
+		{
+			scene[nextScene]->PostInit();
+		}
+		scene[nextScene]->firstGenerateFlag = false;
 		initGameFlag = true;
 	}
 

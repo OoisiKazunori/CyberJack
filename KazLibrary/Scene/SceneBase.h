@@ -16,6 +16,7 @@ public:
 
 	bool endGameFlag;
 	bool skipTurtorialFlag;
+	bool firstGenerateFlag;
 protected:
 
 };

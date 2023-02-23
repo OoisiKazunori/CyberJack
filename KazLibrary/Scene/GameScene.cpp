@@ -11,6 +11,7 @@ GameScene::GameScene()
 {
 	skipTurtorialFlag = true;
 	PostInit();
+	firstGenerateFlag = true;
 }
 
 GameScene::~GameScene()

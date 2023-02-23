@@ -165,8 +165,7 @@ GalacticParticle::GalacticParticle()
 
 		float lScale = 0.1f;
 		hitStageArray[i].transform.scale = { lScale,lScale,lScale };
-		blockHitBox.emplace_back(Sphere(&hitStageArray[i].transform.pos, 1.0f));
-
+		//blockHitBox.emplace_back(Sphere(&hitStageArray[i].transform.pos, 1.0f));
 	}
 
 

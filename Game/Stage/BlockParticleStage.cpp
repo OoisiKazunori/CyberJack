@@ -158,13 +158,13 @@ BlockParticleStage::BlockParticleStage()
 
 
 	MeshParticleLoadData lParticleData;
-	lParticleData.bias = 70;
+	lParticleData.bias = 100;
 	lParticleData.faceCountNum = 21935;
 	lParticleData.perTriangleNum = 5;
 
 	InitMeshParticleData lStageMeshParticleData = MeshParticleLoader::Instance()->Load(KazFilePathName::StagePath + "Dungeon_Wall.fbx", false, &transformArrayData[0].GetMat(), lParticleData);
 	RESOURCE_HANDLE lHandle = FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "Dungeon_Wall.fbx");
-	lStageMeshParticleData.color = { 0.5f,0.5f,0.5f,1.0f };
+	lStageMeshParticleData.color = { 0.3f,0.3f,0.3f,1.0f };
 
 
 	collisionArrrayData.emplace_back(InitMeshCollisionData());

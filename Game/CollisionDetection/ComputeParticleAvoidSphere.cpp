@@ -29,12 +29,13 @@ ComputeParticleAvoidSphere::ComputeParticleAvoidSphere()
 	computeHelper.InitCounterBuffer(copyBuffer.GetBuffer());
 
 	//ç¿ïWÇÃÉâÅ[Évèàóù
-	computeHelper.CreateBuffer(
+	RESOURCE_HANDLE lHandle = computeHelper.CreateBuffer(
 		KazBufferHelper::SetOnlyReadStructuredBuffer(sizeof(DirectX::XMFLOAT3) * PARTICLE_MAX_NUM),
 		GRAPHICS_RANGE_TYPE_UAV_DESC,
 		GRAPHICS_PRAMTYPE_DATA4,
 		sizeof(DirectX::XMFLOAT3),
 		PARTICLE_MAX_NUM);
+
 }
 
 void ComputeParticleAvoidSphere::SetHitIDBuffer(const ResouceBufferHelper::BufferData &HIT_ID_BUFFER)
@@ -50,6 +51,7 @@ void ComputeParticleAvoidSphere::SetHitIDBuffer(const ResouceBufferHelper::Buffe
 		sizeof(InitOutputData),
 		PARTICLE_MAX_NUM,
 		false);
+
 }
 
 void ComputeParticleAvoidSphere::GenerateHitNum(UINT NUM)
