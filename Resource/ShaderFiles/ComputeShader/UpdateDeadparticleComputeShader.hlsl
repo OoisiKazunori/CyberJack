@@ -33,11 +33,6 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     uint index = groupThreadID.x;
     index += 1024 * groupId.x;
 
-    if(1000 <= index)
-    {
-       return;
-    }
-
     particleData[index].pos += particleData[index].vel;
     particleData[index].color.a  += -0.01f;
 

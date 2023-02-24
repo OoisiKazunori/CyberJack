@@ -276,9 +276,16 @@ D3D12_GPU_VIRTUAL_ADDRESS KazRenderHelper::ID3D12ResourceWrapper::GetGpuAddress(
 	return buffer[RenderTargetStatus::Instance()->bbIndex]->GetGPUVirtualAddress();
 }
 
-void *KazRenderHelper::ID3D12ResourceWrapper::GetMapAddres()const
+void *KazRenderHelper::ID3D12ResourceWrapper::GetMapAddres(int BB_INDEX)const
 {
 	void *dataMap = nullptr;
-	auto result = buffer[RenderTargetStatus::Instance()->bbIndex]->Map(0, nullptr, (void **)&dataMap);
+	if (BB_INDEX == -1)
+	{
+		buffer[RenderTargetStatus::Instance()->bbIndex]->Map(0, nullptr, (void **)&dataMap);
+	}
+	else
+	{
+		buffer[BB_INDEX]->Map(0, nullptr, (void **)&dataMap);
+	}
 	return dataMap;
 }

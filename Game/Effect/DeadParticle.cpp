@@ -13,16 +13,14 @@
 DeadParticle::DeadParticle(const ResouceBufferHelper::BufferData &ADDRESS, int VERT_NUM, const GPUParticleRender *RENDER_PTR, float PARTICLE_SCALE)
 {
 	PARTICLE_MAX_NUM = VERT_NUM;
-	PARTICLE_MAX_NUM = 100000;
 
-	InitMeshParticleData lData;
-	lData.vertData = ADDRESS;
-	lData.triagnleData.x = 650;
-	lData.triagnleData.y = 70;
-	lData.triagnleData.z = 50;
-	lData.triagnleData.w = 100;
+	data.vertData = ADDRESS;
+	data.triagnleData.x = 650;
+	data.triagnleData.y = 70;
+	data.triagnleData.z = 50;
+	data.triagnleData.w = 100;
 	
-	meshParticle = std::make_unique<MeshParticle>(lData, 0);
+	meshParticle = std::make_unique<MeshParticle>(data, 0);
 
 
 	//バッファ生成-------------------------

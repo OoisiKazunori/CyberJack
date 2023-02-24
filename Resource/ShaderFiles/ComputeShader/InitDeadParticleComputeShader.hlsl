@@ -10,7 +10,7 @@ struct InitData
 };
 
 //çXêV
-RWStructuredBuffer<float4> particleData : register(u0);
+RWStructuredBuffer<float3> particleData : register(u0);
 RWStructuredBuffer<InitData> initParticleData : register(u1);
 
 [numthreads(1024, 1, 1)]
@@ -19,12 +19,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     uint index = groupThreadID.x;
     index += 1024 * groupId.x;
 
-    if(400 <= index)
-    {
-    //    return;
-    }
-
-    initParticleData[index].pos = particleData[index];
+    initParticleData[index].pos.xyz = particleData[index];
     initParticleData[index].color = float4(1,1,1,1);
     initParticleData[index].vel.xyz = RandVec3(index,2,-2) * 0.1f;
 }

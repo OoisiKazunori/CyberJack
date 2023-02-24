@@ -17,7 +17,7 @@ public:
 	RESOURCE_HANDLE GetViewHandle();
 
 	const ResouceBufferHelper::BufferData &GetBBBuffer();
-	BoundingBoxData GetData();
+	BoundingBoxData GetData(int BB_INDEX = -1);
 	void Compute();
 	
 	ResouceBufferHelper computeBuffer;

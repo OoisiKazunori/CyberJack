@@ -26,9 +26,9 @@ BoundingBox::BoundingBox(const ResouceBufferHelper::BufferData &VERT_DATA, UINT 
 	computeBuffer.TransData(matBufferHandle, &lData, sizeof(CommonData));
 }
 
-BoundingBoxData BoundingBox::GetData()
+BoundingBoxData BoundingBox::GetData(int BB_INDEX)
 {
-	BoundingBoxBufferData *lData = (BoundingBoxBufferData *)computeBuffer.GetBufferData(bbBufferHandle).bufferWrapper.GetMapAddres();
+	BoundingBoxBufferData *lData = (BoundingBoxBufferData *)computeBuffer.GetBufferData(bbBufferHandle).bufferWrapper.GetMapAddres(BB_INDEX);
 
 	BoundingBoxData lTmpData;
 	lTmpData.minPos = { lData->minPos.x, lData->minPos.y, lData->minPos.z };

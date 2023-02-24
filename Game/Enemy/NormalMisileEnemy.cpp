@@ -117,17 +117,6 @@ void NormalMisileEnemy::Update()
 			lerpPos += vel;
 		}
 	}
-	else
-	{
-		if (iEnemy_FbxModelRender->data.colorData.color.a < 255)
-		{
-			iEnemy_FbxModelRender->data.colorData.color.a += 5;
-		}
-		else
-		{
-			iEnemy_FbxModelRender->data.colorData.color.a = 255;
-		}
-	}
 
 	KazMath::Larp(lerpPos.z, &iEnemy_FbxModelRender->data.transform.pos.z, 0.1f);
 

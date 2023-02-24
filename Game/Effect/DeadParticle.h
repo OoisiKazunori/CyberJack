@@ -60,4 +60,6 @@ private:
 	ResouceBufferHelper initComputeHelper, updateComputeHelper;
 
 	std::unique_ptr<MeshParticle> meshParticle;
+
+	InitMeshParticleData data;
 };

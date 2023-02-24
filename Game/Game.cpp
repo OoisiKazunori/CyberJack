@@ -123,10 +123,7 @@ Game::Game(
 
 
 	particleRender = std::make_unique<GPUParticleRender>();
-	deadParticleRender = std::make_unique<GPUParticleRender>(100000);
 	meshParticle = std::make_unique<InstanceMeshParticle>(particleRender.get());
-	deadParticle = std::make_unique<InstanceDeadParticle>(deadParticleRender.get());
-	deadParticle->Init();
 
 	for (int enemyType = 0; enemyType < responeData.size(); ++enemyType)
 	{
@@ -539,11 +536,11 @@ void Game::Update()
 						break;
 					}
 
-					deadParticle->AddData(
-						enemies[enemyType][enemyCount]->GetData()->deadParticleData
-					);
+					//deadParticle->AddData(
+					//	enemies[enemyType][enemyCount]->GetData()->deadParticleData
+					//);
 
-					/*deadParticleArray[enemyType].push_back(std::make_unique<DeadParticle>(
+					/*deadParticleArray[enemyType][enemyCount].push_back(std::make_unique<DeadParticle>(
 						enemies[enemyType][enemyCount]->GetData()->meshParticleData[0]->meshParticleData.vertData,
 						enemies[enemyType][enemyCount]->GetData()->meshParticleData[0]->meshParticleData.triagnleData.x,
 						deadParticleRender.get(),
@@ -780,7 +777,6 @@ void Game::Update()
 			else if (lineLevel[lineIndex].lineReachObjFlag && !enemies[enemyTypeIndex][enemyIndex]->IsAlive() && !lineEffectArrayData[i].hitFlag)
 			{
 				enemies[enemyTypeIndex][enemyIndex]->Dead();
-				//deadParticleArray[enemyTypeIndex][enemyIndex]->Init(enemies[enemyTypeIndex][enemyIndex]->GetData()->motherMat);
 				lineEffectArrayData[i].hitFlag = true;
 
 				//ヒット時の円演出
@@ -923,7 +919,6 @@ void Game::Update()
 		stages[stageNum]->hitFlag = false;
 		tutorialWindow.Update();
 		logoutWindow->Update();
-		deadParticle->Compute();
 		if (stageNum == 0)
 		{
 			meshParticle->Compute();
@@ -1034,18 +1029,6 @@ void Game::Update()
 			lightEffect[i].Update();
 		}
 
-		//メッシュパーティクルの死亡処理
-		for (int enemyType = 0; enemyType < deadParticleArray.size(); ++enemyType)
-		{
-			for (int enemyCount = 0; enemyCount < deadParticleArray[enemyType].size(); ++enemyCount)
-			{
-				if (enemies[enemyType][enemyCount] == nullptr)
-				{
-					continue;
-				}
-				//deadParticleArray[enemyType][enemyCount]->Update(0);
-			}
-		}
 #pragma endregion
 		stringLog.Update();
 	}
@@ -1100,7 +1083,6 @@ void Game::Update()
 void Game::Draw()
 {
 	particleRender->InitCount();
-	deadParticleRender->InitCount();
 
 	if (tutorial.tutorialFlag)
 	{
@@ -1167,7 +1149,6 @@ void Game::Draw()
 		stages[stageNum]->SetCamera(0);
 		stages[stageNum]->Draw();
 
-		deadParticleRender->Draw({ 10,1,1 });
 
 		PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "Enemy");
 		//敵の描画処理----------------------------------------------------------------
@@ -1178,8 +1159,7 @@ void Game::Draw()
 				//生成されている敵のみ描画処理を通す
 				bool enableToUseDataFlag = enemies[enemyType][enemyCount] != nullptr &&
 					enemies[enemyType][enemyCount]->GetData()->oprationObjData->initFlag &&
-					!enemies[enemyType][enemyCount]->GetData()->outOfStageFlag &&
-					enemies[enemyType][enemyCount]->GetData()->oprationObjData->enableToHitFlag;
+					!enemies[enemyType][enemyCount]->GetData()->outOfStageFlag;
 				if (enableToUseDataFlag)
 				{
 					enemies[enemyType][enemyCount]->Draw();
@@ -1192,7 +1172,7 @@ void Game::Draw()
 				}
 #endif
 			}
-			}
+		}
 		PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
 
@@ -1235,19 +1215,6 @@ void Game::Draw()
 		}
 
 
-		for (int enemyType = 0; enemyType < deadParticleArray.size(); ++enemyType)
-		{
-			for (int enemyCount = 0; enemyCount < deadParticleArray[enemyType].size(); ++enemyCount)
-			{
-				if (!deadParticleArray[enemyType][enemyCount])
-				{
-					continue;
-				}
-				//deadParticleArray[enemyType][enemyCount]->Draw();
-			}
-		}
-
-
 
 		renderTarget[stageNum]->Draw();
 
@@ -1271,12 +1238,15 @@ void Game::Draw()
 		logoutWindow->Draw();
 
 		mainRenderTarget.Draw();
-		cursor.Draw();
 		if (tutorial.tutorialFlag)
 		{
 			tutorial.cursor.Draw();
 		}
+		else
+		{
+			cursor.Draw();
 		}
+	}
 	else if (gameOverFlag)
 	{
 		gameOverTex.data.handleData = gameOverResouceHandle;
@@ -1314,7 +1284,7 @@ void Game::Draw()
 
 	blackTex.Draw();
 
-	}
+}
 
 int Game::SceneChange()
 {

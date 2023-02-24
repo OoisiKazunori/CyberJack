@@ -131,7 +131,7 @@ namespace KazRenderHelper
 		/// <returns>バッファのGPUアドレス</returns>
 		D3D12_GPU_VIRTUAL_ADDRESS GetGpuAddress();
 
-		void *GetMapAddres()const;
+		void *GetMapAddres(int BB_INDEX=-1)const;
 
 		void CopyBuffer(
 			const Microsoft::WRL::ComPtr<ID3D12Resource> &SRC_BUFFER,

@@ -104,7 +104,7 @@ void CSmain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 gr
     //‚ ‚½‚è”»’è‚ÌŒõ‚ç‚¹
     if(particleData.hitFlag)
     {
-        particleData.color = float4(0.15, 0.22, 0.95,1.0);
+        particleData.color = float4(0.0, 0.8, 0.8,1.0);
         particleData.hitTimer += 1;
         if(1 <= particleData.hitTimer)
         {

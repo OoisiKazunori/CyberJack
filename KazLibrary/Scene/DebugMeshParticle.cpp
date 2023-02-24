@@ -17,7 +17,7 @@
 
 
 DebugMeshParticleScene::DebugMeshParticleScene() :
-	sphereModel(FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "sphere.fbx")),
+	sphereModel(FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::StagePath + "sphere.fbx")),
 	enemyModel(FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "Move/" + "MoveEnemy_Model.fbx", true)),
 	summonModel(FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::EnemyPath + "Summon/" + "SummonEnemy_anim.fbx")),
 	cubeModel(FbxModelResourceMgr::Instance()->LoadModel(KazFilePathName::TestPath + "testCube.fbx"))

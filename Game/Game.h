@@ -190,8 +190,6 @@ private:
 	std::array<Sprite2DRender, 4> smokeR;
 
 	int emittNum;
-	std::array<std::vector<std::unique_ptr<DeadParticle>>, KazEnemyHelper::LAYER_LEVEL_MAX> deadParticleArray;
-
 
 	//エフェクト--------------------------------------
 	std::array<FireEffect, 30>fireEffect;
@@ -223,7 +221,5 @@ private:
 	std::vector<Sphere *>enemyHitBoxArray;
 	std::unique_ptr<InstanceMeshCollision> meshCollision;
 	std::unique_ptr<InstanceMeshParticle>meshParticle;
-	std::unique_ptr<InstanceDeadParticle>deadParticle;
 	std::unique_ptr<GPUParticleRender>particleRender;
-	std::unique_ptr<GPUParticleRender>deadParticleRender;
 };

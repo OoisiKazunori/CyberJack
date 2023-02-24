@@ -10,7 +10,7 @@ InstanceMeshCollision::InstanceMeshCollision(const std::vector<InitMeshCollision
 		meshData.emplace_back(MeshParticleData(INIT_DATA[i].vertData, INIT_DATA[i].vertNumArray, INIT_DATA[i].meshParticleData, i));
 		//BB¶¬
 		meshData[i].bb.Compute();
-		meshData[i].bb.GetData();
+
 		motherMatArray.emplace_back(INIT_DATA[i].motherMat);
 		colorDataArray.emplace_back(INIT_DATA[i].colorData);
 	}
@@ -56,7 +56,7 @@ void InstanceMeshCollision::Init(const GPUParticleRender *RENDER_PTR)
 	for (int i = 0; i < meshData.size(); ++i)
 	{
 		//ƒƒbƒVƒ…‹…¶¬
-		generateMeshHitBox.emplace_back(BBDuringEquallyCoordinatePlace(meshData[i].bb.GetBBBuffer(), meshData[i].bb.GetData(), meshMoveCompute.GetBufferData(inputMeshCircleBufferHandle), lRadius, i));
+		generateMeshHitBox.emplace_back(BBDuringEquallyCoordinatePlace(meshData[i].bb.GetBBBuffer(), meshData[i].bb.GetData(0), meshMoveCompute.GetBufferData(inputMeshCircleBufferHandle), lRadius, i));
 
 #ifdef DEBUG
 		generateMeshHitBox[i].SetDebugDraw(RENDER_PTR->GetStackBuffer());

@@ -160,6 +160,7 @@ public:
 	FbxModelRenderPtr iEnemy_FbxModelRender;				//“G‚Ì•`‰æ
 	std::unique_ptr<MeshParticleEmitter> iEnemy_MeshModelRender;
 	KazMath::Vec3<float> lerpPos;
+	float yVel;
 
 protected:
 	bool initDeadSoundFlag;

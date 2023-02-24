@@ -9,7 +9,7 @@
 
 GameScene::GameScene()
 {
-	skipTurtorialFlag = true;
+	skipTurtorialFlag = false;
 	PostInit();
 	firstGenerateFlag = true;
 }

@@ -62,7 +62,7 @@ void NormalEnemy::Update()
 	}
 
 	//Ž€–S‰‰o’†‚É“oê‰‰o‚Ís‚í‚È‚¢
-	if (!ProcessingOfDeathFbx(DEATH_SINK))
+	if (!ProcessingOfDeathFbx(DEATH_ROLL))
 	{
 		//“oêˆ—
 		if (iEnemy_FbxModelRender->data.colorData.color.a < 255)
@@ -83,7 +83,7 @@ void NormalEnemy::Update()
 
 	if (!iEnemy_EnemyStatusData->oprationObjData->enableToHitFlag)
 	{
-		iEnemy_FbxModelRender->data.colorData.color.a = 0;
+		iEnemy_EnemyStatusData->meshParticleData[0]->meshParticleData.color = KazMath::Color(255, 255, 255, 255).GetColorRate();
 		iEnemy_EnemyStatusData->hitBox.radius = 0.0f;
 		iEnemy_FbxModelRender->CaluMat();
 	}

@@ -42,6 +42,8 @@ IEnemy::IEnemy() :hpDirtyFlag(&iOperationData.rockOnNum)
 
 	iEnemy_FbxModelRender->data.transform.pos = { 0.0f,0.0f,-10000.0f };
 	iEnemy_ObjModelRender->data.transform.pos = { 0.0f,0.0f,-10000.0f };
+
+	yVel = KazMath::Rand<float>(1.0f, 0.1f);
 }
 
 void IEnemy::Dead()
@@ -59,7 +61,7 @@ void IEnemy::DeadEffect(KazMath::Vec3<float> *POS, KazMath::Vec3<float> *ROTATIO
 	{
 		KazMath::Vec3<float> rota{ 5.0f,5.0f,5.0f };
 		*ROTATION += initDeadRotaVel;
-		POS->y -= 0.5f;
+		POS->y -= yVel;
 		*ALPHA -= 5;
 	}
 }
