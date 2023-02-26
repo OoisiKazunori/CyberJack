@@ -10,7 +10,7 @@
 GameScene::GameScene()
 {
 	skipTurtorialFlag = false;
-	PostInit();
+	PreInit();
 	firstGenerateFlag = true;
 }
 
@@ -24,7 +24,7 @@ void GameScene::Init()
 	skipTurtorialFlag = false;
 }
 
-void GameScene::PostInit()
+void GameScene::PreInit()
 {
 	int respoineIndex = 0;
 	int layerLevel = 0;

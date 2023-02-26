@@ -5,7 +5,7 @@ class SceneBase
 public:
 	virtual ~SceneBase() = default;
 	virtual void Init() = 0;
-	virtual void PostInit() {};
+	virtual void PreInit() {};
 	virtual void Finalize() = 0;
 	virtual void Input() = 0;
 	virtual void Update() = 0;

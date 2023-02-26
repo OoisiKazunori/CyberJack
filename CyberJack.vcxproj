@@ -275,6 +275,7 @@
     <ClCompile Include="KazLibrary\Scene\GameScene.cpp" />
     <ClCompile Include="KazLibrary\Scene\main.cpp" />
     <ClCompile Include="KazLibrary\Scene\PortalScene.cpp" />
+    <ClCompile Include="KazLibrary\Scene\RayTracingScene.cpp" />
     <ClCompile Include="KazLibrary\Scene\SceneChange.cpp" />
     <ClCompile Include="KazLibrary\Scene\SceneManager.cpp" />
     <ClCompile Include="KazLibrary\Scene\StageSelectScene.cpp" />
@@ -461,6 +462,7 @@
     <ClInclude Include="KazLibrary\Scene\EnemyDebugScene.h" />
     <ClInclude Include="KazLibrary\Scene\GameScene.h" />
     <ClInclude Include="KazLibrary\Scene\PortalScene.h" />
+    <ClInclude Include="KazLibrary\Scene\RayTracingScene.h" />
     <ClInclude Include="KazLibrary\Scene\SceneBase.h" />
     <ClInclude Include="KazLibrary\Scene\SceneChange.h" />
     <ClInclude Include="KazLibrary\Scene\SceneData.h" />
