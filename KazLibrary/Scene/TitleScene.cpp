@@ -42,6 +42,9 @@ TitleScene::TitleScene() :movie(true)
 
 	onlyControllerR.data.handleData = TextureResourceMgr::Instance()->LoadGraph(KazFilePathName::UIPath + "OnlyController.png");
 	onlyControllerR.data.transform.pos = { 1000.0f,380.0f };
+
+	renderTarget = std::make_unique<GameRenderTarget>(KazMath::Color(14, 12, 13, 255));
+	mainRenderTarget = std::make_unique<GameRenderTarget>(KazMath::Color(14, 12, 13, 255));
 }
 
 TitleScene::~TitleScene()
@@ -112,8 +115,6 @@ void TitleScene::Init()
 	gridTopRate = 0.0f;
 
 
-	renderTarget = std::make_unique<GameRenderTarget>(KazMath::Color(14, 12, 13, 255));
-	mainRenderTarget = std::make_unique<GameRenderTarget>(KazMath::Color(14, 12, 13, 255));
 	mainRenderTargetRender.data.handleData = mainRenderTarget->GetGameRenderTargetHandle();
 
 	movie.Init("", 10);
@@ -146,7 +147,6 @@ void TitleScene::Finalize()
 	{
 		mainGridR[i]->Finalize();
 	}
-	renderTarget.reset();
 }
 
 void TitleScene::Input()
