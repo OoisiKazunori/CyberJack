@@ -175,6 +175,8 @@
     <ClCompile Include="KazLibrary\Loader\MeshParticleLoader.cpp" />
     <ClCompile Include="Game\Effect\InstanceDeadParticle.cpp" />
     <ClCompile Include="KazLibrary\Scene\RayTracingScene.cpp" />
+    <ClCompile Include="KazLibrary\Loader\MovieLoader.cpp" />
+    <ClCompile Include="Game\Event\GameCommonData.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -365,6 +367,8 @@
     <ClInclude Include="KazLibrary\Loader\MeshParticleLoader.h" />
     <ClInclude Include="Game\Effect\InstanceDeadParticle.h" />
     <ClInclude Include="KazLibrary\Scene\RayTracingScene.h" />
+    <ClInclude Include="KazLibrary\Loader\MovieLoader.h" />
+    <ClInclude Include="Game\Event\GameCommonData.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

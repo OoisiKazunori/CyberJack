@@ -1576,23 +1576,6 @@ PreCreateBasePipeLine::PreCreateBasePipeLine()
 	}
 
 
-	//エミッターの場所を決める
-	{
-		RootSignatureDataTest lRootsignature;
-		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA));
-		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA2));
-		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA3));
-		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_UAV_DESC, GRAPHICS_PRAMTYPE_DATA4));
-		lRootsignature.rangeArray.push_back(BufferRootsignature(GRAPHICS_RANGE_TYPE_CBV_VIEW, GRAPHICS_PRAMTYPE_DATA5));
-
-		GraphicsPipeLineMgr::Instance()->CreateComputePipeLine(
-			ShaderOptionData(KazFilePathName::ComputeShaderPath + "MeshParticleComputeShader.hlsl", "CSmain", "cs_6_4"),
-			desc,
-			lRootsignature,
-			PIPELINE_COMPUTE_NAME_MESHPARTICLE
-		);
-	}
-
 	//スプライン曲線に沿ったパーティクル初期化
 	{
 		RootSignatureDataTest lRootsignature;
