@@ -1,6 +1,7 @@
 #include "Letter.h"
 #include<assert.h>
 #include"../KazLibrary/Helper/ResourceFilePass.h"
+#include"../Game/Event/GameCommonData.h"
 
 Letter::Letter()
 {
@@ -93,6 +94,17 @@ void Letter::Init(const KazMath::Vec2<float> &POS, const char &CHARACTER, float 
 	{
 		return;
 	}
+
+	//大文字画像がリリース版でのみ解放されるバグ発生中。別の画像を読み込んで対処
+	if(GameCommonData::Instance()->IsSecondFlag)
+	{
+		graphHandle[CHARA_LARGE] = TextureResourceMgr::Instance()->LoadDivGraph(KazFilePathName::UIPath + "UppercaseAlphabet2.png", 26, 1, 16, 16);
+	}
+	else
+	{
+		graphHandle[CHARA_LARGE] = TextureResourceMgr::Instance()->LoadDivGraph(KazFilePathName::UIPath + "UppercaseAlphabet.png", 26, 1, 16, 16);
+	}
+
 	render->data.handleData = graphHandle[fontType];
 	render->data.animationHandle = fontNum;
 }
@@ -173,7 +185,6 @@ void String::Init(const KazMath::Vec2<float>POS, const std::string &STRING, floa
 	charaArrayNum = 0;
 
 	basePos = POS;
-
 }
 
 void String::Finalize()

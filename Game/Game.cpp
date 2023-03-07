@@ -198,8 +198,8 @@ void Game::Init(bool SKIP_FLAG)
 	testEnemyPos = { 0.0f,0.0f,100.0f };
 
 	appearGoalBoxPos[0] = { 0.0f,10.0f,40.0f };
-	//appearGoalBoxPos[1] = { -20.0f,10.0f,40.0f };
-	//appearGoalBoxPos[2] = { 20.0f,-5.0f,40.0f };
+	appearGoalBoxPos[1] = { -20.0f,10.0f,40.0f };
+	appearGoalBoxPos[2] = { 20.0f,-5.0f,40.0f };
 	responeGoalBoxPos = { -10.0f,-100.0f,40.0f };
 	goalBox.Init(responeGoalBoxPos);
 	initAppearFlag = false;
